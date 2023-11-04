@@ -1,27 +1,33 @@
-import {useNonce} from '@shopify/hydrogen';
-import {
-  defer,
-  type SerializeFrom,
-  type LoaderFunctionArgs,
-} from '@shopify/remix-oxygen';
+import {ColorSchemeScript, MantineProvider, createTheme} from '@mantine/core';
+import {cssBundleHref} from '@remix-run/css-bundle';
+
+import '@mantine/core/styles.css';
+
+import {ModalsProvider} from '@mantine/modals';
 import {
   Links,
+  LiveReload,
   Meta,
   Outlet,
   Scripts,
-  LiveReload,
-  useMatches,
-  useRouteError,
-  useLoaderData,
   ScrollRestoration,
   isRouteErrorResponse,
+  useLoaderData,
+  useMatches,
+  useRouteError,
   type ShouldRevalidateFunction,
 } from '@remix-run/react';
+import {useNonce} from '@shopify/hydrogen';
 import type {CustomerAccessToken} from '@shopify/hydrogen/storefront-api-types';
-import favicon from '../public/favicon.svg';
-import resetStyles from './styles/reset.css';
-import appStyles from './styles/app.css';
+import {
+  defer,
+  type LoaderFunctionArgs,
+  type SerializeFrom,
+} from '@shopify/remix-oxygen';
 import {Layout} from '~/components/Layout';
+import favicon from '../public/favicon.svg';
+import appStyles from './styles/app.css';
+import resetStyles from './styles/reset.css';
 
 /**
  * This is important to avoid re-fetching root queries on sub-navigations
@@ -46,6 +52,7 @@ export const shouldRevalidate: ShouldRevalidateFunction = ({
 
 export function links() {
   return [
+    ...(cssBundleHref ? [{rel: 'stylesheet', href: cssBundleHref}] : []),
     {rel: 'stylesheet', href: resetStyles},
     {rel: 'stylesheet', href: appStyles},
     {
@@ -110,6 +117,9 @@ export async function loader({context}: LoaderFunctionArgs) {
 export default function App() {
   const nonce = useNonce();
   const data = useLoaderData<typeof loader>();
+  const theme = createTheme({
+    /** Put your mantine theme override here */
+  });
 
   return (
     <html lang="en">
@@ -118,14 +128,19 @@ export default function App() {
         <meta name="viewport" content="width=device-width,initial-scale=1" />
         <Meta />
         <Links />
+        <ColorSchemeScript />
       </head>
       <body>
-        <Layout {...data}>
-          <Outlet />
-        </Layout>
-        <ScrollRestoration nonce={nonce} />
-        <Scripts nonce={nonce} />
-        <LiveReload nonce={nonce} />
+        <MantineProvider theme={theme}>
+          <ModalsProvider>
+            <Layout {...data}>
+              <Outlet />
+            </Layout>
+            <ScrollRestoration nonce={nonce} />
+            <Scripts nonce={nonce} />
+            <LiveReload nonce={nonce} />
+          </ModalsProvider>
+        </MantineProvider>
       </body>
     </html>
   );

@@ -13,6 +13,9 @@
   },
   "prettier": "@shopify/prettier-config",
   "dependencies": {
+    "@mantine/core": "^7.1.7",
+    "@mantine/hooks": "^7.1.7",
+    "@mantine/modals": "^7.1.7",
     "@remix-run/css-bundle": "2.1.0",
     "@remix-run/react": "2.1.0",
     "@shopify/cli": "3.50.0",
@@ -36,6 +39,9 @@
     "@types/react-dom": "^18.2.7",
     "eslint": "^8.20.0",
     "eslint-plugin-hydrogen": "0.12.2",
+    "postcss": "^8.4.31",
+    "postcss-preset-mantine": "^1.9.1",
+    "postcss-simple-vars": "^7.0.1",
     "prettier": "^2.8.4",
     "typescript": "^5.2.2"
   },

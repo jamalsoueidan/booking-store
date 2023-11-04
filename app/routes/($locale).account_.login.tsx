@@ -1,10 +1,11 @@
+import {Button} from '@mantine/core';
+import {Form, Link, useActionData, type MetaFunction} from '@remix-run/react';
 import {
   json,
   redirect,
   type ActionFunctionArgs,
   type LoaderFunctionArgs,
 } from '@shopify/remix-oxygen';
-import {Form, Link, useActionData, type MetaFunction} from '@remix-run/react';
 
 type ActionResponse = {
   error: string | null;
@@ -109,7 +110,9 @@ export default function Login() {
         ) : (
           <br />
         )}
-        <button type="submit">Sign in</button>
+        <Button variant="filled" type="submit">
+          Sign in
+        </Button>
       </Form>
       <br />
       <div>
