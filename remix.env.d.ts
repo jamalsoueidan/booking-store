@@ -6,6 +6,10 @@
 import '@total-typescript/ts-reset';
 
 import type {Storefront, HydrogenCart} from '@shopify/hydrogen';
+import type {
+  LanguageCode,
+  CountryCode,
+} from '@shopify/hydrogen/storefront-api-types';
 import type {CustomerAccessToken} from '@shopify/hydrogen/storefront-api-types';
 import type {HydrogenSession} from './server';
 
@@ -25,6 +29,15 @@ declare global {
     PUBLIC_STORE_DOMAIN: string;
     PUBLIC_STOREFRONT_ID: string;
   }
+
+  /**
+   * The I18nLocale used for Storefront API query context.
+   */
+  type I18nLocale = {
+    language: LanguageCode;
+    country: CountryCode;
+    pathPrefix: string;
+  };
 }
 
 declare module '@shopify/remix-oxygen' {
@@ -34,7 +47,7 @@ declare module '@shopify/remix-oxygen' {
   export interface AppLoadContext {
     env: Env;
     cart: HydrogenCart;
-    storefront: Storefront;
+    storefront: Storefront<I18nLocale>;
     session: HydrogenSession;
     waitUntil: ExecutionContext['waitUntil'];
   }
