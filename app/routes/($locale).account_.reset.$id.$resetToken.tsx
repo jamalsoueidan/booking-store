@@ -1,5 +1,14 @@
-import {type ActionFunctionArgs, json, redirect} from '@shopify/remix-oxygen';
-import {Form, useActionData, type MetaFunction} from '@remix-run/react';
+import {
+  Anchor,
+  Button,
+  Container,
+  Paper,
+  PasswordInput,
+  Text,
+  Title,
+} from '@mantine/core';
+import {Link, useActionData, type MetaFunction} from '@remix-run/react';
+import {json, redirect, type ActionFunctionArgs} from '@shopify/remix-oxygen';
 
 type ActionResponse = {
   error: string | null;
@@ -64,52 +73,53 @@ export default function Reset() {
   const action = useActionData<ActionResponse>();
 
   return (
-    <div className="account-reset">
-      <h1>Reset Password.</h1>
-      <p>Enter a new password for your account.</p>
-      <Form method="POST">
-        <fieldset>
-          <label htmlFor="password">Password</label>
-          <input
-            aria-label="Password"
-            autoComplete="current-password"
+    <Container size={420} my={40}>
+      <Title order={1} ta="center">
+        Nulstil adgangskode
+      </Title>
+      <Text size="sm" ta="center" mt="md">
+        Indtast en ny adgangskode for din konto.
+      </Text>
+
+      <Paper withBorder shadow="md" p={30} mt={30} radius="md">
+        <form method="POST">
+          <PasswordInput
+            label="Adgangskode"
+            id="password"
+            name="password"
+            type="password"
+            placeholder="Din adgangskode"
+            required
             // eslint-disable-next-line jsx-a11y/no-autofocus
             autoFocus
-            id="password"
-            minLength={8}
-            name="password"
-            placeholder="Password"
-            required
-            type="password"
+            autoComplete="new-password"
           />
-          <label htmlFor="passwordConfirm">Re-enter password</label>
-          <input
-            aria-label="Re-enter password"
-            autoComplete="current-password"
+          <PasswordInput
+            label="Bekræft adgangskode"
             id="passwordConfirm"
-            minLength={8}
             name="passwordConfirm"
-            placeholder="Re-enter password"
-            required
             type="password"
+            placeholder="Gentag adgangskode"
+            required
+            mt="md"
           />
-        </fieldset>
-        {action?.error ? (
-          <p>
-            <mark>
-              <small>{action.error}</small>
-            </mark>
-          </p>
-        ) : (
-          <br />
-        )}
-        <button type="submit">Reset</button>
-      </Form>
-      <br />
-      <p>
-        <a href="/account/login">Back to login →</a>
-      </p>
-    </div>
+          {action?.error && (
+            <Text size="sm" mt="md">
+              {action.error}
+            </Text>
+          )}
+          <Button fullWidth mt="xl" type="submit">
+            Nulstil
+          </Button>
+        </form>
+      </Paper>
+
+      <Text ta="center" mt="md">
+        <Anchor component={Link} to="/account/login" size="sm">
+          Tilbage til login →
+        </Anchor>
+      </Text>
+    </Container>
   );
 }
 

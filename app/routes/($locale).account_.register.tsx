@@ -1,10 +1,20 @@
 import {
+  Anchor,
+  Button,
+  Container,
+  Paper,
+  PasswordInput,
+  Text,
+  TextInput,
+  Title,
+} from '@mantine/core';
+import {Form, Link, useActionData} from '@remix-run/react';
+import {
   json,
   redirect,
   type ActionFunctionArgs,
   type LoaderFunctionArgs,
 } from '@shopify/remix-oxygen';
-import {Form, Link, useActionData} from '@remix-run/react';
 import type {CustomerCreateMutation} from 'storefrontapi.generated';
 
 type ActionResponse = {
@@ -106,62 +116,62 @@ export async function action({request, context}: ActionFunctionArgs) {
 export default function Register() {
   const data = useActionData<ActionResponse>();
   const error = data?.error || null;
+
   return (
-    <div className="login">
-      <h1>Register.</h1>
-      <Form method="POST">
-        <fieldset>
-          <label htmlFor="email">Email address</label>
-          <input
+    <Container size={420} my={40}>
+      <Title order={1} ta="center">
+        Opret en konto!
+      </Title>
+      <Paper withBorder shadow="md" p={30} mt={30} radius="md">
+        <Form method="POST">
+          <TextInput
+            label="Email adresse"
             id="email"
             name="email"
             type="email"
             autoComplete="email"
             required
-            placeholder="Email address"
-            aria-label="Email address"
+            placeholder="Email adresse"
             // eslint-disable-next-line jsx-a11y/no-autofocus
             autoFocus
           />
-          <label htmlFor="password">Password</label>
-          <input
+          <PasswordInput
+            label="Adgangskode"
             id="password"
             name="password"
-            type="password"
-            autoComplete="current-password"
-            placeholder="Password"
-            aria-label="Password"
-            minLength={8}
+            placeholder="Adgangskode"
             required
+            autoComplete="new-password"
+            minLength={8}
+            mt="md"
           />
-          <label htmlFor="passwordConfirm">Re-enter password</label>
-          <input
+          <PasswordInput
+            label="Bekræft adgangskode"
             id="passwordConfirm"
             name="passwordConfirm"
-            type="password"
-            autoComplete="current-password"
-            placeholder="Re-enter password"
-            aria-label="Re-enter password"
-            minLength={8}
+            placeholder="Gentag adgangskode"
             required
+            autoComplete="new-password"
+            minLength={8}
+            mt="md"
           />
-        </fieldset>
-        {error ? (
-          <p>
-            <mark>
+          {error && (
+            <Text color="red" size="sm" mt="md">
               <small>{error}</small>
-            </mark>
-          </p>
-        ) : (
-          <br />
-        )}
-        <button type="submit">Register</button>
-      </Form>
-      <br />
-      <p>
-        <Link to="/account/login">Login →</Link>
-      </p>
-    </div>
+            </Text>
+          )}
+          <Button fullWidth mt="xl" type="submit">
+            Registrer
+          </Button>
+        </Form>
+      </Paper>
+      <Text ta="center" mt="md">
+        Har du allerede en konto?{' '}
+        <Anchor component={Link} to="/account/login" size="sm">
+          Login →
+        </Anchor>
+      </Text>
+    </Container>
   );
 }
 

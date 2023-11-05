@@ -1,10 +1,19 @@
 import {
+  Anchor,
+  Button,
+  Container,
+  Paper,
+  PasswordInput,
+  Text,
+  Title,
+} from '@mantine/core';
+import {Form, Link, useActionData, type MetaFunction} from '@remix-run/react';
+import {
   json,
   redirect,
   type ActionFunctionArgs,
   type LoaderFunctionArgs,
 } from '@shopify/remix-oxygen';
-import {Form, useActionData, type MetaFunction} from '@remix-run/react';
 
 type ActionResponse = {
   error: string | null;
@@ -88,53 +97,53 @@ export default function Activate() {
   const error = action?.error ?? null;
 
   return (
-    <div className="account-activate">
-      <h1>Activate Account.</h1>
-      <p>Create your password to activate your account.</p>
-      <Form method="POST">
-        <fieldset>
-          <label htmlFor="password">Password</label>
-          <input
+    <Container size={420} my={40}>
+      <Title order={1} ta="center">
+        Aktiver Konto.
+      </Title>
+      <Text size="sm" ta="center">
+        Opret din adgangskode for at aktivere din konto.
+      </Text>
+      <Paper withBorder shadow="md" p={30} mt={30} radius="md">
+        <Form method="POST">
+          <PasswordInput
+            label="Adgangskode"
             id="password"
             name="password"
-            type="password"
-            autoComplete="current-password"
-            placeholder="Password"
-            aria-label="Password"
-            minLength={8}
+            placeholder="Adgangskode"
             required
             // eslint-disable-next-line jsx-a11y/no-autofocus
             autoFocus
+            minLength={8}
+            autoComplete="new-password"
           />
-          <label htmlFor="passwordConfirm">Re-enter password</label>
-          <input
+          <PasswordInput
+            label="Bekræft adgangskode"
             id="passwordConfirm"
             name="passwordConfirm"
-            type="password"
-            autoComplete="current-password"
-            placeholder="Re-enter password"
-            aria-label="Re-enter password"
-            minLength={8}
+            placeholder="Gentag adgangskode"
             required
+            minLength={8}
+            autoComplete="new-password"
+            mt="md"
           />
-        </fieldset>
-        {error ? (
-          <p>
-            <mark>
+          {error && (
+            <Text color="red" size="sm" mt="md">
               <small>{error}</small>
-            </mark>
-          </p>
-        ) : (
-          <br />
-        )}
-        <button
-          className="bg-primary text-contrast rounded py-2 px-4 focus:shadow-outline block w-full"
-          type="submit"
-        >
-          Save
-        </button>
-      </Form>
-    </div>
+            </Text>
+          )}
+          <Button fullWidth mt="xl" type="submit">
+            Gem
+          </Button>
+        </Form>
+      </Paper>
+      <Text ta="center" mt="md">
+        Har du brug for hjælp?{' '}
+        <Anchor component={Link} to="/help" size="sm">
+          Kontakt support
+        </Anchor>
+      </Text>
+    </Container>
   );
 }
 

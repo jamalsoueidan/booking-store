@@ -85,41 +85,41 @@ export default function Login() {
 
   return (
     <Container size={420} my={40}>
-      <Title ta="center">Welcome back!</Title>
+      <Title ta="center">Velkommen tilbage!</Title>
       <Text c="dimmed" size="sm" ta="center" mt={5}>
-        Do not have an account yet?{' '}
+        Har du ikke en konto endnu?{' '}
         <Anchor size="sm" component={Link} to="/account/register">
-          Create account
+          Opret konto
         </Anchor>
       </Text>
 
       <Paper withBorder shadow="md" p={30} mt={30} radius="md">
         <Form method="POST">
           <TextInput
-            label="Email address"
+            label="Emailadresse"
             id="email"
             name="email"
             type="email"
             autoComplete="email"
             required
-            placeholder="Email address"
+            placeholder="Din emailadresse"
           />
           <PasswordInput
-            label="Password"
+            label="Adgangskode"
             id="password"
             name="password"
-            placeholder="Your password"
+            placeholder="Din adgangskode"
             required
             mt="md"
           />
           <Group justify="space-between" mt="lg">
-            <Checkbox label="Remember me" />
+            <Checkbox label="Husk mig" />
             <Anchor component={Link} to="/account/recover" size="sm">
-              Forgot password?
+              Glemt adgangskode?
             </Anchor>
           </Group>
           <Button fullWidth mt="xl" type="submit">
-            Sign in
+            Log ind
           </Button>
           {error ? (
             <p>

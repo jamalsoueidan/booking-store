@@ -68,32 +68,33 @@ export default function Recover() {
     <Container size={460} my={30}>
       {action?.resetRequested ? (
         <>
-          <Title ta="center">Request Sent.</Title>
+          <Title ta="center">Anmodning sendt.</Title>
           <Text c="dimmed" fz="sm" ta="center">
-            If that email address is in our system, you will receive an email
-            with instructions about how to reset your password in a few minutes.{' '}
+            Hvis den e-mailadresse er i vores system, vil du modtage en e-mail
+            med instruktioner om, hvordan du nulstiller din adgangskode inden
+            for få minutter.{' '}
             <Anchor size="sm" href="/account/login">
-              Return to Login
+              Vend tilbage til login
             </Anchor>
           </Text>
         </>
       ) : (
         <>
-          <Title ta="center">Forgot your password?</Title>
+          <Title ta="center">Glemt din adgangskode?</Title>
           <Text c="dimmed" fz="sm" ta="center">
-            Enter your email to get a reset link
+            Indtast din e-mail for at få et nulstillingslink
           </Text>
 
           <Paper withBorder shadow="md" p={30} radius="md" mt="xl">
             <Form method="POST">
               <TextInput
-                aria-label="Email address"
+                label="Din e-mail"
+                placeholder="Emailadresse"
                 autoComplete="email"
                 // eslint-disable-next-line jsx-a11y/no-autofocus
                 autoFocus
                 id="email"
                 name="email"
-                placeholder="Email address"
                 required
                 type="email"
               />
@@ -109,10 +110,10 @@ export default function Recover() {
                       style={{width: rem(12), height: rem(12)}}
                       stroke={1.5}
                     />
-                    <Box ml={5}>Back to the login page</Box>
+                    <Box ml={5}>Tilbage til login-siden</Box>
                   </Center>
                 </Anchor>
-                <Button type="submit">Reset password</Button>
+                <Button type="submit">Nulstil adgangskode</Button>
               </Group>
             </Form>
           </Paper>
