@@ -1,9 +1,10 @@
-# Hydrogen template: Skeleton
+# Beauty Proffesional Store
 
-Hydrogen is Shopify’s stack for headless commerce. Hydrogen is designed to dovetail with [Remix](https://remix.run/), Shopify’s full stack web framework. This template contains a **minimal setup** of components, queries and tooling to get started with Hydrogen.
+This platform is a place specially designed for beauty professionals. It functions as a digital marketplace where these professionals can sell their services to customers using a booking system and online payment options. It's important to note that it's not about beauty locations, but about beauty professionals themselves.
 
-[Check out Hydrogen docs](https://shopify.dev/custom-storefronts/hydrogen)
-[Get familiar with Remix](https://remix.run/docs/en/v1)
+The main idea of this platform is to gather all beauty professionals on one website. Customers can find any beauty professional in any city, in a short period of time. They have the opportunity to see all beauty professionals, their information, Instagram, and their work, before they book any appointment.
+
+Beauty professionals can create an account and offer their services through this platform.
 
 ## What's included
 
@@ -15,26 +16,6 @@ Hydrogen is Shopify’s stack for headless commerce. Hydrogen is designed to dov
 - Prettier
 - GraphQL generator
 - TypeScript and JavaScript flavors
-- Minimal setup of components and routes
-
-## Getting started
-
-**Requirements:**
-
-- Node.js version 16.14.0 or higher
-
-```bash
-npm create @shopify/hydrogen@latest
-```
-
-## Building for production
-
-```bash
-npm run build
-```
-
-## Local development
-
-```bash
-npm run dev
-```
+- Mantine UI (react components library)
+- Orval (restful client generator)
+- Tabler (Icons)

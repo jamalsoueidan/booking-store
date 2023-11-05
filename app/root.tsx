@@ -2,6 +2,7 @@ import {ColorSchemeScript, MantineProvider, createTheme} from '@mantine/core';
 import {cssBundleHref} from '@remix-run/css-bundle';
 
 import '@mantine/core/styles.css';
+import '@mantine/nprogress/styles.css';
 
 import {ModalsProvider} from '@mantine/modals';
 import {
@@ -26,6 +27,7 @@ import {
 } from '@shopify/remix-oxygen';
 import {Layout} from '~/components/Layout';
 import favicon from '../public/favicon.svg';
+import {GlobalLoadingIndicator} from './components/NavigationProgress';
 import appStyles from './styles/app.css';
 import resetStyles from './styles/reset.css';
 
@@ -132,6 +134,7 @@ export default function App() {
       </head>
       <body>
         <MantineProvider theme={theme}>
+          <GlobalLoadingIndicator />
           <ModalsProvider>
             <Layout {...data}>
               <Outlet />

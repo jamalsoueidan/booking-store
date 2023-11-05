@@ -93,15 +93,6 @@ form {
   }
 }
 
-input {
-  border-radius: 4px;
-  border: 1px solid #000;
-  font-size: 1rem;
-  margin-bottom: 0.5rem;
-  margin-top: 0.25rem;
-  padding: 0.5rem;
-}
-
 legend {
   font-weight: 600;
   margin-bottom: 0.5rem;

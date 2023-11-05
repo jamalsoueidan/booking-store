@@ -1,4 +1,15 @@
-import {Button} from '@mantine/core';
+import {
+  Anchor,
+  Button,
+  Checkbox,
+  Container,
+  Group,
+  Paper,
+  PasswordInput,
+  Text,
+  TextInput,
+  Title,
+} from '@mantine/core';
 import {Form, Link, useActionData, type MetaFunction} from '@remix-run/react';
 import {
   json,
@@ -73,57 +84,55 @@ export default function Login() {
   const error = data?.error || null;
 
   return (
-    <div className="login">
-      <h1>Sign in.</h1>
-      <Form method="POST">
-        <fieldset>
-          <label htmlFor="email">Email address</label>
-          <input
+    <Container size={420} my={40}>
+      <Title ta="center">Welcome back!</Title>
+      <Text c="dimmed" size="sm" ta="center" mt={5}>
+        Do not have an account yet?{' '}
+        <Anchor size="sm" component={Link} to="/account/register">
+          Create account
+        </Anchor>
+      </Text>
+
+      <Paper withBorder shadow="md" p={30} mt={30} radius="md">
+        <Form method="POST">
+          <TextInput
+            label="Email address"
             id="email"
             name="email"
             type="email"
             autoComplete="email"
             required
             placeholder="Email address"
-            aria-label="Email address"
-            // eslint-disable-next-line jsx-a11y/no-autofocus
-            autoFocus
           />
-          <label htmlFor="password">Password</label>
-          <input
+          <PasswordInput
+            label="Password"
             id="password"
             name="password"
-            type="password"
-            autoComplete="current-password"
-            placeholder="Password"
-            aria-label="Password"
-            minLength={8}
+            placeholder="Your password"
             required
+            mt="md"
           />
-        </fieldset>
-        {error ? (
-          <p>
-            <mark>
-              <small>{error}</small>
-            </mark>
-          </p>
-        ) : (
-          <br />
-        )}
-        <Button variant="filled" type="submit">
-          Sign in
-        </Button>
-      </Form>
-      <br />
-      <div>
-        <p>
-          <Link to="/account/recover">Forgot password →</Link>
-        </p>
-        <p>
-          <Link to="/account/register">Register →</Link>
-        </p>
-      </div>
-    </div>
+          <Group justify="space-between" mt="lg">
+            <Checkbox label="Remember me" />
+            <Anchor component={Link} to="/account/recover" size="sm">
+              Forgot password?
+            </Anchor>
+          </Group>
+          <Button fullWidth mt="xl" type="submit">
+            Sign in
+          </Button>
+          {error ? (
+            <p>
+              <mark>
+                <small>{error}</small>
+              </mark>
+            </p>
+          ) : (
+            <br />
+          )}
+        </Form>
+      </Paper>
+    </Container>
   );
 }
 
