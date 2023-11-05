@@ -1,8 +1,10 @@
-import {Await, NavLink} from '@remix-run/react';
+import {Box, Button, Group} from '@mantine/core';
+import {Await, Link, NavLink} from '@remix-run/react';
 import {Suspense} from 'react';
 import type {HeaderQuery} from 'storefrontapi.generated';
-import type {LayoutProps} from './Layout';
 import {useRootLoaderData} from '~/root';
+import classes from './Header.module.css';
+import type {LayoutProps} from './Layout';
 
 type HeaderProps = Pick<LayoutProps, 'header' | 'cart' | 'isLoggedIn'>;
 
@@ -11,17 +13,23 @@ type Viewport = 'desktop' | 'mobile';
 export function Header({header, isLoggedIn, cart}: HeaderProps) {
   const {shop, menu} = header;
   return (
-    <header className="header">
-      <NavLink prefetch="intent" to="/" style={activeLinkStyle} end>
-        <strong>{shop.name}</strong>
-      </NavLink>
-      <HeaderMenu
-        menu={menu}
-        viewport="desktop"
-        primaryDomainUrl={header.shop.primaryDomain.url}
-      />
-      <HeaderCtas isLoggedIn={isLoggedIn} cart={cart} />
-    </header>
+    <Box>
+      <header className={classes.header}>
+        <Group justify="space-between" h="100%">
+          <NavLink prefetch="intent" to="/" style={activeLinkStyle} end>
+            <strong>{shop.name}</strong>
+          </NavLink>
+          <Group h="100%" gap={0} visibleFrom="sm">
+            <HeaderMenu
+              menu={menu}
+              viewport="desktop"
+              primaryDomainUrl={header.shop.primaryDomain.url}
+            />
+          </Group>
+          <HeaderCtas isLoggedIn={isLoggedIn} cart={cart} />
+        </Group>
+      </header>
+    </Box>
   );
 }
 
@@ -68,17 +76,9 @@ export function HeaderMenu({
             ? new URL(item.url).pathname
             : item.url;
         return (
-          <NavLink
-            className="header-menu-item"
-            end
-            key={item.id}
-            onClick={closeAside}
-            prefetch="intent"
-            style={activeLinkStyle}
-            to={url}
-          >
+          <a key={item.id} href={url} className={classes.link}>
             {item.title}
-          </NavLink>
+          </a>
         );
       })}
     </nav>
@@ -90,14 +90,16 @@ function HeaderCtas({
   cart,
 }: Pick<HeaderProps, 'isLoggedIn' | 'cart'>) {
   return (
-    <nav className="header-ctas" role="navigation">
+    <>
       <HeaderMenuMobileToggle />
-      <NavLink prefetch="intent" to="/account" style={activeLinkStyle}>
-        {isLoggedIn ? 'Account' : 'Sign in'}
-      </NavLink>
-      <SearchToggle />
-      <CartToggle cart={cart} />
-    </nav>
+      <Group visibleFrom="sm">
+        <Button component={Link} to="/account" prefetch="intent">
+          {isLoggedIn ? 'Account' : 'Sign in'}
+        </Button>
+
+        <CartToggle cart={cart} />
+      </Group>
+    </>
   );
 }
 
@@ -114,7 +116,7 @@ function SearchToggle() {
 }
 
 function CartBadge({count}: {count: number}) {
-  return <a href="#cart-aside">Cart {count}</a>;
+  return <a href="#cart-aside">Cart {count || ''}</a>;
 }
 
 function CartToggle({cart}: Pick<HeaderProps, 'cart'>) {
