@@ -1,6 +1,17 @@
-import {Box, Button, Group} from '@mantine/core';
+/* eslint-disable jsx-a11y/anchor-is-valid */
+import {
+  Box,
+  Burger,
+  Button,
+  Divider,
+  Drawer,
+  Group,
+  ScrollArea,
+  rem,
+} from '@mantine/core';
+import {useDisclosure} from '@mantine/hooks';
 import {Await, Link, NavLink} from '@remix-run/react';
-import {Suspense} from 'react';
+import React, {Suspense} from 'react';
 import type {HeaderQuery} from 'storefrontapi.generated';
 import {useRootLoaderData} from '~/root';
 import classes from './Header.module.css';
@@ -12,23 +23,36 @@ type Viewport = 'desktop' | 'mobile';
 
 export function Header({header, isLoggedIn, cart}: HeaderProps) {
   const {shop, menu} = header;
+  const [drawerOpened, {toggle: toggleDrawer, close: closeDrawer}] =
+    useDisclosure(false);
+
   return (
-    <Box>
+    <Box pb={120}>
       <header className={classes.header}>
         <Group justify="space-between" h="100%">
           <NavLink prefetch="intent" to="/" style={activeLinkStyle} end>
             <strong>{shop.name}</strong>
           </NavLink>
-          <Group h="100%" gap={0} visibleFrom="sm">
+          <Group h="100%" gap={0} visibleFrom="lg">
             <HeaderMenu
               menu={menu}
               viewport="desktop"
               primaryDomainUrl={header.shop.primaryDomain.url}
             />
           </Group>
-          <HeaderCtas isLoggedIn={isLoggedIn} cart={cart} />
+          <Group visibleFrom="lg">
+            <HeaderCtas isLoggedIn={isLoggedIn} cart={cart} />
+          </Group>
+          <Burger
+            opened={drawerOpened}
+            onClick={toggleDrawer}
+            hiddenFrom="lg"
+          />
         </Group>
       </header>
+      <HeaderMenuMobile drawerOpened={drawerOpened} closeDrawer={closeDrawer}>
+        <HeaderCtas isLoggedIn={isLoggedIn} cart={cart} />
+      </HeaderMenuMobile>
     </Box>
   );
 }
@@ -91,23 +115,56 @@ function HeaderCtas({
 }: Pick<HeaderProps, 'isLoggedIn' | 'cart'>) {
   return (
     <>
-      <HeaderMenuMobileToggle />
-      <Group visibleFrom="sm">
-        <Button component={Link} to="/account" prefetch="intent">
-          {isLoggedIn ? 'Account' : 'Sign in'}
-        </Button>
+      <Button component={Link} to="/account" prefetch="intent">
+        {isLoggedIn ? 'Account' : 'Sign in'}
+      </Button>
 
-        <CartToggle cart={cart} />
-      </Group>
+      <CartToggle cart={cart} />
     </>
   );
 }
 
-function HeaderMenuMobileToggle() {
+function HeaderMenuMobile({
+  children,
+  drawerOpened,
+  closeDrawer,
+}: {
+  children: JSX.Element;
+  drawerOpened: boolean;
+  closeDrawer: () => void;
+}) {
   return (
-    <a className="header-menu-mobile-toggle" href="#mobile-menu-aside">
-      <h3>☰</h3>
-    </a>
+    <Drawer
+      opened={drawerOpened}
+      onClose={closeDrawer}
+      size="100%"
+      padding="md"
+      title="Navigation"
+      hiddenFrom="lg"
+      zIndex={1000000}
+    >
+      <ScrollArea h={`calc(100vh - ${rem(80)})`} mx="-md">
+        <Divider my="sm" />
+
+        <a href="#" className={classes.link}>
+          Home
+        </a>
+
+        <a href="#" className={classes.link}>
+          Learn
+        </a>
+
+        <a href="#" className={classes.link}>
+          Academy
+        </a>
+
+        <Divider my="sm" />
+
+        <Group justify="center" grow pb="xl" px="md">
+          {children}
+        </Group>
+      </ScrollArea>
+    </Drawer>
   );
 }
 
@@ -116,7 +173,11 @@ function SearchToggle() {
 }
 
 function CartBadge({count}: {count: number}) {
-  return <a href="#cart-aside">Cart {count || ''}</a>;
+  return (
+    <Button variant="default" component="a" href="#cart-aside">
+      Indkøbskurv {count || ''}
+    </Button>
+  );
 }
 
 function CartToggle({cart}: Pick<HeaderProps, 'cart'>) {
