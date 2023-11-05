@@ -6,9 +6,9 @@ import type {
   HeaderQuery,
 } from 'storefrontapi.generated';
 import {Aside} from '~/components/Aside';
+import {CartMain} from '~/components/Cart';
 import {Footer} from '~/components/Footer';
 import {Header, HeaderMenu} from '~/components/Header';
-import {CartMain} from '~/components/Cart';
 import {
   PredictiveSearchForm,
   PredictiveSearchResults,
@@ -31,16 +31,22 @@ export function Layout({
 }: LayoutProps) {
   return (
     <>
-      <CartAside cart={cart} />
-      <SearchAside />
-      <MobileMenuAside menu={header.menu} shop={header.shop} />
-      <Header header={header} cart={cart} isLoggedIn={isLoggedIn} />
+      {!isLoggedIn ? (
+        <>
+          <CartAside cart={cart} />
+          <SearchAside />
+          <MobileMenuAside menu={header.menu} shop={header.shop} />
+          <Header header={header} cart={cart} isLoggedIn={isLoggedIn} />
+        </>
+      ) : null}
       <main>{children}</main>
-      <Suspense>
-        <Await resolve={footer}>
-          {(footer) => <Footer menu={footer.menu} shop={header.shop} />}
-        </Await>
-      </Suspense>
+      {!isLoggedIn ? (
+        <Suspense>
+          <Await resolve={footer}>
+            {(footer) => <Footer menu={footer.menu} shop={header.shop} />}
+          </Await>
+        </Suspense>
+      ) : null}
     </>
   );
 }

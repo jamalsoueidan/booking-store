@@ -1,3 +1,5 @@
+import {AppShell, Burger} from '@mantine/core';
+import {useDisclosure} from '@mantine/hooks';
 import {Form, NavLink, Outlet, useLoaderData} from '@remix-run/react';
 import {json, redirect, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
 import type {CustomerFragment} from 'storefrontapi.generated';
@@ -85,8 +87,6 @@ export default function Acccount() {
 
   return (
     <AccountLayout customer={customer as CustomerFragment}>
-      <br />
-      <br />
       <Outlet context={{customer}} />
     </AccountLayout>
   );
@@ -99,6 +99,8 @@ function AccountLayout({
   customer: CustomerFragment;
   children: React.ReactNode;
 }) {
+  const [opened, {toggle}] = useDisclosure();
+
   const heading = customer
     ? customer.firstName
       ? `Welcome, ${customer.firstName}`
@@ -106,12 +108,25 @@ function AccountLayout({
     : 'Account Details';
 
   return (
-    <div className="account">
-      <h1>{heading}</h1>
-      <br />
-      <AccountMenu />
-      {children}
-    </div>
+    <AppShell
+      header={{height: 60}}
+      navbar={{width: 300, breakpoint: 'sm', collapsed: {mobile: !opened}}}
+      padding="md"
+    >
+      <AppShell.Header>
+        <Burger opened={opened} onClick={toggle} hiddenFrom="sm" size="sm" />
+        <div>Logo</div>
+      </AppShell.Header>
+
+      <AppShell.Navbar p="md">
+        <AccountMenu />
+      </AppShell.Navbar>
+
+      <AppShell.Main>
+        <h1>{heading}</h1>rwar
+        {children}
+      </AppShell.Main>
+    </AppShell>
   );
 }
 
