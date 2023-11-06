@@ -1,4 +1,4 @@
-import {AppShell, Burger, Title} from '@mantine/core';
+import {AppShell, Burger} from '@mantine/core';
 import {useDisclosure} from '@mantine/hooks';
 import {Outlet, useLoaderData} from '@remix-run/react';
 import {json, redirect, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
@@ -121,17 +121,13 @@ function AccountLayout({
         <div
           style={{
             position: 'absolute',
-            right: 0,
-            top: 0,
-            margin: opened
-              ? 'var(--mantine-spacing-sm)'
-              : 'var(--mantine-spacing-md)',
+            right: opened ? 15 : 28,
+            top: opened ? 12.5 : 15,
             zIndex: 1000,
           }}
         >
           <Burger opened={opened} onClick={toggle} hiddenFrom="sm" size="sm" />
         </div>
-        <Title>{heading}</Title>
         {children}
       </AppShell.Main>
     </AppShell>

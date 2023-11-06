@@ -1,4 +1,4 @@
-import {Button, Group} from '@mantine/core';
+import {Group, UnstyledButton} from '@mantine/core';
 import {Form, NavLink} from '@remix-run/react';
 import {
   Icon2fa,
@@ -34,7 +34,7 @@ export function AccountMenu({closeDrawer}: {closeDrawer: () => void}) {
       to={item.link}
       key={item.label}
       onClick={(event) => {
-        event.preventDefault();
+        closeDrawer();
         setActive(item.label);
       }}
     >
@@ -65,16 +65,15 @@ export function AccountMenu({closeDrawer}: {closeDrawer: () => void}) {
         </NavLink>
 
         <Form method="POST" action="/account/logout">
-          <Button
+          <UnstyledButton
             className={classes.link}
-            component="a"
-            href="#"
             type="submit"
             variant="subtle"
+            style={{width: '100%'}}
           >
             <IconLogout className={classes.linkIcon} stroke={1.5} />
             <span>Log ud</span>
-          </Button>
+          </UnstyledButton>
         </Form>
       </div>
     </>

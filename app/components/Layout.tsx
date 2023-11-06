@@ -1,4 +1,4 @@
-import {Await} from '@remix-run/react';
+import {Await, useLocation} from '@remix-run/react';
 import {Suspense} from 'react';
 import type {
   CartApiQueryFragment,
@@ -29,9 +29,12 @@ export function Layout({
   header,
   isLoggedIn,
 }: LayoutProps) {
+  const location = useLocation();
+  const path = location.pathname;
+
   return (
     <>
-      {!isLoggedIn ? (
+      {!path.includes('/account') ? (
         <>
           <CartAside cart={cart} />
           <SearchAside />
@@ -40,7 +43,7 @@ export function Layout({
         </>
       ) : null}
       <main>{children}</main>
-      {!isLoggedIn ? (
+      {!path.includes('/account') ? (
         <Suspense>
           <Await resolve={footer}>
             {(footer) => <Footer menu={footer.menu} shop={header.shop} />}
