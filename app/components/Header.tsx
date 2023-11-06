@@ -1,4 +1,3 @@
-/* eslint-disable jsx-a11y/anchor-is-valid */
 import {
   Box,
   Burger,
@@ -146,15 +145,15 @@ function HeaderMenuMobile({
       <ScrollArea h={`calc(100vh - ${rem(80)})`} mx="-md">
         <Divider my="sm" />
 
-        <a href="#" className={classes.link}>
+        <a href="a" className={classes.link}>
           Home
         </a>
 
-        <a href="#" className={classes.link}>
+        <a href="b" className={classes.link}>
           Learn
         </a>
 
-        <a href="#" className={classes.link}>
+        <a href="c" className={classes.link}>
           Academy
         </a>
 
