@@ -4,14 +4,6 @@
   "sideEffects": false,
   "version": "1.0.0",
   "endOfLine": "lf",
-  "husky": {
-    "hooks": {
-      "pre-commit": "lint-staged"
-    }
-  },
-  "lint-staged": {
-    "*": "prettier --write --ignore-unknown"
-  },
   "scripts": {
     "build": "shopify hydrogen build",
     "dev": "shopify hydrogen dev --codegen",

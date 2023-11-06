@@ -1,8 +1,9 @@
-import {AppShell, Burger} from '@mantine/core';
+import {AppShell, Burger, Title} from '@mantine/core';
 import {useDisclosure} from '@mantine/hooks';
-import {Form, NavLink, Outlet, useLoaderData} from '@remix-run/react';
+import {Outlet, useLoaderData} from '@remix-run/react';
 import {json, redirect, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
 import type {CustomerFragment} from 'storefrontapi.generated';
+import {AccountMenu} from '~/components/AccountMenu';
 
 export function shouldRevalidate() {
   return true;
@@ -99,7 +100,7 @@ function AccountLayout({
   customer: CustomerFragment;
   children: React.ReactNode;
 }) {
-  const [opened, {toggle}] = useDisclosure();
+  const [opened, {toggle, close}] = useDisclosure(false);
 
   const heading = customer
     ? customer.firstName
@@ -109,65 +110,31 @@ function AccountLayout({
 
   return (
     <AppShell
-      header={{height: 60}}
       navbar={{width: 300, breakpoint: 'sm', collapsed: {mobile: !opened}}}
       padding="md"
     >
-      <AppShell.Header>
-        <Burger opened={opened} onClick={toggle} hiddenFrom="sm" size="sm" />
-        <div>Logo</div>
-      </AppShell.Header>
-
       <AppShell.Navbar p="md">
-        <AccountMenu />
+        <AccountMenu closeDrawer={close} />
       </AppShell.Navbar>
 
       <AppShell.Main>
-        <h1>{heading}</h1>rwar
+        <div
+          style={{
+            position: 'absolute',
+            right: 0,
+            top: 0,
+            margin: opened
+              ? 'var(--mantine-spacing-sm)'
+              : 'var(--mantine-spacing-md)',
+            zIndex: 1000,
+          }}
+        >
+          <Burger opened={opened} onClick={toggle} hiddenFrom="sm" size="sm" />
+        </div>
+        <Title>{heading}</Title>
         {children}
       </AppShell.Main>
     </AppShell>
-  );
-}
-
-function AccountMenu() {
-  function isActiveStyle({
-    isActive,
-    isPending,
-  }: {
-    isActive: boolean;
-    isPending: boolean;
-  }) {
-    return {
-      fontWeight: isActive ? 'bold' : undefined,
-      color: isPending ? 'grey' : 'black',
-    };
-  }
-
-  return (
-    <nav role="navigation">
-      <NavLink to="/account/orders" style={isActiveStyle}>
-        Orders &nbsp;
-      </NavLink>
-      &nbsp;|&nbsp;
-      <NavLink to="/account/profile" style={isActiveStyle}>
-        &nbsp; Profile &nbsp;
-      </NavLink>
-      &nbsp;|&nbsp;
-      <NavLink to="/account/addresses" style={isActiveStyle}>
-        &nbsp; Addresses &nbsp;
-      </NavLink>
-      &nbsp;|&nbsp;
-      <Logout />
-    </nav>
-  );
-}
-
-function Logout() {
-  return (
-    <Form className="account-logout" method="POST" action="/account/logout">
-      &nbsp;<button type="submit">Sign out</button>
-    </Form>
   );
 }
 
