@@ -16,7 +16,16 @@ import classes from './AccountMenu.module.css';
 
 const data = [
   {link: '/account/orders', label: 'Orders', icon: IconBellRinging},
-  {link: '/account/profile', label: 'Profile', icon: IconReceipt2},
+  {
+    link: '/account/profile',
+    label: 'Personalige oplysninger',
+    icon: IconReceipt2,
+  },
+  {
+    link: '/account/password',
+    label: 'Skift adgangskode',
+    icon: IconReceipt2,
+  },
   {link: '/account/addresses', label: 'Addresses', icon: IconFingerprint},
   {link: '', label: 'SSH Keys', icon: IconKey},
   {link: '', label: 'Databases', icon: IconDatabaseImport},

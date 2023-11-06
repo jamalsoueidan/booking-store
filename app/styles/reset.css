@@ -68,10 +68,6 @@ body {
   min-height: 100vh;
 }
 
-body > main {
-  margin: 0 1rem 1rem 1rem;
-}
-
 /*section {
   padding: 1rem 0;
   @media (min-width: 768px) {

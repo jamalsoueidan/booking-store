@@ -1,18 +1,8 @@
-import {
-  Button,
-  Checkbox,
-  Divider,
-  Group,
-  Stack,
-  Text,
-  TextInput,
-  Title,
-} from '@mantine/core';
+import {Button, Divider, Stack, Text, TextInput, Title} from '@mantine/core';
 import {
   Form,
   useActionData,
   useNavigation,
-  useOutletContext,
   type MetaFunction,
 } from '@remix-run/react';
 import type {CustomerUpdateInput} from '@shopify/hydrogen/storefront-api-types';
@@ -23,13 +13,14 @@ import {
   type LoaderFunctionArgs,
 } from '@shopify/remix-oxygen';
 import type {CustomerFragment} from 'storefrontapi.generated';
+
 export type ActionResponse = {
   error: string | null;
   customer: CustomerFragment | null;
 };
 
 export const meta: MetaFunction = () => {
-  return [{title: 'Profile'}];
+  return [{title: 'Skift adgangskode'}];
 };
 
 export async function loader({context}: LoaderFunctionArgs) {
@@ -56,13 +47,7 @@ export async function action({request, context}: ActionFunctionArgs) {
   try {
     const password = getPassword(form);
     const customer: CustomerUpdateInput = {};
-    const validInputKeys = [
-      'firstName',
-      'lastName',
-      'email',
-      'password',
-      'phone',
-    ] as const;
+    const validInputKeys = ['password'] as const;
     for (const [key, value] of form.entries()) {
       if (!validInputKeys.includes(key as any)) {
         continue;
@@ -116,15 +101,13 @@ export async function action({request, context}: ActionFunctionArgs) {
   }
 }
 
-export default function AccountProfile() {
-  const account = useOutletContext<{customer: CustomerFragment}>();
+export default function AccountPassword() {
   const {state} = useNavigation();
   const action = useActionData<ActionResponse>();
-  const customer = action?.customer ?? account?.customer;
 
   return (
     <>
-      <Title>Personlige oplysninger</Title>
+      <Title>Skift adgangskode</Title>
       <Text c="dimmed" size="sm" mt={5}>
         Har du ikke en konto endnu?
       </Text>
@@ -133,64 +116,46 @@ export default function AccountProfile() {
       <Form method="PUT">
         <Stack>
           <TextInput
-            label="Fornavn"
-            id="firstName"
-            name="firstName"
-            type="text"
-            autoComplete="given-name"
-            placeholder="Fornavn"
-            aria-label="Fornavn"
-            defaultValue={customer.firstName ?? ''}
+            label="Nuværende adgangskode"
+            id="currentPassword"
+            name="currentPassword"
+            type="password"
+            placeholder="Indtast nuværende adgangskode"
+            autoComplete="current-password"
+            aria-label="Nuværende adgangskode"
             required
-            minLength={2}
+            minLength={8}
           />
-          <TextInput
-            label="Efternavn"
-            id="lastName"
-            name="lastName"
-            type="text"
-            autoComplete="family-name"
-            placeholder="Efternavn"
-            aria-label="Efternavn"
-            defaultValue={customer.lastName ?? ''}
-            required
-            minLength={2}
-          />
-          <TextInput
-            label="Mobil"
-            id="phone"
-            name="phone"
-            type="tel"
-            autoComplete="tel"
-            placeholder="Mobil"
-            aria-label="Mobil"
-            defaultValue={customer.phone ?? ''}
-          />
-          <TextInput
-            label="Emailadresse"
-            id="email"
-            name="email"
-            type="email"
-            autoComplete="email"
-            placeholder="Emailadresse"
-            aria-label="Emailadresse"
-            defaultValue={customer.email ?? ''}
-            required
-          />
-          <Group>
-            <Checkbox
-              id="acceptsMarketing"
-              name="acceptsMarketing"
-              label="Tilmeldt markedsføringskommunikation"
-              defaultChecked={customer.acceptsMarketing}
-            />
-          </Group>
 
-          {action?.error && (
+          <TextInput
+            label="Ny adgangskode"
+            id="newPassword"
+            name="newPassword"
+            type="password"
+            placeholder="Indtast ny adgangskode"
+            aria-label="Ny adgangskode"
+            required
+            minLength={8}
+          />
+
+          <TextInput
+            label="Bekræft ny adgangskode"
+            id="newPasswordConfirm"
+            name="newPasswordConfirm"
+            type="password"
+            placeholder="Bekræft ny adgangskode"
+            aria-label="Bekræft ny adgangskode"
+            required
+            minLength={8}
+          />
+          <Text size="sm">Adgangskoden skal være mindst 8 tegn.</Text>
+
+          {action?.error ? (
             <Text color="red" size="sm">
               {action.error}
             </Text>
-          )}
+          ) : null}
+
           <Button type="submit" disabled={state !== 'idle'}>
             {state !== 'idle' ? 'Opdaterer...' : 'Opdater'}
           </Button>

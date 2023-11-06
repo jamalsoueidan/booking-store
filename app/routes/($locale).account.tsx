@@ -16,7 +16,7 @@ export async function loader({request, context}: LoaderFunctionArgs) {
   const isLoggedIn = !!customerAccessToken?.accessToken;
   const isAccountHome = pathname === '/account' || pathname === '/account/';
   const isPrivateRoute =
-    /^\/account\/(orders|orders\/.*|profile|addresses|addresses\/.*)$/.test(
+    /^\/account\/(orders|orders\/.*|profile|addresses|password|addresses\/.*)$/.test(
       pathname,
     );
 
@@ -113,7 +113,12 @@ function AccountLayout({
       navbar={{width: 300, breakpoint: 'sm', collapsed: {mobile: !opened}}}
       padding="md"
     >
-      <AppShell.Navbar p="md">
+      <AppShell.Navbar
+        p="md"
+        style={{
+          backgroundColor: 'var(--mantine-color-gray-0)',
+        }}
+      >
         <AccountMenu closeDrawer={close} />
       </AppShell.Navbar>
 
@@ -121,8 +126,8 @@ function AccountLayout({
         <div
           style={{
             position: 'absolute',
-            right: opened ? 15 : 28,
-            top: opened ? 12.5 : 15,
+            right: `var(--mantine-spacing-${opened ? 'sm' : 'md'})`,
+            top: `var(--mantine-spacing-${opened ? 'sm' : 'md'})`,
             zIndex: 1000,
           }}
         >
