@@ -1,22 +1,17 @@
-import {
-  Button,
-  Divider,
-  MultiSelect,
-  Stack,
-  TextInput,
-  Textarea,
-  Title,
-} from '@mantine/core';
+import {Divider, Stack, TextInput, Textarea, Title} from '@mantine/core';
 import {Form, useActionData, useLoaderData} from '@remix-run/react';
 import {parseGid} from '@shopify/hydrogen';
 import {
   json,
+  redirect,
   type ActionFunctionArgs,
   type LoaderFunctionArgs,
 } from '@shopify/remix-oxygen';
 
-import {conform, list, useFieldList, useForm} from '@conform-to/react';
+import {conform, useForm} from '@conform-to/react';
 import {parse} from '@conform-to/zod';
+import {MultiTags} from '~/components/form/MultiTags';
+import {SubmitButton} from '~/components/form/SubmitButton';
 import {getBookingShopifyApi} from '~/lib/api/bookingShopifyApi';
 import {getCustomer} from '~/lib/get-customer';
 import {customerUpsertBody} from '~/lib/zod/bookingShopifyApi';
@@ -32,14 +27,16 @@ export const action = async ({request, context}: ActionFunctionArgs) => {
     return json(submission);
   }
 
-  return json({...submission, customerId: parseGid(customer.id).id});
+  try {
+    await getBookingShopifyApi().customerUpsert(
+      parseGid(customer.id).id,
+      submission.value,
+    );
 
-  /*await getBookingShopifyApi().customerUpsert(
-    parseGid(customer.id).id,
-    submission.value,
-  );
-
-  return redirect('./account/public');*/
+    return redirect('/account/public');
+  } catch (error) {
+    return json(submission);
+  }
 };
 
 export async function loader({context}: LoaderFunctionArgs) {
@@ -64,7 +61,10 @@ export default function AccountBusiness() {
   const {user, professionOptions, specialityOptions} =
     useLoaderData<typeof loader>();
 
-  const [form, {username, shortDescription, aboutMe, professions}] = useForm({
+  const [
+    form,
+    {username, shortDescription, aboutMe, professions, specialties},
+  ] = useForm({
     lastSubmission,
     defaultValue: user,
     onValidate({formData}) {
@@ -72,8 +72,7 @@ export default function AccountBusiness() {
     },
   });
 
-  const itemsList = useFieldList(form.ref, professions);
-
+  console.log(form);
   return (
     <>
       <Title>Redigere din profil</Title>
@@ -81,24 +80,24 @@ export default function AccountBusiness() {
 
       <Form method="POST" {...form.props}>
         <Stack>
-          <MultiSelect
+          <MultiTags
+            form={form}
+            field={professions}
             data={professionOptions}
-            label="Professions"
-            placeholder="Select professions"
-            value={user.professions}
-            onChange={(value: string[]) => {
-              itemsList.every((item) => {
-                list.remove(item.name, {index: 0});
-              });
-            }}
+            name="professions"
+            label="Professioner"
+            placeholder="Vælg professioner"
+            defaultValue={user.professions}
           />
 
-          <MultiSelect
+          <MultiTags
+            form={form}
+            field={specialties}
             data={specialityOptions}
             name="specialties"
             label="Hvad er dine specialer?"
             placeholder="Vælge special(er)?"
-            defaultValue={user.specialties}
+            defaultValue={user.specialties || []}
           />
 
           <TextInput label="Vælge en profilnavn" {...conform.input(username)} />
@@ -107,23 +106,15 @@ export default function AccountBusiness() {
             {...conform.input(shortDescription)}
           />
           <Textarea
-            label="About Me"
-            placeholder="Tell us about yourself"
+            label="Om mig"
+            placeholder="Fortæl om dig selv"
             {...conform.input(aboutMe)}
-            error={aboutMe.error && 'Please fill in your bio'}
+            error={aboutMe.error && 'Udfyld venligst din biografi'}
           />
 
-          <Button type="submit">Submit</Button>
+          <SubmitButton>Submit</SubmitButton>
         </Stack>
       </Form>
     </>
   );
-}
-
-function convertToValidUrlPath(firstName: string, lastName: string): string {
-  const allowedCharactersRegex = /[^a-zA-Z0-9\-_]/g;
-  firstName = firstName.replace(allowedCharactersRegex, '');
-  lastName = lastName.replace(allowedCharactersRegex, '');
-  const urlPath = `${firstName}-${lastName}`;
-  return urlPath;
 }
