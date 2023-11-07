@@ -27,7 +27,7 @@ const data = [
     icon: IconReceipt2,
   },
   {link: '/account/addresses', label: 'Addresses', icon: IconFingerprint},
-  {link: '', label: 'SSH Keys', icon: IconKey},
+  {link: '/account/public', label: 'Profile', icon: IconKey},
   {link: '', label: 'Databases', icon: IconDatabaseImport},
   {link: '', label: 'Authentication', icon: Icon2fa},
   {link: '', label: 'Other Settings', icon: IconSettings},

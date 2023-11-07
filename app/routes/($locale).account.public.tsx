@@ -1,6 +1,13 @@
-import {Title} from '@mantine/core';
-import {useActionData, useLoaderData} from '@remix-run/react';
-import {withZod} from '@remix-validated-form/with-zod';
+import {
+  Button,
+  Divider,
+  MultiSelect,
+  Stack,
+  TextInput,
+  Textarea,
+  Title,
+} from '@mantine/core';
+import {Form, useActionData, useLoaderData} from '@remix-run/react';
 import {parseGid} from '@shopify/hydrogen';
 import {
   json,
@@ -8,46 +15,31 @@ import {
   type LoaderFunctionArgs,
 } from '@shopify/remix-oxygen';
 
-import {ValidatedForm, validationError} from 'remix-validated-form';
-import {MultiTags} from '~/components/form/MultiTags';
-
-import {SubmitButton} from '~/components/form/SubmitButton';
-import {TextField} from '~/components/form/TextField';
+import {conform, list, useFieldList, useForm} from '@conform-to/react';
+import {parse} from '@conform-to/zod';
 import {getBookingShopifyApi} from '~/lib/api/bookingShopifyApi';
 import {getCustomer} from '~/lib/get-customer';
 import {customerUpsertBody} from '~/lib/zod/bookingShopifyApi';
 
-export interface ActionData {
-  success?: boolean;
-  formError?: string;
-}
-
-const badRequest = (data: ActionData) => json(data, {status: 400});
-
-export const validator = withZod(customerUpsertBody);
-
-export const action = async ({
-  request,
-  context,
-  params,
-}: ActionFunctionArgs) => {
+export const action = async ({request, context}: ActionFunctionArgs) => {
   const customerAccessToken = await context.session.get('customerAccessToken');
-
   const customer = await getCustomer({context, customerAccessToken});
 
-  const result = await validator.validate(await request.formData());
-  if (result.error) return validationError(result.error);
+  const formData = await request.formData();
+  const submission = parse(formData, {schema: customerUpsertBody});
 
-  await getBookingShopifyApi().customerUpsert(
+  if (submission.intent !== 'submit' || !submission.value) {
+    return json(submission);
+  }
+
+  return json({...submission, customerId: parseGid(customer.id).id});
+
+  /*await getBookingShopifyApi().customerUpsert(
     parseGid(customer.id).id,
-    result.data as any,
+    submission.value,
   );
 
-  try {
-    return json({error: null});
-  } catch (error: any) {
-    return badRequest({formError: error.message});
-  }
+  return redirect('./account/public');*/
 };
 
 export async function loader({context}: LoaderFunctionArgs) {
@@ -68,63 +60,62 @@ export async function loader({context}: LoaderFunctionArgs) {
 }
 
 export default function AccountBusiness() {
-  const actionData = useActionData<ActionData>();
+  const lastSubmission = useActionData<typeof action>();
   const {user, professionOptions, specialityOptions} =
     useLoaderData<typeof loader>();
+
+  const [form, {username, shortDescription, aboutMe, professions}] = useForm({
+    lastSubmission,
+    defaultValue: user,
+    onValidate({formData}) {
+      return parse(formData, {schema: customerUpsertBody});
+    },
+  });
+
+  const itemsList = useFieldList(form.ref, professions);
 
   return (
     <>
       <Title>Redigere din profil</Title>
+      <Divider my="sm" />
 
-      <ValidatedForm
-        validator={validator}
-        method="post"
-        defaultValues={user as any}
-      >
-        {actionData?.formError && (
-          <div className="flex items-center justify-center mb-6 bg-red-100 rounded">
-            <p className="m-4 text-sm text-red-900">{actionData.formError}</p>
-          </div>
-        )}
-        <div className="flex flex-col gap-4">
-          <div className="max-w-md">
-            <MultiTags
-              name="professions"
-              label="Hvad er din stilling(er)?"
-              placeholder="Vælge stilling(er)?"
-              options={professionOptions}
-            />
-          </div>
+      <Form method="POST" {...form.props}>
+        <Stack>
+          <MultiSelect
+            data={professionOptions}
+            label="Professions"
+            placeholder="Select professions"
+            value={user.professions}
+            onChange={(value: string[]) => {
+              itemsList.every((item) => {
+                list.remove(item.name, {index: 0});
+              });
+            }}
+          />
 
-          <div className="max-w-md">
-            <MultiTags
-              options={specialityOptions}
-              name="specialties"
-              label="Hvad er dine specialer?"
-              placeholder="Vælge special(er)?"
-            />
-          </div>
+          <MultiSelect
+            data={specialityOptions}
+            name="specialties"
+            label="Hvad er dine specialer?"
+            placeholder="Vælge special(er)?"
+            defaultValue={user.specialties}
+          />
 
-          <TextField name="username" label="Vælge en profilnavn" />
-          <TextField name="shortDescription" label="Skriv kort beskrivelse" />
-          <label htmlFor="aboutMe">
-            Skriv lidt om dig selv
-            <br />
-            <textarea
-              name="aboutMe"
-              id="aboutMe"
-              cols={50}
-              rows={5}
-              className="bg-transparent px-0 py-2 focus:ring-0 transition border-1 border-primary/10 focus:border-primary/90"
-              placeholder="Skriv lidt om dig selv"
-              defaultValue={user.aboutMe}
-            ></textarea>
-          </label>
-        </div>
-        <div className="mt-6">
-          <SubmitButton />
-        </div>
-      </ValidatedForm>
+          <TextInput label="Vælge en profilnavn" {...conform.input(username)} />
+          <TextInput
+            label="Skriv kort beskrivelse"
+            {...conform.input(shortDescription)}
+          />
+          <Textarea
+            label="About Me"
+            placeholder="Tell us about yourself"
+            {...conform.input(aboutMe)}
+            error={aboutMe.error && 'Please fill in your bio'}
+          />
+
+          <Button type="submit">Submit</Button>
+        </Stack>
+      </Form>
     </>
   );
 }
