@@ -57,7 +57,7 @@ export const AccountLocation = ({data}: AccountLocationProps) => {
     );
   }
   return (
-    <Stack>
+    <Stack style={{flex: 1}}>
       <span>
         <strong>Navn:</strong> {data.name}
       </span>

@@ -108,7 +108,6 @@ function AccountLayout({
       padding="md"
     >
       <AppShell.Navbar
-        p="md"
         style={{
           backgroundColor: 'var(--mantine-color-gray-1)',
         }}
@@ -120,8 +119,8 @@ function AccountLayout({
         <div
           style={{
             position: 'absolute',
-            right: `var(--mantine-spacing-${opened ? 'sm' : 'md'})`,
-            top: `var(--mantine-spacing-${opened ? 'sm' : 'md'})`,
+            right: `var(--mantine-spacing-${opened ? 'sm' : 'xs'})`,
+            top: `var(--mantine-spacing-${opened ? 'xs' : 'xs'})`,
             zIndex: 1000,
           }}
         >

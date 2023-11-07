@@ -35,7 +35,7 @@ export default function AccountLocationsIndex() {
         <Button component={Link} to={'create'} radius="xl" size="md">
           Opret lokation
         </Button>
-        <Button component={Link} to={'create'} radius="xl" size="md">
+        <Button component={Link} to={'add'} radius="xl" size="md">
           Tilføj eksisterende
         </Button>
       </Group>
@@ -43,7 +43,7 @@ export default function AccountLocationsIndex() {
       <Grid align="stretch">
         {loaderData.map((d) => (
           <Grid.Col key={d._id} span={{base: 12, md: 6, lg: 4}}>
-            <Card padding="sm" radius="md" withBorder>
+            <Card padding="sm" radius="md" h="100%" withBorder>
               <AccountLocation data={d} />
               <SimpleGrid cols={2} verticalSpacing="xs" mt="lg">
                 <Button
@@ -58,7 +58,7 @@ export default function AccountLocationsIndex() {
                 <Form
                   method="post"
                   action={`${d._id}/remove`}
-                  className="inline-block"
+                  style={{display: 'inline-block'}}
                 >
                   <Button
                     variant="light"

@@ -95,7 +95,7 @@ export default function Component() {
       </Flex>
       <Divider my="md" />
 
-      <Form method="POST" {...form.props}>
+      <Form method="PUT" {...form.props}>
         <Stack>
           <TextInput
             label="Navn"
