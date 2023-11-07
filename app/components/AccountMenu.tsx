@@ -2,20 +2,22 @@ import {Group, UnstyledButton} from '@mantine/core';
 import {Form, NavLink} from '@remix-run/react';
 import {
   Icon2fa,
-  IconBellRinging,
-  IconDatabaseImport,
+  IconAddressBook,
+  IconBrandPaypal,
   IconFingerprint,
-  IconKey,
+  IconLocation,
   IconLogout,
   IconReceipt2,
   IconSettings,
   IconSwitchHorizontal,
+  IconUser,
 } from '@tabler/icons-react';
 import {useState} from 'react';
 import classes from './AccountMenu.module.css';
 
 const data = [
-  {link: '/account/orders', label: 'Orders', icon: IconBellRinging},
+  {link: '/account/locations', label: 'Lokationer', icon: IconLocation},
+  {link: '/account/orders', label: 'Orders', icon: IconBrandPaypal},
   {
     link: '/account/profile',
     label: 'Personalige oplysninger',
@@ -24,11 +26,10 @@ const data = [
   {
     link: '/account/password',
     label: 'Skift adgangskode',
-    icon: IconReceipt2,
+    icon: IconFingerprint,
   },
-  {link: '/account/addresses', label: 'Addresses', icon: IconFingerprint},
-  {link: '/account/public', label: 'Profile', icon: IconKey},
-  {link: '', label: 'Databases', icon: IconDatabaseImport},
+  {link: '/account/addresses', label: 'Addresses', icon: IconAddressBook},
+  {link: '/account/public', label: 'Profile', icon: IconUser},
   {link: '', label: 'Authentication', icon: Icon2fa},
   {link: '', label: 'Other Settings', icon: IconSettings},
 ];

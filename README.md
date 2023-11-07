@@ -19,3 +19,4 @@ Beauty professionals can create an account and offer their services through this
 - Mantine UI (react components library)
 - Orval (restful client generator)
 - Tabler (Icons)
+- Conform-To (React Form Validator)

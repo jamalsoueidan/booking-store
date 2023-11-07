@@ -111,7 +111,7 @@ export default function AccountPassword() {
       <Text c="dimmed" size="sm" mt={5}>
         Har du ikke en konto endnu?
       </Text>
-      <Divider my="sm" />
+      <Divider my="md" />
 
       <Form method="PUT">
         <Stack>

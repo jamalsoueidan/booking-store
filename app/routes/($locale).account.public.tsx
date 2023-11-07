@@ -67,16 +67,12 @@ export default function AccountBusiness() {
   ] = useForm({
     lastSubmission,
     defaultValue: user,
-    onValidate({formData}) {
-      return parse(formData, {schema: customerUpsertBody});
-    },
   });
 
-  console.log(form);
   return (
     <>
       <Title>Redigere din profil</Title>
-      <Divider my="sm" />
+      <Divider my="md" />
 
       <Form method="POST" {...form.props}>
         <Stack>

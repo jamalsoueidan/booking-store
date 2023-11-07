@@ -1,4 +1,4 @@
-import {AppShell, Burger} from '@mantine/core';
+import {AppShell, Burger, Container} from '@mantine/core';
 import {useDisclosure} from '@mantine/hooks';
 import {Outlet, useLoaderData} from '@remix-run/react';
 import {json, redirect, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
@@ -15,7 +15,7 @@ export async function loader({request, context}: LoaderFunctionArgs) {
   const isLoggedIn = !!customerAccessToken?.accessToken;
   const isAccountHome = pathname === '/account' || pathname === '/account/';
   const isPrivateRoute =
-    /^\/account\/(orders|orders\/.*|profile|addresses|public|password|addresses\/.*)$/.test(
+    /^\/account\/(orders|orders\/.*|profile|addresses|public|password|locations|locations\/.*|addresses\/.*)$/.test(
       pathname,
     );
 
@@ -103,7 +103,7 @@ function AccountLayout({children}: {children: React.ReactNode}) {
       <AppShell.Navbar
         p="md"
         style={{
-          backgroundColor: 'var(--mantine-color-gray-0)',
+          backgroundColor: 'var(--mantine-color-gray-1)',
         }}
       >
         <AccountMenu closeDrawer={close} />
@@ -120,7 +120,7 @@ function AccountLayout({children}: {children: React.ReactNode}) {
         >
           <Burger opened={opened} onClick={toggle} hiddenFrom="sm" size="sm" />
         </div>
-        {children}
+        <Container fluid>{children}</Container>
       </AppShell.Main>
     </AppShell>
   );
