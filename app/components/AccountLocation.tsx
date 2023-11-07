@@ -1,6 +1,5 @@
 import {Stack, UnstyledButton} from '@mantine/core';
 import {Form} from '@remix-run/react';
-import {Link} from 'react-router-dom';
 import {type CustomerLocationIsDefault} from '~/lib/api/model';
 
 export type AccountLocationProps = {
@@ -67,15 +66,16 @@ export const AccountLocation = ({data}: AccountLocationProps) => {
       </span>
       <span>
         <strong>Vis kort:</strong>{' '}
-        <Link
-          to={`https://www.google.com/maps/search/?api=1&query=${data.geoLocation.coordinates
+        <a
+          href={`https://www.google.com/maps/search/?api=1&query=${data.geoLocation.coordinates
             .reverse()
             .join(',')}`}
           target="_blank"
           className="!m-0"
+          rel="noreferrer"
         >
           Åben vindue
-        </Link>
+        </a>
       </span>
       <span>
         <strong>Type:</strong>{' '}

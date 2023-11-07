@@ -1,6 +1,7 @@
 import {AppShell, Burger, Container} from '@mantine/core';
 import {useDisclosure} from '@mantine/hooks';
 import {Outlet, useLoaderData} from '@remix-run/react';
+import {Customer} from '@shopify/hydrogen/storefront-api-types';
 import {json, redirect, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
 import {AccountMenu} from '~/components/AccountMenu';
 
@@ -86,13 +87,19 @@ export default function Acccount() {
   }
 
   return (
-    <AccountLayout>
+    <AccountLayout customer={customer!}>
       <Outlet context={{customer}} />
     </AccountLayout>
   );
 }
 
-function AccountLayout({children}: {children: React.ReactNode}) {
+function AccountLayout({
+  children,
+  customer,
+}: {
+  children: React.ReactNode;
+  customer: Pick<Customer, 'firstName' | 'lastName'>;
+}) {
   const [opened, {toggle, close}] = useDisclosure(false);
 
   return (
@@ -106,7 +113,7 @@ function AccountLayout({children}: {children: React.ReactNode}) {
           backgroundColor: 'var(--mantine-color-gray-1)',
         }}
       >
-        <AccountMenu closeDrawer={close} />
+        <AccountMenu closeDrawer={close} customer={customer} />
       </AppShell.Navbar>
 
       <AppShell.Main>

@@ -46,7 +46,12 @@ export default function AccountLocationsIndex() {
             <Card padding="sm" radius="md" withBorder>
               <AccountLocation data={d} />
               <SimpleGrid cols={2} verticalSpacing="xs" mt="lg">
-                <Button component={Link} variant="primary" to={`${d._id}/edit`}>
+                <Button
+                  component={Link}
+                  variant="primary"
+                  size="xs"
+                  to={`${d._id}/edit`}
+                >
                   Redigere
                 </Button>
 
@@ -59,10 +64,10 @@ export default function AccountLocationsIndex() {
                     variant="light"
                     color="blue"
                     fullWidth
-                    radius="md"
+                    size="xs"
                     type="submit"
                   >
-                    Fjern
+                    Slet
                   </Button>
                 </Form>
               </SimpleGrid>

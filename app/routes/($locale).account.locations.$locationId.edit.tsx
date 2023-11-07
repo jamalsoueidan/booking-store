@@ -1,59 +1,49 @@
-import {Form, Link, useActionData} from '@remix-run/react';
+import {conform, useForm} from '@conform-to/react';
+import {parse} from '@conform-to/zod';
+import {Form, Link, useActionData, useLoaderData} from '@remix-run/react';
+
 import {
   json,
   redirect,
   type ActionFunctionArgs,
   type LoaderFunctionArgs,
 } from '@shopify/remix-oxygen';
-
+import {getBookingShopifyApi} from '~/lib/api/bookingShopifyApi';
 import {getCustomer} from '~/lib/get-customer';
-import {customerLocationCreateBody} from '~/lib/zod/bookingShopifyApi';
+import {customerLocationUpdateBody} from '~/lib/zod/bookingShopifyApi';
 
-import {
-  conform,
-  useForm,
-  useInputEvent,
-  type FieldConfig,
-} from '@conform-to/react';
-import {parse} from '@conform-to/zod';
 import {
   ActionIcon,
   Divider,
   Flex,
-  Radio,
   Stack,
   TextInput,
   Title,
 } from '@mantine/core';
 import {parseGid} from '@shopify/hydrogen';
 import {IconArrowLeft} from '@tabler/icons-react';
-import {useRef, useState} from 'react';
 import {AddressAutocompleteInput} from '~/components/AddressAutocompleteInput';
 import {SubmitButton} from '~/components/form/SubmitButton';
-import {getBookingShopifyApi} from '~/lib/api/bookingShopifyApi';
 
-export async function loader({context}: LoaderFunctionArgs) {
-  const customerAccessToken = await context.session.get('customerAccessToken');
-  if (!customerAccessToken) {
-    return redirect('/account/login');
-  }
-  return json({});
-}
-
-export const action = async ({request, context}: ActionFunctionArgs) => {
+export const action = async ({
+  request,
+  context,
+  params,
+}: ActionFunctionArgs) => {
   const customerAccessToken = await context.session.get('customerAccessToken');
   const customer = await getCustomer({context, customerAccessToken});
 
   const formData = await request.formData();
-  const submission = parse(formData, {schema: customerLocationCreateBody});
+  const submission = parse(formData, {schema: customerLocationUpdateBody});
 
   if (submission.intent !== 'submit' || !submission.value) {
     return json(submission);
   }
 
   try {
-    const response = await getBookingShopifyApi().customerLocationCreate(
+    const response = await getBookingShopifyApi().customerLocationUpdate(
       parseGid(customer.id).id,
+      params.locationId || '',
       submission.value,
     );
 
@@ -63,28 +53,26 @@ export const action = async ({request, context}: ActionFunctionArgs) => {
   }
 };
 
+export async function loader({context, params}: LoaderFunctionArgs) {
+  const customerAccessToken = await context.session.get('customerAccessToken');
+  const customer = await getCustomer({context, customerAccessToken});
+
+  const response = await getBookingShopifyApi().customerLocationGet(
+    customer.id,
+    params.locationId || '',
+  );
+
+  return json(response.payload);
+}
+
 export default function Component() {
+  const defaultValues = useLoaderData<typeof loader>();
   const lastSubmission = useActionData<typeof action>();
 
   const [form, fields] = useForm({
     lastSubmission,
-    defaultValue: {
-      name: '',
-      locationType: 'origin',
-      fullAddress: '',
-      originType: 'home',
-      distanceHourlyRate: 500,
-      fixedRatePerKm: 20,
-      distanceForFree: 4,
-      minDriveDistance: 0,
-      maxDriveDistance: 300,
-      startFee: 0,
-    },
+    defaultValue: defaultValues,
   });
-
-  const [locationType, setLocationType] = useState(
-    fields.locationType.defaultValue,
-  );
 
   return (
     <>
@@ -99,13 +87,16 @@ export default function Component() {
             <IconArrowLeft style={{width: '70%', height: '70%'}} stroke={1.5} />
           </ActionIcon>
         </Link>
-        <Title>Opret en lokation</Title>
+        <Title>
+          {defaultValues.originType === 'commercial'
+            ? 'Redigere butik lokation'
+            : 'Redigere hjemme lokation'}
+        </Title>
       </Flex>
       <Divider my="md" />
 
       <Form method="POST" {...form.props}>
         <Stack>
-          <RadioGroup onChange={setLocationType} {...fields.locationType} />
           <TextInput
             label="Navn"
             placeholder="BySisters"
@@ -113,7 +104,7 @@ export default function Component() {
           />
           <AddressAutocompleteInput
             label={
-              locationType === 'destination'
+              defaultValues.locationType === 'destination'
                 ? 'Hvor vil du kører fra?'
                 : 'Hvor skal kunden køre til?'
             }
@@ -121,7 +112,7 @@ export default function Component() {
             {...conform.input(fields.fullAddress)}
           />
           <input type="hidden" {...conform.input(fields.originType)} />
-          {locationType === 'destination' ? (
+          {defaultValues.locationType === 'destination' ? (
             <>
               <TextInput
                 label="Udgifter for turen"
@@ -155,62 +146,18 @@ export default function Component() {
             </>
           ) : (
             <>
-              <input type="hidden" name="startFee" value="0" />
               <input type="hidden" name="distanceForFree" value="0" />
               <input type="hidden" name="fixedRatePerKm" value="0" />
               <input type="hidden" name="distanceHourlyRate" value="0" />
               <input type="hidden" name="minDriveDistance" value="0" />
               <input type="hidden" name="maxDriveDistance" value="500" />
+              <input type="hidden" name="startFee" value="0" />
             </>
           )}
 
-          <SubmitButton>Tilføj</SubmitButton>
+          <SubmitButton>Opdatere</SubmitButton>
         </Stack>
       </Form>
-    </>
-  );
-}
-
-function RadioGroup({
-  onChange,
-  ...config
-}: FieldConfig<string> & {onChange: (value: string) => void}) {
-  const [value, setValue] = useState(config.defaultValue ?? '');
-
-  const shadowInputRef = useRef<HTMLInputElement>(null);
-
-  const control = useInputEvent({
-    ref: shadowInputRef,
-    onReset: () => setValue(config.defaultValue ?? ''),
-  });
-
-  // https://conform.guide/checkbox-and-radio-group
-  return (
-    <>
-      <input
-        ref={shadowInputRef}
-        {...conform.input(config, {hidden: true})}
-        onChange={(e) => setValue(e.target.value)}
-      />
-      <Radio.Group
-        label="Hvilken type location vil du oprette?"
-        value={value}
-        onChange={(value: string) => {
-          control.change(value);
-          onChange(value);
-        }}
-      >
-        <Radio
-          mt="xs"
-          mb="xs"
-          label="Opret en fast arbejdslokation."
-          value="origin"
-        />
-        <Radio
-          label="Opret en mobil arbejdslokation (Du vil kører til kunden)."
-          value="destination"
-        />
-      </Radio.Group>
     </>
   );
 }
