@@ -1,6 +1,5 @@
 // custom-instance.ts
 
-import {ValidatorError} from 'remix-validated-form';
 import {Errors} from '../model';
 
 const baseURL = 'https://booking-shopify-api.azurewebsites.net/api'; // use your own URL here or environment variable
@@ -27,7 +26,7 @@ function paramsToQueryString(params: Record<string, string | Date>) {
   return `?${queryString}`;
 }
 
-function convertErrorMessage(errorObject: Errors): ValidatorError {
+function convertErrorMessage(errorObject: Errors) {
   const result = errorObject.errors.reduce((accumulator, error) => {
     // Iterate over the paths array and create keys for each path
     error.path.forEach((path) => {
@@ -41,8 +40,8 @@ function convertErrorMessage(errorObject: Errors): ValidatorError {
 
   return {fieldErrors: result};
 }
-export function isValidatorError(obj: any): obj is ValidatorError {
-  return obj && Object.keys((obj as ValidatorError).fieldErrors).length > 0;
+export function isValidatorError(obj: any) {
+  return obj && Object.keys(obj.fieldErrors).length > 0;
 }
 
 export function isError(obj: any): obj is Errors {
@@ -74,7 +73,7 @@ export const queryClient = async <T>({
 
   const responseJson = await response.json();
   if (isError(responseJson)) {
-    console.log(JSON.stringify(responseJson));
+    console.log(JSON.stringify(data), JSON.stringify(responseJson));
     throw convertErrorMessage(responseJson);
   }
 

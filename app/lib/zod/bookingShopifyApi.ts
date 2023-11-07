@@ -272,7 +272,7 @@ export const customerUpsertBody = zod.object({
   professions: zod.array(zod.string()).or(zod.string()),
   specialties: zod.array(zod.string()).or(zod.string()),
   username: zod.string().regex(customerUpsertBodyUsernameRegExp),
-  aboutMe: zod.string(),
+  aboutMe: zod.string().min(4),
   shortDescription: zod.string(),
   social: zod
     .object({

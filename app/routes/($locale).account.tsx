@@ -2,7 +2,6 @@ import {AppShell, Burger} from '@mantine/core';
 import {useDisclosure} from '@mantine/hooks';
 import {Outlet, useLoaderData} from '@remix-run/react';
 import {json, redirect, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
-import type {CustomerFragment} from 'storefrontapi.generated';
 import {AccountMenu} from '~/components/AccountMenu';
 
 export function shouldRevalidate() {
@@ -16,7 +15,7 @@ export async function loader({request, context}: LoaderFunctionArgs) {
   const isLoggedIn = !!customerAccessToken?.accessToken;
   const isAccountHome = pathname === '/account' || pathname === '/account/';
   const isPrivateRoute =
-    /^\/account\/(orders|orders\/.*|profile|addresses|password|addresses\/.*)$/.test(
+    /^\/account\/(orders|orders\/.*|profile|addresses|public|password|addresses\/.*)$/.test(
       pathname,
     );
 
@@ -87,26 +86,14 @@ export default function Acccount() {
   }
 
   return (
-    <AccountLayout customer={customer as CustomerFragment}>
+    <AccountLayout>
       <Outlet context={{customer}} />
     </AccountLayout>
   );
 }
 
-function AccountLayout({
-  customer,
-  children,
-}: {
-  customer: CustomerFragment;
-  children: React.ReactNode;
-}) {
+function AccountLayout({children}: {children: React.ReactNode}) {
   const [opened, {toggle, close}] = useDisclosure(false);
-
-  const heading = customer
-    ? customer.firstName
-      ? `Welcome, ${customer.firstName}`
-      : `Welcome to your account.`
-    : 'Account Details';
 
   return (
     <AppShell
