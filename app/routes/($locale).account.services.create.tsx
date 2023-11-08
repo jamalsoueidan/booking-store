@@ -1,4 +1,4 @@
-import {conform, useFieldset, useForm} from '@conform-to/react';
+import {conform, useForm} from '@conform-to/react';
 import {parse} from '@conform-to/zod';
 import {
   ActionIcon,
@@ -19,11 +19,14 @@ import {
 } from '@shopify/remix-oxygen';
 import {IconArrowLeft} from '@tabler/icons-react';
 import {z} from 'zod';
+import PeriodInput from '~/components/form/PeriodInput';
 
 import {SubmitButton} from '~/components/form/SubmitButton';
+import {SwitchGroupLocations} from '~/components/form/SwitchGroupLocations';
 
 import {PRODUCT_SIMPLE} from '~/data/fragments';
 import {getBookingShopifyApi} from '~/lib/api/bookingShopifyApi';
+import type {CustomerProductUpsertBody} from '~/lib/api/model';
 
 import {getCustomer} from '~/lib/get-customer';
 import {customerProductUpsertBody} from '~/lib/zod/bookingShopifyApi';
@@ -110,7 +113,7 @@ export async function loader({context}: LoaderFunctionArgs) {
           locationType: findDefaultLocation?.locationType,
         },
       ],
-    },
+    } as CustomerProductUpsertBody,
   });
 }
 
@@ -135,9 +138,6 @@ export default function EditAddress() {
     label: schedule.name,
   }));
 
-  const bookingPeriod = useFieldset(form.ref, fields.bookingPeriod);
-  const noticePeriod = useFieldset(form.ref, fields.noticePeriod);
-
   return (
     <>
       <Flex direction={'row'} align={'center'}>
@@ -161,14 +161,20 @@ export default function EditAddress() {
             label="Vælg ydelse"
             data={selectServices}
             {...conform.select(fields.productId)}
-            defaultValue={defaultValues.productId}
+            defaultValue={''}
+          />
+
+          <SwitchGroupLocations
+            label="Vælge lokation(er):"
+            field={fields.locations}
+            data={locations}
           />
 
           <Select
             label="Vælge vagtplan"
             data={selectSchedules}
             {...conform.select(fields.scheduleId)}
-            defaultValue={defaultValues.scheduleId}
+            defaultValue={fields.scheduleId.defaultValue}
           />
 
           <Flex align={'flex-end'} gap="xs">
@@ -184,40 +190,23 @@ export default function EditAddress() {
             />
           </Flex>
 
-          <Flex align={'flex-end'} gap="xs">
-            <TextInput
-              label="Bookinghorisont for behandlingen?"
-              w="70%"
-              {...conform.input(bookingPeriod.value, {type: 'number'})}
-            />
+          <PeriodInput
+            field={fields.bookingPeriod}
+            label="Hvor mange bookingsperioder?"
+            data={[
+              {value: 'months', label: 'Måneder'},
+              {value: 'hours', label: 'Timer'},
+            ]}
+          />
 
-            <Select
-              w="30%"
-              data={[
-                {value: 'months', label: 'Måned'},
-                {value: 'weeks', label: 'Uger'},
-              ]}
-              {...conform.select(bookingPeriod.unit)}
-              defaultValue={defaultValues.bookingPeriod.unit}
-            />
-          </Flex>
-
-          <Flex align={'flex-end'} gap="xs">
-            <TextInput
-              label="Hvor tidligst må en behandling bookes?"
-              w="70%"
-              {...conform.input(noticePeriod.value)}
-            />
-            <Select
-              w="30%"
-              data={[
-                {value: 'days', label: 'Dage'},
-                {value: 'hours', label: 'Timer'},
-              ]}
-              {...conform.select(noticePeriod.unit)}
-              defaultValue={defaultValues.noticePeriod.unit}
-            />
-          </Flex>
+          <PeriodInput
+            field={fields.noticePeriod}
+            label="Hvor tidligst må en behandling bookes?"
+            data={[
+              {value: 'days', label: 'Dage'},
+              {value: 'hours', label: 'Timer'},
+            ]}
+          />
 
           <SubmitButton>Tilføj ny ydelse</SubmitButton>
         </Stack>

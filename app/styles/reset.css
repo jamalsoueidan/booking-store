@@ -78,8 +78,10 @@ body {
 fieldset {
   display: flex;
   flex-direction: column;
-  margin-bottom: 0.5rem;
-  padding: 1rem;
+  border: 0;
+  padding: 0;
+  margin: 0;
+  min-width: 0;
 }
 
 form {
