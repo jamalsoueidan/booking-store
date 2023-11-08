@@ -1,7 +1,15 @@
-import {conform, useForm} from '@conform-to/react';
+import {conform, useFieldset, useForm} from '@conform-to/react';
 import {parse} from '@conform-to/zod';
-import {Select, Stack} from '@mantine/core';
-import {Form, useActionData, useLoaderData} from '@remix-run/react';
+import {
+  ActionIcon,
+  Divider,
+  Flex,
+  Select,
+  Stack,
+  TextInput,
+  Title,
+} from '@mantine/core';
+import {Form, Link, useActionData, useLoaderData} from '@remix-run/react';
 import {parseGid} from '@shopify/hydrogen';
 import {
   json,
@@ -9,10 +17,9 @@ import {
   type ActionFunctionArgs,
   type LoaderFunctionArgs,
 } from '@shopify/remix-oxygen';
+import {IconArrowLeft} from '@tabler/icons-react';
 import {z} from 'zod';
-import ServiceProductForm from '~/components/Account/ServiceProductForm';
-import {ServiceProductLocationsGroup} from '~/components/Account/ServiceProductLocationsGroup';
-import {ServiceProductVariantSelector} from '~/components/Account/ServiceProductVariantSelector';
+
 import {SubmitButton} from '~/components/form/SubmitButton';
 
 import {PRODUCT_SIMPLE} from '~/data/fragments';
@@ -118,33 +125,104 @@ export default function EditAddress() {
     defaultValue: defaultValues,
   });
 
-  const data = storeProducts.nodes.map((product) => ({
+  const selectServices = storeProducts.nodes.map((product) => ({
     value: parseGid(product.id).id,
     label: product.title,
   }));
 
-  return (
-    <Form method="post" {...form.props}>
-      <Stack>
-        <Select
-          label="Vælg ydelse"
-          data={data}
-          {...conform.select(fields.productId)}
-          defaultValue={defaultValues.productId}
-        />
+  const selectSchedules = schedules.map((schedule) => ({
+    value: schedule._id,
+    label: schedule.name,
+  }));
 
-        <ServiceProductVariantSelector
-          products={storeProducts.nodes}
-          defaultValue={defaultValues.variantId}
-        />
-        <ServiceProductLocationsGroup locations={locations} />
-        <ServiceProductForm
-          defaultValues={defaultValues}
-          schedules={schedules}
-        />
-        <SubmitButton>Tilføj ny ydelse</SubmitButton>
-      </Stack>
-    </Form>
+  const bookingPeriod = useFieldset(form.ref, fields.bookingPeriod);
+  const noticePeriod = useFieldset(form.ref, fields.noticePeriod);
+
+  return (
+    <>
+      <Flex direction={'row'} align={'center'}>
+        <Link to="/account/services">
+          <ActionIcon
+            variant="transparent"
+            size="xl"
+            aria-label="Back"
+            color="black"
+          >
+            <IconArrowLeft style={{width: '70%', height: '70%'}} stroke={1.5} />
+          </ActionIcon>
+        </Link>
+        <Title>Opret en ydelse</Title>
+      </Flex>
+      <Divider my="md" />
+
+      <Form method="post" {...form.props}>
+        <Stack>
+          <Select
+            label="Vælg ydelse"
+            data={selectServices}
+            {...conform.select(fields.productId)}
+            defaultValue={defaultValues.productId}
+          />
+
+          <Select
+            label="Vælge vagtplan"
+            data={selectSchedules}
+            {...conform.select(fields.scheduleId)}
+            defaultValue={defaultValues.scheduleId}
+          />
+
+          <Flex align={'flex-end'} gap="xs">
+            <TextInput
+              w="50%"
+              label="Behandlingstid:"
+              {...conform.input(fields.duration)}
+            />
+            <TextInput
+              w="50%"
+              label="Pause efter behandling?"
+              {...conform.input(fields.breakTime)}
+            />
+          </Flex>
+
+          <Flex align={'flex-end'} gap="xs">
+            <TextInput
+              label="Bookinghorisont for behandlingen?"
+              w="70%"
+              {...conform.input(bookingPeriod.value, {type: 'number'})}
+            />
+
+            <Select
+              w="30%"
+              data={[
+                {value: 'months', label: 'Måned'},
+                {value: 'weeks', label: 'Uger'},
+              ]}
+              {...conform.select(bookingPeriod.unit)}
+              defaultValue={defaultValues.bookingPeriod.unit}
+            />
+          </Flex>
+
+          <Flex align={'flex-end'} gap="xs">
+            <TextInput
+              label="Hvor tidligst må en behandling bookes?"
+              w="70%"
+              {...conform.input(noticePeriod.value)}
+            />
+            <Select
+              w="30%"
+              data={[
+                {value: 'days', label: 'Dage'},
+                {value: 'hours', label: 'Timer'},
+              ]}
+              {...conform.select(noticePeriod.unit)}
+              defaultValue={defaultValues.noticePeriod.unit}
+            />
+          </Flex>
+
+          <SubmitButton>Tilføj ny ydelse</SubmitButton>
+        </Stack>
+      </Form>
+    </>
   );
 }
 
