@@ -16,7 +16,7 @@ export async function loader({request, context}: LoaderFunctionArgs) {
   const isLoggedIn = !!customerAccessToken?.accessToken;
   const isAccountHome = pathname === '/account' || pathname === '/account/';
   const isPrivateRoute =
-    /^\/account\/(orders|orders\/.*|profile|addresses|public|password|locations|locations\/.*|addresses\/.*)$/.test(
+    /^\/account\/(orders|orders\/.*|profile|addresses|public|password|locations|locations\/.*|services|services\/.*|schedules|schedules\/.*|addresses\/.*)$/.test(
       pathname,
     );
 
