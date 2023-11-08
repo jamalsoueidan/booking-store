@@ -3,6 +3,22 @@
 /* eslint-disable */
 import * as StorefrontAPI from '@shopify/hydrogen/storefront-api-types';
 
+export type ProductSimpleFragment = Pick<
+  StorefrontAPI.Product,
+  'id' | 'title' | 'handle' | 'publishedAt'
+> & {
+  variants: {
+    nodes: Array<
+      Pick<StorefrontAPI.ProductVariant, 'id'> & {
+        image?: StorefrontAPI.Maybe<
+          Pick<StorefrontAPI.Image, 'url' | 'altText' | 'width' | 'height'>
+        >;
+        price: Pick<StorefrontAPI.MoneyV2, 'amount' | 'currencyCode'>;
+      }
+    >;
+  };
+};
+
 export type CustomerIdFragment = Pick<StorefrontAPI.Customer, 'id'>;
 
 export type CustomerIdQueryVariables = StorefrontAPI.Exact<{
@@ -729,26 +745,6 @@ export type CustomerUpdateMutation = {
   }>;
 };
 
-export type ProductSimpleFragment = Pick<
-  StorefrontAPI.Product,
-  'id' | 'title' | 'handle' | 'publishedAt'
-> & {
-  variants: {
-    nodes: Array<
-      Pick<StorefrontAPI.ProductVariant, 'id'> & {
-        image?: StorefrontAPI.Maybe<
-          Pick<StorefrontAPI.Image, 'url' | 'altText' | 'width' | 'height'>
-        >;
-        price: Pick<StorefrontAPI.MoneyV2, 'amount' | 'currencyCode'>;
-        compareAtPrice?: StorefrontAPI.Maybe<
-          Pick<StorefrontAPI.MoneyV2, 'amount' | 'currencyCode'>
-        >;
-        product: Pick<StorefrontAPI.Product, 'id'>;
-      }
-    >;
-  };
-};
-
 export type AccountServicesProductsQueryVariables = StorefrontAPI.Exact<{
   country?: StorefrontAPI.InputMaybe<StorefrontAPI.CountryCode>;
   language?: StorefrontAPI.InputMaybe<StorefrontAPI.LanguageCode>;
@@ -770,10 +766,35 @@ export type AccountServicesProductsQuery = {
                 >
               >;
               price: Pick<StorefrontAPI.MoneyV2, 'amount' | 'currencyCode'>;
-              compareAtPrice?: StorefrontAPI.Maybe<
-                Pick<StorefrontAPI.MoneyV2, 'amount' | 'currencyCode'>
+            }
+          >;
+        };
+      }
+    >;
+  };
+};
+
+export type AllAccountCreateProductsQueryVariables = StorefrontAPI.Exact<{
+  country?: StorefrontAPI.InputMaybe<StorefrontAPI.CountryCode>;
+  language?: StorefrontAPI.InputMaybe<StorefrontAPI.LanguageCode>;
+  first?: StorefrontAPI.InputMaybe<StorefrontAPI.Scalars['Int']['input']>;
+  query?: StorefrontAPI.InputMaybe<StorefrontAPI.Scalars['String']['input']>;
+}>;
+
+export type AllAccountCreateProductsQuery = {
+  products: {
+    nodes: Array<
+      Pick<StorefrontAPI.Product, 'id' | 'title' | 'handle' | 'publishedAt'> & {
+        variants: {
+          nodes: Array<
+            Pick<StorefrontAPI.ProductVariant, 'id'> & {
+              image?: StorefrontAPI.Maybe<
+                Pick<
+                  StorefrontAPI.Image,
+                  'url' | 'altText' | 'width' | 'height'
+                >
               >;
-              product: Pick<StorefrontAPI.Product, 'id'>;
+              price: Pick<StorefrontAPI.MoneyV2, 'amount' | 'currencyCode'>;
             }
           >;
         };
@@ -1888,9 +1909,13 @@ interface GeneratedQueryTypes {
     return: CustomerOrdersQuery;
     variables: CustomerOrdersQueryVariables;
   };
-  '#graphql\n  #graphql\n  fragment ProductSimple on Product {\n    id\n    title\n    handle\n    publishedAt\n    variants(first: 10) {\n      nodes {\n        id\n        image {\n          url\n          altText\n          width\n          height\n        }\n        price {\n          amount\n          currencyCode\n        }\n        compareAtPrice {\n          amount\n          currencyCode\n        }\n        product {\n          id\n        }\n      }\n    }\n  }\n\n  query AccountServicesProducts(\n    $country: CountryCode\n    $language: LanguageCode\n    $first: Int\n    $query: String\n  ) @inContext(country: $country, language: $language) {\n    products(first: $first, query: $query) {\n      nodes {\n        ...ProductSimple\n      }\n    }\n  }\n': {
+  '#graphql\n  #graphql\n  fragment ProductSimple on Product {\n    id\n    title\n    handle\n    publishedAt\n    variants(first: 10) {\n      nodes {\n        id\n        image {\n          url\n          altText\n          width\n          height\n        }\n        price {\n          amount\n          currencyCode\n        }\n      }\n    }\n  }\n\n  query AccountServicesProducts(\n    $country: CountryCode\n    $language: LanguageCode\n    $first: Int\n    $query: String\n  ) @inContext(country: $country, language: $language) {\n    products(first: $first, query: $query) {\n      nodes {\n        ...ProductSimple\n      }\n    }\n  }\n': {
     return: AccountServicesProductsQuery;
     variables: AccountServicesProductsQueryVariables;
+  };
+  '#graphql\n  #graphql\n  fragment ProductSimple on Product {\n    id\n    title\n    handle\n    publishedAt\n    variants(first: 10) {\n      nodes {\n        id\n        image {\n          url\n          altText\n          width\n          height\n        }\n        price {\n          amount\n          currencyCode\n        }\n      }\n    }\n  }\n\n  query AllAccountCreateProducts(\n    $country: CountryCode\n    $language: LanguageCode\n    $first: Int\n    $query: String\n  ) @inContext(country: $country, language: $language) {\n    products(first: $first, query: $query) {\n      nodes {\n        ...ProductSimple\n      }\n    }\n  }\n': {
+    return: AllAccountCreateProductsQuery;
+    variables: AllAccountCreateProductsQueryVariables;
   };
   '#graphql\n  query Customer(\n    $customerAccessToken: String!\n    $country: CountryCode\n    $language: LanguageCode\n  ) @inContext(country: $country, language: $language) {\n    customer(customerAccessToken: $customerAccessToken) {\n      ...Customer\n    }\n  }\n  #graphql\n  fragment Customer on Customer {\n    acceptsMarketing\n    addresses(first: 6) {\n      nodes {\n        ...Address\n      }\n    }\n    defaultAddress {\n      ...Address\n    }\n    email\n    firstName\n    lastName\n    numberOfOrders\n    phone\n  }\n  fragment Address on MailingAddress {\n    id\n    formatted\n    firstName\n    lastName\n    company\n    address1\n    address2\n    country\n    province\n    city\n    zip\n    phone\n  }\n\n': {
     return: CustomerQuery;

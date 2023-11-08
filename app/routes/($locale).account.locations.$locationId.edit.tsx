@@ -30,8 +30,7 @@ export const action = async ({
   context,
   params,
 }: ActionFunctionArgs) => {
-  const customerAccessToken = await context.session.get('customerAccessToken');
-  const customer = await getCustomer({context, customerAccessToken});
+  const customer = await getCustomer({context});
 
   const formData = await request.formData();
   const submission = parse(formData, {schema: customerLocationUpdateBody});
@@ -54,8 +53,7 @@ export const action = async ({
 };
 
 export async function loader({context, params}: LoaderFunctionArgs) {
-  const customerAccessToken = await context.session.get('customerAccessToken');
-  const customer = await getCustomer({context, customerAccessToken});
+  const customer = await getCustomer({context});
 
   const response = await getBookingShopifyApi().customerLocationGet(
     customer.id,

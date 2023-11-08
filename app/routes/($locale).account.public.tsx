@@ -17,8 +17,7 @@ import {getCustomer} from '~/lib/get-customer';
 import {customerUpsertBody} from '~/lib/zod/bookingShopifyApi';
 
 export const action = async ({request, context}: ActionFunctionArgs) => {
-  const customerAccessToken = await context.session.get('customerAccessToken');
-  const customer = await getCustomer({context, customerAccessToken});
+  const customer = await getCustomer({context});
 
   const formData = await request.formData();
   const submission = parse(formData, {schema: customerUpsertBody});
@@ -40,8 +39,7 @@ export const action = async ({request, context}: ActionFunctionArgs) => {
 };
 
 export async function loader({context}: LoaderFunctionArgs) {
-  const customerAccessToken = await context.session.get('customerAccessToken');
-  const customer = await getCustomer({context, customerAccessToken});
+  const customer = await getCustomer({context});
 
   const {payload: user} = await getBookingShopifyApi().customerGet(
     parseGid(customer.id).id,

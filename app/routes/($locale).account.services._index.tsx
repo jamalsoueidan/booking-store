@@ -3,14 +3,13 @@ import {Link, useLoaderData} from '@remix-run/react';
 import {Money, parseGid} from '@shopify/hydrogen';
 import {type ProductConnection} from '@shopify/hydrogen/storefront-api-types';
 import {json, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
+import {PRODUCT_SIMPLE} from '~/data/fragments';
 import {getBookingShopifyApi} from '~/lib/api/bookingShopifyApi';
 import {getCustomer} from '~/lib/get-customer';
 
 export async function loader({context}: LoaderFunctionArgs) {
-  const {session, storefront} = context;
-  const customerAccessToken = await session.get('customerAccessToken');
-
-  const customer = await getCustomer({context, customerAccessToken});
+  const {storefront} = context;
+  const customer = await getCustomer({context});
   const response = await getBookingShopifyApi().customerProductsList(
     customer.id,
   );
@@ -34,7 +33,7 @@ export async function loader({context}: LoaderFunctionArgs) {
   });
 }
 
-export default function ServiceList() {
+export default function AccountServicesIndex() {
   const {storeProducts, customerProducts} = useLoaderData<typeof loader>();
 
   return (
@@ -76,37 +75,6 @@ export default function ServiceList() {
     </>
   );
 }
-
-export const PRODUCT_SIMPLE = `#graphql
-  fragment ProductSimple on Product {
-    id
-    title
-    handle
-    publishedAt
-    variants(first: 10) {
-      nodes {
-        id
-        image {
-          url
-          altText
-          width
-          height
-        }
-        price {
-          amount
-          currencyCode
-        }
-        compareAtPrice {
-          amount
-          currencyCode
-        }
-        product {
-          id
-        }
-      }
-    }
-  }
-`;
 
 const ALL_PRODUCTS_QUERY = `#graphql
   ${PRODUCT_SIMPLE}

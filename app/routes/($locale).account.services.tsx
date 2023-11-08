@@ -1,14 +1,11 @@
-import {Outlet, useLoaderData} from '@remix-run/react';
+import {Link, Outlet, useLoaderData} from '@remix-run/react';
 
 import {json, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
 import {getBookingShopifyApi} from '~/lib/api/bookingShopifyApi';
 import {getCustomer} from '~/lib/get-customer';
 
 export async function loader({context}: LoaderFunctionArgs) {
-  const {session} = context;
-  const customerAccessToken = await session.get('customerAccessToken');
-
-  const customer = await getCustomer({context, customerAccessToken});
+  const customer = await getCustomer({context});
   const response = await getBookingShopifyApi().customerStatus(customer.id);
 
   return json({
@@ -16,8 +13,21 @@ export async function loader({context}: LoaderFunctionArgs) {
   });
 }
 
-export default function AccountSchedule() {
+export default function AccountServices() {
   const {status} = useLoaderData<typeof loader>();
-
-  return <Outlet context={status} />;
+  if (!status.locations) {
+    return (
+      <>
+        Du mangler tilføje <Link to="/account/locations">lokationer</Link>
+      </>
+    );
+  }
+  if (!status.schedules) {
+    return (
+      <>
+        Du mangler oprette <Link to="/account/schedules">vagtplan</Link>
+      </>
+    );
+  }
+  return <Outlet />;
 }

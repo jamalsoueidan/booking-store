@@ -1,13 +1,12 @@
-import type {CustomerAccessToken} from '@shopify/hydrogen/storefront-api-types';
 import {redirect, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
 
 export async function getCustomer({
   context,
-  customerAccessToken,
 }: {
   context: LoaderFunctionArgs['context'];
-  customerAccessToken?: CustomerAccessToken;
 }) {
+  const customerAccessToken = await context.session.get('customerAccessToken');
+
   if (!customerAccessToken) {
     return redirect('/account/login');
   }
