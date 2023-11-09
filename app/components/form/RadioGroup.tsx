@@ -20,16 +20,13 @@ export function RadioGroup({onChange, label, data, field}: RadioGroupProps) {
   });
 
   useEffect(() => {
-    if (field.defaultValue === '') {
-      const id = setValue(data[0].value);
+    const findInData = data.findIndex((d) => d.value === value);
+    if (field.defaultValue === '' && findInData === -1) {
+      setValue(data[0].value);
       control.change(data[0].value);
-      if (onChange) {
-        onChange(value);
-      }
     }
   }, [control, data, field.defaultValue, onChange, value]);
 
-  // https://conform.guide/checkbox-and-radio-group
   return (
     <>
       <input

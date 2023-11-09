@@ -21,7 +21,8 @@ import {IconArrowLeft} from '@tabler/icons-react';
 import {useState} from 'react';
 import {z} from 'zod';
 import PeriodInput from '~/components/form/PeriodInput';
-import {RadioVariantsProduct} from '~/components/form/RadioVariantProducts';
+import {RadioGroupVariantsProduct} from '~/components/form/RadioGroupVariantProducts';
+import {SelectSearchable} from '~/components/form/SelectSearchable';
 
 import {SubmitButton} from '~/components/form/SubmitButton';
 import {SwitchGroupLocations} from '~/components/form/SwitchGroupLocations';
@@ -33,15 +34,17 @@ import type {CustomerProductUpsertBody} from '~/lib/api/model';
 import {getCustomer} from '~/lib/get-customer';
 import {customerProductUpsertBody} from '~/lib/zod/bookingShopifyApi';
 
+const schema = customerProductUpsertBody.extend({
+  productId: z.string().min(1),
+  scheduleId: z.string().min(1),
+});
+
 export const action = async ({request, context}: ActionFunctionArgs) => {
   const customer = await getCustomer({context});
 
   const formData = await request.formData();
   const submission = parse(formData, {
-    schema: customerProductUpsertBody.extend({
-      productId: z.string().min(3),
-      scheduleId: z.string().min(3),
-    }),
+    schema,
   });
 
   if (submission.intent !== 'submit' || !submission.value) {
@@ -124,11 +127,17 @@ export default function AccountServicesCreate() {
     useLoaderData<typeof loader>();
 
   const lastSubmission = useActionData<typeof action>();
-  const [productId, setProductId] = useState<string | null>(null);
+  const [productId, setProductId] = useState<string | null>('');
 
   const [form, fields] = useForm({
     lastSubmission,
     defaultValue: defaultValues,
+    onValidate({formData}) {
+      return parse(formData, {
+        schema,
+      });
+    },
+    shouldValidate: 'onInput',
   });
 
   const selectServices = storeProducts.nodes.map((product) => ({
@@ -164,16 +173,15 @@ export default function AccountServicesCreate() {
 
       <Form method="post" {...form.props}>
         <Stack>
-          <Select
+          <SelectSearchable
             label="Hvilken ydelse vil du tilbyde?"
             placeholder="Vælg ydelse"
             data={selectServices}
+            field={fields.productId}
             onChange={setProductId}
-            {...conform.select(fields.productId)}
-            defaultValue={''}
           />
           {selectedProduct && (
-            <RadioVariantsProduct
+            <RadioGroupVariantsProduct
               label="Hvad skal ydelsen koste?"
               product={selectedProduct}
               field={fields.variantId}
@@ -181,13 +189,14 @@ export default function AccountServicesCreate() {
           )}
 
           <SwitchGroupLocations
-            label="Vælge lokation(er):"
+            label="Fra hvilken lokation(er) vil du tilbyde den ydelse?"
+            description="Mindst (1) skal være valgt."
             field={fields.locations}
             data={locations}
           />
 
           <Select
-            label="Vælge vagtplan"
+            label="Hvilken vagtplan vil du tilknytte den ydelse på."
             data={selectSchedules}
             {...conform.select(fields.scheduleId)}
             defaultValue={fields.scheduleId.defaultValue}
@@ -197,11 +206,13 @@ export default function AccountServicesCreate() {
             <TextInput
               w="50%"
               label="Behandlingstid:"
+              rightSection="min"
               {...conform.input(fields.duration)}
             />
             <TextInput
               w="50%"
-              label="Pause efter behandling?"
+              label="Pause efter behandling:"
+              rightSection="min"
               {...conform.input(fields.breakTime)}
             />
           </Flex>

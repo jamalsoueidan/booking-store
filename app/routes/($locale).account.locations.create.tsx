@@ -1,4 +1,4 @@
-import {Form, Link, useActionData} from '@remix-run/react';
+import {Form, Link, useActionData, useLoaderData} from '@remix-run/react';
 import {
   json,
   redirect,
@@ -32,7 +32,18 @@ export async function loader({context}: LoaderFunctionArgs) {
   if (!customerAccessToken) {
     return redirect('/account/login');
   }
-  return json({});
+  return json({
+    name: '',
+    locationType: 'origin',
+    fullAddress: '',
+    originType: 'home',
+    distanceHourlyRate: 500,
+    fixedRatePerKm: 20,
+    distanceForFree: 4,
+    minDriveDistance: 0,
+    maxDriveDistance: 300,
+    startFee: 0,
+  });
 }
 
 export const action = async ({request, context}: ActionFunctionArgs) => {
@@ -59,25 +70,23 @@ export const action = async ({request, context}: ActionFunctionArgs) => {
 
 export default function Component() {
   const lastSubmission = useActionData<typeof action>();
+  const defaultValue = useLoaderData<typeof loader>();
 
   const [form, fields] = useForm({
     lastSubmission,
-    defaultValue: {
-      name: '',
-      locationType: 'origin',
-      fullAddress: '',
-      originType: 'home',
-      distanceHourlyRate: 500,
-      fixedRatePerKm: 20,
-      distanceForFree: 4,
-      minDriveDistance: 0,
-      maxDriveDistance: 300,
-      startFee: 0,
-    },
+    defaultValue,
   });
 
   const [locationType, setLocationType] = useState(
     fields.locationType.defaultValue,
+  );
+
+  console.log(
+    lastSubmission,
+    ':',
+    fields.name,
+    ':',
+    conform.input(fields.name),
   );
 
   return (
@@ -115,11 +124,14 @@ export default function Component() {
               },
             ]}
           />
+
           <TextInput
             label="Navn"
             placeholder="BySisters"
+            error={fields.name.error}
             {...conform.input(fields.name)}
           />
+
           <AddressAutocompleteInput
             label={
               locationType === 'destination'
@@ -127,9 +139,12 @@ export default function Component() {
                 : 'Hvor skal kunden køre til?'
             }
             placeholder="Sigridsvej 45, 8220 Brabrand"
+            error={fields.fullAddress.error}
             {...conform.input(fields.fullAddress)}
           />
+
           <input type="hidden" {...conform.input(fields.originType)} />
+
           {locationType === 'destination' ? (
             <>
               <TextInput

@@ -654,12 +654,14 @@ export const customerProductUpsertBody = zod.object({
     value: zod.number(),
     unit: zod.enum(['weeks', 'months']),
   }),
-  locations: zod.array(
-    zod.object({
-      location: zod.string(),
-      locationType: zod.enum(['origin', 'destination']),
-    }),
-  ),
+  locations: zod
+    .array(
+      zod.object({
+        location: zod.string(),
+        locationType: zod.enum(['origin', 'destination']),
+      }),
+    )
+    .min(1, 'At least one location must be provided.'),
 });
 
 export const customerProductUpsertResponse = zod.object({

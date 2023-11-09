@@ -5,17 +5,15 @@ import {type AccountServicesProductsQuery} from 'storefrontapi.generated';
 import {parseGid} from '@shopify/hydrogen';
 import {RadioGroup} from './RadioGroup';
 
-interface RadioVariantsProductProps {
+interface RadioRadioVariantsProductProps {
   label: string;
   product: AccountServicesProductsQuery['products']['nodes'][0];
   field: FieldConfig<string>;
 }
 
-export const RadioVariantsProduct: React.FC<RadioVariantsProductProps> = ({
-  product,
-  label,
-  field,
-}: RadioVariantsProductProps) => {
+export const RadioGroupVariantsProduct: React.FC<
+  RadioRadioVariantsProductProps
+> = ({product, label, field}: RadioRadioVariantsProductProps) => {
   const data = product?.variants.nodes
     .sort((a, b) => parseFloat(a.price.amount) - parseFloat(b.price.amount))
     .map((variant) => ({

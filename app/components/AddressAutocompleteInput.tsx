@@ -4,15 +4,19 @@ import {useFetcher} from '@remix-run/react';
 import {useEffect, useState} from 'react';
 import {type ApiAutoCompleteProposal} from '~/routes/($locale).api.autocomplete';
 
+export type AddressAutocompleteInputProps = {
+  label: string;
+  placeholder: string;
+  error: string;
+} & ReturnType<typeof conform.input>;
+
 export function AddressAutocompleteInput({
   label,
   placeholder,
   defaultValue,
+  error,
   ...config
-}: {
-  label: string;
-  placeholder: string;
-} & ReturnType<typeof conform.input>) {
+}: AddressAutocompleteInputProps) {
   const fetcher = useFetcher<Array<ApiAutoCompleteProposal>>();
   const [query, setQuery] = useState({
     q: '',
@@ -90,6 +94,7 @@ export function AddressAutocompleteInput({
           label={label} // Hvor vil du kører fra? Hvor skal kunden køre til?
           value={value}
           placeholder={placeholder}
+          error={error}
           {...config}
           onChange={(event) => {
             setValue(event.currentTarget.value);
