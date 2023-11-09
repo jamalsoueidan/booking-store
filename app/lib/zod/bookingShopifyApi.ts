@@ -1392,12 +1392,12 @@ export const customerLocationUpdateBody = zod.object({
   name: zod.string().optional(),
   fullAddress: zod.string().optional(),
   originType: zod.enum(['home', 'commercial']).optional(),
-  distanceForFree: zod.number().or(zod.string()).optional(),
-  distanceHourlyRate: zod.number().or(zod.string()).optional(),
-  fixedRatePerKm: zod.number().or(zod.string()).optional(),
-  minDriveDistance: zod.number().or(zod.string()).optional(),
-  maxDriveDistance: zod.number().or(zod.string()).optional(),
-  startFee: zod.number().or(zod.string()).optional(),
+  distanceForFree: zod.number(),
+  distanceHourlyRate: zod.number(),
+  fixedRatePerKm: zod.number(),
+  minDriveDistance: zod.number(),
+  maxDriveDistance: zod.number(),
+  startFee: zod.number(),
 });
 
 export const customerLocationUpdateResponse = zod.object({

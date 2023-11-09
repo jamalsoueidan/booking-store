@@ -27,6 +27,8 @@ import {RadioGroup} from '~/components/form/RadioGroup';
 import {SubmitButton} from '~/components/form/SubmitButton';
 import {getBookingShopifyApi} from '~/lib/api/bookingShopifyApi';
 
+const schema = customerLocationCreateBody;
+
 export async function loader({context}: LoaderFunctionArgs) {
   const customerAccessToken = await context.session.get('customerAccessToken');
   if (!customerAccessToken) {
@@ -50,7 +52,7 @@ export const action = async ({request, context}: ActionFunctionArgs) => {
   const customer = await getCustomer({context});
 
   const formData = await request.formData();
-  const submission = parse(formData, {schema: customerLocationCreateBody});
+  const submission = parse(formData, {schema});
 
   if (submission.intent !== 'submit' || !submission.value) {
     return json(submission);
@@ -75,18 +77,17 @@ export default function Component() {
   const [form, fields] = useForm({
     lastSubmission,
     defaultValue,
+    onValidate({formData}) {
+      return parse(formData, {
+        schema,
+      });
+    },
+    shouldValidate: 'onSubmit',
+    shouldRevalidate: 'onInput',
   });
 
   const [locationType, setLocationType] = useState(
     fields.locationType.defaultValue,
-  );
-
-  console.log(
-    lastSubmission,
-    ':',
-    fields.name,
-    ':',
-    conform.input(fields.name),
   );
 
   return (

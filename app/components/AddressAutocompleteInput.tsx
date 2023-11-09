@@ -7,7 +7,7 @@ import {type ApiAutoCompleteProposal} from '~/routes/($locale).api.autocomplete'
 export type AddressAutocompleteInputProps = {
   label: string;
   placeholder: string;
-  error: string;
+  error?: string;
 } & ReturnType<typeof conform.input>;
 
 export function AddressAutocompleteInput({

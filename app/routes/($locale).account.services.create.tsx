@@ -137,7 +137,8 @@ export default function AccountServicesCreate() {
         schema,
       });
     },
-    shouldValidate: 'onInput',
+    shouldValidate: 'onSubmit',
+    shouldRevalidate: 'onInput',
   });
 
   const selectServices = storeProducts.nodes.map((product) => ({

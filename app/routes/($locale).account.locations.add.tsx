@@ -20,7 +20,6 @@ import {SubmitButton} from '~/components/form/SubmitButton';
 export const action = async ({request, context}: ActionFunctionArgs) => {
   const customer = await getCustomer({context});
 
-  console.log(customer.id);
   const formData = await request.formData();
   const submission = parse(formData, {
     schema: customerLocationAddParams.pick({locationId: true}),

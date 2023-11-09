@@ -16,6 +16,7 @@ import {
   ActionIcon,
   Divider,
   Flex,
+  NumberInput,
   Stack,
   TextInput,
   Title,
@@ -25,6 +26,8 @@ import {IconArrowLeft} from '@tabler/icons-react';
 import {AddressAutocompleteInput} from '~/components/AddressAutocompleteInput';
 import {SubmitButton} from '~/components/form/SubmitButton';
 
+const schema = customerLocationUpdateBody;
+
 export const action = async ({
   request,
   context,
@@ -33,7 +36,7 @@ export const action = async ({
   const customer = await getCustomer({context});
 
   const formData = await request.formData();
-  const submission = parse(formData, {schema: customerLocationUpdateBody});
+  const submission = parse(formData, {schema});
 
   if (submission.intent !== 'submit' || !submission.value) {
     return json(submission);
@@ -70,6 +73,13 @@ export default function Component() {
   const [form, fields] = useForm({
     lastSubmission,
     defaultValue: defaultValues,
+    onValidate({formData}) {
+      return parse(formData, {
+        schema,
+      });
+    },
+    shouldValidate: 'onSubmit',
+    shouldRevalidate: 'onInput',
   });
 
   return (
@@ -112,34 +122,58 @@ export default function Component() {
           <input type="hidden" {...conform.input(fields.originType)} />
           {defaultValues.locationType === 'destination' ? (
             <>
-              <TextInput
+              <NumberInput
                 label="Udgifter for turen"
                 {...conform.input(fields.startFee)}
+                type={undefined}
+                allowNegative={false}
+                allowDecimal={false}
+                suffix=" kr"
               />
 
-              <TextInput
+              <NumberInput
                 label="Timepris for kørsel"
                 {...conform.input(fields.distanceHourlyRate)}
+                type={undefined}
+                allowNegative={false}
+                allowDecimal={false}
+                suffix=" kr"
               />
 
-              <TextInput
+              <NumberInput
                 label="Pris pr. kilometer"
                 {...conform.input(fields.fixedRatePerKm)}
+                type={undefined}
+                allowNegative={false}
+                allowDecimal={false}
+                suffix=" kr"
               />
 
-              <TextInput
+              <NumberInput
                 label="Afstanden der køres gratis, inden takstberegningen påbegyndes."
                 {...conform.input(fields.distanceForFree)}
+                type={undefined}
+                allowNegative={false}
+                allowDecimal={false}
+                suffix=" km"
               />
 
-              <TextInput
+              <NumberInput
                 label="Minimum der skal køres for at acceptere en kørselsopgave"
                 {...conform.input(fields.minDriveDistance)}
+                type={undefined}
+                allowNegative={false}
+                allowDecimal={false}
+                suffix=" km"
               />
 
-              <TextInput
+              <NumberInput
                 label="Maximum der køres"
                 {...conform.input(fields.maxDriveDistance)}
+                type={undefined}
+                allowNegative={false}
+                allowDecimal={false}
+                suffix=" km"
               />
             </>
           ) : (
