@@ -3,53 +3,57 @@ import {
   requestIntent,
   useFieldList,
   type FieldConfig,
-  type useForm,
 } from '@conform-to/react';
 import {MultiSelect} from '@mantine/core';
-import React from 'react';
+import React, {useRef} from 'react';
 
 interface MultiTagsProps {
-  form: ReturnType<typeof useForm>[0];
   field: FieldConfig<any>;
   name: string;
   data: {label: string; value: string}[];
   label: string;
   placeholder: string;
-  defaultValue: string[];
 }
 
-// Custom MultiSelect component that integrates with @conform-to/react
 export const MultiTags: React.FC<MultiTagsProps> = ({
-  form,
   field,
   name,
   data,
   label,
   placeholder,
-  defaultValue,
 }) => {
-  const fieldList = useFieldList<Array<string>>(form.ref, field);
+  const ref = useRef<HTMLFieldSetElement>(null);
+  const fieldList = useFieldList<Array<string>>(ref, field);
 
   const handleChange = (value: string[]) => {
-    fieldList.forEach(() => {
-      requestIntent(form.ref.current, list.remove(name, {index: 0}));
+    fieldList.forEach((item, index) => {
+      const exist = value.findIndex((l) => l === item.defaultValue);
+      if (exist === -1) {
+        requestIntent(ref.current?.form, list.remove(name, {index}));
+      }
     });
 
     value.forEach((itemValue, index) => {
-      requestIntent(
-        form.ref.current,
-        list.insert(name, {defaultValue: itemValue, index}),
+      const exist = fieldList.findIndex(
+        (item) => item.defaultValue === itemValue,
       );
+
+      if (exist === -1) {
+        requestIntent(
+          ref.current?.form,
+          list.insert(name, {defaultValue: itemValue, index}),
+        );
+      }
     });
   };
 
   return (
-    <>
+    <fieldset ref={ref}>
       <MultiSelect
         data={data}
         label={label}
         placeholder={placeholder}
-        defaultValue={defaultValue}
+        defaultValue={field.defaultValue}
         onChange={handleChange}
       />
       {/* Render hidden inputs for each selected item */}
@@ -61,6 +65,6 @@ export const MultiTags: React.FC<MultiTagsProps> = ({
           name={item.name}
         />
       ))}
-    </>
+    </fieldset>
   );
 };

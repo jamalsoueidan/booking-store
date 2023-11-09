@@ -9,26 +9,21 @@ import {
 import {getCustomer} from '~/lib/get-customer';
 import {customerLocationCreateBody} from '~/lib/zod/bookingShopifyApi';
 
-import {
-  conform,
-  useForm,
-  useInputEvent,
-  type FieldConfig,
-} from '@conform-to/react';
+import {conform, useForm} from '@conform-to/react';
 import {parse} from '@conform-to/zod';
 import {
   ActionIcon,
   Divider,
   Flex,
-  Radio,
   Stack,
   TextInput,
   Title,
 } from '@mantine/core';
 import {parseGid} from '@shopify/hydrogen';
 import {IconArrowLeft} from '@tabler/icons-react';
-import {useRef, useState} from 'react';
+import {useState} from 'react';
 import {AddressAutocompleteInput} from '~/components/AddressAutocompleteInput';
+import {RadioGroup} from '~/components/form/RadioGroup';
 import {SubmitButton} from '~/components/form/SubmitButton';
 import {getBookingShopifyApi} from '~/lib/api/bookingShopifyApi';
 
@@ -41,8 +36,7 @@ export async function loader({context}: LoaderFunctionArgs) {
 }
 
 export const action = async ({request, context}: ActionFunctionArgs) => {
-  const customerAccessToken = await context.session.get('customerAccessToken');
-  const customer = await getCustomer({context, customerAccessToken});
+  const customer = await getCustomer({context});
 
   const formData = await request.formData();
   const submission = parse(formData, {schema: customerLocationCreateBody});
@@ -105,7 +99,22 @@ export default function Component() {
 
       <Form method="POST" {...form.props}>
         <Stack>
-          <RadioGroup onChange={setLocationType} {...fields.locationType} />
+          <RadioGroup
+            label={'Hvilken type location vil du oprette?'}
+            onChange={setLocationType}
+            field={fields.locationType}
+            data={[
+              {
+                label: 'Opret en fast arbejdslokation.',
+                value: 'origin',
+              },
+              {
+                label:
+                  'Opret en mobil arbejdslokation (Du vil kører til kunden).',
+                value: 'destination',
+              },
+            ]}
+          />
           <TextInput
             label="Navn"
             placeholder="BySisters"
@@ -167,50 +176,6 @@ export default function Component() {
           <SubmitButton>Tilføj</SubmitButton>
         </Stack>
       </Form>
-    </>
-  );
-}
-
-function RadioGroup({
-  onChange,
-  ...config
-}: FieldConfig<string> & {onChange: (value: string) => void}) {
-  const [value, setValue] = useState(config.defaultValue ?? '');
-
-  const shadowInputRef = useRef<HTMLInputElement>(null);
-
-  const control = useInputEvent({
-    ref: shadowInputRef,
-    onReset: () => setValue(config.defaultValue ?? ''),
-  });
-
-  // https://conform.guide/checkbox-and-radio-group
-  return (
-    <>
-      <input
-        ref={shadowInputRef}
-        {...conform.input(config, {hidden: true})}
-        onChange={(e) => setValue(e.target.value)}
-      />
-      <Radio.Group
-        label="Hvilken type location vil du oprette?"
-        value={value}
-        onChange={(value: string) => {
-          control.change(value);
-          onChange(value);
-        }}
-      >
-        <Radio
-          mt="xs"
-          mb="xs"
-          label="Opret en fast arbejdslokation."
-          value="origin"
-        />
-        <Radio
-          label="Opret en mobil arbejdslokation (Du vil kører til kunden)."
-          value="destination"
-        />
-      </Radio.Group>
     </>
   );
 }

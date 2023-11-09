@@ -15,9 +15,7 @@ import {getBookingShopifyApi} from '~/lib/api/bookingShopifyApi';
 import {getCustomer} from '~/lib/get-customer';
 
 export async function loader({context}: LoaderFunctionArgs) {
-  const customerAccessToken = await context.session.get('customerAccessToken');
-
-  const customer = await getCustomer({context, customerAccessToken});
+  const customer = await getCustomer({context});
   const response = await getBookingShopifyApi().customerLocationList(
     customer.id,
   );

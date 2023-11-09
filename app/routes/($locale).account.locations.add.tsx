@@ -18,8 +18,7 @@ import {IconArrowLeft} from '@tabler/icons-react';
 import {SubmitButton} from '~/components/form/SubmitButton';
 
 export const action = async ({request, context}: ActionFunctionArgs) => {
-  const customerAccessToken = await context.session.get('customerAccessToken');
-  const customer = await getCustomer({context, customerAccessToken});
+  const customer = await getCustomer({context});
 
   console.log(customer.id);
   const formData = await request.formData();
@@ -44,8 +43,7 @@ export const action = async ({request, context}: ActionFunctionArgs) => {
 };
 
 export async function loader({context}: LoaderFunctionArgs) {
-  const customerAccessToken = await context.session.get('customerAccessToken');
-  const customer = await getCustomer({context, customerAccessToken});
+  const customer = await getCustomer({context});
 
   const response = await getBookingShopifyApi().customerLocationGetAllOrigins(
     customer.id,

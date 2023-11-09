@@ -17,8 +17,7 @@ import {getCustomer} from '~/lib/get-customer';
 import {customerUpsertBody} from '~/lib/zod/bookingShopifyApi';
 
 export const action = async ({request, context}: ActionFunctionArgs) => {
-  const customerAccessToken = await context.session.get('customerAccessToken');
-  const customer = await getCustomer({context, customerAccessToken});
+  const customer = await getCustomer({context});
 
   const formData = await request.formData();
   const submission = parse(formData, {schema: customerUpsertBody});
@@ -40,8 +39,7 @@ export const action = async ({request, context}: ActionFunctionArgs) => {
 };
 
 export async function loader({context}: LoaderFunctionArgs) {
-  const customerAccessToken = await context.session.get('customerAccessToken');
-  const customer = await getCustomer({context, customerAccessToken});
+  const customer = await getCustomer({context});
 
   const {payload: user} = await getBookingShopifyApi().customerGet(
     parseGid(customer.id).id,
@@ -77,23 +75,19 @@ export default function AccountBusiness() {
       <Form method="POST" {...form.props}>
         <Stack>
           <MultiTags
-            form={form}
             field={professions}
             data={professionOptions}
             name="professions"
             label="Professioner"
             placeholder="Vælg professioner"
-            defaultValue={user.professions}
           />
 
           <MultiTags
-            form={form}
             field={specialties}
             data={specialityOptions}
             name="specialties"
             label="Hvad er dine specialer?"
             placeholder="Vælge special(er)?"
-            defaultValue={user.specialties || []}
           />
 
           <TextInput label="Vælge en profilnavn" {...conform.input(username)} />

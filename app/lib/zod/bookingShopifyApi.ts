@@ -647,11 +647,11 @@ export const customerProductUpsertBody = zod.object({
   duration: zod.string().or(zod.number()),
   breakTime: zod.string().or(zod.number()),
   noticePeriod: zod.object({
-    value: zod.string().or(zod.number()),
+    value: zod.number(),
     unit: zod.enum(['hours', 'days', 'weeks']),
   }),
   bookingPeriod: zod.object({
-    value: zod.string().or(zod.number()),
+    value: zod.number(),
     unit: zod.enum(['weeks', 'months']),
   }),
   locations: zod.array(
