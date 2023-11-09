@@ -18,8 +18,10 @@ import {
   type LoaderFunctionArgs,
 } from '@shopify/remix-oxygen';
 import {IconArrowLeft} from '@tabler/icons-react';
+import {useState} from 'react';
 import {z} from 'zod';
 import PeriodInput from '~/components/form/PeriodInput';
+import {RadioVariantsProduct} from '~/components/form/RadioVariantProducts';
 
 import {SubmitButton} from '~/components/form/SubmitButton';
 import {SwitchGroupLocations} from '~/components/form/SwitchGroupLocations';
@@ -117,11 +119,12 @@ export async function loader({context}: LoaderFunctionArgs) {
   });
 }
 
-export default function EditAddress() {
+export default function AccountServicesCreate() {
   const {locations, storeProducts, defaultValues, schedules} =
     useLoaderData<typeof loader>();
 
   const lastSubmission = useActionData<typeof action>();
+  const [productId, setProductId] = useState<string | null>(null);
 
   const [form, fields] = useForm({
     lastSubmission,
@@ -137,6 +140,10 @@ export default function EditAddress() {
     value: schedule._id,
     label: schedule.name,
   }));
+
+  const selectedProduct = storeProducts.nodes.find(
+    (p) => parseGid(p.id).id === productId,
+  );
 
   return (
     <>
@@ -158,11 +165,20 @@ export default function EditAddress() {
       <Form method="post" {...form.props}>
         <Stack>
           <Select
-            label="Vælg ydelse"
+            label="Hvilken ydelse vil du tilbyde?"
+            placeholder="Vælg ydelse"
             data={selectServices}
+            onChange={setProductId}
             {...conform.select(fields.productId)}
             defaultValue={''}
           />
+          {selectedProduct && (
+            <RadioVariantsProduct
+              label="Hvad skal ydelsen koste?"
+              product={selectedProduct}
+              field={fields.variantId}
+            />
+          )}
 
           <SwitchGroupLocations
             label="Vælge lokation(er):"
@@ -217,7 +233,7 @@ export default function EditAddress() {
 
 const ALL_PRODUCTS_QUERY = `#graphql
   ${PRODUCT_SIMPLE}
-  query AllAccountCreateProducts(
+  query AllAccountServicesProducts(
     $country: CountryCode
     $language: LanguageCode
     $first: Int

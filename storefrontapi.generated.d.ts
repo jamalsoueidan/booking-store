@@ -774,14 +774,14 @@ export type AccountServicesProductsQuery = {
   };
 };
 
-export type AllAccountCreateProductsQueryVariables = StorefrontAPI.Exact<{
+export type AllAccountServicesProductsQueryVariables = StorefrontAPI.Exact<{
   country?: StorefrontAPI.InputMaybe<StorefrontAPI.CountryCode>;
   language?: StorefrontAPI.InputMaybe<StorefrontAPI.LanguageCode>;
   first?: StorefrontAPI.InputMaybe<StorefrontAPI.Scalars['Int']['input']>;
   query?: StorefrontAPI.InputMaybe<StorefrontAPI.Scalars['String']['input']>;
 }>;
 
-export type AllAccountCreateProductsQuery = {
+export type AllAccountServicesProductsQuery = {
   products: {
     nodes: Array<
       Pick<StorefrontAPI.Product, 'id' | 'title' | 'handle' | 'publishedAt'> & {
@@ -1913,9 +1913,9 @@ interface GeneratedQueryTypes {
     return: AccountServicesProductsQuery;
     variables: AccountServicesProductsQueryVariables;
   };
-  '#graphql\n  #graphql\n  fragment ProductSimple on Product {\n    id\n    title\n    handle\n    publishedAt\n    variants(first: 10) {\n      nodes {\n        id\n        image {\n          url\n          altText\n          width\n          height\n        }\n        price {\n          amount\n          currencyCode\n        }\n      }\n    }\n  }\n\n  query AllAccountCreateProducts(\n    $country: CountryCode\n    $language: LanguageCode\n    $first: Int\n    $query: String\n  ) @inContext(country: $country, language: $language) {\n    products(first: $first, query: $query) {\n      nodes {\n        ...ProductSimple\n      }\n    }\n  }\n': {
-    return: AllAccountCreateProductsQuery;
-    variables: AllAccountCreateProductsQueryVariables;
+  '#graphql\n  #graphql\n  fragment ProductSimple on Product {\n    id\n    title\n    handle\n    publishedAt\n    variants(first: 10) {\n      nodes {\n        id\n        image {\n          url\n          altText\n          width\n          height\n        }\n        price {\n          amount\n          currencyCode\n        }\n      }\n    }\n  }\n\n  query AllAccountServicesProducts(\n    $country: CountryCode\n    $language: LanguageCode\n    $first: Int\n    $query: String\n  ) @inContext(country: $country, language: $language) {\n    products(first: $first, query: $query) {\n      nodes {\n        ...ProductSimple\n      }\n    }\n  }\n': {
+    return: AllAccountServicesProductsQuery;
+    variables: AllAccountServicesProductsQueryVariables;
   };
   '#graphql\n  query Customer(\n    $customerAccessToken: String!\n    $country: CountryCode\n    $language: LanguageCode\n  ) @inContext(country: $country, language: $language) {\n    customer(customerAccessToken: $customerAccessToken) {\n      ...Customer\n    }\n  }\n  #graphql\n  fragment Customer on Customer {\n    acceptsMarketing\n    addresses(first: 6) {\n      nodes {\n        ...Address\n      }\n    }\n    defaultAddress {\n      ...Address\n    }\n    email\n    firstName\n    lastName\n    numberOfOrders\n    phone\n  }\n  fragment Address on MailingAddress {\n    id\n    formatted\n    firstName\n    lastName\n    company\n    address1\n    address2\n    country\n    province\n    city\n    zip\n    phone\n  }\n\n': {
     return: CustomerQuery;

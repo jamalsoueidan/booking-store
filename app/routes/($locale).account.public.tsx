@@ -75,23 +75,19 @@ export default function AccountBusiness() {
       <Form method="POST" {...form.props}>
         <Stack>
           <MultiTags
-            form={form}
             field={professions}
             data={professionOptions}
             name="professions"
             label="Professioner"
             placeholder="Vælg professioner"
-            defaultValue={user.professions}
           />
 
           <MultiTags
-            form={form}
             field={specialties}
             data={specialityOptions}
             name="specialties"
             label="Hvad er dine specialer?"
             placeholder="Vælge special(er)?"
-            defaultValue={user.specialties || []}
           />
 
           <TextInput label="Vælge en profilnavn" {...conform.input(username)} />
