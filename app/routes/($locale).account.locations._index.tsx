@@ -55,7 +55,7 @@ export default function AccountLocationsIndex() {
 
                 <Form
                   method="post"
-                  action={`${d._id}/remove`}
+                  action={`${d._id}/destroy`}
                   style={{display: 'inline-block'}}
                 >
                   <Button

@@ -10,6 +10,5 @@ export const action: ActionFunction = async ({context, params}) => {
     params.locationId || '',
   );
 
-  const url = params.locale ? `${params.locale}/account` : '/account';
-  return redirect(`${url}/locations`);
+  return redirect(`/accounts/locations`);
 };

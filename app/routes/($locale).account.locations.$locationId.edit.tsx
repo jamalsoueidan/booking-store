@@ -67,12 +67,12 @@ export async function loader({context, params}: LoaderFunctionArgs) {
 }
 
 export default function Component() {
-  const defaultValues = useLoaderData<typeof loader>();
+  const defaultValue = useLoaderData<typeof loader>();
   const lastSubmission = useActionData<typeof action>();
 
   const [form, fields] = useForm({
     lastSubmission,
-    defaultValue: defaultValues,
+    defaultValue,
     onValidate({formData}) {
       return parse(formData, {
         schema,
@@ -96,7 +96,7 @@ export default function Component() {
           </ActionIcon>
         </Link>
         <Title>
-          {defaultValues.originType === 'commercial'
+          {defaultValue.originType === 'commercial'
             ? 'Redigere butik lokation'
             : 'Redigere hjemme lokation'}
         </Title>
@@ -112,7 +112,7 @@ export default function Component() {
           />
           <AddressAutocompleteInput
             label={
-              defaultValues.locationType === 'destination'
+              defaultValue.locationType === 'destination'
                 ? 'Hvor vil du kører fra?'
                 : 'Hvor skal kunden køre til?'
             }
@@ -120,7 +120,7 @@ export default function Component() {
             {...conform.input(fields.fullAddress)}
           />
           <input type="hidden" {...conform.input(fields.originType)} />
-          {defaultValues.locationType === 'destination' ? (
+          {defaultValue.locationType === 'destination' ? (
             <>
               <NumberInput
                 label="Udgifter for turen"

@@ -98,7 +98,7 @@ export async function loader({context}: LoaderFunctionArgs) {
     locations: locations.payload,
     storeProducts: data.products,
     schedules: schedule.payload,
-    defaultValues: {
+    defaultValue: {
       productId: '',
       variantId: '',
       scheduleId: schedule.payload[0]._id,
@@ -123,7 +123,7 @@ export async function loader({context}: LoaderFunctionArgs) {
 }
 
 export default function AccountServicesCreate() {
-  const {locations, storeProducts, defaultValues, schedules} =
+  const {locations, storeProducts, defaultValue, schedules} =
     useLoaderData<typeof loader>();
 
   const lastSubmission = useActionData<typeof action>();
@@ -131,7 +131,7 @@ export default function AccountServicesCreate() {
 
   const [form, fields] = useForm({
     lastSubmission,
-    defaultValue: defaultValues,
+    defaultValue,
     onValidate({formData}) {
       return parse(formData, {
         schema,

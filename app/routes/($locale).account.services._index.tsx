@@ -1,5 +1,14 @@
-import {Button, Card, Divider, Grid, Group, Text, Title} from '@mantine/core';
-import {Link, useLoaderData} from '@remix-run/react';
+import {
+  Button,
+  Card,
+  Divider,
+  Grid,
+  Group,
+  SimpleGrid,
+  Text,
+  Title,
+} from '@mantine/core';
+import {Form, Link, useLoaderData} from '@remix-run/react';
 import {Money, parseGid} from '@shopify/hydrogen';
 import {type ProductConnection} from '@shopify/hydrogen/storefront-api-types';
 import {json, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
@@ -64,9 +73,27 @@ export default function AccountServicesIndex() {
 
                 <Money withoutTrailingZeros data={variant!.price} as="span" />
 
-                <Button component={Link} to={`${parseGid(product.id)}`}>
-                  Rediger
-                </Button>
+                <SimpleGrid cols={2} verticalSpacing="xs" mt="lg">
+                  <Button component={Link} to={`${parseGid(product.id).id}`}>
+                    Rediger
+                  </Button>
+
+                  <Form
+                    method="post"
+                    action={`${parseGid(product.id).id}/destroy`}
+                    style={{display: 'inline-block'}}
+                  >
+                    <Button
+                      variant="light"
+                      color="blue"
+                      fullWidth
+                      size="xs"
+                      type="submit"
+                    >
+                      Slet
+                    </Button>
+                  </Form>
+                </SimpleGrid>
               </Card>
             </Grid.Col>
           );
