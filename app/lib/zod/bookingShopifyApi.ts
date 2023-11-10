@@ -4,7 +4,7 @@
  * Booking Shopify Api
  * OpenAPI spec version: 1.0.0
  */
-import { z as zod } from 'zod';
+import {z as zod} from 'zod';
 
 /**
  * This endpoint gets user object
@@ -87,9 +87,9 @@ export const userGetResponse = zod.object({
                 distanceForFree: zod.number(),
                 distanceHourlyRate: zod.number(),
                 fixedRatePerKm: zod.number(),
-                minDriveDistance: zod.number().or(zod.string()),
-                maxDriveDistance: zod.number().or(zod.string()),
-                startFee: zod.number().or(zod.string()).optional(),
+                minDriveDistance: zod.number(),
+                maxDriveDistance: zod.number(),
+                startFee: zod.number(),
               }),
             ),
           }),
@@ -149,9 +149,9 @@ export const userScheduleGetResponse = zod.object({
           distanceForFree: zod.number(),
           distanceHourlyRate: zod.number(),
           fixedRatePerKm: zod.number(),
-          minDriveDistance: zod.number().or(zod.string()),
-          maxDriveDistance: zod.number().or(zod.string()),
-          startFee: zod.number().or(zod.string()).optional(),
+          minDriveDistance: zod.number(),
+          maxDriveDistance: zod.number(),
+          startFee: zod.number(),
         }),
       ),
     })
@@ -163,14 +163,14 @@ export const userScheduleGetResponse = zod.object({
               productId: zod.number(),
               variantId: zod.number(),
               description: zod.string().optional(),
-              duration: zod.string().or(zod.number()),
-              breakTime: zod.string().or(zod.number()),
+              duration: zod.number(),
+              breakTime: zod.number(),
               noticePeriod: zod.object({
-                value: zod.string().or(zod.number()),
+                value: zod.number(),
                 unit: zod.enum(['hours', 'days', 'weeks']),
               }),
               bookingPeriod: zod.object({
-                value: zod.string().or(zod.number()),
+                value: zod.number(),
                 unit: zod.enum(['weeks', 'months']),
               }),
             })
@@ -191,9 +191,9 @@ export const userScheduleGetResponse = zod.object({
                     distanceForFree: zod.number(),
                     distanceHourlyRate: zod.number(),
                     fixedRatePerKm: zod.number(),
-                    minDriveDistance: zod.number().or(zod.string()),
-                    maxDriveDistance: zod.number().or(zod.string()),
-                    startFee: zod.number().or(zod.string()).optional(),
+                    minDriveDistance: zod.number(),
+                    maxDriveDistance: zod.number(),
+                    startFee: zod.number(),
                   }),
                 ),
               }),
@@ -272,7 +272,7 @@ export const customerUpsertBody = zod.object({
   professions: zod.array(zod.string()).or(zod.string()),
   specialties: zod.array(zod.string()).or(zod.string()),
   username: zod.string().regex(customerUpsertBodyUsernameRegExp),
-  aboutMe: zod.string().min(4),
+  aboutMe: zod.string(),
   shortDescription: zod.string(),
   social: zod
     .object({
@@ -491,14 +491,14 @@ export const customerProductsListResponse = zod.object({
         productId: zod.number(),
         variantId: zod.number(),
         description: zod.string().optional(),
-        duration: zod.string().or(zod.number()),
-        breakTime: zod.string().or(zod.number()),
+        duration: zod.number(),
+        breakTime: zod.number(),
         noticePeriod: zod.object({
-          value: zod.string().or(zod.number()),
+          value: zod.number(),
           unit: zod.enum(['hours', 'days', 'weeks']),
         }),
         bookingPeriod: zod.object({
-          value: zod.string().or(zod.number()),
+          value: zod.number(),
           unit: zod.enum(['weeks', 'months']),
         }),
       })
@@ -608,14 +608,14 @@ export const customerProductGetResponse = zod.object({
       productId: zod.number(),
       variantId: zod.number(),
       description: zod.string().optional(),
-      duration: zod.string().or(zod.number()),
-      breakTime: zod.string().or(zod.number()),
+      duration: zod.number(),
+      breakTime: zod.number(),
       noticePeriod: zod.object({
-        value: zod.string().or(zod.number()),
+        value: zod.number(),
         unit: zod.enum(['hours', 'days', 'weeks']),
       }),
       bookingPeriod: zod.object({
-        value: zod.string().or(zod.number()),
+        value: zod.number(),
         unit: zod.enum(['weeks', 'months']),
       }),
     })
@@ -643,9 +643,9 @@ export const customerProductGetResponse = zod.object({
  */
 export const customerProductUpsertBody = zod.object({
   scheduleId: zod.string(),
-  variantId: zod.string().or(zod.number()),
-  duration: zod.string().or(zod.number()),
-  breakTime: zod.string().or(zod.number()),
+  variantId: zod.number(),
+  duration: zod.number(),
+  breakTime: zod.number(),
   noticePeriod: zod.object({
     value: zod.number(),
     unit: zod.enum(['hours', 'days', 'weeks']),
@@ -654,14 +654,12 @@ export const customerProductUpsertBody = zod.object({
     value: zod.number(),
     unit: zod.enum(['weeks', 'months']),
   }),
-  locations: zod
-    .array(
-      zod.object({
-        location: zod.string(),
-        locationType: zod.enum(['origin', 'destination']),
-      }),
-    )
-    .min(1, 'At least one location must be provided.'),
+  locations: zod.array(
+    zod.object({
+      location: zod.string(),
+      locationType: zod.enum(['origin', 'destination']),
+    }),
+  ),
 });
 
 export const customerProductUpsertResponse = zod.object({
@@ -671,14 +669,14 @@ export const customerProductUpsertResponse = zod.object({
       productId: zod.number(),
       variantId: zod.number(),
       description: zod.string().optional(),
-      duration: zod.string().or(zod.number()),
-      breakTime: zod.string().or(zod.number()),
+      duration: zod.number(),
+      breakTime: zod.number(),
       noticePeriod: zod.object({
-        value: zod.string().or(zod.number()),
+        value: zod.number(),
         unit: zod.enum(['hours', 'days', 'weeks']),
       }),
       bookingPeriod: zod.object({
-        value: zod.string().or(zod.number()),
+        value: zod.number(),
         unit: zod.enum(['weeks', 'months']),
       }),
     })
@@ -861,14 +859,14 @@ export const customerScheduleCreateResponse = zod.object({
           productId: zod.number(),
           variantId: zod.number(),
           description: zod.string().optional(),
-          duration: zod.string().or(zod.number()),
-          breakTime: zod.string().or(zod.number()),
+          duration: zod.number(),
+          breakTime: zod.number(),
           noticePeriod: zod.object({
-            value: zod.string().or(zod.number()),
+            value: zod.number(),
             unit: zod.enum(['hours', 'days', 'weeks']),
           }),
           bookingPeriod: zod.object({
-            value: zod.string().or(zod.number()),
+            value: zod.number(),
             unit: zod.enum(['weeks', 'months']),
           }),
         })
@@ -922,14 +920,14 @@ export const customerScheduleListResponse = zod.object({
             productId: zod.number(),
             variantId: zod.number(),
             description: zod.string().optional(),
-            duration: zod.string().or(zod.number()),
-            breakTime: zod.string().or(zod.number()),
+            duration: zod.number(),
+            breakTime: zod.number(),
             noticePeriod: zod.object({
-              value: zod.string().or(zod.number()),
+              value: zod.number(),
               unit: zod.enum(['hours', 'days', 'weeks']),
             }),
             bookingPeriod: zod.object({
-              value: zod.string().or(zod.number()),
+              value: zod.number(),
               unit: zod.enum(['weeks', 'months']),
             }),
           })
@@ -983,14 +981,14 @@ export const customerScheduleGetResponse = zod.object({
           productId: zod.number(),
           variantId: zod.number(),
           description: zod.string().optional(),
-          duration: zod.string().or(zod.number()),
-          breakTime: zod.string().or(zod.number()),
+          duration: zod.number(),
+          breakTime: zod.number(),
           noticePeriod: zod.object({
-            value: zod.string().or(zod.number()),
+            value: zod.number(),
             unit: zod.enum(['hours', 'days', 'weeks']),
           }),
           bookingPeriod: zod.object({
-            value: zod.string().or(zod.number()),
+            value: zod.number(),
             unit: zod.enum(['weeks', 'months']),
           }),
         })
@@ -1047,14 +1045,14 @@ export const customerScheduleUpdateResponse = zod.object({
           productId: zod.number(),
           variantId: zod.number(),
           description: zod.string().optional(),
-          duration: zod.string().or(zod.number()),
-          breakTime: zod.string().or(zod.number()),
+          duration: zod.number(),
+          breakTime: zod.number(),
           noticePeriod: zod.object({
-            value: zod.string().or(zod.number()),
+            value: zod.number(),
             unit: zod.enum(['hours', 'days', 'weeks']),
           }),
           bookingPeriod: zod.object({
-            value: zod.string().or(zod.number()),
+            value: zod.number(),
             unit: zod.enum(['weeks', 'months']),
           }),
         })
@@ -1088,6 +1086,28 @@ export const customerScheduleDestroyResponse = zod.object({
  * This endpoint update schedule slot
  * @summary PUT Update schedule slot
  */
+export const customerScheduleSlotUpdateBody = zod.object({
+  slots: zod.array(
+    zod.object({
+      day: zod.enum([
+        'monday',
+        'tuesday',
+        'wednesday',
+        'thursday',
+        'friday',
+        'saturday',
+        'sunday',
+      ]),
+      intervals: zod.array(
+        zod.object({
+          from: zod.string(),
+          to: zod.string(),
+        }),
+      ),
+    }),
+  ),
+});
+
 export const customerScheduleSlotUpdateResponse = zod.object({
   success: zod.boolean(),
   payload: zod.object({
@@ -1119,14 +1139,14 @@ export const customerScheduleSlotUpdateResponse = zod.object({
           productId: zod.number(),
           variantId: zod.number(),
           description: zod.string().optional(),
-          duration: zod.string().or(zod.number()),
-          breakTime: zod.string().or(zod.number()),
+          duration: zod.number(),
+          breakTime: zod.number(),
           noticePeriod: zod.object({
-            value: zod.string().or(zod.number()),
+            value: zod.number(),
             unit: zod.enum(['hours', 'days', 'weeks']),
           }),
           bookingPeriod: zod.object({
-            value: zod.string().or(zod.number()),
+            value: zod.number(),
             unit: zod.enum(['weeks', 'months']),
           }),
         })
@@ -1197,9 +1217,9 @@ export const customerLocationGetAllOriginsResponse = zod.object({
       distanceForFree: zod.number(),
       distanceHourlyRate: zod.number(),
       fixedRatePerKm: zod.number(),
-      minDriveDistance: zod.number().or(zod.string()),
-      maxDriveDistance: zod.number().or(zod.string()),
-      startFee: zod.number().or(zod.string()).optional(),
+      minDriveDistance: zod.number(),
+      maxDriveDistance: zod.number(),
+      startFee: zod.number(),
     }),
   ),
 });
@@ -1276,9 +1296,9 @@ export const customerLocationGetResponse = zod.object({
       distanceForFree: zod.number(),
       distanceHourlyRate: zod.number(),
       fixedRatePerKm: zod.number(),
-      minDriveDistance: zod.number().or(zod.string()),
-      maxDriveDistance: zod.number().or(zod.string()),
-      startFee: zod.number().or(zod.string()).optional(),
+      minDriveDistance: zod.number(),
+      maxDriveDistance: zod.number(),
+      startFee: zod.number(),
     })
     .and(
       zod.object({
@@ -1389,9 +1409,9 @@ export const customerLocationUpdateParams = zod.object({
 });
 
 export const customerLocationUpdateBody = zod.object({
-  name: zod.string().optional(),
-  fullAddress: zod.string().optional(),
-  originType: zod.enum(['home', 'commercial']).optional(),
+  name: zod.string(),
+  fullAddress: zod.string(),
+  originType: zod.enum(['home', 'commercial']),
   distanceForFree: zod.number(),
   distanceHourlyRate: zod.number(),
   fixedRatePerKm: zod.number(),
@@ -1416,9 +1436,9 @@ export const customerLocationUpdateResponse = zod.object({
     distanceForFree: zod.number(),
     distanceHourlyRate: zod.number(),
     fixedRatePerKm: zod.number(),
-    minDriveDistance: zod.number().or(zod.string()),
-    maxDriveDistance: zod.number().or(zod.string()),
-    startFee: zod.number().or(zod.string()).optional(),
+    minDriveDistance: zod.number(),
+    maxDriveDistance: zod.number(),
+    startFee: zod.number(),
   }),
 });
 
@@ -1434,12 +1454,12 @@ export const customerLocationCreateBody = zod.object({
   name: zod.string(),
   fullAddress: zod.string(),
   originType: zod.enum(['home', 'commercial']),
-  distanceForFree: zod.number().or(zod.string()),
-  distanceHourlyRate: zod.number().or(zod.string()),
-  fixedRatePerKm: zod.number().or(zod.string()),
-  minDriveDistance: zod.number().or(zod.string()),
-  maxDriveDistance: zod.number().or(zod.string()),
-  startFee: zod.number().or(zod.string()).optional(),
+  distanceForFree: zod.number(),
+  distanceHourlyRate: zod.number(),
+  fixedRatePerKm: zod.number(),
+  minDriveDistance: zod.number(),
+  maxDriveDistance: zod.number(),
+  startFee: zod.number(),
   locationType: zod.enum(['origin', 'destination']),
 });
 
@@ -1459,9 +1479,9 @@ export const customerLocationCreateResponse = zod.object({
     distanceForFree: zod.number(),
     distanceHourlyRate: zod.number(),
     fixedRatePerKm: zod.number(),
-    minDriveDistance: zod.number().or(zod.string()),
-    maxDriveDistance: zod.number().or(zod.string()),
-    startFee: zod.number().or(zod.string()).optional(),
+    minDriveDistance: zod.number(),
+    maxDriveDistance: zod.number(),
+    startFee: zod.number(),
   }),
 });
 
@@ -1491,9 +1511,9 @@ export const customerLocationListResponse = zod.object({
         distanceForFree: zod.number(),
         distanceHourlyRate: zod.number(),
         fixedRatePerKm: zod.number(),
-        minDriveDistance: zod.number().or(zod.string()),
-        maxDriveDistance: zod.number().or(zod.string()),
-        startFee: zod.number().or(zod.string()).optional(),
+        minDriveDistance: zod.number(),
+        maxDriveDistance: zod.number(),
+        startFee: zod.number(),
       })
       .and(
         zod.object({
@@ -1595,12 +1615,12 @@ export const shippingCreateResponse = zod.object({
             name: zod.string(),
             fullAddress: zod.string(),
             originType: zod.enum(['home', 'commercial']),
-            distanceForFree: zod.number().or(zod.string()),
-            distanceHourlyRate: zod.number().or(zod.string()),
-            fixedRatePerKm: zod.number().or(zod.string()),
-            minDriveDistance: zod.number().or(zod.string()),
-            maxDriveDistance: zod.number().or(zod.string()),
-            startFee: zod.number().or(zod.string()).optional(),
+            distanceForFree: zod.number(),
+            distanceHourlyRate: zod.number(),
+            fixedRatePerKm: zod.number(),
+            minDriveDistance: zod.number(),
+            maxDriveDistance: zod.number(),
+            startFee: zod.number(),
             locationType: zod.enum(['origin', 'destination']),
           })
           .optional(),

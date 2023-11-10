@@ -11,6 +11,8 @@ import {getBookingShopifyApi} from '~/lib/api/bookingShopifyApi';
 
 import {
   conform,
+  list,
+  requestIntent,
   useFieldList,
   useFieldset,
   useForm,
@@ -24,20 +26,21 @@ import {
   Flex,
   Select,
   SimpleGrid,
+  Stack,
   Table,
   Title,
   rem,
 } from '@mantine/core';
-import {IconArrowLeft, IconPlus} from '@tabler/icons-react';
+import {IconArrowLeft, IconMinus, IconPlus} from '@tabler/icons-react';
 import {addMinutes, format, set} from 'date-fns';
 import {useState} from 'react';
 import {SubmitButton} from '~/components/form/SubmitButton';
-import {CustomerScheduleSlotDay, type CustomerSchedule} from '~/lib/api/model';
+import {CustomerScheduleSlotDay} from '~/lib/api/model';
 import {getCustomer} from '~/lib/get-customer';
-import {customerScheduleSlotUpdateResponse} from '~/lib/zod/bookingShopifyApi';
+import {customerScheduleSlotUpdateBody} from '~/lib/zod/bookingShopifyApi';
 
 // this must be taken from bookingApi, if it doesn't exist, create it in booking-api
-const schema = customerScheduleSlotUpdateResponse.shape.payload;
+const schema = customerScheduleSlotUpdateBody;
 
 export const action = async ({
   request,
@@ -60,7 +63,7 @@ export const action = async ({
     return json(submission);
   }
 
-  const slotsWithIntervals = submission.value.slots.filter(
+  const slots = submission.value.slots.filter(
     ({intervals}) => intervals && intervals.length > 0,
   );
 
@@ -68,7 +71,7 @@ export const action = async ({
     const response = await getBookingShopifyApi().customerScheduleSlotUpdate(
       customer.id,
       scheduleHandle,
-      slotsWithIntervals as never,
+      {slots},
     );
 
     return redirect(`/account/schedules/${response.payload._id}`);
@@ -104,17 +107,24 @@ export async function loader({context, params}: LoaderFunctionArgs) {
       return days.indexOf(a.day) - days.indexOf(b.day);
     });
 
-  return json<CustomerSchedule>({...response.payload, slots});
+  return json({slots, name: response.payload.name});
 }
 
 export default function AccountSchedules() {
-  const defaultValue = useLoaderData<typeof loader>();
+  const {name, ...defaultValue} = useLoaderData<typeof loader>();
   const lastSubmission = useActionData<typeof action>();
 
   const [form, fields] = useForm({
     lastSubmission,
     defaultValue,
     onValidate({formData}) {
+      console.log(
+        Object.fromEntries(formData),
+        parse(formData, {
+          schema,
+        }),
+      );
+
       return parse(formData, {
         schema,
       });
@@ -138,17 +148,16 @@ export default function AccountSchedules() {
             <IconArrowLeft style={{width: '70%', height: '70%'}} stroke={1.5} />
           </ActionIcon>
         </Link>
-        <Title>Redigere {defaultValue.name} </Title>
+        <Title>Redigere {name} </Title>
       </Flex>
       <Divider my="md" />
 
       <Form method="PUT" {...form.props}>
-        <Table striped highlightOnHover withTableBorder>
+        <Table mb="xs" striped highlightOnHover withTableBorder>
           <Table.Thead>
             <Table.Tr>
               <Table.Th>Dag</Table.Th>
-              <Table.Th w="50%">Tid</Table.Th>
-              <Table.Th w="5%"></Table.Th>
+              <Table.Th w="70%">Tid (fra - til)</Table.Th>
             </Table.Tr>
           </Table.Thead>
           <Table.Tbody>
@@ -176,30 +185,69 @@ function SlotInput({
   const [checked, setChecked] = useState(
     config.defaultValue.intervals.length > 0,
   );
-  const fields = useFieldset<z.infer<typeof slotSchema>>(form.ref, config);
+  const {day, intervals} = useFieldset<z.infer<typeof slotSchema>>(
+    form.ref,
+    config,
+  );
 
-  const intervals = useFieldList(form.ref, fields.intervals);
+  const intervalsList = useFieldList(form.ref, intervals);
+
+  const onChange: React.ChangeEventHandler<HTMLInputElement> = (event) => {
+    const checked = event.currentTarget.checked;
+    setChecked(checked);
+
+    if (checked) {
+      requestIntent(
+        form.ref.current,
+        list.insert(intervals.name, {
+          defaultValue: {from: '', to: ''},
+        }),
+      );
+    } else {
+      intervalsList.forEach((_, index) => {
+        requestIntent(
+          form.ref.current,
+          list.remove(intervals.name, {
+            index,
+          }),
+        );
+      });
+    }
+  };
 
   return (
     <Table.Tr>
-      <Table.Td>
+      <Table.Td valign="top">
         <Checkbox
-          value={fields.day.defaultValue}
-          name={fields.day.name}
+          value={day.defaultValue}
+          name={day.name}
           checked={checked}
-          onChange={(event) => setChecked(event.currentTarget.checked)}
-          label={fields.day.defaultValue}
+          onChange={onChange}
+          label={day.defaultValue}
         />
       </Table.Td>
       <Table.Td>
-        {intervals.map((interval) => (
-          <IntervalInput key={interval.key} config={interval} form={form} />
-        ))}
-      </Table.Td>
-      <Table.Td>
-        <ActionIcon size={34} variant="filled" aria-label="Tilføj tid">
-          <IconPlus style={{width: rem(24), height: rem(24)}} />
-        </ActionIcon>
+        <Stack gap="sm">
+          {intervalsList.length === 0 && <>Ingen tider</>}
+          {intervalsList.map((interval, index) => (
+            <Flex gap="sm" w="100%" key={interval.key}>
+              <IntervalInput config={interval} form={form} />
+              {index > 0 ? (
+                <button {...list.remove(intervals.name, {index})}>
+                  <IconMinus style={{width: rem(24), height: rem(24)}} />
+                </button>
+              ) : (
+                <button
+                  {...list.insert(intervals.name, {
+                    defaultValue: {from: '', to: ''},
+                  })}
+                >
+                  <IconPlus style={{width: rem(24), height: rem(24)}} />
+                </button>
+              )}
+            </Flex>
+          ))}
+        </Stack>
       </Table.Td>
     </Table.Tr>
   );
@@ -222,14 +270,12 @@ function IntervalInput({
         placeholder="Fra"
         data={generateTimeSlots(4, 20, 30)}
         {...conform.select(from)}
-        defaultValue={undefined}
-        value={config.defaultValue.from}
+        defaultValue={config.defaultValue.from}
       />
       <Select
         placeholder="Til"
         {...conform.select(to)}
-        defaultValue={undefined}
-        value={config.defaultValue.to}
+        defaultValue={config.defaultValue.to}
         data={generateTimeSlots(4, 20, 30)}
       />
     </SimpleGrid>

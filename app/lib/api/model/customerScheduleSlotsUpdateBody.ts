@@ -6,4 +6,6 @@
  */
 import type {CustomerScheduleSlot} from './customerScheduleSlot';
 
-export type CustomerScheduleSlotsUpdateBody = CustomerScheduleSlot[];
+export interface CustomerScheduleSlotsUpdateBody {
+  slots: CustomerScheduleSlot[];
+}

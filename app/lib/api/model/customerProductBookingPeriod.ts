@@ -5,9 +5,8 @@
  * OpenAPI spec version: 1.0.0
  */
 import type {CustomerProductBookingUnit} from './customerProductBookingUnit';
-import type {CustomerProductBookingPeriodValue} from './customerProductBookingPeriodValue';
 
 export interface CustomerProductBookingPeriod {
   unit: CustomerProductBookingUnit;
-  value: CustomerProductBookingPeriodValue;
+  value: number;
 }

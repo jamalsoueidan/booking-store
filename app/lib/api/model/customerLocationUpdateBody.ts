@@ -4,22 +4,16 @@
  * Booking Shopify Api
  * OpenAPI spec version: 1.0.0
  */
-import type {CustomerLocationUpdateBodyDistanceForFree} from './customerLocationUpdateBodyDistanceForFree';
-import type {CustomerLocationUpdateBodyDistanceHourlyRate} from './customerLocationUpdateBodyDistanceHourlyRate';
-import type {CustomerLocationUpdateBodyFixedRatePerKm} from './customerLocationUpdateBodyFixedRatePerKm';
-import type {CustomerLocationUpdateBodyMaxDriveDistance} from './customerLocationUpdateBodyMaxDriveDistance';
-import type {CustomerLocationUpdateBodyMinDriveDistance} from './customerLocationUpdateBodyMinDriveDistance';
 import type {CustomerLocationUpdateBodyOriginType} from './customerLocationUpdateBodyOriginType';
-import type {CustomerLocationUpdateBodyStartFee} from './customerLocationUpdateBodyStartFee';
 
 export interface CustomerLocationUpdateBody {
-  distanceForFree?: CustomerLocationUpdateBodyDistanceForFree;
-  distanceHourlyRate?: CustomerLocationUpdateBodyDistanceHourlyRate;
-  fixedRatePerKm?: CustomerLocationUpdateBodyFixedRatePerKm;
-  fullAddress?: string;
-  maxDriveDistance?: CustomerLocationUpdateBodyMaxDriveDistance;
-  minDriveDistance?: CustomerLocationUpdateBodyMinDriveDistance;
-  name?: string;
-  originType?: CustomerLocationUpdateBodyOriginType;
-  startFee?: CustomerLocationUpdateBodyStartFee;
+  distanceForFree: number;
+  distanceHourlyRate: number;
+  fixedRatePerKm: number;
+  fullAddress: string;
+  maxDriveDistance: number;
+  minDriveDistance: number;
+  name: string;
+  originType: CustomerLocationUpdateBodyOriginType;
+  startFee: number;
 }

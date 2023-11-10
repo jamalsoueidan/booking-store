@@ -98,13 +98,9 @@ components:
         description:
           type: string
         duration:
-          oneOf:
-            - type: string
-            - type: number
+          type: number
         breakTime:
-          oneOf:
-            - type: string
-            - type: number
+          type: number
         noticePeriod:
           $ref: '#/components/schemas/CustomerProductNoticePeriod'
         bookingPeriod:
@@ -130,9 +126,7 @@ components:
       type: object
       properties:
         value:
-          oneOf:
-            - type: string
-            - type: number
+          type: number
         unit:
           $ref: '#/components/schemas/CustomerProductBookingUnit'
           default: months
@@ -148,9 +142,7 @@ components:
       type: object
       properties:
         value:
-          oneOf:
-            - type: string
-            - type: number
+          type: number
         unit:
           $ref: '#/components/schemas/CustomerProductNoticeUnit'
           default: hours
@@ -195,17 +187,11 @@ components:
         scheduleId:
           type: string
         variantId:
-          oneOf:
-            - type: string
-            - type: number
+          type: number
         duration:
-          oneOf:
-            - type: string
-            - type: number
+          type: number
         breakTime:
-          oneOf:
-            - type: string
-            - type: number
+          type: number
         noticePeriod:
           $ref: '#/components/schemas/CustomerProductNoticePeriod'
         bookingPeriod:
@@ -401,9 +387,14 @@ components:
         - success
         - payload
     CustomerScheduleSlotsUpdateBody:
-      type: array
-      items:
-        $ref: '#/components/schemas/CustomerScheduleSlot'
+      type: object
+      properties:
+        slots:
+          type: array
+          items:
+            $ref: '#/components/schemas/CustomerScheduleSlot'
+      required:
+        - slots
     CustomerBooking:
       type: object
       properties:
@@ -925,17 +916,11 @@ components:
         fixedRatePerKm:
           type: number
         minDriveDistance:
-          oneOf:
-            - type: number
-            - type: string
+          type: number
         maxDriveDistance:
-          oneOf:
-            - type: number
-            - type: string
+          type: number
         startFee:
-          oneOf:
-            - type: number
-            - type: string
+          type: number
       required:
         - _id
         - locationType
@@ -949,7 +934,7 @@ components:
         - fixedRatePerKm
         - minDriveDistance
         - maxDriveDistance
-        - startFree
+        - startFee
     CustomerLocationIsDefault:
       type: object
       allOf:
@@ -986,29 +971,17 @@ components:
             - home
             - commercial
         distanceForFree:
-          oneOf:
-            - type: number
-            - type: string
+          type: number
         distanceHourlyRate:
-          oneOf:
-            - type: number
-            - type: string
+          type: number
         fixedRatePerKm:
-          oneOf:
-            - type: number
-            - type: string
+          type: number
         minDriveDistance:
-          oneOf:
-            - type: number
-            - type: string
+          type: number
         maxDriveDistance:
-          oneOf:
-            - type: number
-            - type: string
+          type: number
         startFee:
-          oneOf:
-            - type: number
-            - type: string
+          type: number
         locationType:
           type: string
           enum:
@@ -1023,7 +996,7 @@ components:
         - fixedRatePerKm
         - minDriveDistance
         - maxDriveDistance
-        - startFree
+        - startFee
         - locationType
     CustomerLocationCreateResponse:
       type: object
@@ -1073,29 +1046,27 @@ components:
             - home
             - commercial
         distanceForFree:
-          oneOf:
-            - type: number
-            - type: string
+          type: number
         distanceHourlyRate:
-          oneOf:
-            - type: number
-            - type: string
+          type: number
         fixedRatePerKm:
-          oneOf:
-            - type: number
-            - type: string
+          type: number
         minDriveDistance:
-          oneOf:
-            - type: number
-            - type: string
+          type: number
         maxDriveDistance:
-          oneOf:
-            - type: number
-            - type: string
+          type: number
         startFee:
-          oneOf:
-            - type: number
-            - type: string
+          type: number
+      required:
+        - name
+        - fullAddress
+        - originType
+        - distanceForFree
+        - distanceHourlyRate
+        - fixedRatePerKm
+        - minDriveDistance
+        - maxDriveDistance
+        - startFee
     CustomerLocationUpdateResponse:
       type: object
       properties:

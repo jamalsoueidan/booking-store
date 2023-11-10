@@ -5,9 +5,8 @@
  * OpenAPI spec version: 1.0.0
  */
 import type {CustomerProductNoticeUnit} from './customerProductNoticeUnit';
-import type {CustomerProductNoticePeriodValue} from './customerProductNoticePeriodValue';
 
 export interface CustomerProductNoticePeriod {
   unit: CustomerProductNoticeUnit;
-  value: CustomerProductNoticePeriodValue;
+  value: number;
 }

@@ -15,6 +15,7 @@ import {
   ActionIcon,
   Divider,
   Flex,
+  NumberInput,
   Stack,
   TextInput,
   Title,
@@ -148,34 +149,58 @@ export default function Component() {
 
           {locationType === 'destination' ? (
             <>
-              <TextInput
+              <NumberInput
                 label="Udgifter for turen"
                 {...conform.input(fields.startFee)}
+                type={undefined}
+                allowNegative={false}
+                allowDecimal={false}
+                suffix=" kr"
               />
 
-              <TextInput
+              <NumberInput
                 label="Timepris for kørsel"
                 {...conform.input(fields.distanceHourlyRate)}
+                type={undefined}
+                allowNegative={false}
+                allowDecimal={false}
+                suffix=" kr"
               />
 
-              <TextInput
+              <NumberInput
                 label="Pris pr. kilometer"
                 {...conform.input(fields.fixedRatePerKm)}
+                type={undefined}
+                allowNegative={false}
+                allowDecimal={false}
+                suffix=" kr"
               />
 
-              <TextInput
+              <NumberInput
                 label="Afstanden der køres gratis, inden takstberegningen påbegyndes."
                 {...conform.input(fields.distanceForFree)}
+                type={undefined}
+                allowNegative={false}
+                allowDecimal={false}
+                suffix=" km"
               />
 
-              <TextInput
+              <NumberInput
                 label="Minimum der skal køres for at acceptere en kørselsopgave"
                 {...conform.input(fields.minDriveDistance)}
+                type={undefined}
+                allowNegative={false}
+                allowDecimal={false}
+                suffix=" km"
               />
 
-              <TextInput
+              <NumberInput
                 label="Maximum der køres"
                 {...conform.input(fields.maxDriveDistance)}
+                type={undefined}
+                allowNegative={false}
+                allowDecimal={false}
+                suffix=" km"
               />
             </>
           ) : (

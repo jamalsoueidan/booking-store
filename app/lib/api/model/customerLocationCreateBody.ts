@@ -4,24 +4,18 @@
  * Booking Shopify Api
  * OpenAPI spec version: 1.0.0
  */
-import type {CustomerLocationCreateBodyDistanceForFree} from './customerLocationCreateBodyDistanceForFree';
-import type {CustomerLocationCreateBodyDistanceHourlyRate} from './customerLocationCreateBodyDistanceHourlyRate';
-import type {CustomerLocationCreateBodyFixedRatePerKm} from './customerLocationCreateBodyFixedRatePerKm';
 import type {CustomerLocationCreateBodyLocationType} from './customerLocationCreateBodyLocationType';
-import type {CustomerLocationCreateBodyMaxDriveDistance} from './customerLocationCreateBodyMaxDriveDistance';
-import type {CustomerLocationCreateBodyMinDriveDistance} from './customerLocationCreateBodyMinDriveDistance';
 import type {CustomerLocationCreateBodyOriginType} from './customerLocationCreateBodyOriginType';
-import type {CustomerLocationCreateBodyStartFee} from './customerLocationCreateBodyStartFee';
 
 export interface CustomerLocationCreateBody {
-  distanceForFree: CustomerLocationCreateBodyDistanceForFree;
-  distanceHourlyRate: CustomerLocationCreateBodyDistanceHourlyRate;
-  fixedRatePerKm: CustomerLocationCreateBodyFixedRatePerKm;
+  distanceForFree: number;
+  distanceHourlyRate: number;
+  fixedRatePerKm: number;
   fullAddress: string;
   locationType: CustomerLocationCreateBodyLocationType;
-  maxDriveDistance: CustomerLocationCreateBodyMaxDriveDistance;
-  minDriveDistance: CustomerLocationCreateBodyMinDriveDistance;
+  maxDriveDistance: number;
+  minDriveDistance: number;
   name: string;
   originType: CustomerLocationCreateBodyOriginType;
-  startFee?: CustomerLocationCreateBodyStartFee;
+  startFee: number;
 }
