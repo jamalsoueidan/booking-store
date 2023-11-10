@@ -8,7 +8,7 @@ import {MultiSelect} from '@mantine/core';
 import React, {useRef} from 'react';
 
 interface MultiTagsProps {
-  field: FieldConfig<any>;
+  field: FieldConfig<Array<any>>;
   name: string;
   data: {label: string; value: string}[];
   label: string;

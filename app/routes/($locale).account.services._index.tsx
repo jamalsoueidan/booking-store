@@ -47,7 +47,7 @@ export default function AccountServicesIndex() {
 
   return (
     <>
-      <Title>Lokationer</Title>
+      <Title>Ydelser</Title>
       <Group mt="md">
         <Button component={Link} to={'create'} radius="xl" size="md">
           Tilføj ydelse

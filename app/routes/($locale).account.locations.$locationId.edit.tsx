@@ -66,7 +66,7 @@ export async function loader({context, params}: LoaderFunctionArgs) {
   return json(response.payload);
 }
 
-export default function Component() {
+export default function AccountLocationsEdit() {
   const defaultValue = useLoaderData<typeof loader>();
   const lastSubmission = useActionData<typeof action>();
 

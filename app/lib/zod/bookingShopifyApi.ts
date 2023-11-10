@@ -4,7 +4,7 @@
  * Booking Shopify Api
  * OpenAPI spec version: 1.0.0
  */
-import {z as zod} from 'zod';
+import { z as zod } from 'zod';
 
 /**
  * This endpoint gets user object
