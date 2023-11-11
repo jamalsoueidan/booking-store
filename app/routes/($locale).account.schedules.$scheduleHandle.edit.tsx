@@ -14,6 +14,7 @@ import {customerScheduleCreateBody} from '~/lib/zod/bookingShopifyApi';
 
 import {FocusTrap, Stack, TextInput} from '@mantine/core';
 import {SubmitButton} from '~/components/form/SubmitButton';
+import {setNotification} from '~/lib/show-notification';
 
 const schema = customerScheduleCreateBody;
 
@@ -33,7 +34,7 @@ export const action = async ({
   }
 
   try {
-    context.session.set('notify', {
+    setNotification(context, {
       title: 'Vagtplan',
       message: 'Vagtplan navn er opdateret!',
       color: 'green',

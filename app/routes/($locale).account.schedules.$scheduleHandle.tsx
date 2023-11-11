@@ -1,7 +1,6 @@
 import {Form, useActionData, useLoaderData} from '@remix-run/react';
 import {
   json,
-  redirect,
   type ActionFunctionArgs,
   type LoaderFunctionArgs,
 } from '@shopify/remix-oxygen';
@@ -44,6 +43,7 @@ import {useRef, useState} from 'react';
 import {SubmitButton} from '~/components/form/SubmitButton';
 import {CustomerScheduleSlotDay, type CustomerSchedule} from '~/lib/api/model';
 import {getCustomer} from '~/lib/get-customer';
+import {redirectWithNotification} from '~/lib/show-notification';
 import {customerScheduleSlotUpdateBody} from '~/lib/zod/bookingShopifyApi';
 import AccountSchedulesEdit from './($locale).account.schedules.$scheduleHandle.edit';
 
@@ -76,22 +76,17 @@ export const action = async ({
   );
 
   try {
-    context.session.set('notify', {
-      title: 'Vagtplan',
-      message: 'Vagtplan navn er opdateret!',
-      color: 'green',
-    });
-
     const response = await getBookingShopifyApi().customerScheduleSlotUpdate(
       customer.id,
       scheduleHandle,
       {slots},
     );
 
-    return redirect(`/account/schedules/${response.payload._id}`, {
-      headers: {
-        'Set-Cookie': await context.session.commit(),
-      },
+    return redirectWithNotification(context, {
+      redirectUrl: `/account/schedules/${response.payload._id}`,
+      title: 'Vagtplan',
+      message: 'Vagtplan navn er opdateret!',
+      color: 'green',
     });
   } catch (error) {
     return json(submission);

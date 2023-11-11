@@ -2,6 +2,7 @@ import {json, redirect, type ActionFunction} from '@shopify/remix-oxygen';
 
 import {getBookingShopifyApi} from '~/lib/api/bookingShopifyApi';
 import {getCustomer} from '~/lib/get-customer';
+import {setNotification} from '~/lib/show-notification';
 
 export const action: ActionFunction = async ({context, params}) => {
   try {
@@ -9,7 +10,7 @@ export const action: ActionFunction = async ({context, params}) => {
     const customer = await getCustomer({context});
 
     if (scheduleHandle) {
-      context.session.set('notify', {
+      setNotification(context, {
         title: 'Vagtplan',
         message: 'Vagtplanen er slettet!',
         color: 'red',

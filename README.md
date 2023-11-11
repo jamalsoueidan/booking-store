@@ -6,6 +6,48 @@ The main idea of this platform is to gather all beauty professionals on one webs
 
 Beauty professionals can create an account and offer their services through this platform.
 
+## Mantine UI?
+
+I wouldn't recommend using Tailwind for personal projects, as it can be time-consuming to create all the different components from scratch. It's often better to opt for UI libraries like Radix or Chakra. These libraries offer ready-to-use components that only require styling, and they handle accessibility concerns for you.
+
+In my search for a UI library that includes most of the components I need, I discovered Mantine UI. It's an excellent choice, offering a range of features including a theme style, odal manager, notification system, dropdown menus, autocomplete fields, a calendar component, and even app shell for admin dashboard.
+
+## Notifications
+
+Here is how to set and display notification messages:
+
+In an action function, call context.session.set('notify', {message, type}) to set a notification message. For example:
+
+```js
+context.session.set('notify', {
+  title: 'Vagtplan',
+  message: 'Vagtplan navn er opdateret!',
+  color: 'green',
+});
+```
+
+Remember to commit it in the response header.
+
+```js
+return redirect(`/account/schedules/${response.payload._id}`, {
+  headers: {
+    'Set-Cookie': await context.session.commit(),
+  },
+});
+```
+
+In the root.tsx we handle this notify object, we unset the notify everytime the user navigate to a new page, so the notication will only be shown once.
+
+```js
+useEffect(() => {
+  if (data.notify) {
+    notifications.show(data.notify);
+    // for some reason some notifications are published twice!
+    notifications.cleanQueue();
+  }
+}, [data.notify]);
+```
+
 ## What's included
 
 - Remix

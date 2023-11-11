@@ -143,7 +143,7 @@ function BusinessAccount({status}: {status: CustomerStatus}) {
               color={status.services ? 'green' : 'red'}
               radius="xl"
             >
-              {status.locations ? (
+              {status.services ? (
                 <IconCheck size="1.4rem" />
               ) : (
                 <IconX size="1.4rem" />
@@ -165,7 +165,7 @@ function BusinessAccount({status}: {status: CustomerStatus}) {
               color={status.profileImage ? 'green' : 'red'}
               radius="xl"
             >
-              {status.locations ? (
+              {status.profileImage ? (
                 <IconCheck size="1.4rem" />
               ) : (
                 <IconX size="1.4rem" />

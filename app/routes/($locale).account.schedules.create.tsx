@@ -2,10 +2,11 @@ import {conform, useForm} from '@conform-to/react';
 import {parse} from '@conform-to/zod';
 import {FocusTrap, Stack, TextInput} from '@mantine/core';
 import {Form, useActionData} from '@remix-run/react';
-import {json, redirect, type ActionFunctionArgs} from '@shopify/remix-oxygen';
+import {json, type ActionFunctionArgs} from '@shopify/remix-oxygen';
 import {SubmitButton} from '~/components/form/SubmitButton';
 import {getBookingShopifyApi} from '~/lib/api/bookingShopifyApi';
 import {getCustomer} from '~/lib/get-customer';
+import {redirectWithNotification} from '~/lib/show-notification';
 import {customerScheduleCreateBody} from '~/lib/zod/bookingShopifyApi';
 
 const schema = customerScheduleCreateBody;
@@ -20,21 +21,16 @@ export const action = async ({request, context}: ActionFunctionArgs) => {
   }
 
   try {
-    context.session.set('notify', {
-      title: 'Vagtplan',
-      message: 'Du har oprettet en ny vagtplan',
-      color: 'green',
-    });
-
     const response = await getBookingShopifyApi().customerScheduleCreate(
       customer.id,
       submission.value,
     );
 
-    return redirect(`/account/schedules/${response.payload._id}`, {
-      headers: {
-        'Set-Cookie': await context.session.commit(),
-      },
+    return redirectWithNotification(context, {
+      redirectUrl: `/account/schedules/${response.payload._id}`,
+      title: 'Vagtplan',
+      message: 'Du har oprettet en ny vagtplan',
+      color: 'green',
     });
   } catch (error) {
     return json(submission);
