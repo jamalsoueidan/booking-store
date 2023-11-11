@@ -1,4 +1,4 @@
-import {Form, Link, useActionData, useLoaderData} from '@remix-run/react';
+import {Form, useActionData, useLoaderData} from '@remix-run/react';
 import {
   json,
   redirect,
@@ -21,22 +21,20 @@ import {
 import {parse} from '@conform-to/zod';
 import {
   ActionIcon,
-  Button,
   Checkbox,
   Divider,
   Flex,
-  Group,
   Menu,
+  Modal,
   Select,
   SimpleGrid,
   Stack,
   Table,
-  Title,
   rem,
 } from '@mantine/core';
+import {useDisclosure, useMediaQuery} from '@mantine/hooks';
 import {
   IconAdjustments,
-  IconArrowLeft,
   IconEdit,
   IconMinus,
   IconPlus,
@@ -47,6 +45,7 @@ import {SubmitButton} from '~/components/form/SubmitButton';
 import {CustomerScheduleSlotDay, type CustomerSchedule} from '~/lib/api/model';
 import {getCustomer} from '~/lib/get-customer';
 import {customerScheduleSlotUpdateBody} from '~/lib/zod/bookingShopifyApi';
+import AccountSchedulesEdit from './($locale).account.schedules.$scheduleHandle.edit';
 
 // this must be taken from bookingApi, if it doesn't exist, create it in booking-api
 const schema = customerScheduleSlotUpdateBody;
@@ -140,34 +139,6 @@ export default function AccountSchedules() {
 
   return (
     <>
-      <Flex direction={'row'} align={'center'}>
-        <Link to="/account/schedules">
-          <ActionIcon
-            variant="transparent"
-            size="xl"
-            aria-label="Back"
-            color="black"
-          >
-            <IconArrowLeft style={{width: '70%', height: '70%'}} stroke={1.5} />
-          </ActionIcon>
-        </Link>
-        <Title>{defaultValue.name}</Title>
-      </Flex>
-      <Group mt="md">
-        <Button component={Link} to={'destroy'} radius="ml" size="sm">
-          Ændre navn
-        </Button>
-        <Button
-          component={Link}
-          to={'destroy'}
-          color="red"
-          radius="xl"
-          size="sm"
-        >
-          Slet
-        </Button>
-      </Group>
-
       <Divider my="md" />
       <Form method="PUT" {...form.props}>
         <Table mt="lg" withTableBorder>
@@ -177,6 +148,7 @@ export default function AccountSchedules() {
               <Table.Th>
                 <Flex justify="right" gap="sm">
                   <SubmitButton size="xs">Gem</SubmitButton>
+                  <MenuToggle schedule={defaultValue} />
                 </Flex>
               </Table.Th>
             </Table.Tr>
@@ -344,41 +316,58 @@ function MenuToggle({
 }: {
   schedule: Pick<CustomerSchedule, '_id' | 'name'>;
 }) {
+  const [opened, {open, close}] = useDisclosure(false);
+  const isMobile = useMediaQuery('(max-width: 50em)');
   const formRef = useRef<HTMLFormElement>(null);
 
   return (
-    <Menu width={200} shadow="md" trigger="click">
-      <Menu.Target>
-        <ActionIcon variant="light" aria-label="Settings">
-          <IconAdjustments style={{width: '70%', height: '70%'}} stroke={1.5} />
-        </ActionIcon>
-      </Menu.Target>
+    <>
+      <Menu width={200} shadow="md" trigger="click">
+        <Menu.Target>
+          <ActionIcon variant="light" aria-label="Settings">
+            <IconAdjustments
+              style={{width: '70%', height: '70%'}}
+              stroke={1.5}
+            />
+          </ActionIcon>
+        </Menu.Target>
 
-      <Menu.Dropdown>
-        <Menu.Item
-          leftSection={<IconEdit style={{width: rem(14), height: rem(14)}} />}
-          component="a"
-          href="https://mantine.dev"
-        >
-          Ændre navn
-        </Menu.Item>
-        <Menu.Item
-          color="red"
-          ref={formRef}
-          leftSection={<IconMinus style={{width: rem(14), height: rem(14)}} />}
-          component="form"
-          method="post"
-          action={`${schedule._id}/destroy`}
-          onClick={(event: React.MouseEvent<HTMLFormElement>) => {
-            event.preventDefault();
-            if (formRef.current) {
-              formRef.current.submit();
+        <Menu.Dropdown>
+          <Menu.Item
+            leftSection={<IconEdit style={{width: rem(14), height: rem(14)}} />}
+            onClick={open}
+          >
+            Ændre navn
+          </Menu.Item>
+          <Menu.Item
+            color="red"
+            ref={formRef}
+            leftSection={
+              <IconMinus style={{width: rem(14), height: rem(14)}} />
             }
-          }}
-        >
-          Slet
-        </Menu.Item>
-      </Menu.Dropdown>
-    </Menu>
+            component="form"
+            method="post"
+            action={`${schedule._id}/destroy`}
+            onClick={(event: React.MouseEvent<HTMLFormElement>) => {
+              event.preventDefault();
+              if (formRef.current) {
+                formRef.current.submit();
+              }
+            }}
+          >
+            Slet
+          </Menu.Item>
+        </Menu.Dropdown>
+      </Menu>
+      <Modal
+        opened={opened}
+        fullScreen={isMobile}
+        onClose={close}
+        title="Opdater navn"
+        centered
+      >
+        <AccountSchedulesEdit close={close} />
+      </Modal>
+    </>
   );
 }
