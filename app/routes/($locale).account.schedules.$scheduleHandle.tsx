@@ -1,4 +1,4 @@
-import {Form, useActionData, useLoaderData} from '@remix-run/react';
+import {Form, Link, useActionData, useLoaderData} from '@remix-run/react';
 import {
   json,
   redirect,
@@ -21,17 +21,22 @@ import {
 import {parse} from '@conform-to/zod';
 import {
   ActionIcon,
+  Button,
   Checkbox,
+  Divider,
   Flex,
+  Group,
   Menu,
   Select,
   SimpleGrid,
   Stack,
   Table,
+  Title,
   rem,
 } from '@mantine/core';
 import {
   IconAdjustments,
+  IconArrowLeft,
   IconEdit,
   IconMinus,
   IconPlus,
@@ -126,34 +131,64 @@ export default function AccountSchedules() {
         schema,
       });
     },
+    fallbackNative: true,
     shouldValidate: 'onSubmit',
     shouldRevalidate: 'onInput',
   });
 
-  console.log('update', JSON.stringify(defaultValue, null, 2));
   const slotsList = useFieldList(form.ref, fields.slots);
 
   return (
-    <Form method="PUT" {...form.props}>
-      <Table mt="lg" withTableBorder>
-        <Table.Thead>
-          <Table.Tr>
-            <Table.Th w="30%">{defaultValue.name}</Table.Th>
-            <Table.Th>
-              <Flex justify="right" gap="sm">
-                <SubmitButton size="xs">Gem</SubmitButton>
-                <MenuToggle schedule={defaultValue} />
-              </Flex>
-            </Table.Th>
-          </Table.Tr>
-        </Table.Thead>
-        <Table.Tbody>
-          {slotsList.map((slot) => (
-            <SlotInput key={slot.key} config={slot} form={form} />
-          ))}
-        </Table.Tbody>
-      </Table>
-    </Form>
+    <>
+      <Flex direction={'row'} align={'center'}>
+        <Link to="/account/schedules">
+          <ActionIcon
+            variant="transparent"
+            size="xl"
+            aria-label="Back"
+            color="black"
+          >
+            <IconArrowLeft style={{width: '70%', height: '70%'}} stroke={1.5} />
+          </ActionIcon>
+        </Link>
+        <Title>{defaultValue.name}</Title>
+      </Flex>
+      <Group mt="md">
+        <Button component={Link} to={'destroy'} radius="ml" size="sm">
+          Ændre navn
+        </Button>
+        <Button
+          component={Link}
+          to={'destroy'}
+          color="red"
+          radius="xl"
+          size="sm"
+        >
+          Slet
+        </Button>
+      </Group>
+
+      <Divider my="md" />
+      <Form method="PUT" {...form.props}>
+        <Table mt="lg" withTableBorder>
+          <Table.Thead>
+            <Table.Tr>
+              <Table.Th w="30%">{defaultValue.name}</Table.Th>
+              <Table.Th>
+                <Flex justify="right" gap="sm">
+                  <SubmitButton size="xs">Gem</SubmitButton>
+                </Flex>
+              </Table.Th>
+            </Table.Tr>
+          </Table.Thead>
+          <Table.Tbody>
+            {slotsList.map((slot) => (
+              <SlotInput key={slot.key} config={slot} form={form} />
+            ))}
+          </Table.Tbody>
+        </Table>
+      </Form>
+    </>
   );
 }
 
