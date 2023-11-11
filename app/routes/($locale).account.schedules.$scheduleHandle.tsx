@@ -1,4 +1,4 @@
-import {Form, Link, useActionData, useLoaderData} from '@remix-run/react';
+import {Form, useActionData, useLoaderData} from '@remix-run/react';
 import {
   json,
   redirect,
@@ -22,20 +22,24 @@ import {parse} from '@conform-to/zod';
 import {
   ActionIcon,
   Checkbox,
-  Divider,
   Flex,
+  Menu,
   Select,
   SimpleGrid,
   Stack,
   Table,
-  Title,
   rem,
 } from '@mantine/core';
-import {IconArrowLeft, IconMinus, IconPlus} from '@tabler/icons-react';
+import {
+  IconAdjustments,
+  IconEdit,
+  IconMinus,
+  IconPlus,
+} from '@tabler/icons-react';
 import {addMinutes, format, set} from 'date-fns';
-import {useState} from 'react';
+import {useRef, useState} from 'react';
 import {SubmitButton} from '~/components/form/SubmitButton';
-import {CustomerScheduleSlotDay} from '~/lib/api/model';
+import {CustomerScheduleSlotDay, type CustomerSchedule} from '~/lib/api/model';
 import {getCustomer} from '~/lib/get-customer';
 import {customerScheduleSlotUpdateBody} from '~/lib/zod/bookingShopifyApi';
 
@@ -107,24 +111,17 @@ export async function loader({context, params}: LoaderFunctionArgs) {
       return days.indexOf(a.day) - days.indexOf(b.day);
     });
 
-  return json({slots, name: response.payload.name});
+  return json({...response.payload, slots});
 }
 
 export default function AccountSchedules() {
-  const {name, ...defaultValue} = useLoaderData<typeof loader>();
+  const defaultValue = useLoaderData<typeof loader>();
   const lastSubmission = useActionData<typeof action>();
 
   const [form, fields] = useForm({
     lastSubmission,
     defaultValue,
     onValidate({formData}) {
-      console.log(
-        Object.fromEntries(formData),
-        parse(formData, {
-          schema,
-        }),
-      );
-
       return parse(formData, {
         schema,
       });
@@ -133,42 +130,30 @@ export default function AccountSchedules() {
     shouldRevalidate: 'onInput',
   });
 
-  const slots = useFieldList(form.ref, fields.slots);
+  console.log('update', JSON.stringify(defaultValue, null, 2));
+  const slotsList = useFieldList(form.ref, fields.slots);
 
   return (
-    <>
-      <Flex direction={'row'} align={'center'}>
-        <Link to="/account/schedules">
-          <ActionIcon
-            variant="transparent"
-            size="xl"
-            aria-label="Back"
-            color="black"
-          >
-            <IconArrowLeft style={{width: '70%', height: '70%'}} stroke={1.5} />
-          </ActionIcon>
-        </Link>
-        <Title>Redigere {name} </Title>
-      </Flex>
-      <Divider my="md" />
-
-      <Form method="PUT" {...form.props}>
-        <Table mb="xs" striped highlightOnHover withTableBorder>
-          <Table.Thead>
-            <Table.Tr>
-              <Table.Th>Dag</Table.Th>
-              <Table.Th w="70%">Tid (fra - til)</Table.Th>
-            </Table.Tr>
-          </Table.Thead>
-          <Table.Tbody>
-            {slots.map((slot) => (
-              <SlotInput key={slot.key} config={slot} form={form} />
-            ))}
-          </Table.Tbody>
-        </Table>
-        <SubmitButton>Opdatere</SubmitButton>
-      </Form>
-    </>
+    <Form method="PUT" {...form.props}>
+      <Table mt="lg" withTableBorder>
+        <Table.Thead>
+          <Table.Tr>
+            <Table.Th w="30%">{defaultValue.name}</Table.Th>
+            <Table.Th>
+              <Flex justify="right" gap="sm">
+                <SubmitButton size="xs">Gem</SubmitButton>
+                <MenuToggle schedule={defaultValue} />
+              </Flex>
+            </Table.Th>
+          </Table.Tr>
+        </Table.Thead>
+        <Table.Tbody>
+          {slotsList.map((slot) => (
+            <SlotInput key={slot.key} config={slot} form={form} />
+          ))}
+        </Table.Tbody>
+      </Table>
+    </Form>
   );
 }
 
@@ -218,12 +203,12 @@ function SlotInput({
   return (
     <Table.Tr>
       <Table.Td valign="top">
+        <input {...conform.input(day, {hidden: true})} />
         <Checkbox
-          value={day.defaultValue}
-          name={day.name}
           checked={checked}
           onChange={onChange}
           label={day.defaultValue}
+          size="md"
         />
       </Table.Td>
       <Table.Td>
@@ -233,7 +218,10 @@ function SlotInput({
             <Flex gap="sm" w="100%" key={interval.key}>
               <IntervalInput config={interval} form={form} />
               {index > 0 ? (
-                <button {...list.remove(intervals.name, {index})}>
+                <button
+                  {...list.remove(intervals.name, {index})}
+                  style={{display: 'flex', alignItems: 'center'}}
+                >
                   <IconMinus style={{width: rem(24), height: rem(24)}} />
                 </button>
               ) : (
@@ -241,6 +229,7 @@ function SlotInput({
                   {...list.insert(intervals.name, {
                     defaultValue: {from: '', to: ''},
                   })}
+                  style={{display: 'flex', alignItems: 'center'}}
                 >
                   <IconPlus style={{width: rem(24), height: rem(24)}} />
                 </button>
@@ -271,12 +260,14 @@ function IntervalInput({
         data={generateTimeSlots(4, 20, 30)}
         {...conform.select(from)}
         defaultValue={config.defaultValue.from}
+        error={from.error}
       />
       <Select
         placeholder="Til"
         {...conform.select(to)}
         defaultValue={config.defaultValue.to}
         data={generateTimeSlots(4, 20, 30)}
+        error={to.error}
       />
     </SimpleGrid>
   );
@@ -312,3 +303,47 @@ const generateTimeSlots = (
 
   return timeSlots;
 };
+
+function MenuToggle({
+  schedule,
+}: {
+  schedule: Pick<CustomerSchedule, '_id' | 'name'>;
+}) {
+  const formRef = useRef<HTMLFormElement>(null);
+
+  return (
+    <Menu width={200} shadow="md" trigger="click">
+      <Menu.Target>
+        <ActionIcon variant="light" aria-label="Settings">
+          <IconAdjustments style={{width: '70%', height: '70%'}} stroke={1.5} />
+        </ActionIcon>
+      </Menu.Target>
+
+      <Menu.Dropdown>
+        <Menu.Item
+          leftSection={<IconEdit style={{width: rem(14), height: rem(14)}} />}
+          component="a"
+          href="https://mantine.dev"
+        >
+          Ændre navn
+        </Menu.Item>
+        <Menu.Item
+          color="red"
+          ref={formRef}
+          leftSection={<IconMinus style={{width: rem(14), height: rem(14)}} />}
+          component="form"
+          method="post"
+          action={`${schedule._id}/destroy`}
+          onClick={(event: React.MouseEvent<HTMLFormElement>) => {
+            event.preventDefault();
+            if (formRef.current) {
+              formRef.current.submit();
+            }
+          }}
+        >
+          Slet
+        </Menu.Item>
+      </Menu.Dropdown>
+    </Menu>
+  );
+}
