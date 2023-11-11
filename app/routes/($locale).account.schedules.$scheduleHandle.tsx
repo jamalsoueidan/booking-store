@@ -76,13 +76,23 @@ export const action = async ({
   );
 
   try {
+    context.session.set('notify', {
+      title: 'Vagtplan',
+      message: 'Vagtplan navn er opdateret!',
+      color: 'green',
+    });
+
     const response = await getBookingShopifyApi().customerScheduleSlotUpdate(
       customer.id,
       scheduleHandle,
       {slots},
     );
 
-    return redirect(`/account/schedules/${response.payload._id}`);
+    return redirect(`/account/schedules/${response.payload._id}`, {
+      headers: {
+        'Set-Cookie': await context.session.commit(),
+      },
+    });
   } catch (error) {
     return json(submission);
   }

@@ -9,13 +9,23 @@ export const action: ActionFunction = async ({context, params}) => {
     const customer = await getCustomer({context});
 
     if (scheduleHandle) {
+      context.session.set('notify', {
+        title: 'Vagtplan',
+        message: 'Vagtplanen er slettet!',
+        color: 'red',
+      });
+
       await getBookingShopifyApi().customerScheduleDestroy(
         customer.id,
         scheduleHandle,
       );
     }
 
-    return redirect('../../');
+    return redirect('/account/schedules/', {
+      headers: {
+        'Set-Cookie': await context.session.commit(),
+      },
+    });
   } catch (error: unknown) {
     return json(false, {status: 400});
   }

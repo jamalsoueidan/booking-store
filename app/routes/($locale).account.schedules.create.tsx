@@ -10,11 +10,7 @@ import {customerScheduleCreateBody} from '~/lib/zod/bookingShopifyApi';
 
 const schema = customerScheduleCreateBody;
 
-export const action = async ({
-  request,
-  context,
-  params,
-}: ActionFunctionArgs) => {
+export const action = async ({request, context}: ActionFunctionArgs) => {
   const customer = await getCustomer({context});
   const formData = await request.formData();
   const submission = parse(formData, {schema});
@@ -24,12 +20,22 @@ export const action = async ({
   }
 
   try {
+    context.session.set('notify', {
+      title: 'Vagtplan',
+      message: 'Du har oprettet en ny vagtplan',
+      color: 'green',
+    });
+
     const response = await getBookingShopifyApi().customerScheduleCreate(
       customer.id,
       submission.value,
     );
 
-    return redirect(`/account/schedules/${response.payload._id}`);
+    return redirect(`/account/schedules/${response.payload._id}`, {
+      headers: {
+        'Set-Cookie': await context.session.commit(),
+      },
+    });
   } catch (error) {
     return json(submission);
   }

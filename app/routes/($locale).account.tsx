@@ -1,9 +1,18 @@
 import {AppShell, Burger, Container} from '@mantine/core';
 import {useDisclosure} from '@mantine/hooks';
 import {Outlet, useLoaderData} from '@remix-run/react';
-import {Customer} from '@shopify/hydrogen/storefront-api-types';
+import {parseGid} from '@shopify/hydrogen';
 import {json, redirect, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
+import {type CustomerQuery} from 'storefrontapi.generated';
 import {AccountMenu} from '~/components/AccountMenu';
+import {getBookingShopifyApi} from '~/lib/api/bookingShopifyApi';
+import {type User} from '~/lib/api/model';
+
+export type AccountOutlet = {
+  customer: CustomerQuery['customer'];
+  user: User;
+  isBusiness: boolean;
+};
 
 export function shouldRevalidate() {
   return true;
@@ -35,12 +44,9 @@ export async function loader({request, context}: LoaderFunctionArgs) {
         isAccountHome,
         isPrivateRoute,
         customer: null,
+        user: null,
+        isBusiness: null,
       });
-    }
-  } else {
-    // loggedIn, default redirect to the orders page
-    if (isAccountHome) {
-      return redirect('/account/orders');
     }
   }
 
@@ -58,8 +64,25 @@ export async function loader({request, context}: LoaderFunctionArgs) {
       throw new Error('Customer not found');
     }
 
+    const {payload: userIsBusiness} =
+      await getBookingShopifyApi().customerIsBusiness(parseGid(customer.id).id);
+
+    let user;
+    if (userIsBusiness.isBusiness) {
+      user = (
+        await getBookingShopifyApi().customerGet(parseGid(customer.id).id)
+      ).payload;
+    }
+
     return json(
-      {isLoggedIn, isPrivateRoute, isAccountHome, customer},
+      {
+        isLoggedIn,
+        isPrivateRoute,
+        isAccountHome,
+        customer,
+        isBusiness: userIsBusiness.isBusiness,
+        user,
+      },
       {
         headers: {
           'Cache-Control': 'no-cache, no-store, must-revalidate',
@@ -79,7 +102,7 @@ export async function loader({request, context}: LoaderFunctionArgs) {
 }
 
 export default function Acccount() {
-  const {customer, isPrivateRoute, isAccountHome} =
+  const {customer, user, isBusiness, isPrivateRoute, isAccountHome} =
     useLoaderData<typeof loader>();
 
   if (!isPrivateRoute && !isAccountHome) {
@@ -87,19 +110,18 @@ export default function Acccount() {
   }
 
   return (
-    <AccountLayout customer={customer!}>
-      <Outlet context={{customer}} />
+    <AccountLayout customer={customer!} user={user!} isBusiness={isBusiness!}>
+      <Outlet context={{customer, user, isBusiness}} />
     </AccountLayout>
   );
 }
 
 function AccountLayout({
   children,
-  customer,
+  ...props
 }: {
   children: React.ReactNode;
-  customer: Pick<Customer, 'firstName' | 'lastName'>;
-}) {
+} & AccountOutlet) {
   const [opened, {toggle, close}] = useDisclosure(false);
 
   return (
@@ -112,7 +134,7 @@ function AccountLayout({
           backgroundColor: 'var(--mantine-color-gray-1)',
         }}
       >
-        <AccountMenu closeDrawer={close} customer={customer} />
+        <AccountMenu closeDrawer={close} {...props} />
       </AppShell.Navbar>
 
       <AppShell.Main>
@@ -134,6 +156,7 @@ function AccountLayout({
 
 export const CUSTOMER_FRAGMENT = `#graphql
   fragment Customer on Customer {
+    id
     acceptsMarketing
     addresses(first: 6) {
       nodes {

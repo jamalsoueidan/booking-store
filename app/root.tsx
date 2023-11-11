@@ -2,9 +2,12 @@ import {ColorSchemeScript, MantineProvider, createTheme} from '@mantine/core';
 import {cssBundleHref} from '@remix-run/css-bundle';
 
 import '@mantine/core/styles.css';
+import '@mantine/notifications/styles.css';
 import '@mantine/nprogress/styles.css';
 
 import {ModalsProvider} from '@mantine/modals';
+import {Notifications, notifications} from '@mantine/notifications';
+
 import {
   Links,
   LiveReload,
@@ -25,6 +28,7 @@ import {
   type LoaderFunctionArgs,
   type SerializeFrom,
 } from '@shopify/remix-oxygen';
+import {useEffect} from 'react';
 import {Layout} from '~/components/Layout';
 import favicon from '../public/favicon.svg';
 import {GlobalLoadingIndicator} from './components/NavigationProgress';
@@ -77,12 +81,14 @@ export const useRootLoaderData = () => {
 export async function loader({context}: LoaderFunctionArgs) {
   const {storefront, session, cart} = context;
   const customerAccessToken = await session.get('customerAccessToken');
+  const notify = await session.get('notify');
   const publicStoreDomain = context.env.PUBLIC_STORE_DOMAIN;
 
   // validate the customer access token is valid
   const {isLoggedIn, headers} = await validateCustomerAccessToken(
     session,
     customerAccessToken,
+    notify,
   );
 
   // defer the cart query by not awaiting it
@@ -111,6 +117,11 @@ export async function loader({context}: LoaderFunctionArgs) {
       header: await headerPromise,
       isLoggedIn,
       publicStoreDomain,
+      notify: notify as
+        | {
+            message: 'deleted';
+          }
+        | undefined,
     },
     {headers},
   );
@@ -123,6 +134,14 @@ export default function App() {
     /** Put your mantine theme override here */
   });
 
+  useEffect(() => {
+    if (data.notify) {
+      notifications.show(data.notify);
+      // for some reason some notifications are published twice!
+      notifications.cleanQueue();
+    }
+  }, [data.notify]);
+
   return (
     <html lang="en">
       <head>
@@ -134,6 +153,7 @@ export default function App() {
       </head>
       <body>
         <MantineProvider theme={theme}>
+          <Notifications position="bottom-center" limit={1} withBorder />
           <GlobalLoadingIndicator />
           <ModalsProvider>
             <Layout {...data}>
@@ -206,6 +226,7 @@ export function ErrorBoundary() {
 async function validateCustomerAccessToken(
   session: LoaderFunctionArgs['context']['session'],
   customerAccessToken?: CustomerAccessToken,
+  notify?: any,
 ) {
   let isLoggedIn = false;
   const headers = new Headers();
@@ -216,6 +237,11 @@ async function validateCustomerAccessToken(
   const expiresAt = new Date(customerAccessToken.expiresAt).getTime();
   const dateNow = Date.now();
   const customerAccessTokenExpired = expiresAt < dateNow;
+
+  if (notify) {
+    session.unset('notify');
+    headers.append('Set-Cookie', await session.commit());
+  }
 
   if (customerAccessTokenExpired) {
     session.unset('customerAccessToken');

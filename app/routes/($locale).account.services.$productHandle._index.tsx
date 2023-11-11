@@ -144,10 +144,10 @@ export default function EditAddress() {
 
       <Form method="put" {...form.props}>
         <Stack>
-          <input
-            type="hidden"
-            name="productId"
-            defaultValue={defaultValue.productId}
+          <TextInput
+            label="Hvilken ydelse vil du tilbyde?"
+            defaultValue={selectedProduct.title}
+            disabled
           />
 
           <RadioGroupVariantsProduct

@@ -100,17 +100,17 @@ export async function loader({context}: LoaderFunctionArgs) {
     schedules: schedule.payload,
     defaultValue: {
       productId: '',
-      variantId: '',
+      variantId: 0,
       scheduleId: schedule.payload[0]._id,
-      duration: '60',
-      breakTime: '15',
+      duration: 60,
+      breakTime: 15,
       bookingPeriod: {
         unit: 'months',
-        value: '4',
+        value: 4,
       },
       noticePeriod: {
         unit: 'days',
-        value: '1',
+        value: 1,
       },
       locations: [
         {

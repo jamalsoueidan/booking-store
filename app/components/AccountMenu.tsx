@@ -1,6 +1,12 @@
-import {Container, Divider, Title, UnstyledButton} from '@mantine/core';
-import {Form, NavLink} from '@remix-run/react';
-import {type Customer} from '@shopify/hydrogen/storefront-api-types';
+import {
+  Avatar,
+  Container,
+  Divider,
+  Group,
+  Text,
+  UnstyledButton,
+} from '@mantine/core';
+import {Form, Link, NavLink} from '@remix-run/react';
 import {
   IconAddressBook,
   IconBasket,
@@ -13,6 +19,8 @@ import {
   IconUser,
 } from '@tabler/icons-react';
 import {useState} from 'react';
+import {type CustomerQuery} from 'storefrontapi.generated';
+import {type User} from '~/lib/api/model';
 import classes from './AccountMenu.module.css';
 
 const topMenu = [
@@ -40,9 +48,13 @@ const bottomMenu = [
 export function AccountMenu({
   closeDrawer,
   customer,
+  user,
+  isBusiness,
 }: {
   closeDrawer: () => void;
-  customer: Pick<Customer, 'firstName' | 'lastName'>;
+  customer: CustomerQuery['customer'];
+  user: User;
+  isBusiness: boolean;
 }) {
   const [active, setActive] = useState('Billing');
 
@@ -82,9 +94,21 @@ export function AccountMenu({
     <>
       <div className={classes.navbarMain}>
         <Container pt="sm">
-          <Title order={4}>
-            {customer.firstName} {customer.lastName}
-          </Title>
+          <Link to="/account">
+            <Group>
+              <Avatar src={user.images?.profile?.url} radius="xl" />
+
+              <div style={{flex: 1}}>
+                <Text size="sm" fw={500}>
+                  {customer?.firstName} {customer?.lastName}
+                </Text>
+
+                <Text c="dimmed" size="xs">
+                  {customer?.email}
+                </Text>
+              </div>
+            </Group>
+          </Link>
         </Container>
         <Divider my="xs" />
         {topLinks}
