@@ -8,12 +8,14 @@ import {
   storefrontRedirect,
 } from '@shopify/hydrogen';
 import {
+  createCookieSessionStorage,
   createRequestHandler,
   getStorefrontHeaders,
-  createCookieSessionStorage,
-  type SessionStorage,
   type Session,
+  type SessionStorage,
 } from '@shopify/remix-oxygen';
+import {LATEST_API_VERSION, shopifyApi} from '@shopify/shopify-api';
+import '@shopify/shopify-api/adapters/cf-worker';
 
 /**
  * Export a fetch handler in module format.
@@ -47,11 +49,33 @@ export default {
         i18n: getLocaleFromRequest(request),
         publicStorefrontToken: env.PUBLIC_STOREFRONT_API_TOKEN,
         privateStorefrontToken: env.PRIVATE_STOREFRONT_API_TOKEN,
+        adminApiAccessToken: env.PRIVATE_API_ACCESS_TOKEN,
         storeDomain: env.PUBLIC_STORE_DOMAIN,
         storefrontId: env.PUBLIC_STOREFRONT_ID,
         storefrontHeaders: getStorefrontHeaders(request),
+      } as any);
+
+      /**
+       * Create Spi's Storefront client.
+       */
+      const shopify = shopifyApi({
+        apiKey: env.PRIVATE_API_KEY,
+        apiSecretKey: env.PRIVATE_API_SECRET_KEY,
+        adminApiAccessToken: env.PRIVATE_API_ACCESS_TOKEN,
+        apiVersion: LATEST_API_VERSION,
+        isCustomStoreApp: true,
+        scopes: [],
+        isEmbeddedApp: false,
+        hostName: env.PUBLIC_STORE_DOMAIN,
       });
 
+      const shopifySession = shopify.session.customAppSession(
+        env.PUBLIC_STORE_DOMAIN,
+      );
+
+      const adminApi = new shopify.clients.Graphql({
+        session: shopifySession,
+      });
       /*
        * Create a cart handler that will be used to
        * create and update the cart in the session.
@@ -70,7 +94,14 @@ export default {
       const handleRequest = createRequestHandler({
         build: remixBuild,
         mode: process.env.NODE_ENV,
-        getLoadContext: () => ({session, storefront, cart, env, waitUntil}),
+        getLoadContext: () => ({
+          session,
+          storefront,
+          cart,
+          env,
+          waitUntil,
+          adminApi,
+        }),
       });
 
       const response = await handleRequest(request);

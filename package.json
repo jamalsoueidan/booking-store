@@ -29,6 +29,7 @@
     "@shopify/cli-hydrogen": "^6.0.0",
     "@shopify/hydrogen": "^2023.10.0",
     "@shopify/remix-oxygen": "^2.0.0",
+    "@shopify/shopify-api": "^8.0.2",
     "@tabler/icons-react": "^2.40.0",
     "date-fns": "^2.30.0",
     "date-fns-tz": "^2.0.0",

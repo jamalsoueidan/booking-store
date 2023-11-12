@@ -15,7 +15,8 @@ import {
   IconLogout,
   IconMeeple,
   IconPhoneCall,
-  IconReceipt2,
+  IconPhoto,
+  IconSocial,
   IconUser,
 } from '@tabler/icons-react';
 import {useState} from 'react';
@@ -31,13 +32,18 @@ const topMenu = [
 ];
 
 const bottomMenu = [
-  {link: '/account/public', label: 'Profile', icon: IconUser},
+  {link: '/account/public', label: 'Profile', icon: IconSocial},
   {
     link: '/account/profile',
     label: 'Konto',
-    icon: IconReceipt2,
+    icon: IconUser,
   },
   {link: '/account/addresses', label: 'Adresser', icon: IconAddressBook},
+  {
+    link: '/account/upload',
+    label: 'Skift billed',
+    icon: IconPhoto,
+  },
   {
     link: '/account/password',
     label: 'Skift adgangskode',

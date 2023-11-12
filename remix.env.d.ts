@@ -5,12 +5,12 @@
 // Enhance TypeScript's built-in typings.
 import '@total-typescript/ts-reset';
 
-import type {Storefront, HydrogenCart} from '@shopify/hydrogen';
+import type {HydrogenCart, Storefront} from '@shopify/hydrogen';
 import type {
-  LanguageCode,
   CountryCode,
+  CustomerAccessToken,
+  LanguageCode,
 } from '@shopify/hydrogen/storefront-api-types';
-import type {CustomerAccessToken} from '@shopify/hydrogen/storefront-api-types';
 import type {HydrogenSession} from './server';
 
 declare global {
@@ -28,6 +28,10 @@ declare global {
     PRIVATE_STOREFRONT_API_TOKEN: string;
     PUBLIC_STORE_DOMAIN: string;
     PUBLIC_STOREFRONT_ID: string;
+    // adminApi
+    PRIVATE_API_SECRET_KEY: string;
+    PRIVATE_API_KEY: string;
+    PRIVATE_API_ACCESS_TOKEN: string;
   }
 
   /**
@@ -50,6 +54,7 @@ declare module '@shopify/remix-oxygen' {
     storefront: Storefront<I18nLocale>;
     session: HydrogenSession;
     waitUntil: ExecutionContext['waitUntil'];
+    adminApi: GraphqlClient;
   }
 
   /**
