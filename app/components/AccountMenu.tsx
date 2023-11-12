@@ -28,7 +28,8 @@ const topMenu = [
   {link: '/account/locations', label: 'Lokationer', icon: IconLocation},
   {link: '/account/schedules', label: 'Vagtplan', icon: IconMeeple},
   {link: '/account/services', label: 'Ydelser', icon: IconBasket},
-  {link: '/account/orders', label: 'Ordrer', icon: IconPhoneCall},
+  {link: '/account/bookings', label: 'Reservationer', icon: IconPhoneCall},
+  {link: '/account/orders', label: 'Bestillinger', icon: IconPhoneCall},
 ];
 
 const bottomMenu = [
