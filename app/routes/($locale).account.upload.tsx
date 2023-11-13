@@ -16,7 +16,6 @@ import {
 import {parseGid} from '@shopify/hydrogen';
 import {
   json,
-  redirect,
   type ActionFunctionArgs,
   type LoaderFunctionArgs,
 } from '@shopify/remix-oxygen';
@@ -24,39 +23,18 @@ import {IconFileCv, IconInfoCircle} from '@tabler/icons-react';
 import {useEffect, useRef, useState} from 'react';
 import {getBookingShopifyApi} from '~/lib/api/bookingShopifyApi';
 import {getCustomer} from '~/lib/get-customer';
+import {redirectWithNotification} from '~/lib/show-notification';
 
-/*
-mutation {
-  customerUpdate(input: {
-    id: "gid://shopify/Customer/7106990342471",
-    metafields: [{
-      id: "gid://shopify/Metafield/39523247849799",
-      namespace: "api",
-      key: "active",
-      value: "false",
-      type: "boolean",
-    }]
-  }) {
-    customer {
-      id
-      metafields(first: 10, namespace: "api") {
-        edges {
-          node {
-            id
-            namespace
-            key
-            value
-          }
-        }
-      }
-    }
-    userErrors {
-      field
-      message
-    }
-  }
-}
-*/
+/**
+ * Image Upload and Processing Workflow:
+ * 1. Request an upload URL from Shopify using the UPLOAD_CREATE query.
+ * 2. User selects an image and submits it to the URL provided by Shopify.
+ * 3. On submission, the image is uploaded to Shopify, and a resource URL is received.
+ * 4. The resource URL is sent to the Remix action for further processing with Shopify.
+ * 5. Shopify processes the image, and the application updates the user's image with the new one.
+ * 6. Throughout this process, the application maintains the same image display.
+ */
+
 export const action = async ({
   request,
   context,
@@ -64,13 +42,16 @@ export const action = async ({
 }: ActionFunctionArgs) => {
   const customer = await getCustomer({context});
 
+  // Process form data and extract resource URL
   const formData = await request.formData();
   const resourceUrl = formData.get('url') as string;
 
+  // Extract file name from the resource URL
   const url = new URL(resourceUrl);
   const pathSegments = url.pathname.split('/');
   const fileName = pathSegments.pop();
 
+  // Query Shopify to create a file record
   await context.adminApi.query({
     data: {
       query: FILE_CREATE,
@@ -84,26 +65,26 @@ export const action = async ({
     },
   });
 
-  /*const fileGet = await context.adminApi.query({
+  const fileGet = await context.adminApi.query({
     data: {
       query: FILE_GET,
       variables: {
-        query: `filename: '${fileName}'`,
+        query: fileName,
       },
     },
-  });*/
+  });
 
   const pipeDreamFormData = new FormData();
   pipeDreamFormData.append('customerId', parseGid(customer.id).id);
   pipeDreamFormData.append('filename', fileName || '');
 
-  await fetch('http://eogzehsi2ua26f1.m.pipedream.net', {
+  /*await fetch('http://eogzehsi2ua26f1.m.pipedream.net', {
     method: 'POST',
     body: pipeDreamFormData,
     headers: {
       Accept: 'application/json',
     },
-  });
+  });*/
 
   await getBookingShopifyApi().customerUpsert(parseGid(customer.id).id, {
     images: {
@@ -113,12 +94,17 @@ export const action = async ({
     },
   } as any);
 
-  return redirect(`${params.locale || ''}/account/upload?success`);
+  return redirectWithNotification(context, {
+    redirectUrl: `${params.locale || ''}/account/upload`,
+    title: 'Billed uploaded',
+    message: 'tester',
+  });
 };
 
 export async function loader({context}: LoaderFunctionArgs) {
   const customer = await getCustomer({context});
 
+  // Query Shopify to create a staged upload
   const {body} = (await context.adminApi.query({
     data: {
       query: UPLOAD_CREATE,
@@ -137,6 +123,7 @@ export async function loader({context}: LoaderFunctionArgs) {
     },
   })) as UploadMutationResponse;
 
+  // Return the staged upload details
   return json(body.data.stagedUploadsCreate.stagedTargets[0]);
 }
 
@@ -280,7 +267,7 @@ const FILE_CREATE = `#graphql
 
 const FILE_GET = `#graphql
   query FileGet($query: String!) {
-    files(first: 1, sortKey: CREATED_AT, reverse: true, query: $query) {
+    files(first: 10, sortKey: UPDATED_AT, reverse: true, query: $query) {
       nodes {
         preview {
           image {
@@ -322,3 +309,36 @@ type UploadMutationResponse = {
     };
   };
 };
+
+/*
+mutation {
+  customerUpdate(input: {
+    id: "gid://shopify/Customer/7106990342471",
+    metafields: [{
+      id: "gid://shopify/Metafield/39523247849799",
+      namespace: "api",
+      key: "active",
+      value: "false",
+      type: "boolean",
+    }]
+  }) {
+    customer {
+      id
+      metafields(first: 10, namespace: "api") {
+        edges {
+          node {
+            id
+            namespace
+            key
+            value
+          }
+        }
+      }
+    }
+    userErrors {
+      field
+      message
+    }
+  }
+}
+*/
