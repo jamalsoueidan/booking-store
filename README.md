@@ -10,7 +10,7 @@ Beauty professionals can create an account and offer their services through this
 
 I wouldn't recommend using Tailwind for personal projects, as it can be time-consuming to create all the different components from scratch. It's often better to opt for UI libraries like Radix or Chakra. These libraries offer ready-to-use components that only require styling, and they handle accessibility concerns for you.
 
-In my search for a UI library that includes most of the components I need, I discovered Mantine UI. It's an excellent choice, offering a range of features including a theme style, modal manager, notification system, dropdown menus, frid system, autocomplete fields, a calendar component, and even app shell for admin dashboard.
+In my search for a UI library that includes most of the components I need, I discovered Mantine UI. It's an excellent choice, offering a range of features including a theme style, modal manager, notification system, dropdown menus, grid system, autocomplete fields, a calendar component, and even app shell for admin dashboard.
 
 ## Notifications
 
