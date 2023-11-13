@@ -1,4 +1,4 @@
-import {Button, Divider, Group, Text, Title} from '@mantine/core';
+import {Button, Divider, Group, SimpleGrid, Text, Title} from '@mantine/core';
 import {Link, useLoaderData} from '@remix-run/react';
 import {json, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
 import {BookingCard} from '~/components/BookingCard';
@@ -66,10 +66,10 @@ function EmptyBookings() {
 
 function Bookings({bookings}: {bookings: CustomerBooking[]}) {
   return (
-    <ul className="grid grid-flow-row grid-cols-1 gap-2 gap-y-6 md:gap-4 lg:gap-6 false sm:grid-cols-3">
+    <SimpleGrid cols={3}>
       {bookings.map((booking) => (
         <BookingCard booking={booking} key={booking.orderId} />
       ))}
-    </ul>
+    </SimpleGrid>
   );
 }

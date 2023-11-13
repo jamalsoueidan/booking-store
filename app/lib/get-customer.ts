@@ -21,7 +21,7 @@ export async function getCustomer({
   });
 
   if (!customer) {
-    throw new Error('Customer not found');
+    return redirect('/account/login');
   }
 
   return customer;

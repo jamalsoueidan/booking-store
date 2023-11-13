@@ -16,7 +16,6 @@ import {
 import {parseGid} from '@shopify/hydrogen';
 import {
   json,
-  redirect,
   type ActionFunctionArgs,
   type LoaderFunctionArgs,
 } from '@shopify/remix-oxygen';
@@ -24,39 +23,18 @@ import {IconFileCv, IconInfoCircle} from '@tabler/icons-react';
 import {useEffect, useRef, useState} from 'react';
 import {getBookingShopifyApi} from '~/lib/api/bookingShopifyApi';
 import {getCustomer} from '~/lib/get-customer';
+import {redirectWithNotification} from '~/lib/show-notification';
 
-/*
-mutation {
-  customerUpdate(input: {
-    id: "gid://shopify/Customer/7106990342471",
-    metafields: [{
-      id: "gid://shopify/Metafield/39523247849799",
-      namespace: "api",
-      key: "active",
-      value: "false",
-      type: "boolean",
-    }]
-  }) {
-    customer {
-      id
-      metafields(first: 10, namespace: "api") {
-        edges {
-          node {
-            id
-            namespace
-            key
-            value
-          }
-        }
-      }
-    }
-    userErrors {
-      field
-      message
-    }
-  }
-}
-*/
+/**
+ * Image Upload and Processing Workflow:
+ * 1. Request an upload URL from Shopify using the UPLOAD_CREATE query.
+ * 2. User selects an image and submits it to the URL provided by Shopify.
+ * 3. On submission, the image is uploaded to Shopify, and a resource URL is received.
+ * 4. The resource URL is sent to the booking-api.
+ * 5. We processes the image, and the application updates the user's image with the new one.
+ * 6. Throughout this process, the application maintains the same image display.
+ */
+
 export const action = async ({
   request,
   context,
@@ -67,58 +45,22 @@ export const action = async ({
   const formData = await request.formData();
   const resourceUrl = formData.get('url') as string;
 
-  const url = new URL(resourceUrl);
-  const pathSegments = url.pathname.split('/');
-  const fileName = pathSegments.pop();
-
-  await context.adminApi.query({
-    data: {
-      query: FILE_CREATE,
-      variables: {
-        files: {
-          alt: fileName,
-          contentType: 'IMAGE',
-          originalSource: resourceUrl,
-        },
-      },
-    },
+  await getBookingShopifyApi().upload({
+    customerId: parseInt(parseGid(customer.id).id),
+    resourceUrl,
   });
 
-  /*const fileGet = await context.adminApi.query({
-    data: {
-      query: FILE_GET,
-      variables: {
-        query: `filename: '${fileName}'`,
-      },
-    },
-  });*/
-
-  const pipeDreamFormData = new FormData();
-  pipeDreamFormData.append('customerId', parseGid(customer.id).id);
-  pipeDreamFormData.append('filename', fileName || '');
-
-  await fetch('http://eogzehsi2ua26f1.m.pipedream.net', {
-    method: 'POST',
-    body: pipeDreamFormData,
-    headers: {
-      Accept: 'application/json',
-    },
+  return redirectWithNotification(context, {
+    redirectUrl: `${params.locale || ''}/account/upload`,
+    title: 'Billed uploaded',
+    message: 'Der kan gå få sekunder inden dit billed bliver opdateret!',
   });
-
-  await getBookingShopifyApi().customerUpsert(parseGid(customer.id).id, {
-    images: {
-      profile: {
-        url: resourceUrl,
-      },
-    },
-  } as any);
-
-  return redirect(`${params.locale || ''}/account/upload?success`);
 };
 
 export async function loader({context}: LoaderFunctionArgs) {
   const customer = await getCustomer({context});
 
+  // Query Shopify to create a staged upload
   const {body} = (await context.adminApi.query({
     data: {
       query: UPLOAD_CREATE,
@@ -137,6 +79,7 @@ export async function loader({context}: LoaderFunctionArgs) {
     },
   })) as UploadMutationResponse;
 
+  // Return the staged upload details
   return json(body.data.stagedUploadsCreate.stagedTargets[0]);
 }
 
@@ -234,7 +177,7 @@ export default function AccountUpload() {
               leftSectionPointerEvents="none"
             />
 
-            <Button type="submit" disabled={formState === 'submitting'}>
+            <Button type="submit" loading={formState === 'submitting'}>
               {formState === 'submitting' ? 'Uploader...' : 'Skift billed'}
             </Button>
           </Stack>
@@ -258,37 +201,6 @@ const UPLOAD_CREATE = `#graphql
       userErrors {
         field
         message
-      }
-    }
-  }
-` as const;
-
-const FILE_CREATE = `#graphql
-  mutation fileCreate($files: [FileCreateInput!]!) {
-    fileCreate(files: $files) {
-      files {
-        fileStatus
-        alt
-      }
-      userErrors {
-        field
-        message
-      }
-    }
-  }
-` as const;
-
-const FILE_GET = `#graphql
-  query FileGet($query: String!) {
-    files(first: 1, sortKey: CREATED_AT, reverse: true, query: $query) {
-      nodes {
-        preview {
-          image {
-            url
-            width
-            height
-          }
-        }
       }
     }
   }
@@ -322,3 +234,36 @@ type UploadMutationResponse = {
     };
   };
 };
+
+/*
+mutation {
+  customerUpdate(input: {
+    id: "gid://shopify/Customer/7106990342471",
+    metafields: [{
+      id: "gid://shopify/Metafield/39523247849799",
+      namespace: "api",
+      key: "active",
+      value: "false",
+      type: "boolean",
+    }]
+  }) {
+    customer {
+      id
+      metafields(first: 10, namespace: "api") {
+        edges {
+          node {
+            id
+            namespace
+            key
+            value
+          }
+        }
+      }
+    }
+    userErrors {
+      field
+      message
+    }
+  }
+}
+*/
