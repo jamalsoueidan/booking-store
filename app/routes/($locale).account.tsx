@@ -25,7 +25,7 @@ export async function loader({request, context}: LoaderFunctionArgs) {
   const isLoggedIn = !!customerAccessToken?.accessToken;
   const isAccountHome = pathname === '/account' || pathname === '/account/';
   const isPrivateRoute =
-    /^\/account\/(orders|orders\/.*|profile|addresses|upload|public|bookings|bookings\/.*|password|locations|locations\/.*|services|services\/.*|schedules|schedules\/.*|addresses\/.*)$/.test(
+    /^\/account\/(orders|orders\/.*|profile|dashboard|addresses|upload|public|bookings|bookings\/.*|password|locations|locations\/.*|services|services\/.*|schedules|schedules\/.*|addresses\/.*)$/.test(
       pathname,
     );
 
@@ -47,6 +47,11 @@ export async function loader({request, context}: LoaderFunctionArgs) {
         user: null,
         isBusiness: null,
       });
+    }
+  } else {
+    // loggedIn, default redirect to the orders page
+    if (isAccountHome) {
+      return redirect('/account/dashboard');
     }
   }
 

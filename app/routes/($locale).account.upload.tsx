@@ -30,8 +30,8 @@ import {redirectWithNotification} from '~/lib/show-notification';
  * 1. Request an upload URL from Shopify using the UPLOAD_CREATE query.
  * 2. User selects an image and submits it to the URL provided by Shopify.
  * 3. On submission, the image is uploaded to Shopify, and a resource URL is received.
- * 4. The resource URL is sent to the Remix action for further processing with Shopify.
- * 5. Shopify processes the image, and the application updates the user's image with the new one.
+ * 4. The resource URL is sent to the booking-api.
+ * 5. We processes the image, and the application updates the user's image with the new one.
  * 6. Throughout this process, the application maintains the same image display.
  */
 
@@ -42,62 +42,18 @@ export const action = async ({
 }: ActionFunctionArgs) => {
   const customer = await getCustomer({context});
 
-  // Process form data and extract resource URL
   const formData = await request.formData();
   const resourceUrl = formData.get('url') as string;
 
-  // Extract file name from the resource URL
-  const url = new URL(resourceUrl);
-  const pathSegments = url.pathname.split('/');
-  const fileName = pathSegments.pop();
-
-  // Query Shopify to create a file record
-  await context.adminApi.query({
-    data: {
-      query: FILE_CREATE,
-      variables: {
-        files: {
-          alt: fileName,
-          contentType: 'IMAGE',
-          originalSource: resourceUrl,
-        },
-      },
-    },
+  await getBookingShopifyApi().upload({
+    customerId: parseInt(parseGid(customer.id).id),
+    resourceUrl,
   });
-
-  const fileGet = await context.adminApi.query({
-    data: {
-      query: FILE_GET,
-      variables: {
-        query: fileName,
-      },
-    },
-  });
-
-  const pipeDreamFormData = new FormData();
-  pipeDreamFormData.append('customerId', parseGid(customer.id).id);
-  pipeDreamFormData.append('filename', fileName || '');
-
-  /*await fetch('http://eogzehsi2ua26f1.m.pipedream.net', {
-    method: 'POST',
-    body: pipeDreamFormData,
-    headers: {
-      Accept: 'application/json',
-    },
-  });*/
-
-  await getBookingShopifyApi().customerUpsert(parseGid(customer.id).id, {
-    images: {
-      profile: {
-        url: resourceUrl,
-      },
-    },
-  } as any);
 
   return redirectWithNotification(context, {
     redirectUrl: `${params.locale || ''}/account/upload`,
     title: 'Billed uploaded',
-    message: 'tester',
+    message: 'Der kan gå få sekunder inden dit billed bliver opdateret!',
   });
 };
 
@@ -221,7 +177,7 @@ export default function AccountUpload() {
               leftSectionPointerEvents="none"
             />
 
-            <Button type="submit" disabled={formState === 'submitting'}>
+            <Button type="submit" loading={formState === 'submitting'}>
               {formState === 'submitting' ? 'Uploader...' : 'Skift billed'}
             </Button>
           </Stack>
@@ -245,37 +201,6 @@ const UPLOAD_CREATE = `#graphql
       userErrors {
         field
         message
-      }
-    }
-  }
-` as const;
-
-const FILE_CREATE = `#graphql
-  mutation fileCreate($files: [FileCreateInput!]!) {
-    fileCreate(files: $files) {
-      files {
-        fileStatus
-        alt
-      }
-      userErrors {
-        field
-        message
-      }
-    }
-  }
-` as const;
-
-const FILE_GET = `#graphql
-  query FileGet($query: String!) {
-    files(first: 10, sortKey: UPDATED_AT, reverse: true, query: $query) {
-      nodes {
-        preview {
-          image {
-            url
-            width
-            height
-          }
-        }
       }
     }
   }

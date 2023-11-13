@@ -1455,6 +1455,47 @@ components:
       required:
         - success
         - payload
+    UploadBody:
+      type: object
+      properties:
+        customerId:
+          type: number
+        resourceUrl:
+          type: string
+      required:
+        - customerId
+        - resourceUrl
+    UploadResponse:
+      type: object
+      properties:
+        id:
+          type: string
+        statusQueryGetUri:
+          type: string
+        sendEventPostUri:
+          type: string
+        terminatePostUri:
+          type: string
+        rewindPostUri:
+          type: string
+        purgeHistoryDeleteUri:
+          type: string
+        restartPostUri:
+          type: string
+        suspendPostUri:
+          type: string
+        resumePostUri:
+          type: string
+      required:
+        - id
+        - statusQueryGetUri
+        - sendEventPostUri
+        - terminatePostUri
+        - rewindPostUri
+        - purgeHistoryDeleteUri
+        - restartPostUri
+        - suspendPostUri
+        - resumePostUri
 paths:
   '/user/{username}':
     parameters:
@@ -2660,6 +2701,33 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ShippingCalculateResponse'
+        '400':
+          $ref: '#/components/responses/BadResponse'
+        '401':
+          $ref: '#/components/responses/UnauthorizedResponse'
+        '403':
+          $ref: '#/components/responses/ForbiddenResponse'
+      security: []
+  /orchestrators/upload:
+    post:
+      tags:
+        - Orchestrators
+      operationId: upload
+      summary: POST Upload new customer image
+      description: This endpoint is used to upload new image for customer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UploadBody'
+      responses:
+        '200':
+          description: Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UploadResponse'
         '400':
           $ref: '#/components/responses/BadResponse'
         '401':
