@@ -7,6 +7,7 @@ import type {
   FeaturedCollectionFragment,
   RecommendedProductsQuery,
 } from 'storefrontapi.generated';
+import {HeroImageRight} from '~/components/Hero';
 
 export const meta: MetaFunction = () => {
   return [{title: 'Hydrogen | Home'}];
@@ -25,6 +26,7 @@ export default function Homepage() {
   const data = useLoaderData<typeof loader>();
   return (
     <Container fluid py="xl">
+      <HeroImageRight />
       <FeaturedCollection collection={data.featuredCollection} />
       <RecommendedProducts products={data.recommendedProducts} />
     </Container>
@@ -60,7 +62,7 @@ function RecommendedProducts({
 }) {
   return (
     <div className="recommended-products">
-      <h2>Recommended Products</h2>
+      <Title order={2}>Recommended Products</Title>
       <Suspense fallback={<div>Loading...</div>}>
         <Await resolve={products}>
           {({products}) => (

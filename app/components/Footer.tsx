@@ -7,6 +7,7 @@ import {
 } from '@tabler/icons-react';
 import type {FooterQuery, HeaderQuery} from 'storefrontapi.generated';
 import {useRootLoaderData} from '~/root';
+import logo from '../../public/logo.avif';
 import classes from './Footer.module.css';
 
 export function Footer({
@@ -17,7 +18,7 @@ export function Footer({
     <footer className={classes.footer}>
       <div className={classes.inner}>
         <NavLink prefetch="intent" to="/" style={activeLinkStyle} end>
-          <strong>{shop.name}</strong>
+          <img src={logo} alt={shop.name} width="120" />
         </NavLink>
 
         <FooterMenu menu={menu} primaryDomainUrl={shop.primaryDomain.url} />

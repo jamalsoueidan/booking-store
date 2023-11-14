@@ -13,6 +13,7 @@ import {Await, Link, NavLink} from '@remix-run/react';
 import React, {Suspense} from 'react';
 import type {HeaderQuery} from 'storefrontapi.generated';
 import {useRootLoaderData} from '~/root';
+import logo from '../../public/logo.avif';
 import classes from './Header.module.css';
 import type {LayoutProps} from './Layout';
 
@@ -30,22 +31,27 @@ export function Header({header, isLoggedIn, cart}: HeaderProps) {
       <header className={classes.header}>
         <Group justify="space-between" h="100%">
           <NavLink prefetch="intent" to="/" style={activeLinkStyle} end>
-            <strong>{shop.name}</strong>
+            <img
+              src={logo}
+              alt={shop.name}
+              width="150"
+              style={{paddingTop: '6px'}}
+            />
           </NavLink>
-          <Group h="100%" gap={0} visibleFrom="lg">
+          <Group h="100%" gap={0} visibleFrom="md">
             <HeaderMenu
               menu={menu}
               viewport="desktop"
               primaryDomainUrl={header.shop.primaryDomain.url}
             />
           </Group>
-          <Group visibleFrom="lg">
+          <Group visibleFrom="md">
             <HeaderCtas isLoggedIn={isLoggedIn} cart={cart} />
           </Group>
           <Burger
             opened={drawerOpened}
             onClick={toggleDrawer}
-            hiddenFrom="lg"
+            hiddenFrom="md"
           />
         </Group>
       </header>
@@ -139,7 +145,7 @@ function HeaderMenuMobile({
       size="100%"
       padding="md"
       title="Navigation"
-      hiddenFrom="lg"
+      hiddenFrom="md"
       zIndex={1000000}
     >
       <ScrollArea h={`calc(100vh - ${rem(80)})`} mx="-md">

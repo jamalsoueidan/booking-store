@@ -1,6 +1,7 @@
-import {useLoaderData, Link} from '@remix-run/react';
+import {Container, Title} from '@mantine/core';
+import {Link, useLoaderData} from '@remix-run/react';
+import {Image, Pagination, getPaginationVariables} from '@shopify/hydrogen';
 import {json, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
-import {Pagination, getPaginationVariables, Image} from '@shopify/hydrogen';
 import type {CollectionFragment} from 'storefrontapi.generated';
 
 export async function loader({context, request}: LoaderFunctionArgs) {
@@ -19,8 +20,8 @@ export default function Collections() {
   const {collections} = useLoaderData<typeof loader>();
 
   return (
-    <div className="collections">
-      <h1>Collections</h1>
+    <Container fluid py="xl">
+      <Title>Collections</Title>
       <Pagination connection={collections}>
         {({nodes, isLoading, PreviousLink, NextLink}) => (
           <div>
@@ -34,7 +35,7 @@ export default function Collections() {
           </div>
         )}
       </Pagination>
-    </div>
+    </Container>
   );
 }
 

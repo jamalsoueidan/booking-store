@@ -156,7 +156,6 @@ aside li {
   @media (min-width: 45em) {
     display: flex;
     grid-gap: 1rem;
-    margin-left: 3rem;
   }
 }
 
@@ -169,32 +168,6 @@ aside li {
   display: flex;
   grid-gap: 1rem;
   margin-left: auto;
-}
-
-/*
-* --------------------------------------------------
-* components/Footer
-* --------------------------------------------------
-*/
-.footer {
-  background: var(--color-dark);
-  margin-top: auto;
-}
-
-.footer-menu-missing {
-  display: inline-block;
-  margin: 1rem;
-}
-
-.footer-menu {
-  align-items: center;
-  display: flex;
-  grid-gap: 1rem;
-  padding: 1rem;
-}
-
-.footer-menu a {
-  color: var(--color-light);
 }
 
 /*

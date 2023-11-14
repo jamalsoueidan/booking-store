@@ -184,7 +184,7 @@ export function ErrorBoundary() {
     errorMessage = error?.data?.message ?? error.data;
     errorStatus = error.status;
   } else if (error instanceof Error) {
-    errorMessage = error.message;
+    errorMessage = (error as any).message;
   }
 
   return (
