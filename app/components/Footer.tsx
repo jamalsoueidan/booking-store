@@ -1,14 +1,48 @@
+import {ActionIcon, Anchor, Group, rem} from '@mantine/core';
 import {NavLink} from '@remix-run/react';
+import {
+  IconBrandInstagram,
+  IconBrandTwitter,
+  IconBrandYoutube,
+} from '@tabler/icons-react';
 import type {FooterQuery, HeaderQuery} from 'storefrontapi.generated';
 import {useRootLoaderData} from '~/root';
+import classes from './Footer.module.css';
 
 export function Footer({
   menu,
   shop,
 }: FooterQuery & {shop: HeaderQuery['shop']}) {
   return (
-    <footer className="footer">
-      <FooterMenu menu={menu} primaryDomainUrl={shop.primaryDomain.url} />
+    <footer className={classes.footer}>
+      <div className={classes.inner}>
+        <NavLink prefetch="intent" to="/" style={activeLinkStyle} end>
+          <strong>{shop.name}</strong>
+        </NavLink>
+
+        <FooterMenu menu={menu} primaryDomainUrl={shop.primaryDomain.url} />
+
+        <Group gap="xs" justify="flex-end" wrap="nowrap">
+          <ActionIcon size="lg" variant="default" radius="xl">
+            <IconBrandTwitter
+              style={{width: rem(18), height: rem(18)}}
+              stroke={1.5}
+            />
+          </ActionIcon>
+          <ActionIcon size="lg" variant="default" radius="xl">
+            <IconBrandYoutube
+              style={{width: rem(18), height: rem(18)}}
+              stroke={1.5}
+            />
+          </ActionIcon>
+          <ActionIcon size="lg" variant="default" radius="xl">
+            <IconBrandInstagram
+              style={{width: rem(18), height: rem(18)}}
+              stroke={1.5}
+            />
+          </ActionIcon>
+        </Group>
+      </div>
     </footer>
   );
 }
@@ -24,32 +58,43 @@ function FooterMenu({
 
   return (
     <nav className="footer-menu" role="navigation">
-      {(menu || FALLBACK_FOOTER_MENU).items.map((item) => {
-        if (!item.url) return null;
-        // if the url is internal, we strip the domain
-        const url =
-          item.url.includes('myshopify.com') ||
-          item.url.includes(publicStoreDomain) ||
-          item.url.includes(primaryDomainUrl)
-            ? new URL(item.url).pathname
-            : item.url;
-        const isExternal = !url.startsWith('/');
-        return isExternal ? (
-          <a href={url} key={item.id} rel="noopener noreferrer" target="_blank">
-            {item.title}
-          </a>
-        ) : (
-          <NavLink
-            end
-            key={item.id}
-            prefetch="intent"
-            style={activeLinkStyle}
-            to={url}
-          >
-            {item.title}
-          </NavLink>
-        );
-      })}
+      <Group className={classes.links}>
+        {(menu || FALLBACK_FOOTER_MENU).items.map((item) => {
+          if (!item.url) return null;
+          // if the url is internal, we strip the domain
+          const url =
+            item.url.includes('myshopify.com') ||
+            item.url.includes(publicStoreDomain) ||
+            item.url.includes(primaryDomainUrl)
+              ? new URL(item.url).pathname
+              : item.url;
+          const isExternal = !url.startsWith('/');
+          return isExternal ? (
+            <a
+              href={url}
+              key={item.id}
+              rel="noopener noreferrer"
+              target="_blank"
+            >
+              {item.title}
+            </a>
+          ) : (
+            <Anchor
+              component={NavLink}
+              c="dimmed"
+              lh={1}
+              size="sm"
+              end
+              key={item.id}
+              prefetch="intent"
+              style={activeLinkStyle}
+              to={url}
+            >
+              {item.title}
+            </Anchor>
+          );
+        })}
+      </Group>
     </nav>
   );
 }
@@ -105,6 +150,6 @@ function activeLinkStyle({
 }) {
   return {
     fontWeight: isActive ? 'bold' : undefined,
-    color: isPending ? 'grey' : 'white',
+    color: isPending ? 'grey' : 'black',
   };
 }

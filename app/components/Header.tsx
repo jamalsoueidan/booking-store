@@ -26,7 +26,7 @@ export function Header({header, isLoggedIn, cart}: HeaderProps) {
     useDisclosure(false);
 
   return (
-    <Box pb={120}>
+    <Box>
       <header className={classes.header}>
         <Group justify="space-between" h="100%">
           <NavLink prefetch="intent" to="/" style={activeLinkStyle} end>

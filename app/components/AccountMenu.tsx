@@ -4,6 +4,7 @@ import {
   Divider,
   Group,
   Text,
+  Tooltip,
   UnstyledButton,
 } from '@mantine/core';
 import {Form, Link, NavLink} from '@remix-run/react';
@@ -103,7 +104,9 @@ export function AccountMenu({
         <Container pt="sm">
           <Link to="/account">
             <Group>
-              <Avatar src={user.images?.profile?.url} radius="xl" />
+              <Tooltip label={user.customerId}>
+                <Avatar src={user.images?.profile?.url} radius="xl" />
+              </Tooltip>
 
               <div style={{flex: 1}}>
                 <Text size="sm" fw={500}>

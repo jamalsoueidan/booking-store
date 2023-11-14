@@ -1,7 +1,8 @@
-import {defer, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
-import {Await, useLoaderData, Link, type MetaFunction} from '@remix-run/react';
-import {Suspense} from 'react';
+import {Container, Title} from '@mantine/core';
+import {Await, Link, useLoaderData, type MetaFunction} from '@remix-run/react';
 import {Image, Money} from '@shopify/hydrogen';
+import {defer, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
+import {Suspense} from 'react';
 import type {
   FeaturedCollectionFragment,
   RecommendedProductsQuery,
@@ -23,10 +24,10 @@ export async function loader({context}: LoaderFunctionArgs) {
 export default function Homepage() {
   const data = useLoaderData<typeof loader>();
   return (
-    <div className="home">
+    <Container fluid py="xl">
       <FeaturedCollection collection={data.featuredCollection} />
       <RecommendedProducts products={data.recommendedProducts} />
-    </div>
+    </Container>
   );
 }
 
@@ -47,7 +48,7 @@ function FeaturedCollection({
           <Image data={image} sizes="100vw" />
         </div>
       )}
-      <h1>{collection.title}</h1>
+      <Title>{collection.title}</Title>
     </Link>
   );
 }
@@ -85,7 +86,6 @@ function RecommendedProducts({
           )}
         </Await>
       </Suspense>
-      <br />
     </div>
   );
 }

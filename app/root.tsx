@@ -31,6 +31,7 @@ import {
 import {useEffect} from 'react';
 import {Layout} from '~/components/Layout';
 import favicon from '../public/favicon.svg';
+import {Error} from './components/Error';
 import {GlobalLoadingIndicator} from './components/NavigationProgress';
 import appStyles from './styles/app.css';
 import resetStyles from './styles/reset.css';
@@ -173,6 +174,9 @@ export function ErrorBoundary() {
   const error = useRouteError();
   const rootData = useRootLoaderData();
   const nonce = useNonce();
+  const theme = createTheme({
+    /** Put your mantine theme override here */
+  });
   let errorMessage = 'Unknown error';
   let errorStatus = 500;
 
@@ -190,22 +194,17 @@ export function ErrorBoundary() {
         <meta name="viewport" content="width=device-width,initial-scale=1" />
         <Meta />
         <Links />
+        <ColorSchemeScript />
       </head>
       <body>
-        <Layout {...rootData}>
-          <div className="route-error">
-            <h1>Oops</h1>
-            <h2>{errorStatus}</h2>
-            {errorMessage && (
-              <fieldset>
-                <pre>{errorMessage}</pre>
-              </fieldset>
-            )}
-          </div>
-        </Layout>
-        <ScrollRestoration nonce={nonce} />
-        <Scripts nonce={nonce} />
-        <LiveReload nonce={nonce} />
+        <MantineProvider theme={theme}>
+          <Layout {...rootData}>
+            <Error errorStatus={errorStatus} errorMessage={errorMessage} />
+          </Layout>
+          <ScrollRestoration nonce={nonce} />
+          <Scripts nonce={nonce} />
+          <LiveReload nonce={nonce} />
+        </MantineProvider>
       </body>
     </html>
   );
