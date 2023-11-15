@@ -190,17 +190,19 @@ export default function EditAddress() {
               {...conform.input(fields.breakTime)}
             />
           </Flex>
+
           <PeriodInput
             field={fields.bookingPeriod}
-            label="Hvor mange bookingsperioder?"
+            label="Hvor langt ude i fremtiden vil du acceptere bookinger?"
             data={[
               {value: 'months', label: 'Måneder'},
               {value: 'hours', label: 'Timer'},
             ]}
           />
+
           <PeriodInput
             field={fields.noticePeriod}
-            label="Hvor tidligst må en behandling bookes?"
+            label="Hvor hurtigt kan du være klar?"
             data={[
               {value: 'days', label: 'Dage'},
               {value: 'hours', label: 'Timer'},

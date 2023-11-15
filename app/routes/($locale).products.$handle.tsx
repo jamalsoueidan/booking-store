@@ -1,25 +1,25 @@
-import {Suspense} from 'react';
-import {defer, redirect, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
 import {
   Await,
   Link,
   useLoaderData,
-  type MetaFunction,
   type FetcherWithComponents,
+  type MetaFunction,
 } from '@remix-run/react';
+import {defer, redirect, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
+import {Suspense} from 'react';
 import type {
   ProductFragment,
-  ProductVariantsQuery,
   ProductVariantFragment,
+  ProductVariantsQuery,
 } from 'storefrontapi.generated';
 
 import {
+  CartForm,
   Image,
   Money,
   VariantSelector,
-  type VariantOption,
   getSelectedProductOptions,
-  CartForm,
+  type VariantOption,
 } from '@shopify/hydrogen';
 import type {
   CartLineInput,
@@ -51,6 +51,7 @@ export async function loader({params, request, context}: LoaderFunctionArgs) {
     throw new Error('Expected product handle to be defined');
   }
 
+  console.log(selectedOptions);
   // await the query for the critical product data
   const {product} = await storefront.query(PRODUCT_QUERY, {
     variables: {handle, selectedOptions},

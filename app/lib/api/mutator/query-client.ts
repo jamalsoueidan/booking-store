@@ -66,7 +66,6 @@ export const queryClient = async <T>({
   data?: BodyType<unknown>;
   responseType?: string;
 }): Promise<T> => {
-  console.log(paramsToQueryString(params));
   const response = await fetch(
     `${baseURL}${url.replace(/gid:\/\/shopify\/[A-Za-z]+\//, '')}` +
       paramsToQueryString(params),
@@ -75,7 +74,10 @@ export const queryClient = async <T>({
       ...(data ? {body: JSON.stringify(data)} : {}),
     },
   );
-
+  console.log(
+    `${baseURL}${url.replace(/gid:\/\/shopify\/[A-Za-z]+\//, '')}` +
+      paramsToQueryString(params),
+  );
   const responseJson = await response.json();
   if (isError(responseJson)) {
     console.log(JSON.stringify(data), JSON.stringify(responseJson));

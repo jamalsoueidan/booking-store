@@ -25,7 +25,7 @@ export function ArtistProduct({product, services}: ArtistProductProps) {
     return productId.toString() === parseGid(product.id).id;
   });
 
-  const artistVariant = product.variants.nodes.find(({id}) => {
+  const productVariant = product.variants.nodes.find(({id}) => {
     return parseGid(id).id === artistService?.variantId.toString();
   });
 
@@ -60,9 +60,9 @@ export function ArtistProduct({product, services}: ArtistProductProps) {
           {durationToTime(artistService?.duration ?? 0)}
         </Text>
 
-        {artistVariant ? (
+        {productVariant ? (
           <Badge variant="light" color="gray" size="lg">
-            <Money data={artistVariant.price} />
+            <Money data={productVariant.price} />
           </Badge>
         ) : null}
       </Group>

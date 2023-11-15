@@ -220,7 +220,7 @@ export default function AccountServicesCreate() {
 
           <PeriodInput
             field={fields.bookingPeriod}
-            label="Hvor mange bookingsperioder?"
+            label="Hvor langt ude i fremtiden vil du acceptere bookinger?"
             data={[
               {value: 'months', label: 'Måneder'},
               {value: 'hours', label: 'Timer'},
@@ -229,7 +229,7 @@ export default function AccountServicesCreate() {
 
           <PeriodInput
             field={fields.noticePeriod}
-            label="Hvor tidligst må en behandling bookes?"
+            label="Hvor hurtigt kan du være klar?"
             data={[
               {value: 'days', label: 'Dage'},
               {value: 'hours', label: 'Timer'},

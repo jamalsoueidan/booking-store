@@ -181,11 +181,12 @@ export function ErrorBoundary() {
   let errorMessage = 'Unknown error';
   let errorStatus = 500;
 
+  console.log(error);
   if (isRouteErrorResponse(error)) {
     errorMessage = error?.data?.message ?? error.data;
     errorStatus = error.status;
   } else if (error instanceof Error) {
-    errorMessage = (error as any).message;
+    errorMessage = error as any;
   }
 
   return (

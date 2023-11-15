@@ -1,15 +1,22 @@
 import {
+  ActionIcon,
   Box,
   Burger,
-  Button,
   Divider,
   Drawer,
+  Flex,
   Group,
   ScrollArea,
   rem,
 } from '@mantine/core';
 import {useDisclosure} from '@mantine/hooks';
 import {Await, Link, NavLink} from '@remix-run/react';
+import {
+  IconLogin,
+  IconShoppingCart,
+  IconShoppingCartPlus,
+  IconUser,
+} from '@tabler/icons-react';
 import React, {Suspense} from 'react';
 import type {HeaderQuery} from 'storefrontapi.generated';
 import {useRootLoaderData} from '~/root';
@@ -29,7 +36,7 @@ export function Header({header, isLoggedIn, cart}: HeaderProps) {
   return (
     <Box>
       <header className={classes.header}>
-        <Group justify="space-between" h="100%">
+        <Flex h="100%" align="center">
           <NavLink prefetch="intent" to="/" style={activeLinkStyle} end>
             <img
               src={logo}
@@ -38,7 +45,7 @@ export function Header({header, isLoggedIn, cart}: HeaderProps) {
               style={{paddingTop: '6px'}}
             />
           </NavLink>
-          <Group h="100%" gap={0} visibleFrom="md">
+          <Group h="100%" w="100%" gap={0} visibleFrom="md" justify="center">
             <HeaderMenu
               menu={menu}
               viewport="desktop"
@@ -52,8 +59,9 @@ export function Header({header, isLoggedIn, cart}: HeaderProps) {
             opened={drawerOpened}
             onClick={toggleDrawer}
             hiddenFrom="md"
+            style={{position: 'absolute', top: '18px', right: '10px'}}
           />
-        </Group>
+        </Flex>
       </header>
       <HeaderMenuMobile drawerOpened={drawerOpened} closeDrawer={closeDrawer}>
         <HeaderCtas isLoggedIn={isLoggedIn} cart={cart} />
@@ -120,11 +128,24 @@ function HeaderCtas({
 }: Pick<HeaderProps, 'isLoggedIn' | 'cart'>) {
   return (
     <>
-      <Button component={Link} to="/account" prefetch="intent">
-        {isLoggedIn ? 'Account' : 'Sign in'}
-      </Button>
+      <ActionIcon.Group>
+        <ActionIcon
+          variant="default"
+          size="lg"
+          aria-label="Account"
+          component={Link}
+          to="/account"
+          prefetch="intent"
+        >
+          {isLoggedIn ? (
+            <IconUser style={{width: rem(24)}} stroke={1.5} />
+          ) : (
+            <IconLogin style={{width: rem(24)}} stroke={1.5} />
+          )}
+        </ActionIcon>
 
-      <CartToggle cart={cart} />
+        <CartToggle cart={cart} />
+      </ActionIcon.Group>
     </>
   );
 }
@@ -179,9 +200,19 @@ function SearchToggle() {
 
 function CartBadge({count}: {count: number}) {
   return (
-    <Button variant="default" component="a" href="#cart-aside">
-      Indkøbskurv {count || ''}
-    </Button>
+    <ActionIcon
+      variant="default"
+      size="lg"
+      aria-label="Cart"
+      component="a"
+      href="#cart-aside"
+    >
+      {count > 0 ? (
+        <IconShoppingCart style={{width: rem(24)}} stroke={1.5} />
+      ) : (
+        <IconShoppingCartPlus style={{width: rem(24)}} stroke={1.5} />
+      )}
+    </ActionIcon>
   );
 }
 

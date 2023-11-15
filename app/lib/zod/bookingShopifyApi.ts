@@ -98,6 +98,108 @@ export const userProductsListResponse = zod.object({
 });
 
 /**
+ * This endpoint gets user schedule object by product id
+ * @summary GET Get user schedule
+ */
+export const userScheduleGetByProductIdParams = zod.object({
+  username: zod.string(),
+  productId: zod.string(),
+});
+
+export const userScheduleGetByProductIdResponse = zod.object({
+  success: zod.boolean(),
+  payload: zod
+    .object({
+      _id: zod.string(),
+      name: zod.string(),
+      customerId: zod.number(),
+      slots: zod.array(
+        zod.object({
+          day: zod.enum([
+            'monday',
+            'tuesday',
+            'wednesday',
+            'thursday',
+            'friday',
+            'saturday',
+            'sunday',
+          ]),
+          intervals: zod.array(
+            zod.object({
+              from: zod.string(),
+              to: zod.string(),
+            }),
+          ),
+        }),
+      ),
+      locations: zod.array(
+        zod.object({
+          _id: zod.string(),
+          locationType: zod.enum(['origin', 'destination']),
+          customerId: zod.string(),
+          originType: zod.enum(['home', 'commercial']),
+          name: zod.string(),
+          fullAddress: zod.string(),
+          geoLocation: zod.object({
+            type: zod.enum(['Point']),
+            coordinates: zod.array(zod.number()),
+          }),
+          distanceForFree: zod.number(),
+          distanceHourlyRate: zod.number(),
+          fixedRatePerKm: zod.number(),
+          minDriveDistance: zod.number(),
+          maxDriveDistance: zod.number(),
+          startFee: zod.number(),
+        }),
+      ),
+    })
+    .and(
+      zod.object({
+        product: zod
+          .object({
+            productId: zod.number(),
+            variantId: zod.number(),
+            description: zod.string().optional(),
+            duration: zod.number(),
+            breakTime: zod.number(),
+            noticePeriod: zod.object({
+              value: zod.number(),
+              unit: zod.enum(['hours', 'days', 'weeks']),
+            }),
+            bookingPeriod: zod.object({
+              value: zod.number(),
+              unit: zod.enum(['weeks', 'months']),
+            }),
+          })
+          .and(
+            zod.object({
+              locations: zod.array(
+                zod.object({
+                  _id: zod.string(),
+                  locationType: zod.enum(['origin', 'destination']),
+                  customerId: zod.string(),
+                  originType: zod.enum(['home', 'commercial']),
+                  name: zod.string(),
+                  fullAddress: zod.string(),
+                  geoLocation: zod.object({
+                    type: zod.enum(['Point']),
+                    coordinates: zod.array(zod.number()),
+                  }),
+                  distanceForFree: zod.number(),
+                  distanceHourlyRate: zod.number(),
+                  fixedRatePerKm: zod.number(),
+                  minDriveDistance: zod.number(),
+                  maxDriveDistance: zod.number(),
+                  startFee: zod.number(),
+                }),
+              ),
+            }),
+          ),
+      }),
+    ),
+});
+
+/**
  * This endpoint get schedules for user
  * @summary GET Get schedules for user
  */

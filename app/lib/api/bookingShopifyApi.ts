@@ -59,6 +59,7 @@ import type {
   UserGetResponse,
   UserProductsListParams,
   UserProductsListResponse,
+  UserScheduleGetByProductIdResponse,
   UserScheduleGetResponse,
   UserSchedulesList200,
   UsersListParams,
@@ -96,12 +97,23 @@ export const getBookingShopifyApi = () => {
   };
 
   /**
+   * This endpoint gets user schedule object by product id
+   * @summary GET Get user schedule
+   */
+  const userScheduleGetByProductId = (username: string, productId: string) => {
+    return queryClient<UserScheduleGetByProductIdResponse>({
+      url: `/user/${username}/schedule/get-by-product-id/${productId}`,
+      method: 'get',
+    });
+  };
+
+  /**
    * This endpoint get schedules for user
    * @summary GET Get schedules for user
    */
   const userSchedulesList = (username: string) => {
     return queryClient<UserSchedulesList200>({
-      url: `/user/${username}/schedules`,
+      url: `/user/${username}/schedules/locations`,
       method: 'get',
     });
   };
@@ -601,6 +613,7 @@ export const getBookingShopifyApi = () => {
   return {
     userGet,
     userProductsList,
+    userScheduleGetByProductId,
     userSchedulesList,
     userScheduleGet,
     usersProfessions,
@@ -648,6 +661,13 @@ export type UserGetResult = NonNullable<
 export type UserProductsListResult = NonNullable<
   Awaited<
     ReturnType<ReturnType<typeof getBookingShopifyApi>['userProductsList']>
+  >
+>;
+export type UserScheduleGetByProductIdResult = NonNullable<
+  Awaited<
+    ReturnType<
+      ReturnType<typeof getBookingShopifyApi>['userScheduleGetByProductId']
+    >
   >
 >;
 export type UserSchedulesListResult = NonNullable<

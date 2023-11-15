@@ -188,6 +188,14 @@ export default function AccountUpload() {
 }
 
 const UPLOAD_CREATE = `#graphql
+  input StagedUploadInput {
+    filename: String!
+    resource: String
+    mimeType: String
+    httpMethod: String
+    // ... add other fields as needed
+  }
+
   mutation stagedUploadsCreate($input: [StagedUploadInput!]!) {
     stagedUploadsCreate(input: $input) {
       stagedTargets {

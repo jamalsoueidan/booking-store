@@ -1,6 +1,6 @@
 import {defer, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
 
-import {Button, Flex, SimpleGrid, Skeleton} from '@mantine/core';
+import {Button, Flex, SimpleGrid, Skeleton, Stack} from '@mantine/core';
 import {Await, Form, Link, useLoaderData, useLocation} from '@remix-run/react';
 import {Suspense} from 'react';
 import {ArtistProduct} from '~/components/artist/ArtistProduct';
@@ -16,9 +16,9 @@ export type SearchParams = {
 } & UserProductsListParams;
 
 export async function loader({request, params, context}: LoaderFunctionArgs) {
-  const {customerHandle} = params;
+  const {username} = params;
 
-  if (!customerHandle) {
+  if (!username) {
     throw new Error('Invalid request method');
   }
 
@@ -32,11 +32,9 @@ export async function loader({request, params, context}: LoaderFunctionArgs) {
   }
 
   const {payload: services} = await getBookingShopifyApi().userProductsList(
-    customerHandle,
+    username,
     searchParams,
   );
-
-  const schedules = getBookingShopifyApi().userSchedulesList(customerHandle);
 
   const productIds = services.map(({productId}) => productId);
 
@@ -49,6 +47,8 @@ export async function loader({request, params, context}: LoaderFunctionArgs) {
     },
   });
 
+  const schedules = getBookingShopifyApi().userSchedulesList(username);
+
   return defer({
     products,
     services,
@@ -60,7 +60,7 @@ export default function ArtistIndex() {
   const data = useLoaderData<typeof loader>();
 
   return (
-    <>
+    <Stack gap="lg">
       <Suspense
         fallback={
           <div>
@@ -72,7 +72,7 @@ export default function ArtistIndex() {
           {({payload}) => <ArtistSchedulesMenu data={payload} />}
         </Await>
       </Suspense>
-      <SimpleGrid cols={{base: 1, sm: 3}} spacing="lg">
+      <SimpleGrid cols={{base: 1, lg: 4, md: 3, sm: 2}} spacing="xl">
         <Suspense
           fallback={
             <div>
@@ -94,7 +94,7 @@ export default function ArtistIndex() {
           </Await>
         </Suspense>
       </SimpleGrid>
-    </>
+    </Stack>
   );
 }
 

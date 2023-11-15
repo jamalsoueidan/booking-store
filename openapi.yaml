@@ -1250,6 +1250,24 @@ components:
       required:
         - success
         - payload
+    UserScheduleGetByProductIdResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: true
+        payload:
+          allOf:
+            - $ref: '#/components/schemas/UserScheduleWithLocations'
+            - type: object
+              properties:
+                product:
+                  $ref: '#/components/schemas/UserScheduleProductWithLocations'
+              required:
+                - product
+      required:
+        - success
+        - payload
     UserGetResponse:
       type: object
       properties:
@@ -1563,7 +1581,43 @@ paths:
         '403':
           $ref: '#/components/responses/ForbiddenResponse'
       security: []
-  '/user/{username}/schedules':
+  '/user/{username}/schedule/get-by-product-id/{productId}':
+    get:
+      parameters:
+        - name: username
+          in: path
+          description: username
+          required: true
+          schema:
+            type: string
+        - name: productId
+          in: path
+          description: product Id
+          required: true
+          schema:
+            type: string
+      tags:
+        - UserSchedule
+      operationId: userScheduleGetByProductId
+      summary: GET Get user schedule
+      description: This endpoint gets user schedule object by product id
+      responses:
+        '200':
+          description: Response with payload
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserScheduleGetByProductIdResponse'
+        '400':
+          $ref: '#/components/responses/BadResponse'
+        '401':
+          $ref: '#/components/responses/UnauthorizedResponse'
+        '403':
+          $ref: '#/components/responses/ForbiddenResponse'
+        '404':
+          $ref: '#/components/responses/NotFoundResponse'
+      security: []
+  '/user/{username}/schedules/locations':
     get:
       parameters:
         - name: username

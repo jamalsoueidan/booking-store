@@ -24,6 +24,10 @@ export const PRODUCT_SIMPLE = `#graphql
           amount
           currencyCode
         }
+        selectedOptions {
+          name
+          value
+        }
       }
     }
   }
