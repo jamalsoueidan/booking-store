@@ -4,8 +4,9 @@
  * Booking Shopify Api
  * OpenAPI spec version: 1.0.0
  */
+import type {UploadBodyCustomerId} from './uploadBodyCustomerId';
 
 export interface UploadBody {
-  customerId: number;
+  customerId: UploadBodyCustomerId;
   resourceUrl: string;
 }

@@ -19,8 +19,12 @@ function paramsToQueryString(params: Record<string, string | Date>) {
       if (value instanceof Date) {
         value = value.toJSON();
       }
+      if (!value || value === '') {
+        return null;
+      }
       return `${encodeURIComponent(key)}=${encodeURIComponent(value)}`;
     })
+    .filter((value) => value)
     .join('&');
 
   return `?${queryString}`;
@@ -62,6 +66,7 @@ export const queryClient = async <T>({
   data?: BodyType<unknown>;
   responseType?: string;
 }): Promise<T> => {
+  console.log(paramsToQueryString(params));
   const response = await fetch(
     `${baseURL}${url.replace(/gid:\/\/shopify\/[A-Za-z]+\//, '')}` +
       paramsToQueryString(params),

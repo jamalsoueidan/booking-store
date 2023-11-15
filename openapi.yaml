@@ -1182,19 +1182,20 @@ components:
         - socialUrls
         - shortDescription
         - aboutMe
-    UserSchedules:
+    UserProductsListResponse:
       type: object
-      allOf:
-        - $ref: '#/components/schemas/User'
-        - type: object
-          properties:
-            schedules:
-              type: array
-              items:
-                $ref: '#/components/schemas/UserSchedule'
-          required:
-            - schedules
-    UserSchedule:
+      properties:
+        success:
+          type: boolean
+          example: true
+        payload:
+          type: array
+          items:
+            $ref: '#/components/schemas/CustomerProductList'
+      required:
+        - success
+        - payload
+    UserScheduleWithLocations:
       type: object
       properties:
         _id:
@@ -1217,7 +1218,7 @@ components:
         - customerId
         - slots
         - locations
-    UserScheduleProduct:
+    UserScheduleProductWithLocations:
       type: object
       allOf:
         - $ref: '#/components/schemas/CustomerProductBase'
@@ -1237,13 +1238,13 @@ components:
           example: true
         payload:
           allOf:
-            - $ref: '#/components/schemas/UserSchedule'
+            - $ref: '#/components/schemas/UserScheduleWithLocations'
             - type: object
               properties:
                 products:
                   type: array
                   items:
-                    $ref: '#/components/schemas/UserScheduleProduct'
+                    $ref: '#/components/schemas/UserScheduleProductWithLocations'
               required:
                 - products
       required:
@@ -1256,7 +1257,7 @@ components:
           type: boolean
           example: true
         payload:
-          $ref: '#/components/schemas/UserSchedules'
+          $ref: '#/components/schemas/User'
       required:
         - success
         - payload
@@ -1459,7 +1460,9 @@ components:
       type: object
       properties:
         customerId:
-          type: number
+          oneOf:
+            - type: number
+            - type: string
         resourceUrl:
           type: string
       required:
@@ -1526,6 +1529,78 @@ paths:
           $ref: '#/components/responses/ForbiddenResponse'
         '404':
           $ref: '#/components/responses/NotFoundResponse'
+      security: []
+  '/user/{username}/products':
+    get:
+      parameters:
+        - name: username
+          in: path
+          description: username is needed
+          required: true
+          schema:
+            type: string
+        - name: scheduleId
+          in: query
+          description: scheduleId is optional
+          schema:
+            type: string
+      tags:
+        - UserProduct
+      operationId: userProductsList
+      summary: GET Get products for user
+      description: This endpoint get products for user
+      responses:
+        '200':
+          description: Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserProductsListResponse'
+        '400':
+          $ref: '#/components/responses/BadResponse'
+        '401':
+          $ref: '#/components/responses/UnauthorizedResponse'
+        '403':
+          $ref: '#/components/responses/ForbiddenResponse'
+      security: []
+  '/user/{username}/schedules':
+    get:
+      parameters:
+        - name: username
+          in: path
+          description: username is needed
+          required: true
+          schema:
+            type: string
+      tags:
+        - UserSchedule
+      operationId: userSchedulesList
+      summary: GET Get schedules for user
+      description: This endpoint get schedules for user
+      responses:
+        '200':
+          description: Response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  payload:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/UserScheduleWithLocations'
+                required:
+                  - success
+                  - payload
+        '400':
+          $ref: '#/components/responses/BadResponse'
+        '401':
+          $ref: '#/components/responses/UnauthorizedResponse'
+        '403':
+          $ref: '#/components/responses/ForbiddenResponse'
       security: []
   '/user/{username}/schedule/{scheduleId}/location/{locationId}':
     get:

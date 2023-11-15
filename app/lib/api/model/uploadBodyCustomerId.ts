@@ -4,9 +4,5 @@
  * Booking Shopify Api
  * OpenAPI spec version: 1.0.0
  */
-import type {User} from './user';
 
-export interface UserGetResponse {
-  payload: User;
-  success: boolean;
-}
+export type UploadBodyCustomerId = number | string;

@@ -7,7 +7,7 @@
 import type {CustomerLocation} from './customerLocation';
 import type {CustomerScheduleSlot} from './customerScheduleSlot';
 
-export interface UserSchedule {
+export interface UserScheduleWithLocations {
   _id: string;
   customerId: number;
   locations: CustomerLocation[];

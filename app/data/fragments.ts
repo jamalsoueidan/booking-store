@@ -4,6 +4,13 @@ export const PRODUCT_SIMPLE = `#graphql
     title
     handle
     publishedAt
+    images(first: 1) {
+        nodes {
+          url
+          width
+          height
+        }
+      }
     variants(first: 10) {
       nodes {
         id

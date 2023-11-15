@@ -6,6 +6,6 @@
  */
 import type {CustomerLocation} from './customerLocation';
 
-export type UserScheduleProductAllOf = {
+export type UserScheduleProductWithLocationsAllOf = {
   locations: CustomerLocation[];
 };

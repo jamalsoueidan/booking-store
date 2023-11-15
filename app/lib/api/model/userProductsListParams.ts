@@ -4,8 +4,10 @@
  * Booking Shopify Api
  * OpenAPI spec version: 1.0.0
  */
-import type {UserSchedule} from './userSchedule';
 
-export type UserSchedulesAllOf = {
-  schedules: UserSchedule[];
+export type UserProductsListParams = {
+  /**
+   * scheduleId is optional
+   */
+  scheduleId?: string;
 };

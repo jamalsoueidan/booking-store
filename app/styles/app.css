@@ -8,10 +8,6 @@
   --color-light: #fff;
 }
 
-img {
-  border-radius: 4px;
-}
-
 /*
 * --------------------------------------------------
 * components/Aside
@@ -277,7 +273,6 @@ aside li {
 */
 .featured-collection {
   display: block;
-  margin-bottom: 2rem;
   position: relative;
 }
 

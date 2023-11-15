@@ -1,4 +1,15 @@
-import {Container, Title} from '@mantine/core';
+import {Carousel} from '@mantine/carousel';
+import {
+  Avatar,
+  Button,
+  Container,
+  Group,
+  Paper,
+  Skeleton,
+  Stack,
+  Text,
+  Title,
+} from '@mantine/core';
 import {Await, Link, useLoaderData, type MetaFunction} from '@remix-run/react';
 import {Image, Money} from '@shopify/hydrogen';
 import {defer, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
@@ -8,6 +19,8 @@ import type {
   RecommendedProductsQuery,
 } from 'storefrontapi.generated';
 import {HeroImageRight} from '~/components/Hero';
+import {getBookingShopifyApi} from '~/lib/api/bookingShopifyApi';
+import {type UsersListResponse} from '~/lib/api/model';
 
 export const meta: MetaFunction = () => {
   return [{title: 'Hydrogen | Home'}];
@@ -19,17 +32,85 @@ export async function loader({context}: LoaderFunctionArgs) {
   const featuredCollection = collections.nodes[0];
   const recommendedProducts = storefront.query(RECOMMENDED_PRODUCTS_QUERY);
 
-  return defer({featuredCollection, recommendedProducts});
+  const artists = getBookingShopifyApi().usersList({
+    limit: '8',
+    sortOrder: 'desc',
+  });
+
+  return defer({featuredCollection, recommendedProducts, artists});
 }
 
 export default function Homepage() {
   const data = useLoaderData<typeof loader>();
   return (
     <Container fluid py="xl">
-      <HeroImageRight />
-      <FeaturedCollection collection={data.featuredCollection} />
-      <RecommendedProducts products={data.recommendedProducts} />
+      <Stack gap="lg">
+        <HeroImageRight />
+        <FeaturedArtists artists={data.artists} />
+        <FeaturedCollection collection={data.featuredCollection} />
+        <RecommendedProducts products={data.recommendedProducts} />
+      </Stack>
     </Container>
+  );
+}
+
+function FeaturedArtists({artists}: {artists: Promise<UsersListResponse>}) {
+  if (!artists) return null;
+  return (
+    <div className="featured-artists">
+      <Title order={2} mb="sm">
+        Skønhedseksperter
+      </Title>
+      <Suspense
+        fallback={
+          <Group>
+            <Skeleton height={50} mb="xl" />
+          </Group>
+        }
+      >
+        <Await resolve={artists}>
+          {({payload}) => (
+            <Carousel
+              slideSize={{base: '100%', md: '20%', sm: '33.333%'}}
+              slideGap="sm"
+              align="start"
+              containScroll="keepSnaps"
+              withControls={false}
+            >
+              {payload.results.map((artist) => (
+                <Carousel.Slide key={artist.customerId}>
+                  <Paper
+                    radius="md"
+                    withBorder
+                    p="lg"
+                    bg="var(--mantine-color-body)"
+                    component={Link}
+                    to={`/artist/${artist.username}`}
+                  >
+                    <Avatar
+                      src={artist.images?.profile?.url}
+                      size={120}
+                      radius={120}
+                      mx="auto"
+                    />
+                    <Text ta="center" fz="lg" fw={500} mt="md" c="black">
+                      {artist.fullname}
+                    </Text>
+                    <Text ta="center" c="dimmed" fz="sm">
+                      {artist.shortDescription}
+                    </Text>
+
+                    <Button variant="default" fullWidth mt="md">
+                      Vis profile
+                    </Button>
+                  </Paper>
+                </Carousel.Slide>
+              ))}
+            </Carousel>
+          )}
+        </Await>
+      </Suspense>
+    </div>
   );
 }
 

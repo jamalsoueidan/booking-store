@@ -4,7 +4,6 @@
   background-position: center;
   padding-top: calc(var(--mantine-spacing-xl) * 3);
   padding-bottom: calc(var(--mantine-spacing-xl) * 3);
-  margin-bottom: calc(var(--mantine-spacing-xl));
 }
 
 .inner {
