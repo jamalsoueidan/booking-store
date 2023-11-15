@@ -7,7 +7,7 @@ import {ArtistProduct} from '~/components/artist/ArtistProduct';
 import {PRODUCT_SIMPLE} from '~/data/fragments';
 import {getBookingShopifyApi} from '~/lib/api/bookingShopifyApi';
 import {
-  UserProductsListParams,
+  type UserProductsListParams,
   type UserScheduleWithLocations,
 } from '~/lib/api/model';
 
@@ -136,13 +136,13 @@ function ArtistSchedulesMenu({data}: {data: UserScheduleWithLocations[]}) {
 
 const ALL_PRODUCTS_QUERY = `#graphql
   ${PRODUCT_SIMPLE}
-  query AccountServicesProducts(
+  query ArtistServicesProducts(
     $country: CountryCode
     $language: LanguageCode
     $first: Int
     $query: String
   ) @inContext(country: $country, language: $language) {
-    products(first: $first, query: $query) {
+    products(first: $first, sortKey: TITLE, query: $query) {
       nodes {
         ...ProductSimple
       }

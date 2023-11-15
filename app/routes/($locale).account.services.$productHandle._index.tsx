@@ -29,12 +29,20 @@ import {getCustomer} from '~/lib/get-customer';
 import {customerProductUpsertBody} from '~/lib/zod/bookingShopifyApi';
 
 const schema = customerProductUpsertBody.extend({
-  productId: z.string().min(1),
   scheduleId: z.string().min(1),
 });
 
-export const action = async ({request, context}: ActionFunctionArgs) => {
+export const action = async ({
+  request,
+  params,
+  context,
+}: ActionFunctionArgs) => {
   const customer = await getCustomer({context});
+
+  const {productHandle} = params;
+  if (!productHandle) {
+    throw new Error('Missing productHandle param, check route filename');
+  }
 
   const formData = await request.formData();
   const submission = parse(formData, {
@@ -46,12 +54,10 @@ export const action = async ({request, context}: ActionFunctionArgs) => {
   }
 
   try {
-    const {productId, ...body} = submission.value;
-
     const response = await getBookingShopifyApi().customerProductUpsert(
       customer.id,
-      productId,
-      body,
+      productHandle,
+      submission.value,
     );
 
     return redirect(`/account/services/${response.payload.productId}`);
@@ -146,8 +152,8 @@ export default function EditAddress() {
         <Stack>
           <TextInput
             label="Hvilken ydelse vil du tilbyde?"
-            defaultValue={selectedProduct.title}
             disabled
+            value={selectedProduct.title}
           />
 
           <RadioGroupVariantsProduct

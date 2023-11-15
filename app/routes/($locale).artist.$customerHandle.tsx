@@ -4,7 +4,6 @@ import {Container, Skeleton, Stack} from '@mantine/core';
 import {Await, Outlet, useLoaderData} from '@remix-run/react';
 import {Suspense} from 'react';
 import {ArtistHero} from '~/components/artist/ArtistHero';
-import {PRODUCT_SIMPLE} from '~/data/fragments';
 import {getBookingShopifyApi} from '~/lib/api/bookingShopifyApi';
 
 export async function loader({params}: LoaderFunctionArgs) {
@@ -45,19 +44,3 @@ export default function ArtistIndex() {
     </Container>
   );
 }
-
-const ALL_PRODUCTS_QUERY = `#graphql
-  ${PRODUCT_SIMPLE}
-  query AccountServicesProducts(
-    $country: CountryCode
-    $language: LanguageCode
-    $first: Int
-    $query: String
-  ) @inContext(country: $country, language: $language) {
-    products(first: $first, query: $query) {
-      nodes {
-        ...ProductSimple
-      }
-    }
-  }
-`;

@@ -102,14 +102,14 @@ export function AccountMenu({
     <>
       <div className={classes.navbarMain}>
         <Container pt="sm">
-          <Link to="/account">
+          <UnstyledButton component={Link} to="/account">
             <Group>
               <Tooltip label={user.customerId}>
                 <Avatar src={user.images?.profile?.url} radius="xl" />
               </Tooltip>
 
               <div style={{flex: 1}}>
-                <Text size="sm" fw={500}>
+                <Text size="sm" fw={500} c="black">
                   {customer?.firstName} {customer?.lastName}
                 </Text>
 
@@ -118,7 +118,7 @@ export function AccountMenu({
                 </Text>
               </div>
             </Group>
-          </Link>
+          </UnstyledButton>
         </Container>
         <Divider my="xs" />
         {topLinks}
