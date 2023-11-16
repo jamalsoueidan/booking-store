@@ -208,9 +208,9 @@ function CartBadge({count}: {count: number}) {
       href="#cart-aside"
     >
       {count > 0 ? (
-        <IconShoppingCart style={{width: rem(24)}} stroke={1.5} />
-      ) : (
         <IconShoppingCartPlus style={{width: rem(24)}} stroke={1.5} />
+      ) : (
+        <IconShoppingCart style={{width: rem(24)}} stroke={1.5} />
       )}
     </ActionIcon>
   );

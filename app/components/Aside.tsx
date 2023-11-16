@@ -1,3 +1,5 @@
+import {useNavigate} from '@remix-run/react';
+
 /**
  * A side bar component with Overlay that works without JavaScript.
  * @example
@@ -38,9 +40,16 @@ export function Aside({
 }
 
 function CloseAside() {
+  const navigate = useNavigate();
+
+  const handleCloseClick = (event: any) => {
+    event.preventDefault();
+    navigate(-1);
+  };
+
   return (
-    /* eslint-disable-next-line jsx-a11y/anchor-is-valid */
-    <a className="close" href="#" onChange={() => history.go(-1)}>
+    // eslint-disable-next-line jsx-a11y/anchor-is-valid
+    <a className="close" href="#" onClick={handleCloseClick}>
       &times;
     </a>
   );

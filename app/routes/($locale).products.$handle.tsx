@@ -51,7 +51,6 @@ export async function loader({params, request, context}: LoaderFunctionArgs) {
     throw new Error('Expected product handle to be defined');
   }
 
-  console.log(selectedOptions);
   // await the query for the critical product data
   const {product} = await storefront.query(PRODUCT_QUERY, {
     variables: {handle, selectedOptions},

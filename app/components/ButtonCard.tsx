@@ -4,6 +4,7 @@ import classes from './ButtonCard.module.css';
 
 interface ButtonCardProps {
   checked?: boolean;
+  value: string;
   defaultChecked?: boolean;
   onChange?(checked: boolean): void;
   withCheckbox?: boolean;
@@ -13,6 +14,7 @@ interface ButtonCardProps {
 export function ButtonCard({
   checked,
   defaultChecked,
+  value,
   onChange,
   className,
   children,
@@ -21,7 +23,7 @@ export function ButtonCard({
   ...others
 }: ButtonCardProps &
   Omit<React.ComponentPropsWithoutRef<'button'>, keyof ButtonCardProps>) {
-  const [value, handleChange] = useUncontrolled({
+  const [isChecked, handleChange] = useUncontrolled({
     value: checked,
     defaultValue: defaultChecked,
     finalValue: false,
@@ -31,17 +33,17 @@ export function ButtonCard({
   return (
     <UnstyledButton
       {...others}
-      onClick={() => handleChange(!value)}
-      data-checked={value || undefined}
+      onClick={() => handleChange(!isChecked)}
+      data-checked={isChecked || undefined}
       className={classes.button}
     >
       <div className={classes.body}>{children}</div>
 
       {withCheckbox ? (
         <Checkbox
-          checked={value}
+          checked={isChecked}
           name="locationId"
-          id="locationId"
+          value={value}
           onChange={() => {}}
           tabIndex={-1}
           styles={{input: {cursor: 'pointer'}}}
@@ -50,9 +52,9 @@ export function ButtonCard({
 
       {withRadio ? (
         <Radio
-          checked={value}
+          checked={isChecked}
           name="locationId"
-          id="locationId"
+          value={value}
           onChange={() => {}}
           tabIndex={-1}
         />
