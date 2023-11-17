@@ -36,7 +36,7 @@ export function ArtistProduct({product, services}: ArtistProductProps) {
       radius="lg"
       className={classes.card}
       component={Link}
-      to={`treatment/${product.handle}`}
+      to={`treatment/${product.handle}-${parseGid(product.id).id}`}
     >
       <AspectRatio ratio={1920 / 1080}>
         <Image

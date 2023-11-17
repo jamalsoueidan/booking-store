@@ -9,6 +9,7 @@ interface ButtonCardProps {
   onChange?(checked: boolean): void;
   withCheckbox?: boolean;
   withRadio?: boolean;
+  name: string;
 }
 
 export function ButtonCard({
@@ -20,6 +21,7 @@ export function ButtonCard({
   children,
   withCheckbox,
   withRadio,
+  name,
   ...others
 }: ButtonCardProps &
   Omit<React.ComponentPropsWithoutRef<'button'>, keyof ButtonCardProps>) {
@@ -42,18 +44,20 @@ export function ButtonCard({
       {withCheckbox ? (
         <Checkbox
           checked={isChecked}
-          name="locationId"
+          name={name}
           value={value}
           onChange={() => {}}
           tabIndex={-1}
-          styles={{input: {cursor: 'pointer'}}}
+          styles={{
+            input: {cursor: 'pointer'},
+          }}
         />
       ) : null}
 
       {withRadio ? (
         <Radio
           checked={isChecked}
-          name="locationId"
+          name={name}
           value={value}
           onChange={() => {}}
           tabIndex={-1}
