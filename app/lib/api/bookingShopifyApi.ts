@@ -57,11 +57,12 @@ import type {
   UploadBody,
   UploadResponse,
   UserGetResponse,
-  UserProductsListParams,
-  UserProductsListResponse,
+  UserProductsListByLocationResponse,
+  UserProductsListByScheduleParams,
+  UserProductsListByScheduleResponse,
   UserScheduleGetByProductIdResponse,
   UserScheduleGetResponse,
-  UserSchedulesList200,
+  UserSchedulesListLocations200,
   UsersListParams,
   UsersListResponse,
   UsersProfessionsResponse,
@@ -82,14 +83,14 @@ export const getBookingShopifyApi = () => {
   };
 
   /**
-   * This endpoint get products for user
+   * This endpoint get products for user (across all schedules or one scheduleId)
    * @summary GET Get products for user
    */
-  const userProductsList = (
+  const userProductsListBySchedule = (
     username: string,
-    params?: UserProductsListParams,
+    params?: UserProductsListByScheduleParams,
   ) => {
-    return queryClient<UserProductsListResponse>({
+    return queryClient<UserProductsListByScheduleResponse>({
       url: `/user/${username}/products`,
       method: 'get',
       params,
@@ -97,10 +98,25 @@ export const getBookingShopifyApi = () => {
   };
 
   /**
-   * This endpoint gets user schedule object by product id
+   * This endpoint get products for user by productId and locationId
+   * @summary GET Get products for user
+   */
+  const userProductsListByLocation = (
+    username: string,
+    productId: string,
+    locationId: string,
+  ) => {
+    return queryClient<UserProductsListByLocationResponse>({
+      url: `/user/${username}/product/${productId}/location/${locationId}`,
+      method: 'get',
+    });
+  };
+
+  /**
+   * This endpoint should retrieve a schedule and locations belonging to a specific productId, along with the product.
    * @summary GET Get user schedule
    */
-  const userScheduleGetByProductId = (username: string, productId: string) => {
+  const userScheduleGetByProduct = (username: string, productId: string) => {
     return queryClient<UserScheduleGetByProductIdResponse>({
       url: `/user/${username}/schedule/get-by-product-id/${productId}`,
       method: 'get',
@@ -108,21 +124,21 @@ export const getBookingShopifyApi = () => {
   };
 
   /**
-   * This endpoint get schedules for user
+   * This endpoint should return all locations present in all schedules for specific user
    * @summary GET Get schedules for user
    */
-  const userSchedulesList = (username: string) => {
-    return queryClient<UserSchedulesList200>({
+  const userSchedulesListLocations = (username: string) => {
+    return queryClient<UserSchedulesListLocations200>({
       url: `/user/${username}/schedules/locations`,
       method: 'get',
     });
   };
 
   /**
-   * This endpoint gets user schedule object
+   * This endpoint should retrieve a schedule with products that only belong to a specific locationId.
    * @summary GET Get user schedule
    */
-  const userScheduleGet = (
+  const userScheduleGetByLocation = (
     username: string,
     scheduleId: string,
     locationId: string,
@@ -612,10 +628,11 @@ export const getBookingShopifyApi = () => {
 
   return {
     userGet,
-    userProductsList,
-    userScheduleGetByProductId,
-    userSchedulesList,
-    userScheduleGet,
+    userProductsListBySchedule,
+    userProductsListByLocation,
+    userScheduleGetByProduct,
+    userSchedulesListLocations,
+    userScheduleGetByLocation,
     usersProfessions,
     usersList,
     customerUpsert,
@@ -658,26 +675,39 @@ export const getBookingShopifyApi = () => {
 export type UserGetResult = NonNullable<
   Awaited<ReturnType<ReturnType<typeof getBookingShopifyApi>['userGet']>>
 >;
-export type UserProductsListResult = NonNullable<
-  Awaited<
-    ReturnType<ReturnType<typeof getBookingShopifyApi>['userProductsList']>
-  >
->;
-export type UserScheduleGetByProductIdResult = NonNullable<
+export type UserProductsListByScheduleResult = NonNullable<
   Awaited<
     ReturnType<
-      ReturnType<typeof getBookingShopifyApi>['userScheduleGetByProductId']
+      ReturnType<typeof getBookingShopifyApi>['userProductsListBySchedule']
     >
   >
 >;
-export type UserSchedulesListResult = NonNullable<
+export type UserProductsListByLocationResult = NonNullable<
   Awaited<
-    ReturnType<ReturnType<typeof getBookingShopifyApi>['userSchedulesList']>
+    ReturnType<
+      ReturnType<typeof getBookingShopifyApi>['userProductsListByLocation']
+    >
   >
 >;
-export type UserScheduleGetResult = NonNullable<
+export type UserScheduleGetByProductResult = NonNullable<
   Awaited<
-    ReturnType<ReturnType<typeof getBookingShopifyApi>['userScheduleGet']>
+    ReturnType<
+      ReturnType<typeof getBookingShopifyApi>['userScheduleGetByProduct']
+    >
+  >
+>;
+export type UserSchedulesListLocationsResult = NonNullable<
+  Awaited<
+    ReturnType<
+      ReturnType<typeof getBookingShopifyApi>['userSchedulesListLocations']
+    >
+  >
+>;
+export type UserScheduleGetByLocationResult = NonNullable<
+  Awaited<
+    ReturnType<
+      ReturnType<typeof getBookingShopifyApi>['userScheduleGetByLocation']
+    >
   >
 >;
 export type UsersProfessionsResult = NonNullable<

@@ -6,7 +6,7 @@
  */
 import type {CustomerProductList} from './customerProductList';
 
-export interface UserProductsListResponse {
+export interface UserProductsListByScheduleResponse {
   payload: CustomerProductList[];
   success: boolean;
 }

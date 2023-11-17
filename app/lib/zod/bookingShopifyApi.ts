@@ -48,18 +48,18 @@ export const userGetResponse = zod.object({
 });
 
 /**
- * This endpoint get products for user
+ * This endpoint get products for user (across all schedules or one scheduleId)
  * @summary GET Get products for user
  */
-export const userProductsListParams = zod.object({
+export const userProductsListByScheduleParams = zod.object({
   username: zod.string(),
 });
 
-export const userProductsListQueryParams = zod.object({
+export const userProductsListByScheduleQueryParams = zod.object({
   scheduleId: zod.string().optional(),
 });
 
-export const userProductsListResponse = zod.object({
+export const userProductsListByScheduleResponse = zod.object({
   success: zod.boolean(),
   payload: zod.array(
     zod
@@ -98,15 +98,46 @@ export const userProductsListResponse = zod.object({
 });
 
 /**
- * This endpoint gets user schedule object by product id
+ * This endpoint get products for user by productId and locationId
+ * @summary GET Get products for user
+ */
+export const userProductsListByLocationParams = zod.object({
+  username: zod.string(),
+  productId: zod.string(),
+  locationId: zod.string(),
+});
+
+export const userProductsListByLocationResponse = zod.object({
+  success: zod.boolean(),
+  payload: zod.array(
+    zod.object({
+      productId: zod.number(),
+      variantId: zod.number(),
+      description: zod.string().optional(),
+      duration: zod.number(),
+      breakTime: zod.number(),
+      noticePeriod: zod.object({
+        value: zod.number(),
+        unit: zod.enum(['hours', 'days', 'weeks']),
+      }),
+      bookingPeriod: zod.object({
+        value: zod.number(),
+        unit: zod.enum(['weeks', 'months']),
+      }),
+    }),
+  ),
+});
+
+/**
+ * This endpoint should retrieve a schedule and locations belonging to a specific productId, along with the product.
  * @summary GET Get user schedule
  */
-export const userScheduleGetByProductIdParams = zod.object({
+export const userScheduleGetByProductParams = zod.object({
   username: zod.string(),
   productId: zod.string(),
 });
 
-export const userScheduleGetByProductIdResponse = zod.object({
+export const userScheduleGetByProductResponse = zod.object({
   success: zod.boolean(),
   payload: zod
     .object({
@@ -200,14 +231,14 @@ export const userScheduleGetByProductIdResponse = zod.object({
 });
 
 /**
- * This endpoint get schedules for user
+ * This endpoint should return all locations present in all schedules for specific user
  * @summary GET Get schedules for user
  */
-export const userSchedulesListParams = zod.object({
+export const userSchedulesListLocationsParams = zod.object({
   username: zod.string(),
 });
 
-export const userSchedulesListResponse = zod.object({
+export const userSchedulesListLocationsResponse = zod.object({
   success: zod.boolean(),
   payload: zod.array(
     zod.object({
@@ -258,16 +289,16 @@ export const userSchedulesListResponse = zod.object({
 });
 
 /**
- * This endpoint gets user schedule object
+ * This endpoint should retrieve a schedule with products that only belong to a specific locationId.
  * @summary GET Get user schedule
  */
-export const userScheduleGetParams = zod.object({
+export const userScheduleGetByLocationParams = zod.object({
   username: zod.string(),
   scheduleId: zod.string(),
   locationId: zod.string(),
 });
 
-export const userScheduleGetResponse = zod.object({
+export const userScheduleGetByLocationResponse = zod.object({
   success: zod.boolean(),
   payload: zod
     .object({
