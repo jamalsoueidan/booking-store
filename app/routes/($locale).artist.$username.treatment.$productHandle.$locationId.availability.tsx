@@ -159,7 +159,7 @@ export default function ArtistTreatmentsBooking() {
             </Carousel>
           ) : null}
 
-          <Title order={3} mb="sm" mt="xl">
+          <Title order={3} mb="sm" mt="xl ">
             Vælge tid:
           </Title>
           {availabilitySlot ? (
