@@ -8,6 +8,8 @@ interface ButtonCardProps {
   defaultChecked?: boolean;
   onChange?(checked: boolean): void;
   withCheckbox?: boolean;
+  hidden?: boolean;
+  corner?: boolean;
   withRadio?: boolean;
   name: string;
 }
@@ -20,6 +22,8 @@ export function ButtonCard({
   className,
   children,
   withCheckbox,
+  hidden,
+  corner,
   withRadio,
   name,
   ...others
@@ -32,6 +36,15 @@ export function ButtonCard({
     onChange,
   });
 
+  const style: React.CSSProperties = {
+    ...(hidden && {display: 'none'}),
+    ...(corner && {
+      position: 'absolute',
+      right: 'var(--mantine-spacing-lg)',
+      top: ' var(--mantine-spacing-lg)',
+    }),
+  };
+
   return (
     <UnstyledButton
       {...others}
@@ -41,28 +54,30 @@ export function ButtonCard({
     >
       <div className={classes.body}>{children}</div>
 
-      {withCheckbox ? (
-        <Checkbox
-          checked={isChecked}
-          name={name}
-          value={value}
-          onChange={() => {}}
-          tabIndex={-1}
-          styles={{
-            input: {cursor: 'pointer'},
-          }}
-        />
-      ) : null}
+      <span style={style}>
+        {withCheckbox ? (
+          <Checkbox
+            checked={isChecked}
+            name={name}
+            value={value}
+            onChange={() => {}}
+            tabIndex={-1}
+            styles={{
+              input: {cursor: 'pointer'},
+            }}
+          />
+        ) : null}
 
-      {withRadio ? (
-        <Radio
-          checked={isChecked}
-          name={name}
-          value={value}
-          onChange={() => {}}
-          tabIndex={-1}
-        />
-      ) : null}
+        {withRadio ? (
+          <Radio
+            checked={isChecked}
+            name={name}
+            value={value}
+            onChange={() => {}}
+            tabIndex={-1}
+          />
+        ) : null}
+      </span>
     </UnstyledButton>
   );
 }
