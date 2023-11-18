@@ -1,8 +1,8 @@
-import {Button, Flex, Group, Stepper, Text, Title} from '@mantine/core';
+import {Button, Flex, Group, Stack, Stepper, Text, Title} from '@mantine/core';
 import {useLoaderData, useNavigate} from '@remix-run/react';
 import {json, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
 import {useState} from 'react';
-import {ButtonCard} from '~/components/ButtonCard';
+import {AristLocationRadioCard} from '~/components/artist/ArtistLocationRadioCard';
 import {getBookingShopifyApi} from '~/lib/api/bookingShopifyApi';
 import {type CustomerLocation} from '~/lib/api/model';
 
@@ -29,16 +29,18 @@ export default function ArtistTreatments() {
   return (
     <Stepper color="pink" active={0}>
       <Stepper.Step label="Lokation" description="Hvor skal behandling ske?">
-        <Title order={3} mb="sm">
-          Lokationer:
-        </Title>
-        <Text mb="sm">
-          Skønhedseksperten giver dig mulighed for at fuldføre den her
-          behandling to forskellig steder, du skal vælge hvor du ønsker
-          behandling skal ske?
-        </Text>
+        <Stack gap="xl" mt="xl">
+          <div>
+            <Title order={2} tt="uppercase" ta="center" mb="md">
+              Lokation
+            </Title>
+            <Text c="dimmed" ta="center">
+              Vælge hvor du fortag behandling?
+            </Text>
+          </div>
 
-        <LocationStep locations={schedule.locations} />
+          <LocationStep locations={schedule.locations} />
+        </Stack>
       </Stepper.Step>
       <Stepper.Step
         label="Behandlinger"
@@ -70,43 +72,20 @@ function LocationStep({locations}: {locations: CustomerLocation[]}) {
 
   const markup = locations.map((location) => {
     return (
-      <ButtonCard
+      <AristLocationRadioCard
         key={location._id}
-        withRadio
         checked={selectedLocation?._id === location._id}
         value={location._id}
         onChange={onClick(location)}
         name="locationId"
-      >
-        <Text tt="uppercase" c="dimmed" fw={700} size="xs">
-          {location.name}
-        </Text>
-        <Text mt="xs" mb="md" c="black">
-          {location.fullAddress}
-        </Text>
-        <Group wrap="nowrap" gap="xs">
-          <Group gap="xs" wrap="nowrap">
-            {location.locationType === 'destination' ? (
-              <Text size="xs">Kører til din adresse</Text>
-            ) : null}
-            {location.locationType !== 'destination' ? (
-              <>
-                <Text size="xs">
-                  {location.originType === 'home'
-                    ? 'Hjemmeadrsese'
-                    : 'Salon/Klink'}
-                </Text>
-              </>
-            ) : null}
-          </Group>
-        </Group>
-      </ButtonCard>
+        location={location}
+      />
     );
   });
 
   return (
     <form method="get" style={{maxWidth: '100%'}} onSubmit={onSubmit}>
-      <Flex gap="md" mb="md">
+      <Flex gap="lg" p="xl">
         {markup}
       </Flex>
       <Group justify="center">

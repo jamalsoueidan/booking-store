@@ -130,7 +130,7 @@ export default function ArtistTreatmentsBooking() {
           description="Hvornår skal behandling ske?"
         >
           <form
-            method="post"
+            method="POST"
             action={`completed${location.search}`}
             style={{maxWidth: '100%'}}
           >

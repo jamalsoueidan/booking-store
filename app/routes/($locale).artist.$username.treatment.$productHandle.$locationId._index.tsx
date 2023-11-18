@@ -15,18 +15,18 @@ import {ALL_PRODUCTS_QUERY} from './($locale).artist.$username._index';
 
 import {
   AspectRatio,
-  Badge,
   Button,
   Flex,
   Group,
   SimpleGrid,
   Skeleton,
+  Stack,
   Stepper,
   Text,
   Title,
   rem,
 } from '@mantine/core';
-import {ButtonCard} from '~/components/ButtonCard';
+import {ArtistServiceCheckboxCard} from '~/components/artist/ArtistServiceCheckboxCard';
 import {durationToTime} from '~/lib/duration';
 
 export async function loader({params, context}: LoaderFunctionArgs) {
@@ -76,28 +76,35 @@ export default function ArtistTreatments() {
         label="Behandlinger"
         description="Hvilken behandlinger skal laves?"
       >
-        <Title order={3} mb="sm">
-          Valgt produkt(er):
-        </Title>
+        <Stack gap="xl" mt="xl">
+          <div>
+            <Title order={2} tt="uppercase" ta="center" mb="md">
+              Behandlinger
+            </Title>
+            <Text c="dimmed" ta="center">
+              Vælge behandlinger?
+            </Text>
+          </div>
 
-        <Suspense
-          fallback={
-            <SimpleGrid cols={{base: 1, lg: 4, md: 3, sm: 2}} spacing="xl">
-              <Skeleton height={50} circle mb="xl" />
-              <Skeleton height={8} radius="xl" />
-            </SimpleGrid>
-          }
-        >
-          <Await resolve={data.products}>
-            {({products}) => (
-              <RenderArtistProducts
-                products={products}
-                services={data.services}
-                selectedProductId={data.selectedProductId}
-              />
-            )}
-          </Await>
-        </Suspense>
+          <Suspense
+            fallback={
+              <SimpleGrid cols={{base: 1, lg: 4, md: 3, sm: 2}} spacing="xl">
+                <Skeleton height={50} circle mb="xl" />
+                <Skeleton height={8} radius="xl" />
+              </SimpleGrid>
+            }
+          >
+            <Await resolve={data.products}>
+              {({products}) => (
+                <RenderArtistProducts
+                  products={products}
+                  services={data.services}
+                  selectedProductId={data.selectedProductId}
+                />
+              )}
+            </Await>
+          </Suspense>
+        </Stack>
       </Stepper.Step>
 
       <Stepper.Step
@@ -155,14 +162,22 @@ function RenderArtistProducts({
       action={`${params.locationId}/availability`}
       style={{maxWidth: '100%'}}
     >
-      <Flex gap="md" mb="md">
-        {selectedProductMarkup}
-        {restProductsMarkup}
+      <Flex justify="center" align="center" direction={'column'}>
+        <SimpleGrid
+          cols={{base: 1, md: 3}}
+          spacing="lg"
+          mb="md"
+          p="lg"
+          w={{base: '100%', md: '70%'}}
+        >
+          {selectedProductMarkup}
+          {restProductsMarkup}
+        </SimpleGrid>
+        <Group justify="center">
+          <Button onClick={handleCloseClick}>Tilbage</Button>
+          <Button type="submit">Næste</Button>
+        </Group>
       </Flex>
-      <Group justify="center">
-        <Button onClick={handleCloseClick}>Tilbage</Button>
-        <Button type="submit">Næste</Button>
-      </Group>
     </form>
   );
 }
@@ -187,8 +202,7 @@ function ArtistProduct({
   });
 
   return (
-    <ButtonCard
-      withCheckbox
+    <ArtistServiceCheckboxCard
       value={artistService!.productId.toString()}
       defaultChecked={defaultChecked}
       name="productIds"
@@ -200,24 +214,32 @@ function ArtistProduct({
           sizes="(min-width: 45em) 20vw, 50vw"
         />
       </AspectRatio>
-      <Title order={3} mt="sm" mb={rem(4)}>
+      <Title order={3} mt="sm" size={'md'} mb={rem(4)}>
         {product.title}
       </Title>
-      <Text c="dimmed" size="xs" tt="uppercase" fw={700}>
+      <Text c="dimmed" size="xs" tt="uppercase" fw={500}>
         {artistService?.description || 'ingen beskrivelse'}
       </Text>
 
-      <Group justify="space-between">
-        <Text c="dimmed" size="xs" tt="uppercase" fw={700}>
-          {durationToTime(artistService?.duration ?? 0)}
-        </Text>
+      <Flex
+        gap="sm"
+        mt="lg"
+        direction="column"
+        justify="flex-end"
+        style={{flexGrow: 1, position: 'relative'}}
+      >
+        <Group justify="space-between" mt="md">
+          <Text c="dimmed" size="xs" tt="uppercase" fw={700}>
+            {durationToTime(artistService?.duration ?? 0)}
+          </Text>
 
-        {productVariant ? (
-          <Badge variant="light" color="gray" size="lg">
-            <Money data={productVariant.price} />
-          </Badge>
-        ) : null}
-      </Group>
-    </ButtonCard>
+          {productVariant ? (
+            <Text c="black" size="xs" tt="uppercase" fw={700}>
+              <Money data={productVariant.price} />
+            </Text>
+          ) : null}
+        </Group>
+      </Flex>
+    </ArtistServiceCheckboxCard>
   );
 }
