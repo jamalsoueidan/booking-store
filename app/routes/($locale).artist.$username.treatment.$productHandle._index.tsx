@@ -110,7 +110,9 @@ function LocationStep({locations}: {locations: CustomerLocation[]}) {
         {markup}
       </Flex>
       <Group justify="center">
-        <Button type="submit">Næste</Button>
+        <Button type="submit" disabled={!selectedLocation}>
+          Næste
+        </Button>
       </Group>
     </form>
   );

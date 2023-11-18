@@ -1,10 +1,24 @@
 import {Carousel} from '@mantine/carousel';
-import {Button, Stack, Stepper, Title} from '@mantine/core';
-import {useLoaderData, useSearchParams} from '@remix-run/react';
+import {
+  Button,
+  Group,
+  SimpleGrid,
+  Stack,
+  Stepper,
+  Text,
+  Title,
+} from '@mantine/core';
+import {
+  useLoaderData,
+  useLocation,
+  useNavigate,
+  useParams,
+} from '@remix-run/react';
 import {json, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
 import {format} from 'date-fns';
 import {da} from 'date-fns/locale';
 import {createRef, useCallback, useState} from 'react';
+import {MultilineButton} from '~/components/MultilineButton';
 import {getBookingShopifyApi} from '~/lib/api/bookingShopifyApi';
 import {
   type CustomerAvailability,
@@ -42,74 +56,63 @@ export async function loader({params, request}: LoaderFunctionArgs) {
 
 export default function ArtistTreatmentsBooking() {
   const availability = useLoaderData<typeof loader>();
+  const navigate = useNavigate();
+  const location = useLocation();
+  const params = useParams();
   const [active, setActive] = useState(2);
-  const [searchParams, setSearchParams] = useSearchParams();
+  const [selectedTimer, setSelectedTimer] = useState<string>();
+  const [selectedDay, setSelectedDay] = useState<string>();
+
   const availabilityDateInput = createRef<HTMLInputElement>();
   const availabilitySlotInput = createRef<HTMLInputElement>();
 
-  const productIds = searchParams.getAll('productIds');
+  const handleCloseClick = (event: any) => {
+    event.preventDefault();
+    navigate(-1);
+  };
 
-  const changeAvailabilityDateInput = useCallback(
+  const changeDay = useCallback(
     ({date}: CustomerAvailability) =>
       () => {
         if (availabilityDateInput.current) {
           availabilityDateInput.current.value = date.substring(0, 10);
-          setSearchParams({
-            productIds,
-            availabilityDate: availabilityDateInput.current.value,
-          });
+          setSelectedDay(date);
         }
       },
-    [availabilityDateInput, productIds, setSearchParams],
+    [availabilityDateInput],
   );
 
-  const availabilityDate = availability.payload.map((availability) => {
-    return (
-      <Carousel.Slide key={availability.date}>
-        <Button onClick={changeAvailabilityDateInput(availability)}>
-          <p className="text-xs text-gray-900 dark:text-white">
-            {format(new Date(availability.date), 'iiii', {locale: da})}
-          </p>
-          <p className="text-sm text-gray-900 dark:text-white break-keep">
-            {format(new Date(availability.date), 'PPP', {locale: da}).slice(
-              0,
-              -4,
-            )}
-          </p>
-        </Button>
-      </Carousel.Slide>
-    );
-  });
-
-  const changeAvailabilitySlotInput = useCallback(
+  const changeTimer = useCallback(
     (slot: CustomerAvailabilitySlotsItem) => () => {
       if (availabilitySlotInput.current) {
         availabilitySlotInput.current.value = slot.from
           .substring(11, 16)
           .replace(':', '-');
-        setSearchParams({
-          productIds,
-          availabilitySlot: availabilitySlotInput.current.value,
-        });
+        setSelectedTimer(slot.from);
       }
     },
-    [availabilitySlotInput, productIds, setSearchParams],
+    [availabilitySlotInput],
   );
 
-  const availabilitySlot = availability.payload
-    .find(
-      ({date}) =>
-        date.substring(0, 10) === searchParams.get('availabilityDate'),
-    )
-    ?.slots?.map((slot) => {
-      return (
-        <Carousel.Slide key={slot.from}>
-          <Button onClick={changeAvailabilitySlotInput(slot)}>
-            {format(new Date(slot.from), 'HH:mm', {locale: da})}
-          </Button>
-        </Carousel.Slide>
-      );
-    });
+  const days = availability.payload.map((availability) => (
+    <AvailabilityDay
+      key={availability.date}
+      onClick={changeDay(availability)}
+      availability={availability}
+      selected={selectedDay}
+    />
+  ));
+
+  const slots = availability.payload
+    .find(({date}) => date === selectedDay)
+    ?.slots?.map((slot) => (
+      <AvailabilityTime
+        key={slot.from}
+        onClick={changeTimer(slot)}
+        slot={slot}
+        selected={selectedTimer}
+      />
+    ));
 
   return (
     <Stack gap="xl">
@@ -122,64 +125,119 @@ export default function ArtistTreatmentsBooking() {
           label="Behandlinger"
           description="Hvilken behandlinger skal laves?"
         ></Stepper.Step>
-
         <Stepper.Step
           label="Dato & Tid"
           description="Hvornår skal behandling ske?"
         >
-          <input
-            type="hidden"
-            defaultValue={searchParams.get('availabilityDate') || ''}
-            name="availabilityDate"
-            className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-            ref={availabilityDateInput}
-          />
-          <input
-            type="hidden"
-            defaultValue={searchParams.get('availabilitySlot') || ''}
-            name="availabilitySlot"
-            className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-            ref={availabilitySlotInput}
-          />
+          <form
+            method="post"
+            action={`completed${location.search}`}
+            style={{maxWidth: '100%'}}
+          >
+            <Stack gap="xl" mb="md">
+              <input
+                type="hidden"
+                defaultValue={selectedDay}
+                name="availabilityDate"
+                className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                ref={availabilityDateInput}
+              />
+              <input
+                type="hidden"
+                defaultValue={selectedTimer}
+                name="availabilitySlot"
+                className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                ref={availabilitySlotInput}
+              />
 
-          <Title order={3} mb="sm">
-            Vælge dato:
-          </Title>
-          {availabilityDate ? (
-            <Carousel
-              slideSize={{base: '20%'}}
-              align="start"
-              slideGap="sm"
-              controlsOffset="xs"
-              controlSize={40}
-              containScroll="keepSnaps"
-              style={{paddingLeft: '60px', paddingRight: '60px'}}
-            >
-              {availabilityDate}
-            </Carousel>
-          ) : null}
+              {days ? (
+                <div>
+                  <Title order={3} mb="sm">
+                    Vælge dato:
+                  </Title>
 
-          <Title order={3} mb="sm" mt="xl ">
-            Vælge tid:
-          </Title>
-          {availabilitySlot ? (
-            <Carousel
-              slideSize={{base: '5%'}}
-              align="start"
-              slideGap="sm"
-              controlsOffset="xs"
-              controlSize={40}
-              containScroll="keepSnaps"
-              style={{paddingLeft: '60px', paddingRight: '60px'}}
-            >
-              {availabilitySlot}
-            </Carousel>
-          ) : null}
+                  <Carousel
+                    slideSize={{base: '100px'}}
+                    align="start"
+                    slideGap="sm"
+                    controlsOffset="xs"
+                    controlSize={40}
+                    containScroll="trimSnaps"
+                    style={{paddingLeft: '60px', paddingRight: '60px'}}
+                  >
+                    {days}
+                  </Carousel>
+                </div>
+              ) : null}
+
+              {slots ? (
+                <div>
+                  <Title order={3} mb="sm">
+                    Vælge tid:
+                  </Title>
+                  <SimpleGrid
+                    cols={{base: 5, xl: 18, lg: 14, md: 10, sm: 6}}
+                    spacing="sm"
+                  >
+                    {slots}
+                  </SimpleGrid>
+                </div>
+              ) : null}
+            </Stack>
+            <Group justify="center">
+              <Button onClick={handleCloseClick}>Tilbage</Button>
+              <Button type="submit" disabled={!selectedDay || !selectedTimer}>
+                Næste
+              </Button>
+            </Group>
+          </form>
         </Stepper.Step>
-        <Stepper.Completed>
-          Completed, click back button to get to previous step
-        </Stepper.Completed>
       </Stepper>
     </Stack>
+  );
+}
+
+function AvailabilityDay({
+  availability,
+  selected,
+  onClick,
+}: {
+  availability: CustomerAvailability;
+  selected?: string;
+  onClick: () => void;
+}) {
+  return (
+    <Carousel.Slide key={availability.date}>
+      <MultilineButton
+        onClick={onClick}
+        variant={availability.date === selected ? 'filled' : 'light'}
+      >
+        <Text size="sm" ta="center" fw={500}>
+          {format(new Date(availability.date), 'EEEE', {locale: da})}
+        </Text>
+        <Text size="md" ta="center" fw={500}>
+          {format(new Date(availability.date), 'PP', {locale: da}).slice(0, -6)}
+        </Text>
+      </MultilineButton>
+    </Carousel.Slide>
+  );
+}
+
+function AvailabilityTime({
+  slot,
+  selected,
+  onClick,
+}: {
+  slot: CustomerAvailabilitySlotsItem;
+  selected?: string;
+  onClick: () => void;
+}) {
+  return (
+    <Button
+      variant={slot.from === selected ? 'filled' : 'light'}
+      onClick={onClick}
+    >
+      {format(new Date(slot.from), 'HH:mm', {locale: da})}
+    </Button>
   );
 }

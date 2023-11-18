@@ -103,14 +103,7 @@ export default function ArtistTreatments() {
       <Stepper.Step
         label="Dato & Tid"
         description="Hvornår skal behandling ske?"
-      >
-        <Title order={3} mb="sm">
-          Vælge dato/tid:
-        </Title>
-      </Stepper.Step>
-      <Stepper.Completed>
-        Completed, click back button to get to previous step
-      </Stepper.Completed>
+      ></Stepper.Step>
     </Stepper>
   );
 }
