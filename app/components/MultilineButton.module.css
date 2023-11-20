@@ -1,0 +1,11 @@
+.button {
+  width: 100%;
+  height: 72px;
+
+  @mixin hover {
+    background-color: light-dark(
+      var(--mantine-color-blue-4),
+      var(--mantine-color-blue-8)
+    );
+  }
+}

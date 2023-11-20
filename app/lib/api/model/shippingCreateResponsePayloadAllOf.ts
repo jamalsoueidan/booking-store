@@ -9,9 +9,9 @@ import type {ShippingCreateResponsePayloadAllOfDestination} from './shippingCrea
 import type {CustomerLocationCreateBody} from './customerLocationCreateBody';
 
 export type ShippingCreateResponsePayloadAllOf = {
-  _id?: string;
+  _id: string;
   cost: ShippingCreateResponsePayloadAllOfCost;
-  destination?: ShippingCreateResponsePayloadAllOfDestination;
-  location?: string;
-  origin?: CustomerLocationCreateBody;
+  destination: ShippingCreateResponsePayloadAllOfDestination;
+  location: string;
+  origin: CustomerLocationCreateBody;
 };

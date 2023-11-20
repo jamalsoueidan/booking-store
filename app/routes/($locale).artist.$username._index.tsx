@@ -7,13 +7,13 @@ import {ArtistProduct} from '~/components/artist/ArtistProduct';
 import {PRODUCT_SIMPLE} from '~/data/fragments';
 import {getBookingShopifyApi} from '~/lib/api/bookingShopifyApi';
 import {
-  type UserProductsListParams,
+  type UserProductsListByScheduleParams,
   type UserScheduleWithLocations,
 } from '~/lib/api/model';
 
 export type SearchParams = {
   [key: string]: string | undefined;
-} & UserProductsListParams;
+} & UserProductsListByScheduleParams;
 
 export async function loader({request, params, context}: LoaderFunctionArgs) {
   const {username} = params;
@@ -31,10 +31,12 @@ export async function loader({request, params, context}: LoaderFunctionArgs) {
     searchParams[key] = value;
   }
 
-  const {payload: services} = await getBookingShopifyApi().userProductsList(
-    username,
-    searchParams,
-  );
+  //get products for specific schedule id
+  const {payload: services} =
+    await getBookingShopifyApi().userProductsListBySchedule(
+      username,
+      searchParams,
+    );
 
   const productIds = services.map(({productId}) => productId);
 
@@ -47,7 +49,7 @@ export async function loader({request, params, context}: LoaderFunctionArgs) {
     },
   });
 
-  const schedules = getBookingShopifyApi().userSchedulesList(username);
+  const schedules = getBookingShopifyApi().userSchedulesListLocations(username);
 
   return defer({
     products,
@@ -134,7 +136,7 @@ function ArtistSchedulesMenu({data}: {data: UserScheduleWithLocations[]}) {
   );
 }
 
-const ALL_PRODUCTS_QUERY = `#graphql
+export const ALL_PRODUCTS_QUERY = `#graphql
   ${PRODUCT_SIMPLE}
   query ArtistServicesProducts(
     $country: CountryCode

@@ -6,7 +6,7 @@
  */
 import type {UserScheduleWithLocations} from './userScheduleWithLocations';
 
-export type UserSchedulesList200 = {
+export type UserSchedulesListLocations200 = {
   payload: UserScheduleWithLocations[];
   success: boolean;
 };

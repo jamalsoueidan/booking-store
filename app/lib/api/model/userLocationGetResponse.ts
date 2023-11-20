@@ -4,9 +4,9 @@
  * Booking Shopify Api
  * OpenAPI spec version: 1.0.0
  */
-import type {CustomerProductList} from './customerProductList';
+import type {CustomerLocation} from './customerLocation';
 
-export interface UserProductsListResponse {
-  payload: CustomerProductList[];
+export interface UserLocationGetResponse {
+  payload: CustomerLocation;
   success: boolean;
 }

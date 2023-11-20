@@ -84,11 +84,7 @@ export function AddressAutocompleteInput({
   };
 
   return (
-    <Combobox
-      onOptionSubmit={onOptionSubmit}
-      withinPortal={false}
-      store={combobox}
-    >
+    <Combobox onOptionSubmit={onOptionSubmit} store={combobox}>
       <Combobox.Target>
         <TextInput
           label={label} // Hvor vil du kører fra? Hvor skal kunden køre til?

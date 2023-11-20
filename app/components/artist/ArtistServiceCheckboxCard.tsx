@@ -1,34 +1,41 @@
-import {Checkbox, Radio, UnstyledButton} from '@mantine/core';
+import {Checkbox, UnstyledButton} from '@mantine/core';
 import {useUncontrolled} from '@mantine/hooks';
-import classes from './ButtonCard.module.css';
+import classes from './ArtistServiceCheckboxCard.module.css';
 
-interface ButtonCardProps {
+interface ArtistServiceCheckboxCardProps {
   checked?: boolean;
   value: string;
   defaultChecked?: boolean;
   onChange?(checked: boolean): void;
-  withCheckbox?: boolean;
-  withRadio?: boolean;
+  name: string;
 }
 
-export function ButtonCard({
+export function ArtistServiceCheckboxCard({
   checked,
   defaultChecked,
   value,
   onChange,
   className,
   children,
-  withCheckbox,
-  withRadio,
+  name,
   ...others
-}: ButtonCardProps &
-  Omit<React.ComponentPropsWithoutRef<'button'>, keyof ButtonCardProps>) {
+}: ArtistServiceCheckboxCardProps &
+  Omit<
+    React.ComponentPropsWithoutRef<'button'>,
+    keyof ArtistServiceCheckboxCardProps
+  >) {
   const [isChecked, handleChange] = useUncontrolled({
     value: checked,
     defaultValue: defaultChecked,
     finalValue: false,
     onChange,
   });
+
+  const style: React.CSSProperties = {
+    position: 'absolute',
+    right: 'var(--mantine-spacing-lg)',
+    top: ' var(--mantine-spacing-lg)',
+  };
 
   return (
     <UnstyledButton
@@ -39,26 +46,18 @@ export function ButtonCard({
     >
       <div className={classes.body}>{children}</div>
 
-      {withCheckbox ? (
+      <span style={style}>
         <Checkbox
           checked={isChecked}
-          name="locationId"
+          name={name}
           value={value}
           onChange={() => {}}
           tabIndex={-1}
-          styles={{input: {cursor: 'pointer'}}}
+          styles={{
+            input: {cursor: 'pointer'},
+          }}
         />
-      ) : null}
-
-      {withRadio ? (
-        <Radio
-          checked={isChecked}
-          name="locationId"
-          value={value}
-          onChange={() => {}}
-          tabIndex={-1}
-        />
-      ) : null}
+      </span>
     </UnstyledButton>
   );
 }

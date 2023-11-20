@@ -1,4 +1,8 @@
-# Beauty Proffesional Store
+<h1 align="center">Beauty Proffesional Store</h1>
+
+<p align="center">
+  <img src="https://github.com/jamalsoueidan/booking-store/blob/main/screens/artist.png?raw=true" width="600"/>
+</p>
 
 This platform is a place specially designed for beauty professionals. It functions as a digital marketplace where these professionals can sell their services to customers using a booking system and online payment options. It's important to note that it's not about beauty locations, but about beauty professionals themselves.
 

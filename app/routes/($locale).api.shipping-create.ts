@@ -1,9 +1,9 @@
 import {parse} from '@conform-to/zod';
 import {json, type ActionFunctionArgs} from '@shopify/remix-oxygen';
 import {getBookingShopifyApi} from '~/lib/api/bookingShopifyApi';
-import {shippingCalculateBody} from '~/lib/zod/bookingShopifyApi';
+import {shippingCreateBody} from '~/lib/zod/bookingShopifyApi';
 
-const schema = shippingCalculateBody;
+const schema = shippingCreateBody;
 
 export const action = async ({request}: ActionFunctionArgs) => {
   const formData = await request.formData();
@@ -14,9 +14,8 @@ export const action = async ({request}: ActionFunctionArgs) => {
   if (submission.intent !== 'submit' || !submission.value) {
     return json(submission);
   }
-
   try {
-    const response = await getBookingShopifyApi().shippingCalculate(
+    const response = await getBookingShopifyApi().shippingCreate(
       submission.value,
     );
 

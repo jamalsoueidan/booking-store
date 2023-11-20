@@ -1182,19 +1182,6 @@ components:
         - socialUrls
         - shortDescription
         - aboutMe
-    UserProductsListResponse:
-      type: object
-      properties:
-        success:
-          type: boolean
-          example: true
-        payload:
-          type: array
-          items:
-            $ref: '#/components/schemas/CustomerProductList'
-      required:
-        - success
-        - payload
     UserScheduleWithLocations:
       type: object
       properties:
@@ -1230,7 +1217,66 @@ components:
                 $ref: '#/components/schemas/CustomerLocation'
           required:
             - locations
-    UserScheduleGetResponse:
+    UserLocationGetResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: true
+        payload:
+          $ref: '#/components/schemas/CustomerLocation'
+      required:
+        - success
+        - payload
+    UserProductsListByLocationResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: true
+        payload:
+          type: array
+          items:
+            $ref: '#/components/schemas/CustomerProductBase'
+      required:
+        - success
+        - payload
+    UserProductsGetProductsBody:
+      type: object
+      properties:
+        productIds:
+          type: array
+          items:
+            type: string
+      required:
+        - productIds
+    UserProductsGetProductsResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: true
+        payload:
+          type: array
+          items:
+            $ref: '#/components/schemas/CustomerProductBase'
+      required:
+        - success
+        - payload
+    UserProductsListByScheduleResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: true
+        payload:
+          type: array
+          items:
+            $ref: '#/components/schemas/CustomerProductList'
+      required:
+        - success
+        - payload
+    UserScheduleGetByLocationResponse:
       type: object
       properties:
         success:
@@ -1388,7 +1434,7 @@ components:
       type: object
       properties:
         customerId:
-          $ref: '#/components/schemas/NumberOrString'
+          type: number
         locationId:
           type: string
         destination:
@@ -1443,6 +1489,10 @@ components:
                     - currency
                     - value
               required:
+                - _id
+                - location
+                - destination
+                - origin
                 - cost
       required:
         - success
@@ -1459,6 +1509,20 @@ components:
             - $ref: '#/components/schemas/LocationTravelTime'
             - type: object
               properties:
+                customerId:
+                  type: number
+                locationId:
+                  type: string
+                destination:
+                  type: object
+                  properties:
+                    name:
+                      type: string
+                    fullAddress:
+                      type: string
+                  required:
+                    - name
+                    - fullAddress
                 cost:
                   type: object
                   properties:
@@ -1471,6 +1535,9 @@ components:
                     - value
               required:
                 - cost
+                - destination
+                - locationId
+                - customerId
       required:
         - success
         - payload
@@ -1564,16 +1631,96 @@ paths:
             type: string
       tags:
         - UserProduct
-      operationId: userProductsList
+      operationId: userProductsListBySchedule
       summary: GET Get products for user
-      description: This endpoint get products for user
+      description: This endpoint get products for user (across all schedules or one scheduleId)
       responses:
         '200':
           description: Response
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/UserProductsListResponse'
+                $ref: '#/components/schemas/UserProductsListByScheduleResponse'
+        '400':
+          $ref: '#/components/responses/BadResponse'
+        '401':
+          $ref: '#/components/responses/UnauthorizedResponse'
+        '403':
+          $ref: '#/components/responses/ForbiddenResponse'
+      security: []
+  '/user/{username}/product/{productId}/location/{locationId}':
+    get:
+      parameters:
+        - name: username
+          in: path
+          description: username is needed
+          required: true
+          schema:
+            type: string
+        - name: productId
+          in: path
+          description: productId is nedded
+          required: true
+          schema:
+            type: string
+        - name: locationId
+          in: path
+          description: locationId is nedded
+          required: true
+          schema:
+            type: string
+      tags:
+        - UserProduct
+      operationId: userProductsListByLocation
+      summary: GET Get products for user
+      description: This endpoint is intended to be used when we need to fetch related products from the same schedule and same location.
+      responses:
+        '200':
+          description: Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserProductsListByLocationResponse'
+        '400':
+          $ref: '#/components/responses/BadResponse'
+        '401':
+          $ref: '#/components/responses/UnauthorizedResponse'
+        '403':
+          $ref: '#/components/responses/ForbiddenResponse'
+      security: []
+  '/user/{username}/products/location/{locationId}':
+    post:
+      parameters:
+        - name: username
+          in: path
+          description: username is needed
+          required: true
+          schema:
+            type: string
+        - name: locationId
+          in: path
+          description: locationId is nedded
+          required: true
+          schema:
+            type: string
+      tags:
+        - UserProduct
+      operationId: userProductsGetProducts
+      summary: GET Get products for user
+      description: This endpoint get products in productsId from one schedule by location
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserProductsGetProductsBody'
+      responses:
+        '200':
+          description: Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserProductsGetProductsResponse'
         '400':
           $ref: '#/components/responses/BadResponse'
         '401':
@@ -1598,9 +1745,9 @@ paths:
             type: string
       tags:
         - UserSchedule
-      operationId: userScheduleGetByProductId
+      operationId: userScheduleGetByProduct
       summary: GET Get user schedule
-      description: This endpoint gets user schedule object by product id
+      description: 'This endpoint should retrieve a schedule and locations belonging to a specific productId, along with the product.'
       responses:
         '200':
           description: Response with payload
@@ -1628,9 +1775,9 @@ paths:
             type: string
       tags:
         - UserSchedule
-      operationId: userSchedulesList
+      operationId: userSchedulesListLocations
       summary: GET Get schedules for user
-      description: This endpoint get schedules for user
+      description: This endpoint should return all locations present in all schedules for specific user
       responses:
         '200':
           description: Response
@@ -1656,6 +1803,40 @@ paths:
         '403':
           $ref: '#/components/responses/ForbiddenResponse'
       security: []
+  '/user/{username}/location/{locationId}':
+    get:
+      parameters:
+        - name: username
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: locationId
+          in: path
+          required: true
+          schema:
+            type: string
+      tags:
+        - UserLocation
+      operationId: userLocationGet
+      summary: GET Get one location from user
+      description: This endpoint get one location for user
+      responses:
+        '200':
+          description: Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserLocationGetResponse'
+        '400':
+          $ref: '#/components/responses/BadResponse'
+        '401':
+          $ref: '#/components/responses/UnauthorizedResponse'
+        '403':
+          $ref: '#/components/responses/ForbiddenResponse'
+        '404':
+          $ref: '#/components/responses/NotFoundResponse'
+      security: []
   '/user/{username}/schedule/{scheduleId}/location/{locationId}':
     get:
       parameters:
@@ -1679,16 +1860,16 @@ paths:
             type: string
       tags:
         - UserSchedule
-      operationId: userScheduleGet
+      operationId: userScheduleGetByLocation
       summary: GET Get user schedule
-      description: This endpoint gets user schedule object
+      description: This endpoint should retrieve a schedule with products that only belong to a specific locationId.
       responses:
         '200':
           description: Response with payload
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/UserScheduleGetResponse'
+                $ref: '#/components/schemas/UserScheduleGetByLocationResponse'
         '400':
           $ref: '#/components/responses/BadResponse'
         '401':
