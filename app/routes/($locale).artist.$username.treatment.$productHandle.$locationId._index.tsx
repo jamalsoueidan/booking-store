@@ -1,4 +1,21 @@
-import {Await, useLoaderData, useNavigate, useParams} from '@remix-run/react';
+import {
+  AspectRatio,
+  Button,
+  Flex,
+  Group,
+  SimpleGrid,
+  Skeleton,
+  Text,
+  Title,
+  rem,
+} from '@mantine/core';
+import {
+  Await,
+  useActionData,
+  useLoaderData,
+  useNavigate,
+  useParams,
+} from '@remix-run/react';
 import {Image, Money, parseGid} from '@shopify/hydrogen';
 import {defer, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
 import {Suspense} from 'react';
@@ -12,18 +29,8 @@ import {
   type CustomerProductList,
 } from '~/lib/api/model';
 import {ALL_PRODUCTS_QUERY} from './($locale).artist.$username._index';
+import {type action} from './($locale).artist.$username.treatment.$productHandle.$locationId';
 
-import {
-  AspectRatio,
-  Button,
-  Flex,
-  Group,
-  SimpleGrid,
-  Skeleton,
-  Text,
-  Title,
-  rem,
-} from '@mantine/core';
 import {ArtistServiceCheckboxCard} from '~/components/artist/ArtistServiceCheckboxCard';
 import {ArtistStepper} from '~/components/artist/ArtistStepper';
 import {durationToTime} from '~/lib/duration';
@@ -63,7 +70,11 @@ export async function loader({params, context}: LoaderFunctionArgs) {
 }
 
 export default function ArtistTreatments() {
-  const data = useLoaderData<typeof loader>();
+  const previousFormData = useActionData<typeof action>();
+  const {products, services, selectedProductId} =
+    useLoaderData<typeof loader>();
+
+  const params = useParams();
 
   return (
     <ArtistStepper
@@ -79,13 +90,27 @@ export default function ArtistTreatments() {
           </SimpleGrid>
         }
       >
-        <Await resolve={data.products}>
+        <Await resolve={products}>
           {({products}) => (
-            <RenderArtistProducts
-              products={products}
-              services={data.services}
-              selectedProductId={data.selectedProductId}
-            />
+            <form
+              method="get"
+              action={`${params.locationId}/availability`}
+              style={{maxWidth: '100%'}}
+            >
+              {previousFormData?.shippingId ? (
+                <input
+                  type="hidden"
+                  name="shippingId"
+                  value={previousFormData?.shippingId}
+                />
+              ) : null}
+
+              <RenderArtistProducts
+                products={products}
+                services={services}
+                selectedProductId={selectedProductId}
+              />
+            </form>
           )}
         </Await>
       </Suspense>
@@ -105,7 +130,6 @@ function RenderArtistProducts({
   selectedProductId,
 }: RenderArtistProductsProps) {
   const navigate = useNavigate();
-  const params = useParams();
 
   const handleCloseClick = (event: any) => {
     event.preventDefault();
@@ -135,11 +159,7 @@ function RenderArtistProducts({
     ));
 
   return (
-    <form
-      method="get"
-      action={`${params.locationId}/availability`}
-      style={{maxWidth: '100%'}}
-    >
+    <>
       <Flex justify={'center'} align={'center'}>
         <SimpleGrid
           cols={{base: 1, md: 3}}
@@ -156,7 +176,7 @@ function RenderArtistProducts({
         <Button onClick={handleCloseClick}>Tilbage</Button>
         <Button type="submit">Næste</Button>
       </Group>
-    </form>
+    </>
   );
 }
 

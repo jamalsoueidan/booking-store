@@ -19,6 +19,7 @@ export async function loader({params, request}: LoaderFunctionArgs) {
 
   const url = new URL(request.url);
   const productIds = url.searchParams.getAll('productIds');
+  const shippingId = url.searchParams.get('shippingId') as string | undefined;
 
   if (productIds.length === 0) {
     throw new Error('Expected productId to be selected');
@@ -36,7 +37,7 @@ export async function loader({params, request}: LoaderFunctionArgs) {
     {
       productIds,
       startDate: '2023-05-13',
-      shippingId: undefined,
+      shippingId,
     },
   );
 
@@ -60,6 +61,7 @@ export default function ArtistTreatmentsBooking() {
     ({date}: CustomerAvailability) =>
     () => {
       setSelectedDay(date);
+      setSelectedTimer(undefined);
     };
 
   const changeTimer = (slot: CustomerAvailabilitySlotsItem) => () => {
@@ -96,15 +98,17 @@ export default function ArtistTreatmentsBooking() {
         <Stack gap="xl" mb="md">
           <input
             type="hidden"
-            name="availabilityDate"
+            name="date"
             className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-            value={selectedDay?.substring(0, 10)}
+            value={selectedDay || ''}
+            onChange={() => {}}
           />
           <input
             type="hidden"
-            name="availabilitySlot"
+            name="slot"
             className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-            value={selectedTimer?.substring(11, 16).replace(':', '-')}
+            value={selectedTimer || ''}
+            onChange={() => {}}
           />
 
           {days ? (
