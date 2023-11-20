@@ -5,7 +5,11 @@
  * OpenAPI spec version: 1.0.0
  */
 import type {ShippingCalculateResponsePayloadAllOfCost} from './shippingCalculateResponsePayloadAllOfCost';
+import type {ShippingCalculateResponsePayloadAllOfDestination} from './shippingCalculateResponsePayloadAllOfDestination';
 
 export type ShippingCalculateResponsePayloadAllOf = {
   cost: ShippingCalculateResponsePayloadAllOfCost;
+  customerId: number;
+  destination: ShippingCalculateResponsePayloadAllOfDestination;
+  locationId: string;
 };

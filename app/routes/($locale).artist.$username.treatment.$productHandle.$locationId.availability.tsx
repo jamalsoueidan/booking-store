@@ -1,24 +1,13 @@
 import {Carousel} from '@mantine/carousel';
-import {
-  Button,
-  Group,
-  SimpleGrid,
-  Stack,
-  Stepper,
-  Text,
-  Title,
-} from '@mantine/core';
-import {
-  useLoaderData,
-  useLocation,
-  useNavigate,
-  useParams,
-} from '@remix-run/react';
+import {Button, Group, SimpleGrid, Stack, Text, Title} from '@mantine/core';
+import {useMediaQuery} from '@mantine/hooks';
+import {useLoaderData, useLocation, useNavigate} from '@remix-run/react';
 import {json, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
 import {format} from 'date-fns';
 import {da} from 'date-fns/locale';
-import {createRef, useCallback, useState} from 'react';
+import {useState} from 'react';
 import {MultilineButton} from '~/components/MultilineButton';
+import {ArtistStepper} from '~/components/artist/ArtistStepper';
 import {getBookingShopifyApi} from '~/lib/api/bookingShopifyApi';
 import {
   type CustomerAvailability,
@@ -58,41 +47,24 @@ export default function ArtistTreatmentsBooking() {
   const availability = useLoaderData<typeof loader>();
   const navigate = useNavigate();
   const location = useLocation();
-  const params = useParams();
-  const [active, setActive] = useState(2);
+  const isMobile = useMediaQuery('(max-width: 50em)');
   const [selectedTimer, setSelectedTimer] = useState<string>();
   const [selectedDay, setSelectedDay] = useState<string>();
-
-  const availabilityDateInput = createRef<HTMLInputElement>();
-  const availabilitySlotInput = createRef<HTMLInputElement>();
 
   const handleCloseClick = (event: any) => {
     event.preventDefault();
     navigate(-1);
   };
 
-  const changeDay = useCallback(
+  const changeDay =
     ({date}: CustomerAvailability) =>
-      () => {
-        if (availabilityDateInput.current) {
-          availabilityDateInput.current.value = date.substring(0, 10);
-          setSelectedDay(date);
-        }
-      },
-    [availabilityDateInput],
-  );
+    () => {
+      setSelectedDay(date);
+    };
 
-  const changeTimer = useCallback(
-    (slot: CustomerAvailabilitySlotsItem) => () => {
-      if (availabilitySlotInput.current) {
-        availabilitySlotInput.current.value = slot.from
-          .substring(11, 16)
-          .replace(':', '-');
-        setSelectedTimer(slot.from);
-      }
-    },
-    [availabilitySlotInput],
-  );
+  const changeTimer = (slot: CustomerAvailabilitySlotsItem) => () => {
+    setSelectedTimer(slot.from);
+  };
 
   const days = availability.payload.map((availability) => (
     <AvailabilityDay
@@ -115,85 +87,68 @@ export default function ArtistTreatmentsBooking() {
     ));
 
   return (
-    <Stack gap="xl">
-      <Stepper color="pink" active={active} onStepClick={setActive}>
-        <Stepper.Step
-          label="Lokation"
-          description="Hvor skal behandling ske?"
-        ></Stepper.Step>
-        <Stepper.Step
-          label="Behandlinger"
-          description="Hvilken behandlinger skal laves?"
-        ></Stepper.Step>
-        <Stepper.Step
-          label="Dato & Tid"
-          description="Hvornår skal behandling ske?"
-        >
-          <form
-            method="POST"
-            action={`completed${location.search}`}
-            style={{maxWidth: '100%'}}
-          >
-            <Stack gap="xl" mb="md">
-              <input
-                type="hidden"
-                defaultValue={selectedDay}
-                name="availabilityDate"
-                className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                ref={availabilityDateInput}
-              />
-              <input
-                type="hidden"
-                defaultValue={selectedTimer}
-                name="availabilitySlot"
-                className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                ref={availabilitySlotInput}
-              />
+    <ArtistStepper active={2} title="Dato/Tid" description="Vælge tidspunkt?">
+      <form
+        method="POST"
+        action={`completed${location.search}`}
+        style={{maxWidth: '100%'}}
+      >
+        <Stack gap="xl" mb="md">
+          <input
+            type="hidden"
+            name="availabilityDate"
+            className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+            value={selectedDay?.substring(0, 10)}
+          />
+          <input
+            type="hidden"
+            name="availabilitySlot"
+            className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+            value={selectedTimer?.substring(11, 16).replace(':', '-')}
+          />
 
-              {days ? (
-                <div>
-                  <Title order={3} mb="sm">
-                    Vælge dato:
-                  </Title>
+          {days ? (
+            <div>
+              <Title order={3} mb="sm">
+                Vælge dato:
+              </Title>
 
-                  <Carousel
-                    slideSize={{base: '100px'}}
-                    align="start"
-                    slideGap="sm"
-                    controlsOffset="xs"
-                    controlSize={40}
-                    containScroll="trimSnaps"
-                    style={{paddingLeft: '60px', paddingRight: '60px'}}
-                  >
-                    {days}
-                  </Carousel>
-                </div>
-              ) : null}
+              <Carousel
+                slideSize={{base: '100px'}}
+                align="start"
+                slideGap="sm"
+                controlsOffset="xs"
+                controlSize={40}
+                containScroll="trimSnaps"
+                style={{paddingLeft: '60px', paddingRight: '60px'}}
+              >
+                {days}
+              </Carousel>
+            </div>
+          ) : null}
 
-              {slots ? (
-                <div>
-                  <Title order={3} mb="sm">
-                    Vælge tid:
-                  </Title>
-                  <SimpleGrid
-                    cols={{base: 5, xl: 18, lg: 14, md: 10, sm: 6}}
-                    spacing="sm"
-                  >
-                    {slots}
-                  </SimpleGrid>
-                </div>
-              ) : null}
-            </Stack>
-            <Group justify="center">
-              <Button onClick={handleCloseClick}>Tilbage</Button>
-              <Button type="submit" disabled={!selectedDay || !selectedTimer}>
-                Næste
-              </Button>
-            </Group>
-          </form>
-        </Stepper.Step>
-      </Stepper>
-    </Stack>
+          {slots ? (
+            <div>
+              <Title order={3} mb="sm">
+                Vælge tid:
+              </Title>
+              <SimpleGrid
+                cols={{base: 5, xl: 18, lg: 14, md: 10, sm: 6}}
+                spacing="sm"
+              >
+                {slots}
+              </SimpleGrid>
+            </div>
+          ) : null}
+        </Stack>
+        <Group justify="center">
+          <Button onClick={handleCloseClick}>Tilbage</Button>
+          <Button type="submit" disabled={!selectedDay || !selectedTimer}>
+            Næste
+          </Button>
+        </Group>
+      </form>
+    </ArtistStepper>
   );
 }
 

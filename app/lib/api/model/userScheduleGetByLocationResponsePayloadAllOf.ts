@@ -6,6 +6,6 @@
  */
 import type {UserScheduleProductWithLocations} from './userScheduleProductWithLocations';
 
-export type UserScheduleGetResponsePayloadAllOf = {
+export type UserScheduleGetByLocationResponsePayloadAllOf = {
   products: UserScheduleProductWithLocations[];
 };

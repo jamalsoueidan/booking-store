@@ -20,13 +20,12 @@ import {
   Group,
   SimpleGrid,
   Skeleton,
-  Stack,
-  Stepper,
   Text,
   Title,
   rem,
 } from '@mantine/core';
 import {ArtistServiceCheckboxCard} from '~/components/artist/ArtistServiceCheckboxCard';
+import {ArtistStepper} from '~/components/artist/ArtistStepper';
 import {durationToTime} from '~/lib/duration';
 
 export async function loader({params, context}: LoaderFunctionArgs) {
@@ -67,51 +66,30 @@ export default function ArtistTreatments() {
   const data = useLoaderData<typeof loader>();
 
   return (
-    <Stepper color="pink" active={1}>
-      <Stepper.Step
-        label="Lokation"
-        description="Hvor skal behandling ske?"
-      ></Stepper.Step>
-      <Stepper.Step
-        label="Behandlinger"
-        description="Hvilken behandlinger skal laves?"
+    <ArtistStepper
+      active={1}
+      title="Behandlinger"
+      description="Vælge behandlinger?"
+    >
+      <Suspense
+        fallback={
+          <SimpleGrid cols={{base: 1, lg: 4, md: 3, sm: 2}} spacing="xl">
+            <Skeleton height={50} circle mb="xl" />
+            <Skeleton height={8} radius="xl" />
+          </SimpleGrid>
+        }
       >
-        <Stack gap="xl" mt="xl">
-          <div>
-            <Title order={2} tt="uppercase" ta="center" mb="md">
-              Behandlinger
-            </Title>
-            <Text c="dimmed" ta="center">
-              Vælge behandlinger?
-            </Text>
-          </div>
-
-          <Suspense
-            fallback={
-              <SimpleGrid cols={{base: 1, lg: 4, md: 3, sm: 2}} spacing="xl">
-                <Skeleton height={50} circle mb="xl" />
-                <Skeleton height={8} radius="xl" />
-              </SimpleGrid>
-            }
-          >
-            <Await resolve={data.products}>
-              {({products}) => (
-                <RenderArtistProducts
-                  products={products}
-                  services={data.services}
-                  selectedProductId={data.selectedProductId}
-                />
-              )}
-            </Await>
-          </Suspense>
-        </Stack>
-      </Stepper.Step>
-
-      <Stepper.Step
-        label="Dato & Tid"
-        description="Hvornår skal behandling ske?"
-      ></Stepper.Step>
-    </Stepper>
+        <Await resolve={data.products}>
+          {({products}) => (
+            <RenderArtistProducts
+              products={products}
+              services={data.services}
+              selectedProductId={data.selectedProductId}
+            />
+          )}
+        </Await>
+      </Suspense>
+    </ArtistStepper>
   );
 }
 
@@ -162,7 +140,7 @@ function RenderArtistProducts({
       action={`${params.locationId}/availability`}
       style={{maxWidth: '100%'}}
     >
-      <Flex justify="center" align="center" direction={'column'}>
+      <Flex justify={'center'} align={'center'}>
         <SimpleGrid
           cols={{base: 1, md: 3}}
           spacing="lg"
@@ -173,11 +151,11 @@ function RenderArtistProducts({
           {selectedProductMarkup}
           {restProductsMarkup}
         </SimpleGrid>
-        <Group justify="center">
-          <Button onClick={handleCloseClick}>Tilbage</Button>
-          <Button type="submit">Næste</Button>
-        </Group>
       </Flex>
+      <Group justify="center">
+        <Button onClick={handleCloseClick}>Tilbage</Button>
+        <Button type="submit">Næste</Button>
+      </Group>
     </form>
   );
 }

@@ -1,10 +1,10 @@
-import {Stack, Stepper} from '@mantine/core';
 import {useLoaderData} from '@remix-run/react';
 import {
   json,
   type ActionFunctionArgs,
   type LoaderFunctionArgs,
 } from '@shopify/remix-oxygen';
+import {ArtistStepper} from '~/components/artist/ArtistStepper';
 
 export function action({context, request}: ActionFunctionArgs) {
   return json({});
@@ -30,22 +30,12 @@ export default function ArtistTreatmentsBooking() {
   const data = useLoaderData<typeof loader>();
 
   return (
-    <Stack gap="xl">
-      <Stepper color="pink" active={3}>
-        <Stepper.Step
-          label="Lokation"
-          description="Hvor skal behandling ske?"
-        ></Stepper.Step>
-        <Stepper.Step
-          label="Behandlinger"
-          description="Hvilken behandlinger skal laves?"
-        ></Stepper.Step>
-        <Stepper.Step
-          label="Dato & Tid"
-          description="Hvornår skal behandling ske?"
-        ></Stepper.Step>
-        <Stepper.Completed>hej med dig</Stepper.Completed>
-      </Stepper>
-    </Stack>
+    <ArtistStepper
+      active={3}
+      title="Færdig"
+      description="Køb processen er færdig."
+    >
+      <>completed</>
+    </ArtistStepper>
   );
 }

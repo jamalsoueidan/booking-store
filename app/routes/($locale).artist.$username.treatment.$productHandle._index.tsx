@@ -1,8 +1,9 @@
-import {Button, Flex, Group, Stack, Stepper, Text, Title} from '@mantine/core';
+import {Button, Flex, Group} from '@mantine/core';
 import {useLoaderData, useNavigate} from '@remix-run/react';
 import {json, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
 import {useState} from 'react';
 import {AristLocationRadioCard} from '~/components/artist/ArtistLocationRadioCard';
+import {ArtistStepper} from '~/components/artist/ArtistStepper';
 import {getBookingShopifyApi} from '~/lib/api/bookingShopifyApi';
 import {type CustomerLocation} from '~/lib/api/model';
 
@@ -27,31 +28,13 @@ export default function ArtistTreatments() {
   const {schedule} = useLoaderData<typeof loader>();
 
   return (
-    <Stepper color="pink" active={0}>
-      <Stepper.Step label="Lokation" description="Hvor skal behandling ske?">
-        <Stack gap="xl" mt="xl">
-          <div>
-            <Title order={2} tt="uppercase" ta="center" mb="md">
-              Lokation
-            </Title>
-            <Text c="dimmed" ta="center">
-              Vælge hvor du fortag behandling?
-            </Text>
-          </div>
-
-          <LocationStep locations={schedule.locations} />
-        </Stack>
-      </Stepper.Step>
-      <Stepper.Step
-        label="Behandlinger"
-        description="Hvilken behandlinger skal laves?"
-      ></Stepper.Step>
-
-      <Stepper.Step
-        label="Dato & Tid"
-        description="Hvornår skal behandling ske?"
-      ></Stepper.Step>
-    </Stepper>
+    <ArtistStepper
+      active={0}
+      title="Location"
+      description="Vælge hvor du fortag behandling?"
+    >
+      <LocationStep locations={schedule.locations} />
+    </ArtistStepper>
   );
 }
 
@@ -85,7 +68,7 @@ function LocationStep({locations}: {locations: CustomerLocation[]}) {
 
   return (
     <form method="get" style={{maxWidth: '100%'}} onSubmit={onSubmit}>
-      <Flex gap="lg" p="xl">
+      <Flex gap="lg" pt="xl" pb="xl" direction={{base: 'column', sm: 'row'}}>
         {markup}
       </Flex>
       <Group justify="center">
