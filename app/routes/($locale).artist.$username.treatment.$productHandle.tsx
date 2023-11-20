@@ -1,13 +1,5 @@
 import {Outlet} from '@remix-run/react';
-import {
-  json,
-  type ActionFunctionArgs,
-  type LoaderFunctionArgs,
-} from '@shopify/remix-oxygen';
-
-export async function action({request}: ActionFunctionArgs) {
-  return json({});
-}
+import {json, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
 
 export async function loader({params}: LoaderFunctionArgs) {
   const {productHandle, username} = params;

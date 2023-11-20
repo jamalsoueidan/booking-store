@@ -1,6 +1,5 @@
 import {Carousel} from '@mantine/carousel';
 import {Button, Group, SimpleGrid, Stack, Text, Title} from '@mantine/core';
-import {useMediaQuery} from '@mantine/hooks';
 import {useLoaderData, useLocation, useNavigate} from '@remix-run/react';
 import {json, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
 import {format} from 'date-fns';
@@ -48,43 +47,42 @@ export default function ArtistTreatmentsBooking() {
   const availability = useLoaderData<typeof loader>();
   const navigate = useNavigate();
   const location = useLocation();
-  const isMobile = useMediaQuery('(max-width: 50em)');
-  const [selectedTimer, setSelectedTimer] = useState<string>();
-  const [selectedDay, setSelectedDay] = useState<string>();
+  const [selectedSlotFrom, setSelectedSlotFrom] = useState<string>();
+  const [selectedDate, setSelectedDate] = useState<string>();
 
   const handleCloseClick = (event: any) => {
     event.preventDefault();
     navigate(-1);
   };
 
-  const changeDay =
+  const onChangeDate =
     ({date}: CustomerAvailability) =>
     () => {
-      setSelectedDay(date);
-      setSelectedTimer(undefined);
+      setSelectedDate(date);
+      setSelectedSlotFrom(undefined);
     };
 
-  const changeTimer = (slot: CustomerAvailabilitySlotsItem) => () => {
-    setSelectedTimer(slot.from);
+  const onChangeSlot = (slot: CustomerAvailabilitySlotsItem) => () => {
+    setSelectedSlotFrom(slot.from);
   };
 
   const days = availability.payload.map((availability) => (
     <AvailabilityDay
       key={availability.date}
-      onClick={changeDay(availability)}
+      onClick={onChangeDate(availability)}
       availability={availability}
-      selected={selectedDay}
+      selected={selectedDate}
     />
   ));
 
   const slots = availability.payload
-    .find(({date}) => date === selectedDay)
+    .find(({date}) => date === selectedDate)
     ?.slots?.map((slot) => (
       <AvailabilityTime
         key={slot.from}
-        onClick={changeTimer(slot)}
+        onClick={onChangeSlot(slot)}
         slot={slot}
-        selected={selectedTimer}
+        selected={selectedSlotFrom}
       />
     ));
 
@@ -100,14 +98,14 @@ export default function ArtistTreatmentsBooking() {
             type="hidden"
             name="date"
             className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-            value={selectedDay || ''}
+            value={selectedDate || ''}
             onChange={() => {}}
           />
           <input
             type="hidden"
             name="slot"
             className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-            value={selectedTimer || ''}
+            value={selectedSlotFrom || ''}
             onChange={() => {}}
           />
 
@@ -147,7 +145,7 @@ export default function ArtistTreatmentsBooking() {
         </Stack>
         <Group justify="center">
           <Button onClick={handleCloseClick}>Tilbage</Button>
-          <Button type="submit" disabled={!selectedDay || !selectedTimer}>
+          <Button type="submit" disabled={!selectedDate || !selectedSlotFrom}>
             Næste
           </Button>
         </Group>

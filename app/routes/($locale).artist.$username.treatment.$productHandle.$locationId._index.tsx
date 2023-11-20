@@ -11,10 +11,10 @@ import {
 } from '@mantine/core';
 import {
   Await,
-  useActionData,
   useLoaderData,
   useNavigate,
   useParams,
+  useSearchParams,
 } from '@remix-run/react';
 import {Image, Money, parseGid} from '@shopify/hydrogen';
 import {defer, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
@@ -29,7 +29,6 @@ import {
   type CustomerProductList,
 } from '~/lib/api/model';
 import {ALL_PRODUCTS_QUERY} from './($locale).artist.$username._index';
-import {type action} from './($locale).artist.$username.treatment.$productHandle.$locationId';
 
 import {ArtistServiceCheckboxCard} from '~/components/artist/ArtistServiceCheckboxCard';
 import {ArtistStepper} from '~/components/artist/ArtistStepper';
@@ -70,11 +69,13 @@ export async function loader({params, context}: LoaderFunctionArgs) {
 }
 
 export default function ArtistTreatments() {
-  const previousFormData = useActionData<typeof action>();
   const {products, services, selectedProductId} =
     useLoaderData<typeof loader>();
 
   const params = useParams();
+  const [searchParams] = useSearchParams();
+
+  const shippingId = searchParams.get('shippingId');
 
   return (
     <ArtistStepper
@@ -97,12 +98,8 @@ export default function ArtistTreatments() {
               action={`${params.locationId}/availability`}
               style={{maxWidth: '100%'}}
             >
-              {previousFormData?.shippingId ? (
-                <input
-                  type="hidden"
-                  name="shippingId"
-                  value={previousFormData?.shippingId}
-                />
+              {shippingId ? (
+                <input type="hidden" name="shippingId" value={shippingId} />
               ) : null}
 
               <RenderArtistProducts

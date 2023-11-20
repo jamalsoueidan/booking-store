@@ -74,7 +74,6 @@ export default function ArtistTreatments() {
         checked={selectedLocation?._id === location._id}
         value={location._id}
         onChange={onClick(location)}
-        name="locationId"
         location={location}
       />
     );
@@ -87,7 +86,7 @@ export default function ArtistTreatments() {
       description="Vælge hvor du fortag behandling?"
     >
       <form
-        method="post"
+        method="get"
         style={{maxWidth: '100%'}}
         action={`${productHandle}/${selectedLocation?._id || ''}`}
       >

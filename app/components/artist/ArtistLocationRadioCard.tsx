@@ -10,7 +10,6 @@ interface AristLocationRadioCardProps {
   value: string;
   defaultChecked?: boolean;
   onChange?(checked: boolean): void;
-  name: string;
   location: CustomerLocation;
 }
 
@@ -21,7 +20,6 @@ export function AristLocationRadioCard({
   onChange,
   className,
   children,
-  name,
   location,
   ...others
 }: AristLocationRadioCardProps &
@@ -73,7 +71,6 @@ export function AristLocationRadioCard({
 
       <Radio
         checked={isChecked}
-        name={name}
         value={value}
         onChange={() => {}}
         tabIndex={-1}
