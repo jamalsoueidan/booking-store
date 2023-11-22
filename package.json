@@ -18,12 +18,12 @@
   "dependencies": {
     "@conform-to/react": "^0.9.0",
     "@conform-to/zod": "^0.9.0",
+    "@mantine/carousel": "^7.2.2",
     "@mantine/core": "^7.2.2",
     "@mantine/hooks": "^7.2.2",
     "@mantine/modals": "^7.2.2",
     "@mantine/notifications": "^7.2.2",
     "@mantine/nprogress": "^7.2.2",
-    "@mantine/carousel": "^7.2.2",
     "@remix-run/css-bundle": "2.1.0",
     "@remix-run/react": "2.1.0",
     "@shopify/cli": "3.50.0",
@@ -40,6 +40,7 @@
     "isbot": "^3.6.6",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
+    "react-infinite-scroll-component": "^6.1.0",
     "zod": "^3.21.4"
   },
   "devDependencies": {

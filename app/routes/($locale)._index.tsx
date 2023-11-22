@@ -1,15 +1,5 @@
 import {Carousel} from '@mantine/carousel';
-import {
-  Avatar,
-  Button,
-  Container,
-  Group,
-  Paper,
-  Skeleton,
-  Stack,
-  Text,
-  Title,
-} from '@mantine/core';
+import {Container, Group, Skeleton, Stack, Title} from '@mantine/core';
 import {Await, Link, useLoaderData, type MetaFunction} from '@remix-run/react';
 import {Image, Money} from '@shopify/hydrogen';
 import {defer, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
@@ -19,6 +9,7 @@ import type {
   RecommendedProductsQuery,
 } from 'storefrontapi.generated';
 import {HeroImageRight} from '~/components/Hero';
+import {ArtistCard} from '~/components/artists/ArtistCard';
 import {getBookingShopifyApi} from '~/lib/api/bookingShopifyApi';
 import {type UsersListResponse} from '~/lib/api/model';
 
@@ -79,31 +70,7 @@ function FeaturedArtists({artists}: {artists: Promise<UsersListResponse>}) {
             >
               {payload.results.map((artist) => (
                 <Carousel.Slide key={artist.customerId}>
-                  <Paper
-                    radius="md"
-                    withBorder
-                    p="lg"
-                    bg="var(--mantine-color-body)"
-                    component={Link}
-                    to={`/artist/${artist.username}`}
-                  >
-                    <Avatar
-                      src={artist.images?.profile?.url}
-                      size={120}
-                      radius={120}
-                      mx="auto"
-                    />
-                    <Text ta="center" fz="lg" fw={500} mt="md" c="black">
-                      {artist.fullname}
-                    </Text>
-                    <Text ta="center" c="dimmed" fz="sm">
-                      {artist.shortDescription}
-                    </Text>
-
-                    <Button variant="default" fullWidth mt="md">
-                      Vis profile
-                    </Button>
-                  </Paper>
+                  <ArtistCard artist={artist} />
                 </Carousel.Slide>
               ))}
             </Carousel>

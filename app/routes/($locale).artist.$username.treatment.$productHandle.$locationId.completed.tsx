@@ -8,26 +8,23 @@ import {
   Stack,
   Text,
 } from '@mantine/core';
-import {useActionData, useLoaderData} from '@remix-run/react';
+import {useActionData} from '@remix-run/react';
 import {Money, parseGid} from '@shopify/hydrogen';
+import {type CartLineInput} from '@shopify/hydrogen/storefront-api-types';
 import {json, type ActionFunctionArgs} from '@shopify/remix-oxygen';
 import {format} from 'date-fns';
 import da from 'date-fns/locale/da';
-import {type ArtistServicesProductsQuery} from 'storefrontapi.generated';
 import {ArtistStepper} from '~/components/artist/ArtistStepper';
 import {getBookingShopifyApi} from '~/lib/api/bookingShopifyApi';
-import {type CustomerProductBase} from '~/lib/api/model';
 import {durationToTime} from '~/lib/duration';
 import {ALL_PRODUCTS_QUERY} from './($locale).artist.$username._index';
+import {AddToCartButton} from './($locale).products.$handle';
 
-type ActionResult = {
-  date: string;
-  slot: string;
-  products: ArtistServicesProductsQuery['products'];
-  services: CustomerProductBase[];
-};
-
-export async function loader({context, params, request}: ActionFunctionArgs) {
+export const action = async ({
+  request,
+  params,
+  context,
+}: ActionFunctionArgs) => {
   const {productHandle, username, locationId} = params;
 
   const {searchParams} = new URL(request.url);
@@ -35,16 +32,16 @@ export async function loader({context, params, request}: ActionFunctionArgs) {
   const productIds = searchParams.getAll('productIds');
 
   if (productIds.length === 0) {
-    throw new Error('Expected productId to be selected');
+    throw new Response('Expected productId to be selected', {status: 400});
   }
 
   if (!productHandle || !username || !locationId) {
-    throw new Error('Expected product handle to be defined');
+    throw new Response('Expected product handle to be defined', {status: 400});
   }
 
-  /*const formData = await request.formData();
-  const day = formData.get('day') as string;
-  const slot = formData.get('slot') as string;*/
+  const formData = await request.formData();
+  const fromDate = formData.get('fromDate') as string;
+  const toDate = formData.get('toDate') as string;
 
   const {payload: location} = await getBookingShopifyApi().userLocationGet(
     username,
@@ -54,8 +51,8 @@ export async function loader({context, params, request}: ActionFunctionArgs) {
   const {payload: availability} =
     await getBookingShopifyApi().userAvailabilityGet(username, locationId, {
       productIds,
-      fromDate: '2023-11-26T05:15:00.000Z',
-      toDate: '2023-11-26T08:05:00.000Z',
+      fromDate, //: '2023-11-26T05:15:00.000Z',
+      toDate, //: '2023-11-26T08:05:00.000Z',
       shippingId: shippingId ? shippingId : undefined,
     });
 
@@ -73,14 +70,13 @@ export async function loader({context, params, request}: ActionFunctionArgs) {
     products,
     availability,
   });
-}
+};
 
 export default function ArtistTreatmentsBooking() {
-  const action = useActionData<ActionResult>();
-  const {availability, location, products} = useLoaderData<typeof loader>();
+  const data = useActionData<typeof action>();
 
-  const productMarkup = products.nodes.map((product) => {
-    const slotProduct = availability.slot.products.find(
+  const productMarkup = data?.products.nodes.map((product) => {
+    const slotProduct = data?.availability.slot.products.find(
       (p) => p.productId.toString() === parseGid(product.id).id,
     );
 
@@ -108,6 +104,73 @@ export default function ArtistTreatmentsBooking() {
     );
   });
 
+  const lines: Array<CartLineInput> = (data?.products.nodes || []).map(
+    (product) => {
+      const slotProduct = data?.availability.slot.products.find(
+        (p) => p.productId.toString() === parseGid(product.id).id,
+      );
+
+      const productVariant = product.variants.nodes.find(
+        (v) => parseGid(v.id).id === slotProduct?.variantId.toString(),
+      );
+
+      const input =
+        {
+          merchandiseId: productVariant?.id || '',
+          quantity: 1,
+          attributes: [
+            {
+              key: '_from',
+              value: slotProduct?.from || '',
+            },
+            {
+              key: '_to',
+              value: slotProduct?.to || '',
+            },
+            {
+              key: '_customerId',
+              value: data?.availability.customer.customerId?.toString() || '',
+            },
+            {
+              key: 'Dato',
+              value: `${format(
+                new Date(slotProduct?.from || new Date()),
+                'iiii',
+                {
+                  locale: da,
+                },
+              )}, ${format(new Date(slotProduct?.from || new Date()), 'PPP', {
+                locale: da,
+              }).slice(0, -4)}`,
+            },
+            {
+              key: 'Tid',
+              value: format(new Date(slotProduct?.from || new Date()), 'p', {
+                locale: da,
+              }),
+            },
+            {
+              key: 'Skønhedsekspert',
+              value: data?.availability.customer.fullname || '',
+            },
+            {
+              key: 'Varighed',
+              value: durationToTime(slotProduct?.duration || ''),
+            },
+          ],
+        } || [];
+
+      if (data?.availability.shipping) {
+        input.attributes.push({
+          key: '_shippingId',
+          value: data?.availability.shipping?._id || '',
+        });
+      }
+
+      return input;
+    },
+  );
+
   return (
     <ArtistStepper
       active={3}
@@ -118,24 +181,24 @@ export default function ArtistTreatmentsBooking() {
         <Text size="lg" mb="md" fw="bold">
           Lokation
         </Text>
-        {location.locationType === 'destination' ? (
+        {data?.location.locationType === 'destination' ? (
           <>
             <Text size="md" fw={500}>
-              {availability.shipping?.destination.fullAddress}
+              {data?.availability.shipping?.destination.fullAddress}
             </Text>
             <Text size="xs" c="red" fw={500}>
               Udgifterne bliver beregnet under købsprocessen{' '}
-              {availability.shipping?.cost.value}{' '}
-              {availability.shipping?.cost.currency}
+              {data?.availability.shipping?.cost.value}{' '}
+              {data?.availability.shipping?.cost.currency}
             </Text>
           </>
         ) : (
           <>
             <Text size="md" fw={500}>
-              {location.name}
+              {data?.location.name}
             </Text>
             <Text size="md" fw={500}>
-              {location.fullAddress}
+              {data?.location.fullAddress}
             </Text>
             <Anchor href="googlemap">Se google map</Anchor>
           </>
@@ -147,10 +210,15 @@ export default function ArtistTreatmentsBooking() {
           Dato & Tid
         </Text>
         <Text size="md" fw={500}>
-          {format(new Date(availability.date), 'PPPP', {locale: da})}{' '}
+          {format(new Date(data?.availability.date || ''), 'PPPP', {
+            locale: da,
+          })}{' '}
         </Text>
         <Text size="md" fw={500}>
-          kl. {format(new Date(availability.slot.from), 'HH:mm', {locale: da})}
+          kl.{' '}
+          {format(new Date(data?.availability.slot.from || ''), 'HH:mm', {
+            locale: da,
+          })}
         </Text>
         <Card.Section pt="md" pb="md">
           <Divider />
@@ -162,7 +230,14 @@ export default function ArtistTreatmentsBooking() {
       </Card>
       <Group m="xl" justify="center">
         <Button>Tilbage</Button>
-        <Button type="submit">Køb nu</Button>
+        <AddToCartButton
+          onClick={() => {
+            window.location.href = window.location.href + '#cart-aside';
+          }}
+          lines={lines}
+        >
+          Add to cart
+        </AddToCartButton>
       </Group>
     </ArtistStepper>
   );

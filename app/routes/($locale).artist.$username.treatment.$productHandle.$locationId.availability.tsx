@@ -89,7 +89,7 @@ export default function ArtistTreatmentsBooking() {
   return (
     <ArtistStepper active={2} title="Dato/Tid" description="Vælge tidspunkt?">
       <Form
-        method="POST"
+        method="post"
         action={`../completed${location.search}`}
         style={{maxWidth: '100%'}}
       >

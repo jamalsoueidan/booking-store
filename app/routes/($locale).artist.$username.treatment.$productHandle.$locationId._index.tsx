@@ -38,7 +38,7 @@ export async function loader({params, context}: LoaderFunctionArgs) {
   const {productHandle, username, locationId} = params;
 
   if (!productHandle || !username || !locationId) {
-    throw new Error('Expected product handle to be defined');
+    throw new Response('Expected product handle to be defined', {status: 400});
   }
 
   const productId = productHandle.match(/\d+$/)![0];
