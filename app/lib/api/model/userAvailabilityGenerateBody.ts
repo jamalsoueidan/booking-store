@@ -5,7 +5,8 @@
  * OpenAPI spec version: 1.0.0
  */
 
-export type CustomerAvailabilityShippingDestination = {
-  fullAddress?: string;
-  name?: string;
-};
+export interface UserAvailabilityGenerateBody {
+  fromDate?: string;
+  productIds: string[];
+  shippingId?: string;
+}

@@ -42,10 +42,6 @@ components:
           schema:
             $ref: '#/components/schemas/Errors'
   schemas:
-    NumberOrString:
-      oneOf:
-        - type: number
-        - type: string
     Errors:
       type: object
       properties:
@@ -508,144 +504,6 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/CustomerBooking'
-      required:
-        - success
-        - payload
-    CustomerAvailabilityBody:
-      type: object
-      properties:
-        startDate:
-          type: string
-        productIds:
-          type: array
-          items:
-            type: string
-        shippingId:
-          type: string
-      required:
-        - startDate
-        - productIds
-    CustomerAvailability:
-      type: object
-      properties:
-        date:
-          type: string
-        customer:
-          type: object
-          properties:
-            customerId:
-              type: string
-            fullname:
-              type: string
-          required:
-            - customerId
-            - fullname
-        shipping:
-          type: object
-          properties:
-            _id:
-              type: string
-            location:
-              type: string
-            origin:
-              type: object
-              properties:
-                customerId:
-                  type: string
-                  format: gid
-                name:
-                  type: string
-                fullAddress:
-                  type: string
-                distanceForFree:
-                  type: number
-                distanceHourlyRate:
-                  type: number
-                fixedRatePerKm:
-                  type: number
-                startFee:
-                  type: number
-            destination:
-              type: object
-              properties:
-                name:
-                  type: string
-                fullAddress:
-                  type: string
-            duration:
-              type: object
-              properties:
-                text:
-                  type: string
-                value:
-                  type: number
-            distance:
-              type: object
-              properties:
-                text:
-                  type: string
-                value:
-                  type: number
-            cost:
-              type: number
-          required:
-            - _id
-            - origin
-            - destination
-            - duration
-            - distance
-            - cost
-        slots:
-          type: array
-          items:
-            type: object
-            properties:
-              from:
-                type: string
-              to:
-                type: string
-              products:
-                type: array
-                items:
-                  type: object
-                  properties:
-                    productId:
-                      type: number
-                    variantId:
-                      type: number
-                    from:
-                      type: string
-                    to:
-                      type: string
-                    breakTime:
-                      type: number
-                    duration:
-                      type: number
-                  required:
-                    - productId
-                    - variantId
-                    - from
-                    - to
-                    - breakTime
-                    - duration
-            required:
-              - from
-              - to
-              - products
-      required:
-        - date
-        - customer
-        - slots
-    CustomerAvailabilityGetResponse:
-      type: object
-      properties:
-        success:
-          type: boolean
-          example: true
-        payload:
-          type: array
-          items:
-            $ref: '#/components/schemas/CustomerAvailability'
       required:
         - success
         - payload
@@ -1358,6 +1216,139 @@ components:
       required:
         - success
         - payload
+    UserAvailabilitySlot:
+      type: object
+      properties:
+        from:
+          type: string
+        to:
+          type: string
+        products:
+          type: array
+          items:
+            type: object
+            properties:
+              productId:
+                type: number
+              variantId:
+                type: number
+              from:
+                type: string
+              to:
+                type: string
+              breakTime:
+                type: number
+              duration:
+                type: number
+            required:
+              - productId
+              - variantId
+              - from
+              - to
+              - breakTime
+              - duration
+      required:
+        - from
+        - to
+        - products
+    UserAvailability:
+      type: object
+      properties:
+        date:
+          type: string
+        customer:
+          type: object
+          properties:
+            customerId:
+              type: string
+            fullname:
+              type: string
+          required:
+            - customerId
+            - fullname
+        shipping:
+          $ref: '#/components/schemas/Shipping'
+      required:
+        - date
+        - customer
+    UserAvailabilitySingle:
+      type: object
+      allOf:
+        - $ref: '#/components/schemas/UserAvailability'
+        - type: object
+          properties:
+            slot:
+              $ref: '#/components/schemas/UserAvailabilitySlot'
+          required:
+            - slot
+    UserAvailabilityGetBody:
+      type: object
+      properties:
+        fromDate:
+          type: string
+        toDate:
+          type: string
+        productIds:
+          type: array
+          items:
+            type: string
+        shippingId:
+          type: string
+      required:
+        - startDate
+        - productIds
+        - fromDate
+        - toDate
+    UserAvailabilityGeResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: true
+        payload:
+          $ref: '#/components/schemas/UserAvailabilitySingle'
+      required:
+        - success
+        - payload
+    UserAvailabilityMulti:
+      type: object
+      allOf:
+        - $ref: '#/components/schemas/UserAvailability'
+        - type: object
+          properties:
+            slots:
+              type: array
+              items:
+                $ref: '#/components/schemas/UserAvailabilitySlot'
+          required:
+            - slots
+    UserAvailabilityGenerateBody:
+      type: object
+      properties:
+        fromDate:
+          type: string
+        productIds:
+          type: array
+          items:
+            type: string
+        shippingId:
+          type: string
+      required:
+        - startDate
+        - productIds
+    UserAvailabilityGenerateResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: true
+        payload:
+          type: array
+          items:
+            $ref: '#/components/schemas/UserAvailabilityMulti'
+      required:
+        - success
+        - payload
     LocationCoordinates:
       type: object
       properties:
@@ -1430,6 +1421,44 @@ components:
       required:
         - success
         - payload
+    Shipping:
+      type: object
+      allOf:
+        - $ref: '#/components/schemas/LocationTravelTime'
+        - type: object
+          properties:
+            _id:
+              type: string
+            location:
+              type: string
+            origin:
+              $ref: '#/components/schemas/CustomerLocation'
+            destination:
+              type: object
+              properties:
+                name:
+                  type: string
+                fullAddress:
+                  type: string
+              required:
+                - name
+                - fullAddress
+            cost:
+              type: object
+              properties:
+                currency:
+                  type: string
+                value:
+                  type: integer
+              required:
+                - currency
+                - value
+          required:
+            - _id
+            - location
+            - origin
+            - destination
+            - cost
     ShippingBody:
       type: object
       properties:
@@ -1457,43 +1486,7 @@ components:
           type: boolean
           example: true
         payload:
-          type: object
-          allOf:
-            - $ref: '#/components/schemas/LocationTravelTime'
-            - type: object
-              properties:
-                _id:
-                  type: string
-                location:
-                  type: string
-                origin:
-                  $ref: '#/components/schemas/CustomerLocationCreateBody'
-                destination:
-                  type: object
-                  properties:
-                    name:
-                      type: string
-                    fullAddress:
-                      type: string
-                  required:
-                    - name
-                    - fullAddress
-                cost:
-                  type: object
-                  properties:
-                    currency:
-                      type: string
-                    value:
-                      type: integer
-                  required:
-                    - currency
-                    - value
-              required:
-                - _id
-                - location
-                - destination
-                - origin
-                - cost
+          $ref: '#/components/schemas/Shipping'
       required:
         - success
         - payload
@@ -1504,40 +1497,7 @@ components:
           type: boolean
           example: true
         payload:
-          type: object
-          allOf:
-            - $ref: '#/components/schemas/LocationTravelTime'
-            - type: object
-              properties:
-                customerId:
-                  type: number
-                locationId:
-                  type: string
-                destination:
-                  type: object
-                  properties:
-                    name:
-                      type: string
-                    fullAddress:
-                      type: string
-                  required:
-                    - name
-                    - fullAddress
-                cost:
-                  type: object
-                  properties:
-                    currency:
-                      type: string
-                    value:
-                      type: integer
-                  required:
-                    - currency
-                    - value
-              required:
-                - cost
-                - destination
-                - locationId
-                - customerId
+          $ref: '#/components/schemas/Shipping'
       required:
         - success
         - payload
@@ -1902,6 +1862,86 @@ paths:
         '404':
           $ref: '#/components/responses/NotFoundResponse'
       security: []
+  '/user/{username}/availability/{locationId}/generate':
+    parameters:
+      - name: username
+        in: path
+        description: This field for username
+        required: true
+        schema:
+          type: string
+      - name: locationId
+        in: path
+        description: This field for locationId
+        required: true
+        schema:
+          type: string
+    post:
+      tags:
+        - UserAvailability
+      operationId: userAvailabilityGenerate
+      summary: POST generate availabilty for user
+      description: This endpoint generate availabilty for user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserAvailabilityGenerateBody'
+      responses:
+        '200':
+          description: Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserAvailabilityGenerateResponse'
+        '400':
+          $ref: '#/components/responses/BadResponse'
+        '401':
+          $ref: '#/components/responses/UnauthorizedResponse'
+        '403':
+          $ref: '#/components/responses/ForbiddenResponse'
+      security: []
+  '/user/{username}/availability/{locationId}/get':
+    parameters:
+      - name: username
+        in: path
+        description: This field for username
+        required: true
+        schema:
+          type: string
+      - name: locationId
+        in: path
+        description: This field for locationId
+        required: true
+        schema:
+          type: string
+    post:
+      tags:
+        - UserAvailability
+      operationId: UserAvailabilityGet
+      summary: POST get single availabilty for user
+      description: This endpoint get's one single availabilty for user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserAvailabilityGetBody'
+      responses:
+        '200':
+          description: Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserAvailabilityGeResponse'
+        '400':
+          $ref: '#/components/responses/BadResponse'
+        '401':
+          $ref: '#/components/responses/UnauthorizedResponse'
+        '403':
+          $ref: '#/components/responses/ForbiddenResponse'
+      security: []
   /users:
     parameters:
       - name: nextCursor
@@ -2149,46 +2189,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/CustomerProductListIdsResponse'
-        '400':
-          $ref: '#/components/responses/BadResponse'
-        '401':
-          $ref: '#/components/responses/UnauthorizedResponse'
-        '403':
-          $ref: '#/components/responses/ForbiddenResponse'
-      security: []
-  '/customer/{customerId}/availability/{locationId}/get':
-    parameters:
-      - name: customerId
-        in: path
-        description: This field for customerId
-        required: true
-        schema:
-          type: string
-      - name: locationId
-        in: path
-        description: This field for locationId
-        required: true
-        schema:
-          type: string
-    post:
-      tags:
-        - CustomerAvailability
-      operationId: customerAvailabilityGet
-      summary: POST get availabilty for customer
-      description: This availabilty for customer
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/CustomerAvailabilityBody'
-      responses:
-        '200':
-          description: Response
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/CustomerAvailabilityGetResponse'
         '400':
           $ref: '#/components/responses/BadResponse'
         '401':

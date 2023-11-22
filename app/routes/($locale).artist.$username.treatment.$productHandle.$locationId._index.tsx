@@ -11,9 +11,9 @@ import {
 } from '@mantine/core';
 import {
   Await,
+  Form,
   useLoaderData,
   useNavigate,
-  useParams,
   useSearchParams,
 } from '@remix-run/react';
 import {Image, Money, parseGid} from '@shopify/hydrogen';
@@ -72,7 +72,6 @@ export default function ArtistTreatments() {
   const {products, services, selectedProductId} =
     useLoaderData<typeof loader>();
 
-  const params = useParams();
   const [searchParams] = useSearchParams();
 
   const shippingId = searchParams.get('shippingId');
@@ -93,9 +92,9 @@ export default function ArtistTreatments() {
       >
         <Await resolve={products}>
           {({products}) => (
-            <form
+            <Form
               method="get"
-              action={`${params.locationId}/availability`}
+              action={`./availability`}
               style={{maxWidth: '100%'}}
             >
               {shippingId ? (
@@ -107,7 +106,7 @@ export default function ArtistTreatments() {
                 services={services}
                 selectedProductId={selectedProductId}
               />
-            </form>
+            </Form>
           )}
         </Await>
       </Suspense>

@@ -8,7 +8,7 @@ import {
   TextInput,
 } from '@mantine/core';
 import {useDisclosure} from '@mantine/hooks';
-import {useFetcher, useLoaderData} from '@remix-run/react';
+import {Form, useFetcher, useLoaderData} from '@remix-run/react';
 import {json, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
 import {useEffect, useState} from 'react';
 import {AddressAutocompleteInput} from '~/components/AddressAutocompleteInput';
@@ -36,13 +36,12 @@ export async function loader({params}: LoaderFunctionArgs) {
 
   return json({
     schedule,
-    productHandle,
   });
 }
 
 export default function ArtistTreatments() {
   const [opened, {open, close}] = useDisclosure(false);
-  const {schedule, productHandle} = useLoaderData<typeof loader>();
+  const {schedule} = useLoaderData<typeof loader>();
   const [shippingId, setShippingId] = useState<string | undefined>();
   const [selectedLocation, setSelectedLocation] = useState<
     CustomerLocation | undefined
@@ -85,10 +84,10 @@ export default function ArtistTreatments() {
       title="Location"
       description="Vælge hvor du fortag behandling?"
     >
-      <form
+      <Form
         method="get"
         style={{maxWidth: '100%'}}
-        action={`${productHandle}/${selectedLocation?._id || ''}`}
+        action={`./${selectedLocation?._id || ''}`}
       >
         <Flex gap="lg" pt="xl" pb="xl" direction={{base: 'column', sm: 'row'}}>
           {markup}
@@ -110,7 +109,7 @@ export default function ArtistTreatments() {
             Næste
           </Button>
         </Group>
-      </form>
+      </Form>
     </ArtistStepper>
   );
 }

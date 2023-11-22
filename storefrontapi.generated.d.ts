@@ -5,7 +5,7 @@ import * as StorefrontAPI from '@shopify/hydrogen/storefront-api-types';
 
 export type ProductSimpleFragment = Pick<
   StorefrontAPI.Product,
-  'id' | 'title' | 'handle' | 'publishedAt'
+  'id' | 'title' | 'description' | 'handle' | 'publishedAt'
 > & {
   images: {nodes: Array<Pick<StorefrontAPI.Image, 'url' | 'width' | 'height'>>};
   variants: {
@@ -757,7 +757,10 @@ export type AccountTreatmentProductQueryVariables = StorefrontAPI.Exact<{
 
 export type AccountTreatmentProductQuery = {
   product?: StorefrontAPI.Maybe<
-    Pick<StorefrontAPI.Product, 'id' | 'title' | 'handle' | 'publishedAt'> & {
+    Pick<
+      StorefrontAPI.Product,
+      'id' | 'title' | 'description' | 'handle' | 'publishedAt'
+    > & {
       images: {
         nodes: Array<Pick<StorefrontAPI.Image, 'url' | 'width' | 'height'>>;
       };
@@ -788,7 +791,10 @@ export type AccountServicesProductsQueryVariables = StorefrontAPI.Exact<{
 export type AccountServicesProductsQuery = {
   products: {
     nodes: Array<
-      Pick<StorefrontAPI.Product, 'id' | 'title' | 'handle' | 'publishedAt'> & {
+      Pick<
+        StorefrontAPI.Product,
+        'id' | 'title' | 'description' | 'handle' | 'publishedAt'
+      > & {
         images: {
           nodes: Array<Pick<StorefrontAPI.Image, 'url' | 'width' | 'height'>>;
         };
@@ -823,7 +829,10 @@ export type AllAccountServicesProductsQueryVariables = StorefrontAPI.Exact<{
 export type AllAccountServicesProductsQuery = {
   products: {
     nodes: Array<
-      Pick<StorefrontAPI.Product, 'id' | 'title' | 'handle' | 'publishedAt'> & {
+      Pick<
+        StorefrontAPI.Product,
+        'id' | 'title' | 'description' | 'handle' | 'publishedAt'
+      > & {
         images: {
           nodes: Array<Pick<StorefrontAPI.Image, 'url' | 'width' | 'height'>>;
         };
@@ -1192,7 +1201,10 @@ export type ArtistServicesProductsQueryVariables = StorefrontAPI.Exact<{
 export type ArtistServicesProductsQuery = {
   products: {
     nodes: Array<
-      Pick<StorefrontAPI.Product, 'id' | 'title' | 'handle' | 'publishedAt'> & {
+      Pick<
+        StorefrontAPI.Product,
+        'id' | 'title' | 'description' | 'handle' | 'publishedAt'
+      > & {
         images: {
           nodes: Array<Pick<StorefrontAPI.Image, 'url' | 'width' | 'height'>>;
         };
@@ -1991,15 +2003,15 @@ interface GeneratedQueryTypes {
     return: CustomerOrdersQuery;
     variables: CustomerOrdersQueryVariables;
   };
-  '#graphql\n  #graphql\n  fragment ProductSimple on Product {\n    id\n    title\n    handle\n    publishedAt\n    images(first: 1) {\n        nodes {\n          url\n          width\n          height\n        }\n      }\n    variants(first: 10) {\n      nodes {\n        id\n        image {\n          url\n          altText\n          width\n          height\n        }\n        price {\n          amount\n          currencyCode\n        }\n        selectedOptions {\n          name\n          value\n        }\n      }\n    }\n  }\n\n  query AccountTreatmentProduct(\n    $country: CountryCode\n    $language: LanguageCode\n    $Id: ID!\n  ) @inContext(country: $country, language: $language) {\n    product(id: $Id) {\n      ...ProductSimple\n    }\n  }\n': {
+  '#graphql\n  #graphql\n  fragment ProductSimple on Product {\n    id\n    title\n    description\n    handle\n    publishedAt\n    images(first: 1) {\n        nodes {\n          url\n          width\n          height\n        }\n      }\n    variants(first: 10) {\n      nodes {\n        id\n        image {\n          url\n          altText\n          width\n          height\n        }\n        price {\n          amount\n          currencyCode\n        }\n        selectedOptions {\n          name\n          value\n        }\n      }\n    }\n  }\n\n  query AccountTreatmentProduct(\n    $country: CountryCode\n    $language: LanguageCode\n    $Id: ID!\n  ) @inContext(country: $country, language: $language) {\n    product(id: $Id) {\n      ...ProductSimple\n    }\n  }\n': {
     return: AccountTreatmentProductQuery;
     variables: AccountTreatmentProductQueryVariables;
   };
-  '#graphql\n  #graphql\n  fragment ProductSimple on Product {\n    id\n    title\n    handle\n    publishedAt\n    images(first: 1) {\n        nodes {\n          url\n          width\n          height\n        }\n      }\n    variants(first: 10) {\n      nodes {\n        id\n        image {\n          url\n          altText\n          width\n          height\n        }\n        price {\n          amount\n          currencyCode\n        }\n        selectedOptions {\n          name\n          value\n        }\n      }\n    }\n  }\n\n  query AccountServicesProducts(\n    $country: CountryCode\n    $language: LanguageCode\n    $first: Int\n    $query: String\n  ) @inContext(country: $country, language: $language) {\n    products(first: $first, query: $query) {\n      nodes {\n        ...ProductSimple\n      }\n    }\n  }\n': {
+  '#graphql\n  #graphql\n  fragment ProductSimple on Product {\n    id\n    title\n    description\n    handle\n    publishedAt\n    images(first: 1) {\n        nodes {\n          url\n          width\n          height\n        }\n      }\n    variants(first: 10) {\n      nodes {\n        id\n        image {\n          url\n          altText\n          width\n          height\n        }\n        price {\n          amount\n          currencyCode\n        }\n        selectedOptions {\n          name\n          value\n        }\n      }\n    }\n  }\n\n  query AccountServicesProducts(\n    $country: CountryCode\n    $language: LanguageCode\n    $first: Int\n    $query: String\n  ) @inContext(country: $country, language: $language) {\n    products(first: $first, query: $query) {\n      nodes {\n        ...ProductSimple\n      }\n    }\n  }\n': {
     return: AccountServicesProductsQuery;
     variables: AccountServicesProductsQueryVariables;
   };
-  '#graphql\n  #graphql\n  fragment ProductSimple on Product {\n    id\n    title\n    handle\n    publishedAt\n    images(first: 1) {\n        nodes {\n          url\n          width\n          height\n        }\n      }\n    variants(first: 10) {\n      nodes {\n        id\n        image {\n          url\n          altText\n          width\n          height\n        }\n        price {\n          amount\n          currencyCode\n        }\n        selectedOptions {\n          name\n          value\n        }\n      }\n    }\n  }\n\n  query AllAccountServicesProducts(\n    $country: CountryCode\n    $language: LanguageCode\n    $first: Int\n    $query: String\n  ) @inContext(country: $country, language: $language) {\n    products(first: $first, query: $query) {\n      nodes {\n        ...ProductSimple\n      }\n    }\n  }\n': {
+  '#graphql\n  #graphql\n  fragment ProductSimple on Product {\n    id\n    title\n    description\n    handle\n    publishedAt\n    images(first: 1) {\n        nodes {\n          url\n          width\n          height\n        }\n      }\n    variants(first: 10) {\n      nodes {\n        id\n        image {\n          url\n          altText\n          width\n          height\n        }\n        price {\n          amount\n          currencyCode\n        }\n        selectedOptions {\n          name\n          value\n        }\n      }\n    }\n  }\n\n  query AllAccountServicesProducts(\n    $country: CountryCode\n    $language: LanguageCode\n    $first: Int\n    $query: String\n  ) @inContext(country: $country, language: $language) {\n    products(first: $first, query: $query) {\n      nodes {\n        ...ProductSimple\n      }\n    }\n  }\n': {
     return: AllAccountServicesProductsQuery;
     variables: AllAccountServicesProductsQueryVariables;
   };
@@ -2011,7 +2023,7 @@ interface GeneratedQueryTypes {
     return: PredictiveSearchQuery;
     variables: PredictiveSearchQueryVariables;
   };
-  '#graphql\n  #graphql\n  fragment ProductSimple on Product {\n    id\n    title\n    handle\n    publishedAt\n    images(first: 1) {\n        nodes {\n          url\n          width\n          height\n        }\n      }\n    variants(first: 10) {\n      nodes {\n        id\n        image {\n          url\n          altText\n          width\n          height\n        }\n        price {\n          amount\n          currencyCode\n        }\n        selectedOptions {\n          name\n          value\n        }\n      }\n    }\n  }\n\n  query ArtistServicesProducts(\n    $country: CountryCode\n    $language: LanguageCode\n    $first: Int\n    $query: String\n  ) @inContext(country: $country, language: $language) {\n    products(first: $first, sortKey: TITLE, query: $query) {\n      nodes {\n        ...ProductSimple\n      }\n    }\n  }\n': {
+  '#graphql\n  #graphql\n  fragment ProductSimple on Product {\n    id\n    title\n    description\n    handle\n    publishedAt\n    images(first: 1) {\n        nodes {\n          url\n          width\n          height\n        }\n      }\n    variants(first: 10) {\n      nodes {\n        id\n        image {\n          url\n          altText\n          width\n          height\n        }\n        price {\n          amount\n          currencyCode\n        }\n        selectedOptions {\n          name\n          value\n        }\n      }\n    }\n  }\n\n  query ArtistServicesProducts(\n    $country: CountryCode\n    $language: LanguageCode\n    $first: Int\n    $query: String\n  ) @inContext(country: $country, language: $language) {\n    products(first: $first, sortKey: TITLE, query: $query) {\n      nodes {\n        ...ProductSimple\n      }\n    }\n  }\n': {
     return: ArtistServicesProductsQuery;
     variables: ArtistServicesProductsQueryVariables;
   };

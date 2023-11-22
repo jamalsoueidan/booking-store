@@ -71,7 +71,7 @@ function FeaturedArtists({artists}: {artists: Promise<UsersListResponse>}) {
         <Await resolve={artists}>
           {({payload}) => (
             <Carousel
-              slideSize={{base: '100%', md: '20%', sm: '33.333%'}}
+              slideSize={{base: '50%', md: '20%', sm: '33.333%'}}
               slideGap="sm"
               align="start"
               containScroll="keepSnaps"

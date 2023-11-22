@@ -5,8 +5,6 @@
  * OpenAPI spec version: 1.0.0
  */
 import type {
-  CustomerAvailabilityBody,
-  CustomerAvailabilityGetResponse,
   CustomerBookingGetParams,
   CustomerBookingGetResponse,
   CustomerBookingListResponse,
@@ -56,6 +54,10 @@ import type {
   ShippingCreateResponse,
   UploadBody,
   UploadResponse,
+  UserAvailabilityGeResponse,
+  UserAvailabilityGenerateBody,
+  UserAvailabilityGenerateResponse,
+  UserAvailabilityGetBody,
   UserGetResponse,
   UserLocationGetResponse,
   UserProductsGetProductsBody,
@@ -192,6 +194,40 @@ export const getBookingShopifyApi = () => {
   };
 
   /**
+   * This endpoint generate availabilty for user
+   * @summary POST generate availabilty for user
+   */
+  const userAvailabilityGenerate = (
+    username: string,
+    locationId: string,
+    userAvailabilityGenerateBody: BodyType<UserAvailabilityGenerateBody>,
+  ) => {
+    return queryClient<UserAvailabilityGenerateResponse>({
+      url: `/user/${username}/availability/${locationId}/generate`,
+      method: 'post',
+      headers: {'Content-Type': 'application/json'},
+      data: userAvailabilityGenerateBody,
+    });
+  };
+
+  /**
+   * This endpoint get's one single availabilty for user
+   * @summary POST get single availabilty for user
+   */
+  const userAvailabilityGet = (
+    username: string,
+    locationId: string,
+    userAvailabilityGetBody: BodyType<UserAvailabilityGetBody>,
+  ) => {
+    return queryClient<UserAvailabilityGeResponse>({
+      url: `/user/${username}/availability/${locationId}/get`,
+      method: 'post',
+      headers: {'Content-Type': 'application/json'},
+      data: userAvailabilityGetBody,
+    });
+  };
+
+  /**
    * This endpoint get all users
    * @summary GET Get all users
    */
@@ -287,23 +323,6 @@ export const getBookingShopifyApi = () => {
     return queryClient<CustomerProductListIdsResponse>({
       url: `/customer/${customerId}/products/ids`,
       method: 'get',
-    });
-  };
-
-  /**
-   * This availabilty for customer
-   * @summary POST get availabilty for customer
-   */
-  const customerAvailabilityGet = (
-    customerId: string,
-    locationId: string,
-    customerAvailabilityBody: BodyType<CustomerAvailabilityBody>,
-  ) => {
-    return queryClient<CustomerAvailabilityGetResponse>({
-      url: `/customer/${customerId}/availability/${locationId}/get`,
-      method: 'post',
-      headers: {'Content-Type': 'application/json'},
-      data: customerAvailabilityBody,
     });
   };
 
@@ -667,6 +686,8 @@ export const getBookingShopifyApi = () => {
     userLocationGet,
     userScheduleGetByLocation,
     usersProfessions,
+    userAvailabilityGenerate,
+    userAvailabilityGet,
     usersList,
     customerUpsert,
     customerGet,
@@ -675,7 +696,6 @@ export const getBookingShopifyApi = () => {
     customerIsBusiness,
     customerProductsList,
     customerProductsListIds,
-    customerAvailabilityGet,
     customerProductGet,
     customerProductUpsert,
     customerProductDestroy,
@@ -760,6 +780,18 @@ export type UsersProfessionsResult = NonNullable<
     ReturnType<ReturnType<typeof getBookingShopifyApi>['usersProfessions']>
   >
 >;
+export type UserAvailabilityGenerateResult = NonNullable<
+  Awaited<
+    ReturnType<
+      ReturnType<typeof getBookingShopifyApi>['userAvailabilityGenerate']
+    >
+  >
+>;
+export type UserAvailabilityGetResult = NonNullable<
+  Awaited<
+    ReturnType<ReturnType<typeof getBookingShopifyApi>['userAvailabilityGet']>
+  >
+>;
 export type UsersListResult = NonNullable<
   Awaited<ReturnType<ReturnType<typeof getBookingShopifyApi>['usersList']>>
 >;
@@ -789,13 +821,6 @@ export type CustomerProductsListIdsResult = NonNullable<
   Awaited<
     ReturnType<
       ReturnType<typeof getBookingShopifyApi>['customerProductsListIds']
-    >
-  >
->;
-export type CustomerAvailabilityGetResult = NonNullable<
-  Awaited<
-    ReturnType<
-      ReturnType<typeof getBookingShopifyApi>['customerAvailabilityGet']
     >
   >
 >;

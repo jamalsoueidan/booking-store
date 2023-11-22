@@ -468,6 +468,179 @@ export const usersProfessionsResponse = zod.object({
 });
 
 /**
+ * This endpoint generate availabilty for user
+ * @summary POST generate availabilty for user
+ */
+export const userAvailabilityGenerateBody = zod.object({
+  fromDate: zod.string().optional(),
+  productIds: zod.array(zod.string()),
+  shippingId: zod.string().optional(),
+});
+
+export const userAvailabilityGenerateResponse = zod.object({
+  success: zod.boolean(),
+  payload: zod.array(
+    zod
+      .object({
+        date: zod.string(),
+        customer: zod.object({
+          customerId: zod.string(),
+          fullname: zod.string(),
+        }),
+        shipping: zod
+          .object({
+            duration: zod.object({
+              text: zod.string(),
+              value: zod.number(),
+            }),
+            distance: zod.object({
+              text: zod.string(),
+              value: zod.number(),
+            }),
+          })
+          .and(
+            zod.object({
+              _id: zod.string(),
+              location: zod.string(),
+              origin: zod.object({
+                _id: zod.string(),
+                locationType: zod.enum(['origin', 'destination']),
+                customerId: zod.string(),
+                originType: zod.enum(['home', 'commercial']),
+                name: zod.string(),
+                fullAddress: zod.string(),
+                geoLocation: zod.object({
+                  type: zod.enum(['Point']),
+                  coordinates: zod.array(zod.number()),
+                }),
+                distanceForFree: zod.number(),
+                distanceHourlyRate: zod.number(),
+                fixedRatePerKm: zod.number(),
+                minDriveDistance: zod.number(),
+                maxDriveDistance: zod.number(),
+                startFee: zod.number(),
+              }),
+              destination: zod.object({
+                name: zod.string(),
+                fullAddress: zod.string(),
+              }),
+              cost: zod.object({
+                currency: zod.string(),
+                value: zod.number(),
+              }),
+            }),
+          )
+          .optional(),
+      })
+      .and(
+        zod.object({
+          slots: zod.array(
+            zod.object({
+              from: zod.string(),
+              to: zod.string(),
+              products: zod.array(
+                zod.object({
+                  productId: zod.number(),
+                  variantId: zod.number(),
+                  from: zod.string(),
+                  to: zod.string(),
+                  breakTime: zod.number(),
+                  duration: zod.number(),
+                }),
+              ),
+            }),
+          ),
+        }),
+      ),
+  ),
+});
+
+/**
+ * This endpoint get's one single availabilty for user
+ * @summary POST get single availabilty for user
+ */
+export const userAvailabilityGetBody = zod.object({
+  fromDate: zod.string(),
+  toDate: zod.string(),
+  productIds: zod.array(zod.string()),
+  shippingId: zod.string().optional(),
+});
+
+export const userAvailabilityGetResponse = zod.object({
+  success: zod.boolean(),
+  payload: zod
+    .object({
+      date: zod.string(),
+      customer: zod.object({
+        customerId: zod.string(),
+        fullname: zod.string(),
+      }),
+      shipping: zod
+        .object({
+          duration: zod.object({
+            text: zod.string(),
+            value: zod.number(),
+          }),
+          distance: zod.object({
+            text: zod.string(),
+            value: zod.number(),
+          }),
+        })
+        .and(
+          zod.object({
+            _id: zod.string(),
+            location: zod.string(),
+            origin: zod.object({
+              _id: zod.string(),
+              locationType: zod.enum(['origin', 'destination']),
+              customerId: zod.string(),
+              originType: zod.enum(['home', 'commercial']),
+              name: zod.string(),
+              fullAddress: zod.string(),
+              geoLocation: zod.object({
+                type: zod.enum(['Point']),
+                coordinates: zod.array(zod.number()),
+              }),
+              distanceForFree: zod.number(),
+              distanceHourlyRate: zod.number(),
+              fixedRatePerKm: zod.number(),
+              minDriveDistance: zod.number(),
+              maxDriveDistance: zod.number(),
+              startFee: zod.number(),
+            }),
+            destination: zod.object({
+              name: zod.string(),
+              fullAddress: zod.string(),
+            }),
+            cost: zod.object({
+              currency: zod.string(),
+              value: zod.number(),
+            }),
+          }),
+        )
+        .optional(),
+    })
+    .and(
+      zod.object({
+        slot: zod.object({
+          from: zod.string(),
+          to: zod.string(),
+          products: zod.array(
+            zod.object({
+              productId: zod.number(),
+              variantId: zod.number(),
+              from: zod.string(),
+              to: zod.string(),
+              breakTime: zod.number(),
+              duration: zod.number(),
+            }),
+          ),
+        }),
+      }),
+    ),
+});
+
+/**
  * This endpoint get all users
  * @summary GET Get all users
  */
@@ -783,73 +956,6 @@ export const customerProductsListResponse = zod.object({
 export const customerProductsListIdsResponse = zod.object({
   success: zod.boolean(),
   payload: zod.array(zod.number()),
-});
-
-/**
- * This availabilty for customer
- * @summary POST get availabilty for customer
- */
-export const customerAvailabilityGetBody = zod.object({
-  startDate: zod.string(),
-  productIds: zod.array(zod.string()),
-  shippingId: zod.string().optional(),
-});
-
-export const customerAvailabilityGetResponse = zod.object({
-  success: zod.boolean(),
-  payload: zod.array(
-    zod.object({
-      date: zod.string(),
-      customer: zod.object({
-        customerId: zod.string(),
-        fullname: zod.string(),
-      }),
-      shipping: zod
-        .object({
-          _id: zod.string(),
-          location: zod.string().optional(),
-          origin: zod.object({
-            customerId: zod.string().optional(),
-            name: zod.string().optional(),
-            fullAddress: zod.string().optional(),
-            distanceForFree: zod.number().optional(),
-            distanceHourlyRate: zod.number().optional(),
-            fixedRatePerKm: zod.number().optional(),
-            startFee: zod.number().optional(),
-          }),
-          destination: zod.object({
-            name: zod.string().optional(),
-            fullAddress: zod.string().optional(),
-          }),
-          duration: zod.object({
-            text: zod.string().optional(),
-            value: zod.number().optional(),
-          }),
-          distance: zod.object({
-            text: zod.string().optional(),
-            value: zod.number().optional(),
-          }),
-          cost: zod.number(),
-        })
-        .optional(),
-      slots: zod.array(
-        zod.object({
-          from: zod.string(),
-          to: zod.string(),
-          products: zod.array(
-            zod.object({
-              productId: zod.number(),
-              variantId: zod.number(),
-              from: zod.string(),
-              to: zod.string(),
-              breakTime: zod.number(),
-              duration: zod.number(),
-            }),
-          ),
-        }),
-      ),
-    }),
-  ),
 });
 
 /**
@@ -1866,16 +1972,22 @@ export const shippingCreateResponse = zod.object({
         _id: zod.string(),
         location: zod.string(),
         origin: zod.object({
+          _id: zod.string(),
+          locationType: zod.enum(['origin', 'destination']),
+          customerId: zod.string(),
+          originType: zod.enum(['home', 'commercial']),
           name: zod.string(),
           fullAddress: zod.string(),
-          originType: zod.enum(['home', 'commercial']),
+          geoLocation: zod.object({
+            type: zod.enum(['Point']),
+            coordinates: zod.array(zod.number()),
+          }),
           distanceForFree: zod.number(),
           distanceHourlyRate: zod.number(),
           fixedRatePerKm: zod.number(),
           minDriveDistance: zod.number(),
           maxDriveDistance: zod.number(),
           startFee: zod.number(),
-          locationType: zod.enum(['origin', 'destination']),
         }),
         destination: zod.object({
           name: zod.string(),
@@ -1916,8 +2028,26 @@ export const shippingCalculateResponse = zod.object({
     })
     .and(
       zod.object({
-        customerId: zod.number(),
-        locationId: zod.string(),
+        _id: zod.string(),
+        location: zod.string(),
+        origin: zod.object({
+          _id: zod.string(),
+          locationType: zod.enum(['origin', 'destination']),
+          customerId: zod.string(),
+          originType: zod.enum(['home', 'commercial']),
+          name: zod.string(),
+          fullAddress: zod.string(),
+          geoLocation: zod.object({
+            type: zod.enum(['Point']),
+            coordinates: zod.array(zod.number()),
+          }),
+          distanceForFree: zod.number(),
+          distanceHourlyRate: zod.number(),
+          fixedRatePerKm: zod.number(),
+          minDriveDistance: zod.number(),
+          maxDriveDistance: zod.number(),
+          startFee: zod.number(),
+        }),
         destination: zod.object({
           name: zod.string(),
           fullAddress: zod.string(),

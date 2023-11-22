@@ -2,6 +2,7 @@ export const PRODUCT_SIMPLE = `#graphql
   fragment ProductSimple on Product {
     id
     title
+    description
     handle
     publishedAt
     images(first: 1) {
