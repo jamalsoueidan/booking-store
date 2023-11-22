@@ -5,7 +5,7 @@ import classes from './ArtistsHero.module.css';
 export function ArtistsHero() {
   return (
     <div className={classes.wrapper} style={{backgroundImage: `url(${image})`}}>
-      <Overlay color="#000" opacity={0.5} zIndex={1} />
+      <Overlay color="#000" opacity={0.4} zIndex={1} />
 
       <div className={classes.inner}>
         <Title className={classes.title}>

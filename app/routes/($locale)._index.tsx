@@ -8,7 +8,7 @@ import type {
   FeaturedCollectionFragment,
   RecommendedProductsQuery,
 } from 'storefrontapi.generated';
-import {HeroImageRight} from '~/components/Hero';
+import {FrontpageHero} from '~/components/Hero';
 import {ArtistCard} from '~/components/artists/ArtistCard';
 import {getBookingShopifyApi} from '~/lib/api/bookingShopifyApi';
 import {type UsersListResponse} from '~/lib/api/model';
@@ -34,14 +34,16 @@ export async function loader({context}: LoaderFunctionArgs) {
 export default function Homepage() {
   const data = useLoaderData<typeof loader>();
   return (
-    <Container fluid py="xl">
-      <Stack gap="lg">
-        <HeroImageRight />
-        <FeaturedArtists artists={data.artists} />
-        <FeaturedCollection collection={data.featuredCollection} />
-        <RecommendedProducts products={data.recommendedProducts} />
-      </Stack>
-    </Container>
+    <>
+      <FrontpageHero />
+      <Container fluid py="xl">
+        <Stack gap="lg">
+          <FeaturedArtists artists={data.artists} />
+          <FeaturedCollection collection={data.featuredCollection} />
+          <RecommendedProducts products={data.recommendedProducts} />
+        </Stack>
+      </Container>
+    </>
   );
 }
 

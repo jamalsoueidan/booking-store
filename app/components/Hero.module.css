@@ -2,8 +2,8 @@
   background-color: #ea4651;
   background-size: cover;
   background-position: center;
-  padding-top: calc(var(--mantine-spacing-xl) * 3);
-  padding-bottom: calc(var(--mantine-spacing-xl) * 3);
+  padding-top: var(--mantine-spacing-xs);
+  padding-bottom: var(--mantine-spacing-xs);
 }
 
 .inner {
@@ -22,8 +22,8 @@
 }
 
 .content {
-  padding-top: calc(var(--mantine-spacing-xl) * 2);
-  padding-bottom: calc(var(--mantine-spacing-xl) * 2);
+  padding-top: var(--mantine-spacing-xl);
+  padding-bottom: var(--mantine-spacing-xl);
   margin-right: calc(var(--mantine-spacing-xl) * 3);
 
   @media (max-width: $mantine-breakpoint-md) {
@@ -50,17 +50,19 @@
   color: #ea4651;
   opacity: 0.75;
   max-width: rem(500px);
+  font-size: rem(20px);
 
   @media (max-width: $mantine-breakpoint-md) {
     max-width: 100%;
+    font-size: rem(14px);
   }
 }
 
 .control {
-  padding-left: rem(50px);
-  padding-right: rem(50px);
+  padding-left: rem(30px);
+  padding-right: rem(30px);
   font-family: Greycliff CF, var(--mantine-font-family);
-  font-size: rem(22px);
+  font-size: rem(18px);
 
   @media (max-width: $mantine-breakpoint-md) {
     width: 100%;
