@@ -1,15 +1,22 @@
 import {Carousel} from '@mantine/carousel';
-import {Container, Group, Skeleton, Stack, Title} from '@mantine/core';
-import {Await, Link, useLoaderData, type MetaFunction} from '@remix-run/react';
-import {Image, Money} from '@shopify/hydrogen';
+import {
+  Container,
+  Group,
+  SimpleGrid,
+  Skeleton,
+  Stack,
+  Text,
+  Title,
+  rem,
+} from '@mantine/core';
+import {Await, useLoaderData, type MetaFunction} from '@remix-run/react';
 import {defer, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
 import {Suspense} from 'react';
-import type {
-  FeaturedCollectionFragment,
-  RecommendedProductsQuery,
-} from 'storefrontapi.generated';
+import type {RecommendedProductsQuery} from 'storefrontapi.generated';
 import {FrontpageHero} from '~/components/Hero';
+import {ProductCard} from '~/components/ProductCard';
 import {ArtistCard} from '~/components/artists/ArtistCard';
+import {PRODUCT_ITEM_FRAGMENT} from '~/data/fragments';
 import {getBookingShopifyApi} from '~/lib/api/bookingShopifyApi';
 import {type UsersListResponse} from '~/lib/api/model';
 
@@ -19,8 +26,6 @@ export const meta: MetaFunction = () => {
 
 export async function loader({context}: LoaderFunctionArgs) {
   const {storefront} = context;
-  const {collections} = await storefront.query(FEATURED_COLLECTION_QUERY);
-  const featuredCollection = collections.nodes[0];
   const recommendedProducts = storefront.query(RECOMMENDED_PRODUCTS_QUERY);
 
   const artists = getBookingShopifyApi().usersList({
@@ -28,7 +33,7 @@ export async function loader({context}: LoaderFunctionArgs) {
     sortOrder: 'desc',
   });
 
-  return defer({featuredCollection, recommendedProducts, artists});
+  return defer({recommendedProducts, artists});
 }
 
 export default function Homepage() {
@@ -37,9 +42,8 @@ export default function Homepage() {
     <>
       <FrontpageHero />
       <Container fluid py="xl">
-        <Stack gap="lg">
+        <Stack gap={rem(64)}>
           <FeaturedArtists artists={data.artists} />
-          <FeaturedCollection collection={data.featuredCollection} />
           <RecommendedProducts products={data.recommendedProducts} />
         </Stack>
       </Container>
@@ -50,10 +54,13 @@ export default function Homepage() {
 function FeaturedArtists({artists}: {artists: Promise<UsersListResponse>}) {
   if (!artists) return null;
   return (
-    <div className="featured-artists">
-      <Title order={2} mb="sm">
-        Skønhedseksperter
-      </Title>
+    <Stack gap="lg">
+      <span>
+        <Title order={2} fw={400} mb="xs">
+          Skønhedseksperter
+        </Title>
+        <Text c="dimmed">Vælge en af skønhedseksperter.</Text>
+      </span>
       <Suspense
         fallback={
           <Group>
@@ -79,29 +86,7 @@ function FeaturedArtists({artists}: {artists: Promise<UsersListResponse>}) {
           )}
         </Await>
       </Suspense>
-    </div>
-  );
-}
-
-function FeaturedCollection({
-  collection,
-}: {
-  collection: FeaturedCollectionFragment;
-}) {
-  if (!collection) return null;
-  const image = collection?.image;
-  return (
-    <Link
-      className="featured-collection"
-      to={`/collections/${collection.handle}`}
-    >
-      {image && (
-        <div className="featured-collection-image">
-          <Image data={image} sizes="100vw" />
-        </div>
-      )}
-      <Title>{collection.title}</Title>
-    </Link>
+    </Stack>
   );
 }
 
@@ -111,86 +96,39 @@ function RecommendedProducts({
   products: Promise<RecommendedProductsQuery>;
 }) {
   return (
-    <div className="recommended-products">
-      <Title order={2}>Recommended Products</Title>
+    <Stack gap="lg">
+      <span>
+        <Title order={2} fw={400} mb="xs">
+          Anbefalt produkter
+        </Title>
+        <Text c="dimmed">Nogle produkter som kunder har købt.</Text>
+      </span>
       <Suspense fallback={<div>Loading...</div>}>
         <Await resolve={products}>
           {({products}) => (
-            <div className="recommended-products-grid">
+            <SimpleGrid cols={{base: 1, md: 3, lg: 4}}>
               {products.nodes.map((product) => (
-                <Link
+                <ProductCard
                   key={product.id}
-                  className="recommended-product"
-                  to={`/products/${product.handle}`}
-                >
-                  <Image
-                    data={product.images.nodes[0]}
-                    aspectRatio="1/1"
-                    sizes="(min-width: 45em) 20vw, 50vw"
-                  />
-                  <h4>{product.title}</h4>
-                  <small>
-                    <Money data={product.priceRange.minVariantPrice} />
-                  </small>
-                </Link>
+                  product={product}
+                  loading="eager"
+                />
               ))}
-            </div>
+            </SimpleGrid>
           )}
         </Await>
       </Suspense>
-    </div>
+    </Stack>
   );
 }
 
-const FEATURED_COLLECTION_QUERY = `#graphql
-  fragment FeaturedCollection on Collection {
-    id
-    title
-    image {
-      id
-      url
-      altText
-      width
-      height
-    }
-    handle
-  }
-  query FeaturedCollection($country: CountryCode, $language: LanguageCode)
-    @inContext(country: $country, language: $language) {
-    collections(first: 1, sortKey: UPDATED_AT, reverse: true) {
-      nodes {
-        ...FeaturedCollection
-      }
-    }
-  }
-` as const;
-
 const RECOMMENDED_PRODUCTS_QUERY = `#graphql
-  fragment RecommendedProduct on Product {
-    id
-    title
-    handle
-    priceRange {
-      minVariantPrice {
-        amount
-        currencyCode
-      }
-    }
-    images(first: 1) {
-      nodes {
-        id
-        url
-        altText
-        width
-        height
-      }
-    }
-  }
+  ${PRODUCT_ITEM_FRAGMENT}
   query RecommendedProducts ($country: CountryCode, $language: LanguageCode)
     @inContext(country: $country, language: $language) {
-    products(first: 4, sortKey: UPDATED_AT, reverse: true) {
+    products(first: 4, sortKey: UPDATED_AT, reverse: true, query: "tag:products") {
       nodes {
-        ...RecommendedProduct
+        ...ProductItem
       }
     }
   }

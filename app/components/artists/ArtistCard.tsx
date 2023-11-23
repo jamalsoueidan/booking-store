@@ -13,8 +13,8 @@ export const ArtistCard = ({artist}: {artist: User}) => (
   >
     <Avatar
       src={artist.images?.profile?.url}
-      size={120}
-      radius={120}
+      size={240}
+      radius={240}
       mx="auto"
     />
     <Text ta="center" fz="lg" fw={500} mt="md" c="black">

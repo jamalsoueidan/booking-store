@@ -2,8 +2,7 @@
   background-color: #ea4651;
   background-size: cover;
   background-position: center;
-  padding-top: var(--mantine-spacing-xs);
-  padding-bottom: var(--mantine-spacing-xs);
+  padding: calc(var(--mantine-spacing-xs) * 6) 0;
 }
 
 .inner {

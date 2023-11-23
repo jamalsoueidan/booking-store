@@ -1,9 +1,8 @@
-import {Container, SimpleGrid} from '@mantine/core';
+import {Container, SimpleGrid, Stack, Title, rem} from '@mantine/core';
 import {useLoaderData} from '@remix-run/react';
 import {json, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
 import {useState} from 'react';
 import InfiniteScroll from 'react-infinite-scroll-component';
-import {ArtistsHero} from '~/components/ArtistsHero';
 import {ArtistCard} from '~/components/artists/ArtistCard';
 import {getBookingShopifyApi} from '~/lib/api/bookingShopifyApi';
 import {type User} from '~/lib/api/model';
@@ -19,7 +18,17 @@ export default function Collections() {
   const data = useLoaderData<typeof loader>();
   return (
     <>
-      <ArtistsHero />
+      <Stack pt={rem(30)} pb={rem(60)} gap="xs">
+        <Title order={5} c="dimmed" tt="uppercase" fw={300} ta="center">
+          Skønhedseksperter
+        </Title>
+        <Title order={1} size={rem(54)} fw={400} ta="center">
+          Find den perfekte skønhedsekspert til dine behov!
+        </Title>
+        <Title order={3} c="dimmed" ta="center" fw={300}>
+          Booke tid hos en skønhedsekspert, der passer perfekt til dine behov.
+        </Title>
+      </Stack>
       <Container fluid>
         <UserList initialData={data.results} initialCursor={data.nextCursor} />
       </Container>
@@ -59,7 +68,7 @@ export const UserList = ({initialData, initialCursor}: UserListProps) => {
       hasMore={hasMore}
       loader={<h4>Loading...</h4>}
     >
-      <SimpleGrid cols={{base: 2, lg: 6, md: 4}}>
+      <SimpleGrid cols={{base: 2, md: 4}}>
         {data?.map((user) => (
           <ArtistCard artist={user} key={user.customerId} />
         ))}
