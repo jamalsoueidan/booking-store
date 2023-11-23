@@ -42,10 +42,16 @@ export function TreatmentCard({
           />
         </AspectRatio>
       )}
-      <Title order={3} className={classes.title} mt="sm" mb={rem(4)}>
+      <Title
+        order={3}
+        className={classes.title}
+        mt={product.featuredImage ? 'sm' : undefined}
+        mb={rem(4)}
+        fw={500}
+      >
         {product.title}
       </Title>
-      <Text c="dimmed" size="xs" tt="uppercase" fw={700}>
+      <Text c="dimmed" size="xs" tt="uppercase" fw={400} lineClamp={2}>
         {product.description || 'ingen beskrivelse'}
       </Text>
       <Card.Section mt="md" mb="md">

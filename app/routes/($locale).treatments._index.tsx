@@ -33,13 +33,13 @@ export default function Collections() {
     <Container fluid pt="xl">
       <Stack pt={rem(30)} pb={rem(60)} gap="xs">
         <Title order={5} c="dimmed" tt="uppercase" fw={300} ta="center">
-          Kategorier
+          KATEGORIUDVALG
         </Title>
         <Title order={1} size={rem(54)} fw={400} ta="center">
-          Dykke dybere ned i de mange forskellige skønhedskategorier.
+          Udforsk behandlinger, og book din tid – alt sammen på ét sted.
         </Title>
         <Title order={3} c="dimmed" ta="center" fw={300}>
-          Vælge den kategori du vil købe fra.
+          Vælg din næste skønhedsoplevelse.
         </Title>
       </Stack>
 
