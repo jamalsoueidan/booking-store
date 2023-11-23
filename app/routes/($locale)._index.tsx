@@ -16,7 +16,7 @@ import type {RecommendedProductsQuery} from 'storefrontapi.generated';
 import {FrontpageHero} from '~/components/Hero';
 import {ProductCard} from '~/components/ProductCard';
 import {ArtistCard} from '~/components/artists/ArtistCard';
-import {Faq} from '~/components/faq';
+
 import {PRODUCT_ITEM_FRAGMENT} from '~/data/fragments';
 import {getBookingShopifyApi} from '~/lib/api/bookingShopifyApi';
 import {type UsersListResponse} from '~/lib/api/model';
@@ -46,7 +46,6 @@ export default function Homepage() {
         <Stack gap={rem(64)}>
           <FeaturedArtists artists={data.artists} />
           <RecommendedProducts products={data.recommendedProducts} />
-          <Faq />
         </Stack>
       </Container>
     </>
