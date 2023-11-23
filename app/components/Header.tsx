@@ -2,16 +2,19 @@ import {
   ActionIcon,
   Box,
   Burger,
+  Center,
   Divider,
   Drawer,
   Flex,
   Group,
+  Menu,
   ScrollArea,
   rem,
 } from '@mantine/core';
 import {useDisclosure} from '@mantine/hooks';
-import {Await, Link, NavLink} from '@remix-run/react';
+import {Await, Link, NavLink, useLocation} from '@remix-run/react';
 import {
+  IconChevronDown,
   IconLogin,
   IconShoppingCart,
   IconShoppingCartPlus,
@@ -79,6 +82,7 @@ export function HeaderMenu({
   primaryDomainUrl: HeaderQuery['shop']['primaryDomain']['url'];
   viewport: Viewport;
 }) {
+  const location = useLocation();
   const {publicStoreDomain} = useRootLoaderData();
   const className = `header-menu-${viewport}`;
 
@@ -102,19 +106,67 @@ export function HeaderMenu({
           Home
         </NavLink>
       )}
-      {(menu || FALLBACK_HEADER_MENU).items.map((item) => {
-        if (!item.url) return null;
+      {(menu || FALLBACK_HEADER_MENU).items.map((link) => {
+        if (!link.url) return null;
 
         // if the url is internal, we strip the domain
         const url =
-          item.url.includes('myshopify.com') ||
-          item.url.includes(publicStoreDomain) ||
-          item.url.includes(primaryDomainUrl)
-            ? new URL(item.url).pathname
-            : item.url;
+          link.url.includes('myshopify.com') ||
+          link.url.includes(publicStoreDomain) ||
+          link.url.includes(primaryDomainUrl)
+            ? new URL(link.url).pathname
+            : link.url;
+
+        const menuItems = link.items?.map((item) => {
+          if (!item.url) return null;
+
+          const url =
+            item.url.includes('myshopify.com') ||
+            item.url.includes(publicStoreDomain) ||
+            item.url.includes(primaryDomainUrl)
+              ? new URL(item.url).pathname
+              : link.url;
+
+          return (
+            <Menu.Item key={item.url} component="a" href={url || ''}>
+              {item.title}
+            </Menu.Item>
+          );
+        });
+
+        if (menuItems.length > 0) {
+          return (
+            <Menu
+              key={link.id}
+              trigger="hover"
+              transitionProps={{exitDuration: 0}}
+              withinPortal
+            >
+              <Menu.Target>
+                <a
+                  href={url}
+                  className={classes.link}
+                  data-active={location.pathname.includes(url) || undefined}
+                >
+                  <Center>
+                    <span className={classes.linkLabel}>{link.title}</span>
+                    <IconChevronDown size="0.9rem" stroke={1.5} />
+                  </Center>
+                </a>
+              </Menu.Target>
+              <Menu.Dropdown>{menuItems}</Menu.Dropdown>
+            </Menu>
+          );
+        }
+
         return (
-          <a key={item.id} href={url} className={classes.link}>
-            {item.title}
+          <a
+            key={link.id}
+            href={url}
+            className={classes.link}
+            data-active={location.pathname.includes(url) || undefined}
+          >
+            {link.title}
           </a>
         );
       })}

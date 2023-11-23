@@ -38,17 +38,19 @@ export function ArtistProduct({product, services}: ArtistProductProps) {
       component={Link}
       to={`treatment/${product.handle}-${parseGid(product.id).id}`}
     >
-      <AspectRatio ratio={1920 / 1080}>
-        <Image
-          data={product.images.nodes[0]}
-          aspectRatio="1/1"
-          sizes="(min-width: 45em) 20vw, 50vw"
-        />
-      </AspectRatio>
-      <Title order={3} className={classes.title} mt="sm" mb={rem(4)}>
+      {product.featuredImage && (
+        <AspectRatio ratio={1920 / 1080}>
+          <Image
+            data={product.featuredImage}
+            aspectRatio="1/1"
+            sizes="(min-width: 45em) 20vw, 50vw"
+          />
+        </AspectRatio>
+      )}
+      <Title order={3} className={classes.title} mt="sm" mb={rem(4)} fw={500}>
         {product.title}
       </Title>
-      <Text c="dimmed" size="xs" tt="uppercase" fw={700}>
+      <Text c="dimmed" size="xs" tt="uppercase" fw={400} lineClamp={2}>
         {artistService?.description || 'ingen beskrivelse'}
       </Text>
       <Card.Section mt="md" mb="md">

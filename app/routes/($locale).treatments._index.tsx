@@ -1,15 +1,22 @@
-import {Button, Container, Flex, Stack, Title, rem} from '@mantine/core';
-import {Link, useLoaderData} from '@remix-run/react';
-import {Image, Pagination, getPaginationVariables} from '@shopify/hydrogen';
+import {
+  Button,
+  Container,
+  Flex,
+  SimpleGrid,
+  Stack,
+  Title,
+  rem,
+} from '@mantine/core';
+import {useLoaderData} from '@remix-run/react';
+import {Pagination, getPaginationVariables} from '@shopify/hydrogen';
 import {json, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
 import type {CollectionFragment} from 'storefrontapi.generated';
-import {CollectionCard} from '~/components/CollectionCard';
+import {TreatmentCollectionCard} from '~/components/treatment/TreatmentCollectionCard';
 import {COLLECTION_ITEM_FRAGMENT} from '~/data/fragments';
-import {parseCT} from '~/lib/clean';
 
 export async function loader({context, request}: LoaderFunctionArgs) {
   const paginationVariables = getPaginationVariables(request, {
-    pageBy: 4,
+    pageBy: 6,
   });
 
   const {collections} = await context.storefront.query(COLLECTIONS_QUERY, {
@@ -26,13 +33,13 @@ export default function Collections() {
     <Container fluid pt="xl">
       <Stack pt={rem(30)} pb={rem(60)} gap="xs">
         <Title order={5} c="dimmed" tt="uppercase" fw={300} ta="center">
-          Kollektioner
+          KATEGORIUDVALG
         </Title>
         <Title order={1} size={rem(54)} fw={400} ta="center">
-          Køb produkter hos os som vi bruger.
+          Udforsk behandlinger, og book din tid – alt sammen på ét sted.
         </Title>
         <Title order={3} c="dimmed" ta="center" fw={300}>
-          Køb produkter hos os som vi bruger.
+          Vælg din næste skønhedsoplevelse.
         </Title>
       </Stack>
 
@@ -60,48 +67,21 @@ export default function Collections() {
 
 function CollectionsGrid({collections}: {collections: CollectionFragment[]}) {
   return (
-    <div className="collections-grid">
+    <SimpleGrid cols={{base: 1, md: 3, sm: 2}}>
       {collections.map((collection, index) => (
-        <CollectionCard
+        <TreatmentCollectionCard
           key={collection.id}
           collection={collection}
           index={index}
         />
       ))}
-    </div>
-  );
-}
-
-function CollectionItem({
-  collection,
-  index,
-}: {
-  collection: CollectionFragment;
-  index: number;
-}) {
-  return (
-    <Link
-      className="collection-item"
-      key={collection.id}
-      to={`/collections/${collection.handle}`}
-      prefetch="intent"
-    >
-      {collection?.image && (
-        <Image
-          alt={collection.image.altText || collection.title}
-          aspectRatio="1/1"
-          data={collection.image}
-          loading={index < 3 ? 'eager' : undefined}
-        />
-      )}
-      <h5>{parseCT(collection.title)}</h5>
-    </Link>
+    </SimpleGrid>
   );
 }
 
 const COLLECTIONS_QUERY = `#graphql
   ${COLLECTION_ITEM_FRAGMENT}
-  query StoreCollections(
+  query StoreTreatment(
     $country: CountryCode
     $endCursor: String
     $first: Int
@@ -114,7 +94,7 @@ const COLLECTIONS_QUERY = `#graphql
       last: $last,
       before: $startCursor,
       after: $endCursor,
-      query: "title:products:*"
+      query: "title:treatments:*"
     ) {
       nodes {
         ...Collection

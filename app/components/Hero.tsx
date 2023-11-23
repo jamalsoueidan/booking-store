@@ -1,7 +1,9 @@
 import {Button, Container, Text, Title} from '@mantine/core';
+import {Link} from '@remix-run/react';
 import image from '../../public/background.webp';
 import classes from './Hero.module.css';
-export function HeroImageRight() {
+
+export function FrontpageHero() {
   return (
     <div
       className={classes.root}
@@ -35,8 +37,10 @@ export function HeroImageRight() {
             <Button
               variant="gradient"
               gradient={{from: 'pink', to: 'yellow'}}
-              size="xl"
+              size="md"
               className={classes.control}
+              component={Link}
+              to="/artists"
               mt={40}
             >
               Start din søgning

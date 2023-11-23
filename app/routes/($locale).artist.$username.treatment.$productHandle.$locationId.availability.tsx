@@ -1,6 +1,6 @@
 import {Carousel} from '@mantine/carousel';
 import {Button, Group, SimpleGrid, Stack, Text, Title} from '@mantine/core';
-import {useLoaderData, useLocation, useNavigate} from '@remix-run/react';
+import {Form, useLoaderData, useLocation, useNavigate} from '@remix-run/react';
 import {json, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
 import {format} from 'date-fns';
 import {da} from 'date-fns/locale';
@@ -9,8 +9,8 @@ import {MultilineButton} from '~/components/MultilineButton';
 import {ArtistStepper} from '~/components/artist/ArtistStepper';
 import {getBookingShopifyApi} from '~/lib/api/bookingShopifyApi';
 import {
-  type CustomerAvailability,
-  type CustomerAvailabilitySlotsItem,
+  type UserAvailability,
+  type UserAvailabilitySlot,
 } from '~/lib/api/model';
 
 export async function loader({params, request}: LoaderFunctionArgs) {
@@ -28,15 +28,13 @@ export async function loader({params, request}: LoaderFunctionArgs) {
     throw new Error('Expected product handle to be defined');
   }
 
-  const {payload: user} = await getBookingShopifyApi().userGet(username);
-
-  const availability = await getBookingShopifyApi().customerAvailabilityGet(
-    user.customerId.toString(),
+  const availability = await getBookingShopifyApi().userAvailabilityGenerate(
+    username,
     locationId,
     {
       productIds,
-      startDate: '2023-05-13',
-      shippingId,
+      fromDate: '2023-05-13',
+      shippingId: shippingId ? shippingId : undefined, //stringify ignore undefined values but not NULL
     },
   );
 
@@ -47,7 +45,9 @@ export default function ArtistTreatmentsBooking() {
   const availability = useLoaderData<typeof loader>();
   const navigate = useNavigate();
   const location = useLocation();
-  const [selectedSlotFrom, setSelectedSlotFrom] = useState<string>();
+  const [selectedSlot, setSelectedSlot] = useState<
+    UserAvailabilitySlot | undefined
+  >();
   const [selectedDate, setSelectedDate] = useState<string>();
 
   const handleCloseClick = (event: any) => {
@@ -56,14 +56,14 @@ export default function ArtistTreatmentsBooking() {
   };
 
   const onChangeDate =
-    ({date}: CustomerAvailability) =>
+    ({date}: UserAvailability) =>
     () => {
       setSelectedDate(date);
-      setSelectedSlotFrom(undefined);
+      setSelectedSlot(undefined);
     };
 
-  const onChangeSlot = (slot: CustomerAvailabilitySlotsItem) => () => {
-    setSelectedSlotFrom(slot.from);
+  const onChangeSlot = (slot: UserAvailabilitySlot) => () => {
+    setSelectedSlot(slot);
   };
 
   const days = availability.payload.map((availability) => (
@@ -82,30 +82,29 @@ export default function ArtistTreatmentsBooking() {
         key={slot.from}
         onClick={onChangeSlot(slot)}
         slot={slot}
-        selected={selectedSlotFrom}
+        selected={selectedSlot?.from}
       />
     ));
 
   return (
     <ArtistStepper active={2} title="Dato/Tid" description="Vælge tidspunkt?">
-      <form
-        method="POST"
-        action={`completed${location.search}`}
+      <Form
+        method="post"
+        action={`../completed${location.search}`}
         style={{maxWidth: '100%'}}
       >
         <Stack gap="xl" mb="md">
           <input
             type="hidden"
-            name="date"
-            className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-            value={selectedDate || ''}
+            name="fromDate"
+            value={selectedSlot ? selectedSlot.from : ''}
             onChange={() => {}}
           />
+
           <input
             type="hidden"
-            name="slot"
-            className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-            value={selectedSlotFrom || ''}
+            name="toDate"
+            value={selectedSlot ? selectedSlot.to : ''}
             onChange={() => {}}
           />
 
@@ -145,11 +144,11 @@ export default function ArtistTreatmentsBooking() {
         </Stack>
         <Group justify="center">
           <Button onClick={handleCloseClick}>Tilbage</Button>
-          <Button type="submit" disabled={!selectedDate || !selectedSlotFrom}>
+          <Button type="submit" disabled={!selectedDate || !selectedSlot}>
             Næste
           </Button>
         </Group>
-      </form>
+      </Form>
     </ArtistStepper>
   );
 }
@@ -159,7 +158,7 @@ function AvailabilityDay({
   selected,
   onClick,
 }: {
-  availability: CustomerAvailability;
+  availability: UserAvailability;
   selected?: string;
   onClick: () => void;
 }) {
@@ -185,7 +184,7 @@ function AvailabilityTime({
   selected,
   onClick,
 }: {
-  slot: CustomerAvailabilitySlotsItem;
+  slot: UserAvailabilitySlot;
   selected?: string;
   onClick: () => void;
 }) {

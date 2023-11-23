@@ -8,7 +8,7 @@ import {
   TextInput,
 } from '@mantine/core';
 import {useDisclosure} from '@mantine/hooks';
-import {useFetcher, useLoaderData} from '@remix-run/react';
+import {Form, useFetcher, useLoaderData} from '@remix-run/react';
 import {json, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
 import {useEffect, useState} from 'react';
 import {AddressAutocompleteInput} from '~/components/AddressAutocompleteInput';
@@ -18,35 +18,40 @@ import {getBookingShopifyApi} from '~/lib/api/bookingShopifyApi';
 import {
   CustomerLocationLocationType,
   type CustomerLocation,
-  type ShippingCalculateResponsePayload,
-  type ShippingCreateResponsePayload,
+  type Shipping,
 } from '~/lib/api/model';
 
 export async function loader({params}: LoaderFunctionArgs) {
   const {productHandle, username} = params;
 
   if (!productHandle || !username) {
-    throw new Error('Expected product handle to be defined');
+    throw new Response('Expected product handle to be defined', {status: 400});
   }
 
-  const productId = productHandle.match(/\d+$/)![0];
+  try {
+    const productId = productHandle.match(/\d+$/)![0];
 
-  const {payload: schedule} =
-    await getBookingShopifyApi().userScheduleGetByProduct(username, productId);
+    const {payload: schedule} =
+      await getBookingShopifyApi().userScheduleGetByProduct(
+        username,
+        productId,
+      );
 
-  return json({
-    schedule,
-    productHandle,
-  });
+    return json({
+      schedule,
+    });
+  } catch (err) {
+    throw new Response('Username or product handle is wrong', {status: 404});
+  }
 }
 
 export default function ArtistTreatments() {
   const [opened, {open, close}] = useDisclosure(false);
-  const {schedule, productHandle} = useLoaderData<typeof loader>();
+  const {schedule} = useLoaderData<typeof loader>();
   const [shippingId, setShippingId] = useState<string | undefined>();
   const [selectedLocation, setSelectedLocation] = useState<
     CustomerLocation | undefined
-  >(undefined);
+  >(schedule.locations.length === 1 ? schedule.locations[0] : undefined);
 
   const onClick = (location: CustomerLocation) => () => {
     setShippingId(undefined);
@@ -85,10 +90,10 @@ export default function ArtistTreatments() {
       title="Location"
       description="Vælge hvor du fortag behandling?"
     >
-      <form
+      <Form
         method="get"
         style={{maxWidth: '100%'}}
-        action={`${productHandle}/${selectedLocation?._id || ''}`}
+        action={`./${selectedLocation?._id || ''}`}
       >
         <Flex gap="lg" pt="xl" pb="xl" direction={{base: 'column', sm: 'row'}}>
           {markup}
@@ -110,7 +115,7 @@ export default function ArtistTreatments() {
             Næste
           </Button>
         </Group>
-      </form>
+      </Form>
     </ArtistStepper>
   );
 }
@@ -130,9 +135,8 @@ function LocationModal({
 }: LocationModalProps) {
   const [view, setView] = useState('init');
 
-  const calculateShippingFetcher =
-    useFetcher<ShippingCalculateResponsePayload>();
-  const createShippingFetcher = useFetcher<ShippingCreateResponsePayload>();
+  const calculateShippingFetcher = useFetcher<Shipping>();
+  const createShippingFetcher = useFetcher<Shipping>();
 
   const back = () => {
     setView('init');

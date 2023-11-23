@@ -66,6 +66,11 @@ export const queryClient = async <T>({
   data?: BodyType<unknown>;
   responseType?: string;
 }): Promise<T> => {
+  console.log(
+    `${baseURL}${url.replace(/gid:\/\/shopify\/[A-Za-z]+\//, '')}` +
+      paramsToQueryString(params),
+    data ? {body: JSON.stringify(data)} : {},
+  );
   const response = await fetch(
     `${baseURL}${url.replace(/gid:\/\/shopify\/[A-Za-z]+\//, '')}` +
       paramsToQueryString(params),

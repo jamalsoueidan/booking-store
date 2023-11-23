@@ -5,7 +5,7 @@
  * OpenAPI spec version: 1.0.0
  */
 
-export type ShippingCreateResponsePayloadAllOfCost = {
-  currency: string;
-  value: number;
+export type UserAvailabilityCustomer = {
+  customerId: string;
+  fullname: string;
 };

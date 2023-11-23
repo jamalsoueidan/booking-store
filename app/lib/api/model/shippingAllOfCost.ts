@@ -5,8 +5,7 @@
  * OpenAPI spec version: 1.0.0
  */
 
-export interface CustomerAvailabilityBody {
-  productIds: string[];
-  shippingId?: string;
-  startDate: string;
-}
+export type ShippingAllOfCost = {
+  currency: string;
+  value: number;
+};

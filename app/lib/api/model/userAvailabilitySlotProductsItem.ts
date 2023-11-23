@@ -5,7 +5,7 @@
  * OpenAPI spec version: 1.0.0
  */
 
-export type CustomerAvailabilitySlotsItemProductsItem = {
+export type UserAvailabilitySlotProductsItem = {
   breakTime: number;
   duration: number;
   from: string;

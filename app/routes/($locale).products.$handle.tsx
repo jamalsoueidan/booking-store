@@ -289,7 +289,7 @@ function ProductOptions({option}: {option: VariantOption}) {
   );
 }
 
-function AddToCartButton({
+export function AddToCartButton({
   analytics,
   children,
   disabled,
