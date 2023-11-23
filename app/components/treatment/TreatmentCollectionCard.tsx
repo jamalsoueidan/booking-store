@@ -3,7 +3,7 @@ import {Link} from '@remix-run/react';
 import {IconArrowRight} from '@tabler/icons-react';
 import {type CollectionFragment} from 'storefrontapi.generated';
 import {parseTE} from '~/lib/clean';
-import classes from './TreatmentCollection.module.css';
+import classes from './TreatmentCollectionCard.module.css';
 
 export function TreatmentCollectionCard({
   collection,

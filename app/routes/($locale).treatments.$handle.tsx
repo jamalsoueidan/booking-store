@@ -8,22 +8,30 @@ import {
   rem,
 } from '@mantine/core';
 import {useLoaderData, type MetaFunction} from '@remix-run/react';
-import {Pagination, getPaginationVariables} from '@shopify/hydrogen';
+import {Pagination, getPaginationVariables, parseGid} from '@shopify/hydrogen';
 import {json, redirect, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
 import type {ProductItemFragment} from 'storefrontapi.generated';
 import {TreatmentCard} from '~/components/treatment/TreatmentCard';
 import {PRODUCT_ITEM_FRAGMENT} from '~/data/fragments';
+import {getBookingShopifyApi} from '~/lib/api/bookingShopifyApi';
+import type {ProductsGetUsersResponse} from '~/lib/api/model';
 import {parseTE} from '~/lib/clean';
 
 export const meta: MetaFunction<typeof loader> = ({data}) => {
-  return [{title: `Hydrogen | ${data?.collection.title ?? ''} Collection`}];
+  return [
+    {
+      title: `Hydrogen | ${
+        parseTE(data?.collection.title || '') ?? ''
+      } Collection`,
+    },
+  ];
 };
 
 export async function loader({request, params, context}: LoaderFunctionArgs) {
   const {handle} = params;
   const {storefront} = context;
   const paginationVariables = getPaginationVariables(request, {
-    pageBy: 8,
+    pageBy: 10,
   });
 
   if (!handle) {
@@ -34,16 +42,22 @@ export async function loader({request, params, context}: LoaderFunctionArgs) {
     variables: {handle, ...paginationVariables},
   });
 
+  const {payload: productsUsers} =
+    await getBookingShopifyApi().productsGetUsers({
+      productIds:
+        collection?.products.nodes.map((p) => parseGid(p.id).id) || [],
+    });
+
   if (!collection) {
     throw new Response(`Collection ${handle} not found`, {
       status: 404,
     });
   }
-  return json({collection});
+  return json({collection, productsUsers});
 }
 
 export default function Collection() {
-  const {collection} = useLoaderData<typeof loader>();
+  const {collection, productsUsers} = useLoaderData<typeof loader>();
 
   return (
     <Container fluid pt="xl">
@@ -67,7 +81,7 @@ export default function Collection() {
                 ↑ Hent tidligere
               </Button>
             </Flex>
-            <ProductsGrid products={nodes} />
+            <ProductsGrid products={nodes} productsUsers={productsUsers} />
             <br />
             <Flex justify="center">
               <Button component={NextLink} loading={isLoading}>
@@ -81,19 +95,32 @@ export default function Collection() {
   );
 }
 
-function ProductsGrid({products}: {products: ProductItemFragment[]}) {
+function ProductsGrid({
+  products,
+  productsUsers,
+}: {
+  products: ProductItemFragment[];
+  productsUsers: ProductsGetUsersResponse[];
+}) {
   return (
-    <SimpleGrid cols={{base: 1, md: 3, lg: 4}}>
-      {products.map((product, index) => {
-        return (
-          <TreatmentCard
-            key={product.id}
-            product={product}
-            loading={index < 8 ? 'eager' : undefined}
-          />
-        );
-      })}
-    </SimpleGrid>
+    <Container size="xl">
+      <SimpleGrid cols={{base: 1, md: 3}}>
+        {products.map((product, index) => {
+          const productUsers = productsUsers.find(
+            (p) => p.productId.toString() === parseGid(product.id).id,
+          );
+
+          return (
+            <TreatmentCard
+              key={product.id}
+              product={product}
+              productUsers={productUsers}
+              loading={index < 8 ? 'eager' : undefined}
+            />
+          );
+        })}
+      </SimpleGrid>
+    </Container>
   );
 }
 

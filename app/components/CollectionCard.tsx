@@ -21,16 +21,16 @@ export function CollectionCard({
       prefetch="intent"
       className={classes.card}
     >
-      <AspectRatio ratio={1920 / 1080}>
-        {collection?.image && (
+      {collection?.image && (
+        <AspectRatio ratio={1080 / 1080}>
           <Image
             alt={collection.image.altText || collection.title}
             aspectRatio="1/1"
             data={collection.image}
             loading={index < 3 ? 'eager' : undefined}
           />
-        )}
-      </AspectRatio>
+        </AspectRatio>
+      )}
       <Text c="dimmed" size="xs" tt="uppercase" fw={700} mt="md">
         {collection.handle}
       </Text>

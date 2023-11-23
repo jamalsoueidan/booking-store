@@ -7,6 +7,40 @@
 import {z as zod} from 'zod';
 
 /**
+ * This endpoint respond with products users
+ * @summary POST get users belongs to products
+ */
+export const productsGetUsersBody = zod.object({
+  productIds: zod.array(zod.string()),
+});
+
+export const productsGetUsersResponse = zod.object({
+  success: zod.boolean(),
+  payload: zod.array(
+    zod.object({
+      productId: zod.number(),
+      totalUsers: zod.number(),
+      users: zod.array(
+        zod.object({
+          customerId: zod.number(),
+          username: zod.string(),
+          images: zod.object({
+            profile: zod
+              .object({
+                url: zod.string().url().optional(),
+                width: zod.number().optional(),
+                height: zod.number().optional(),
+              })
+              .optional(),
+          }),
+          fullname: zod.string(),
+        }),
+      ),
+    }),
+  ),
+});
+
+/**
  * This endpoint gets user object
  * @summary GET Get user
  */

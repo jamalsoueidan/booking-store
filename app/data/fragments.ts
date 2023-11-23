@@ -1,5 +1,5 @@
-export const PRODUCT_SIMPLE = `#graphql
-  fragment ProductSimple on Product {
+export const PRODUCT_SERVICE_ITEM_FRAGMENT = `#graphql
+  fragment ProductServiceItem on Product {
     id
     title
     description
@@ -32,7 +32,7 @@ export const PRODUCT_SIMPLE = `#graphql
       }
     }
   }
-`;
+` as const;
 
 export const COLLECTION_ITEM_FRAGMENT = `#graphql
   fragment Collection on Collection {

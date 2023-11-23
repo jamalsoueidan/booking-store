@@ -17,7 +17,7 @@ export const loader = async ({request, context}: LoaderFunctionArgs) => {
 export default function Collections() {
   const data = useLoaderData<typeof loader>();
   return (
-    <>
+    <Container fluid>
       <Stack pt={rem(30)} pb={rem(60)} gap="xs">
         <Title order={5} c="dimmed" tt="uppercase" fw={300} ta="center">
           Skønhedseksperter
@@ -29,10 +29,10 @@ export default function Collections() {
           Booke tid hos en skønhedsekspert, der passer perfekt til dine behov.
         </Title>
       </Stack>
-      <Container fluid>
+      <Container size="xl">
         <UserList initialData={data.results} initialCursor={data.nextCursor} />
       </Container>
-    </>
+    </Container>
   );
 }
 

@@ -12,7 +12,7 @@ import {Form, Link, useLoaderData} from '@remix-run/react';
 import {Money, parseGid} from '@shopify/hydrogen';
 import {type ProductConnection} from '@shopify/hydrogen/storefront-api-types';
 import {json, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
-import {PRODUCT_SIMPLE} from '~/data/fragments';
+import {PRODUCT_SERVICE_ITEM_FRAGMENT} from '~/data/fragments';
 import {getBookingShopifyApi} from '~/lib/api/bookingShopifyApi';
 import {getCustomer} from '~/lib/get-customer';
 
@@ -104,7 +104,7 @@ export default function AccountServicesIndex() {
 }
 
 const ALL_PRODUCTS_QUERY = `#graphql
-  ${PRODUCT_SIMPLE}
+  ${PRODUCT_SERVICE_ITEM_FRAGMENT}
   query AccountServicesProducts(
     $country: CountryCode
     $language: LanguageCode
@@ -113,7 +113,7 @@ const ALL_PRODUCTS_QUERY = `#graphql
   ) @inContext(country: $country, language: $language) {
     products(first: $first, query: $query) {
       nodes {
-        ...ProductSimple
+        ...ProductServiceItem
       }
     }
   }

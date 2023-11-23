@@ -1,18 +1,10 @@
-import {
-  AspectRatio,
-  Badge,
-  Card,
-  Divider,
-  Group,
-  Text,
-  Title,
-  rem,
-} from '@mantine/core';
+import {Badge, Card, Text} from '@mantine/core';
 import {Link} from '@remix-run/react';
-import {Image, Money, parseGid} from '@shopify/hydrogen';
+import {Money, parseGid} from '@shopify/hydrogen';
 import {type AccountServicesProductsQuery} from 'storefrontapi.generated';
 import {type CustomerProductList} from '~/lib/api/model';
 import {durationToTime} from '~/lib/duration';
+import {TreatmentContent} from '../treatment/TreatmentContent';
 import classes from './ArtistProduct.module.css';
 
 export type ArtistProductProps = {
@@ -29,6 +21,18 @@ export function ArtistProduct({product, services}: ArtistProductProps) {
     return parseGid(id).id === artistService?.variantId.toString();
   });
 
+  const leftSection = (
+    <Text c="dimmed" size="xs" tt="uppercase" fw={700}>
+      {durationToTime(artistService?.duration ?? 0)}
+    </Text>
+  );
+
+  const rightSection = productVariant?.price && (
+    <Badge variant="light" color="gray" size="lg">
+      <Money data={productVariant?.price} />
+    </Badge>
+  );
+
   return (
     <Card
       key={product.handle}
@@ -38,36 +42,12 @@ export function ArtistProduct({product, services}: ArtistProductProps) {
       component={Link}
       to={`treatment/${product.handle}-${parseGid(product.id).id}`}
     >
-      {product.featuredImage && (
-        <AspectRatio ratio={1920 / 1080}>
-          <Image
-            data={product.featuredImage}
-            aspectRatio="1/1"
-            sizes="(min-width: 45em) 20vw, 50vw"
-          />
-        </AspectRatio>
-      )}
-      <Title order={3} className={classes.title} mt="sm" mb={rem(4)} fw={500}>
-        {product.title}
-      </Title>
-      <Text c="dimmed" size="xs" tt="uppercase" fw={400} lineClamp={2}>
-        {artistService?.description || 'ingen beskrivelse'}
-      </Text>
-      <Card.Section mt="md" mb="md">
-        <Divider />
-      </Card.Section>
-
-      <Group justify="space-between">
-        <Text c="dimmed" size="xs" tt="uppercase" fw={700}>
-          {durationToTime(artistService?.duration ?? 0)}
-        </Text>
-
-        {productVariant ? (
-          <Badge variant="light" color="gray" size="lg">
-            <Money data={productVariant.price} />
-          </Badge>
-        ) : null}
-      </Group>
+      <TreatmentContent
+        product={product}
+        description={artistService?.description}
+        leftSection={leftSection}
+        rightSection={rightSection}
+      />
     </Card>
   );
 }

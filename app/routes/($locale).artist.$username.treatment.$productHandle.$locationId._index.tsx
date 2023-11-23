@@ -1,13 +1,11 @@
 import {
-  AspectRatio,
+  Badge,
   Button,
   Flex,
   Group,
   SimpleGrid,
   Skeleton,
   Text,
-  Title,
-  rem,
 } from '@mantine/core';
 import {
   Await,
@@ -16,12 +14,12 @@ import {
   useNavigate,
   useSearchParams,
 } from '@remix-run/react';
-import {Image, Money, parseGid} from '@shopify/hydrogen';
+import {Money, parseGid} from '@shopify/hydrogen';
 import {defer, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
 import {Suspense} from 'react';
 import {
-  type AccountServicesProductsQuery,
   type ArtistServicesProductsQuery,
+  type ProductServiceItemFragment,
 } from 'storefrontapi.generated';
 import {getBookingShopifyApi} from '~/lib/api/bookingShopifyApi';
 import {
@@ -32,6 +30,7 @@ import {ALL_PRODUCTS_QUERY} from './($locale).artist.$username._index';
 
 import {ArtistServiceCheckboxCard} from '~/components/artist/ArtistServiceCheckboxCard';
 import {ArtistStepper} from '~/components/artist/ArtistStepper';
+import {TreatmentContent} from '~/components/treatment/TreatmentContent';
 import {durationToTime} from '~/lib/duration';
 
 export async function loader({params, context}: LoaderFunctionArgs) {
@@ -177,7 +176,7 @@ function RenderArtistProducts({
 }
 
 type ArtistProductProps = {
-  product: AccountServicesProductsQuery['products']['nodes'][number];
+  product: ProductServiceItemFragment;
   services: CustomerProductList[];
   defaultChecked?: boolean;
 };
@@ -195,47 +194,30 @@ function ArtistProduct({
     return parseGid(id).id === artistService?.variantId.toString();
   });
 
+  const leftSection = (
+    <Text c="dimmed" size="xs" tt="uppercase" fw={700}>
+      {durationToTime(artistService?.duration ?? 0)}
+    </Text>
+  );
+
+  const rightSection = productVariant?.price && (
+    <Badge variant="light" color="gray" size="lg">
+      <Money data={productVariant?.price} />
+    </Badge>
+  );
+
   return (
     <ArtistServiceCheckboxCard
       value={artistService!.productId.toString()}
       defaultChecked={defaultChecked}
       name="productIds"
     >
-      {product.featuredImage && (
-        <AspectRatio ratio={1920 / 1080}>
-          <Image
-            data={product.featuredImage}
-            aspectRatio="1/1"
-            sizes="(min-width: 45em) 20vw, 50vw"
-          />
-        </AspectRatio>
-      )}
-      <Title order={3} mt="sm" size={'md'} mb={rem(4)}>
-        {product.title}
-      </Title>
-      <Text c="dimmed" size="xs" tt="uppercase" fw={500}>
-        {artistService?.description || 'ingen beskrivelse'}
-      </Text>
-
-      <Flex
-        gap="sm"
-        mt="lg"
-        direction="column"
-        justify="flex-end"
-        style={{flexGrow: 1, position: 'relative'}}
-      >
-        <Group justify="space-between" mt="md">
-          <Text c="dimmed" size="xs" tt="uppercase" fw={700}>
-            {durationToTime(artistService?.duration ?? 0)}
-          </Text>
-
-          {productVariant ? (
-            <Text c="black" size="xs" tt="uppercase" fw={700}>
-              <Money data={productVariant.price} />
-            </Text>
-          ) : null}
-        </Group>
-      </Flex>
+      <TreatmentContent
+        product={product}
+        description={artistService?.description}
+        leftSection={leftSection}
+        rightSection={rightSection}
+      />
     </ArtistServiceCheckboxCard>
   );
 }

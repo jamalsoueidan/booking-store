@@ -49,6 +49,8 @@ import type {
   LocationValidateAddressResponse,
   MetaProfessions200,
   Metaspecialties200,
+  ProductsGetUsers,
+  ProductsGetUsersBody,
   ShippingBody,
   ShippingCalculateResponse,
   ShippingCreateResponse,
@@ -76,6 +78,21 @@ import {queryClient} from './mutator/query-client';
 import type {BodyType} from './mutator/query-client';
 
 export const getBookingShopifyApi = () => {
+  /**
+   * This endpoint respond with products users
+   * @summary POST get users belongs to products
+   */
+  const productsGetUsers = (
+    productsGetUsersBody: BodyType<ProductsGetUsersBody>,
+  ) => {
+    return queryClient<ProductsGetUsers>({
+      url: `/products/get-users`,
+      method: 'post',
+      headers: {'Content-Type': 'application/json'},
+      data: productsGetUsersBody,
+    });
+  };
+
   /**
    * This endpoint gets user object
    * @summary GET Get user
@@ -677,6 +694,7 @@ export const getBookingShopifyApi = () => {
   };
 
   return {
+    productsGetUsers,
     userGet,
     userProductsListBySchedule,
     userProductsListByLocation,
@@ -725,6 +743,11 @@ export const getBookingShopifyApi = () => {
     upload,
   };
 };
+export type ProductsGetUsersResult = NonNullable<
+  Awaited<
+    ReturnType<ReturnType<typeof getBookingShopifyApi>['productsGetUsers']>
+  >
+>;
 export type UserGetResult = NonNullable<
   Awaited<ReturnType<ReturnType<typeof getBookingShopifyApi>['userGet']>>
 >;

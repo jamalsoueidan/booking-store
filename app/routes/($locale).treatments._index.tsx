@@ -67,15 +67,17 @@ export default function Collections() {
 
 function CollectionsGrid({collections}: {collections: CollectionFragment[]}) {
   return (
-    <SimpleGrid cols={{base: 1, md: 3, sm: 2}}>
-      {collections.map((collection, index) => (
-        <TreatmentCollectionCard
-          key={collection.id}
-          collection={collection}
-          index={index}
-        />
-      ))}
-    </SimpleGrid>
+    <Container size="xl">
+      <SimpleGrid cols={{base: 1, md: 3, sm: 2}} spacing={'xl'}>
+        {collections.map((collection, index) => (
+          <TreatmentCollectionCard
+            key={collection.id}
+            collection={collection}
+            index={index}
+          />
+        ))}
+      </SimpleGrid>
+    </Container>
   );
 }
 

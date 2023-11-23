@@ -1544,7 +1544,96 @@ components:
         - restartPostUri
         - suspendPostUri
         - resumePostUri
+    ProductsGetUsersBody:
+      type: object
+      properties:
+        productIds:
+          type: array
+          items:
+            type: string
+      required:
+        - productIds
+    ProductsGetUsers:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: true
+        payload:
+          type: array
+          items:
+            $ref: '#/components/schemas/ProductsGetUsersResponse'
+      required:
+        - success
+        - payload
+    ProductsGetUsersResponse:
+      type: object
+      properties:
+        productId:
+          type: number
+        totalUsers:
+          type: number
+        users:
+          type: array
+          items:
+            type: object
+            properties:
+              customerId:
+                type: number
+              username:
+                type: string
+              images:
+                type: object
+                properties:
+                  profile:
+                    type: object
+                    properties:
+                      url:
+                        type: string
+                        format: uri
+                      width:
+                        type: integer
+                      height:
+                        type: integer
+              fullname:
+                type: string
+            required:
+              - customerId
+              - fullname
+              - username
+              - images
+      required:
+        - productId
+        - totalUsers
+        - users
 paths:
+  /products/get-users:
+    post:
+      tags:
+        - Products
+      operationId: productsGetUsers
+      summary: POST get users belongs to products
+      description: This endpoint respond with products users
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProductsGetUsersBody'
+      responses:
+        '200':
+          description: Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProductsGetUsers'
+        '400':
+          $ref: '#/components/responses/BadResponse'
+        '401':
+          $ref: '#/components/responses/UnauthorizedResponse'
+        '403':
+          $ref: '#/components/responses/ForbiddenResponse'
+      security: []
   '/user/{username}':
     parameters:
       - name: username

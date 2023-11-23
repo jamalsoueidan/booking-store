@@ -1,4 +1,12 @@
-import {Button, Container, Flex, Stack, Title, rem} from '@mantine/core';
+import {
+  Button,
+  Container,
+  Flex,
+  SimpleGrid,
+  Stack,
+  Title,
+  rem,
+} from '@mantine/core';
 import {Link, useLoaderData} from '@remix-run/react';
 import {Image, Pagination, getPaginationVariables} from '@shopify/hydrogen';
 import {json, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
@@ -60,15 +68,17 @@ export default function Collections() {
 
 function CollectionsGrid({collections}: {collections: CollectionFragment[]}) {
   return (
-    <div className="collections-grid">
-      {collections.map((collection, index) => (
-        <CollectionCard
-          key={collection.id}
-          collection={collection}
-          index={index}
-        />
-      ))}
-    </div>
+    <Container>
+      <SimpleGrid cols={{base: 1, sm: 2}} spacing="xl">
+        {collections.map((collection, index) => (
+          <CollectionCard
+            key={collection.id}
+            collection={collection}
+            index={index}
+          />
+        ))}
+      </SimpleGrid>
+    </Container>
   );
 }
 

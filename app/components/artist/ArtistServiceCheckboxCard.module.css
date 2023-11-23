@@ -5,7 +5,7 @@
   width: 100%;
   transition: background-color 150ms ease, border-color 150ms ease;
   border-radius: var(--mantine-radius-sm);
-  padding: var(--mantine-spacing-sm);
+  padding: var(--mantine-spacing-md);
   border: rem(1px) solid
     light-dark(var(--mantine-color-gray-3), var(--mantine-color-dark-8));
   background-color: light-dark(

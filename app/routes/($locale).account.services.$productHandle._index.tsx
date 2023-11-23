@@ -22,7 +22,7 @@ import PeriodInput from '~/components/form/PeriodInput';
 import {RadioGroupVariantsProduct} from '~/components/form/RadioGroupVariantProducts';
 import {SubmitButton} from '~/components/form/SubmitButton';
 import {SwitchGroupLocations} from '~/components/form/SwitchGroupLocations';
-import {PRODUCT_SIMPLE} from '~/data/fragments';
+import {PRODUCT_SERVICE_ITEM_FRAGMENT} from '~/data/fragments';
 import {getBookingShopifyApi} from '~/lib/api/bookingShopifyApi';
 import {getCustomer} from '~/lib/get-customer';
 
@@ -216,14 +216,14 @@ export default function EditAddress() {
 }
 
 const PRODUCT_QUERY = `#graphql
-  ${PRODUCT_SIMPLE}
+  ${PRODUCT_SERVICE_ITEM_FRAGMENT}
   query AccountTreatmentProduct(
     $country: CountryCode
     $language: LanguageCode
     $Id: ID!
   ) @inContext(country: $country, language: $language) {
     product(id: $Id) {
-      ...ProductSimple
+      ...ProductServiceItem
     }
   }
 `;
