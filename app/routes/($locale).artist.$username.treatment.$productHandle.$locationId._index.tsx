@@ -201,13 +201,15 @@ function ArtistProduct({
       defaultChecked={defaultChecked}
       name="productIds"
     >
-      <AspectRatio ratio={1920 / 1080}>
-        <Image
-          data={product.images.nodes[0]}
-          aspectRatio="1/1"
-          sizes="(min-width: 45em) 20vw, 50vw"
-        />
-      </AspectRatio>
+      {product.featuredImage && (
+        <AspectRatio ratio={1920 / 1080}>
+          <Image
+            data={product.featuredImage}
+            aspectRatio="1/1"
+            sizes="(min-width: 45em) 20vw, 50vw"
+          />
+        </AspectRatio>
+      )}
       <Title order={3} mt="sm" size={'md'} mb={rem(4)}>
         {product.title}
       </Title>

@@ -236,7 +236,7 @@ export default function ArtistTreatmentsBooking() {
           }}
           lines={lines}
         >
-          Add to cart
+          Tilføj indkøbskurv
         </AddToCartButton>
       </Group>
     </ArtistStepper>
