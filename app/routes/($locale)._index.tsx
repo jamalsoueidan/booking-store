@@ -10,16 +10,24 @@ import {
   rem,
 } from '@mantine/core';
 import {Await, useLoaderData, type MetaFunction} from '@remix-run/react';
+import {parseGid} from '@shopify/hydrogen';
 import {defer, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
 import {Suspense} from 'react';
-import type {RecommendedProductsQuery} from 'storefrontapi.generated';
+import type {
+  RecommendedProductsQuery,
+  RecommendedTreatmentsQuery,
+} from 'storefrontapi.generated';
 import {FrontpageHero} from '~/components/Hero';
 import {ProductCard} from '~/components/ProductCard';
 import {ArtistCard} from '~/components/artists/ArtistCard';
+import {TreatmentCard} from '~/components/treatment/TreatmentCard';
 
 import {PRODUCT_ITEM_FRAGMENT} from '~/data/fragments';
 import {getBookingShopifyApi} from '~/lib/api/bookingShopifyApi';
-import {type UsersListResponse} from '~/lib/api/model';
+import {
+  type ProductsGetUsersResponse,
+  type UsersListResponse,
+} from '~/lib/api/model';
 
 export const meta: MetaFunction = () => {
   return [{title: 'Hydrogen | Home'}];
@@ -28,13 +36,28 @@ export const meta: MetaFunction = () => {
 export async function loader({context}: LoaderFunctionArgs) {
   const {storefront} = context;
   const recommendedProducts = storefront.query(RECOMMENDED_PRODUCTS_QUERY);
+  const recommendedTreatments = await storefront.query(
+    RECOMMENDED_TREATMENT_QUERY,
+  );
+
+  const {payload: recommendedTreatmentsProductsUsers} =
+    await getBookingShopifyApi().productsGetUsers({
+      productIds:
+        recommendedTreatments?.products.nodes.map((p) => parseGid(p.id).id) ||
+        [],
+    });
 
   const artists = getBookingShopifyApi().usersList({
     limit: '8',
     sortOrder: 'desc',
   });
 
-  return defer({recommendedProducts, artists});
+  return defer({
+    recommendedProducts,
+    recommendedTreatmentsProductsUsers,
+    recommendedTreatments,
+    artists,
+  });
 }
 
 export default function Homepage() {
@@ -42,9 +65,13 @@ export default function Homepage() {
   return (
     <>
       <FrontpageHero />
-      <Container fluid py="xl">
+      <Container size="xl" py="xl">
         <Stack gap={rem(64)}>
           <FeaturedArtists artists={data.artists} />
+          <RecommendedTreatments
+            products={data.recommendedTreatments}
+            productsUsers={data.recommendedTreatmentsProductsUsers}
+          />
           <RecommendedProducts products={data.recommendedProducts} />
         </Stack>
       </Container>
@@ -123,11 +150,64 @@ function RecommendedProducts({
   );
 }
 
+function RecommendedTreatments({
+  products,
+  productsUsers,
+}: {
+  products: RecommendedTreatmentsQuery;
+  productsUsers: ProductsGetUsersResponse[];
+}) {
+  return (
+    <Stack gap="lg">
+      <span>
+        <Title order={2} fw={400} mb="xs">
+          Anbefalt behandlinger
+        </Title>
+        <Text c="dimmed">Behandlinger du kan være interesseret i.</Text>
+      </span>
+      <Suspense fallback={<div>Loading...</div>}>
+        <Await resolve={products}>
+          {({products}) => (
+            <SimpleGrid cols={{base: 1, md: 3, lg: 4}}>
+              {products.nodes.map((product) => {
+                const productUsers = productsUsers.find(
+                  (p) => p.productId.toString() === parseGid(product.id).id,
+                );
+
+                return (
+                  <TreatmentCard
+                    key={product.id}
+                    product={product}
+                    productUsers={productUsers}
+                    loading={'eager'}
+                  />
+                );
+              })}
+            </SimpleGrid>
+          )}
+        </Await>
+      </Suspense>
+    </Stack>
+  );
+}
+
 const RECOMMENDED_PRODUCTS_QUERY = `#graphql
   ${PRODUCT_ITEM_FRAGMENT}
   query RecommendedProducts ($country: CountryCode, $language: LanguageCode)
     @inContext(country: $country, language: $language) {
     products(first: 4, sortKey: UPDATED_AT, reverse: true, query: "tag:products") {
+      nodes {
+        ...ProductItem
+      }
+    }
+  }
+` as const;
+
+const RECOMMENDED_TREATMENT_QUERY = `#graphql
+  ${PRODUCT_ITEM_FRAGMENT}
+  query RecommendedTreatments ($country: CountryCode, $language: LanguageCode)
+    @inContext(country: $country, language: $language) {
+    products(first: 4, sortKey: RELEVANCE, reverse: true, query: "tag:treatments") {
       nodes {
         ...ProductItem
       }
