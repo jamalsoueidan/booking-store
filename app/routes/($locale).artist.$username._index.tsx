@@ -74,7 +74,7 @@ export default function ArtistIndex() {
           {({payload}) => <ArtistSchedulesMenu data={payload} />}
         </Await>
       </Suspense>
-      <SimpleGrid cols={{base: 1, lg: 4, md: 3, sm: 2}} spacing="xl">
+      <SimpleGrid cols={{base: 1, lg: 4, md: 3, sm: 2}} spacing={0}>
         <Suspense
           fallback={
             <div>

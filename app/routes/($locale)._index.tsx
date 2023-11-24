@@ -168,7 +168,7 @@ function RecommendedTreatments({
       <Suspense fallback={<div>Loading...</div>}>
         <Await resolve={products}>
           {({products}) => (
-            <SimpleGrid cols={{base: 1, md: 3, lg: 4}}>
+            <SimpleGrid cols={{base: 1, md: 3, lg: 4}} spacing={0}>
               {products.nodes.map((product) => {
                 const productUsers = productsUsers.find(
                   (p) => p.productId.toString() === parseGid(product.id).id,

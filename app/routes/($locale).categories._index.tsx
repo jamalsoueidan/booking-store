@@ -11,7 +11,7 @@ import {useLoaderData} from '@remix-run/react';
 import {Pagination, getPaginationVariables} from '@shopify/hydrogen';
 import {json, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
 import type {CollectionFragment} from 'storefrontapi.generated';
-import {TreatmentCollectionCard} from '~/components/treatment/TreatmentCollectionCard';
+import {CategoryCard} from '~/components/treatment/CategoryCard';
 import {COLLECTION_ITEM_FRAGMENT} from '~/data/fragments';
 
 export async function loader({context, request}: LoaderFunctionArgs) {
@@ -33,7 +33,7 @@ export default function Collections() {
     <Container fluid pt="xl">
       <Stack pt={rem(30)} pb={rem(60)} gap="xs">
         <Title order={5} c="dimmed" tt="uppercase" fw={300} ta="center">
-          KATEGORIUDVALG
+          Kategorier
         </Title>
         <Title order={1} size={rem(54)} fw={400} ta="center">
           Udforsk behandlinger, og book din tid – alt sammen på ét sted.
@@ -70,7 +70,7 @@ function CollectionsGrid({collections}: {collections: CollectionFragment[]}) {
     <Container size="xl">
       <SimpleGrid cols={{base: 1, md: 3, sm: 2}} spacing={'xl'}>
         {collections.map((collection, index) => (
-          <TreatmentCollectionCard
+          <CategoryCard
             key={collection.id}
             collection={collection}
             index={index}

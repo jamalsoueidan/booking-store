@@ -1,6 +1,5 @@
 import {Avatar, Button, Card} from '@mantine/core';
 import {Link} from '@remix-run/react';
-import {parseGid} from '@shopify/hydrogen';
 import {type ProductItemFragment} from 'storefrontapi.generated';
 import {type ProductsGetUsersResponse} from '~/lib/api/model';
 import classes from './TreatmentCard.module.css';
@@ -44,11 +43,11 @@ export function TreatmentCard({
     <Card
       key={product.handle}
       withBorder
-      radius="md"
+      radius={0}
       padding="md"
       className={classes.card}
       component={Link}
-      to={`./${product.handle}-${parseGid(product.id).id}`}
+      to={`/treatments/${product.handle}`}
     >
       <TreatmentContent
         product={product}

@@ -3,9 +3,9 @@ import {Link} from '@remix-run/react';
 import {IconArrowRight} from '@tabler/icons-react';
 import {type CollectionFragment} from 'storefrontapi.generated';
 import {parseTE} from '~/lib/clean';
-import classes from './TreatmentCollectionCard.module.css';
+import classes from './CategoryCard.module.css';
 
-export function TreatmentCollectionCard({
+export function CategoryCard({
   collection,
   index,
 }: {
@@ -20,7 +20,7 @@ export function TreatmentCollectionCard({
         backgroundImage: `url(${collection.image?.url})`,
       }}
       component={Link}
-      to={`/treatments/${collection.handle}`}
+      to={`/categories/${collection.handle}`}
       prefetch="intent"
     >
       <Overlay className={classes.overlay} opacity={0.3} zIndex={0} />

@@ -1,5 +1,12 @@
 .card {
   background-color: var(--mantine-color-body);
+  transition: transform 150ms ease, box-shadow 150ms ease;
+
+  &:hover {
+    transform: scale(1.02);
+    box-shadow: var(--mantine-shadow-lg);
+    z-index: 10;
+  }
 }
 
 .imageSection {
