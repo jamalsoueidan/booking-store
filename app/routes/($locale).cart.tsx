@@ -7,7 +7,7 @@ import {CartMain} from '~/components/Cart';
 import {useRootLoaderData} from '~/root';
 
 export const meta: MetaFunction = () => {
-  return [{title: `Hydrogen | Cart`}];
+  return [{title: `BySisters | Indkøbskurv`}];
 };
 
 export async function action({request, context}: ActionFunctionArgs) {
@@ -90,8 +90,8 @@ export default function Cart() {
 
   return (
     <div className="cart">
-      <h1>Cart</h1>
-      <Suspense fallback={<p>Loading cart ...</p>}>
+      <h1>Indkøbskurv</h1>
+      <Suspense fallback={<p>Henter indkøbskurv ...</p>}>
         <Await
           resolve={cartPromise}
           errorElement={<div>An error occurred</div>}

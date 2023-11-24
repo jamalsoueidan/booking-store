@@ -1,9 +1,9 @@
-import {json, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
 import {Link, useLoaderData, type MetaFunction} from '@remix-run/react';
-import {Pagination, getPaginationVariables} from '@shopify/hydrogen';
+import {getPaginationVariables, Pagination} from '@shopify/hydrogen';
+import {json, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
 
 export const meta: MetaFunction = () => {
-  return [{title: `Hydrogen | Blogs`}];
+  return [{title: `BySisters | Blogs`}];
 };
 
 export const loader = async ({

@@ -1,9 +1,9 @@
-import {json, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
 import {useLoaderData, type MetaFunction} from '@remix-run/react';
 import {Image} from '@shopify/hydrogen';
+import {json, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
 
 export const meta: MetaFunction<typeof loader> = ({data}) => {
-  return [{title: `Hydrogen | ${data?.article.title ?? ''} article`}];
+  return [{title: `BySisters | ${data?.article.title ?? ''} article`}];
 };
 
 export async function loader({params, context}: LoaderFunctionArgs) {

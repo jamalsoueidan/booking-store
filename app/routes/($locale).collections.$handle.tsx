@@ -16,7 +16,7 @@ import {PRODUCT_ITEM_FRAGMENT} from '~/data/fragments';
 import {parseCT} from '~/lib/clean';
 
 export const meta: MetaFunction<typeof loader> = ({data}) => {
-  return [{title: `Hydrogen | ${data?.collection.title ?? ''} Collection`}];
+  return [{title: `BySisters | ${data?.collection.title ?? ''} Collection`}];
 };
 
 export async function loader({request, params, context}: LoaderFunctionArgs) {

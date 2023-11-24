@@ -20,7 +20,7 @@ import {parseTE} from '~/lib/clean';
 export const meta: MetaFunction<typeof loader> = ({data}) => {
   return [
     {
-      title: `Hydrogen | ${
+      title: `BySisters | ${
         parseTE(data?.collection.title || '') ?? ''
       } Collection`,
     },

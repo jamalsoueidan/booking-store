@@ -30,7 +30,7 @@ import {
 } from '~/lib/api/model';
 
 export const meta: MetaFunction = () => {
-  return [{title: 'Hydrogen | Home'}];
+  return [{title: 'BySisters | Home'}];
 };
 
 export async function loader({context}: LoaderFunctionArgs) {

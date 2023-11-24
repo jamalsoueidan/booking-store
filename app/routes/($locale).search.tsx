@@ -1,11 +1,11 @@
-import {defer, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
 import {useLoaderData, type MetaFunction} from '@remix-run/react';
 import {getPaginationVariables} from '@shopify/hydrogen';
+import {defer, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
 
-import {SearchForm, SearchResults, NoSearchResults} from '~/components/Search';
+import {NoSearchResults, SearchForm, SearchResults} from '~/components/Search';
 
 export const meta: MetaFunction = () => {
-  return [{title: `Hydrogen | Search`}];
+  return [{title: `BySisters | Search`}];
 };
 
 export async function loader({request, context}: LoaderFunctionArgs) {
