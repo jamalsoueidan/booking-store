@@ -23,18 +23,20 @@ export function getVariantUrl({
   pathname,
   searchParams,
   selectedOptions,
+  name,
 }: {
   handle: string;
   pathname: string;
   searchParams: URLSearchParams;
   selectedOptions: SelectedOption[];
+  name?: string;
 }) {
   const match = /(\/[a-zA-Z]{2}-[a-zA-Z]{2}\/)/g.exec(pathname);
   const isLocalePathname = match && match.length > 0;
 
   const path = isLocalePathname
-    ? `${match![0]}products/${handle}`
-    : `/products/${handle}`;
+    ? `${match![0]}${name || 'products'}/${handle}`
+    : `/${name || 'products'}/${handle}`;
 
   selectedOptions.forEach((option) => {
     searchParams.set(option.name, option.value);

@@ -8,7 +8,7 @@ export function FrontpageHero() {
     <div
       className={classes.root}
       style={{
-        backgroundImage: `linear-gradient(250deg,rgba(130, 201, 30, 0) 0%,#fff 90%),url('${image}')`,
+        backgroundImage: `url('${image}')`,
       }}
     >
       <Container size="lg">

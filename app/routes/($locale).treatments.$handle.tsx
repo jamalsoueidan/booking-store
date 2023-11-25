@@ -14,6 +14,16 @@ import type {
 } from 'storefrontapi.generated';
 
 import {
+  AspectRatio,
+  Box,
+  Button,
+  Group,
+  SimpleGrid,
+  Text,
+  Title,
+  rem,
+} from '@mantine/core';
+import {
   CartForm,
   Image,
   Money,
@@ -106,6 +116,7 @@ function redirectToFirstVariant({
       handle: product.handle,
       selectedOptions: firstVariant.selectedOptions,
       searchParams: new URLSearchParams(url.search),
+      name: 'treatments',
     }),
     {
       status: 302,
@@ -117,14 +128,14 @@ export default function Product() {
   const {product, variants} = useLoaderData<typeof loader>();
   const {selectedVariant} = product;
   return (
-    <div className="product">
+    <SimpleGrid cols={{base: 1, md: 2}} spacing={0}>
       <ProductImage image={selectedVariant?.image} />
       <ProductMain
         selectedVariant={selectedVariant}
         product={product}
         variants={variants}
       />
-    </div>
+    </SimpleGrid>
   );
 }
 
@@ -133,7 +144,7 @@ function ProductImage({image}: {image: ProductVariantFragment['image']}) {
     return <div className="product-image" />;
   }
   return (
-    <div className="product-image">
+    <AspectRatio ratio={1080 / 1080}>
       <Image
         alt={image.altText || 'Product Image'}
         aspectRatio="1/1"
@@ -141,7 +152,7 @@ function ProductImage({image}: {image: ProductVariantFragment['image']}) {
         key={image.id}
         sizes="(min-width: 45em) 50vw, 100vw"
       />
-    </div>
+    </AspectRatio>
   );
 }
 
@@ -156,10 +167,17 @@ function ProductMain({
 }) {
   const {title, descriptionHtml} = product;
   return (
-    <div className="product-main">
-      <h1>{title}</h1>
-      <ProductPrice selectedVariant={selectedVariant} />
-      <br />
+    <Box p={rem(42)} bg="#fafafb">
+      <Title order={1} size={rem(54)}>
+        {title}
+      </Title>
+      <Text
+        size="xl"
+        c="dimmed"
+        fw={400}
+        dangerouslySetInnerHTML={{__html: descriptionHtml}}
+      ></Text>
+
       <Suspense
         fallback={
           <ProductForm
@@ -182,15 +200,30 @@ function ProductMain({
           )}
         </Await>
       </Suspense>
-      <br />
-      <br />
-      <p>
-        <strong>Description</strong>
-      </p>
-      <br />
-      <div dangerouslySetInnerHTML={{__html: descriptionHtml}} />
-      <br />
-    </div>
+
+      <Group justify="space-between" align="center" mt={rem(64)}>
+        <ProductPrice selectedVariant={selectedVariant} />
+
+        <AddToCartButton
+          disabled={!selectedVariant || !selectedVariant.availableForSale}
+          onClick={() => {
+            window.location.href = window.location.href + '#cart-aside';
+          }}
+          lines={
+            selectedVariant
+              ? [
+                  {
+                    merchandiseId: selectedVariant.id,
+                    quantity: 1,
+                  },
+                ]
+              : []
+          }
+        >
+          {selectedVariant?.availableForSale ? 'Tilføj indkøbskurv' : 'Udsolgt'}
+        </AddToCartButton>
+      </Group>
+    </Box>
   );
 }
 
@@ -200,11 +233,9 @@ function ProductPrice({
   selectedVariant: ProductFragment['selectedVariant'];
 }) {
   return (
-    <div className="product-price">
+    <Text size={rem(24)} c="gray" fw={400}>
       {selectedVariant?.compareAtPrice ? (
         <>
-          <p>Sale</p>
-          <br />
           <div className="product-price-on-sale">
             {selectedVariant ? <Money data={selectedVariant.price} /> : null}
             <s>
@@ -215,7 +246,7 @@ function ProductPrice({
       ) : (
         selectedVariant?.price && <Money data={selectedVariant?.price} />
       )}
-    </div>
+    </Text>
   );
 }
 
@@ -237,25 +268,6 @@ function ProductForm({
       >
         {({option}) => <ProductOptions key={option.name} option={option} />}
       </VariantSelector>
-      <br />
-      <AddToCartButton
-        disabled={!selectedVariant || !selectedVariant.availableForSale}
-        onClick={() => {
-          window.location.href = window.location.href + '#cart-aside';
-        }}
-        lines={
-          selectedVariant
-            ? [
-                {
-                  merchandiseId: selectedVariant.id,
-                  quantity: 1,
-                },
-              ]
-            : []
-        }
-      >
-        {selectedVariant?.availableForSale ? 'Add to cart' : 'Sold out'}
-      </AddToCartButton>
     </div>
   );
 }
@@ -311,13 +323,16 @@ export function AddToCartButton({
             type="hidden"
             value={JSON.stringify(analytics)}
           />
-          <button
+          <Button
+            variant="default"
+            radius="xl"
+            size="lg"
             type="submit"
             onClick={onClick}
             disabled={disabled ?? fetcher.state !== 'idle'}
           >
             {children}
-          </button>
+          </Button>
         </>
       )}
     </CartForm>
