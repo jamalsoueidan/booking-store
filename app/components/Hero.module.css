@@ -7,7 +7,6 @@
 
 .inner {
   display: flex;
-  justify-content: space-between;
 
   @media (max-width: $mantine-breakpoint-md) {
     flex-direction: column;
@@ -20,26 +19,14 @@
   }
 }
 
-.content {
-  padding-top: var(--mantine-spacing-xl);
-  padding-bottom: var(--mantine-spacing-xl);
-  margin-right: calc(var(--mantine-spacing-xl) * 3);
-
-  @media (max-width: $mantine-breakpoint-md) {
-    margin-right: 0;
-  }
-}
-
 .title {
-  color: #ea4651;
+  color: #fff;
   font-family: Greycliff CF, var(--mantine-font-family);
-  font-weight: 900;
   line-height: 1.05;
-  max-width: rem(650px);
-  font-size: rem(48px);
+  font-size: rem(38px);
+  font-weight: 600;
 
   @media (max-width: $mantine-breakpoint-md) {
-    max-width: 100%;
     font-size: rem(34px);
     line-height: 1.15;
   }
@@ -48,22 +35,13 @@
 .description {
   color: #ea4651;
   opacity: 0.75;
-  max-width: rem(500px);
   font-size: rem(20px);
+  width: 450px;
+  color: #fff;
+  font-weight: 500;
 
   @media (max-width: $mantine-breakpoint-md) {
     max-width: 100%;
     font-size: rem(14px);
-  }
-}
-
-.control {
-  padding-left: rem(30px);
-  padding-right: rem(30px);
-  font-family: Greycliff CF, var(--mantine-font-family);
-  font-size: rem(18px);
-
-  @media (max-width: $mantine-breakpoint-md) {
-    width: 100%;
   }
 }
