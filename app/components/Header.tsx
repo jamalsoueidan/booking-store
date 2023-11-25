@@ -128,7 +128,7 @@ export function HeaderMenu({
               : link.url;
 
           return (
-            <Menu.Item key={item.url} component="a" href={url || ''}>
+            <Menu.Item key={item.url} component={Link} to={url || ''}>
               {item.title}
             </Menu.Item>
           );
@@ -143,8 +143,8 @@ export function HeaderMenu({
               withinPortal
             >
               <Menu.Target>
-                <a
-                  href={url}
+                <Link
+                  to={url}
                   className={classes.link}
                   data-active={location.pathname.includes(url) || undefined}
                 >
@@ -152,7 +152,7 @@ export function HeaderMenu({
                     <span className={classes.linkLabel}>{link.title}</span>
                     <IconChevronDown size="0.9rem" stroke={1.5} />
                   </Center>
-                </a>
+                </Link>
               </Menu.Target>
               <Menu.Dropdown>{menuItems}</Menu.Dropdown>
             </Menu>
@@ -160,14 +160,14 @@ export function HeaderMenu({
         }
 
         return (
-          <a
+          <Link
             key={link.id}
-            href={url}
+            to={url}
             className={classes.link}
             data-active={location.pathname.includes(url) || undefined}
           >
             {link.title}
-          </a>
+          </Link>
         );
       })}
     </nav>
