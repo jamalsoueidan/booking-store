@@ -118,7 +118,6 @@ export default function Product() {
 
   return (
     <>
-      hui
       <Suspense
         fallback={
           <ProductForm
@@ -197,6 +196,9 @@ function ProductOptions({option}: {option: VariantOption}) {
       <h5>{option.name}</h5>
       <div className="product-options-grid">
         {option.values.map(({value, isAvailable, isActive, to}) => {
+          const param =
+            to.indexOf('?') > -1 ? to.substring(to.indexOf('?')) : '';
+
           return (
             <Link
               className="product-options-item"
@@ -204,7 +206,7 @@ function ProductOptions({option}: {option: VariantOption}) {
               prefetch="intent"
               preventScrollReset
               replace
-              to={to}
+              to={param}
               style={{
                 border: isActive ? '1px solid black' : '1px solid transparent',
                 opacity: isAvailable ? 1 : 0.3,

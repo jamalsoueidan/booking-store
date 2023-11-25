@@ -1,4 +1,10 @@
-import {Link, Outlet, useLoaderData, type MetaFunction} from '@remix-run/react';
+import {
+  Outlet,
+  useLoaderData,
+  useLocation,
+  useNavigate,
+  type MetaFunction,
+} from '@remix-run/react';
 import {defer, redirect, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
 import type {
   ProductFragment,
@@ -6,6 +12,7 @@ import type {
 } from 'storefrontapi.generated';
 
 import {
+  ActionIcon,
   AspectRatio,
   Box,
   Button,
@@ -17,7 +24,8 @@ import {
   rem,
 } from '@mantine/core';
 import {Image, getSelectedProductOptions} from '@shopify/hydrogen';
-import {IconArrowRight} from '@tabler/icons-react';
+import {IconArrowLeft, IconArrowRight} from '@tabler/icons-react';
+import {useState} from 'react';
 import {getVariantUrlForTreatment} from '~/utils';
 
 export const meta: MetaFunction<typeof loader> = ({data}) => {
@@ -88,8 +96,50 @@ function ProductImage({image}: {image: ProductVariantFragment['image']}) {
   );
 }
 
+const paths: Record<number, string> = {
+  0: '',
+  1: 'variants',
+  2: 'pick-artists',
+};
+
 function ProductMain({product}: {product: ProductFragment}) {
+  const navigate = useNavigate();
+  const location = useLocation();
   const {title} = product;
+  const [active, setActive] = useState(determineStepFromURL(location.pathname));
+
+  function getBasePath() {
+    const segments = location.pathname.split('/').filter(Boolean);
+    return '/' + segments.slice(0, 2).join('/');
+  }
+
+  function determineStepFromURL(pathname: string) {
+    const base = getBasePath();
+    for (const [step, relativePath] of Object.entries(paths)) {
+      if (relativePath !== '') {
+        const fullPath = `${base}/${relativePath}`.replace(/\/+$/, '');
+        if (pathname === fullPath || pathname.startsWith(fullPath + '/')) {
+          return parseInt(step, 10);
+        }
+      }
+    }
+    return 0;
+  }
+
+  const nextStep = () => {
+    const newActive = active < 2 ? active + 1 : active;
+    setActive(newActive);
+    const basePath = getBasePath();
+    navigate(`${basePath}/${paths[newActive]}${location.search}`);
+  };
+
+  const prevStep = () => {
+    const newActive = active > 0 ? active - 1 : active;
+    setActive(newActive);
+    const basePath = getBasePath();
+    navigate(`${basePath}/${paths[newActive]}${location.search}`);
+  };
+
   return (
     <Box p={rem(42)} bg="#fafafb">
       <Title order={1} size={rem(54)} mb="xl">
@@ -99,24 +149,59 @@ function ProductMain({product}: {product: ProductFragment}) {
       <Group justify="space-between">
         <Group>
           <Text c="dimmed" size={rem(24)}>
-            1/4
+            {active + 1}/{Object.keys(paths).length}
           </Text>
           <Text fw={500} tt="uppercase" size={rem(24)}>
             Beskrivelse
           </Text>
         </Group>
-        <Button
-          variant="filled"
-          color="yellow"
-          c="black"
-          radius="xl"
-          size="md"
-          rightSection={<IconArrowRight />}
-          component={Link}
-          to="./variants"
-        >
-          Bestil en tid
-        </Button>
+        <Group gap="xs">
+          {active > 0 ? (
+            <>
+              <ActionIcon
+                variant="filled"
+                color="yellow"
+                c="black"
+                radius="xl"
+                size="xl"
+                aria-label="Tilbage"
+                onClick={prevStep}
+              >
+                <IconArrowLeft
+                  style={{width: '70%', height: '70%'}}
+                  stroke={1.5}
+                />
+              </ActionIcon>
+
+              <ActionIcon
+                variant="filled"
+                color="yellow"
+                c="black"
+                radius="xl"
+                size="xl"
+                aria-label="Næste"
+                onClick={nextStep}
+              >
+                <IconArrowRight
+                  style={{width: '70%', height: '70%'}}
+                  stroke={1.5}
+                />
+              </ActionIcon>
+            </>
+          ) : (
+            <Button
+              variant="filled"
+              color="yellow"
+              c="black"
+              radius="xl"
+              size="md"
+              rightSection={<IconArrowRight />}
+              onClick={nextStep}
+            >
+              Bestil en tid
+            </Button>
+          )}
+        </Group>
       </Group>
 
       <ScrollArea h="500" type="always" offsetScrollbars scrollbarSize={18}>
