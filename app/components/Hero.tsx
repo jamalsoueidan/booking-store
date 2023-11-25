@@ -10,7 +10,7 @@ export function FrontpageHero() {
         backgroundImage: `url('${image}')`,
       }}
     >
-      <Container size="lg" p={rem(48)}>
+      <Container size="lg" p={{base: rem(38), sm: rem(48)}}>
         <Flex direction="column" align="center" justify="center">
           <Title className={classes.title} ta="center">
             Find din skønhedsekspert

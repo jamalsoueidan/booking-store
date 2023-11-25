@@ -23,11 +23,11 @@
   color: #fff;
   font-family: Greycliff CF, var(--mantine-font-family);
   line-height: 1.05;
-  font-size: rem(38px);
+  font-size: rem(48px);
   font-weight: 600;
 
   @media (max-width: $mantine-breakpoint-md) {
-    font-size: rem(34px);
+    font-size: rem(18px);
     line-height: 1.15;
   }
 }
@@ -43,5 +43,6 @@
   @media (max-width: $mantine-breakpoint-md) {
     max-width: 100%;
     font-size: rem(14px);
+    display: none;
   }
 }
