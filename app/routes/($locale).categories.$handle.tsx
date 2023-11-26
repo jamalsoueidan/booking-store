@@ -14,7 +14,7 @@ import type {ProductItemFragment} from 'storefrontapi.generated';
 import {TreatmentCard} from '~/components/treatment/TreatmentCard';
 import {PRODUCT_ITEM_FRAGMENT} from '~/data/fragments';
 import {getBookingShopifyApi} from '~/lib/api/bookingShopifyApi';
-import type {ProductsGetUsersResponse} from '~/lib/api/model';
+import type {ProductsGetUsersImage} from '~/lib/api/model';
 import {parseTE} from '~/lib/clean';
 
 export const meta: MetaFunction<typeof loader> = ({data}) => {
@@ -43,7 +43,7 @@ export async function loader({request, params, context}: LoaderFunctionArgs) {
   });
 
   const {payload: productsUsers} =
-    await getBookingShopifyApi().productsGetUsers({
+    await getBookingShopifyApi().productsGetUsersImage({
       productIds:
         collection?.products.nodes.map((p) => parseGid(p.id).id) || [],
     });
@@ -100,7 +100,7 @@ function ProductsGrid({
   productsUsers,
 }: {
   products: ProductItemFragment[];
-  productsUsers: ProductsGetUsersResponse[];
+  productsUsers: ProductsGetUsersImage[];
 }) {
   return (
     <SimpleGrid cols={{base: 1, md: 4}} spacing={0}>

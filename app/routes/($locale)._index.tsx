@@ -24,10 +24,7 @@ import {TreatmentCard} from '~/components/treatment/TreatmentCard';
 
 import {PRODUCT_ITEM_FRAGMENT} from '~/data/fragments';
 import {getBookingShopifyApi} from '~/lib/api/bookingShopifyApi';
-import {
-  type ProductsGetUsersResponse,
-  type UsersListResponse,
-} from '~/lib/api/model';
+import {ProductsGetUsersImage, type UsersListResponse} from '~/lib/api/model';
 
 export const meta: MetaFunction = () => {
   return [{title: 'BySisters | Home'}];
@@ -41,7 +38,7 @@ export async function loader({context}: LoaderFunctionArgs) {
   );
 
   const {payload: recommendedTreatmentsProductsUsers} =
-    await getBookingShopifyApi().productsGetUsers({
+    await getBookingShopifyApi().productsGetUsersImage({
       productIds:
         recommendedTreatments?.products.nodes.map((p) => parseGid(p.id).id) ||
         [],
@@ -155,7 +152,7 @@ function RecommendedTreatments({
   productsUsers,
 }: {
   products: RecommendedTreatmentsQuery;
-  productsUsers: ProductsGetUsersResponse[];
+  productsUsers: ProductsGetUsersImage[];
 }) {
   return (
     <Stack gap="lg">

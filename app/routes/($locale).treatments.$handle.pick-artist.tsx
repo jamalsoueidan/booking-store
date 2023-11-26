@@ -2,28 +2,42 @@ import {
   Await,
   Link,
   useLoaderData,
+  useNavigate,
   type FetcherWithComponents,
   type MetaFunction,
 } from '@remix-run/react';
 import {defer, redirect, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
-import {Suspense} from 'react';
+import {Suspense, useEffect, useState} from 'react';
 import type {
   ProductFragment,
   ProductVariantFragment,
 } from 'storefrontapi.generated';
 
-import {Button, Text, rem} from '@mantine/core';
+import {
+  Avatar,
+  Button,
+  Paper,
+  Select,
+  SimpleGrid,
+  Stack,
+  Text,
+  rem,
+} from '@mantine/core';
 import {
   CartForm,
   Money,
   VariantSelector,
   getSelectedProductOptions,
+  parseGid,
   type VariantOption,
 } from '@shopify/hydrogen';
 import type {
   CartLineInput,
   SelectedOption,
 } from '@shopify/hydrogen/storefront-api-types';
+import {TreatmentPickArtistRadioCard} from '~/components/treatment/TreatmentPickArtistRadioCard';
+import {getBookingShopifyApi} from '~/lib/api/bookingShopifyApi';
+import {type ProductsGetUsersByVariant} from '~/lib/api/model';
 import {getVariantUrlForTreatment} from '~/utils';
 
 export const meta: MetaFunction<typeof loader> = ({data}) => {
@@ -77,6 +91,11 @@ export async function loader({params, request, context}: LoaderFunctionArgs) {
     }
   }
 
+  const users = getBookingShopifyApi().productsGetUsersByVariant({
+    variantId: parseGid(product.selectedVariant.id).id,
+    productId: parseGid(product.id).id,
+  });
+
   // In order to show which variants are available in the UI, we need to query
   // all of them. But there might be a *lot*, so instead separate the variants
   // into it's own separate query that is deferred. So there's a brief moment
@@ -86,7 +105,7 @@ export async function loader({params, request, context}: LoaderFunctionArgs) {
     variables: {handle},
   });
 
-  return defer({product, variants});
+  return defer({product, variants, users});
 }
 
 function redirectToFirstVariant({
@@ -113,11 +132,18 @@ function redirectToFirstVariant({
 }
 
 export default function Product() {
-  const {product, variants} = useLoaderData<typeof loader>();
+  const {product, variants, users} = useLoaderData<typeof loader>();
   const {selectedVariant} = product;
+  const [selectedArtist, setSelectedArtist] = useState<
+    ProductsGetUsersByVariant | undefined
+  >(undefined);
+
+  const onChange = (artist: ProductsGetUsersByVariant) => () => {
+    setSelectedArtist(artist);
+  };
 
   return (
-    <>
+    <Stack gap="md">
       <Suspense
         fallback={
           <ProductForm
@@ -140,9 +166,61 @@ export default function Product() {
           )}
         </Await>
       </Suspense>
-    </>
+      <Suspense fallback="Henter bruger">
+        <Await
+          errorElement="There was a problem loading product variants"
+          resolve={users}
+        >
+          {({payload}) => (
+            <SimpleGrid cols={{base: 4}}>
+              {payload.result.map((user) => (
+                <TreatmentPickArtistRadioCard
+                  artist={user}
+                  checked={selectedArtist?.username === user.username}
+                  value={user.username}
+                  onChange={onChange(user)}
+                  key={user.customerId}
+                />
+              ))}
+            </SimpleGrid>
+          )}
+        </Await>
+      </Suspense>
+    </Stack>
   );
 }
+
+export const PickArtistCard = ({
+  artist,
+}: {
+  artist: ProductsGetUsersByVariant;
+}) => (
+  <Paper
+    radius="md"
+    withBorder
+    p="lg"
+    bg="var(--mantine-color-body)"
+    component={Link}
+    to={`/artist/${artist.username}`}
+  >
+    <Avatar
+      src={artist.images?.profile?.url}
+      size={240}
+      radius={240}
+      mx="auto"
+    />
+    <Text ta="center" fz="lg" fw={500} mt="md" c="black">
+      {artist.fullname}
+    </Text>
+    <Text ta="center" c="dimmed" fz="sm">
+      {artist.shortDescription}
+    </Text>
+
+    <Button variant="default" fullWidth mt="md">
+      Vælge
+    </Button>
+  </Paper>
+);
 
 function ProductPrice({
   selectedVariant,
@@ -191,34 +269,41 @@ function ProductForm({
 }
 
 function ProductOptions({option}: {option: VariantOption}) {
-  return (
-    <div className="product-options" key={option.name}>
-      <h5>{option.name}</h5>
-      <div className="product-options-grid">
-        {option.values.map(({value, isAvailable, isActive, to}) => {
-          const param =
-            to.indexOf('?') > -1 ? to.substring(to.indexOf('?')) : '';
+  const navigate = useNavigate();
+  const [active, setActive] = useState<string>();
 
-          return (
-            <Link
-              className="product-options-item"
-              key={option.name + value}
-              prefetch="intent"
-              preventScrollReset
-              replace
-              to={param}
-              style={{
-                border: isActive ? '1px solid black' : '1px solid transparent',
-                opacity: isAvailable ? 1 : 0.3,
-              }}
-            >
-              {value}
-            </Link>
-          );
-        })}
-      </div>
-      <br />
-    </div>
+  const data = option.values.map(
+    ({value: label, isAvailable, isActive, to}) => {
+      const value = to.indexOf('?') > -1 ? to.substring(to.indexOf('?')) : '';
+      return {value, label: label.substring(7), isActive};
+    },
+  );
+
+  const onChange = (value: string | null) => {
+    if (value) {
+      navigate(value);
+    }
+  };
+
+  useEffect(() => {
+    const filterData = data.filter((l) => l.isActive);
+    if (filterData.length > 0) {
+      const isActive = filterData[0];
+      setActive(isActive.value);
+    }
+  }, [data]);
+
+  return (
+    active && (
+      <Select
+        label="Pris"
+        placeholder="Pick value"
+        data={data}
+        defaultValue={active}
+        allowDeselect={false}
+        onChange={onChange}
+      />
+    )
   );
 }
 

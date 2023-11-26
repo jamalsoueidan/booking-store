@@ -5,8 +5,8 @@
  * OpenAPI spec version: 1.0.0
  */
 
-export type ProductsGetUsersResponseUsersItemImagesProfile = {
-  height?: number;
-  url?: string;
-  width?: number;
+export type ProductsGetUsersByVariantImagesProfile = {
+  height: number;
+  url: string;
+  width: number;
 };

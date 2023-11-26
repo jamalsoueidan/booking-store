@@ -96,10 +96,19 @@ function ProductImage({image}: {image: ProductVariantFragment['image']}) {
   );
 }
 
-const paths: Record<number, string> = {
-  0: '',
-  1: 'variants',
-  2: 'pick-artists',
+const paths: Record<number, {title: string; path: string}> = {
+  0: {
+    title: 'Beskrivelse',
+    path: '',
+  },
+  1: {
+    title: 'Skønhedsekspert',
+    path: 'pick-artist',
+  },
+  2: {
+    title: 'Lokation',
+    path: 'pick-location',
+  },
 };
 
 function ProductMain({product}: {product: ProductFragment}) {
@@ -115,9 +124,9 @@ function ProductMain({product}: {product: ProductFragment}) {
 
   function determineStepFromURL(pathname: string) {
     const base = getBasePath();
-    for (const [step, relativePath] of Object.entries(paths)) {
-      if (relativePath !== '') {
-        const fullPath = `${base}/${relativePath}`.replace(/\/+$/, '');
+    for (const [step, data] of Object.entries(paths)) {
+      if (data.path !== '') {
+        const fullPath = `${base}/${data.path}`.replace(/\/+$/, '');
         if (pathname === fullPath || pathname.startsWith(fullPath + '/')) {
           return parseInt(step, 10);
         }
@@ -130,14 +139,14 @@ function ProductMain({product}: {product: ProductFragment}) {
     const newActive = active < 2 ? active + 1 : active;
     setActive(newActive);
     const basePath = getBasePath();
-    navigate(`${basePath}/${paths[newActive]}${location.search}`);
+    navigate(`${basePath}/${paths[newActive].path}${location.search}`);
   };
 
   const prevStep = () => {
     const newActive = active > 0 ? active - 1 : active;
     setActive(newActive);
     const basePath = getBasePath();
-    navigate(`${basePath}/${paths[newActive]}${location.search}`);
+    navigate(`${basePath}/${paths[newActive].path}${location.search}`);
   };
 
   return (
@@ -147,12 +156,12 @@ function ProductMain({product}: {product: ProductFragment}) {
       </Title>
 
       <Group justify="space-between">
-        <Group>
+        <Group gap="xs">
           <Text c="dimmed" size={rem(24)}>
             {active + 1}/{Object.keys(paths).length}
           </Text>
           <Text fw={500} tt="uppercase" size={rem(24)}>
-            Beskrivelse
+            {paths[active].title}
           </Text>
         </Group>
         <Group gap="xs">

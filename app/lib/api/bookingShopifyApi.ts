@@ -49,8 +49,10 @@ import type {
   LocationValidateAddressResponse,
   MetaProfessions200,
   Metaspecialties200,
-  ProductsGetUsers,
-  ProductsGetUsersBody,
+  ProductsGetUsersByVariantParams,
+  ProductsGetUsersByVariantResponse,
+  ProductsGetUsersImageBody,
+  ProductsGetUsersImageResponse,
   ShippingBody,
   ShippingCalculateResponse,
   ShippingCreateResponse,
@@ -79,17 +81,31 @@ import type {BodyType} from './mutator/query-client';
 
 export const getBookingShopifyApi = () => {
   /**
-   * This endpoint respond with products users
-   * @summary POST get users belongs to products
+   * This endpoint respond with users images
+   * @summary POST get users belongs to productIds array
    */
-  const productsGetUsers = (
-    productsGetUsersBody: BodyType<ProductsGetUsersBody>,
+  const productsGetUsersImage = (
+    productsGetUsersImageBody: BodyType<ProductsGetUsersImageBody>,
   ) => {
-    return queryClient<ProductsGetUsers>({
-      url: `/products/get-users`,
+    return queryClient<ProductsGetUsersImageResponse>({
+      url: `/products/get-users-image`,
       method: 'post',
       headers: {'Content-Type': 'application/json'},
-      data: productsGetUsersBody,
+      data: productsGetUsersImageBody,
+    });
+  };
+
+  /**
+   * This endpoint get all users for specific productId and variantId
+   * @summary GET Get all users for specific productId and variantId
+   */
+  const productsGetUsersByVariant = (
+    params: ProductsGetUsersByVariantParams,
+  ) => {
+    return queryClient<ProductsGetUsersByVariantResponse>({
+      url: `/products/get-users-by-variant`,
+      method: 'get',
+      params,
     });
   };
 
@@ -694,7 +710,8 @@ export const getBookingShopifyApi = () => {
   };
 
   return {
-    productsGetUsers,
+    productsGetUsersImage,
+    productsGetUsersByVariant,
     userGet,
     userProductsListBySchedule,
     userProductsListByLocation,
@@ -743,9 +760,16 @@ export const getBookingShopifyApi = () => {
     upload,
   };
 };
-export type ProductsGetUsersResult = NonNullable<
+export type ProductsGetUsersImageResult = NonNullable<
   Awaited<
-    ReturnType<ReturnType<typeof getBookingShopifyApi>['productsGetUsers']>
+    ReturnType<ReturnType<typeof getBookingShopifyApi>['productsGetUsersImage']>
+  >
+>;
+export type ProductsGetUsersByVariantResult = NonNullable<
+  Awaited<
+    ReturnType<
+      ReturnType<typeof getBookingShopifyApi>['productsGetUsersByVariant']
+    >
   >
 >;
 export type UserGetResult = NonNullable<

@@ -1,0 +1,51 @@
+.button {
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  justify-content: center;
+  position: relative;
+  width: 100%;
+  transition: background-color 150ms ease, border-color 150ms ease;
+  border-radius: var(--mantine-radius-sm);
+  padding: var(--mantine-spacing-sm);
+  border: rem(1px) solid
+    light-dark(var(--mantine-color-gray-3), var(--mantine-color-dark-8));
+  background-color: light-dark(
+    var(--mantine-color-white),
+    var(--mantine-color-dark-8)
+  );
+
+  &[data-checked] {
+    border-color: var(--mantine-color-blue-filled);
+    background-color: var(--mantine-color-blue-light);
+  }
+
+  &:hover {
+    border-color: var(--mantine-color-blue-filled);
+    background-color: var(--mantine-color-blue-light);
+  }
+}
+
+.body {
+  flex: 1;
+}
+
+.image {
+  border: 1px solid var(--mantine-color-black-filled);
+  border-radius: calc(var(--mantine-radius-xl) * 2);
+}
+
+.radioChecked,
+.radioUnchecked {
+  position: absolute;
+  top: calc(50% - 30px);
+  left: calc(50% - 15px);
+}
+
+.radioUnchecked {
+  opacity: 0.1;
+}
+
+.radioChecked {
+  opacity: 0.5;
+}

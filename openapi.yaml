@@ -1033,7 +1033,6 @@ components:
         - yearsExperience
         - professions
         - fullname
-        - avatar
         - active
         - locations
         - speaks
@@ -1544,7 +1543,7 @@ components:
         - restartPostUri
         - suspendPostUri
         - resumePostUri
-    ProductsGetUsersBody:
+    ProductsGetUsersImageBody:
       type: object
       properties:
         productIds:
@@ -1553,7 +1552,7 @@ components:
             type: string
       required:
         - productIds
-    ProductsGetUsers:
+    ProductsGetUsersImageResponse:
       type: object
       properties:
         success:
@@ -1562,11 +1561,11 @@ components:
         payload:
           type: array
           items:
-            $ref: '#/components/schemas/ProductsGetUsersResponse'
+            $ref: '#/components/schemas/ProductsGetUsersImage'
       required:
         - success
         - payload
-    ProductsGetUsersResponse:
+    ProductsGetUsersImage:
       type: object
       properties:
         productId:
@@ -1606,33 +1605,144 @@ components:
         - productId
         - totalUsers
         - users
+    ProductsGetUsersByVariantResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: true
+        payload:
+          type: object
+          properties:
+            productId:
+              type: number
+            variantId:
+              type: number
+            totalUsers:
+              type: number
+            nextCursor:
+              type: string
+            result:
+              type: array
+              items:
+                $ref: '#/components/schemas/ProductsGetUsersByVariant'
+          required:
+            - result
+            - totalUsers
+            - variantId
+            - productId
+      required:
+        - success
+        - payload
+    ProductsGetUsersByVariant:
+      type: object
+      properties:
+        customerId:
+          type: number
+        username:
+          type: string
+        shortDescription:
+          type: string
+        images:
+          type: object
+          properties:
+            profile:
+              type: object
+              properties:
+                url:
+                  type: string
+                  format: uri
+                width:
+                  type: integer
+                height:
+                  type: integer
+              required:
+                - url
+                - width
+                - height
+          required:
+            - profile
+        fullname:
+          type: string
+      required:
+        - customerId
+        - fullname
+        - shortDescription
+        - username
+        - images
 paths:
-  /products/get-users:
+  /products/get-users-image:
     post:
       tags:
         - Products
-      operationId: productsGetUsers
-      summary: POST get users belongs to products
-      description: This endpoint respond with products users
+      operationId: productsGetUsersImage
+      summary: POST get users belongs to productIds array
+      description: This endpoint respond with users images
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/ProductsGetUsersBody'
+              $ref: '#/components/schemas/ProductsGetUsersImageBody'
       responses:
         '200':
           description: Response
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ProductsGetUsers'
+                $ref: '#/components/schemas/ProductsGetUsersImageResponse'
         '400':
           $ref: '#/components/responses/BadResponse'
         '401':
           $ref: '#/components/responses/UnauthorizedResponse'
         '403':
           $ref: '#/components/responses/ForbiddenResponse'
+      security: []
+  /products/get-users-by-variant:
+    parameters:
+      - name: productId
+        in: query
+        description: product Id
+        required: true
+        schema:
+          type: string
+      - name: variantId
+        in: query
+        description: variant Id
+        required: true
+        schema:
+          type: string
+      - name: nextCursor
+        in: query
+        description: nextCursor
+        schema:
+          type: string
+      - name: limit
+        in: query
+        description: limit items (default 5)
+        schema:
+          type: string
+    get:
+      tags:
+        - Products
+      operationId: productsGetUsersByVariant
+      summary: GET Get all users for specific productId and variantId
+      description: This endpoint get all users for specific productId and variantId
+      responses:
+        '200':
+          description: Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProductsGetUsersByVariantResponse'
+        '400':
+          $ref: '#/components/responses/BadResponse'
+        '401':
+          $ref: '#/components/responses/UnauthorizedResponse'
+        '403':
+          $ref: '#/components/responses/ForbiddenResponse'
+        '404':
+          $ref: '#/components/responses/NotFoundResponse'
       security: []
   '/user/{username}':
     parameters:

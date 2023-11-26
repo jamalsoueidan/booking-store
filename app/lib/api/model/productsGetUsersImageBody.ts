@@ -5,6 +5,6 @@
  * OpenAPI spec version: 1.0.0
  */
 
-export interface ProductsGetUsersBody {
+export interface ProductsGetUsersImageBody {
   productIds: string[];
 }

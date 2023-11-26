@@ -53,7 +53,7 @@ export default function ArtistTreatments() {
     CustomerLocation | undefined
   >(schedule.locations.length === 1 ? schedule.locations[0] : undefined);
 
-  const onClick = (location: CustomerLocation) => () => {
+  const onChange = (location: CustomerLocation) => () => {
     setShippingId(undefined);
     setSelectedLocation(location);
     if (location.locationType === CustomerLocationLocationType.destination) {
@@ -78,7 +78,7 @@ export default function ArtistTreatments() {
         key={location._id}
         checked={selectedLocation?._id === location._id}
         value={location._id}
-        onChange={onClick(location)}
+        onChange={onChange(location)}
         location={location}
       />
     );

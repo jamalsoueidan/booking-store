@@ -1,6 +1,6 @@
 import {Avatar, Button, Paper, Text} from '@mantine/core';
 import {Link} from '@remix-run/react';
-import {type User} from '~/lib/api/model';
+import type {User} from '~/lib/api/model';
 
 export const ArtistCard = ({artist}: {artist: User}) => (
   <Paper

@@ -7,14 +7,14 @@
 import {z as zod} from 'zod';
 
 /**
- * This endpoint respond with products users
- * @summary POST get users belongs to products
+ * This endpoint respond with users images
+ * @summary POST get users belongs to productIds array
  */
-export const productsGetUsersBody = zod.object({
+export const productsGetUsersImageBody = zod.object({
   productIds: zod.array(zod.string()),
 });
 
-export const productsGetUsersResponse = zod.object({
+export const productsGetUsersImageResponse = zod.object({
   success: zod.boolean(),
   payload: zod.array(
     zod.object({
@@ -38,6 +38,35 @@ export const productsGetUsersResponse = zod.object({
       ),
     }),
   ),
+});
+
+/**
+ * This endpoint get all users for specific productId and variantId
+ * @summary GET Get all users for specific productId and variantId
+ */
+export const productsGetUsersByVariantResponse = zod.object({
+  success: zod.boolean(),
+  payload: zod.object({
+    productId: zod.number(),
+    variantId: zod.number(),
+    totalUsers: zod.number(),
+    nextCursor: zod.string().optional(),
+    result: zod.array(
+      zod.object({
+        customerId: zod.number(),
+        username: zod.string(),
+        shortDescription: zod.string(),
+        images: zod.object({
+          profile: zod.object({
+            url: zod.string().url(),
+            width: zod.number(),
+            height: zod.number(),
+          }),
+        }),
+        fullname: zod.string(),
+      }),
+    ),
+  }),
 });
 
 /**
