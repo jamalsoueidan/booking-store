@@ -13,7 +13,7 @@ export type ProductsGetUsersByVariantParams = {
   /**
    * variant Id
    */
-  variantId: string;
+  variantId?: string;
   /**
    * nextCursor
    */

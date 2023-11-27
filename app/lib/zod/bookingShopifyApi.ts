@@ -48,7 +48,6 @@ export const productsGetUsersByVariantResponse = zod.object({
   success: zod.boolean(),
   payload: zod.object({
     productId: zod.number(),
-    variantId: zod.number(),
     totalUsers: zod.number(),
     nextCursor: zod.string().optional(),
     result: zod.array(
@@ -64,6 +63,7 @@ export const productsGetUsersByVariantResponse = zod.object({
           }),
         }),
         fullname: zod.string(),
+        variantId: zod.string(),
       }),
     ),
   }),

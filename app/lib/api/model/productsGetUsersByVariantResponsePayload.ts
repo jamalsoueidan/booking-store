@@ -11,5 +11,4 @@ export type ProductsGetUsersByVariantResponsePayload = {
   productId: number;
   result: ProductsGetUsersByVariant[];
   totalUsers: number;
-  variantId: number;
 };
