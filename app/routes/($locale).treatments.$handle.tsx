@@ -150,7 +150,7 @@ function ProductMain({product}: {product: ProductFragment}) {
   };
 
   return (
-    <Box p={rem(42)} bg="#fafafb">
+    <Box p={{base: rem(10), md: rem(42)}} bg="#fafafb">
       <Title order={1} size={rem(54)} mb="xl">
         {title}
       </Title>
@@ -213,7 +213,13 @@ function ProductMain({product}: {product: ProductFragment}) {
         </Group>
       </Group>
 
-      <ScrollArea h="500" type="always" offsetScrollbars scrollbarSize={18}>
+      <ScrollArea
+        h="500"
+        type="always"
+        offsetScrollbars
+        scrollbarSize={18}
+        mt="lg"
+      >
         <Outlet context={{product}} />
       </ScrollArea>
     </Box>
@@ -308,7 +314,7 @@ const PRODUCT_FRAGMENT = `#graphql
   ${PRODUCT_VARIANT_FRAGMENT}
 ` as const;
 
-const PRODUCT_QUERY = `#graphql
+export const PRODUCT_QUERY = `#graphql
   query Product(
     $country: CountryCode
     $handle: String!
@@ -320,28 +326,4 @@ const PRODUCT_QUERY = `#graphql
     }
   }
   ${PRODUCT_FRAGMENT}
-` as const;
-
-const PRODUCT_VARIANTS_FRAGMENT = `#graphql
-  fragment ProductVariants on Product {
-    variants(first: 250) {
-      nodes {
-        ...ProductVariant
-      }
-    }
-  }
-  ${PRODUCT_VARIANT_FRAGMENT}
-` as const;
-
-const VARIANTS_QUERY = `#graphql
-  ${PRODUCT_VARIANTS_FRAGMENT}
-  query ProductVariants(
-    $country: CountryCode
-    $language: LanguageCode
-    $handle: String!
-  ) @inContext(country: $country, language: $language) {
-    product(handle: $handle) {
-      ...ProductVariants
-    }
-  }
 ` as const;

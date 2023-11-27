@@ -8,7 +8,8 @@ import {
 } from '@mantine/core';
 import {useUncontrolled} from '@mantine/hooks';
 
-import {Image} from '@shopify/hydrogen';
+import {Image, Money} from '@shopify/hydrogen';
+import type {ProductVariantFragment} from 'storefrontapi.generated';
 import {type ProductsGetUsersByVariant} from '~/lib/api/model';
 import classes from './TreatmentPickArtistRadioCard.module.css';
 
@@ -18,6 +19,7 @@ interface TreatmentPickArtistRadioCardProps {
   defaultChecked?: boolean;
   onChange?(checked: boolean): void;
   artist: ProductsGetUsersByVariant;
+  variant?: ProductVariantFragment;
 }
 
 export function TreatmentPickArtistRadioCard({
@@ -28,6 +30,7 @@ export function TreatmentPickArtistRadioCard({
   className,
   children,
   artist,
+  variant,
   ...others
 }: TreatmentPickArtistRadioCardProps &
   Omit<
@@ -61,6 +64,12 @@ export function TreatmentPickArtistRadioCard({
         <Text tt="uppercase" c="dimmed" fw={700} size="xs">
           {artist.fullname}
         </Text>
+
+        {variant && (
+          <Text size="xs" c="dimmed" fw={500}>
+            <Money data={variant.price} />
+          </Text>
+        )}
       </Stack>
       <Radio
         checked={isChecked}

@@ -24,7 +24,7 @@ import {TreatmentCard} from '~/components/treatment/TreatmentCard';
 
 import {PRODUCT_ITEM_FRAGMENT} from '~/data/fragments';
 import {getBookingShopifyApi} from '~/lib/api/bookingShopifyApi';
-import {ProductsGetUsersImage, type UsersListResponse} from '~/lib/api/model';
+import type {ProductsGetUsersImage, UsersListResponse} from '~/lib/api/model';
 
 export const meta: MetaFunction = () => {
   return [{title: 'BySisters | Home'}];

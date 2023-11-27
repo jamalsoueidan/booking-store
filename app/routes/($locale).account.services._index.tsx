@@ -71,7 +71,9 @@ export default function AccountServicesIndex() {
 
                 <Text>{customerProduct?.scheduleName}</Text>
 
-                <Money withoutTrailingZeros data={variant!.price} as="span" />
+                {variant && (
+                  <Money withoutTrailingZeros data={variant.price} as="span" />
+                )}
 
                 <SimpleGrid cols={2} verticalSpacing="xs" mt="lg">
                   <Button component={Link} to={`${parseGid(product.id).id}`}>
