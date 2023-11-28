@@ -28,10 +28,10 @@ export async function loader({request, params, context}: LoaderFunctionArgs) {
   const url = new URL(request.url);
   const searchParams = url.searchParams;
 
-  const artist = searchParams.get('artist');
+  const username = searchParams.get('username');
 
-  if (!artist || !handle) {
-    throw new Response('Expected artist handle to be defined', {status: 400});
+  if (!username || !handle) {
+    throw new Response('Expected username handle to be defined', {status: 400});
   }
 
   try {
@@ -45,7 +45,7 @@ export async function loader({request, params, context}: LoaderFunctionArgs) {
 
     const {payload: schedule} =
       await getBookingShopifyApi().userScheduleGetByProduct(
-        artist,
+        username,
         parseGid(product.id).id,
       );
 
@@ -84,8 +84,11 @@ export default function TreatmentHandlePickLocation() {
 
   const setLocationId = (value: CustomerLocation | undefined) => {
     const newSearchParams = new URLSearchParams(searchParams);
-    newSearchParams.set('locationId', value?._id || '');
-    newSearchParams.set('shippingId', '');
+    newSearchParams.delete('locationId');
+    if (value) {
+      newSearchParams.set('locationId', value._id);
+    }
+    newSearchParams.delete('shippingId');
     setSearchParams(newSearchParams);
   };
 

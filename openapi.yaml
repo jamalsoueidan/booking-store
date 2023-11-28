@@ -1616,8 +1616,6 @@ components:
           properties:
             productId:
               type: number
-            variantId:
-              type: number
             totalUsers:
               type: number
             nextCursor:
@@ -1629,7 +1627,6 @@ components:
           required:
             - result
             - totalUsers
-            - variantId
             - productId
       required:
         - success
@@ -1664,12 +1661,15 @@ components:
             - profile
         fullname:
           type: string
+        variantId:
+          type: string
       required:
         - customerId
         - fullname
         - shortDescription
         - username
         - images
+        - variantId
 paths:
   /products/get-users-image:
     post:
@@ -1709,7 +1709,6 @@ paths:
       - name: variantId
         in: query
         description: variant Id
-        required: true
         schema:
           type: string
       - name: nextCursor

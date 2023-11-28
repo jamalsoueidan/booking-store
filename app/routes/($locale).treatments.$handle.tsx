@@ -5,7 +5,7 @@ import {
   useNavigate,
   type MetaFunction,
 } from '@remix-run/react';
-import {defer, redirect, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
+import {defer, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
 import type {
   ProductFragment,
   ProductVariantFragment,
@@ -26,7 +26,6 @@ import {
 import {Image, getSelectedProductOptions} from '@shopify/hydrogen';
 import {IconArrowLeft, IconArrowRight} from '@tabler/icons-react';
 import {useState} from 'react';
-import {getVariantUrlForTreatment} from '~/utils';
 
 export const meta: MetaFunction<typeof loader> = ({data}) => {
   return [{title: `BySisters | ${data?.product.title ?? ''}`}];
@@ -102,12 +101,24 @@ const paths: Record<number, {title: string; path: string}> = {
     path: '',
   },
   1: {
-    title: 'Skønhedsekspert',
-    path: 'pick-artist',
+    title: 'Skønhedsekspert?',
+    path: 'pick-username',
   },
   2: {
-    title: 'Lokation',
+    title: 'Lokation?',
     path: 'pick-location',
+  },
+  3: {
+    title: 'Andre behandlinger?',
+    path: 'pick-more',
+  },
+  4: {
+    title: 'Dato & Tid?',
+    path: 'pick-datetime',
+  },
+  5: {
+    title: 'Godkend',
+    path: 'completed',
   },
 };
 
@@ -136,7 +147,7 @@ function ProductMain({product}: {product: ProductFragment}) {
   }
 
   const nextStep = () => {
-    const newActive = active < 2 ? active + 1 : active;
+    const newActive = active < 5 ? active + 1 : active;
     setActive(newActive);
     const basePath = getBasePath();
     navigate(`${basePath}/${paths[newActive].path}${location.search}`);
@@ -164,88 +175,71 @@ function ProductMain({product}: {product: ProductFragment}) {
             {paths[active].title}
           </Text>
         </Group>
-        <Group gap="xs">
-          {active > 0 ? (
-            <>
-              <ActionIcon
-                variant="filled"
-                color="yellow"
-                c="black"
-                radius="xl"
-                size="xl"
-                aria-label="Tilbage"
-                onClick={prevStep}
-              >
-                <IconArrowLeft
-                  style={{width: '70%', height: '70%'}}
-                  stroke={1.5}
-                />
-              </ActionIcon>
+        {paths[active].path !== 'completed' && (
+          <Group gap="xs">
+            {active > 0 ? (
+              <>
+                <ActionIcon
+                  variant="filled"
+                  color="yellow"
+                  c="black"
+                  radius="xl"
+                  size="xl"
+                  aria-label="Tilbage"
+                  onClick={prevStep}
+                >
+                  <IconArrowLeft
+                    style={{width: '70%', height: '70%'}}
+                    stroke={1.5}
+                  />
+                </ActionIcon>
 
-              <ActionIcon
+                <ActionIcon
+                  variant="filled"
+                  color="yellow"
+                  c="black"
+                  radius="xl"
+                  size="xl"
+                  aria-label="Næste"
+                  onClick={nextStep}
+                >
+                  <IconArrowRight
+                    style={{width: '70%', height: '70%'}}
+                    stroke={1.5}
+                  />
+                </ActionIcon>
+              </>
+            ) : (
+              <Button
                 variant="filled"
                 color="yellow"
                 c="black"
                 radius="xl"
-                size="xl"
-                aria-label="Næste"
+                size="md"
+                rightSection={<IconArrowRight />}
                 onClick={nextStep}
               >
-                <IconArrowRight
-                  style={{width: '70%', height: '70%'}}
-                  stroke={1.5}
-                />
-              </ActionIcon>
-            </>
-          ) : (
-            <Button
-              variant="filled"
-              color="yellow"
-              c="black"
-              radius="xl"
-              size="md"
-              rightSection={<IconArrowRight />}
-              onClick={nextStep}
-            >
-              Bestil en tid
-            </Button>
-          )}
-        </Group>
+                Bestil en tid
+              </Button>
+            )}
+          </Group>
+        )}
       </Group>
 
-      <ScrollArea
-        h="500"
-        type="always"
-        offsetScrollbars
-        scrollbarSize={18}
-        mt="lg"
-      >
+      {paths[active].path === 'completed' ? (
         <Outlet context={{product}} />
-      </ScrollArea>
+      ) : (
+        <ScrollArea
+          h="500"
+          type="always"
+          offsetScrollbars
+          scrollbarSize={18}
+          mt="lg"
+        >
+          <Outlet context={{product}} />
+        </ScrollArea>
+      )}
     </Box>
-  );
-}
-
-function redirectToFirstVariant({
-  product,
-  request,
-}: {
-  product: ProductFragment;
-  request: Request;
-}) {
-  const url = new URL(request.url);
-  const firstVariant = product.variants.nodes[0];
-
-  return redirect(
-    getVariantUrlForTreatment({
-      pathname: url.pathname,
-      handle: product.handle,
-      selectedOptions: firstVariant.selectedOptions,
-      searchParams: new URLSearchParams(url.search),
-    }),
-    {
-      status: 302,
-    },
   );
 }
 

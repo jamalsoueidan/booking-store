@@ -55,7 +55,7 @@ export async function loader({params, request, context}: LoaderFunctionArgs) {
       !option.name.startsWith('_v') &&
       // Filter out third party tracking params
       !option.name.startsWith('fbclid') &&
-      !option.name.startsWith('artist'),
+      !option.name.startsWith('username'),
   );
 
   if (!handle) {
@@ -146,9 +146,11 @@ function PickArtistsForm({
 
   const onChange = (artist: ProductsGetUsersByVariant) => () => {
     const newSearchParams = new URLSearchParams(searchParams);
-    newSearchParams.set('artist', artist.username);
+    newSearchParams.set('username', artist.username);
     setSearchParams(newSearchParams);
   };
+
+  const username = searchParams.get('username');
 
   return (
     <SimpleGrid cols={{base: 4}}>
@@ -159,7 +161,7 @@ function PickArtistsForm({
         return (
           <TreatmentPickArtistRadioCard
             artist={user}
-            checked={searchParams.get('artist') === user.username}
+            checked={username === user.username}
             value={user.username}
             onChange={onChange(user)}
             key={user.customerId}
