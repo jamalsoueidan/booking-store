@@ -30,7 +30,7 @@ import {ALL_PRODUCTS_QUERY} from './($locale).artist.$username._index';
 
 import {ArtistServiceCheckboxCard} from '~/components/artist/ArtistServiceCheckboxCard';
 import {ArtistStepper} from '~/components/artist/ArtistStepper';
-import {TreatmentContent} from '~/components/treatment/TreatmentContent';
+import {TreatmentServiceContent} from '~/components/treatment/TreatmentServiceContent';
 import {durationToTime} from '~/lib/duration';
 
 export async function loader({params, context}: LoaderFunctionArgs) {
@@ -212,7 +212,7 @@ function ArtistProduct({
       defaultChecked={defaultChecked}
       name="productIds"
     >
-      <TreatmentContent
+      <TreatmentServiceContent
         product={product}
         description={artistService?.description}
         leftSection={leftSection}

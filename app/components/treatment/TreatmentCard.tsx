@@ -1,9 +1,9 @@
 import {Avatar, Button, Card} from '@mantine/core';
 import {Link} from '@remix-run/react';
 import {type ProductItemFragment} from 'storefrontapi.generated';
-import {type ProductsGetUsersResponse} from '~/lib/api/model';
+import {type ProductsGetUsersImage} from '~/lib/api/model';
+import {ArtistServiceContent} from '../artist/ArtistServiceContent';
 import classes from './TreatmentCard.module.css';
-import {TreatmentContent} from './TreatmentContent';
 
 export function TreatmentCard({
   product,
@@ -11,7 +11,7 @@ export function TreatmentCard({
   loading,
 }: {
   product: ProductItemFragment;
-  productUsers?: ProductsGetUsersResponse;
+  productUsers?: ProductsGetUsersImage;
   loading?: 'eager' | 'lazy';
 }) {
   const leftSection =
@@ -49,7 +49,7 @@ export function TreatmentCard({
       component={Link}
       to={`/treatments/${product.handle}`}
     >
-      <TreatmentContent
+      <ArtistServiceContent
         product={product}
         rightSection={
           <Button variant="default" size="md">

@@ -12,9 +12,9 @@ import {
   type ProductItemFragment,
   type ProductServiceItemFragment,
 } from 'storefrontapi.generated';
-import classes from './TreatmentContent.module.css';
+import classes from './ArtistServiceContent.module.css';
 
-export function TreatmentContent({
+export function ArtistServiceContent({
   product,
   description,
   loading,

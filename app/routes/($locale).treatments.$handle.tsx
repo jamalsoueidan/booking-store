@@ -226,19 +226,21 @@ function ProductMain({product}: {product: ProductFragment}) {
         )}
       </Group>
 
-      {paths[active].path === 'completed' ? (
-        <Outlet context={{product}} />
-      ) : (
-        <ScrollArea
-          h="500"
-          type="always"
-          offsetScrollbars
-          scrollbarSize={18}
-          mt="lg"
-        >
+      <Box mt="xl">
+        {paths[active].path === 'completed' ||
+        paths[active].path === 'pick-datetime' ? (
           <Outlet context={{product}} />
-        </ScrollArea>
-      )}
+        ) : (
+          <ScrollArea
+            style={{height: 'calc(100vh)'}}
+            type="always"
+            offsetScrollbars
+            scrollbarSize={18}
+          >
+            <Outlet context={{product}} />
+          </ScrollArea>
+        )}
+      </Box>
     </Box>
   );
 }

@@ -17,7 +17,7 @@ import {type CustomerProductBase} from '~/lib/api/model';
 import {ALL_PRODUCTS_QUERY} from './($locale).artist.$username._index';
 
 import {ArtistServiceCheckboxCard} from '~/components/artist/ArtistServiceCheckboxCard';
-import {TreatmentContent} from '~/components/treatment/TreatmentContent';
+import {TreatmentServiceContent} from '~/components/treatment/TreatmentServiceContent';
 import {durationToTime} from '~/lib/duration';
 import {PRODUCT_QUERY} from './($locale).treatments.$handle';
 
@@ -179,7 +179,7 @@ function ArtistProduct({
   );
 
   const rightSection = productVariant?.price && (
-    <Badge variant="light" color="gray" size="lg">
+    <Badge variant="light" color="gray" size="md">
       <Money data={productVariant?.price} />
     </Badge>
   );
@@ -191,7 +191,7 @@ function ArtistProduct({
       onChange={onChange}
       name="productIds"
     >
-      <TreatmentContent
+      <TreatmentServiceContent
         product={product}
         description={artistService?.description}
         leftSection={leftSection}

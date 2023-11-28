@@ -123,20 +123,19 @@ export default function ArtistTreatmentsBooking() {
     ));
 
   return (
-    <Stack gap="xl" style={{width: '100%'}}>
+    <Stack gap="xl">
       {days ? (
-        <div style={{width: '40%'}}>
-          <Carousel
-            slideSize={{base: '100px'}}
-            align="start"
-            slideGap="sm"
-            controlsOffset="xs"
-            controlSize={40}
-            containScroll="trimSnaps"
-          >
-            {days}
-          </Carousel>
-        </div>
+        <Carousel
+          slideSize={{base: '100px'}}
+          align="start"
+          slideGap="sm"
+          controlsOffset="xs"
+          controlSize={40}
+          containScroll="trimSnaps"
+          style={{paddingLeft: '60px', paddingRight: '60px'}}
+        >
+          {days}
+        </Carousel>
       ) : null}
 
       {slots ? (

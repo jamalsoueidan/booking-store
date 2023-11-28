@@ -5,6 +5,7 @@ import {type CartLineInput} from '@shopify/hydrogen/storefront-api-types';
 import {json, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
 import {format} from 'date-fns';
 import da from 'date-fns/locale/da';
+import {TreatmentArtistCardComplete} from '~/components/treatment/TreatmentArtistCardComplete';
 import {getBookingShopifyApi} from '~/lib/api/bookingShopifyApi';
 import {durationToTime} from '~/lib/duration';
 import {ALL_PRODUCTS_QUERY} from './($locale).artist.$username._index';
@@ -28,14 +29,7 @@ export const loader = async ({
   const fromDate = searchParams.get('fromDate');
   const toDate = searchParams.get('toDate');
 
-  if (
-    !handle ||
-    productIds.length === 0 ||
-    !username ||
-    !locationId ||
-    !fromDate ||
-    !toDate
-  ) {
+  if (!handle || !username || !locationId || !fromDate || !toDate) {
     throw new Response('Expected productId to be selected', {status: 400});
   }
 
@@ -54,6 +48,8 @@ export const loader = async ({
       username,
       locationId,
     );
+
+    const {payload: user} = await getBookingShopifyApi().userGet(username);
 
     const {payload: availability} =
       await getBookingShopifyApi().userAvailabilityGet(username, locationId, {
@@ -74,6 +70,7 @@ export const loader = async ({
 
     return json({
       location,
+      user,
       products,
       availability,
     });
@@ -184,6 +181,13 @@ export default function ArtistTreatmentsBooking() {
   return (
     <>
       <Card shadow="sm" p="lg" mt="xl" radius="md" withBorder>
+        <Text size="lg" mb="md" fw="bold">
+          Skønhedsekspert
+        </Text>
+        <TreatmentArtistCardComplete artist={data.user} />
+        <Card.Section pt="md" pb="md">
+          <Divider />
+        </Card.Section>
         <Text size="lg" mb="md" fw="bold">
           Lokation
         </Text>

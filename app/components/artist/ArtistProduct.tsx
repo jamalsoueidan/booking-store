@@ -4,8 +4,8 @@ import {Money, parseGid} from '@shopify/hydrogen';
 import {type AccountServicesProductsQuery} from 'storefrontapi.generated';
 import {type CustomerProductList} from '~/lib/api/model';
 import {durationToTime} from '~/lib/duration';
-import {TreatmentContent} from '../treatment/TreatmentContent';
 import classes from './ArtistProduct.module.css';
+import {ArtistServiceContent} from './ArtistServiceContent';
 
 export type ArtistProductProps = {
   product: AccountServicesProductsQuery['products']['nodes'][number];
@@ -42,7 +42,7 @@ export function ArtistProduct({product, services}: ArtistProductProps) {
       component={Link}
       to={`treatment/${product.handle}-${parseGid(product.id).id}`}
     >
-      <TreatmentContent
+      <ArtistServiceContent
         product={product}
         description={artistService?.description}
         leftSection={leftSection}
