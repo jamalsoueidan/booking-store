@@ -120,3 +120,31 @@ export const PRODUCT_VARIANTS_FRAGMENT = `#graphql
   }
   ${PRODUCT_VARIANT_FRAGMENT}
 ` as const;
+
+export const PRODUCT_SELECTED_OPTIONS_FRAGMENT = `#graphql
+  fragment Product on Product {
+    id
+    title
+    vendor
+    handle
+    descriptionHtml
+    description
+    options {
+      name
+      values
+    }
+    selectedVariant: variantBySelectedOptions(selectedOptions: $selectedOptions) {
+      ...ProductVariant
+    }
+    variants(first: 1) {
+      nodes {
+        ...ProductVariant
+      }
+    }
+    seo {
+      description
+      title
+    }
+  }
+  ${PRODUCT_VARIANT_FRAGMENT}
+` as const;

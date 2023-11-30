@@ -1,4 +1,8 @@
-import {PRODUCT_ITEM_FRAGMENT, PRODUCT_VARIANTS_FRAGMENT} from './fragments';
+import {
+  PRODUCT_ITEM_FRAGMENT,
+  PRODUCT_SELECTED_OPTIONS_FRAGMENT,
+  PRODUCT_VARIANTS_FRAGMENT,
+} from './fragments';
 
 export const PRODUCT_QUERY_ID = `#graphql
   ${PRODUCT_ITEM_FRAGMENT}
@@ -50,4 +54,18 @@ export const VARIANTS_QUERY_ID = `#graphql
       ...ProductVariants
     }
   }
+` as const;
+
+export const PRODUCT_SELECTED_OPTIONS_QUERY = `#graphql
+  query Product(
+    $country: CountryCode
+    $productHandle: String!
+    $language: LanguageCode
+    $selectedOptions: [SelectedOptionInput!]!
+  ) @inContext(country: $country, language: $language) {
+    product(handle: $productHandle) {
+      ...Product
+    }
+  }
+  ${PRODUCT_SELECTED_OPTIONS_FRAGMENT}
 ` as const;
