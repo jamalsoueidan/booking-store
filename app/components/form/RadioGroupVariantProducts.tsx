@@ -33,22 +33,6 @@ export const RadioGroupVariantsProduct: React.FC<
       };
     });
 
-  const onChange = (value: string) => {
-    const variant = fetcher.data?.find(
-      (variant) => parseGid(variant.id).id === value,
-    );
-    if (variant) {
-      setSelectedOptions(
-        variant.selectedOptions.length > 0
-          ? variant.selectedOptions[0]
-          : {
-              name: '',
-              value: '',
-            },
-      );
-    }
-  };
-
   useEffect(() => {
     fetcher.load(`/api/products/${productId}/variants`);
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -56,24 +40,7 @@ export const RadioGroupVariantsProduct: React.FC<
 
   return (
     <>
-      <input
-        type="hidden"
-        name="selectedOptions.name"
-        value={selectedOptions?.name}
-        onChange={() => {}}
-      />
-      <input
-        type="hidden"
-        name="selectedOptions.value"
-        value={selectedOptions?.value}
-        onChange={() => {}}
-      />
-      <RadioGroup
-        onChange={onChange}
-        label={label}
-        data={data || []}
-        field={field}
-      />
+      <RadioGroup label={label} data={data || []} field={field} />
     </>
   );
 };

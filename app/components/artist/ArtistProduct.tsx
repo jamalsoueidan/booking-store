@@ -40,7 +40,7 @@ export function ArtistProduct({product, services}: ArtistProductProps) {
       radius={0}
       className={classes.card}
       component={Link}
-      to={`treatment/${product.handle}-${parseGid(product.id).id}`}
+      to={`treatment/${product.handle}`}
     >
       <ArtistServiceContent
         product={product}

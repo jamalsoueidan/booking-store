@@ -1,9 +1,6 @@
 import {Divider, Flex, Group, Text, Title, rem} from '@mantine/core';
 import {Image} from '@shopify/hydrogen';
-import {
-  type ProductItemFragment,
-  type ProductServiceItemFragment,
-} from 'storefrontapi.generated';
+import {type ProductItemFragment} from 'storefrontapi.generated';
 import classes from './TreatmentServiceContent.module.css';
 
 export function TreatmentServiceContent({
@@ -13,7 +10,7 @@ export function TreatmentServiceContent({
   leftSection,
   rightSection,
 }: {
-  product: ProductItemFragment | ProductServiceItemFragment;
+  product: ProductItemFragment;
   description?: string;
   leftSection?: JSX.Element;
   rightSection?: JSX.Element;
