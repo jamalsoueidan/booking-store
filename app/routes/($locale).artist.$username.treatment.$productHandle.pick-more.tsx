@@ -2,16 +2,13 @@ import {Badge, Flex, SimpleGrid, Skeleton, Text} from '@mantine/core';
 import {
   Await,
   useLoaderData,
-  useNavigate,
+  useParams,
   useSearchParams,
 } from '@remix-run/react';
 import {Money, parseGid} from '@shopify/hydrogen';
 import {defer, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
 import {Suspense} from 'react';
-import {
-  type ArtistServicesProductsQuery,
-  type ProductServiceItemFragment,
-} from 'storefrontapi.generated';
+import {type ProductItemFragment} from 'storefrontapi.generated';
 import {getBookingShopifyApi} from '~/lib/api/bookingShopifyApi';
 import {type CustomerProductBase} from '~/lib/api/model';
 import {ALL_PRODUCTS_QUERY} from './($locale).artist.$username._index';
@@ -19,34 +16,24 @@ import {ALL_PRODUCTS_QUERY} from './($locale).artist.$username._index';
 import {ArtistServiceCheckboxCard} from '~/components/artist/ArtistServiceCheckboxCard';
 import {TreatmentServiceContent} from '~/components/treatment/TreatmentServiceContent';
 import {durationToTime} from '~/lib/duration';
-import {PRODUCT_QUERY} from './($locale).treatments.$handle';
+
+export function shouldRevalidate() {
+  return false;
+}
 
 export async function loader({params, request, context}: LoaderFunctionArgs) {
-  const {handle} = params;
-  const {storefront} = context;
-
-  if (!handle) {
-    throw new Error('Expected product handle to be defined');
-  }
-  // await the query for the critical product data
-  const {product} = await storefront.query(PRODUCT_QUERY, {
-    variables: {handle, selectedOptions: []},
-  });
-
-  if (!product?.id) {
-    throw new Response(null, {status: 404});
-  }
-
+  const {productHandle, username} = params;
   const {searchParams} = new URL(request.url);
   const locationId = searchParams.get('locationId') as string;
-  const username = searchParams.get('username') as string;
 
-  const productId = parseGid(product.id).id;
+  if (!productHandle || !username || !locationId) {
+    throw new Error('Expected product handle to be defined');
+  }
 
   const {payload: services} =
     await getBookingShopifyApi().userProductsListByLocation(
       username,
-      productId,
+      productHandle,
       locationId,
     );
 
@@ -64,13 +51,12 @@ export async function loader({params, request, context}: LoaderFunctionArgs) {
   return defer({
     products,
     services,
-    selectedProductId: productId,
   });
 }
 
 export default function ArtistTreatments() {
-  const {products, services, selectedProductId} =
-    useLoaderData<typeof loader>();
+  const {products, services} = useLoaderData<typeof loader>();
+  const {productHandle: selectedProductHandle} = useParams();
 
   const [searchParams] = useSearchParams();
 
@@ -88,9 +74,9 @@ export default function ArtistTreatments() {
       <Await resolve={products}>
         {({products}) => (
           <RenderArtistProducts
-            products={products}
+            products={products.nodes}
             services={services}
-            selectedProductId={selectedProductId}
+            selectedProductHandle={selectedProductHandle || ''}
           />
         )}
       </Await>
@@ -99,20 +85,18 @@ export default function ArtistTreatments() {
 }
 
 type RenderArtistProductsProps = {
-  products: ArtistServicesProductsQuery['products'];
+  products: ProductItemFragment[];
   services: CustomerProductBase[];
-  selectedProductId: string;
+  selectedProductHandle: string;
 };
 
 function RenderArtistProducts({
   products,
   services,
-  selectedProductId,
+  selectedProductHandle,
 }: RenderArtistProductsProps) {
-  const navigate = useNavigate();
-
-  const restProductsMarkup = products.nodes
-    .filter((product) => parseGid(product.id).id !== selectedProductId)
+  const restProductsMarkup = products
+    .filter((product) => product.handle !== selectedProductHandle)
     .map((product) => (
       <ArtistProduct key={product.id} product={product} services={services} />
     ));
@@ -129,7 +113,7 @@ function RenderArtistProducts({
 }
 
 type ArtistProductProps = {
-  product: ProductServiceItemFragment;
+  product: ProductItemFragment;
   services: CustomerProductBase[];
   defaultChecked?: boolean;
 };
@@ -168,19 +152,15 @@ function ArtistProduct({
     return productId.toString() === parseGid(product.id).id;
   });
 
-  const productVariant = product.variants.nodes.find(({id}) => {
-    return parseGid(id).id === artistService?.variantId.toString();
-  });
-
   const leftSection = (
     <Text c="dimmed" size="xs" tt="uppercase" fw={700}>
       {durationToTime(artistService?.duration ?? 0)}
     </Text>
   );
 
-  const rightSection = productVariant?.price && (
+  const rightSection = artistService?.price && (
     <Badge variant="light" color="gray" size="md">
-      <Money data={productVariant?.price} />
+      <Money data={artistService?.price as any} />
     </Badge>
   );
 

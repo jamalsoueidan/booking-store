@@ -11,26 +11,23 @@ import {json, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
 import {format} from 'date-fns';
 import {da} from 'date-fns/locale';
 import {MultilineButton} from '~/components/MultilineButton';
+import {PRODUCT_SELECTED_OPTIONS_QUERY} from '~/data/queries';
 import {getBookingShopifyApi} from '~/lib/api/bookingShopifyApi';
 import {
   type UserAvailability,
   type UserAvailabilitySlot,
 } from '~/lib/api/model';
-import {PRODUCT_QUERY} from './($locale).treatments.$handle';
 
 export function shouldRevalidate({
   currentUrl,
   nextUrl,
 }: ShouldRevalidateFunctionArgs) {
-  // Get the search parameters from both the current and next URLs
   const currentSearchParams = currentUrl.searchParams;
   const nextSearchParams = nextUrl.searchParams;
 
-  // Create copies of the current and next search parameters
   const currentParamsCopy = new URLSearchParams(currentSearchParams);
   const nextParamsCopy = new URLSearchParams(nextSearchParams);
 
-  // Delete 'date' and 'slot' from both copies
   currentParamsCopy.delete('date');
   currentParamsCopy.delete('fromDate');
   currentParamsCopy.delete('toDate');
@@ -38,28 +35,25 @@ export function shouldRevalidate({
   nextParamsCopy.delete('fromDate');
   nextParamsCopy.delete('toDate');
 
-  // Compare the rest of the search parameters
-  // If they are the same, we do not re-run the loader
   return currentParamsCopy.toString() !== nextParamsCopy.toString();
 }
 
 export async function loader({params, request, context}: LoaderFunctionArgs) {
-  const {handle} = params;
+  const {productHandle, username} = params;
   const {storefront} = context;
   const url = new URL(request.url);
   const searchParams = url.searchParams;
 
-  const username = searchParams.get('username');
-  const productIds = url.searchParams.getAll('productIds');
-  const locationId = url.searchParams.get('locationId') as string | undefined;
-  const shippingId = url.searchParams.get('shippingId') as string | undefined;
+  const productIds = searchParams.getAll('productIds');
+  const locationId = searchParams.get('locationId') as string | undefined;
+  const shippingId = searchParams.get('shippingId') as string | undefined;
 
-  if (!username || !handle || !locationId) {
+  if (!username || !productHandle || !locationId) {
     throw new Response('Expected artist handle to be defined', {status: 400});
   }
 
-  const {product} = await storefront.query(PRODUCT_QUERY, {
-    variables: {handle, selectedOptions: []},
+  const {product} = await storefront.query(PRODUCT_SELECTED_OPTIONS_QUERY, {
+    variables: {productHandle, selectedOptions: []},
   });
 
   if (!product?.id) {

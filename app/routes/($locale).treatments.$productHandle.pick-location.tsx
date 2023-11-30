@@ -9,7 +9,6 @@ import {
 } from '@mantine/core';
 import {useDisclosure} from '@mantine/hooks';
 import {useFetcher, useLoaderData, useSearchParams} from '@remix-run/react';
-import {parseGid} from '@shopify/hydrogen';
 import {json, redirect, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
 import {useEffect, useState} from 'react';
 import {AddressAutocompleteInput} from '~/components/AddressAutocompleteInput';
@@ -20,33 +19,28 @@ import {
   type CustomerLocation,
   type Shipping,
 } from '~/lib/api/model';
-import {PRODUCT_QUERY} from './($locale).treatments.$handle';
+
+export function shouldRevalidate() {
+  return false;
+}
 
 export async function loader({request, params, context}: LoaderFunctionArgs) {
-  const {handle} = params;
+  const {productHandle} = params;
   const {storefront} = context;
   const url = new URL(request.url);
   const searchParams = url.searchParams;
 
   const username = searchParams.get('username');
 
-  if (!username || !handle) {
+  if (!username || !productHandle) {
     throw new Response('Expected username handle to be defined', {status: 400});
   }
 
   try {
-    const {product} = await storefront.query(PRODUCT_QUERY, {
-      variables: {handle, selectedOptions: []},
-    });
-
-    if (!product?.id) {
-      throw new Response(null, {status: 404});
-    }
-
     const {payload: schedule} =
       await getBookingShopifyApi().userScheduleGetByProduct(
         username,
-        parseGid(product.id).id,
+        productHandle,
       );
 
     const url = new URL(request.url);

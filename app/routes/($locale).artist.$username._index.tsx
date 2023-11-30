@@ -4,7 +4,7 @@ import {Button, Flex, SimpleGrid, Skeleton, Stack} from '@mantine/core';
 import {Await, Form, Link, useLoaderData, useLocation} from '@remix-run/react';
 import {Suspense} from 'react';
 import {ArtistProduct} from '~/components/artist/ArtistProduct';
-import {PRODUCT_SERVICE_ITEM_FRAGMENT} from '~/data/fragments';
+import {PRODUCT_ITEM_FRAGMENT} from '~/data/fragments';
 import {getBookingShopifyApi} from '~/lib/api/bookingShopifyApi';
 import {
   type UserProductsListByScheduleParams,
@@ -137,7 +137,7 @@ function ArtistSchedulesMenu({data}: {data: UserScheduleWithLocations[]}) {
 }
 
 export const ALL_PRODUCTS_QUERY = `#graphql
-  ${PRODUCT_SERVICE_ITEM_FRAGMENT}
+  ${PRODUCT_ITEM_FRAGMENT}
   query ArtistServicesProducts(
     $country: CountryCode
     $language: LanguageCode
@@ -146,7 +146,7 @@ export const ALL_PRODUCTS_QUERY = `#graphql
   ) @inContext(country: $country, language: $language) {
     products(first: $first, sortKey: TITLE, query: $query) {
       nodes {
-        ...ProductServiceItem
+        ...ProductItem
       }
     }
   }

@@ -26,13 +26,14 @@ import {
 import {Image, getSelectedProductOptions} from '@shopify/hydrogen';
 import {IconArrowLeft, IconArrowRight} from '@tabler/icons-react';
 import {useState} from 'react';
+import {PRODUCT_SELECTED_OPTIONS_QUERY} from '~/data/queries';
 
 export const meta: MetaFunction<typeof loader> = ({data}) => {
   return [{title: `BySisters | ${data?.product.title ?? ''}`}];
 };
 
 export async function loader({params, request, context}: LoaderFunctionArgs) {
-  const {handle} = params;
+  const {productHandle} = params;
   const {storefront} = context;
 
   const selectedOptions = getSelectedProductOptions(request).filter(
@@ -47,13 +48,13 @@ export async function loader({params, request, context}: LoaderFunctionArgs) {
       !option.name.startsWith('fbclid'),
   );
 
-  if (!handle) {
+  if (!productHandle) {
     throw new Error('Expected product handle to be defined');
   }
 
   // await the query for the critical product data
-  const {product} = await storefront.query(PRODUCT_QUERY, {
-    variables: {handle, selectedOptions},
+  const {product} = await storefront.query(PRODUCT_SELECTED_OPTIONS_QUERY, {
+    variables: {productHandle, selectedOptions},
   });
 
   if (!product?.id) {
@@ -244,82 +245,3 @@ function ProductMain({product}: {product: ProductFragment}) {
     </Box>
   );
 }
-
-const PRODUCT_VARIANT_FRAGMENT = `#graphql
-  fragment ProductVariant on ProductVariant {
-    availableForSale
-    compareAtPrice {
-      amount
-      currencyCode
-    }
-    id
-    image {
-      __typename
-      id
-      url
-      altText
-      width
-      height
-    }
-    price {
-      amount
-      currencyCode
-    }
-    product {
-      title
-      handle
-    }
-    selectedOptions {
-      name
-      value
-    }
-    sku
-    title
-    unitPrice {
-      amount
-      currencyCode
-    }
-  }
-` as const;
-
-const PRODUCT_FRAGMENT = `#graphql
-  fragment Product on Product {
-    id
-    title
-    vendor
-    handle
-    descriptionHtml
-    description
-    options {
-      name
-      values
-    }
-    selectedVariant: variantBySelectedOptions(selectedOptions: $selectedOptions) {
-      ...ProductVariant
-    }
-    variants(first: 1) {
-      nodes {
-        ...ProductVariant
-      }
-    }
-    seo {
-      description
-      title
-    }
-  }
-  ${PRODUCT_VARIANT_FRAGMENT}
-` as const;
-
-export const PRODUCT_QUERY = `#graphql
-  query Product(
-    $country: CountryCode
-    $handle: String!
-    $language: LanguageCode
-    $selectedOptions: [SelectedOptionInput!]!
-  ) @inContext(country: $country, language: $language) {
-    product(handle: $handle) {
-      ...Product
-    }
-  }
-  ${PRODUCT_FRAGMENT}
-` as const;
