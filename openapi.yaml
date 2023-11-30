@@ -93,6 +93,36 @@ components:
           type: number
         description:
           type: string
+        selectedOptions:
+          type: object
+          properties:
+            name:
+              type: string
+            value:
+              type: string
+          required:
+            - name
+            - value
+        price:
+          type: object
+          properties:
+            amount:
+              type: string
+            currencyCode:
+              type: string
+          required:
+            - amount
+            - currencyCode
+        compareAtPrice:
+          type: object
+          properties:
+            amount:
+              type: string
+            currencyCode:
+              type: string
+          required:
+            - amount
+            - currencyCode
         duration:
           type: number
         breakTime:
@@ -105,6 +135,8 @@ components:
         - variantId
         - productId
         - duration
+        - price
+        - selectedOptions
         - breakTime
         - noticePeriod
         - bookingPeriod
@@ -184,6 +216,36 @@ components:
           type: string
         variantId:
           type: number
+        selectedOptions:
+          type: object
+          properties:
+            name:
+              type: string
+            value:
+              type: string
+          required:
+            - name
+            - value
+        price:
+          type: object
+          properties:
+            amount:
+              type: string
+            currencyCode:
+              type: string
+          required:
+            - amount
+            - currencyCode
+        compareAtPrice:
+          type: object
+          properties:
+            amount:
+              type: string
+            currencyCode:
+              type: string
+          required:
+            - amount
+            - currencyCode
         duration:
           type: number
         breakTime:
@@ -197,7 +259,9 @@ components:
       required:
         - scheduleId
         - variantId
+        - price
         - duration
+        - selectedOptions
         - breakTime
         - noticePeriod
         - bookingPeriod
@@ -1227,6 +1291,26 @@ components:
           items:
             type: object
             properties:
+              price:
+                type: object
+                properties:
+                  amount:
+                    type: string
+                  currencyCode:
+                    type: string
+                required:
+                  - amount
+                  - currencyCode
+              compareAtPrice:
+                type: object
+                properties:
+                  amount:
+                    type: string
+                  currencyCode:
+                    type: string
+                required:
+                  - amount
+                  - currencyCode
               productId:
                 type: number
               variantId:
@@ -1240,6 +1324,7 @@ components:
               duration:
                 type: number
             required:
+              - price
               - productId
               - variantId
               - from
@@ -1662,7 +1747,7 @@ components:
         fullname:
           type: string
         variantId:
-          type: string
+          type: number
       required:
         - customerId
         - fullname
