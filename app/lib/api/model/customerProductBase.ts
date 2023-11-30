@@ -18,6 +18,7 @@ export interface CustomerProductBase {
   duration: number;
   noticePeriod: CustomerProductNoticePeriod;
   price: CustomerProductBasePrice;
+  productHandle?: string;
   productId: number;
   selectedOptions: CustomerProductBaseSelectedOptions;
   variantId: number;

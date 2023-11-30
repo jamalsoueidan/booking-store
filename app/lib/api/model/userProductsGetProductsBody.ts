@@ -6,5 +6,5 @@
  */
 
 export interface UserProductsGetProductsBody {
-  productIds: string[];
+  productHandlers: string[];
 }

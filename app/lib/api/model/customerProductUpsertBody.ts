@@ -19,6 +19,7 @@ export interface CustomerProductUpsertBody {
   locations: CustomerProductLocations;
   noticePeriod: CustomerProductNoticePeriod;
   price: CustomerProductUpsertBodyPrice;
+  productHandle: string;
   scheduleId: string;
   selectedOptions: CustomerProductUpsertBodySelectedOptions;
   variantId: number;

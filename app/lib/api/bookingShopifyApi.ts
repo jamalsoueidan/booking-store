@@ -66,6 +66,7 @@ import type {
   UserLocationGetResponse,
   UserProductsGetProductsBody,
   UserProductsGetProductsResponse,
+  UserProductsGetResponse,
   UserProductsListByLocationResponse,
   UserProductsListByScheduleParams,
   UserProductsListByScheduleResponse,
@@ -121,6 +122,17 @@ export const getBookingShopifyApi = () => {
   };
 
   /**
+   * This endpoint get product for customer
+   * @summary GET Get product that exist in one of the schedules for customer
+   */
+  const userProductGet = (username: string, productHandle: string) => {
+    return queryClient<UserProductsGetResponse>({
+      url: `/user/${username}/products/${productHandle}`,
+      method: 'get',
+    });
+  };
+
+  /**
    * This endpoint get products for user (across all schedules or one scheduleId)
    * @summary GET Get products for user
    */
@@ -141,17 +153,17 @@ export const getBookingShopifyApi = () => {
    */
   const userProductsListByLocation = (
     username: string,
-    productId: string,
+    productHandle: string,
     locationId: string,
   ) => {
     return queryClient<UserProductsListByLocationResponse>({
-      url: `/user/${username}/product/${productId}/location/${locationId}`,
+      url: `/user/${username}/product/${productHandle}/location/${locationId}`,
       method: 'get',
     });
   };
 
   /**
-   * This endpoint get products in productsId from one schedule by location
+   * This endpoint get products from one schedule by location
    * @summary GET Get products for user
    */
   const userProductsGetProducts = (
@@ -168,12 +180,15 @@ export const getBookingShopifyApi = () => {
   };
 
   /**
-   * This endpoint should retrieve a schedule and locations belonging to a specific productId, along with the product.
+   * This endpoint should retrieve a schedule and locations belonging to a specific productHandle, along with the product.
    * @summary GET Get user schedule
    */
-  const userScheduleGetByProduct = (username: string, productId: string) => {
+  const userScheduleGetByProduct = (
+    username: string,
+    productHandle: string,
+  ) => {
     return queryClient<UserScheduleGetByProductIdResponse>({
-      url: `/user/${username}/schedule/get-by-product-id/${productId}`,
+      url: `/user/${username}/schedule/get-by-product-id/${productHandle}`,
       method: 'get',
     });
   };
@@ -713,6 +728,7 @@ export const getBookingShopifyApi = () => {
     productsGetUsersImage,
     productsGetUsersByVariant,
     userGet,
+    userProductGet,
     userProductsListBySchedule,
     userProductsListByLocation,
     userProductsGetProducts,
@@ -774,6 +790,9 @@ export type ProductsGetUsersByVariantResult = NonNullable<
 >;
 export type UserGetResult = NonNullable<
   Awaited<ReturnType<ReturnType<typeof getBookingShopifyApi>['userGet']>>
+>;
+export type UserProductGetResult = NonNullable<
+  Awaited<ReturnType<ReturnType<typeof getBookingShopifyApi>['userProductGet']>>
 >;
 export type UserProductsListByScheduleResult = NonNullable<
   Awaited<

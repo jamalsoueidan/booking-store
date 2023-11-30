@@ -87,6 +87,8 @@ components:
     CustomerProductBase:
       type: object
       properties:
+        productHandle:
+          type: string
         productId:
           type: number
         variantId:
@@ -214,6 +216,8 @@ components:
       properties:
         scheduleId:
           type: string
+        productHandle:
+          type: string
         variantId:
           type: number
         selectedOptions:
@@ -258,6 +262,7 @@ components:
           $ref: '#/components/schemas/CustomerProductLocations'
       required:
         - scheduleId
+        - productHandle
         - variantId
         - price
         - duration
@@ -1149,6 +1154,17 @@ components:
       required:
         - success
         - payload
+    UserProductsGetResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: true
+        payload:
+          $ref: '#/components/schemas/CustomerProductList'
+      required:
+        - success
+        - payload
     UserProductsListByLocationResponse:
       type: object
       properties:
@@ -1165,12 +1181,12 @@ components:
     UserProductsGetProductsBody:
       type: object
       properties:
-        productIds:
+        productHandlers:
           type: array
           items:
             type: string
       required:
-        - productIds
+        - productHandlers
     UserProductsGetProductsResponse:
       type: object
       properties:
@@ -1292,16 +1308,6 @@ components:
             type: object
             properties:
               price:
-                type: object
-                properties:
-                  amount:
-                    type: string
-                  currencyCode:
-                    type: string
-                required:
-                  - amount
-                  - currencyCode
-              compareAtPrice:
                 type: object
                 properties:
                   amount:
@@ -1858,6 +1864,40 @@ paths:
         '404':
           $ref: '#/components/responses/NotFoundResponse'
       security: []
+  '/user/{username}/products/{productHandle}':
+    get:
+      parameters:
+        - name: username
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: productHandle
+          in: path
+          required: true
+          schema:
+            type: string
+      tags:
+        - UserProduct
+      operationId: UserProductGet
+      summary: GET Get product that exist in one of the schedules for customer
+      description: This endpoint get product for customer
+      responses:
+        '200':
+          description: Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserProductsGetResponse'
+        '400':
+          $ref: '#/components/responses/BadResponse'
+        '401':
+          $ref: '#/components/responses/UnauthorizedResponse'
+        '403':
+          $ref: '#/components/responses/ForbiddenResponse'
+        '404':
+          $ref: '#/components/responses/NotFoundResponse'
+      security: []
   '/user/{username}/products':
     get:
       parameters:
@@ -1891,7 +1931,7 @@ paths:
         '403':
           $ref: '#/components/responses/ForbiddenResponse'
       security: []
-  '/user/{username}/product/{productId}/location/{locationId}':
+  '/user/{username}/product/{productHandle}/location/{locationId}':
     get:
       parameters:
         - name: username
@@ -1900,9 +1940,9 @@ paths:
           required: true
           schema:
             type: string
-        - name: productId
+        - name: productHandle
           in: path
-          description: productId is nedded
+          description: productHandle is nedded
           required: true
           schema:
             type: string
@@ -1950,7 +1990,7 @@ paths:
         - UserProduct
       operationId: userProductsGetProducts
       summary: GET Get products for user
-      description: This endpoint get products in productsId from one schedule by location
+      description: This endpoint get products from one schedule by location
       requestBody:
         required: true
         content:
@@ -1971,7 +2011,7 @@ paths:
         '403':
           $ref: '#/components/responses/ForbiddenResponse'
       security: []
-  '/user/{username}/schedule/get-by-product-id/{productId}':
+  '/user/{username}/schedule/get-by-product-id/{productHandle}':
     get:
       parameters:
         - name: username
@@ -1980,9 +2020,9 @@ paths:
           required: true
           schema:
             type: string
-        - name: productId
+        - name: productHandle
           in: path
-          description: product Id
+          description: productHandle
           required: true
           schema:
             type: string
@@ -1990,7 +2030,7 @@ paths:
         - UserSchedule
       operationId: userScheduleGetByProduct
       summary: GET Get user schedule
-      description: 'This endpoint should retrieve a schedule and locations belonging to a specific productId, along with the product.'
+      description: 'This endpoint should retrieve a schedule and locations belonging to a specific productHandle, along with the product.'
       responses:
         '200':
           description: Response with payload

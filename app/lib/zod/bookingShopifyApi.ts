@@ -111,6 +111,66 @@ export const userGetResponse = zod.object({
 });
 
 /**
+ * This endpoint get product for customer
+ * @summary GET Get product that exist in one of the schedules for customer
+ */
+export const userProductGetParams = zod.object({
+  username: zod.string(),
+  productHandle: zod.string(),
+});
+
+export const userProductGetResponse = zod.object({
+  success: zod.boolean(),
+  payload: zod
+    .object({
+      productHandle: zod.string().optional(),
+      productId: zod.number(),
+      variantId: zod.number(),
+      description: zod.string().optional(),
+      selectedOptions: zod.object({
+        name: zod.string(),
+        value: zod.string(),
+      }),
+      price: zod.object({
+        amount: zod.string(),
+        currencyCode: zod.string(),
+      }),
+      compareAtPrice: zod
+        .object({
+          amount: zod.string(),
+          currencyCode: zod.string(),
+        })
+        .optional(),
+      duration: zod.number(),
+      breakTime: zod.number(),
+      noticePeriod: zod.object({
+        value: zod.number(),
+        unit: zod.enum(['hours', 'days', 'weeks']),
+      }),
+      bookingPeriod: zod.object({
+        value: zod.number(),
+        unit: zod.enum(['weeks', 'months']),
+      }),
+    })
+    .and(
+      zod.object({
+        locations: zod.array(
+          zod.object({
+            location: zod.string(),
+            locationType: zod.enum(['origin', 'destination']),
+          }),
+        ),
+      }),
+    )
+    .and(
+      zod.object({
+        scheduleId: zod.string(),
+        scheduleName: zod.string(),
+      }),
+    ),
+});
+
+/**
  * This endpoint get products for user (across all schedules or one scheduleId)
  * @summary GET Get products for user
  */
@@ -127,6 +187,7 @@ export const userProductsListByScheduleResponse = zod.object({
   payload: zod.array(
     zod
       .object({
+        productHandle: zod.string().optional(),
         productId: zod.number(),
         variantId: zod.number(),
         description: zod.string().optional(),
@@ -180,7 +241,7 @@ export const userProductsListByScheduleResponse = zod.object({
  */
 export const userProductsListByLocationParams = zod.object({
   username: zod.string(),
-  productId: zod.string(),
+  productHandle: zod.string(),
   locationId: zod.string(),
 });
 
@@ -188,6 +249,7 @@ export const userProductsListByLocationResponse = zod.object({
   success: zod.boolean(),
   payload: zod.array(
     zod.object({
+      productHandle: zod.string().optional(),
       productId: zod.number(),
       variantId: zod.number(),
       description: zod.string().optional(),
@@ -220,7 +282,7 @@ export const userProductsListByLocationResponse = zod.object({
 });
 
 /**
- * This endpoint get products in productsId from one schedule by location
+ * This endpoint get products from one schedule by location
  * @summary GET Get products for user
  */
 export const userProductsGetProductsParams = zod.object({
@@ -229,13 +291,14 @@ export const userProductsGetProductsParams = zod.object({
 });
 
 export const userProductsGetProductsBody = zod.object({
-  productIds: zod.array(zod.string()),
+  productHandlers: zod.array(zod.string()),
 });
 
 export const userProductsGetProductsResponse = zod.object({
   success: zod.boolean(),
   payload: zod.array(
     zod.object({
+      productHandle: zod.string().optional(),
       productId: zod.number(),
       variantId: zod.number(),
       description: zod.string().optional(),
@@ -268,12 +331,12 @@ export const userProductsGetProductsResponse = zod.object({
 });
 
 /**
- * This endpoint should retrieve a schedule and locations belonging to a specific productId, along with the product.
+ * This endpoint should retrieve a schedule and locations belonging to a specific productHandle, along with the product.
  * @summary GET Get user schedule
  */
 export const userScheduleGetByProductParams = zod.object({
   username: zod.string(),
-  productId: zod.string(),
+  productHandle: zod.string(),
 });
 
 export const userScheduleGetByProductResponse = zod.object({
@@ -327,6 +390,7 @@ export const userScheduleGetByProductResponse = zod.object({
       zod.object({
         product: zod
           .object({
+            productHandle: zod.string().optional(),
             productId: zod.number(),
             variantId: zod.number(),
             description: zod.string().optional(),
@@ -534,6 +598,7 @@ export const userScheduleGetByLocationResponse = zod.object({
         products: zod.array(
           zod
             .object({
+              productHandle: zod.string().optional(),
               productId: zod.number(),
               variantId: zod.number(),
               description: zod.string().optional(),
@@ -677,12 +742,6 @@ export const userAvailabilityGenerateResponse = zod.object({
                     amount: zod.string(),
                     currencyCode: zod.string(),
                   }),
-                  compareAtPrice: zod
-                    .object({
-                      amount: zod.string(),
-                      currencyCode: zod.string(),
-                    })
-                    .optional(),
                   productId: zod.number(),
                   variantId: zod.number(),
                   from: zod.string(),
@@ -774,12 +833,6 @@ export const userAvailabilityGetResponse = zod.object({
                 amount: zod.string(),
                 currencyCode: zod.string(),
               }),
-              compareAtPrice: zod
-                .object({
-                  amount: zod.string(),
-                  currencyCode: zod.string(),
-                })
-                .optional(),
               productId: zod.number(),
               variantId: zod.number(),
               from: zod.string(),
@@ -1069,6 +1122,7 @@ export const customerProductsListResponse = zod.object({
   payload: zod.array(
     zod
       .object({
+        productHandle: zod.string().optional(),
         productId: zod.number(),
         variantId: zod.number(),
         description: zod.string().optional(),
@@ -1133,6 +1187,7 @@ export const customerProductGetResponse = zod.object({
   success: zod.boolean(),
   payload: zod
     .object({
+      productHandle: zod.string().optional(),
       productId: zod.number(),
       variantId: zod.number(),
       description: zod.string().optional(),
@@ -1185,6 +1240,7 @@ export const customerProductGetResponse = zod.object({
  */
 export const customerProductUpsertBody = zod.object({
   scheduleId: zod.string(),
+  productHandle: zod.string(),
   variantId: zod.number(),
   selectedOptions: zod.object({
     name: zod.string(),
@@ -1222,6 +1278,7 @@ export const customerProductUpsertResponse = zod.object({
   success: zod.boolean(),
   payload: zod
     .object({
+      productHandle: zod.string().optional(),
       productId: zod.number(),
       variantId: zod.number(),
       description: zod.string().optional(),
@@ -1426,6 +1483,7 @@ export const customerScheduleCreateResponse = zod.object({
     products: zod.array(
       zod
         .object({
+          productHandle: zod.string().optional(),
           productId: zod.number(),
           variantId: zod.number(),
           description: zod.string().optional(),
@@ -1501,6 +1559,7 @@ export const customerScheduleListResponse = zod.object({
       products: zod.array(
         zod
           .object({
+            productHandle: zod.string().optional(),
             productId: zod.number(),
             variantId: zod.number(),
             description: zod.string().optional(),
@@ -1576,6 +1635,7 @@ export const customerScheduleGetResponse = zod.object({
     products: zod.array(
       zod
         .object({
+          productHandle: zod.string().optional(),
           productId: zod.number(),
           variantId: zod.number(),
           description: zod.string().optional(),
@@ -1654,6 +1714,7 @@ export const customerScheduleUpdateResponse = zod.object({
     products: zod.array(
       zod
         .object({
+          productHandle: zod.string().optional(),
           productId: zod.number(),
           variantId: zod.number(),
           description: zod.string().optional(),
@@ -1762,6 +1823,7 @@ export const customerScheduleSlotUpdateResponse = zod.object({
     products: zod.array(
       zod
         .object({
+          productHandle: zod.string().optional(),
           productId: zod.number(),
           variantId: zod.number(),
           description: zod.string().optional(),
