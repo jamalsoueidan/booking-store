@@ -63,7 +63,7 @@ export const productsGetUsersByVariantResponse = zod.object({
           }),
         }),
         fullname: zod.string(),
-        variantId: zod.string(),
+        variantId: zod.number(),
       }),
     ),
   }),
@@ -130,6 +130,20 @@ export const userProductsListByScheduleResponse = zod.object({
         productId: zod.number(),
         variantId: zod.number(),
         description: zod.string().optional(),
+        selectedOptions: zod.object({
+          name: zod.string(),
+          value: zod.string(),
+        }),
+        price: zod.object({
+          amount: zod.string(),
+          currencyCode: zod.string(),
+        }),
+        compareAtPrice: zod
+          .object({
+            amount: zod.string(),
+            currencyCode: zod.string(),
+          })
+          .optional(),
         duration: zod.number(),
         breakTime: zod.number(),
         noticePeriod: zod.object({
@@ -177,6 +191,20 @@ export const userProductsListByLocationResponse = zod.object({
       productId: zod.number(),
       variantId: zod.number(),
       description: zod.string().optional(),
+      selectedOptions: zod.object({
+        name: zod.string(),
+        value: zod.string(),
+      }),
+      price: zod.object({
+        amount: zod.string(),
+        currencyCode: zod.string(),
+      }),
+      compareAtPrice: zod
+        .object({
+          amount: zod.string(),
+          currencyCode: zod.string(),
+        })
+        .optional(),
       duration: zod.number(),
       breakTime: zod.number(),
       noticePeriod: zod.object({
@@ -211,6 +239,20 @@ export const userProductsGetProductsResponse = zod.object({
       productId: zod.number(),
       variantId: zod.number(),
       description: zod.string().optional(),
+      selectedOptions: zod.object({
+        name: zod.string(),
+        value: zod.string(),
+      }),
+      price: zod.object({
+        amount: zod.string(),
+        currencyCode: zod.string(),
+      }),
+      compareAtPrice: zod
+        .object({
+          amount: zod.string(),
+          currencyCode: zod.string(),
+        })
+        .optional(),
       duration: zod.number(),
       breakTime: zod.number(),
       noticePeriod: zod.object({
@@ -288,6 +330,20 @@ export const userScheduleGetByProductResponse = zod.object({
             productId: zod.number(),
             variantId: zod.number(),
             description: zod.string().optional(),
+            selectedOptions: zod.object({
+              name: zod.string(),
+              value: zod.string(),
+            }),
+            price: zod.object({
+              amount: zod.string(),
+              currencyCode: zod.string(),
+            }),
+            compareAtPrice: zod
+              .object({
+                amount: zod.string(),
+                currencyCode: zod.string(),
+              })
+              .optional(),
             duration: zod.number(),
             breakTime: zod.number(),
             noticePeriod: zod.object({
@@ -481,6 +537,20 @@ export const userScheduleGetByLocationResponse = zod.object({
               productId: zod.number(),
               variantId: zod.number(),
               description: zod.string().optional(),
+              selectedOptions: zod.object({
+                name: zod.string(),
+                value: zod.string(),
+              }),
+              price: zod.object({
+                amount: zod.string(),
+                currencyCode: zod.string(),
+              }),
+              compareAtPrice: zod
+                .object({
+                  amount: zod.string(),
+                  currencyCode: zod.string(),
+                })
+                .optional(),
               duration: zod.number(),
               breakTime: zod.number(),
               noticePeriod: zod.object({
@@ -603,6 +673,16 @@ export const userAvailabilityGenerateResponse = zod.object({
               to: zod.string(),
               products: zod.array(
                 zod.object({
+                  price: zod.object({
+                    amount: zod.string(),
+                    currencyCode: zod.string(),
+                  }),
+                  compareAtPrice: zod
+                    .object({
+                      amount: zod.string(),
+                      currencyCode: zod.string(),
+                    })
+                    .optional(),
                   productId: zod.number(),
                   variantId: zod.number(),
                   from: zod.string(),
@@ -690,6 +770,16 @@ export const userAvailabilityGetResponse = zod.object({
           to: zod.string(),
           products: zod.array(
             zod.object({
+              price: zod.object({
+                amount: zod.string(),
+                currencyCode: zod.string(),
+              }),
+              compareAtPrice: zod
+                .object({
+                  amount: zod.string(),
+                  currencyCode: zod.string(),
+                })
+                .optional(),
               productId: zod.number(),
               variantId: zod.number(),
               from: zod.string(),
@@ -982,6 +1072,20 @@ export const customerProductsListResponse = zod.object({
         productId: zod.number(),
         variantId: zod.number(),
         description: zod.string().optional(),
+        selectedOptions: zod.object({
+          name: zod.string(),
+          value: zod.string(),
+        }),
+        price: zod.object({
+          amount: zod.string(),
+          currencyCode: zod.string(),
+        }),
+        compareAtPrice: zod
+          .object({
+            amount: zod.string(),
+            currencyCode: zod.string(),
+          })
+          .optional(),
         duration: zod.number(),
         breakTime: zod.number(),
         noticePeriod: zod.object({
@@ -1032,6 +1136,20 @@ export const customerProductGetResponse = zod.object({
       productId: zod.number(),
       variantId: zod.number(),
       description: zod.string().optional(),
+      selectedOptions: zod.object({
+        name: zod.string(),
+        value: zod.string(),
+      }),
+      price: zod.object({
+        amount: zod.string(),
+        currencyCode: zod.string(),
+      }),
+      compareAtPrice: zod
+        .object({
+          amount: zod.string(),
+          currencyCode: zod.string(),
+        })
+        .optional(),
       duration: zod.number(),
       breakTime: zod.number(),
       noticePeriod: zod.object({
@@ -1068,6 +1186,20 @@ export const customerProductGetResponse = zod.object({
 export const customerProductUpsertBody = zod.object({
   scheduleId: zod.string(),
   variantId: zod.number(),
+  selectedOptions: zod.object({
+    name: zod.string(),
+    value: zod.string(),
+  }),
+  price: zod.object({
+    amount: zod.string(),
+    currencyCode: zod.string(),
+  }),
+  compareAtPrice: zod
+    .object({
+      amount: zod.string(),
+      currencyCode: zod.string(),
+    })
+    .optional(),
   duration: zod.number(),
   breakTime: zod.number(),
   noticePeriod: zod.object({
@@ -1093,6 +1225,20 @@ export const customerProductUpsertResponse = zod.object({
       productId: zod.number(),
       variantId: zod.number(),
       description: zod.string().optional(),
+      selectedOptions: zod.object({
+        name: zod.string(),
+        value: zod.string(),
+      }),
+      price: zod.object({
+        amount: zod.string(),
+        currencyCode: zod.string(),
+      }),
+      compareAtPrice: zod
+        .object({
+          amount: zod.string(),
+          currencyCode: zod.string(),
+        })
+        .optional(),
       duration: zod.number(),
       breakTime: zod.number(),
       noticePeriod: zod.object({
@@ -1283,6 +1429,20 @@ export const customerScheduleCreateResponse = zod.object({
           productId: zod.number(),
           variantId: zod.number(),
           description: zod.string().optional(),
+          selectedOptions: zod.object({
+            name: zod.string(),
+            value: zod.string(),
+          }),
+          price: zod.object({
+            amount: zod.string(),
+            currencyCode: zod.string(),
+          }),
+          compareAtPrice: zod
+            .object({
+              amount: zod.string(),
+              currencyCode: zod.string(),
+            })
+            .optional(),
           duration: zod.number(),
           breakTime: zod.number(),
           noticePeriod: zod.object({
@@ -1344,6 +1504,20 @@ export const customerScheduleListResponse = zod.object({
             productId: zod.number(),
             variantId: zod.number(),
             description: zod.string().optional(),
+            selectedOptions: zod.object({
+              name: zod.string(),
+              value: zod.string(),
+            }),
+            price: zod.object({
+              amount: zod.string(),
+              currencyCode: zod.string(),
+            }),
+            compareAtPrice: zod
+              .object({
+                amount: zod.string(),
+                currencyCode: zod.string(),
+              })
+              .optional(),
             duration: zod.number(),
             breakTime: zod.number(),
             noticePeriod: zod.object({
@@ -1405,6 +1579,20 @@ export const customerScheduleGetResponse = zod.object({
           productId: zod.number(),
           variantId: zod.number(),
           description: zod.string().optional(),
+          selectedOptions: zod.object({
+            name: zod.string(),
+            value: zod.string(),
+          }),
+          price: zod.object({
+            amount: zod.string(),
+            currencyCode: zod.string(),
+          }),
+          compareAtPrice: zod
+            .object({
+              amount: zod.string(),
+              currencyCode: zod.string(),
+            })
+            .optional(),
           duration: zod.number(),
           breakTime: zod.number(),
           noticePeriod: zod.object({
@@ -1469,6 +1657,20 @@ export const customerScheduleUpdateResponse = zod.object({
           productId: zod.number(),
           variantId: zod.number(),
           description: zod.string().optional(),
+          selectedOptions: zod.object({
+            name: zod.string(),
+            value: zod.string(),
+          }),
+          price: zod.object({
+            amount: zod.string(),
+            currencyCode: zod.string(),
+          }),
+          compareAtPrice: zod
+            .object({
+              amount: zod.string(),
+              currencyCode: zod.string(),
+            })
+            .optional(),
           duration: zod.number(),
           breakTime: zod.number(),
           noticePeriod: zod.object({
@@ -1563,6 +1765,20 @@ export const customerScheduleSlotUpdateResponse = zod.object({
           productId: zod.number(),
           variantId: zod.number(),
           description: zod.string().optional(),
+          selectedOptions: zod.object({
+            name: zod.string(),
+            value: zod.string(),
+          }),
+          price: zod.object({
+            amount: zod.string(),
+            currencyCode: zod.string(),
+          }),
+          compareAtPrice: zod
+            .object({
+              amount: zod.string(),
+              currencyCode: zod.string(),
+            })
+            .optional(),
           duration: zod.number(),
           breakTime: zod.number(),
           noticePeriod: zod.object({
