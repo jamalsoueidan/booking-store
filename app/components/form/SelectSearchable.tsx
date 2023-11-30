@@ -1,60 +1,126 @@
 import {conform, useInputEvent, type FieldConfig} from '@conform-to/react';
-import {Select} from '@mantine/core';
+import {
+  Combobox,
+  Highlight,
+  Loader,
+  TextInput,
+  useCombobox,
+} from '@mantine/core';
+import {useFetcher} from '@remix-run/react';
+import {parseGid} from '@shopify/hydrogen';
 import {useRef, useState} from 'react';
+import type {ProductSearchQueryQuery} from 'storefrontapi.generated';
 
 export type SelectSearchableProps = {
-  onChange?: (value: string | null) => void;
+  onChange?: (value: string | undefined) => void;
   label: string;
   placeholder?: string;
   field: FieldConfig<string>;
-  data: Array<{label: string; value: string}>;
 };
 
 export function SelectSearchable({
   onChange,
   label,
   placeholder,
-  data,
   field,
 }: SelectSearchableProps) {
-  const [value, setValue] = useState(field.defaultValue ?? '');
-
-  const shadowInputRef = useRef<HTMLInputElement>(null);
-  const customInputRef = useRef<HTMLInputElement>(null);
-
-  const control = useInputEvent({
-    ref: shadowInputRef,
-    onReset: () => setValue(field.defaultValue ?? ''),
+  const combobox = useCombobox({
+    onDropdownClose: () => combobox.resetSelectedOption(),
   });
+  const customInputRef = useRef<HTMLInputElement>(null);
+  const baseInputRef = useRef<HTMLInputElement>(null);
+  const control = useInputEvent({
+    ref: baseInputRef,
+    onReset: () => setValue(''),
+  });
+
+  const fetcher = useFetcher<ProductSearchQueryQuery>();
+  const [value, setValue] = useState('');
+  const [title, setTitle] = useState('');
+
+  const fetchOptions = (query: string) => {
+    fetcher.load(`/api/products?limit=5&title=${query}&excludeCreated=true`);
+  };
+
+  const options = fetcher.data?.products.nodes.map((item) => (
+    <Combobox.Option value={parseGid(item.id).id} key={item.id}>
+      <Highlight
+        highlight={parseGid(item.id).id === value ? item.title : ''}
+        size="sm"
+      >
+        {item.title}
+      </Highlight>
+    </Combobox.Option>
+  ));
 
   return (
     <>
       <input
-        ref={shadowInputRef}
+        ref={baseInputRef}
         {...conform.input(field, {hidden: true})}
-        onChange={(e) => setValue(e.target.value)}
+        onChange={(e) => {
+          setValue(e.target.value);
+          if (onChange) {
+            onChange(e.target.value);
+          }
+        }}
         onFocus={() => customInputRef.current?.focus()}
       />
 
-      <Select
-        ref={customInputRef}
-        label={label}
-        placeholder={placeholder}
-        value={value}
-        onChange={(value) => {
-          if (value) {
-            control.change(value);
+      <Combobox
+        onOptionSubmit={(optionValue) => {
+          const node = fetcher.data?.products.nodes.find(
+            (item) => parseGid(item.id).id === optionValue,
+          );
+          if (node?.title) {
+            setTitle(node?.title);
           }
-          if (onChange) {
-            onChange(value);
-          }
+          control.change({target: {value: optionValue}});
+          combobox.closeDropdown();
         }}
-        onDropdownClose={control.blur}
-        data={data}
-        nothingFoundMessage="Intet fundet..."
-        error={field.error}
-        searchable
-      />
+        withinPortal={false}
+        store={combobox}
+      >
+        <Combobox.Target>
+          <TextInput
+            ref={customInputRef}
+            label={label}
+            placeholder={placeholder}
+            value={title}
+            onChange={(event) => {
+              setTitle(event.currentTarget.value);
+              fetchOptions(event.currentTarget.value);
+              control.change({target: {value: ''}});
+              combobox.resetSelectedOption();
+              combobox.openDropdown();
+            }}
+            onClick={() => {
+              combobox.openDropdown();
+            }}
+            onFocus={() => {
+              control.focus();
+              combobox.openDropdown();
+              if (!fetcher.data) {
+                fetchOptions(title);
+              }
+            }}
+            onBlur={() => {
+              combobox.closeDropdown();
+              control.blur();
+            }}
+            rightSection={fetcher.state === 'loading' && <Loader size={18} />}
+          />
+        </Combobox.Target>
+
+        <Combobox.Dropdown hidden={fetcher.data === null}>
+          <Combobox.Options>
+            {options}
+            {(!fetcher.data || fetcher.data?.products.nodes.length === 0) && (
+              <Combobox.Empty>Ingen produkt med dette navn</Combobox.Empty>
+            )}
+          </Combobox.Options>
+        </Combobox.Dropdown>
+      </Combobox>
     </>
   );
 }
