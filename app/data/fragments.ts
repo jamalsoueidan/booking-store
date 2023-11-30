@@ -1,39 +1,3 @@
-export const PRODUCT_SERVICE_ITEM_FRAGMENT = `#graphql
-  fragment ProductServiceItem on Product {
-    id
-    title
-    description
-    handle
-    publishedAt
-    featuredImage {
-      id
-      altText
-      url
-      width
-      height
-    }
-    variants(first: 10) {
-      nodes {
-        id
-        image {
-          url
-          altText
-          width
-          height
-        }
-        price {
-          amount
-          currencyCode
-        }
-        selectedOptions {
-          name
-          value
-        }
-      }
-    }
-  }
-` as const;
-
 export const COLLECTION_ITEM_FRAGMENT = `#graphql
   fragment Collection on Collection {
     id
@@ -44,6 +8,23 @@ export const COLLECTION_ITEM_FRAGMENT = `#graphql
       id
       url
       altText
+      width
+      height
+    }
+  }
+` as const;
+
+export const PRODUCT_SIMPLE_FRAGMENT = `#graphql
+  fragment ProductSimple on Product {
+    id
+    title
+    description
+    handle
+    publishedAt
+    featuredImage {
+      id
+      altText
+      url
       width
       height
     }
@@ -78,11 +59,64 @@ export const PRODUCT_ITEM_FRAGMENT = `#graphql
     }
     variants(first: 1) {
       nodes {
+        id
         selectedOptions {
           name
           value
         }
+        price {
+          amount
+          currencyCode
+        }
       }
     }
   }
+` as const;
+
+export const PRODUCT_VARIANT_FRAGMENT = `#graphql
+  fragment ProductVariant on ProductVariant {
+    availableForSale
+    compareAtPrice {
+      amount
+      currencyCode
+    }
+    id
+    image {
+      __typename
+      id
+      url
+      altText
+      width
+      height
+    }
+    price {
+      amount
+      currencyCode
+    }
+    product {
+      title
+      handle
+    }
+    selectedOptions {
+      name
+      value
+    }
+    sku
+    title
+    unitPrice {
+      amount
+      currencyCode
+    }
+  }
+` as const;
+
+export const PRODUCT_VARIANTS_FRAGMENT = `#graphql
+  fragment ProductVariants on Product {
+    variants(first: 250) {
+      nodes {
+        ...ProductVariant
+      }
+    }
+  }
+  ${PRODUCT_VARIANT_FRAGMENT}
 ` as const;
