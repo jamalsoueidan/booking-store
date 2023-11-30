@@ -10,5 +10,5 @@ export function determineStepFromURL(
     }
     return false;
   });
-  return index ? index : 0;
+  return index > -1 ? index : 0;
 }

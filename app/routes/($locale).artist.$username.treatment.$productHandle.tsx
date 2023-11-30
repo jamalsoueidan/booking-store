@@ -42,23 +42,27 @@ export async function loader({params, request, context}: LoaderFunctionArgs) {
     throw new Response('Expected product handle to be defined', {status: 404});
   }
 
-  const {payload: userProduct} = await getBookingShopifyApi().userProductGet(
-    username,
-    productHandle,
-  );
-
-  const {product} = await storefront.query(PRODUCT_SELECTED_OPTIONS_QUERY, {
-    variables: {
+  try {
+    const {payload: userProduct} = await getBookingShopifyApi().userProductGet(
+      username,
       productHandle,
-      selectedOptions: userProduct.selectedOptions,
-    },
-  });
+    );
 
-  if (!product?.id) {
-    throw new Response(null, {status: 404});
+    const {product} = await storefront.query(PRODUCT_SELECTED_OPTIONS_QUERY, {
+      variables: {
+        productHandle,
+        selectedOptions: userProduct.selectedOptions,
+      },
+    });
+
+    if (!product?.id) {
+      throw new Response('Product not found', {status: 404});
+    }
+
+    return json({product});
+  } catch (err) {
+    throw new Response('Username or product handle is wrong', {status: 404});
   }
-
-  return json({product});
 }
 
 export default function Product() {
@@ -116,7 +120,7 @@ const paths = [
 function ProductMain({product}: {product: ProductFragment}) {
   const navigate = useNavigate();
   const location = useLocation();
-  const {title} = product;
+
   const [active, setActive] = useState(
     determineStepFromURL(paths, location.pathname),
   );
@@ -136,7 +140,7 @@ function ProductMain({product}: {product: ProductFragment}) {
   return (
     <Box p={{base: rem(10), md: rem(42)}} bg="#fafafb">
       <Title order={1} size={rem(54)} mb="xl">
-        {title}
+        {product?.title}
       </Title>
 
       <Group justify="space-between">
