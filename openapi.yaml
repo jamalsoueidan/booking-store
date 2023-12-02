@@ -644,7 +644,7 @@ components:
       required:
         - success
         - payload
-    CustomerUpdateResponse:
+    CustomerCreateResponse:
       type: object
       properties:
         success:
@@ -655,28 +655,32 @@ components:
       required:
         - success
         - payload
-    CustomerUpdateBody:
+    CustomerCreateBody:
       type: object
       properties:
         customerId:
           type: number
+        fullname:
+          type: string
+        email:
+          type: string
+          format: email
+        phone:
+          type: string
+        username:
+          type: string
+          pattern: '^[a-zA-Z0-9-_]+$'
         yearsExperience:
           type: string
           format: number
         professions:
-          oneOf:
-            - type: array
-              items:
-                type: string
-            - type: string
+          type: array
+          items:
+            type: string
         specialties:
-          oneOf:
-            - type: array
-              items:
-                type: string
-            - type: string
-        username:
-          type: string
+          type: array
+          items:
+            type: string
         aboutMe:
           type: string
         shortDescription:
@@ -692,35 +696,25 @@ components:
               type: string
             instagram:
               type: string
-        images:
-          type: object
-          properties:
-            profile:
-              type: object
-              properties:
-                url:
-                  type: string
-                  format: uri
-                width:
-                  type: integer
-                height:
-                  type: integer
         speaks:
-          oneOf:
-            - type: array
-              items:
-                type: string
-            - type: string
-        fullname:
-          type: string
-        active:
-          type: boolean
-        email:
-          type: string
-          format: email
-        phone:
-          type: string
-    CustomerUpsertResponse:
+          type: array
+          items:
+            type: string
+      required:
+        - customerId
+        - fullname
+        - username
+        - email
+        - phone
+        - yearsExperience
+        - professions
+        - specialties
+        - aboutMe
+        - shortDescription
+        - gender
+        - social
+        - speaks
+    CustomerUpdateResponse:
       type: object
       properties:
         success:
@@ -731,27 +725,32 @@ components:
       required:
         - success
         - payload
-    CustomerUpsertBody:
+    CustomerUpdateBody:
       type: object
       properties:
-        professions:
-          oneOf:
-            - type: array
-              items:
-                type: string
-            - type: string
-        specialties:
-          oneOf:
-            - type: array
-              items:
-                type: string
-            - type: string
-        username:
+        fullname:
           type: string
-          pattern: '^[a-zA-Z0-9-_]+$'
+        email:
+          type: string
+          format: email
+        phone:
+          type: string
+        yearsExperience:
+          type: string
+          format: number
+        professions:
+          type: array
+          items:
+            type: string
+        specialties:
+          type: array
+          items:
+            type: string
         aboutMe:
           type: string
         shortDescription:
+          type: string
+        gender:
           type: string
         social:
           type: object
@@ -763,17 +762,9 @@ components:
             instagram:
               type: string
         speaks:
-          oneOf:
-            - type: array
-              items:
-                type: string
-            - type: string
-      required:
-        - professions
-        - specialties
-        - username
-        - aboutMe
-        - shortDescription
+          type: array
+          items:
+            type: string
     CustomerProductListIdsResponse:
       type: object
       properties:
@@ -1043,6 +1034,15 @@ components:
       properties:
         customerId:
           type: number
+        fullname:
+          type: string
+        email:
+          type: string
+          format: email
+        phone:
+          type: string
+        username:
+          type: string
         yearsExperience:
           type: string
           format: number
@@ -1054,8 +1054,6 @@ components:
           type: array
           items:
             type: string
-        username:
-          type: string
         aboutMe:
           type: string
         shortDescription:
@@ -1071,6 +1069,10 @@ components:
               type: string
             instagram:
               type: string
+        speaks:
+          type: array
+          items:
+            type: string
         images:
           type: object
           properties:
@@ -1084,30 +1086,21 @@ components:
                   type: integer
                 height:
                   type: integer
-        speaks:
-          type: array
-          items:
-            type: string
-        fullname:
-          type: string
-        active:
-          type: boolean
-        email:
-          type: string
-          format: email
-        phone:
-          type: string
       required:
         - customerId
+        - fullname
+        - username
+        - email
+        - phone
         - yearsExperience
         - professions
-        - fullname
-        - active
-        - locations
-        - speaks
-        - socialUrls
-        - shortDescription
+        - specialties
         - aboutMe
+        - shortDescription
+        - gender
+        - social
+        - speaks
+        - images
     UserScheduleWithLocations:
       type: object
       properties:
@@ -2319,22 +2312,22 @@ paths:
             type: string
       tags:
         - Customer
-      operationId: customerUpsert
-      summary: PUT Create or Update user (restricted fields)
-      description: This endpoint creates new or updates user
+      operationId: customerUpdate
+      summary: PUT Update user
+      description: This endpoint update user
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/CustomerUpsertBody'
+              $ref: '#/components/schemas/CustomerUpdateBody'
       responses:
         '200':
           description: Response
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/CustomerUpsertResponse'
+                $ref: '#/components/schemas/CustomerUpdateResponse'
         '400':
           $ref: '#/components/responses/BadResponse'
         '401':
@@ -2399,33 +2392,26 @@ paths:
         '404':
           $ref: '#/components/responses/NotFoundResponse'
       security: []
-  '/customer/{customerId}/update':
-    put:
-      parameters:
-        - name: customerId
-          in: path
-          description: must be customerId
-          required: true
-          schema:
-            type: string
+  /customer:
+    post:
       tags:
         - Customer
-      operationId: customerUpdate
-      summary: PUT Create or Update user (all fields allowed)
-      description: This endpoint creates new or updates user
+      operationId: customerCreate
+      summary: PUT Create user
+      description: This endpoint creates new user
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/CustomerUpdateBody'
+              $ref: '#/components/schemas/CustomerCreateBody'
       responses:
         '200':
           description: Response
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/CustomerUpdateResponse'
+                $ref: '#/components/schemas/CustomerCreateResponse'
         '400':
           $ref: '#/components/responses/BadResponse'
         '401':

@@ -4,26 +4,18 @@
  * Booking Shopify Api
  * OpenAPI spec version: 1.0.0
  */
-import type {CustomerUpdateBodyImages} from './customerUpdateBodyImages';
-import type {CustomerUpdateBodyProfessions} from './customerUpdateBodyProfessions';
 import type {CustomerUpdateBodySocial} from './customerUpdateBodySocial';
-import type {CustomerUpdateBodySpeaks} from './customerUpdateBodySpeaks';
-import type {CustomerUpdateBodySpecialties} from './customerUpdateBodySpecialties';
 
 export interface CustomerUpdateBody {
   aboutMe?: string;
-  active?: boolean;
-  customerId?: number;
   email?: string;
   fullname?: string;
   gender?: string;
-  images?: CustomerUpdateBodyImages;
   phone?: string;
-  professions?: CustomerUpdateBodyProfessions;
+  professions?: string[];
   shortDescription?: string;
   social?: CustomerUpdateBodySocial;
-  speaks?: CustomerUpdateBodySpeaks;
-  specialties?: CustomerUpdateBodySpecialties;
-  username?: string;
+  speaks?: string[];
+  specialties?: string[];
   yearsExperience?: string;
 }

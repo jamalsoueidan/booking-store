@@ -4,5 +4,9 @@
  * Booking Shopify Api
  * OpenAPI spec version: 1.0.0
  */
+import type {User} from './user';
 
-export type CustomerUpsertBodySpecialties = string[] | string;
+export interface CustomerCreateResponse {
+  payload: User;
+  success: boolean;
+}

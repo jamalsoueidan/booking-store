@@ -9,6 +9,8 @@ import type {
   CustomerBookingGetResponse,
   CustomerBookingListResponse,
   CustomerBookingsListParams,
+  CustomerCreateBody,
+  CustomerCreateResponse,
   CustomerGetResponse,
   CustomerIsBusinessResponse,
   CustomerLocationAddResponse,
@@ -39,8 +41,6 @@ import type {
   CustomerStatusResponse,
   CustomerUpdateBody,
   CustomerUpdateResponse,
-  CustomerUpsertBody,
-  CustomerUpsertResponse,
   LocationGetCoordinatesParams,
   LocationGetCoordinatesResponse,
   LocationGetTravelTimeParams,
@@ -288,18 +288,18 @@ export const getBookingShopifyApi = () => {
   };
 
   /**
-   * This endpoint creates new or updates user
-   * @summary PUT Create or Update user (restricted fields)
+   * This endpoint update user
+   * @summary PUT Update user
    */
-  const customerUpsert = (
+  const customerUpdate = (
     customerId: string,
-    customerUpsertBody: BodyType<CustomerUpsertBody>,
+    customerUpdateBody: BodyType<CustomerUpdateBody>,
   ) => {
-    return queryClient<CustomerUpsertResponse>({
+    return queryClient<CustomerUpdateResponse>({
       url: `/customer/${customerId}`,
       method: 'put',
       headers: {'Content-Type': 'application/json'},
-      data: customerUpsertBody,
+      data: customerUpdateBody,
     });
   };
 
@@ -326,18 +326,15 @@ export const getBookingShopifyApi = () => {
   };
 
   /**
-   * This endpoint creates new or updates user
-   * @summary PUT Create or Update user (all fields allowed)
+   * This endpoint creates new user
+   * @summary PUT Create user
    */
-  const customerUpdate = (
-    customerId: string,
-    customerUpdateBody: BodyType<CustomerUpdateBody>,
-  ) => {
-    return queryClient<CustomerUpdateResponse>({
-      url: `/customer/${customerId}/update`,
-      method: 'put',
+  const customerCreate = (customerCreateBody: BodyType<CustomerCreateBody>) => {
+    return queryClient<CustomerCreateResponse>({
+      url: `/customer`,
+      method: 'post',
       headers: {'Content-Type': 'application/json'},
-      data: customerUpdateBody,
+      data: customerCreateBody,
     });
   };
 
@@ -740,10 +737,10 @@ export const getBookingShopifyApi = () => {
     userAvailabilityGenerate,
     userAvailabilityGet,
     usersList,
-    customerUpsert,
+    customerUpdate,
     customerGet,
     customerStatus,
-    customerUpdate,
+    customerCreate,
     customerIsBusiness,
     customerProductsList,
     customerProductsListIds,
@@ -861,8 +858,8 @@ export type UserAvailabilityGetResult = NonNullable<
 export type UsersListResult = NonNullable<
   Awaited<ReturnType<ReturnType<typeof getBookingShopifyApi>['usersList']>>
 >;
-export type CustomerUpsertResult = NonNullable<
-  Awaited<ReturnType<ReturnType<typeof getBookingShopifyApi>['customerUpsert']>>
+export type CustomerUpdateResult = NonNullable<
+  Awaited<ReturnType<ReturnType<typeof getBookingShopifyApi>['customerUpdate']>>
 >;
 export type CustomerGetResult = NonNullable<
   Awaited<ReturnType<ReturnType<typeof getBookingShopifyApi>['customerGet']>>
@@ -870,8 +867,8 @@ export type CustomerGetResult = NonNullable<
 export type CustomerStatusResult = NonNullable<
   Awaited<ReturnType<ReturnType<typeof getBookingShopifyApi>['customerStatus']>>
 >;
-export type CustomerUpdateResult = NonNullable<
-  Awaited<ReturnType<ReturnType<typeof getBookingShopifyApi>['customerUpdate']>>
+export type CustomerCreateResult = NonNullable<
+  Awaited<ReturnType<ReturnType<typeof getBookingShopifyApi>['customerCreate']>>
 >;
 export type CustomerIsBusinessResult = NonNullable<
   Awaited<
