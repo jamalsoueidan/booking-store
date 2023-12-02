@@ -14,6 +14,7 @@ import type {
 import {
   ActionIcon,
   AspectRatio,
+  Badge,
   Box,
   Button,
   Group,
@@ -23,7 +24,7 @@ import {
   Title,
   rem,
 } from '@mantine/core';
-import {Image} from '@shopify/hydrogen';
+import {Image, Money} from '@shopify/hydrogen';
 import {IconArrowLeft, IconArrowRight} from '@tabler/icons-react';
 import {useState} from 'react';
 import {PRODUCT_SELECTED_OPTIONS_QUERY} from '~/data/queries';
@@ -67,11 +68,10 @@ export async function loader({params, request, context}: LoaderFunctionArgs) {
 
 export default function Product() {
   const {product} = useLoaderData<typeof loader>();
-  const {selectedVariant} = product;
 
   return (
     <SimpleGrid cols={{base: 1, md: 2}} spacing={0}>
-      <ProductImage image={selectedVariant?.image} />
+      <ProductImage image={product.selectedVariant?.image} />
       <ProductMain product={product} />
     </SimpleGrid>
   );
@@ -139,9 +139,16 @@ function ProductMain({product}: {product: ProductFragment}) {
 
   return (
     <Box p={{base: rem(10), md: rem(42)}} bg="#fafafb">
-      <Title order={1} size={rem(54)} mb="xl">
-        {product?.title}
-      </Title>
+      <Box mb="xl">
+        <Title order={1} size={rem(54)}>
+          {product?.title}
+        </Title>
+        {product.selectedVariant?.price && (
+          <Badge variant="light" color="gray" size="lg">
+            <Money data={product.selectedVariant?.price} />
+          </Badge>
+        )}
+      </Box>
 
       <Group justify="space-between">
         <Group gap="xs">

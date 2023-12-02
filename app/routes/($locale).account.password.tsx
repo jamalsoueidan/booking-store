@@ -52,9 +52,6 @@ export async function action({request, context}: ActionFunctionArgs) {
       if (!validInputKeys.includes(key as any)) {
         continue;
       }
-      if (key === 'acceptsMarketing') {
-        customer.acceptsMarketing = value === 'on';
-      }
       if (typeof value === 'string' && value.length) {
         customer[key as (typeof validInputKeys)[number]] = value;
       }

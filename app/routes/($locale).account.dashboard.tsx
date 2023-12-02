@@ -1,5 +1,14 @@
-import {Divider, Text, ThemeIcon, Timeline, Title} from '@mantine/core';
 import {
+  Button,
+  Divider,
+  Stack,
+  Text,
+  ThemeIcon,
+  Timeline,
+  Title,
+} from '@mantine/core';
+import {
+  Link,
   useLoaderData,
   useOutletContext,
   useSearchParams,
@@ -184,5 +193,17 @@ function BusinessAccount({status}: {status: CustomerStatus}) {
 }
 
 function BuyerAccount() {
-  return <p>-</p>;
+  return (
+    <Stack>
+      <Text>
+        Hvis du ønsker register dig som skønhedsekspert bedes du trykke på
+        knappen.
+      </Text>
+      <div>
+        <Button component={Link} to="../business">
+          Register dig!
+        </Button>
+      </div>
+    </Stack>
+  );
 }

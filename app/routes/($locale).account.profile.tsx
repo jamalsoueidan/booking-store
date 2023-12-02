@@ -56,13 +56,7 @@ export async function action({request, context}: ActionFunctionArgs) {
   try {
     const password = getPassword(form);
     const customer: CustomerUpdateInput = {};
-    const validInputKeys = [
-      'firstName',
-      'lastName',
-      'email',
-      'password',
-      'phone',
-    ] as const;
+    const validInputKeys = ['firstName', 'lastName', 'email', 'phone'] as const;
     for (const [key, value] of form.entries()) {
       if (!validInputKeys.includes(key as any)) {
         continue;
@@ -73,10 +67,6 @@ export async function action({request, context}: ActionFunctionArgs) {
       if (typeof value === 'string' && value.length) {
         customer[key as (typeof validInputKeys)[number]] = value;
       }
-    }
-
-    if (password) {
-      customer.password = password;
     }
 
     // update customer and possibly password

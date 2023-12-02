@@ -22,21 +22,13 @@ export async function loader({request, params, context}: LoaderFunctionArgs) {
     throw new Error('Invalid request method');
   }
 
-  const url = new URL(request.url);
-  const searchParams: SearchParams = {
-    scheduleId: undefined,
-  };
+  const {searchParams} = new URL(request.url);
+  const scheduleId = searchParams.get('scheduleId') as string;
 
-  for (const [key, value] of url.searchParams.entries()) {
-    searchParams[key] = value;
-  }
-
-  //get products for specific schedule id
   const {payload: services} =
-    await getBookingShopifyApi().userProductsListBySchedule(
-      username,
-      searchParams,
-    );
+    await getBookingShopifyApi().userProductsListBySchedule(username, {
+      scheduleId,
+    });
 
   const productIds = services.map(({productId}) => productId);
 

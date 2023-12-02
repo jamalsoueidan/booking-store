@@ -17,19 +17,15 @@ export function ArtistProduct({product, services}: ArtistProductProps) {
     return productId.toString() === parseGid(product.id).id;
   });
 
-  const productVariant = product.variants.nodes.find(({id}) => {
-    return parseGid(id).id === artistService?.variantId.toString();
-  });
-
   const leftSection = (
     <Text c="dimmed" size="xs" tt="uppercase" fw={700}>
       {durationToTime(artistService?.duration ?? 0)}
     </Text>
   );
 
-  const rightSection = productVariant?.price && (
+  const rightSection = artistService?.price && (
     <Badge variant="light" color="gray" size="lg">
-      <Money data={productVariant?.price} />
+      <Money data={artistService?.price as any} />
     </Badge>
   );
 
