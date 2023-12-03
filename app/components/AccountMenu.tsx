@@ -50,12 +50,6 @@ const topMenu = [
     icon: IconPhoneCall,
     isBusiness: true,
   },
-  {
-    link: '/account/orders',
-    label: 'Bookinger',
-    icon: IconPhoneCall,
-    isBusiness: true,
-  },
 ];
 
 const bottomMenu = [

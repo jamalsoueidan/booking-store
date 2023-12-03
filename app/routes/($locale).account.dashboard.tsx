@@ -96,7 +96,8 @@ function BusinessAccount({status}: {status: CustomerStatus}) {
           }
         >
           <Text c="dimmed" size="sm">
-            Vælg en brugernavn, og fortælle kort om dig selv, din arbejdstitle,
+            Udfyld alle felter under profil side,{' '}
+            <Link to="../public">Opdatere profil</Link>.
           </Text>
         </Timeline.Item>
         <Timeline.Item
@@ -118,7 +119,8 @@ function BusinessAccount({status}: {status: CustomerStatus}) {
         >
           <Text c="dimmed" size="sm">
             Tilføj de steder, hvor du vil tilbyde dine ydelser, så dine følgere
-            har mulighed for at vælge den mest passende lokation,
+            har mulighed for at vælge den mest passende lokation,{' '}
+            <Link to="../locations/create">Opret lokation</Link>.
           </Text>
         </Timeline.Item>
         <Timeline.Item
@@ -140,7 +142,7 @@ function BusinessAccount({status}: {status: CustomerStatus}) {
         >
           <Text c="dimmed" size="sm">
             Opret din vagtplan, så dine følgere ved, hvornår de kan booke din
-            tid.
+            tid, <Link to="../schedules/create">Opret vagtplan</Link>.
           </Text>
         </Timeline.Item>
         <Timeline.Item
@@ -162,7 +164,8 @@ function BusinessAccount({status}: {status: CustomerStatus}) {
         >
           <Text c="dimmed" size="sm">
             Tilføj dine ydelser, så dine følgere kan se, hvad du tilbyder, og
-            vælge det, de har brug for.
+            vælge det, de har brug for,{' '}
+            <Link to="../services/create">Tilføj ydelser</Link>
           </Text>
         </Timeline.Item>
         <Timeline.Item
@@ -184,7 +187,8 @@ function BusinessAccount({status}: {status: CustomerStatus}) {
         >
           <Text c="dimmed" size="sm">
             Tilføj et billede af dig selv, så dine følgere kan sætte ansigt på
-            personen bag ydelserne.
+            personen bag ydelserne,
+            <Link to="../upload">Upload et billed</Link>
           </Text>
         </Timeline.Item>
       </Timeline>

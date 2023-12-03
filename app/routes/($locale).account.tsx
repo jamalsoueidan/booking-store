@@ -115,7 +115,11 @@ export default function Acccount() {
   }
 
   return (
-    <AccountLayout customer={customer!} user={user} isBusiness={isBusiness!}>
+    <AccountLayout
+      customer={customer!}
+      user={user}
+      isBusiness={isBusiness || false}
+    >
       <Outlet context={{customer, user, isBusiness}} />
     </AccountLayout>
   );

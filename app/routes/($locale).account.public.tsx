@@ -1,4 +1,13 @@
-import {Divider, Stack, TextInput, Textarea, Title} from '@mantine/core';
+import {
+  Divider,
+  Group,
+  Radio,
+  Stack,
+  TextInput,
+  Textarea,
+  Title,
+  rem,
+} from '@mantine/core';
 import {Form, useActionData, useLoaderData} from '@remix-run/react';
 import {parseGid} from '@shopify/hydrogen';
 import {
@@ -8,26 +17,30 @@ import {
   type LoaderFunctionArgs,
 } from '@shopify/remix-oxygen';
 
-import {conform, useForm} from '@conform-to/react';
+import {conform, useFieldset, useForm} from '@conform-to/react';
 import {parse} from '@conform-to/zod';
+import {IconAt} from '@tabler/icons-react';
 import {MultiTags} from '~/components/form/MultiTags';
 import {SubmitButton} from '~/components/form/SubmitButton';
 import {getBookingShopifyApi} from '~/lib/api/bookingShopifyApi';
 import {getCustomer} from '~/lib/get-customer';
-import {customerUpsertBody} from '~/lib/zod/bookingShopifyApi';
+import {customerUpdateBody} from '~/lib/zod/bookingShopifyApi';
+
+const schema = customerUpdateBody;
 
 export const action = async ({request, context}: ActionFunctionArgs) => {
   const customer = await getCustomer({context});
 
   const formData = await request.formData();
-  const submission = parse(formData, {schema: customerUpsertBody});
+  const submission = parse(formData, {schema});
 
   if (submission.intent !== 'submit' || !submission.value) {
     return json(submission);
   }
 
+  console.log(submission.value);
   try {
-    await getBookingShopifyApi().customerUpsert(
+    await getBookingShopifyApi().customerUpdate(
       parseGid(customer.id).id,
       submission.value,
     );
@@ -61,11 +74,22 @@ export default function AccountBusiness() {
 
   const [
     form,
-    {username, shortDescription, aboutMe, professions, specialties},
+    {
+      speaks,
+      yearsExperience,
+      shortDescription,
+      aboutMe,
+      gender,
+      professions,
+      specialties,
+      social,
+    },
   ] = useForm({
     lastSubmission,
     defaultValue: user,
   });
+
+  const {instagram, twitter, youtube} = useFieldset(form.ref, social);
 
   return (
     <>
@@ -73,7 +97,25 @@ export default function AccountBusiness() {
       <Divider my="md" />
 
       <Form method="POST" {...form.props}>
-        <Stack>
+        <Stack gap="md">
+          <TextInput
+            label="Vælge en profilnavn"
+            disabled
+            defaultValue={user.username}
+          />
+
+          <Radio.Group
+            label="Hvad er din køn?"
+            withAsterisk
+            {...conform.input(gender)}
+          >
+            <Group mt="xs">
+              <Radio value="woman" label="Kvinde" />
+
+              <Radio value="man" label="Mand" />
+            </Group>
+          </Radio.Group>
+
           <MultiTags
             field={professions}
             data={professionOptions}
@@ -81,6 +123,8 @@ export default function AccountBusiness() {
             label="Professioner"
             placeholder="Vælg professioner"
           />
+
+          <TextInput label="Års erfaring" {...conform.input(yearsExperience)} />
 
           <MultiTags
             field={specialties}
@@ -90,7 +134,17 @@ export default function AccountBusiness() {
             placeholder="Vælge special(er)?"
           />
 
-          <TextInput label="Vælge en profilnavn" {...conform.input(username)} />
+          <MultiTags
+            field={speaks}
+            data={[
+              {label: 'Dansk', value: 'danish'},
+              {label: 'Engelsk', value: 'english'},
+            ]}
+            name="speaks"
+            label="Hvilken sprog taler du"
+            placeholder="Vælge sprog"
+          />
+
           <TextInput
             label="Skriv kort beskrivelse"
             {...conform.input(shortDescription)}
@@ -100,9 +154,34 @@ export default function AccountBusiness() {
             placeholder="Fortæl om dig selv"
             {...conform.input(aboutMe)}
             error={aboutMe.error && 'Udfyld venligst din biografi'}
+            minRows={10}
           />
 
-          <SubmitButton>Submit</SubmitButton>
+          <TextInput
+            leftSectionPointerEvents="none"
+            leftSection={<IconAt style={{width: rem(16), height: rem(16)}} />}
+            label="Instagram"
+            placeholder="Instagram profil"
+            {...conform.input(instagram)}
+          />
+
+          <TextInput
+            leftSectionPointerEvents="none"
+            leftSection={<IconAt style={{width: rem(16), height: rem(16)}} />}
+            label="Twitter (X)"
+            placeholder="Twitter (X)"
+            {...conform.input(twitter)}
+          />
+
+          <TextInput
+            leftSectionPointerEvents="none"
+            leftSection={<IconAt style={{width: rem(16), height: rem(16)}} />}
+            label="Youtube"
+            placeholder="Youtube profil"
+            {...conform.input(youtube)}
+          />
+
+          <SubmitButton>Opdatere</SubmitButton>
         </Stack>
       </Form>
     </>

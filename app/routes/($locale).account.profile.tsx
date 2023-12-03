@@ -54,7 +54,6 @@ export async function action({request, context}: ActionFunctionArgs) {
   }
 
   try {
-    const password = getPassword(form);
     const customer: CustomerUpdateInput = {};
     const validInputKeys = ['firstName', 'lastName', 'email', 'phone'] as const;
     for (const [key, value] of form.entries()) {
@@ -115,9 +114,6 @@ export default function AccountProfile() {
   return (
     <>
       <Title>Personlige oplysninger</Title>
-      <Text c="dimmed" size="sm" mt={5}>
-        Har du ikke en konto endnu?
-      </Text>
       <Divider my="md" />
 
       <Form method="PUT">
