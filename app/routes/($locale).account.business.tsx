@@ -75,7 +75,7 @@ export async function action({request, params, context}: ActionFunctionArgs) {
     });
 
     return redirectWithNotification(context, {
-      redirectUrl: `/account/dashboard`,
+      redirectUrl: `/account/public`,
       title: 'Business konto',
       message: 'Du er nu business konto',
       color: 'green',

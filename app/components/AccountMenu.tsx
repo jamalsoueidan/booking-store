@@ -12,6 +12,7 @@ import {
   IconAddressBook,
   IconBasket,
   IconFingerprint,
+  IconHome,
   IconLocation,
   IconLogout,
   IconMeeple,
@@ -59,6 +60,11 @@ const topMenu = [
 ];
 
 const bottomMenu = [
+  {
+    link: '/account',
+    label: 'Forside',
+    icon: IconHome,
+  },
   {
     link: '/account/orders',
     label: 'Bestillinger',

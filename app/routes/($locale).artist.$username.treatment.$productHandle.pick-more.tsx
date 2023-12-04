@@ -58,10 +58,6 @@ export default function ArtistTreatments() {
   const {products, services} = useLoaderData<typeof loader>();
   const {productHandle: selectedProductHandle} = useParams();
 
-  const [searchParams] = useSearchParams();
-
-  const shippingId = searchParams.get('shippingId');
-
   return (
     <Suspense
       fallback={
@@ -145,7 +141,11 @@ function ArtistProduct({
       );
     }
 
-    setSearchParams(newSearchParams);
+    setSearchParams(newSearchParams, {
+      state: {
+        key: 'booking',
+      },
+    });
   };
 
   const artistService = services.find(({productId}) => {

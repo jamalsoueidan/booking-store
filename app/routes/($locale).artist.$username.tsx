@@ -6,6 +6,10 @@ import {Suspense} from 'react';
 import {ArtistHero} from '~/components/artist/ArtistHero';
 import {getBookingShopifyApi} from '~/lib/api/bookingShopifyApi';
 
+export function shouldRevalidate() {
+  return false;
+}
+
 export async function loader({params}: LoaderFunctionArgs) {
   const {username} = params;
 

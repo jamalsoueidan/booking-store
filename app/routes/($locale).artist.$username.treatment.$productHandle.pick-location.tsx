@@ -68,9 +68,12 @@ export default function TreatmentHandlePickLocation() {
     if (value) {
       newSearchParams.set('shippingId', value);
     }
-    setSearchParams(newSearchParams);
+    setSearchParams(newSearchParams, {
+      state: {
+        key: 'booking',
+      },
+    });
   };
-  const shippingId = searchParams.get('shippingId');
 
   const setLocationId = (value: CustomerLocation | undefined) => {
     const newSearchParams = new URLSearchParams(searchParams);
@@ -79,7 +82,11 @@ export default function TreatmentHandlePickLocation() {
       newSearchParams.set('locationId', value._id);
     }
     newSearchParams.delete('shippingId');
-    setSearchParams(newSearchParams);
+    setSearchParams(newSearchParams, {
+      state: {
+        key: 'booking',
+      },
+    });
   };
 
   const locationId = searchParams.get('locationId');
@@ -120,10 +127,6 @@ export default function TreatmentHandlePickLocation() {
       <Flex gap="lg" direction="column">
         {markup}
       </Flex>
-
-      {shippingId ? (
-        <input type="hidden" name="shippingId" value={shippingId} />
-      ) : null}
 
       <LocationModal
         location={selectedLocation}

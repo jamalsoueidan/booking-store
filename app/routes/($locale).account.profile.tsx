@@ -17,6 +17,7 @@ import {
   useSearchParams,
   type MetaFunction,
 } from '@remix-run/react';
+import {parseGid} from '@shopify/hydrogen';
 import type {CustomerUpdateInput} from '@shopify/hydrogen/storefront-api-types';
 import {
   json,
@@ -25,6 +26,8 @@ import {
   type LoaderFunctionArgs,
 } from '@shopify/remix-oxygen';
 import type {CustomerFragment} from 'storefrontapi.generated';
+import {getBookingShopifyApi} from '~/lib/api/bookingShopifyApi';
+import {CUSTOMER_QUERY} from './($locale).account';
 export type ActionResponse = {
   error: string | null;
   customer: CustomerFragment | null;
@@ -101,6 +104,24 @@ export async function action({request, context}: ActionFunctionArgs) {
     const comingFromBusiness = Boolean(
       searchParams.has('firstName') || searchParams.has('lastName'),
     );
+
+    const {customer: customerData} = await context.storefront.query(
+      CUSTOMER_QUERY,
+      {
+        variables: {
+          customerAccessToken: customerAccessToken.accessToken,
+          country: context.storefront.i18n.country,
+          language: context.storefront.i18n.language,
+        },
+        cache: context.storefront.CacheNone(),
+      },
+    );
+
+    await getBookingShopifyApi().customerUpdate(parseGid(customerData?.id).id, {
+      phone: customer.phone || '',
+      email: customer.email || '',
+      fullname: `${customer.firstName} ${customer.lastName}`,
+    });
 
     if (comingFromBusiness) {
       return redirect('/account/business', {
