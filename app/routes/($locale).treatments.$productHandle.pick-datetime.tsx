@@ -83,14 +83,22 @@ export default function ArtistTreatmentsBooking() {
     newSearchParams.set('date', availability.date);
     newSearchParams.delete('fromDate');
     newSearchParams.delete('toDate');
-    setSearchParams(newSearchParams);
+    setSearchParams(newSearchParams, {
+      state: {
+        key: 'booking',
+      },
+    });
   };
 
   const onChangeSlot = (slot: UserAvailabilitySlot) => () => {
     const newSearchParams = new URLSearchParams(searchParams);
     newSearchParams.set('fromDate', slot.from);
     newSearchParams.set('toDate', slot.to);
-    setSearchParams(newSearchParams);
+    setSearchParams(newSearchParams, {
+      state: {
+        key: 'booking',
+      },
+    });
   };
 
   const selectedDate = searchParams.get('date');

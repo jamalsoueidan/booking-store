@@ -1,33 +1,15 @@
-import {
-  Outlet,
-  useLoaderData,
-  useLocation,
-  useNavigate,
-  type MetaFunction,
-} from '@remix-run/react';
+import {useLoaderData, type MetaFunction} from '@remix-run/react';
 import {json, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
-import type {
-  ProductFragment,
-  ProductVariantFragment,
-} from 'storefrontapi.generated';
+import type {ProductVariantFragment} from 'storefrontapi.generated';
 
-import {
-  ActionIcon,
-  AspectRatio,
-  Box,
-  Button,
-  Group,
-  ScrollArea,
-  SimpleGrid,
-  Text,
-  Title,
-  rem,
-} from '@mantine/core';
+import {AspectRatio, Box, SimpleGrid, Title, rem} from '@mantine/core';
 import {Image, getSelectedProductOptions} from '@shopify/hydrogen';
-import {IconArrowLeft, IconArrowRight} from '@tabler/icons-react';
-import {useState} from 'react';
+import {TreatmentStepper} from '~/components/TreatmentStepper';
 import {PRODUCT_SELECTED_OPTIONS_QUERY} from '~/data/queries';
-import {determineStepFromURL} from '~/lib/determineStepFromURL';
+
+export function shouldRevalidate() {
+  return false;
+}
 
 export const meta: MetaFunction<typeof loader> = ({data}) => {
   return [{title: `BySisters | ${data?.product.title ?? ''}`}];
@@ -68,6 +50,39 @@ export async function loader({params, request, context}: LoaderFunctionArgs) {
   return json({product});
 }
 
+const paths = [
+  {
+    title: 'Beskrivelse',
+    path: '',
+  },
+  {
+    title: 'Skønhedsekspert?',
+    path: 'pick-username',
+    required: ['username'],
+    text: 'Vælge en skønhedsekspert før du kan forsætte...',
+  },
+  {
+    title: 'Lokation?',
+    path: 'pick-location',
+    required: ['locationId'],
+    text: 'Vælge en lokation før du kan forsætte...',
+  },
+  {
+    title: 'Andre behandlinger?',
+    path: 'pick-more',
+  },
+  {
+    title: 'Dato & Tid?',
+    path: 'pick-datetime',
+    required: ['fromDate', 'toDate'],
+    text: 'Vælge en tid før du kan forsætte...',
+  },
+  {
+    title: 'Godkend',
+    path: 'completed',
+  },
+];
+
 export default function Product() {
   const {product} = useLoaderData<typeof loader>();
   const {selectedVariant} = product;
@@ -75,7 +90,15 @@ export default function Product() {
   return (
     <SimpleGrid cols={{base: 1, md: 2}} spacing={0}>
       <ProductImage image={selectedVariant?.image} />
-      <ProductMain product={product} />
+      <Box p={{base: rem(10), md: rem(42)}} bg="#fafafb">
+        <Box mb="xl">
+          <Title order={1} size={rem(54)}>
+            {product?.title}
+          </Title>
+        </Box>
+
+        <TreatmentStepper paths={paths} product={product} />
+      </Box>
     </SimpleGrid>
   );
 }
@@ -94,137 +117,5 @@ function ProductImage({image}: {image: ProductVariantFragment['image']}) {
         sizes="(min-width: 45em) 50vw, 100vw"
       />
     </AspectRatio>
-  );
-}
-
-const paths = [
-  {
-    title: 'Beskrivelse',
-    path: '',
-  },
-  {
-    title: 'Skønhedsekspert?',
-    path: 'pick-username',
-  },
-  {
-    title: 'Lokation?',
-    path: 'pick-location',
-  },
-  {
-    title: 'Andre behandlinger?',
-    path: 'pick-more',
-  },
-  {
-    title: 'Dato & Tid?',
-    path: 'pick-datetime',
-  },
-  {
-    title: 'Godkend',
-    path: 'completed',
-  },
-];
-
-function ProductMain({product}: {product: ProductFragment}) {
-  const navigate = useNavigate();
-  const location = useLocation();
-
-  const [active, setActive] = useState(
-    determineStepFromURL(paths, location.pathname),
-  );
-
-  const nextStep = () => {
-    const newActive = active < 5 ? active + 1 : active;
-    setActive(newActive);
-    navigate(paths[newActive].path + location.search);
-  };
-
-  const prevStep = () => {
-    const newActive = active > 0 ? active - 1 : active;
-    setActive(newActive);
-    navigate(paths[newActive].path + location.search);
-  };
-
-  return (
-    <Box p={{base: rem(10), md: rem(42)}} bg="#fafafb">
-      <Title order={1} size={rem(54)} mb="xl">
-        {product?.title}
-      </Title>
-
-      <Group justify="space-between">
-        <Group gap="xs">
-          <Text c="dimmed" size={rem(24)}>
-            {active + 1}/{Object.keys(paths).length}
-          </Text>
-          <Text fw={500} tt="uppercase" size={rem(24)}>
-            {paths[active].title}
-          </Text>
-        </Group>
-        {paths[active].path !== 'completed' && (
-          <Group gap="xs">
-            {active > 0 ? (
-              <>
-                <ActionIcon
-                  variant="filled"
-                  color="yellow"
-                  c="black"
-                  radius="xl"
-                  size="xl"
-                  aria-label="Tilbage"
-                  onClick={prevStep}
-                >
-                  <IconArrowLeft
-                    style={{width: '70%', height: '70%'}}
-                    stroke={1.5}
-                  />
-                </ActionIcon>
-
-                <ActionIcon
-                  variant="filled"
-                  color="yellow"
-                  c="black"
-                  radius="xl"
-                  size="xl"
-                  aria-label="Næste"
-                  onClick={nextStep}
-                >
-                  <IconArrowRight
-                    style={{width: '70%', height: '70%'}}
-                    stroke={1.5}
-                  />
-                </ActionIcon>
-              </>
-            ) : (
-              <Button
-                variant="filled"
-                color="yellow"
-                c="black"
-                radius="xl"
-                size="md"
-                rightSection={<IconArrowRight />}
-                onClick={nextStep}
-              >
-                Bestil en tid
-              </Button>
-            )}
-          </Group>
-        )}
-      </Group>
-
-      <Box mt="xl">
-        {paths[active].path === 'completed' ||
-        paths[active].path === 'pick-datetime' ? (
-          <Outlet context={{product}} />
-        ) : (
-          <ScrollArea
-            style={{height: 'calc(100vh)'}}
-            type="always"
-            offsetScrollbars
-            scrollbarSize={18}
-          >
-            <Outlet context={{product}} />
-          </ScrollArea>
-        )}
-      </Box>
-    </Box>
   );
 }

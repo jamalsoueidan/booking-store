@@ -165,7 +165,11 @@ function PickArtistsForm({
   const onChange = (artist: ProductsGetUsersByVariant) => () => {
     const newSearchParams = new URLSearchParams(searchParams);
     newSearchParams.set('username', artist.username);
-    setSearchParams(newSearchParams);
+    setSearchParams(newSearchParams, {
+      state: {
+        key: 'booking',
+      },
+    });
   };
 
   const username = searchParams.get('username');
