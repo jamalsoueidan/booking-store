@@ -12,7 +12,6 @@ import {Form, useActionData, useLoaderData} from '@remix-run/react';
 import {parseGid} from '@shopify/hydrogen';
 import {
   json,
-  redirect,
   type ActionFunctionArgs,
   type LoaderFunctionArgs,
 } from '@shopify/remix-oxygen';
@@ -24,6 +23,7 @@ import {MultiTags} from '~/components/form/MultiTags';
 import {SubmitButton} from '~/components/form/SubmitButton';
 import {getBookingShopifyApi} from '~/lib/api/bookingShopifyApi';
 import {getCustomer} from '~/lib/get-customer';
+import {redirectWithNotification} from '~/lib/show-notification';
 import {customerUpdateBody} from '~/lib/zod/bookingShopifyApi';
 
 const schema = customerUpdateBody;
@@ -38,14 +38,18 @@ export const action = async ({request, context}: ActionFunctionArgs) => {
     return json(submission);
   }
 
-  console.log(submission.value);
   try {
     await getBookingShopifyApi().customerUpdate(
       parseGid(customer.id).id,
       submission.value,
     );
 
-    return redirect('/account/public');
+    return redirectWithNotification(context, {
+      redirectUrl: `/account/public`,
+      title: 'Din profil',
+      message: 'Profil opdateret',
+      color: 'green',
+    });
   } catch (error) {
     return json(submission);
   }
@@ -96,7 +100,7 @@ export default function AccountBusiness() {
       <Title>Din profil</Title>
       <Divider my="md" />
 
-      <Form method="POST" {...form.props}>
+      <Form method="POST">
         <Stack gap="md">
           <TextInput
             label="Vælge en profilnavn"
@@ -181,7 +185,9 @@ export default function AccountBusiness() {
             {...conform.input(youtube)}
           />
 
-          <SubmitButton>Opdatere</SubmitButton>
+          <div>
+            <SubmitButton>Opdatere</SubmitButton>
+          </div>
         </Stack>
       </Form>
     </>
