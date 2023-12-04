@@ -311,7 +311,9 @@ export default function AccountBusiness() {
             {...conform.input(youtube)}
           />
 
-          <SubmitButton>Opret en business konto</SubmitButton>
+          <div>
+            <SubmitButton>Opret en business konto</SubmitButton>
+          </div>
         </Stack>
       </Form>
     </>
