@@ -12,5 +12,5 @@ export interface ProductsGetUsersByVariant {
   images: ProductsGetUsersByVariantImages;
   shortDescription: string;
   username: string;
-  variantId: string;
+  variantId: number;
 }

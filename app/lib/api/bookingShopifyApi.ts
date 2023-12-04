@@ -9,6 +9,8 @@ import type {
   CustomerBookingGetResponse,
   CustomerBookingListResponse,
   CustomerBookingsListParams,
+  CustomerCreateBody,
+  CustomerCreateResponse,
   CustomerGetResponse,
   CustomerIsBusinessResponse,
   CustomerLocationAddResponse,
@@ -39,8 +41,6 @@ import type {
   CustomerStatusResponse,
   CustomerUpdateBody,
   CustomerUpdateResponse,
-  CustomerUpsertBody,
-  CustomerUpsertResponse,
   LocationGetCoordinatesParams,
   LocationGetCoordinatesResponse,
   LocationGetTravelTimeParams,
@@ -66,12 +66,14 @@ import type {
   UserLocationGetResponse,
   UserProductsGetProductsBody,
   UserProductsGetProductsResponse,
+  UserProductsGetResponse,
   UserProductsListByLocationResponse,
   UserProductsListByScheduleParams,
   UserProductsListByScheduleResponse,
   UserScheduleGetByLocationResponse,
   UserScheduleGetByProductIdResponse,
   UserSchedulesListLocations200,
+  UserUsernameTakenResponse,
   UsersListParams,
   UsersListResponse,
   UsersProfessionsResponse,
@@ -110,12 +112,34 @@ export const getBookingShopifyApi = () => {
   };
 
   /**
+   * This endpoint return false or true
+   * @summary GET check if username is taken
+   */
+  const userUsernameTaken = (username: string) => {
+    return queryClient<UserUsernameTakenResponse>({
+      url: `/user/${username}/username-taken`,
+      method: 'get',
+    });
+  };
+
+  /**
    * This endpoint gets user object
    * @summary GET Get user
    */
   const userGet = (username: string) => {
     return queryClient<UserGetResponse>({
       url: `/user/${username}`,
+      method: 'get',
+    });
+  };
+
+  /**
+   * This endpoint get product for customer
+   * @summary GET Get product that exist in one of the schedules for customer
+   */
+  const userProductGet = (username: string, productHandle: string) => {
+    return queryClient<UserProductsGetResponse>({
+      url: `/user/${username}/products/${productHandle}`,
       method: 'get',
     });
   };
@@ -141,17 +165,17 @@ export const getBookingShopifyApi = () => {
    */
   const userProductsListByLocation = (
     username: string,
-    productId: string,
+    productHandle: string,
     locationId: string,
   ) => {
     return queryClient<UserProductsListByLocationResponse>({
-      url: `/user/${username}/product/${productId}/location/${locationId}`,
+      url: `/user/${username}/product/${productHandle}/location/${locationId}`,
       method: 'get',
     });
   };
 
   /**
-   * This endpoint get products in productsId from one schedule by location
+   * This endpoint get products from one schedule by location
    * @summary GET Get products for user
    */
   const userProductsGetProducts = (
@@ -168,12 +192,15 @@ export const getBookingShopifyApi = () => {
   };
 
   /**
-   * This endpoint should retrieve a schedule and locations belonging to a specific productId, along with the product.
+   * This endpoint should retrieve a schedule and locations belonging to a specific productHandle, along with the product.
    * @summary GET Get user schedule
    */
-  const userScheduleGetByProduct = (username: string, productId: string) => {
+  const userScheduleGetByProduct = (
+    username: string,
+    productHandle: string,
+  ) => {
     return queryClient<UserScheduleGetByProductIdResponse>({
-      url: `/user/${username}/schedule/get-by-product-id/${productId}`,
+      url: `/user/${username}/schedule/get-by-product-id/${productHandle}`,
       method: 'get',
     });
   };
@@ -273,18 +300,18 @@ export const getBookingShopifyApi = () => {
   };
 
   /**
-   * This endpoint creates new or updates user
-   * @summary PUT Create or Update user (restricted fields)
+   * This endpoint update user
+   * @summary PUT Update user
    */
-  const customerUpsert = (
+  const customerUpdate = (
     customerId: string,
-    customerUpsertBody: BodyType<CustomerUpsertBody>,
+    customerUpdateBody: BodyType<CustomerUpdateBody>,
   ) => {
-    return queryClient<CustomerUpsertResponse>({
+    return queryClient<CustomerUpdateResponse>({
       url: `/customer/${customerId}`,
       method: 'put',
       headers: {'Content-Type': 'application/json'},
-      data: customerUpsertBody,
+      data: customerUpdateBody,
     });
   };
 
@@ -311,18 +338,15 @@ export const getBookingShopifyApi = () => {
   };
 
   /**
-   * This endpoint creates new or updates user
-   * @summary PUT Create or Update user (all fields allowed)
+   * This endpoint creates new user
+   * @summary PUT Create user
    */
-  const customerUpdate = (
-    customerId: string,
-    customerUpdateBody: BodyType<CustomerUpdateBody>,
-  ) => {
-    return queryClient<CustomerUpdateResponse>({
-      url: `/customer/${customerId}/update`,
-      method: 'put',
+  const customerCreate = (customerCreateBody: BodyType<CustomerCreateBody>) => {
+    return queryClient<CustomerCreateResponse>({
+      url: `/customer`,
+      method: 'post',
       headers: {'Content-Type': 'application/json'},
-      data: customerUpdateBody,
+      data: customerCreateBody,
     });
   };
 
@@ -712,7 +736,9 @@ export const getBookingShopifyApi = () => {
   return {
     productsGetUsersImage,
     productsGetUsersByVariant,
+    userUsernameTaken,
     userGet,
+    userProductGet,
     userProductsListBySchedule,
     userProductsListByLocation,
     userProductsGetProducts,
@@ -724,10 +750,10 @@ export const getBookingShopifyApi = () => {
     userAvailabilityGenerate,
     userAvailabilityGet,
     usersList,
-    customerUpsert,
+    customerUpdate,
     customerGet,
     customerStatus,
-    customerUpdate,
+    customerCreate,
     customerIsBusiness,
     customerProductsList,
     customerProductsListIds,
@@ -772,8 +798,16 @@ export type ProductsGetUsersByVariantResult = NonNullable<
     >
   >
 >;
+export type UserUsernameTakenResult = NonNullable<
+  Awaited<
+    ReturnType<ReturnType<typeof getBookingShopifyApi>['userUsernameTaken']>
+  >
+>;
 export type UserGetResult = NonNullable<
   Awaited<ReturnType<ReturnType<typeof getBookingShopifyApi>['userGet']>>
+>;
+export type UserProductGetResult = NonNullable<
+  Awaited<ReturnType<ReturnType<typeof getBookingShopifyApi>['userProductGet']>>
 >;
 export type UserProductsListByScheduleResult = NonNullable<
   Awaited<
@@ -842,8 +876,8 @@ export type UserAvailabilityGetResult = NonNullable<
 export type UsersListResult = NonNullable<
   Awaited<ReturnType<ReturnType<typeof getBookingShopifyApi>['usersList']>>
 >;
-export type CustomerUpsertResult = NonNullable<
-  Awaited<ReturnType<ReturnType<typeof getBookingShopifyApi>['customerUpsert']>>
+export type CustomerUpdateResult = NonNullable<
+  Awaited<ReturnType<ReturnType<typeof getBookingShopifyApi>['customerUpdate']>>
 >;
 export type CustomerGetResult = NonNullable<
   Awaited<ReturnType<ReturnType<typeof getBookingShopifyApi>['customerGet']>>
@@ -851,8 +885,8 @@ export type CustomerGetResult = NonNullable<
 export type CustomerStatusResult = NonNullable<
   Awaited<ReturnType<ReturnType<typeof getBookingShopifyApi>['customerStatus']>>
 >;
-export type CustomerUpdateResult = NonNullable<
-  Awaited<ReturnType<ReturnType<typeof getBookingShopifyApi>['customerUpdate']>>
+export type CustomerCreateResult = NonNullable<
+  Awaited<ReturnType<ReturnType<typeof getBookingShopifyApi>['customerCreate']>>
 >;
 export type CustomerIsBusinessResult = NonNullable<
   Awaited<

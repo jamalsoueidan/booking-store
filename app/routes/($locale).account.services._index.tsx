@@ -12,7 +12,7 @@ import {Form, Link, useLoaderData} from '@remix-run/react';
 import {Money, parseGid} from '@shopify/hydrogen';
 import {type ProductConnection} from '@shopify/hydrogen/storefront-api-types';
 import {json, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
-import {PRODUCT_SERVICE_ITEM_FRAGMENT} from '~/data/fragments';
+import {PRODUCT_ITEM_FRAGMENT} from '~/data/fragments';
 import {getBookingShopifyApi} from '~/lib/api/bookingShopifyApi';
 import {getCustomer} from '~/lib/get-customer';
 
@@ -61,9 +61,6 @@ export default function AccountServicesIndex() {
             return productId.toString() === parseGid(product.id).id;
           });
 
-          const variant = product.variants.nodes.find(({id}) => {
-            return parseGid(id).id === customerProduct?.variantId.toString();
-          });
           return (
             <Grid.Col key={product.id} span={{base: 12, md: 6, lg: 4}}>
               <Card padding="sm" radius="md" h="100%" withBorder>
@@ -71,8 +68,12 @@ export default function AccountServicesIndex() {
 
                 <Text>{customerProduct?.scheduleName}</Text>
 
-                {variant && (
-                  <Money withoutTrailingZeros data={variant.price} as="span" />
+                {customerProduct?.price && (
+                  <Money
+                    withoutTrailingZeros
+                    data={customerProduct?.price as any}
+                    as="span"
+                  />
                 )}
 
                 <SimpleGrid cols={2} verticalSpacing="xs" mt="lg">
@@ -106,7 +107,7 @@ export default function AccountServicesIndex() {
 }
 
 const ALL_PRODUCTS_QUERY = `#graphql
-  ${PRODUCT_SERVICE_ITEM_FRAGMENT}
+  ${PRODUCT_ITEM_FRAGMENT}
   query AccountServicesProducts(
     $country: CountryCode
     $language: LanguageCode
@@ -115,7 +116,7 @@ const ALL_PRODUCTS_QUERY = `#graphql
   ) @inContext(country: $country, language: $language) {
     products(first: $first, query: $query) {
       nodes {
-        ...ProductServiceItem
+        ...ProductItem
       }
     }
   }

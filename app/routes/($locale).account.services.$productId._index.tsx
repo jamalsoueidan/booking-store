@@ -22,26 +22,35 @@ import PeriodInput from '~/components/form/PeriodInput';
 import {RadioGroupVariantsProduct} from '~/components/form/RadioGroupVariantProducts';
 import {SubmitButton} from '~/components/form/SubmitButton';
 import {SwitchGroupLocations} from '~/components/form/SwitchGroupLocations';
-import {PRODUCT_SERVICE_ITEM_FRAGMENT} from '~/data/fragments';
+import {isEqualGid} from '~/data/isEqualGid';
+import {PRODUCT_QUERY_ID, VARIANTS_QUERY_ID} from '~/data/queries';
 import {getBookingShopifyApi} from '~/lib/api/bookingShopifyApi';
 import {getCustomer} from '~/lib/get-customer';
 
 import {customerProductUpsertBody} from '~/lib/zod/bookingShopifyApi';
 
-const schema = customerProductUpsertBody.extend({
-  scheduleId: z.string().min(1),
-});
+const schema = customerProductUpsertBody
+  .omit({
+    price: true,
+    compareAtPrice: true,
+    productHandle: true,
+    selectedOptions: true,
+  })
+  .extend({
+    scheduleId: z.string().min(1),
+  });
 
 export const action = async ({
   request,
   params,
   context,
 }: ActionFunctionArgs) => {
+  const {storefront} = context;
   const customer = await getCustomer({context});
 
-  const {productHandle} = params;
-  if (!productHandle) {
-    throw new Error('Missing productHandle param, check route filename');
+  const {productId} = params;
+  if (!productId) {
+    throw new Response('Missing productId param', {status: 404});
   }
 
   const formData = await request.formData();
@@ -54,10 +63,30 @@ export const action = async ({
   }
 
   try {
+    const variants = await storefront.query(VARIANTS_QUERY_ID, {
+      variables: {handle: `gid://shopify/Product/${productId}`},
+    });
+
+    const variant = variants.product?.variants.nodes.find((v) =>
+      isEqualGid(v.id, submission.value?.variantId || ''),
+    );
+
+    if (!variant) {
+      throw new Response('Variant not found', {status: 404});
+    }
+
     const response = await getBookingShopifyApi().customerProductUpsert(
       customer.id,
-      productHandle,
-      submission.value,
+      productId,
+      {
+        ...submission.value,
+        selectedOptions: variant.selectedOptions[0],
+        productHandle: variant.product.handle,
+        price: variant.price,
+        ...(variant.compareAtPrice
+          ? {compareAtPrice: variant.compareAtPrice}
+          : {}),
+      },
     );
 
     return redirect(`/account/services/${response.payload.productId}`);
@@ -69,8 +98,8 @@ export const action = async ({
 export async function loader({context, params}: LoaderFunctionArgs) {
   const customer = await getCustomer({context});
 
-  const {productHandle} = params;
-  if (!productHandle) {
+  const {productId} = params;
+  if (!productId) {
     throw new Error('Missing productHandle param, check route filename');
   }
 
@@ -83,11 +112,11 @@ export async function loader({context, params}: LoaderFunctionArgs) {
   );
 
   const {payload: customerProduct} =
-    await getBookingShopifyApi().customerProductGet(customer.id, productHandle);
+    await getBookingShopifyApi().customerProductGet(customer.id, productId);
 
-  const data = await context.storefront.query(PRODUCT_QUERY, {
+  const data = await context.storefront.query(PRODUCT_QUERY_ID, {
     variables: {
-      Id: `gid://shopify/Product/${productHandle}`,
+      Id: `gid://shopify/Product/${productId}`,
       country: context.storefront.i18n.country,
       language: context.storefront.i18n.language,
     },
@@ -158,7 +187,7 @@ export default function EditAddress() {
 
           <RadioGroupVariantsProduct
             label="Hvad skal ydelsen koste?"
-            product={selectedProduct}
+            productId={defaultValue.productId}
             field={fields.variantId}
           />
 
@@ -214,16 +243,3 @@ export default function EditAddress() {
     </>
   );
 }
-
-const PRODUCT_QUERY = `#graphql
-  ${PRODUCT_SERVICE_ITEM_FRAGMENT}
-  query AccountTreatmentProduct(
-    $country: CountryCode
-    $language: LanguageCode
-    $Id: ID!
-  ) @inContext(country: $country, language: $language) {
-    product(id: $Id) {
-      ...ProductServiceItem
-    }
-  }
-`;

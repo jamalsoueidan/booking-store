@@ -5,4 +5,7 @@
  * OpenAPI spec version: 1.0.0
  */
 
-export type CustomerUpsertBodyProfessions = string[] | string;
+export type CustomerProductUpsertBodyCompareAtPrice = {
+  amount: string;
+  currencyCode: string;
+};

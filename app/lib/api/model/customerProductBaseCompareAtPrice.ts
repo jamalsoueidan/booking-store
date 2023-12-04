@@ -5,8 +5,7 @@
  * OpenAPI spec version: 1.0.0
  */
 
-export type CustomerUpdateBodyImagesProfile = {
-  height?: number;
-  url?: string;
-  width?: number;
+export type CustomerProductBaseCompareAtPrice = {
+  amount: string;
+  currencyCode: string;
 };

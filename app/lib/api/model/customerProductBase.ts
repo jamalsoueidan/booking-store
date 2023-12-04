@@ -5,14 +5,21 @@
  * OpenAPI spec version: 1.0.0
  */
 import type {CustomerProductBookingPeriod} from './customerProductBookingPeriod';
+import type {CustomerProductBaseCompareAtPrice} from './customerProductBaseCompareAtPrice';
 import type {CustomerProductNoticePeriod} from './customerProductNoticePeriod';
+import type {CustomerProductBasePrice} from './customerProductBasePrice';
+import type {CustomerProductBaseSelectedOptions} from './customerProductBaseSelectedOptions';
 
 export interface CustomerProductBase {
   bookingPeriod: CustomerProductBookingPeriod;
   breakTime: number;
+  compareAtPrice?: CustomerProductBaseCompareAtPrice;
   description?: string;
   duration: number;
   noticePeriod: CustomerProductNoticePeriod;
+  price: CustomerProductBasePrice;
+  productHandle?: string;
   productId: number;
+  selectedOptions: CustomerProductBaseSelectedOptions;
   variantId: number;
 }

@@ -5,6 +5,8 @@
  * OpenAPI spec version: 1.0.0
  */
 
-export interface UserProductsGetProductsBody {
-  productHandlers: string[];
-}
+export type CustomerCreateBodySocial = {
+  instagram?: string;
+  twitter?: string;
+  youtube?: string;
+};

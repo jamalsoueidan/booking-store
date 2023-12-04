@@ -5,4 +5,7 @@
  * OpenAPI spec version: 1.0.0
  */
 
-export type CustomerUpdateBodyProfessions = string[] | string;
+export type CustomerProductUpsertBodySelectedOptions = {
+  name: string;
+  value: string;
+};

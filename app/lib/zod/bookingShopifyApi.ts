@@ -63,9 +63,24 @@ export const productsGetUsersByVariantResponse = zod.object({
           }),
         }),
         fullname: zod.string(),
-        variantId: zod.string(),
+        variantId: zod.number(),
       }),
     ),
+  }),
+});
+
+/**
+ * This endpoint return false or true
+ * @summary GET check if username is taken
+ */
+export const userUsernameTakenParams = zod.object({
+  username: zod.string(),
+});
+
+export const userUsernameTakenResponse = zod.object({
+  success: zod.boolean(),
+  payload: zod.object({
+    usernameTaken: zod.boolean(),
   }),
 });
 
@@ -77,37 +92,92 @@ export const userGetResponse = zod.object({
   success: zod.boolean(),
   payload: zod.object({
     customerId: zod.number(),
+    fullname: zod.string(),
+    email: zod.string().email(),
+    phone: zod.string(),
+    username: zod.string(),
     yearsExperience: zod.string(),
     professions: zod.array(zod.string()),
-    specialties: zod.array(zod.string()).optional(),
-    username: zod.string().optional(),
+    specialties: zod.array(zod.string()),
     aboutMe: zod.string(),
     shortDescription: zod.string(),
-    gender: zod.string().optional(),
-    social: zod
-      .object({
-        youtube: zod.string().optional(),
-        twitter: zod.string().optional(),
-        instagram: zod.string().optional(),
-      })
-      .optional(),
-    images: zod
-      .object({
-        profile: zod
-          .object({
-            url: zod.string().url().optional(),
-            width: zod.number().optional(),
-            height: zod.number().optional(),
-          })
-          .optional(),
-      })
-      .optional(),
+    gender: zod.string(),
+    social: zod.object({
+      youtube: zod.string().optional(),
+      twitter: zod.string().optional(),
+      instagram: zod.string().optional(),
+    }),
     speaks: zod.array(zod.string()),
-    fullname: zod.string(),
-    active: zod.boolean(),
-    email: zod.string().email().optional(),
-    phone: zod.string().optional(),
+    images: zod.object({
+      profile: zod
+        .object({
+          url: zod.string().url().optional(),
+          width: zod.number().optional(),
+          height: zod.number().optional(),
+        })
+        .optional(),
+    }),
   }),
+});
+
+/**
+ * This endpoint get product for customer
+ * @summary GET Get product that exist in one of the schedules for customer
+ */
+export const userProductGetParams = zod.object({
+  username: zod.string(),
+  productHandle: zod.string(),
+});
+
+export const userProductGetResponse = zod.object({
+  success: zod.boolean(),
+  payload: zod
+    .object({
+      productHandle: zod.string().optional(),
+      productId: zod.number(),
+      variantId: zod.number(),
+      description: zod.string().optional(),
+      selectedOptions: zod.object({
+        name: zod.string(),
+        value: zod.string(),
+      }),
+      price: zod.object({
+        amount: zod.string(),
+        currencyCode: zod.string(),
+      }),
+      compareAtPrice: zod
+        .object({
+          amount: zod.string(),
+          currencyCode: zod.string(),
+        })
+        .optional(),
+      duration: zod.number(),
+      breakTime: zod.number(),
+      noticePeriod: zod.object({
+        value: zod.number(),
+        unit: zod.enum(['hours', 'days', 'weeks']),
+      }),
+      bookingPeriod: zod.object({
+        value: zod.number(),
+        unit: zod.enum(['weeks', 'months']),
+      }),
+    })
+    .and(
+      zod.object({
+        locations: zod.array(
+          zod.object({
+            location: zod.string(),
+            locationType: zod.enum(['origin', 'destination']),
+          }),
+        ),
+      }),
+    )
+    .and(
+      zod.object({
+        scheduleId: zod.string(),
+        scheduleName: zod.string(),
+      }),
+    ),
 });
 
 /**
@@ -127,9 +197,24 @@ export const userProductsListByScheduleResponse = zod.object({
   payload: zod.array(
     zod
       .object({
+        productHandle: zod.string().optional(),
         productId: zod.number(),
         variantId: zod.number(),
         description: zod.string().optional(),
+        selectedOptions: zod.object({
+          name: zod.string(),
+          value: zod.string(),
+        }),
+        price: zod.object({
+          amount: zod.string(),
+          currencyCode: zod.string(),
+        }),
+        compareAtPrice: zod
+          .object({
+            amount: zod.string(),
+            currencyCode: zod.string(),
+          })
+          .optional(),
         duration: zod.number(),
         breakTime: zod.number(),
         noticePeriod: zod.object({
@@ -166,7 +251,7 @@ export const userProductsListByScheduleResponse = zod.object({
  */
 export const userProductsListByLocationParams = zod.object({
   username: zod.string(),
-  productId: zod.string(),
+  productHandle: zod.string(),
   locationId: zod.string(),
 });
 
@@ -174,9 +259,24 @@ export const userProductsListByLocationResponse = zod.object({
   success: zod.boolean(),
   payload: zod.array(
     zod.object({
+      productHandle: zod.string().optional(),
       productId: zod.number(),
       variantId: zod.number(),
       description: zod.string().optional(),
+      selectedOptions: zod.object({
+        name: zod.string(),
+        value: zod.string(),
+      }),
+      price: zod.object({
+        amount: zod.string(),
+        currencyCode: zod.string(),
+      }),
+      compareAtPrice: zod
+        .object({
+          amount: zod.string(),
+          currencyCode: zod.string(),
+        })
+        .optional(),
       duration: zod.number(),
       breakTime: zod.number(),
       noticePeriod: zod.object({
@@ -192,7 +292,7 @@ export const userProductsListByLocationResponse = zod.object({
 });
 
 /**
- * This endpoint get products in productsId from one schedule by location
+ * This endpoint get products from one schedule by location
  * @summary GET Get products for user
  */
 export const userProductsGetProductsParams = zod.object({
@@ -201,16 +301,31 @@ export const userProductsGetProductsParams = zod.object({
 });
 
 export const userProductsGetProductsBody = zod.object({
-  productIds: zod.array(zod.string()),
+  productHandlers: zod.array(zod.string()),
 });
 
 export const userProductsGetProductsResponse = zod.object({
   success: zod.boolean(),
   payload: zod.array(
     zod.object({
+      productHandle: zod.string().optional(),
       productId: zod.number(),
       variantId: zod.number(),
       description: zod.string().optional(),
+      selectedOptions: zod.object({
+        name: zod.string(),
+        value: zod.string(),
+      }),
+      price: zod.object({
+        amount: zod.string(),
+        currencyCode: zod.string(),
+      }),
+      compareAtPrice: zod
+        .object({
+          amount: zod.string(),
+          currencyCode: zod.string(),
+        })
+        .optional(),
       duration: zod.number(),
       breakTime: zod.number(),
       noticePeriod: zod.object({
@@ -226,12 +341,12 @@ export const userProductsGetProductsResponse = zod.object({
 });
 
 /**
- * This endpoint should retrieve a schedule and locations belonging to a specific productId, along with the product.
+ * This endpoint should retrieve a schedule and locations belonging to a specific productHandle, along with the product.
  * @summary GET Get user schedule
  */
 export const userScheduleGetByProductParams = zod.object({
   username: zod.string(),
-  productId: zod.string(),
+  productHandle: zod.string(),
 });
 
 export const userScheduleGetByProductResponse = zod.object({
@@ -285,9 +400,24 @@ export const userScheduleGetByProductResponse = zod.object({
       zod.object({
         product: zod
           .object({
+            productHandle: zod.string().optional(),
             productId: zod.number(),
             variantId: zod.number(),
             description: zod.string().optional(),
+            selectedOptions: zod.object({
+              name: zod.string(),
+              value: zod.string(),
+            }),
+            price: zod.object({
+              amount: zod.string(),
+              currencyCode: zod.string(),
+            }),
+            compareAtPrice: zod
+              .object({
+                amount: zod.string(),
+                currencyCode: zod.string(),
+              })
+              .optional(),
             duration: zod.number(),
             breakTime: zod.number(),
             noticePeriod: zod.object({
@@ -478,9 +608,24 @@ export const userScheduleGetByLocationResponse = zod.object({
         products: zod.array(
           zod
             .object({
+              productHandle: zod.string().optional(),
               productId: zod.number(),
               variantId: zod.number(),
               description: zod.string().optional(),
+              selectedOptions: zod.object({
+                name: zod.string(),
+                value: zod.string(),
+              }),
+              price: zod.object({
+                amount: zod.string(),
+                currencyCode: zod.string(),
+              }),
+              compareAtPrice: zod
+                .object({
+                  amount: zod.string(),
+                  currencyCode: zod.string(),
+                })
+                .optional(),
               duration: zod.number(),
               breakTime: zod.number(),
               noticePeriod: zod.object({
@@ -603,6 +748,10 @@ export const userAvailabilityGenerateResponse = zod.object({
               to: zod.string(),
               products: zod.array(
                 zod.object({
+                  price: zod.object({
+                    amount: zod.string(),
+                    currencyCode: zod.string(),
+                  }),
                   productId: zod.number(),
                   variantId: zod.number(),
                   from: zod.string(),
@@ -690,6 +839,10 @@ export const userAvailabilityGetResponse = zod.object({
           to: zod.string(),
           products: zod.array(
             zod.object({
+              price: zod.object({
+                amount: zod.string(),
+                currencyCode: zod.string(),
+              }),
               productId: zod.number(),
               variantId: zod.number(),
               from: zod.string(),
@@ -714,57 +867,54 @@ export const usersListResponse = zod.object({
     results: zod.array(
       zod.object({
         customerId: zod.number(),
+        fullname: zod.string(),
+        email: zod.string().email(),
+        phone: zod.string(),
+        username: zod.string(),
         yearsExperience: zod.string(),
         professions: zod.array(zod.string()),
-        specialties: zod.array(zod.string()).optional(),
-        username: zod.string().optional(),
+        specialties: zod.array(zod.string()),
         aboutMe: zod.string(),
         shortDescription: zod.string(),
-        gender: zod.string().optional(),
-        social: zod
-          .object({
-            youtube: zod.string().optional(),
-            twitter: zod.string().optional(),
-            instagram: zod.string().optional(),
-          })
-          .optional(),
-        images: zod
-          .object({
-            profile: zod
-              .object({
-                url: zod.string().url().optional(),
-                width: zod.number().optional(),
-                height: zod.number().optional(),
-              })
-              .optional(),
-          })
-          .optional(),
+        gender: zod.string(),
+        social: zod.object({
+          youtube: zod.string().optional(),
+          twitter: zod.string().optional(),
+          instagram: zod.string().optional(),
+        }),
         speaks: zod.array(zod.string()),
-        fullname: zod.string(),
-        active: zod.boolean(),
-        email: zod.string().email().optional(),
-        phone: zod.string().optional(),
+        images: zod.object({
+          profile: zod
+            .object({
+              url: zod.string().url().optional(),
+              width: zod.number().optional(),
+              height: zod.number().optional(),
+            })
+            .optional(),
+        }),
       }),
     ),
   }),
 });
 
 /**
- * This endpoint creates new or updates user
- * @summary PUT Create or Update user (restricted fields)
+ * This endpoint update user
+ * @summary PUT Update user
  */
-export const customerUpsertParams = zod.object({
+export const customerUpdateParams = zod.object({
   customerId: zod.string(),
 });
 
-export const customerUpsertBodyUsernameRegExp = new RegExp('^[a-zA-Z0-9-_]+$');
-
-export const customerUpsertBody = zod.object({
-  professions: zod.array(zod.string()).or(zod.string()),
-  specialties: zod.array(zod.string()).or(zod.string()),
-  username: zod.string().regex(customerUpsertBodyUsernameRegExp),
-  aboutMe: zod.string(),
-  shortDescription: zod.string(),
+export const customerUpdateBody = zod.object({
+  fullname: zod.string().optional(),
+  email: zod.string().email().optional(),
+  phone: zod.string().optional(),
+  yearsExperience: zod.string().optional(),
+  professions: zod.array(zod.string()).optional(),
+  specialties: zod.array(zod.string()).optional(),
+  aboutMe: zod.string().optional(),
+  shortDescription: zod.string().optional(),
+  gender: zod.string().optional(),
   social: zod
     .object({
       youtube: zod.string().optional(),
@@ -772,43 +922,38 @@ export const customerUpsertBody = zod.object({
       instagram: zod.string().optional(),
     })
     .optional(),
-  speaks: zod.array(zod.string()).or(zod.string()).optional(),
+  speaks: zod.array(zod.string()).optional(),
 });
 
-export const customerUpsertResponse = zod.object({
+export const customerUpdateResponse = zod.object({
   success: zod.boolean(),
   payload: zod.object({
     customerId: zod.number(),
+    fullname: zod.string(),
+    email: zod.string().email(),
+    phone: zod.string(),
+    username: zod.string(),
     yearsExperience: zod.string(),
     professions: zod.array(zod.string()),
-    specialties: zod.array(zod.string()).optional(),
-    username: zod.string().optional(),
+    specialties: zod.array(zod.string()),
     aboutMe: zod.string(),
     shortDescription: zod.string(),
-    gender: zod.string().optional(),
-    social: zod
-      .object({
-        youtube: zod.string().optional(),
-        twitter: zod.string().optional(),
-        instagram: zod.string().optional(),
-      })
-      .optional(),
-    images: zod
-      .object({
-        profile: zod
-          .object({
-            url: zod.string().url().optional(),
-            width: zod.number().optional(),
-            height: zod.number().optional(),
-          })
-          .optional(),
-      })
-      .optional(),
+    gender: zod.string(),
+    social: zod.object({
+      youtube: zod.string().optional(),
+      twitter: zod.string().optional(),
+      instagram: zod.string().optional(),
+    }),
     speaks: zod.array(zod.string()),
-    fullname: zod.string(),
-    active: zod.boolean(),
-    email: zod.string().email().optional(),
-    phone: zod.string().optional(),
+    images: zod.object({
+      profile: zod
+        .object({
+          url: zod.string().url().optional(),
+          width: zod.number().optional(),
+          height: zod.number().optional(),
+        })
+        .optional(),
+    }),
   }),
 });
 
@@ -824,36 +969,31 @@ export const customerGetResponse = zod.object({
   success: zod.boolean(),
   payload: zod.object({
     customerId: zod.number(),
+    fullname: zod.string(),
+    email: zod.string().email(),
+    phone: zod.string(),
+    username: zod.string(),
     yearsExperience: zod.string(),
     professions: zod.array(zod.string()),
-    specialties: zod.array(zod.string()).optional(),
-    username: zod.string().optional(),
+    specialties: zod.array(zod.string()),
     aboutMe: zod.string(),
     shortDescription: zod.string(),
-    gender: zod.string().optional(),
-    social: zod
-      .object({
-        youtube: zod.string().optional(),
-        twitter: zod.string().optional(),
-        instagram: zod.string().optional(),
-      })
-      .optional(),
-    images: zod
-      .object({
-        profile: zod
-          .object({
-            url: zod.string().url().optional(),
-            width: zod.number().optional(),
-            height: zod.number().optional(),
-          })
-          .optional(),
-      })
-      .optional(),
+    gender: zod.string(),
+    social: zod.object({
+      youtube: zod.string().optional(),
+      twitter: zod.string().optional(),
+      instagram: zod.string().optional(),
+    }),
     speaks: zod.array(zod.string()),
-    fullname: zod.string(),
-    active: zod.boolean(),
-    email: zod.string().email().optional(),
-    phone: zod.string().optional(),
+    images: zod.object({
+      profile: zod
+        .object({
+          url: zod.string().url().optional(),
+          width: zod.number().optional(),
+          height: zod.number().optional(),
+        })
+        .optional(),
+    }),
   }),
 });
 
@@ -877,31 +1017,52 @@ export const customerStatusResponse = zod.object({
 });
 
 /**
- * This endpoint creates new or updates user
- * @summary PUT Create or Update user (all fields allowed)
+ * This endpoint creates new user
+ * @summary PUT Create user
  */
-export const customerUpdateParams = zod.object({
-  customerId: zod.string(),
+export const customerCreateBodyUsernameRegExp = new RegExp('^[a-zA-Z0-9-_]+$');
+
+export const customerCreateBody = zod.object({
+  customerId: zod.number(),
+  fullname: zod.string(),
+  email: zod.string().email(),
+  phone: zod.string(),
+  username: zod.string().regex(customerCreateBodyUsernameRegExp),
+  yearsExperience: zod.string(),
+  professions: zod.array(zod.string()),
+  specialties: zod.array(zod.string()),
+  aboutMe: zod.string(),
+  shortDescription: zod.string(),
+  gender: zod.string(),
+  social: zod.object({
+    youtube: zod.string().optional(),
+    twitter: zod.string().optional(),
+    instagram: zod.string().optional(),
+  }),
+  speaks: zod.array(zod.string()),
 });
 
-export const customerUpdateBody = zod.object({
-  customerId: zod.number().optional(),
-  yearsExperience: zod.string().optional(),
-  professions: zod.array(zod.string()).or(zod.string()).optional(),
-  specialties: zod.array(zod.string()).or(zod.string()).optional(),
-  username: zod.string().optional(),
-  aboutMe: zod.string().optional(),
-  shortDescription: zod.string().optional(),
-  gender: zod.string().optional(),
-  social: zod
-    .object({
+export const customerCreateResponse = zod.object({
+  success: zod.boolean(),
+  payload: zod.object({
+    customerId: zod.number(),
+    fullname: zod.string(),
+    email: zod.string().email(),
+    phone: zod.string(),
+    username: zod.string(),
+    yearsExperience: zod.string(),
+    professions: zod.array(zod.string()),
+    specialties: zod.array(zod.string()),
+    aboutMe: zod.string(),
+    shortDescription: zod.string(),
+    gender: zod.string(),
+    social: zod.object({
       youtube: zod.string().optional(),
       twitter: zod.string().optional(),
       instagram: zod.string().optional(),
-    })
-    .optional(),
-  images: zod
-    .object({
+    }),
+    speaks: zod.array(zod.string()),
+    images: zod.object({
       profile: zod
         .object({
           url: zod.string().url().optional(),
@@ -909,49 +1070,7 @@ export const customerUpdateBody = zod.object({
           height: zod.number().optional(),
         })
         .optional(),
-    })
-    .optional(),
-  speaks: zod.array(zod.string()).or(zod.string()).optional(),
-  fullname: zod.string().optional(),
-  active: zod.boolean().optional(),
-  email: zod.string().email().optional(),
-  phone: zod.string().optional(),
-});
-
-export const customerUpdateResponse = zod.object({
-  success: zod.boolean(),
-  payload: zod.object({
-    customerId: zod.number(),
-    yearsExperience: zod.string(),
-    professions: zod.array(zod.string()),
-    specialties: zod.array(zod.string()).optional(),
-    username: zod.string().optional(),
-    aboutMe: zod.string(),
-    shortDescription: zod.string(),
-    gender: zod.string().optional(),
-    social: zod
-      .object({
-        youtube: zod.string().optional(),
-        twitter: zod.string().optional(),
-        instagram: zod.string().optional(),
-      })
-      .optional(),
-    images: zod
-      .object({
-        profile: zod
-          .object({
-            url: zod.string().url().optional(),
-            width: zod.number().optional(),
-            height: zod.number().optional(),
-          })
-          .optional(),
-      })
-      .optional(),
-    speaks: zod.array(zod.string()),
-    fullname: zod.string(),
-    active: zod.boolean(),
-    email: zod.string().email().optional(),
-    phone: zod.string().optional(),
+    }),
   }),
 });
 
@@ -979,9 +1098,24 @@ export const customerProductsListResponse = zod.object({
   payload: zod.array(
     zod
       .object({
+        productHandle: zod.string().optional(),
         productId: zod.number(),
         variantId: zod.number(),
         description: zod.string().optional(),
+        selectedOptions: zod.object({
+          name: zod.string(),
+          value: zod.string(),
+        }),
+        price: zod.object({
+          amount: zod.string(),
+          currencyCode: zod.string(),
+        }),
+        compareAtPrice: zod
+          .object({
+            amount: zod.string(),
+            currencyCode: zod.string(),
+          })
+          .optional(),
         duration: zod.number(),
         breakTime: zod.number(),
         noticePeriod: zod.object({
@@ -1029,9 +1163,24 @@ export const customerProductGetResponse = zod.object({
   success: zod.boolean(),
   payload: zod
     .object({
+      productHandle: zod.string().optional(),
       productId: zod.number(),
       variantId: zod.number(),
       description: zod.string().optional(),
+      selectedOptions: zod.object({
+        name: zod.string(),
+        value: zod.string(),
+      }),
+      price: zod.object({
+        amount: zod.string(),
+        currencyCode: zod.string(),
+      }),
+      compareAtPrice: zod
+        .object({
+          amount: zod.string(),
+          currencyCode: zod.string(),
+        })
+        .optional(),
       duration: zod.number(),
       breakTime: zod.number(),
       noticePeriod: zod.object({
@@ -1067,7 +1216,22 @@ export const customerProductGetResponse = zod.object({
  */
 export const customerProductUpsertBody = zod.object({
   scheduleId: zod.string(),
+  productHandle: zod.string(),
   variantId: zod.number(),
+  selectedOptions: zod.object({
+    name: zod.string(),
+    value: zod.string(),
+  }),
+  price: zod.object({
+    amount: zod.string(),
+    currencyCode: zod.string(),
+  }),
+  compareAtPrice: zod
+    .object({
+      amount: zod.string(),
+      currencyCode: zod.string(),
+    })
+    .optional(),
   duration: zod.number(),
   breakTime: zod.number(),
   noticePeriod: zod.object({
@@ -1090,9 +1254,24 @@ export const customerProductUpsertResponse = zod.object({
   success: zod.boolean(),
   payload: zod
     .object({
+      productHandle: zod.string().optional(),
       productId: zod.number(),
       variantId: zod.number(),
       description: zod.string().optional(),
+      selectedOptions: zod.object({
+        name: zod.string(),
+        value: zod.string(),
+      }),
+      price: zod.object({
+        amount: zod.string(),
+        currencyCode: zod.string(),
+      }),
+      compareAtPrice: zod
+        .object({
+          amount: zod.string(),
+          currencyCode: zod.string(),
+        })
+        .optional(),
       duration: zod.number(),
       breakTime: zod.number(),
       noticePeriod: zod.object({
@@ -1280,9 +1459,24 @@ export const customerScheduleCreateResponse = zod.object({
     products: zod.array(
       zod
         .object({
+          productHandle: zod.string().optional(),
           productId: zod.number(),
           variantId: zod.number(),
           description: zod.string().optional(),
+          selectedOptions: zod.object({
+            name: zod.string(),
+            value: zod.string(),
+          }),
+          price: zod.object({
+            amount: zod.string(),
+            currencyCode: zod.string(),
+          }),
+          compareAtPrice: zod
+            .object({
+              amount: zod.string(),
+              currencyCode: zod.string(),
+            })
+            .optional(),
           duration: zod.number(),
           breakTime: zod.number(),
           noticePeriod: zod.object({
@@ -1341,9 +1535,24 @@ export const customerScheduleListResponse = zod.object({
       products: zod.array(
         zod
           .object({
+            productHandle: zod.string().optional(),
             productId: zod.number(),
             variantId: zod.number(),
             description: zod.string().optional(),
+            selectedOptions: zod.object({
+              name: zod.string(),
+              value: zod.string(),
+            }),
+            price: zod.object({
+              amount: zod.string(),
+              currencyCode: zod.string(),
+            }),
+            compareAtPrice: zod
+              .object({
+                amount: zod.string(),
+                currencyCode: zod.string(),
+              })
+              .optional(),
             duration: zod.number(),
             breakTime: zod.number(),
             noticePeriod: zod.object({
@@ -1402,9 +1611,24 @@ export const customerScheduleGetResponse = zod.object({
     products: zod.array(
       zod
         .object({
+          productHandle: zod.string().optional(),
           productId: zod.number(),
           variantId: zod.number(),
           description: zod.string().optional(),
+          selectedOptions: zod.object({
+            name: zod.string(),
+            value: zod.string(),
+          }),
+          price: zod.object({
+            amount: zod.string(),
+            currencyCode: zod.string(),
+          }),
+          compareAtPrice: zod
+            .object({
+              amount: zod.string(),
+              currencyCode: zod.string(),
+            })
+            .optional(),
           duration: zod.number(),
           breakTime: zod.number(),
           noticePeriod: zod.object({
@@ -1466,9 +1690,24 @@ export const customerScheduleUpdateResponse = zod.object({
     products: zod.array(
       zod
         .object({
+          productHandle: zod.string().optional(),
           productId: zod.number(),
           variantId: zod.number(),
           description: zod.string().optional(),
+          selectedOptions: zod.object({
+            name: zod.string(),
+            value: zod.string(),
+          }),
+          price: zod.object({
+            amount: zod.string(),
+            currencyCode: zod.string(),
+          }),
+          compareAtPrice: zod
+            .object({
+              amount: zod.string(),
+              currencyCode: zod.string(),
+            })
+            .optional(),
           duration: zod.number(),
           breakTime: zod.number(),
           noticePeriod: zod.object({
@@ -1560,9 +1799,24 @@ export const customerScheduleSlotUpdateResponse = zod.object({
     products: zod.array(
       zod
         .object({
+          productHandle: zod.string().optional(),
           productId: zod.number(),
           variantId: zod.number(),
           description: zod.string().optional(),
+          selectedOptions: zod.object({
+            name: zod.string(),
+            value: zod.string(),
+          }),
+          price: zod.object({
+            amount: zod.string(),
+            currencyCode: zod.string(),
+          }),
+          compareAtPrice: zod
+            .object({
+              amount: zod.string(),
+              currencyCode: zod.string(),
+            })
+            .optional(),
           duration: zod.number(),
           breakTime: zod.number(),
           noticePeriod: zod.object({
@@ -1661,36 +1915,31 @@ export const customerLocationSetDefaultResponse = zod.object({
   success: zod.boolean(),
   payload: zod.object({
     customerId: zod.number(),
+    fullname: zod.string(),
+    email: zod.string().email(),
+    phone: zod.string(),
+    username: zod.string(),
     yearsExperience: zod.string(),
     professions: zod.array(zod.string()),
-    specialties: zod.array(zod.string()).optional(),
-    username: zod.string().optional(),
+    specialties: zod.array(zod.string()),
     aboutMe: zod.string(),
     shortDescription: zod.string(),
-    gender: zod.string().optional(),
-    social: zod
-      .object({
-        youtube: zod.string().optional(),
-        twitter: zod.string().optional(),
-        instagram: zod.string().optional(),
-      })
-      .optional(),
-    images: zod
-      .object({
-        profile: zod
-          .object({
-            url: zod.string().url().optional(),
-            width: zod.number().optional(),
-            height: zod.number().optional(),
-          })
-          .optional(),
-      })
-      .optional(),
+    gender: zod.string(),
+    social: zod.object({
+      youtube: zod.string().optional(),
+      twitter: zod.string().optional(),
+      instagram: zod.string().optional(),
+    }),
     speaks: zod.array(zod.string()),
-    fullname: zod.string(),
-    active: zod.boolean(),
-    email: zod.string().email().optional(),
-    phone: zod.string().optional(),
+    images: zod.object({
+      profile: zod
+        .object({
+          url: zod.string().url().optional(),
+          width: zod.number().optional(),
+          height: zod.number().optional(),
+        })
+        .optional(),
+    }),
   }),
 });
 
@@ -1744,36 +1993,31 @@ export const customerLocationRemoveResponse = zod.object({
   success: zod.boolean(),
   payload: zod.object({
     customerId: zod.number(),
+    fullname: zod.string(),
+    email: zod.string().email(),
+    phone: zod.string(),
+    username: zod.string(),
     yearsExperience: zod.string(),
     professions: zod.array(zod.string()),
-    specialties: zod.array(zod.string()).optional(),
-    username: zod.string().optional(),
+    specialties: zod.array(zod.string()),
     aboutMe: zod.string(),
     shortDescription: zod.string(),
-    gender: zod.string().optional(),
-    social: zod
-      .object({
-        youtube: zod.string().optional(),
-        twitter: zod.string().optional(),
-        instagram: zod.string().optional(),
-      })
-      .optional(),
-    images: zod
-      .object({
-        profile: zod
-          .object({
-            url: zod.string().url().optional(),
-            width: zod.number().optional(),
-            height: zod.number().optional(),
-          })
-          .optional(),
-      })
-      .optional(),
+    gender: zod.string(),
+    social: zod.object({
+      youtube: zod.string().optional(),
+      twitter: zod.string().optional(),
+      instagram: zod.string().optional(),
+    }),
     speaks: zod.array(zod.string()),
-    fullname: zod.string(),
-    active: zod.boolean(),
-    email: zod.string().email().optional(),
-    phone: zod.string().optional(),
+    images: zod.object({
+      profile: zod
+        .object({
+          url: zod.string().url().optional(),
+          width: zod.number().optional(),
+          height: zod.number().optional(),
+        })
+        .optional(),
+    }),
   }),
 });
 
@@ -1790,36 +2034,31 @@ export const customerLocationAddResponse = zod.object({
   success: zod.boolean(),
   payload: zod.object({
     customerId: zod.number(),
+    fullname: zod.string(),
+    email: zod.string().email(),
+    phone: zod.string(),
+    username: zod.string(),
     yearsExperience: zod.string(),
     professions: zod.array(zod.string()),
-    specialties: zod.array(zod.string()).optional(),
-    username: zod.string().optional(),
+    specialties: zod.array(zod.string()),
     aboutMe: zod.string(),
     shortDescription: zod.string(),
-    gender: zod.string().optional(),
-    social: zod
-      .object({
-        youtube: zod.string().optional(),
-        twitter: zod.string().optional(),
-        instagram: zod.string().optional(),
-      })
-      .optional(),
-    images: zod
-      .object({
-        profile: zod
-          .object({
-            url: zod.string().url().optional(),
-            width: zod.number().optional(),
-            height: zod.number().optional(),
-          })
-          .optional(),
-      })
-      .optional(),
+    gender: zod.string(),
+    social: zod.object({
+      youtube: zod.string().optional(),
+      twitter: zod.string().optional(),
+      instagram: zod.string().optional(),
+    }),
     speaks: zod.array(zod.string()),
-    fullname: zod.string(),
-    active: zod.boolean(),
-    email: zod.string().email().optional(),
-    phone: zod.string().optional(),
+    images: zod.object({
+      profile: zod
+        .object({
+          url: zod.string().url().optional(),
+          width: zod.number().optional(),
+          height: zod.number().optional(),
+        })
+        .optional(),
+    }),
   }),
 });
 

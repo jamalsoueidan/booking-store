@@ -1,87 +1,90 @@
-import {
-  Anchor,
-  Button,
-  Card,
-  Divider,
-  Flex,
-  Group,
-  Stack,
-  Text,
-} from '@mantine/core';
-import {useActionData} from '@remix-run/react';
+import {Anchor, Card, Divider, Flex, Group, Stack, Text} from '@mantine/core';
+import {useLoaderData} from '@remix-run/react';
 import {Money, parseGid} from '@shopify/hydrogen';
 import {type CartLineInput} from '@shopify/hydrogen/storefront-api-types';
-import {json, type ActionFunctionArgs} from '@shopify/remix-oxygen';
+import {json, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
 import {format} from 'date-fns';
 import da from 'date-fns/locale/da';
-import {ArtistStepper} from '~/components/artist/ArtistStepper';
+import {TreatmentArtistCardComplete} from '~/components/treatment/TreatmentArtistCardComplete';
+import {PRODUCT_SELECTED_OPTIONS_QUERY} from '~/data/queries';
 import {getBookingShopifyApi} from '~/lib/api/bookingShopifyApi';
 import {durationToTime} from '~/lib/duration';
 import {ALL_PRODUCTS_QUERY} from './($locale).artist.$username._index';
 import {AddToCartButton} from './($locale).products.$handle';
 
-export const action = async ({
+export const loader = async ({
   request,
   params,
   context,
-}: ActionFunctionArgs) => {
-  const {productHandle, username, locationId} = params;
+}: LoaderFunctionArgs) => {
+  const {productHandle} = params;
+  const {storefront} = context;
 
-  const {searchParams} = new URL(request.url);
-  const shippingId = searchParams.get('shippingId');
+  const url = new URL(request.url);
+  const searchParams = url.searchParams;
   const productIds = searchParams.getAll('productIds');
+  const username = searchParams.get('username');
+  const locationId = searchParams.get('locationId');
+  const shippingId = searchParams.get('shippingId');
+  const fromDate = searchParams.get('fromDate');
+  const toDate = searchParams.get('toDate');
 
-  if (productIds.length === 0) {
+  if (!productHandle || !username || !locationId || !fromDate || !toDate) {
     throw new Response('Expected productId to be selected', {status: 400});
   }
 
-  if (!productHandle || !username || !locationId) {
-    throw new Response('Expected product handle to be defined', {status: 400});
-  }
-
-  const formData = await request.formData();
-  const fromDate = formData.get('fromDate') as string;
-  const toDate = formData.get('toDate') as string;
-
-  const {payload: location} = await getBookingShopifyApi().userLocationGet(
-    username,
-    locationId,
-  );
-
-  const {payload: availability} =
-    await getBookingShopifyApi().userAvailabilityGet(username, locationId, {
-      productIds,
-      fromDate, //: '2023-11-26T05:15:00.000Z',
-      toDate, //: '2023-11-26T08:05:00.000Z',
-      shippingId: shippingId ? shippingId : undefined,
+  try {
+    const {product} = await storefront.query(PRODUCT_SELECTED_OPTIONS_QUERY, {
+      variables: {productHandle, selectedOptions: []},
     });
 
-  const {products} = await context.storefront.query(ALL_PRODUCTS_QUERY, {
-    variables: {
-      first: productIds.length,
-      query: productIds.length > 0 ? productIds.join(' OR ') : 'id=-',
-      country: context.storefront.i18n.country,
-      language: context.storefront.i18n.language,
-    },
-  });
+    if (!product?.id) {
+      throw new Response(null, {status: 404});
+    }
 
-  return json({
-    location,
-    products,
-    availability,
-  });
+    const joinProductIds = productIds.concat(parseGid(product.id).id);
+
+    const {payload: location} = await getBookingShopifyApi().userLocationGet(
+      username,
+      locationId,
+    );
+
+    const {payload: user} = await getBookingShopifyApi().userGet(username);
+
+    const {payload: availability} =
+      await getBookingShopifyApi().userAvailabilityGet(username, locationId, {
+        productIds: joinProductIds,
+        fromDate, //: '2023-11-26T05:15:00.000Z',
+        toDate, //: '2023-11-26T08:05:00.000Z',
+        shippingId: shippingId ? shippingId : undefined,
+      });
+
+    const {products} = await context.storefront.query(ALL_PRODUCTS_QUERY, {
+      variables: {
+        first: joinProductIds.length,
+        query: joinProductIds.join(' OR '),
+        country: context.storefront.i18n.country,
+        language: context.storefront.i18n.language,
+      },
+    });
+
+    return json({
+      location,
+      user,
+      products,
+      availability,
+    });
+  } catch (err) {
+    throw new Response('Username or product handle is wrong', {status: 404});
+  }
 };
 
 export default function ArtistTreatmentsBooking() {
-  const data = useActionData<typeof action>();
+  const data = useLoaderData<typeof loader>();
 
   const productMarkup = data?.products.nodes.map((product) => {
     const slotProduct = data?.availability.slot.products.find(
       (p) => p.productId.toString() === parseGid(product.id).id,
-    );
-
-    const productVariant = product.variants.nodes.find(
-      (v) => parseGid(v.id).id === slotProduct?.variantId.toString(),
     );
 
     return (
@@ -89,16 +92,18 @@ export default function ArtistTreatmentsBooking() {
         <Text size="md" fw={500}>
           {product.title}
         </Text>
-        <Text size="md" c="dimmed" fw={500}>
+        <Text size="md" c="dimmed" fw={500} lineClamp={1}>
           {product.description}
         </Text>
         <Flex align="center" gap="lg">
           <Text size="xs" c="dimmed" tt="uppercase" fw={500}>
             {durationToTime(slotProduct?.duration ?? 0)}
           </Text>
-          <Text size="xs" c="dimmed" fw={500}>
-            <Money data={productVariant!.price} />
-          </Text>
+          {slotProduct?.price && (
+            <Text size="xs" c="dimmed" fw={500}>
+              <Money data={slotProduct?.price as any} />
+            </Text>
+          )}
         </Flex>
       </div>
     );
@@ -110,13 +115,11 @@ export default function ArtistTreatmentsBooking() {
         (p) => p.productId.toString() === parseGid(product.id).id,
       );
 
-      const productVariant = product.variants.nodes.find(
-        (v) => parseGid(v.id).id === slotProduct?.variantId.toString(),
-      );
-
       const input =
         {
-          merchandiseId: productVariant?.id || '',
+          merchandiseId: `gid://shopify/ProductVariant/${
+            slotProduct?.variantId || ''
+          }`,
           quantity: 1,
           attributes: [
             {
@@ -172,12 +175,15 @@ export default function ArtistTreatmentsBooking() {
   );
 
   return (
-    <ArtistStepper
-      active={3}
-      title="Færdig"
-      description="Køb processen er færdig."
-    >
+    <>
       <Card shadow="sm" p="lg" mt="xl" radius="md" withBorder>
+        <Text size="lg" mb="md" fw="bold">
+          Skønhedsekspert
+        </Text>
+        <TreatmentArtistCardComplete artist={data.user} />
+        <Card.Section pt="md" pb="md">
+          <Divider />
+        </Card.Section>
         <Text size="lg" mb="md" fw="bold">
           Lokation
         </Text>
@@ -209,17 +215,21 @@ export default function ArtistTreatmentsBooking() {
         <Text size="lg" mb="md" fw="bold">
           Dato & Tid
         </Text>
-        <Text size="md" fw={500}>
-          {format(new Date(data?.availability.date || ''), 'PPPP', {
-            locale: da,
-          })}{' '}
-        </Text>
-        <Text size="md" fw={500}>
-          kl.{' '}
-          {format(new Date(data?.availability.slot.from || ''), 'HH:mm', {
-            locale: da,
-          })}
-        </Text>
+        {data && (
+          <>
+            <Text size="md" fw={500}>
+              {format(new Date(data?.availability.date || ''), 'PPPP', {
+                locale: da,
+              })}{' '}
+            </Text>
+            <Text size="md" fw={500}>
+              kl.{' '}
+              {format(new Date(data?.availability.slot.from || ''), 'HH:mm', {
+                locale: da,
+              })}
+            </Text>
+          </>
+        )}
         <Card.Section pt="md" pb="md">
           <Divider />
         </Card.Section>
@@ -229,7 +239,6 @@ export default function ArtistTreatmentsBooking() {
         <Stack gap="xs">{productMarkup}</Stack>
       </Card>
       <Group m="xl" justify="center">
-        <Button>Tilbage</Button>
         <AddToCartButton
           onClick={() => {
             window.location.href = window.location.href + '#cart-aside';
@@ -239,6 +248,6 @@ export default function ArtistTreatmentsBooking() {
           Tilføj indkøbskurv
         </AddToCartButton>
       </Group>
-    </ArtistStepper>
+    </>
   );
 }

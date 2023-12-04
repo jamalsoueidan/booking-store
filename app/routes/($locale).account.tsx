@@ -10,7 +10,7 @@ import {type User} from '~/lib/api/model';
 
 export type AccountOutlet = {
   customer: CustomerQuery['customer'];
-  user: User;
+  user?: User | null;
   isBusiness: boolean;
 };
 
@@ -25,7 +25,7 @@ export async function loader({request, context}: LoaderFunctionArgs) {
   const isLoggedIn = !!customerAccessToken?.accessToken;
   const isAccountHome = pathname === '/account' || pathname === '/account/';
   const isPrivateRoute =
-    /^\/account\/(orders|orders\/.*|profile|dashboard|addresses|upload|public|bookings|bookings\/.*|password|locations|locations\/.*|services|services\/.*|schedules|schedules\/.*|addresses\/.*)$/.test(
+    /^\/account\/(orders|orders\/.*|business|profile|dashboard|addresses|upload|public|bookings|bookings\/.*|password|locations|locations\/.*|services|services\/.*|schedules|schedules\/.*|addresses\/.*)$/.test(
       pathname,
     );
 
@@ -66,13 +66,13 @@ export async function loader({request, context}: LoaderFunctionArgs) {
     });
 
     if (!customer) {
-      throw new Error('Customer not found');
+      throw new Response('Customer not found', {status: 404});
     }
 
     const {payload: userIsBusiness} =
       await getBookingShopifyApi().customerIsBusiness(parseGid(customer.id).id);
 
-    let user;
+    let user = undefined;
     if (userIsBusiness.isBusiness) {
       user = (
         await getBookingShopifyApi().customerGet(parseGid(customer.id).id)
@@ -115,7 +115,11 @@ export default function Acccount() {
   }
 
   return (
-    <AccountLayout customer={customer!} user={user!} isBusiness={isBusiness!}>
+    <AccountLayout
+      customer={customer!}
+      user={user}
+      isBusiness={isBusiness || false}
+    >
       <Outlet context={{customer, user, isBusiness}} />
     </AccountLayout>
   );
@@ -194,7 +198,7 @@ export const CUSTOMER_FRAGMENT = `#graphql
 ` as const;
 
 // NOTE: https://shopify.dev/docs/api/storefront/latest/queries/customer
-const CUSTOMER_QUERY = `#graphql
+export const CUSTOMER_QUERY = `#graphql
   query Customer(
     $customerAccessToken: String!
     $country: CountryCode

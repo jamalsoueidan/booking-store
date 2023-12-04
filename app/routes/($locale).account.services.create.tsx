@@ -10,7 +10,6 @@ import {
   Title,
 } from '@mantine/core';
 import {Form, Link, useActionData, useLoaderData} from '@remix-run/react';
-import {parseGid} from '@shopify/hydrogen';
 import {
   json,
   redirect,
@@ -18,7 +17,6 @@ import {
   type LoaderFunctionArgs,
 } from '@shopify/remix-oxygen';
 import {IconArrowLeft} from '@tabler/icons-react';
-import {useState} from 'react';
 import {z} from 'zod';
 import PeriodInput from '~/components/form/PeriodInput';
 import {RadioGroupVariantsProduct} from '~/components/form/RadioGroupVariantProducts';
@@ -27,19 +25,31 @@ import {SelectSearchable} from '~/components/form/SelectSearchable';
 import {SubmitButton} from '~/components/form/SubmitButton';
 import {SwitchGroupLocations} from '~/components/form/SwitchGroupLocations';
 
-import {PRODUCT_SERVICE_ITEM_FRAGMENT} from '~/data/fragments';
+import {PRODUCT_ITEM_FRAGMENT} from '~/data/fragments';
+import {VARIANTS_QUERY_ID} from '~/data/queries';
 import {getBookingShopifyApi} from '~/lib/api/bookingShopifyApi';
-import type {CustomerProductUpsertBody} from '~/lib/api/model';
 
+import {useState} from 'react';
+import {isEqualGid} from '~/data/isEqualGid';
 import {getCustomer} from '~/lib/get-customer';
 import {customerProductUpsertBody} from '~/lib/zod/bookingShopifyApi';
 
-const schema = customerProductUpsertBody.extend({
-  productId: z.string().min(1),
-  scheduleId: z.string().min(1),
-});
+const schema = customerProductUpsertBody
+  .omit({
+    selectedOptions: true,
+    price: true,
+    compareAtPrice: true,
+    productHandle: true,
+  })
+  .extend({
+    productId: z.string().min(1),
+    scheduleId: z.string().min(1),
+  });
+
+type DefaultValues = z.infer<typeof schema>;
 
 export const action = async ({request, context}: ActionFunctionArgs) => {
+  const {storefront} = context;
   const customer = await getCustomer({context});
 
   const formData = await request.formData();
@@ -54,10 +64,30 @@ export const action = async ({request, context}: ActionFunctionArgs) => {
   try {
     const {productId, ...body} = submission.value;
 
+    const variants = await storefront.query(VARIANTS_QUERY_ID, {
+      variables: {handle: `gid://shopify/Product/${productId}`},
+    });
+
+    const variant = variants.product?.variants.nodes.find((v) =>
+      isEqualGid(v.id, body.variantId),
+    );
+
+    if (!variant) {
+      throw new Response('Variant not found', {status: 404});
+    }
+
     const response = await getBookingShopifyApi().customerProductUpsert(
       customer.id,
       productId,
-      body,
+      {
+        ...body,
+        selectedOptions: variant.selectedOptions[0],
+        productHandle: variant.product.handle,
+        price: variant.price,
+        ...(variant.compareAtPrice
+          ? {compareAtPrice: variant.compareAtPrice}
+          : {}),
+      },
     );
 
     return redirect(`/account/services/${response.payload.productId}`);
@@ -82,21 +112,8 @@ export async function loader({context}: LoaderFunctionArgs) {
     locationType: 'origin',
   };
 
-  const {payload: productIds} =
-    await getBookingShopifyApi().customerProductsListIds(customer.id);
-
-  const query = productIds.map((id) => `-${id}`).join(' AND ');
-
-  const data = await context.storefront.query(ALL_PRODUCTS_QUERY, {
-    variables: {
-      first: 50,
-      query,
-    },
-  });
-
   return json({
     locations: locations.payload,
-    storeProducts: data.products,
     schedules: schedule.payload,
     defaultValue: {
       productId: '',
@@ -118,16 +135,14 @@ export async function loader({context}: LoaderFunctionArgs) {
           locationType: findDefaultLocation?.locationType,
         },
       ],
-    } as CustomerProductUpsertBody,
+    } as DefaultValues,
   });
 }
 
 export default function AccountServicesCreate() {
-  const {locations, storeProducts, defaultValue, schedules} =
-    useLoaderData<typeof loader>();
-
+  const {locations, defaultValue, schedules} = useLoaderData<typeof loader>();
   const lastSubmission = useActionData<typeof action>();
-  const [productId, setProductId] = useState<string | null>('');
+  const [productId, setProductId] = useState<string | undefined>();
 
   const [form, fields] = useForm({
     lastSubmission,
@@ -141,19 +156,10 @@ export default function AccountServicesCreate() {
     shouldRevalidate: 'onInput',
   });
 
-  const selectServices = storeProducts.nodes.map((product) => ({
-    value: parseGid(product.id).id,
-    label: product.title,
-  }));
-
   const selectSchedules = schedules.map((schedule) => ({
     value: schedule._id,
     label: schedule.name,
   }));
-
-  const selectedProduct = storeProducts.nodes.find(
-    (p) => parseGid(p.id).id === productId,
-  );
 
   return (
     <>
@@ -177,14 +183,14 @@ export default function AccountServicesCreate() {
           <SelectSearchable
             label="Hvilken ydelse vil du tilbyde?"
             placeholder="Vælg ydelse"
-            data={selectServices}
             field={fields.productId}
             onChange={setProductId}
           />
-          {selectedProduct && (
+
+          {productId && (
             <RadioGroupVariantsProduct
               label="Hvad skal ydelsen koste?"
-              product={selectedProduct}
+              productId={productId}
               field={fields.variantId}
             />
           )}
@@ -244,7 +250,7 @@ export default function AccountServicesCreate() {
 }
 
 const ALL_PRODUCTS_QUERY = `#graphql
-  ${PRODUCT_SERVICE_ITEM_FRAGMENT}
+  ${PRODUCT_ITEM_FRAGMENT}
   query AllAccountServicesProducts(
     $country: CountryCode
     $language: LanguageCode
@@ -253,8 +259,8 @@ const ALL_PRODUCTS_QUERY = `#graphql
   ) @inContext(country: $country, language: $language) {
     products(first: $first, query: $query) {
       nodes {
-        ...ProductServiceItem
+        ...ProductItem
       }
     }
   }
-`;
+` as const;

@@ -26,15 +26,44 @@ import {type User} from '~/lib/api/model';
 import classes from './AccountMenu.module.css';
 
 const topMenu = [
-  {link: '/account/locations', label: 'Lokationer', icon: IconLocation},
-  {link: '/account/schedules', label: 'Vagtplan', icon: IconMeeple},
-  {link: '/account/services', label: 'Ydelser', icon: IconBasket},
-  {link: '/account/bookings', label: 'Reservationer', icon: IconPhoneCall},
-  {link: '/account/orders', label: 'Bestillinger', icon: IconPhoneCall},
+  {
+    link: '/account/public',
+    label: 'Profile',
+    icon: IconSocial,
+    isBusiness: true,
+  },
+  {
+    link: '/account/locations',
+    label: 'Lokationer',
+    icon: IconLocation,
+    isBusiness: true,
+  },
+  {
+    link: '/account/schedules',
+    label: 'Vagtplan',
+    icon: IconMeeple,
+    isBusiness: true,
+  },
+  {
+    link: '/account/services',
+    label: 'Ydelser',
+    icon: IconBasket,
+    isBusiness: true,
+  },
+  {
+    link: '/account/bookings',
+    label: 'Reservationer',
+    icon: IconPhoneCall,
+    isBusiness: true,
+  },
 ];
 
 const bottomMenu = [
-  {link: '/account/public', label: 'Profile', icon: IconSocial},
+  {
+    link: '/account/orders',
+    label: 'Bestillinger',
+    icon: IconPhoneCall,
+  },
   {
     link: '/account/profile',
     label: 'Konto',
@@ -45,6 +74,7 @@ const bottomMenu = [
     link: '/account/upload',
     label: 'Skift billed',
     icon: IconPhoto,
+    isBusiness: true,
   },
   {
     link: '/account/password',
@@ -61,42 +91,46 @@ export function AccountMenu({
 }: {
   closeDrawer: () => void;
   customer: CustomerQuery['customer'];
-  user: User;
+  user?: User | null;
   isBusiness: boolean;
 }) {
   const [active, setActive] = useState('Billing');
 
-  const topLinks = topMenu.map((item) => (
-    <NavLink
-      className={classes.link}
-      data-active={item.label === active || undefined}
-      to={item.link}
-      key={item.label}
-      onClick={() => {
-        closeDrawer();
-        setActive(item.label);
-      }}
-    >
-      <item.icon className={classes.linkIcon} stroke={1.5} />
-      <span>{item.label}</span>
-    </NavLink>
-  ));
+  const topLinks = topMenu
+    .filter((item) => item.isBusiness === isBusiness || !item.isBusiness)
+    .map((item) => (
+      <NavLink
+        className={classes.link}
+        data-active={item.label === active || undefined}
+        to={item.link}
+        key={item.label}
+        onClick={() => {
+          closeDrawer();
+          setActive(item.label);
+        }}
+      >
+        <item.icon className={classes.linkIcon} stroke={1.5} />
+        <Text>{item.label}</Text>
+      </NavLink>
+    ));
 
-  const bottomLinks = bottomMenu.map((item) => (
-    <NavLink
-      className={classes.link}
-      data-active={item.label === active || undefined}
-      to={item.link}
-      key={item.label}
-      onClick={() => {
-        closeDrawer();
-        setActive(item.label);
-      }}
-    >
-      <item.icon className={classes.linkIcon} stroke={1.5} />
-      <span>{item.label}</span>
-    </NavLink>
-  ));
+  const bottomLinks = bottomMenu
+    .filter((item) => item.isBusiness === isBusiness || !item.isBusiness)
+    .map((item) => (
+      <NavLink
+        className={classes.link}
+        data-active={item.label === active || undefined}
+        to={item.link}
+        key={item.label}
+        onClick={() => {
+          closeDrawer();
+          setActive(item.label);
+        }}
+      >
+        <item.icon className={classes.linkIcon} stroke={1.5} />
+        <span>{item.label}</span>
+      </NavLink>
+    ));
 
   return (
     <>
@@ -104,10 +138,11 @@ export function AccountMenu({
         <Container pt="sm">
           <UnstyledButton component={Link} to="/account">
             <Group>
-              <Tooltip label={user.customerId}>
-                <Avatar src={user.images?.profile?.url} radius="xl" />
-              </Tooltip>
-
+              {user && (
+                <Tooltip label={user.customerId}>
+                  <Avatar src={user.images?.profile?.url} radius="xl" />
+                </Tooltip>
+              )}
               <div style={{flex: 1}}>
                 <Text size="sm" fw={500} c="black">
                   {customer?.firstName} {customer?.lastName}
@@ -121,11 +156,11 @@ export function AccountMenu({
           </UnstyledButton>
         </Container>
         <Divider my="xs" />
-        {topLinks}
+        {isBusiness ? topLinks : bottomLinks}
       </div>
       <div className={classes.footer}>
         <Divider my="xs" />
-        {bottomLinks}
+        {isBusiness && bottomLinks}
 
         <Form method="POST" action="/account/logout">
           <UnstyledButton

@@ -6,36 +6,35 @@ import {json, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
 import {format} from 'date-fns';
 import da from 'date-fns/locale/da';
 import {TreatmentArtistCardComplete} from '~/components/treatment/TreatmentArtistCardComplete';
+import {PRODUCT_SELECTED_OPTIONS_QUERY} from '~/data/queries';
 import {getBookingShopifyApi} from '~/lib/api/bookingShopifyApi';
 import {durationToTime} from '~/lib/duration';
 import {ALL_PRODUCTS_QUERY} from './($locale).artist.$username._index';
 import {AddToCartButton} from './($locale).products.$handle';
-import {PRODUCT_QUERY} from './($locale).treatments.$handle';
 
 export const loader = async ({
   request,
   params,
   context,
 }: LoaderFunctionArgs) => {
-  const {handle} = params;
+  const {productHandle, username} = params;
   const {storefront} = context;
 
   const url = new URL(request.url);
   const searchParams = url.searchParams;
   const productIds = searchParams.getAll('productIds');
-  const username = searchParams.get('username');
   const locationId = searchParams.get('locationId');
   const shippingId = searchParams.get('shippingId');
   const fromDate = searchParams.get('fromDate');
   const toDate = searchParams.get('toDate');
 
-  if (!handle || !username || !locationId || !fromDate || !toDate) {
+  if (!productHandle || !username || !locationId || !fromDate || !toDate) {
     throw new Response('Expected productId to be selected', {status: 400});
   }
 
   try {
-    const {product} = await storefront.query(PRODUCT_QUERY, {
-      variables: {handle, selectedOptions: []},
+    const {product} = await storefront.query(PRODUCT_SELECTED_OPTIONS_QUERY, {
+      variables: {productHandle, selectedOptions: []},
     });
 
     if (!product?.id) {
@@ -87,10 +86,6 @@ export default function ArtistTreatmentsBooking() {
       (p) => p.productId.toString() === parseGid(product.id).id,
     );
 
-    const productVariant = product.variants.nodes.find(
-      (v) => parseGid(v.id).id === slotProduct?.variantId.toString(),
-    );
-
     return (
       <div key={product.handle}>
         <Text size="md" fw={500}>
@@ -103,9 +98,11 @@ export default function ArtistTreatmentsBooking() {
           <Text size="xs" c="dimmed" tt="uppercase" fw={500}>
             {durationToTime(slotProduct?.duration ?? 0)}
           </Text>
-          <Text size="xs" c="dimmed" fw={500}>
-            <Money data={productVariant!.price} />
-          </Text>
+          {slotProduct?.price && (
+            <Text size="xs" c="dimmed" fw={500}>
+              <Money data={slotProduct?.price as any} />
+            </Text>
+          )}
         </Flex>
       </div>
     );
@@ -117,13 +114,11 @@ export default function ArtistTreatmentsBooking() {
         (p) => p.productId.toString() === parseGid(product.id).id,
       );
 
-      const productVariant = product.variants.nodes.find(
-        (v) => parseGid(v.id).id === slotProduct?.variantId.toString(),
-      );
-
       const input =
         {
-          merchandiseId: productVariant?.id || '',
+          merchandiseId: `gid://shopify/ProductVariant/${
+            slotProduct?.variantId || ''
+          }`,
           quantity: 1,
           attributes: [
             {

@@ -4,9 +4,9 @@
  * Booking Shopify Api
  * OpenAPI spec version: 1.0.0
  */
-import type {User} from './user';
+import type {CustomerProductList} from './customerProductList';
 
-export interface CustomerUpsertResponse {
-  payload: User;
+export interface UserProductsGetResponse {
+  payload: CustomerProductList;
   success: boolean;
 }

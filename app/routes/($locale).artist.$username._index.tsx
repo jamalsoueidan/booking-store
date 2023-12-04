@@ -4,7 +4,7 @@ import {Button, Flex, SimpleGrid, Skeleton, Stack} from '@mantine/core';
 import {Await, Form, Link, useLoaderData, useLocation} from '@remix-run/react';
 import {Suspense} from 'react';
 import {ArtistProduct} from '~/components/artist/ArtistProduct';
-import {PRODUCT_SERVICE_ITEM_FRAGMENT} from '~/data/fragments';
+import {PRODUCT_ITEM_FRAGMENT} from '~/data/fragments';
 import {getBookingShopifyApi} from '~/lib/api/bookingShopifyApi';
 import {
   type UserProductsListByScheduleParams,
@@ -22,21 +22,13 @@ export async function loader({request, params, context}: LoaderFunctionArgs) {
     throw new Error('Invalid request method');
   }
 
-  const url = new URL(request.url);
-  const searchParams: SearchParams = {
-    scheduleId: undefined,
-  };
+  const {searchParams} = new URL(request.url);
+  const scheduleId = searchParams.get('scheduleId') as string;
 
-  for (const [key, value] of url.searchParams.entries()) {
-    searchParams[key] = value;
-  }
-
-  //get products for specific schedule id
   const {payload: services} =
-    await getBookingShopifyApi().userProductsListBySchedule(
-      username,
-      searchParams,
-    );
+    await getBookingShopifyApi().userProductsListBySchedule(username, {
+      scheduleId,
+    });
 
   const productIds = services.map(({productId}) => productId);
 
@@ -137,7 +129,7 @@ function ArtistSchedulesMenu({data}: {data: UserScheduleWithLocations[]}) {
 }
 
 export const ALL_PRODUCTS_QUERY = `#graphql
-  ${PRODUCT_SERVICE_ITEM_FRAGMENT}
+  ${PRODUCT_ITEM_FRAGMENT}
   query ArtistServicesProducts(
     $country: CountryCode
     $language: LanguageCode
@@ -146,7 +138,7 @@ export const ALL_PRODUCTS_QUERY = `#graphql
   ) @inContext(country: $country, language: $language) {
     products(first: $first, sortKey: TITLE, query: $query) {
       nodes {
-        ...ProductServiceItem
+        ...ProductItem
       }
     }
   }

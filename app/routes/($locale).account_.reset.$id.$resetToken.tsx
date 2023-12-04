@@ -71,6 +71,7 @@ export async function action({request, context, params}: ActionFunctionArgs) {
 
 export default function Reset() {
   const action = useActionData<ActionResponse>();
+  const error = action?.error || null;
 
   return (
     <Container size={420} my={40}>
@@ -111,6 +112,15 @@ export default function Reset() {
           <Button fullWidth mt="xl" type="submit">
             Nulstil
           </Button>
+          {error ? (
+            <p>
+              <mark>
+                <small>{error}</small>
+              </mark>
+            </p>
+          ) : (
+            <br />
+          )}
         </form>
       </Paper>
 

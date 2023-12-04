@@ -5,7 +5,7 @@ import {
   useNavigate,
   type MetaFunction,
 } from '@remix-run/react';
-import {defer, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
+import {json, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
 import type {
   ProductFragment,
   ProductVariantFragment,
@@ -26,13 +26,15 @@ import {
 import {Image, getSelectedProductOptions} from '@shopify/hydrogen';
 import {IconArrowLeft, IconArrowRight} from '@tabler/icons-react';
 import {useState} from 'react';
+import {PRODUCT_SELECTED_OPTIONS_QUERY} from '~/data/queries';
+import {determineStepFromURL} from '~/lib/determineStepFromURL';
 
 export const meta: MetaFunction<typeof loader> = ({data}) => {
   return [{title: `BySisters | ${data?.product.title ?? ''}`}];
 };
 
 export async function loader({params, request, context}: LoaderFunctionArgs) {
-  const {handle} = params;
+  const {productHandle} = params;
   const {storefront} = context;
 
   const selectedOptions = getSelectedProductOptions(request).filter(
@@ -47,13 +49,13 @@ export async function loader({params, request, context}: LoaderFunctionArgs) {
       !option.name.startsWith('fbclid'),
   );
 
-  if (!handle) {
+  if (!productHandle) {
     throw new Error('Expected product handle to be defined');
   }
 
   // await the query for the critical product data
-  const {product} = await storefront.query(PRODUCT_QUERY, {
-    variables: {handle, selectedOptions},
+  const {product} = await storefront.query(PRODUCT_SELECTED_OPTIONS_QUERY, {
+    variables: {productHandle, selectedOptions},
   });
 
   if (!product?.id) {
@@ -63,7 +65,7 @@ export async function loader({params, request, context}: LoaderFunctionArgs) {
   const firstVariant = product.variants.nodes[0];
   product.selectedVariant = firstVariant;
 
-  return defer({product});
+  return json({product});
 }
 
 export default function Product() {
@@ -95,75 +97,57 @@ function ProductImage({image}: {image: ProductVariantFragment['image']}) {
   );
 }
 
-const paths: Record<number, {title: string; path: string}> = {
-  0: {
+const paths = [
+  {
     title: 'Beskrivelse',
     path: '',
   },
-  1: {
+  {
     title: 'Skønhedsekspert?',
     path: 'pick-username',
   },
-  2: {
+  {
     title: 'Lokation?',
     path: 'pick-location',
   },
-  3: {
+  {
     title: 'Andre behandlinger?',
     path: 'pick-more',
   },
-  4: {
+  {
     title: 'Dato & Tid?',
     path: 'pick-datetime',
   },
-  5: {
+  {
     title: 'Godkend',
     path: 'completed',
   },
-};
+];
 
 function ProductMain({product}: {product: ProductFragment}) {
   const navigate = useNavigate();
   const location = useLocation();
-  const {title} = product;
-  const [active, setActive] = useState(determineStepFromURL(location.pathname));
 
-  function getBasePath() {
-    const segments = location.pathname.split('/').filter(Boolean);
-    return '/' + segments.slice(0, 2).join('/');
-  }
-
-  function determineStepFromURL(pathname: string) {
-    const base = getBasePath();
-    for (const [step, data] of Object.entries(paths)) {
-      if (data.path !== '') {
-        const fullPath = `${base}/${data.path}`.replace(/\/+$/, '');
-        if (pathname === fullPath || pathname.startsWith(fullPath + '/')) {
-          return parseInt(step, 10);
-        }
-      }
-    }
-    return 0;
-  }
+  const [active, setActive] = useState(
+    determineStepFromURL(paths, location.pathname),
+  );
 
   const nextStep = () => {
     const newActive = active < 5 ? active + 1 : active;
     setActive(newActive);
-    const basePath = getBasePath();
-    navigate(`${basePath}/${paths[newActive].path}${location.search}`);
+    navigate(paths[newActive].path + location.search);
   };
 
   const prevStep = () => {
     const newActive = active > 0 ? active - 1 : active;
     setActive(newActive);
-    const basePath = getBasePath();
-    navigate(`${basePath}/${paths[newActive].path}${location.search}`);
+    navigate(paths[newActive].path + location.search);
   };
 
   return (
     <Box p={{base: rem(10), md: rem(42)}} bg="#fafafb">
       <Title order={1} size={rem(54)} mb="xl">
-        {title}
+        {product?.title}
       </Title>
 
       <Group justify="space-between">
@@ -244,82 +228,3 @@ function ProductMain({product}: {product: ProductFragment}) {
     </Box>
   );
 }
-
-const PRODUCT_VARIANT_FRAGMENT = `#graphql
-  fragment ProductVariant on ProductVariant {
-    availableForSale
-    compareAtPrice {
-      amount
-      currencyCode
-    }
-    id
-    image {
-      __typename
-      id
-      url
-      altText
-      width
-      height
-    }
-    price {
-      amount
-      currencyCode
-    }
-    product {
-      title
-      handle
-    }
-    selectedOptions {
-      name
-      value
-    }
-    sku
-    title
-    unitPrice {
-      amount
-      currencyCode
-    }
-  }
-` as const;
-
-const PRODUCT_FRAGMENT = `#graphql
-  fragment Product on Product {
-    id
-    title
-    vendor
-    handle
-    descriptionHtml
-    description
-    options {
-      name
-      values
-    }
-    selectedVariant: variantBySelectedOptions(selectedOptions: $selectedOptions) {
-      ...ProductVariant
-    }
-    variants(first: 1) {
-      nodes {
-        ...ProductVariant
-      }
-    }
-    seo {
-      description
-      title
-    }
-  }
-  ${PRODUCT_VARIANT_FRAGMENT}
-` as const;
-
-export const PRODUCT_QUERY = `#graphql
-  query Product(
-    $country: CountryCode
-    $handle: String!
-    $language: LanguageCode
-    $selectedOptions: [SelectedOptionInput!]!
-  ) @inContext(country: $country, language: $language) {
-    product(handle: $handle) {
-      ...Product
-    }
-  }
-  ${PRODUCT_FRAGMENT}
-` as const;
