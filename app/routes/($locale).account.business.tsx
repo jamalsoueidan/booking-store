@@ -12,7 +12,7 @@ import {
   Title,
   rem,
 } from '@mantine/core';
-import {Form, useActionData, useLoaderData} from '@remix-run/react';
+import {Form, useActionData, useFetcher, useLoaderData} from '@remix-run/react';
 import {parseGid} from '@shopify/hydrogen';
 import {
   json,
@@ -22,10 +22,11 @@ import {
 } from '@shopify/remix-oxygen';
 import {SubmitButton} from '~/components/form/SubmitButton';
 
-import {IconAt} from '@tabler/icons-react';
+import {IconAt, IconCheck, IconExclamationCircle} from '@tabler/icons-react';
 import {type z} from 'zod';
 import {MultiTags} from '~/components/form/MultiTags';
 import {getBookingShopifyApi} from '~/lib/api/bookingShopifyApi';
+import {type UserUsernameTakenResponsePayload} from '~/lib/api/model';
 import {redirectWithNotification} from '~/lib/show-notification';
 import {customerCreateBody} from '~/lib/zod/bookingShopifyApi';
 import {CUSTOMER_QUERY} from './($locale).account';
@@ -125,15 +126,25 @@ export async function loader({context, params}: LoaderFunctionArgs) {
   const {payload: specialityOptions} =
     await getBookingShopifyApi().metaspecialties();
 
+  const username = convertToValidUrlPath(
+    customer.firstName || '',
+    customer.lastName || '',
+  );
+
+  const {payload: usernameTaken} =
+    await getBookingShopifyApi().userUsernameTaken(username);
+
   return json({
-    customer,
     professionOptions,
     specialityOptions,
     defaultValue: {
-      username: convertToValidUrlPath(
-        customer?.firstName || '',
-        customer?.lastName || '',
-      ),
+      username: !usernameTaken.usernameTaken
+        ? username
+        : convertToValidUrlPath(
+            customer.firstName || '',
+            customer.lastName || '',
+            true,
+          ),
       aboutMe: '',
       shortDescription: '',
       professions: [],
@@ -154,7 +165,7 @@ export async function loader({context, params}: LoaderFunctionArgs) {
 
 export default function AccountBusiness() {
   const lastSubmission = useActionData<typeof action>();
-  const {customer, professionOptions, defaultValue, specialityOptions} =
+  const {professionOptions, defaultValue, specialityOptions} =
     useLoaderData<typeof loader>();
 
   const [
@@ -184,6 +195,12 @@ export default function AccountBusiness() {
 
   const {instagram, twitter, youtube} = useFieldset(form.ref, social);
 
+  const fetcher = useFetcher<UserUsernameTakenResponsePayload>();
+
+  const onChangeUsername = (event: React.ChangeEvent<HTMLInputElement>) => {
+    fetcher.load(`/api/usernameTaken?username=${event.target.value}`);
+  };
+
   return (
     <>
       <Flex direction={'row'} align={'center'}>
@@ -198,7 +215,24 @@ export default function AccountBusiness() {
 
       <Form method="post" {...form.props}>
         <Stack gap="md">
-          <TextInput label="Vælge en profilnavn" {...conform.input(username)} />
+          <TextInput
+            label="Vælge en profilnavn"
+            {...conform.input(username)}
+            onChange={onChangeUsername}
+            rightSection={
+              fetcher.data?.usernameTaken ? (
+                <IconExclamationCircle
+                  style={{width: rem(20), height: rem(20)}}
+                  color="var(--mantine-color-error)"
+                />
+              ) : (
+                <IconCheck
+                  style={{width: rem(20), height: rem(20)}}
+                  color="var(--mantine-color-green-filled)"
+                />
+              )
+            }
+          />
 
           <Radio.Group
             label="Hvad er din køn?"
@@ -284,10 +318,14 @@ export default function AccountBusiness() {
   );
 }
 
-function convertToValidUrlPath(firstName: string, lastName: string): string {
+function convertToValidUrlPath(
+  firstName: string,
+  lastName: string,
+  random?: boolean,
+): string {
   const allowedCharactersRegex = /[^a-zA-Z0-9\-_]/g;
   firstName = firstName.replace(allowedCharactersRegex, '');
   lastName = lastName.replace(allowedCharactersRegex, '');
-  const urlPath = `${firstName}-${lastName}`;
+  const urlPath = `${firstName}-${lastName}${random ? '-96' : ''}`;
   return urlPath?.toLowerCase();
 }

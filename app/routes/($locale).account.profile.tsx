@@ -1,4 +1,5 @@
 import {
+  Blockquote,
   Button,
   Checkbox,
   Divider,
@@ -13,6 +14,7 @@ import {
   useActionData,
   useNavigation,
   useOutletContext,
+  useSearchParams,
   type MetaFunction,
 } from '@remix-run/react';
 import type {CustomerUpdateInput} from '@shopify/hydrogen/storefront-api-types';
@@ -92,6 +94,22 @@ export async function action({request, context}: ActionFunctionArgs) {
       );
     }
 
+    // if coming from business page
+    const url = new URL(request.url);
+    const searchParams = new URLSearchParams(url.search);
+
+    const comingFromBusiness = Boolean(
+      searchParams.has('firstName') || searchParams.has('lastName'),
+    );
+
+    if (comingFromBusiness) {
+      return redirect('/account/business', {
+        headers: {
+          'Set-Cookie': await session.commit(),
+        },
+      });
+    }
+
     return json(
       {error: null, customer: updated.customerUpdate?.customer},
       {
@@ -109,12 +127,24 @@ export default function AccountProfile() {
   const account = useOutletContext<{customer: CustomerFragment}>();
   const {state} = useNavigation();
   const action = useActionData<ActionResponse>();
+  const [searchParams] = useSearchParams();
   const customer = action?.customer ?? account?.customer;
+
+  const comingFromBusiness = Boolean(
+    searchParams.has('firstName') || searchParams.has('lastName'),
+  );
 
   return (
     <>
       <Title>Personlige oplysninger</Title>
       <Divider my="md" />
+
+      {comingFromBusiness ? (
+        <Blockquote color="lime" my="md">
+          Før du kan register dig som skønhedsekspert, bedes du udfylde du
+          udfylder alle felter og trykke på opdatere.
+        </Blockquote>
+      ) : undefined}
 
       <Form method="PUT">
         <Stack>
@@ -177,9 +207,11 @@ export default function AccountProfile() {
               {action.error}
             </Text>
           )}
-          <Button type="submit" disabled={state !== 'idle'}>
-            {state !== 'idle' ? 'Opdaterer...' : 'Opdater'}
-          </Button>
+          <div>
+            <Button type="submit" loading={state !== 'idle'}>
+              {comingFromBusiness ? 'Gem og gå videre...' : 'Opdater'}
+            </Button>
+          </div>
         </Stack>
       </Form>
     </>

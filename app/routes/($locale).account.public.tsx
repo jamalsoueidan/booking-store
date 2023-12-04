@@ -93,7 +93,7 @@ export default function AccountBusiness() {
 
   return (
     <>
-      <Title>Redigere din profil</Title>
+      <Title>Din profil</Title>
       <Divider my="md" />
 
       <Form method="POST" {...form.props}>

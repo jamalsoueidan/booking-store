@@ -27,6 +27,12 @@ import classes from './AccountMenu.module.css';
 
 const topMenu = [
   {
+    link: '/account/public',
+    label: 'Profile',
+    icon: IconSocial,
+    isBusiness: true,
+  },
+  {
     link: '/account/locations',
     label: 'Lokationer',
     icon: IconLocation,
@@ -57,12 +63,6 @@ const bottomMenu = [
     link: '/account/orders',
     label: 'Bestillinger',
     icon: IconPhoneCall,
-  },
-  {
-    link: '/account/public',
-    label: 'Profile',
-    icon: IconSocial,
-    isBusiness: true,
   },
   {
     link: '/account/profile',
