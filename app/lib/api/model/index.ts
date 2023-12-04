@@ -163,6 +163,8 @@ export * from './userScheduleProductWithLocationsAllOf';
 export * from './userScheduleWithLocations';
 export * from './userSchedulesListLocations200';
 export * from './userSocial';
+export * from './userUsernameTakenResponse';
+export * from './userUsernameTakenResponsePayload';
 export * from './usersListParams';
 export * from './usersListResponse';
 export * from './usersListResponsePayload';

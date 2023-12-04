@@ -70,6 +70,21 @@ export const productsGetUsersByVariantResponse = zod.object({
 });
 
 /**
+ * This endpoint return false or true
+ * @summary GET check if username is taken
+ */
+export const userUsernameTakenParams = zod.object({
+  username: zod.string(),
+});
+
+export const userUsernameTakenResponse = zod.object({
+  success: zod.boolean(),
+  payload: zod.object({
+    usernameTaken: zod.boolean(),
+  }),
+});
+
+/**
  * This endpoint gets user object
  * @summary GET Get user
  */

@@ -1029,6 +1029,22 @@ components:
       required:
         - success
         - payload
+    UserUsernameTakenResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: true
+        payload:
+          type: object
+          properties:
+            usernameTaken:
+              type: boolean
+          required:
+            - usernameTaken
+      required:
+        - success
+        - payload
     User:
       type: object
       properties:
@@ -1818,6 +1834,36 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ProductsGetUsersByVariantResponse'
+        '400':
+          $ref: '#/components/responses/BadResponse'
+        '401':
+          $ref: '#/components/responses/UnauthorizedResponse'
+        '403':
+          $ref: '#/components/responses/ForbiddenResponse'
+        '404':
+          $ref: '#/components/responses/NotFoundResponse'
+      security: []
+  '/user/{username}/username-taken':
+    get:
+      parameters:
+        - name: username
+          in: path
+          description: username
+          required: true
+          schema:
+            type: string
+      tags:
+        - User
+      operationId: userUsernameTaken
+      summary: GET check if username is taken
+      description: This endpoint return false or true
+      responses:
+        '200':
+          description: Response with payload
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserUsernameTakenResponse'
         '400':
           $ref: '#/components/responses/BadResponse'
         '401':

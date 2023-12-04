@@ -73,6 +73,7 @@ import type {
   UserScheduleGetByLocationResponse,
   UserScheduleGetByProductIdResponse,
   UserSchedulesListLocations200,
+  UserUsernameTakenResponse,
   UsersListParams,
   UsersListResponse,
   UsersProfessionsResponse,
@@ -107,6 +108,17 @@ export const getBookingShopifyApi = () => {
       url: `/products/get-users-by-variant`,
       method: 'get',
       params,
+    });
+  };
+
+  /**
+   * This endpoint return false or true
+   * @summary GET check if username is taken
+   */
+  const userUsernameTaken = (username: string) => {
+    return queryClient<UserUsernameTakenResponse>({
+      url: `/user/${username}/username-taken`,
+      method: 'get',
     });
   };
 
@@ -724,6 +736,7 @@ export const getBookingShopifyApi = () => {
   return {
     productsGetUsersImage,
     productsGetUsersByVariant,
+    userUsernameTaken,
     userGet,
     userProductGet,
     userProductsListBySchedule,
@@ -783,6 +796,11 @@ export type ProductsGetUsersByVariantResult = NonNullable<
     ReturnType<
       ReturnType<typeof getBookingShopifyApi>['productsGetUsersByVariant']
     >
+  >
+>;
+export type UserUsernameTakenResult = NonNullable<
+  Awaited<
+    ReturnType<ReturnType<typeof getBookingShopifyApi>['userUsernameTaken']>
   >
 >;
 export type UserGetResult = NonNullable<
