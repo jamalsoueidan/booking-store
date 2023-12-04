@@ -11,13 +11,12 @@ import {
   Box,
   Button,
   Group,
-  ScrollArea,
   Text,
   Tooltip,
   rem,
 } from '@mantine/core';
 import {IconArrowLeft, IconArrowRight} from '@tabler/icons-react';
-import {useEffect, useState, type ReactNode} from 'react';
+import {type ReactNode} from 'react';
 import {type ProductFragment} from 'storefrontapi.generated';
 import {determineStepFromURL} from '~/lib/determineStepFromURL';
 
@@ -37,17 +36,11 @@ export function TreatmentStepper({paths, product}: StepperProps) {
   const navigate = useNavigate();
   const location = useLocation();
   const [searchParams] = useSearchParams();
-  const [disabled, setDisabled] = useState(false);
   const navigation = useNavigation();
 
-  const [active, setActive] = useState(
-    determineStepFromURL(paths, location.pathname),
-  );
-
   const nextStep = () => {
-    const newActive = active < 5 ? active + 1 : active;
-    setActive(newActive);
-    navigate(paths[newActive].path + location.search, {
+    const path = paths[determineStepFromURL(paths, location.pathname) + 1];
+    navigate(path.path + location.search, {
       state: {
         key: 'booking',
       },
@@ -55,47 +48,45 @@ export function TreatmentStepper({paths, product}: StepperProps) {
   };
 
   const prevStep = () => {
-    const newActive = active > 0 ? active - 1 : active;
-    setActive(newActive);
-    if (newActive === 0) {
+    const path = paths[determineStepFromURL(paths, location.pathname) - 1];
+    if (path.path === '') {
       return navigate('./', {
         state: {
           key: 'booking',
         },
       });
     }
-    navigate(paths[newActive].path + location.search, {
+    navigate(path.path + location.search, {
       state: {
         key: 'booking',
       },
     });
   };
 
-  useEffect(() => {
-    const requiredParams = paths[active].required;
-    if (requiredParams) {
-      const missingParams = requiredParams.filter(
-        (param) => !searchParams.has(param),
-      );
-      return setDisabled(missingParams.length > 0);
-    }
-    setDisabled(false);
-  }, [active, paths, searchParams]);
+  const currenctActive = determineStepFromURL(paths, location.pathname);
+  const currentPath = paths[currenctActive];
+
+  const requiredParams = currentPath.required;
+  const missingParams = requiredParams?.filter(
+    (param) => !searchParams.has(param),
+  );
+
+  const disabled = (missingParams && missingParams.length > 0) || false;
 
   return (
     <>
       <Group justify="space-between">
         <Group gap="xs">
           <Text c="dimmed" size={rem(24)}>
-            {active + 1}/{Object.keys(paths).length}
+            {currenctActive + 1}/{Object.keys(paths).length}
           </Text>
           <Text fw={500} tt="uppercase" size={rem(24)}>
-            {paths[active].title}
+            {currentPath.title}
           </Text>
         </Group>
-        {paths[active].path !== 'completed' && (
+        {currentPath.path !== 'completed' && (
           <Group gap="xs">
-            {active > 0 ? (
+            {currenctActive > 0 ? (
               <>
                 <ActionIcon
                   variant="filled"
@@ -115,7 +106,7 @@ export function TreatmentStepper({paths, product}: StepperProps) {
 
                 <ConditionalTooltip
                   disabled={disabled}
-                  tooltipText={paths[active].text}
+                  tooltipText={currentPath.text}
                 >
                   <ActionIcon
                     variant="filled"
@@ -153,19 +144,7 @@ export function TreatmentStepper({paths, product}: StepperProps) {
       </Group>
 
       <Box mt="xl">
-        {paths[active].path === 'completed' ||
-        paths[active].path === 'pick-datetime' ? (
-          <Outlet context={{product}} />
-        ) : (
-          <ScrollArea
-            style={{height: 'calc(100vh)'}}
-            type="always"
-            offsetScrollbars
-            scrollbarSize={18}
-          >
-            <Outlet context={{product}} />
-          </ScrollArea>
-        )}
+        <Outlet context={{product}} />
       </Box>
     </>
   );
@@ -189,7 +168,6 @@ const ConditionalTooltip: React.FC<ConditionalTooltipProps> = ({
       </Tooltip>
     );
   }
+
   return <>{children}</>;
 };
-
-// Usage remains the same

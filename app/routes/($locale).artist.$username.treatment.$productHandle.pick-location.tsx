@@ -1,13 +1,15 @@
-import {Flex} from '@mantine/core';
+import {Flex, Skeleton} from '@mantine/core';
 import {useDisclosure} from '@mantine/hooks';
-import {useLoaderData, useSearchParams} from '@remix-run/react';
-import {json, redirect, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
+import {Await, useLoaderData, useSearchParams} from '@remix-run/react';
+import {defer, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
+import {Suspense, useEffect} from 'react';
 import {LocationModal} from '~/components/LocationModal';
 import {AristLocationRadioCard} from '~/components/artist/ArtistLocationRadioCard';
 import {getBookingShopifyApi} from '~/lib/api/bookingShopifyApi';
 import {
   CustomerLocationLocationType,
   type CustomerLocation,
+  type UserScheduleGetByProductIdResponsePayload,
 } from '~/lib/api/model';
 
 export function shouldRevalidate() {
@@ -23,24 +25,12 @@ export async function loader({request, params, context}: LoaderFunctionArgs) {
   }
 
   try {
-    const {payload: schedule} =
-      await getBookingShopifyApi().userScheduleGetByProduct(
-        username,
-        productHandle,
-      );
+    const schedule = getBookingShopifyApi().userScheduleGetByProduct(
+      username,
+      productHandle,
+    );
 
-    const url = new URL(request.url);
-    if (
-      schedule.locations.length === 1 &&
-      url.searchParams.get('locationId') === null
-    ) {
-      url.searchParams.set('locationId', schedule.locations[0]._id);
-      return redirect(url.toString(), {
-        status: 302,
-      });
-    }
-
-    return json({
+    return defer({
       schedule,
     });
   } catch (err) {
@@ -48,9 +38,32 @@ export async function loader({request, params, context}: LoaderFunctionArgs) {
   }
 }
 
-export default function TreatmentHandlePickLocation() {
-  const [opened, {open, close}] = useDisclosure(false);
+export default function ArtistTreatmentPickLocation() {
   const {schedule} = useLoaderData<typeof loader>();
+
+  return (
+    <Suspense
+      fallback={
+        <div>
+          <Skeleton height={50} mb="xl" />
+          <Skeleton height={50} mb="xl" />
+          <Skeleton height={50} mb="xl" />
+        </div>
+      }
+    >
+      <Await resolve={schedule}>
+        {({payload}) => <TreatmentHandlePickLocation schedule={payload} />}
+      </Await>
+    </Suspense>
+  );
+}
+
+function TreatmentHandlePickLocation({
+  schedule,
+}: {
+  schedule: UserScheduleGetByProductIdResponsePayload;
+}) {
+  const [opened, {open, close}] = useDisclosure(false);
   const [searchParams, setSearchParams] = useSearchParams();
 
   const setShippingId = (value: string | undefined) => {
@@ -99,6 +112,12 @@ export default function TreatmentHandlePickLocation() {
     setShippingId(shippingId);
     close();
   };
+
+  useEffect(() => {
+    if (schedule.locations.length === 1 && !searchParams.has('locationId')) {
+      setLocationId(schedule.locations[0]);
+    }
+  }, []);
 
   const markup = schedule.locations.map((location) => {
     return (
