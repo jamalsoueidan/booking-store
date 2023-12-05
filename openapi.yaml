@@ -724,9 +724,11 @@ components:
           properties:
             youtube:
               type: string
-            twitter:
+            x:
               type: string
             instagram:
+              type: string
+            facebook:
               type: string
         speaks:
           type: array
@@ -789,9 +791,11 @@ components:
           properties:
             youtube:
               type: string
-            twitter:
+            facebook:
               type: string
             instagram:
+              type: string
+            x:
               type: string
         speaks:
           type: array
@@ -1113,9 +1117,11 @@ components:
           properties:
             youtube:
               type: string
-            twitter:
+            x:
               type: string
             instagram:
+              type: string
+            facebook:
               type: string
         speaks:
           type: array

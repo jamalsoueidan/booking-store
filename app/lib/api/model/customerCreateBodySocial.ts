@@ -6,7 +6,8 @@
  */
 
 export type CustomerCreateBodySocial = {
+  facebook?: string;
   instagram?: string;
-  twitter?: string;
+  x?: string;
   youtube?: string;
 };

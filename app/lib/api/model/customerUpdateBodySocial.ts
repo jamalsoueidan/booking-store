@@ -6,7 +6,8 @@
  */
 
 export type CustomerUpdateBodySocial = {
+  facebook?: string;
   instagram?: string;
-  twitter?: string;
+  x?: string;
   youtube?: string;
 };

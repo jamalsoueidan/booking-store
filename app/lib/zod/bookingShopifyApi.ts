@@ -104,8 +104,9 @@ export const userGetResponse = zod.object({
     gender: zod.string(),
     social: zod.object({
       youtube: zod.string().optional(),
-      twitter: zod.string().optional(),
+      x: zod.string().optional(),
       instagram: zod.string().optional(),
+      facebook: zod.string().optional(),
     }),
     speaks: zod.array(zod.string()),
     images: zod.object({
@@ -879,8 +880,9 @@ export const usersListResponse = zod.object({
         gender: zod.string(),
         social: zod.object({
           youtube: zod.string().optional(),
-          twitter: zod.string().optional(),
+          x: zod.string().optional(),
           instagram: zod.string().optional(),
+          facebook: zod.string().optional(),
         }),
         speaks: zod.array(zod.string()),
         images: zod.object({
@@ -940,8 +942,9 @@ export const customerUpdateBody = zod.object({
   social: zod
     .object({
       youtube: zod.string().optional(),
-      twitter: zod.string().optional(),
+      facebook: zod.string().optional(),
       instagram: zod.string().optional(),
+      x: zod.string().optional(),
     })
     .optional(),
   speaks: zod.array(zod.string()).optional(),
@@ -963,8 +966,9 @@ export const customerUpdateResponse = zod.object({
     gender: zod.string(),
     social: zod.object({
       youtube: zod.string().optional(),
-      twitter: zod.string().optional(),
+      x: zod.string().optional(),
       instagram: zod.string().optional(),
+      facebook: zod.string().optional(),
     }),
     speaks: zod.array(zod.string()),
     images: zod.object({
@@ -1003,8 +1007,9 @@ export const customerGetResponse = zod.object({
     gender: zod.string(),
     social: zod.object({
       youtube: zod.string().optional(),
-      twitter: zod.string().optional(),
+      x: zod.string().optional(),
       instagram: zod.string().optional(),
+      facebook: zod.string().optional(),
     }),
     speaks: zod.array(zod.string()),
     images: zod.object({
@@ -1058,8 +1063,9 @@ export const customerCreateBody = zod.object({
   gender: zod.string(),
   social: zod.object({
     youtube: zod.string().optional(),
-    twitter: zod.string().optional(),
+    x: zod.string().optional(),
     instagram: zod.string().optional(),
+    facebook: zod.string().optional(),
   }),
   speaks: zod.array(zod.string()),
 });
@@ -1080,8 +1086,9 @@ export const customerCreateResponse = zod.object({
     gender: zod.string(),
     social: zod.object({
       youtube: zod.string().optional(),
-      twitter: zod.string().optional(),
+      x: zod.string().optional(),
       instagram: zod.string().optional(),
+      facebook: zod.string().optional(),
     }),
     speaks: zod.array(zod.string()),
     images: zod.object({
@@ -1949,8 +1956,9 @@ export const customerLocationSetDefaultResponse = zod.object({
     gender: zod.string(),
     social: zod.object({
       youtube: zod.string().optional(),
-      twitter: zod.string().optional(),
+      x: zod.string().optional(),
       instagram: zod.string().optional(),
+      facebook: zod.string().optional(),
     }),
     speaks: zod.array(zod.string()),
     images: zod.object({
@@ -2027,8 +2035,9 @@ export const customerLocationRemoveResponse = zod.object({
     gender: zod.string(),
     social: zod.object({
       youtube: zod.string().optional(),
-      twitter: zod.string().optional(),
+      x: zod.string().optional(),
       instagram: zod.string().optional(),
+      facebook: zod.string().optional(),
     }),
     speaks: zod.array(zod.string()),
     images: zod.object({
@@ -2068,8 +2077,9 @@ export const customerLocationAddResponse = zod.object({
     gender: zod.string(),
     social: zod.object({
       youtube: zod.string().optional(),
-      twitter: zod.string().optional(),
+      x: zod.string().optional(),
       instagram: zod.string().optional(),
+      facebook: zod.string().optional(),
     }),
     speaks: zod.array(zod.string()),
     images: zod.object({
