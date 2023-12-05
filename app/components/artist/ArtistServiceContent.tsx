@@ -40,6 +40,7 @@ export function ArtistServiceContent({
         order={3}
         className={classes.title}
         mt={product.featuredImage ? 'sm' : undefined}
+        size={rem(18)}
         mb={rem(4)}
         fw={500}
       >

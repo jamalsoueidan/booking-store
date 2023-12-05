@@ -4,7 +4,7 @@
 
   &:hover {
     transform: scale(1.02);
-    box-shadow: var(--mantine-shadow-lg);
+    box-shadow: var(--mantine-shadow-sm);
     z-index: 10;
   }
 }

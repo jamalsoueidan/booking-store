@@ -1,8 +1,8 @@
 import {Carousel} from '@mantine/carousel';
 import {
+  Box,
   Container,
   Group,
-  SimpleGrid,
   Skeleton,
   Stack,
   Text,
@@ -96,10 +96,10 @@ function FeaturedArtists({artists}: {artists: Promise<UsersListResponse>}) {
         <Await resolve={artists}>
           {({payload}) => (
             <Carousel
-              slideSize={{base: '50%', md: '20%', sm: '33.333%'}}
+              slideSize={{base: '75%', md: '20%', sm: '33.333%'}}
               slideGap="sm"
               align="start"
-              containScroll="keepSnaps"
+              containScroll="trimSnaps"
               withControls={false}
             >
               {payload.results.map((artist) => (
@@ -115,13 +115,64 @@ function FeaturedArtists({artists}: {artists: Promise<UsersListResponse>}) {
   );
 }
 
+function RecommendedTreatments({
+  products,
+  productsUsers,
+}: {
+  products: RecommendedTreatmentsQuery;
+  productsUsers: ProductsGetUsersImage[];
+}) {
+  return (
+    <Stack gap="0">
+      <span>
+        <Title order={2} fw={400} mb="xs">
+          Anbefalt behandlinger
+        </Title>
+        <Text c="dimmed">Behandlinger du kan være interesseret i.</Text>
+      </span>
+
+      <Suspense fallback={<div>Loading...</div>}>
+        <Await resolve={products}>
+          {({products}) => (
+            <Carousel
+              slideSize={{base: '75%', md: '25%', sm: '33.333%'}}
+              slideGap="0"
+              align="start"
+              containScroll="trimSnaps"
+              withControls={false}
+            >
+              {products.nodes.map((product) => {
+                const productUsers = productsUsers.find(
+                  (p) => p.productId.toString() === parseGid(product.id).id,
+                );
+
+                return (
+                  <Carousel.Slide key={product.id}>
+                    <Box px={rem(6)} py="md">
+                      <TreatmentCard
+                        product={product}
+                        productUsers={productUsers}
+                        loading={'eager'}
+                      />
+                    </Box>
+                  </Carousel.Slide>
+                );
+              })}
+            </Carousel>
+          )}
+        </Await>
+      </Suspense>
+    </Stack>
+  );
+}
+
 function RecommendedProducts({
   products,
 }: {
   products: Promise<RecommendedProductsQuery>;
 }) {
   return (
-    <Stack gap="lg">
+    <Stack gap="0">
       <span>
         <Title order={2} fw={400} mb="xs">
           Anbefalt produkter
@@ -131,56 +182,21 @@ function RecommendedProducts({
       <Suspense fallback={<div>Loading...</div>}>
         <Await resolve={products}>
           {({products}) => (
-            <SimpleGrid cols={{base: 1, md: 3, lg: 4}}>
+            <Carousel
+              slideSize={{base: '75%', md: '25%', sm: '33.333%'}}
+              slideGap="0"
+              align="start"
+              containScroll="trimSnaps"
+              withControls={false}
+            >
               {products.nodes.map((product) => (
-                <ProductCard
-                  key={product.id}
-                  product={product}
-                  loading="eager"
-                />
+                <Carousel.Slide key={product.id}>
+                  <Box px={rem(6)} py="md">
+                    <ProductCard product={product} loading="eager" />
+                  </Box>
+                </Carousel.Slide>
               ))}
-            </SimpleGrid>
-          )}
-        </Await>
-      </Suspense>
-    </Stack>
-  );
-}
-
-function RecommendedTreatments({
-  products,
-  productsUsers,
-}: {
-  products: RecommendedTreatmentsQuery;
-  productsUsers: ProductsGetUsersImage[];
-}) {
-  return (
-    <Stack gap="lg">
-      <span>
-        <Title order={2} fw={400} mb="xs">
-          Anbefalt behandlinger
-        </Title>
-        <Text c="dimmed">Behandlinger du kan være interesseret i.</Text>
-      </span>
-      <Suspense fallback={<div>Loading...</div>}>
-        <Await resolve={products}>
-          {({products}) => (
-            <SimpleGrid cols={{base: 1, md: 3, lg: 4}} spacing={0}>
-              {products.nodes.map((product) => {
-                const productUsers = productsUsers.find(
-                  (p) => p.productId.toString() === parseGid(product.id).id,
-                );
-
-                return (
-                  <TreatmentCard
-                    key={product.id}
-                    product={product}
-                    productUsers={productUsers}
-                    loading={'eager'}
-                  />
-                );
-              })}
-            </SimpleGrid>
+            </Carousel>
           )}
         </Await>
       </Suspense>
@@ -192,7 +208,7 @@ const RECOMMENDED_PRODUCTS_QUERY = `#graphql
   ${PRODUCT_ITEM_FRAGMENT}
   query RecommendedProducts ($country: CountryCode, $language: LanguageCode)
     @inContext(country: $country, language: $language) {
-    products(first: 4, sortKey: UPDATED_AT, reverse: true, query: "tag:products") {
+    products(first: 8, sortKey: UPDATED_AT, reverse: true, query: "tag:products") {
       nodes {
         ...ProductItem
       }
@@ -204,7 +220,7 @@ const RECOMMENDED_TREATMENT_QUERY = `#graphql
   ${PRODUCT_ITEM_FRAGMENT}
   query RecommendedTreatments ($country: CountryCode, $language: LanguageCode)
     @inContext(country: $country, language: $language) {
-    products(first: 4, sortKey: RELEVANCE, reverse: true, query: "tag:treatments") {
+    products(first: 8, sortKey: RELEVANCE, reverse: true, query: "tag:treatments") {
       nodes {
         ...ProductItem
       }
