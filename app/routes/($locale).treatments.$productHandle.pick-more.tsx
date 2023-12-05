@@ -1,5 +1,5 @@
-import {Flex, SimpleGrid, Skeleton} from '@mantine/core';
-import {Await, useLoaderData, useParams} from '@remix-run/react';
+import {SimpleGrid, Skeleton, Text} from '@mantine/core';
+import {Await, useLoaderData} from '@remix-run/react';
 import {defer, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
 import {Suspense} from 'react';
 import {type ProductItemFragment} from 'storefrontapi.generated';
@@ -31,7 +31,9 @@ export async function loader({params, request, context}: LoaderFunctionArgs) {
       locationId,
     );
 
-  const productIds = services.map(({productId}) => productId);
+  const productIds = services
+    .filter((product) => product.productHandle !== productHandle)
+    .map(({productId}) => productId);
 
   const products = context.storefront.query(ALL_PRODUCTS_QUERY, {
     variables: {
@@ -50,7 +52,6 @@ export async function loader({params, request, context}: LoaderFunctionArgs) {
 
 export default function ArtistTreatments() {
   const {products, services} = useLoaderData<typeof loader>();
-  const {productHandle: selectedProductHandle} = useParams();
 
   return (
     <Suspense
@@ -62,13 +63,22 @@ export default function ArtistTreatments() {
       }
     >
       <Await resolve={products}>
-        {({products}) => (
-          <RenderArtistProducts
-            products={products.nodes}
-            services={services}
-            selectedProductHandle={selectedProductHandle || ''}
-          />
-        )}
+        {({products}) => {
+          if (products.nodes.length > 0) {
+            return (
+              <RenderArtistProducts
+                products={products.nodes}
+                services={services}
+              />
+            );
+          } else {
+            return (
+              <Text c="dimmed">
+                Der kan ikke kombinseres andre behandlinger med dette behandling
+              </Text>
+            );
+          }
+        }}
       </Await>
     </Suspense>
   );
@@ -77,31 +87,20 @@ export default function ArtistTreatments() {
 type RenderArtistProductsProps = {
   products: ProductItemFragment[];
   services: CustomerProductBase[];
-  selectedProductHandle: string;
 };
 
-function RenderArtistProducts({
-  products,
-  services,
-  selectedProductHandle,
-}: RenderArtistProductsProps) {
-  const restProductsMarkup = products
-    .filter((product) => product.handle !== selectedProductHandle)
-    .map((product) => (
-      <ArtistServiceProduct
-        key={product.id}
-        product={product}
-        services={services}
-      />
-    ));
+function RenderArtistProducts({products, services}: RenderArtistProductsProps) {
+  const restProductsMarkup = products.map((product) => (
+    <ArtistServiceProduct
+      key={product.id}
+      product={product}
+      services={services}
+    />
+  ));
 
   return (
-    <>
-      <Flex direction="row" justify={'center'} align={'center'}>
-        <SimpleGrid cols={1} spacing="lg">
-          {restProductsMarkup}
-        </SimpleGrid>
-      </Flex>
-    </>
+    <SimpleGrid cols={1} spacing="lg">
+      {restProductsMarkup}
+    </SimpleGrid>
   );
 }

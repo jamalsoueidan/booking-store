@@ -91,10 +91,8 @@ export default function Product() {
     <SimpleGrid cols={{base: 1, md: 2}} spacing={0}>
       <ProductImage image={selectedVariant?.image} />
       <Box p={{base: rem(10), md: rem(42)}} bg="#fafafb">
-        <Box mb="xl">
-          <Title order={1} size={rem(54)}>
-            {product?.title}
-          </Title>
+        <Box mb="md">
+          <Title order={1}>{product?.title}</Title>
         </Box>
 
         <TreatmentStepper paths={paths} product={product} />

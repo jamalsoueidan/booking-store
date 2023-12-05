@@ -77,10 +77,10 @@ export function TreatmentStepper({paths, product}: StepperProps) {
     <>
       <Group justify="space-between">
         <Group gap="xs">
-          <Text c="dimmed" size={rem(24)}>
+          <Text c="dimmed" size={rem(20)}>
             {currenctActive + 1}/{Object.keys(paths).length}
           </Text>
-          <Text fw={500} tt="uppercase" size={rem(24)}>
+          <Text fw={500} tt="uppercase" size={rem(20)}>
             {currentPath.title}
           </Text>
         </Group>
@@ -136,7 +136,7 @@ export function TreatmentStepper({paths, product}: StepperProps) {
                 rightSection={<IconArrowRight />}
                 onClick={nextStep}
               >
-                Bestil en tid
+                Bestil tid
               </Button>
             )}
           </Group>

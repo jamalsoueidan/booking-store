@@ -163,7 +163,7 @@ function PickArtistsForm({
   const [searchParams, setSearchParams] = useSearchParams();
 
   const onChange = (artist: ProductsGetUsersByVariant) => () => {
-    const newSearchParams = new URLSearchParams(searchParams);
+    const newSearchParams = new URLSearchParams();
     newSearchParams.set('username', artist.username);
     setSearchParams(newSearchParams, {
       state: {
@@ -175,7 +175,7 @@ function PickArtistsForm({
   const username = searchParams.get('username');
 
   return (
-    <SimpleGrid cols={{base: 4}}>
+    <SimpleGrid cols={{base: 2, sm: 3}}>
       {users.map((user) => {
         const variant = variants.find(
           (v) => parseGid(v.id).id === user.variantId.toString(),
