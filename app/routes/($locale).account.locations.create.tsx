@@ -27,6 +27,7 @@ import {AddressAutocompleteInput} from '~/components/AddressAutocompleteInput';
 import {RadioGroup} from '~/components/form/RadioGroup';
 import {SubmitButton} from '~/components/form/SubmitButton';
 import {getBookingShopifyApi} from '~/lib/api/bookingShopifyApi';
+import {redirectWithNotification} from '~/lib/show-notification';
 
 const schema = customerLocationCreateBody;
 
@@ -65,7 +66,12 @@ export const action = async ({request, context}: ActionFunctionArgs) => {
       submission.value,
     );
 
-    return redirect(`/account/locations/${response.payload._id}/edit`);
+    return redirectWithNotification(context, {
+      redirectUrl: `/account/locations/${response.payload._id}/edit`,
+      title: 'Lokation',
+      message: 'Lokation er nu oprettet!',
+      color: 'green',
+    });
   } catch (error) {
     return json(submission);
   }
@@ -108,7 +114,7 @@ export default function Component() {
       </Flex>
       <Divider my="md" />
 
-      <Form method="POST" {...form.props}>
+      <Form method="POST">
         <Stack>
           <RadioGroup
             label={'Hvilken type location vil du oprette?'}

@@ -60,27 +60,11 @@ export const action = async ({
 export async function loader({context}: LoaderFunctionArgs) {
   const customer = await getCustomer({context});
 
-  // Query Shopify to create a staged upload
-  const {body} = (await context.adminApi.query({
-    data: {
-      query: UPLOAD_CREATE,
-      variables: {
-        input: [
-          {
-            resource: 'IMAGE',
-            filename: `${
-              customer.id
-            }_customer_profile_${new Date().getTime()}.jpg`,
-            mimeType: 'image/jpeg',
-            httpMethod: 'POST',
-          },
-        ],
-      },
-    },
-  })) as UploadMutationResponse;
+  const {payload} = await getBookingShopifyApi().customerUploadResourceURL(
+    parseGid(customer.id).id,
+  );
 
-  // Return the staged upload details
-  return json(body.data.stagedUploadsCreate.stagedTargets[0]);
+  return json(payload);
 }
 
 export default function AccountUpload() {
@@ -186,84 +170,3 @@ export default function AccountUpload() {
     </>
   );
 }
-
-const UPLOAD_CREATE = `#graphql
-  mutation stagedUploadsCreate($input: [StagedUploadInput!]!) {
-    stagedUploadsCreate(input: $input) {
-      stagedTargets {
-        resourceUrl
-        url
-        parameters {
-          name
-          value
-        }
-      }
-      userErrors {
-        field
-        message
-      }
-    }
-  }
-`;
-
-type UploadMutationResponse = {
-  body: {
-    data: {
-      stagedUploadsCreate: {
-        stagedTargets: Array<{
-          resourceUrl: string;
-          url: string;
-          parameters: Array<{
-            name: string;
-            value: string;
-          }>;
-        }>;
-        userErrors: Array<any>;
-      };
-    };
-    extensions: {
-      cost: {
-        requestedQueryCost: number;
-        actualQueryCost: number;
-        throttleStatus: {
-          maximumAvailable: number;
-          currentlyAvailable: number;
-          restoreRate: number;
-        };
-      };
-    };
-  };
-};
-
-/*
-mutation {
-  customerUpdate(input: {
-    id: "gid://shopify/Customer/7106990342471",
-    metafields: [{
-      id: "gid://shopify/Metafield/39523247849799",
-      namespace: "api",
-      key: "active",
-      value: "false",
-      type: "boolean",
-    }]
-  }) {
-    customer {
-      id
-      metafields(first: 10, namespace: "api") {
-        edges {
-          node {
-            id
-            namespace
-            key
-            value
-          }
-        }
-      }
-    }
-    userErrors {
-      field
-      message
-    }
-  }
-}
-*/

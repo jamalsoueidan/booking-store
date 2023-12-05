@@ -1,9 +1,23 @@
-import {useLoaderData, type MetaFunction} from '@remix-run/react';
+import {Link, useLoaderData, type MetaFunction} from '@remix-run/react';
 import {json, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
 import type {ProductVariantFragment} from 'storefrontapi.generated';
 
-import {AspectRatio, Badge, Box, SimpleGrid, Title, rem} from '@mantine/core';
+import {
+  ActionIcon,
+  Anchor,
+  AspectRatio,
+  Avatar,
+  Badge,
+  Box,
+  Group,
+  SimpleGrid,
+  Stack,
+  Text,
+  Title,
+  rem,
+} from '@mantine/core';
 import {Image, Money} from '@shopify/hydrogen';
+import {IconArrowLeft} from '@tabler/icons-react';
 import {TreatmentStepper} from '~/components/TreatmentStepper';
 import {PRODUCT_SELECTED_OPTIONS_QUERY} from '~/data/queries';
 import {getBookingShopifyApi} from '~/lib/api/bookingShopifyApi';
@@ -30,6 +44,8 @@ export async function loader({params, request, context}: LoaderFunctionArgs) {
       productHandle,
     );
 
+    const {payload: artist} = await getBookingShopifyApi().userGet(username);
+
     const {product} = await storefront.query(PRODUCT_SELECTED_OPTIONS_QUERY, {
       variables: {
         productHandle,
@@ -37,60 +53,83 @@ export async function loader({params, request, context}: LoaderFunctionArgs) {
       },
     });
 
-    if (!product?.id) {
-      throw new Response('Product not found', {status: 404});
+    if (!product) {
+      throw new Response('Product handle is wrong', {
+        status: 404,
+      });
     }
 
-    return json({product});
+    return json({product, artist});
   } catch (err) {
     throw new Response('Username or product handle is wrong', {status: 404});
   }
 }
 
-const paths = [
-  {
-    title: 'Beskrivelse',
-    path: '',
-  },
-  {
-    title: 'Lokation?',
-    path: 'pick-location',
-    required: ['locationId'],
-    text: 'Vælge en lokation før du kan forsætte...',
-  },
-  {
-    title: 'Andre behandlinger?',
-    path: 'pick-more',
-  },
-  {
-    title: 'Dato & Tid?',
-    path: 'pick-datetime',
-    required: ['fromDate', 'toDate'],
-    text: 'Vælge en tid før du kan forsætte...',
-  },
-  {
-    title: 'Godkend',
-    path: 'completed',
-  },
-];
-
 export default function Product() {
-  const {product} = useLoaderData<typeof loader>();
+  const {product, artist} = useLoaderData<typeof loader>();
+
+  const paths = [
+    {
+      title: 'Beskrivelse',
+      path: '',
+    },
+    {
+      title: 'Lokation?',
+      path: 'pick-location',
+      required: ['locationId'],
+      text: 'Vælge en lokation før du kan forsætte...',
+    },
+    {
+      title: 'Andre behandlinger?',
+      path: 'pick-more',
+    },
+    {
+      title: 'Dato & Tid?',
+      path: 'pick-datetime',
+      required: ['fromDate', 'toDate'],
+      text: 'Vælge en tid før du kan forsætte...',
+    },
+    {
+      title: 'Godkend',
+      path: 'completed',
+    },
+  ];
 
   return (
     <SimpleGrid cols={{base: 1, md: 2}} spacing={0}>
       <ProductImage image={product.selectedVariant?.image} />
-      <Box p={{base: rem(10), md: rem(42)}} bg="#fafafb">
-        <Box mb="xl">
-          <Title order={1} size={rem(54)}>
-            {product?.title}
-          </Title>
+      <Box p={rem(28)} bg="#fafafb">
+        <Anchor component={Link} to={`/artist/${artist.username}`}>
+          <Group gap="0">
+            <ActionIcon
+              variant="transparent"
+              size="xl"
+              aria-label="Back"
+              color="black"
+            >
+              <IconArrowLeft
+                style={{width: '70%', height: '70%'}}
+                stroke={1.5}
+              />
+            </ActionIcon>
+            <Text>{artist.fullname}</Text>
+          </Group>
+        </Anchor>
+
+        <Stack mb="xl" gap={0}>
+          <Group gap="xs">
+            <Title order={1} mb="xs">
+              {product?.title}
+            </Title>
+
+            <Avatar src={artist.images?.profile?.url} size={32} radius={32} />
+          </Group>
           {product.selectedVariant?.price && (
-            <Badge variant="light" color="gray" size="lg">
+            <Badge variant="light" color="blue" size="lg">
               <Money data={product.selectedVariant?.price} />
             </Badge>
           )}
-        </Box>
+        </Stack>
 
         <TreatmentStepper paths={paths} product={product} />
       </Box>

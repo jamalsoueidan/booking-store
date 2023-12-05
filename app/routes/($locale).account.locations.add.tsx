@@ -4,7 +4,6 @@ import {Form, Link, useActionData, useLoaderData} from '@remix-run/react';
 
 import {
   json,
-  redirect,
   type ActionFunctionArgs,
   type LoaderFunctionArgs,
 } from '@shopify/remix-oxygen';
@@ -16,6 +15,7 @@ import {customerLocationAddParams} from '~/lib/zod/bookingShopifyApi';
 import {parse} from '@conform-to/zod';
 import {IconArrowLeft} from '@tabler/icons-react';
 import {SubmitButton} from '~/components/form/SubmitButton';
+import {redirectWithNotification} from '~/lib/show-notification';
 
 export const action = async ({request, context}: ActionFunctionArgs) => {
   const customer = await getCustomer({context});
@@ -35,7 +35,12 @@ export const action = async ({request, context}: ActionFunctionArgs) => {
       submission.value.locationId,
     );
 
-    return redirect(`/account/locations`);
+    return redirectWithNotification(context, {
+      redirectUrl: `/account/locations`,
+      title: 'Lokation',
+      message: 'Lokation er nu oprettet!',
+      color: 'green',
+    });
   } catch (error) {
     return json(submission);
   }
