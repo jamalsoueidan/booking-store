@@ -41,6 +41,7 @@ import type {
   CustomerStatusResponse,
   CustomerUpdateBody,
   CustomerUpdateResponse,
+  CustomerUploadResourceURLResponse,
   LocationGetCoordinatesParams,
   LocationGetCoordinatesResponse,
   LocationGetTravelTimeParams,
@@ -296,6 +297,17 @@ export const getBookingShopifyApi = () => {
       url: `/users`,
       method: 'get',
       params,
+    });
+  };
+
+  /**
+   * This endpoint gets customer upload resource url, so customer can upload image
+   * @summary GET Get customer upload resource url
+   */
+  const customerUploadResourceURL = (customerId: string) => {
+    return queryClient<CustomerUploadResourceURLResponse>({
+      url: `/customer/${customerId}/upload/resource-url`,
+      method: 'get',
     });
   };
 
@@ -750,6 +762,7 @@ export const getBookingShopifyApi = () => {
     userAvailabilityGenerate,
     userAvailabilityGet,
     usersList,
+    customerUploadResourceURL,
     customerUpdate,
     customerGet,
     customerStatus,
@@ -875,6 +888,13 @@ export type UserAvailabilityGetResult = NonNullable<
 >;
 export type UsersListResult = NonNullable<
   Awaited<ReturnType<ReturnType<typeof getBookingShopifyApi>['usersList']>>
+>;
+export type CustomerUploadResourceURLResult = NonNullable<
+  Awaited<
+    ReturnType<
+      ReturnType<typeof getBookingShopifyApi>['customerUploadResourceURL']
+    >
+  >
 >;
 export type CustomerUpdateResult = NonNullable<
   Awaited<ReturnType<ReturnType<typeof getBookingShopifyApi>['customerUpdate']>>

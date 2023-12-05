@@ -898,6 +898,28 @@ export const usersListResponse = zod.object({
 });
 
 /**
+ * This endpoint gets customer upload resource url, so customer can upload image
+ * @summary GET Get customer upload resource url
+ */
+export const customerUploadResourceURLParams = zod.object({
+  customerId: zod.string(),
+});
+
+export const customerUploadResourceURLResponse = zod.object({
+  success: zod.boolean(),
+  payload: zod.object({
+    resourceUrl: zod.string().optional(),
+    url: zod.string(),
+    parameters: zod.array(
+      zod.object({
+        name: zod.string(),
+        value: zod.string(),
+      }),
+    ),
+  }),
+});
+
+/**
  * This endpoint update user
  * @summary PUT Update user
  */

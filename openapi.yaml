@@ -84,6 +84,38 @@ components:
       required:
         - label
         - value
+    CustomerUploadResourceURLResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: true
+        payload:
+          type: object
+          properties:
+            resourceUrl:
+              type: string
+            url:
+              type: string
+            parameters:
+              type: array
+              items:
+                type: object
+                properties:
+                  name:
+                    type: string
+                  value:
+                    type: string
+                required:
+                  - name
+                  - value
+          required:
+            - resourceURL
+            - url
+            - parameters
+      required:
+        - success
+        - payload
     CustomerProductBase:
       type: object
       properties:
@@ -2339,6 +2371,35 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/UsersListResponse'
+        '400':
+          $ref: '#/components/responses/BadResponse'
+        '401':
+          $ref: '#/components/responses/UnauthorizedResponse'
+        '403':
+          $ref: '#/components/responses/ForbiddenResponse'
+        '404':
+          $ref: '#/components/responses/NotFoundResponse'
+      security: []
+  '/customer/{customerId}/upload/resource-url':
+    get:
+      parameters:
+        - name: customerId
+          in: path
+          required: true
+          schema:
+            type: string
+      tags:
+        - Customer
+      operationId: customerUploadResourceURL
+      summary: GET Get customer upload resource url
+      description: 'This endpoint gets customer upload resource url, so customer can upload image'
+      responses:
+        '200':
+          description: Response with payload
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CustomerUploadResourceURLResponse'
         '400':
           $ref: '#/components/responses/BadResponse'
         '401':
