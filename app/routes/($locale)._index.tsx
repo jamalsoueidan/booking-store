@@ -96,7 +96,7 @@ function FeaturedArtists({artists}: {artists: Promise<UsersListResponse>}) {
         <Await resolve={artists}>
           {({payload}) => (
             <Carousel
-              slideSize={{base: '75%', md: '20%', sm: '33.333%'}}
+              slideSize={{base: '75%', md: '23%', sm: '33.333%'}}
               slideGap="sm"
               align="start"
               containScroll="trimSnaps"
@@ -135,7 +135,7 @@ function RecommendedTreatments({
         <Await resolve={products}>
           {({products}) => (
             <Carousel
-              slideSize={{base: '75%', md: '25%', sm: '33.333%'}}
+              slideSize={{base: '75%', md: '23%', sm: '33.333%'}}
               slideGap="0"
               align="start"
               containScroll="trimSnaps"
@@ -183,7 +183,7 @@ function RecommendedProducts({
         <Await resolve={products}>
           {({products}) => (
             <Carousel
-              slideSize={{base: '75%', md: '25%', sm: '33.333%'}}
+              slideSize={{base: '75%', md: '22%', sm: '33.333%'}}
               slideGap="0"
               align="start"
               containScroll="trimSnaps"

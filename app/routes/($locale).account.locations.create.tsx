@@ -67,7 +67,7 @@ export const action = async ({request, context}: ActionFunctionArgs) => {
     );
 
     return redirectWithNotification(context, {
-      redirectUrl: `/account/locations/${response.payload._id}/edit`,
+      redirectUrl: `/account/locations`,
       title: 'Lokation',
       message: 'Lokation er nu oprettet!',
       color: 'green',

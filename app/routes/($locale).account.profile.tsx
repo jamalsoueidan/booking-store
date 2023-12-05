@@ -117,11 +117,16 @@ export async function action({request, context}: ActionFunctionArgs) {
       },
     );
 
-    await getBookingShopifyApi().customerUpdate(parseGid(customerData?.id).id, {
-      phone: customer.phone || '',
-      email: customer.email || '',
-      fullname: `${customer.firstName} ${customer.lastName}`,
-    });
+    if (!comingFromBusiness) {
+      await getBookingShopifyApi().customerUpdate(
+        parseGid(customerData?.id).id,
+        {
+          phone: customer.phone || '',
+          email: customer.email || '',
+          fullname: `${customer.firstName} ${customer.lastName}`,
+        },
+      );
+    }
 
     if (comingFromBusiness) {
       return redirect('/account/business', {
