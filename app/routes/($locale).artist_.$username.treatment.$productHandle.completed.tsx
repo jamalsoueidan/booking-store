@@ -1,16 +1,15 @@
 import {Anchor, Card, Divider, Flex, Group, Stack, Text} from '@mantine/core';
 import {useLoaderData} from '@remix-run/react';
 import {Money, parseGid} from '@shopify/hydrogen';
-import {type CartLineInput} from '@shopify/hydrogen/storefront-api-types';
 import {json, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
 import {format} from 'date-fns';
 import da from 'date-fns/locale/da';
+import {AddToCartTreatment} from '~/components/AddToCartTreatments';
 import {TreatmentArtistCardComplete} from '~/components/treatment/TreatmentArtistCardComplete';
 import {PRODUCT_SELECTED_OPTIONS_QUERY} from '~/data/queries';
 import {getBookingShopifyApi} from '~/lib/api/bookingShopifyApi';
 import {durationToTime} from '~/lib/duration';
 import {ALL_PRODUCTS_QUERY} from './($locale).artist.$username._index';
-import {AddToCartButton} from './($locale).products.$handle';
 
 export const loader = async ({
   request,
@@ -81,8 +80,8 @@ export const loader = async ({
 export default function ArtistTreatmentsBooking() {
   const data = useLoaderData<typeof loader>();
 
-  const productMarkup = data?.products.nodes.map((product) => {
-    const slotProduct = data?.availability.slot.products.find(
+  const productMarkup = data.products.nodes.map((product) => {
+    const slotProduct = data.availability.slot.products.find(
       (p) => p.productId.toString() === parseGid(product.id).id,
     );
 
@@ -107,71 +106,6 @@ export default function ArtistTreatmentsBooking() {
       </div>
     );
   });
-
-  const lines: Array<CartLineInput> = (data?.products.nodes || []).map(
-    (product) => {
-      const slotProduct = data?.availability.slot.products.find(
-        (p) => p.productId.toString() === parseGid(product.id).id,
-      );
-
-      const input =
-        {
-          merchandiseId: `gid://shopify/ProductVariant/${
-            slotProduct?.variantId || ''
-          }`,
-          quantity: 1,
-          attributes: [
-            {
-              key: '_from',
-              value: slotProduct?.from || '',
-            },
-            {
-              key: '_to',
-              value: slotProduct?.to || '',
-            },
-            {
-              key: '_customerId',
-              value: data?.availability.customer.customerId?.toString() || '',
-            },
-            {
-              key: 'Dato',
-              value: `${format(
-                new Date(slotProduct?.from || new Date()),
-                'iiii',
-                {
-                  locale: da,
-                },
-              )}, ${format(new Date(slotProduct?.from || new Date()), 'PPP', {
-                locale: da,
-              }).slice(0, -4)}`,
-            },
-            {
-              key: 'Tid',
-              value: format(new Date(slotProduct?.from || new Date()), 'p', {
-                locale: da,
-              }),
-            },
-            {
-              key: 'Skønhedsekspert',
-              value: data?.availability.customer.fullname || '',
-            },
-            {
-              key: 'Varighed',
-              value: durationToTime(slotProduct?.duration || ''),
-            },
-          ],
-        } || [];
-
-      if (data?.availability.shipping) {
-        input.attributes.push({
-          key: '_shippingId',
-          value: data?.availability.shipping?._id || '',
-        });
-      }
-
-      return input;
-    },
-  );
 
   return (
     <>
@@ -238,14 +172,10 @@ export default function ArtistTreatmentsBooking() {
         <Stack gap="xs">{productMarkup}</Stack>
       </Card>
       <Group m="xl" justify="center">
-        <AddToCartButton
-          onClick={() => {
-            window.location.href = window.location.href + '#cart-aside';
-          }}
-          lines={lines}
-        >
-          Tilføj indkøbskurv
-        </AddToCartButton>
+        <AddToCartTreatment
+          products={data.products}
+          availability={data.availability}
+        />
       </Group>
     </>
   );

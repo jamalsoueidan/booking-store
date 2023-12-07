@@ -22,18 +22,18 @@ export function TreatmentCard({
             key={user.customerId}
             src={user.images.profile?.url || ''}
             radius="lg"
-            size="md"
+            size="sm"
           />
         ))}
         {productUsers.totalUsers > productUsers.users.length && (
-          <Avatar radius="lg" size="md">
+          <Avatar radius="lg" size="sm">
             +{productUsers.totalUsers}
           </Avatar>
         )}
       </Avatar.Group>
     ) : (
       <Avatar.Group spacing="xs">
-        <Avatar radius="lg" size="md">
+        <Avatar radius="lg" size="sm">
           +0
         </Avatar>
       </Avatar.Group>
@@ -52,7 +52,7 @@ export function TreatmentCard({
       <ArtistServiceContent
         product={product}
         rightSection={
-          <Button variant="default" size="md">
+          <Button variant="default" size="xs">
             Se behandling
           </Button>
         }

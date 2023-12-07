@@ -56,8 +56,8 @@ export function Layout({
 
 function CartAside({cart}: {cart: LayoutProps['cart']}) {
   return (
-    <Aside id="cart-aside" heading="CART">
-      <Suspense fallback={<p>Loading cart ...</p>}>
+    <Aside id="cart-aside" heading="Indkøbskurv">
+      <Suspense fallback={<p>Indlæser indkøbskurv ...</p>}>
         <Await resolve={cart}>
           {(cart) => {
             return <CartMain cart={cart} layout="aside" />;

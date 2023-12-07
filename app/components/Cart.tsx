@@ -1,3 +1,4 @@
+import {Box, Button, Divider, Flex, Text, TextInput} from '@mantine/core';
 import {Link} from '@remix-run/react';
 import {CartForm, Image, Money} from '@shopify/hydrogen';
 import type {CartLineUpdateInput} from '@shopify/hydrogen/storefront-api-types';
@@ -33,10 +34,12 @@ function CartDetails({layout, cart}: CartMainProps) {
     <div className="cart-details">
       <CartLines lines={cart?.lines} layout={layout} />
       {cartHasItems && (
-        <CartSummary cost={cart.cost} layout={layout}>
-          <CartDiscounts discountCodes={cart.discountCodes} />
-          <CartCheckoutActions checkoutUrl={cart.checkoutUrl} />
-        </CartSummary>
+        <>
+          <CartSummary cost={cart.cost} layout={layout}>
+            <CartDiscounts discountCodes={cart.discountCodes} />
+            <CartCheckoutActions checkoutUrl={cart.checkoutUrl} />
+          </CartSummary>
+        </>
       )}
     </div>
   );
@@ -52,13 +55,13 @@ function CartLines({
   if (!lines) return null;
 
   return (
-    <div aria-labelledby="cart-lines">
-      <ul>
+    <Box p="md">
+      <Flex direction="column" gap="xs">
         {lines.nodes.map((line) => (
           <CartLineItem key={line.id} line={line} layout={layout} />
         ))}
-      </ul>
-    </div>
+      </Flex>
+    </Box>
   );
 }
 
@@ -74,19 +77,19 @@ function CartLineItem({
   const lineItemUrl = useVariantUrl(product.handle, selectedOptions);
 
   return (
-    <li key={id} className="cart-line">
+    <Flex key={id} className="cart-line" gap="xs">
       {image && (
         <Image
           alt={title}
           aspectRatio="1/1"
           data={image}
-          height={100}
+          height={80}
           loading="lazy"
-          width={100}
+          width={80}
         />
       )}
 
-      <div>
+      <div style={{flexGrow: 1}}>
         <Link
           prefetch="intent"
           to={lineItemUrl}
@@ -97,34 +100,36 @@ function CartLineItem({
             }
           }}
         >
-          <p>
-            <strong>{product.title}</strong>
-          </p>
+          <strong>{product.title}</strong>
         </Link>
-        <CartLinePrice line={line} as="span" />
         <ul>
-          {selectedOptions.map((option) => (
-            <li key={option.name}>
-              <small>
-                {option.name}: {option.value}
-              </small>
-            </li>
-          ))}
-        </ul>
-        <ul>
-          {attributes
-            .filter((option) => option.key[0] !== '_')
+          {selectedOptions
+            .filter(
+              (option) => option.name !== 'Pris' && option.name !== 'Title',
+            )
             .map((option) => (
-              <li key={option.key}>
+              <li key={option.name}>
                 <small>
-                  {option.key}: {option.value}
+                  {option.name}: {option.value}
                 </small>
               </li>
             ))}
         </ul>
-        <CartLineQuantity line={line} />
+        {attributes
+          .filter((option) => {
+            return option.key[0] !== '_';
+          })
+          .map((option, index, all) => (
+            <small key={option.key}>
+              {option.value} {index + 1 < all.length ? ', ' : ''}
+            </small>
+          ))}
       </div>
-    </li>
+      <Flex direction="column" justify="center" align="center" gap="xs">
+        <CartLinePrice line={line} as="span" />
+        <CartLineQuantity line={line} />
+      </Flex>
+    </Flex>
   );
 }
 
@@ -132,12 +137,18 @@ function CartCheckoutActions({checkoutUrl}: {checkoutUrl: string}) {
   if (!checkoutUrl) return null;
 
   return (
-    <div>
-      <a href={checkoutUrl} target="_self">
-        <p>Continue to Checkout &rarr;</p>
-      </a>
-      <br />
-    </div>
+    <Box p="lg">
+      <Button
+        component="a"
+        href={checkoutUrl}
+        target="_self"
+        radius="md"
+        size="lg"
+        fullWidth
+      >
+        Gå til betalingsside
+      </Button>
+    </Box>
   );
 }
 
@@ -155,17 +166,28 @@ export function CartSummary({
 
   return (
     <div aria-labelledby="cart-summary" className={className}>
-      <h4>Totals</h4>
-      <dl className="cart-subtotal">
-        <dt>Subtotal</dt>
-        <dd>
+      <Divider />
+      <Flex justify="space-between" p="lg">
+        <Text c="dimmed">Subtotal</Text>
+        <Text>
           {cost?.subtotalAmount?.amount ? (
             <Money data={cost?.subtotalAmount} />
           ) : (
             '-'
           )}
-        </dd>
-      </dl>
+        </Text>
+      </Flex>
+      <Divider />
+      <Flex justify="space-between" p="lg">
+        <Text c="dimmed">Total</Text>
+        <Text>
+          {cost?.subtotalAmount?.amount ? (
+            <Money data={cost?.subtotalAmount} />
+          ) : (
+            '-'
+          )}
+        </Text>
+      </Flex>
       {children}
     </div>
   );
@@ -178,7 +200,9 @@ function CartLineRemoveButton({lineIds}: {lineIds: string[]}) {
       action={CartForm.ACTIONS.LinesRemove}
       inputs={{lineIds}}
     >
-      <button type="submit">Slet</button>
+      <Button variant="outline" type="submit" size="compact-sm">
+        Slet
+      </Button>
     </CartForm>
   );
 }
@@ -263,11 +287,12 @@ export function CartEmpty({
     <div hidden={hidden}>
       <br />
       <p>
-        Looks like you haven&rsquo;t added anything yet, let&rsquo;s get you
-        started!
+        Det ser ud til, at du ikke har tilføjet noget endnu, så lad os få dig
+        igang!
       </p>
       <br />
-      <Link
+      <Button
+        component={Link}
         to="/collections"
         onClick={() => {
           if (layout === 'aside') {
@@ -275,8 +300,8 @@ export function CartEmpty({
           }
         }}
       >
-        Continue shopping →
-      </Link>
+        Fortsætte med at handle →
+      </Button>
     </div>
   );
 }
@@ -296,12 +321,12 @@ function CartDiscounts({
       {/* Have existing discount, display it with a remove option */}
       <dl hidden={!codes.length}>
         <div>
-          <dt>Discount(s)</dt>
+          <dt>Rabatkode(r)</dt>
           <UpdateDiscountForm>
             <div className="cart-discount">
               <code>{codes?.join(', ')}</code>
               &nbsp;
-              <button>Remove</button>
+              <button>Fjern</button>
             </div>
           </UpdateDiscountForm>
         </div>
@@ -309,11 +334,15 @@ function CartDiscounts({
 
       {/* Show an input to apply a discount */}
       <UpdateDiscountForm discountCodes={codes}>
-        <div>
-          <input type="text" name="discountCode" placeholder="Discount code" />
-          &nbsp;
-          <button type="submit">Apply</button>
-        </div>
+        <Flex p="lg" gap="lg">
+          <TextInput
+            type="text"
+            name="discountCode"
+            placeholder="Rabatkode"
+            style={{flexGrow: 1}}
+          />
+          <Button type="submit">Anvend</Button>
+        </Flex>
       </UpdateDiscountForm>
     </div>
   );

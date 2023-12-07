@@ -1,5 +1,5 @@
 :root {
-  --aside-width: 400px;
+  --aside-width: 500px;
   --cart-aside-summary-height-with-discount: 300px;
   --cart-aside-summary-height: 250px;
   --grid-item-width: 355px;
@@ -53,10 +53,6 @@ aside header .close:hover {
 aside header h2 {
   margin-bottom: 0.6rem;
   margin-top: 0;
-}
-
-aside main {
-  margin: 1rem;
 }
 
 aside p {
@@ -184,13 +180,11 @@ aside li {
 
 .cart-line {
   display: flex;
-  padding: 0.75rem 0;
 }
 
 .cart-line img {
   height: 100%;
   display: block;
-  margin-right: 0.75rem;
 }
 
 .cart-summary-page {
@@ -199,11 +193,10 @@ aside li {
 
 .cart-summary-aside {
   background: white;
-  border-top: 1px solid var(--color-dark);
   bottom: 0;
-  padding-top: 0.75rem;
+  left: 0;
   position: absolute;
-  width: calc(var(--aside-width) - 40px);
+  width: var(--aside-width);
 }
 
 .cart-line-quantiy {
