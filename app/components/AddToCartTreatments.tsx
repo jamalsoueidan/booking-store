@@ -62,7 +62,7 @@ export function AddToCartTreatment({
           },
           {
             key: 'Varighed',
-            value: `(${durationToTime(slotProduct.duration)})`,
+            value: `${durationToTime(slotProduct.duration)}`,
           },
         ],
       };

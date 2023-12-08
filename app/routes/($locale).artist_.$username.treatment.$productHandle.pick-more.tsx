@@ -62,7 +62,7 @@ export default function ArtistTreatments() {
     >
       <Await resolve={products}>
         {({products}) => {
-          if (products.nodes.length > 1) {
+          if (products.nodes.length > 0) {
             return (
               <RenderArtistProducts
                 products={products.nodes}

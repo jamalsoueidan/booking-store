@@ -193,7 +193,7 @@ export default function AccountBusiness() {
     shouldRevalidate: 'onInput',
   });
 
-  const {instagram, twitter, youtube} = useFieldset(form.ref, social);
+  const {instagram, x, youtube, facebook} = useFieldset(form.ref, social);
 
   const fetcher = useFetcher<UserUsernameTakenResponsePayload>();
 
@@ -300,7 +300,15 @@ export default function AccountBusiness() {
             leftSection={<IconAt style={{width: rem(16), height: rem(16)}} />}
             label="Twitter (X)"
             placeholder="Twitter (X)"
-            {...conform.input(twitter)}
+            {...conform.input(x)}
+          />
+
+          <TextInput
+            leftSectionPointerEvents="none"
+            leftSection={<IconAt style={{width: rem(16), height: rem(16)}} />}
+            label="Facebook"
+            placeholder="Facebook profil"
+            {...conform.input(facebook)}
           />
 
           <TextInput
