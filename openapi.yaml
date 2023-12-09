@@ -625,25 +625,7 @@ components:
           format: date-time
           nullable: true
         client_details:
-          type: object
-          properties:
-            accept_language:
-              type: string
-              nullable: true
-            browser_height:
-              type: number
-              nullable: true
-            browser_ip:
-              type: string
-            browser_width:
-              type: number
-              nullable: true
-            session_hash:
-              type: string
-              nullable: true
-            user_agent:
-              type: string
-              nullable: true
+          $ref: '#/components/schemas/CustomerOrderClient'
         closed_at:
           type: string
           format: date-time
@@ -661,25 +643,25 @@ components:
         current_subtotal_price:
           type: string
         current_subtotal_price_set:
-          $ref: '#/components/schemas/CustomerOrderLineItem/properties/price_set'
+          $ref: '#/components/schemas/CustomerOrderMoney'
         current_total_additional_fees_set:
-          $ref: '#/components/schemas/CustomerOrderLineItem/properties/price_set'
+          $ref: '#/components/schemas/CustomerOrderMoney'
           nullable: true
         current_total_discounts:
           type: string
         current_total_discounts_set:
-          $ref: '#/components/schemas/CustomerOrderLineItem/properties/price_set'
+          $ref: '#/components/schemas/CustomerOrderMoney'
         current_total_duties_set:
-          $ref: '#/components/schemas/CustomerOrderLineItem/properties/price_set'
+          $ref: '#/components/schemas/CustomerOrderMoney'
           nullable: true
         current_total_price:
           type: string
         current_total_price_set:
-          $ref: '#/components/schemas/CustomerOrderLineItem/properties/price_set'
+          $ref: '#/components/schemas/CustomerOrderMoney'
         current_total_tax:
           type: string
         current_total_tax_set:
-          $ref: '#/components/schemas/CustomerOrderLineItem/properties/price_set'
+          $ref: '#/components/schemas/CustomerOrderMoney'
         customer:
           $ref: '#/components/schemas/CustomerOrderCustomer'
         fulfillments:
@@ -695,84 +677,12 @@ components:
           items:
             $ref: '#/components/schemas/CustomerOrderRefund'
         shipping_address:
+          $ref: '#/components/schemas/CustomerOrderAddress'
           nullable: true
-          type: object
-          properties:
-            first_name:
-              type: string
-            address1:
-              type: string
-            phone:
-              type: string
-            city:
-              type: string
-            zip:
-              type: string
-            province:
-              type: string
-              nullable: true
-            country:
-              type: string
-            last_name:
-              type: string
-            address2:
-              type: string
-              nullable: true
-            company:
-              type: string
-              nullable: true
-            latitude:
-              type: number
-              nullable: true
-            longitude:
-              type: number
-              nullable: true
-            name:
-              type: string
-            country_code:
-              type: string
-            province_code:
-              type: string
-              nullable: true
         shipping_lines:
           type: array
           items:
-            type: object
-            properties:
-              id:
-                type: number
-              carrier_identifier:
-                type: string
-                nullable: true
-              code:
-                type: string
-                nullable: true
-              discounted_price:
-                type: string
-              discounted_price_set:
-                $ref: '#/components/schemas/CustomerOrderLineItem/properties/price_set'
-              phone:
-                type: string
-                nullable: true
-              price:
-                type: string
-              price_set:
-                $ref: '#/components/schemas/CustomerOrderLineItem/properties/price_set'
-              requested_fulfillment_service_id:
-                type: string
-                nullable: true
-              source:
-                type: string
-              title:
-                type: string
-            required:
-              - id
-              - discounted_price
-              - discounted_price_set
-              - price
-              - price_set
-              - source
-              - title
+            $ref: '#/components/schemas/CustomerOrderShipping'
       required:
         - id
         - admin_graphql_api_id
@@ -793,6 +703,114 @@ components:
         - line_items
         - refunds
         - shipping_lines
+    CustomerOrderMoney:
+      type: object
+      properties:
+        shop_money:
+          type: object
+          properties:
+            amount:
+              type: string
+            currency_code:
+              type: string
+          required:
+            - amount
+            - currency_code
+        presentment_money:
+          type: object
+          properties:
+            amount:
+              type: string
+            currency_code:
+              type: string
+          required:
+            - amount
+            - currency_code
+      required:
+        - shop_money
+        - presentment_money
+    CustomerOrderAddress:
+      type: object
+      properties:
+        first_name:
+          type: string
+        address1:
+          type: string
+        phone:
+          type: string
+        city:
+          type: string
+        zip:
+          type: string
+        province:
+          type: string
+          nullable: true
+        country:
+          type: string
+        last_name:
+          type: string
+        address2:
+          type: string
+          nullable: true
+        company:
+          type: string
+          nullable: true
+        latitude:
+          type: number
+          nullable: true
+        longitude:
+          type: number
+          nullable: true
+        name:
+          type: string
+        country_code:
+          type: string
+        province_code:
+          type: string
+          nullable: true
+    CustomerOrderClient:
+      type: object
+      properties:
+        accept_language:
+          type: string
+          nullable: true
+        browser_height:
+          type: number
+          nullable: true
+        browser_ip:
+          type: string
+        browser_width:
+          type: number
+          nullable: true
+        session_hash:
+          type: string
+          nullable: true
+        user_agent:
+          type: string
+          nullable: true
+    CustomerOrderDiscount:
+      type: object
+      properties:
+        code:
+          type: string
+        amount:
+          type: string
+        type:
+          type: string
+      required:
+        - code
+        - amount
+        - type
+    CustomerOrderSimpleLineItem:
+      type: object
+      properties:
+        id:
+          type: number
+        name:
+          type: string
+      required:
+        - id
+        - name
     CustomerOrderCustomer:
       type: object
       properties:
@@ -860,7 +878,7 @@ components:
         admin_graphql_api_id:
           type: string
         default_address:
-          $ref: '#/components/schemas/CustomerOrder/properties/shipping_address'
+          $ref: '#/components/schemas/CustomerOrderAddress'
           nullable: true
       required:
         - id
@@ -898,31 +916,7 @@ components:
         price:
           type: string
         price_set:
-          type: object
-          properties:
-            shop_money:
-              type: object
-              properties:
-                amount:
-                  type: string
-                currency_code:
-                  type: string
-              required:
-                - amount
-                - currency_code
-            presentment_money:
-              type: object
-              properties:
-                amount:
-                  type: string
-                currency_code:
-                  type: string
-              required:
-                - amount
-                - currency_code
-          required:
-            - shop_money
-            - presentment_money
+          $ref: '#/components/schemas/CustomerOrderMoney'
         product_exists:
           type: boolean
         product_id:
@@ -961,7 +955,7 @@ components:
         total_discount:
           type: string
         total_discount_set:
-          $ref: '#/components/schemas/CustomerOrderLineItem/properties/price_set'
+          $ref: '#/components/schemas/CustomerOrderMoney'
         variant_id:
           type: number
           nullable: true
@@ -1013,7 +1007,7 @@ components:
         restock:
           type: boolean
         total_duties_set:
-          $ref: '#/components/schemas/CustomerOrderLineItem/properties/price_set'
+          $ref: '#/components/schemas/CustomerOrderMoney'
           nullable: true
         user_id:
           type: number
@@ -1037,15 +1031,15 @@ components:
                   - type: string
                   - type: number
               subtotal_set:
-                $ref: '#/components/schemas/CustomerOrderLineItem/properties/price_set'
+                $ref: '#/components/schemas/CustomerOrderMoney'
               total_tax:
                 oneOf:
                   - type: string
                   - type: number
               total_tax_set:
-                $ref: '#/components/schemas/CustomerOrderLineItem/properties/price_set'
+                $ref: '#/components/schemas/CustomerOrderMoney'
               line_item:
-                $ref: '#/components/schemas/CustomerOrderFulfillment/properties/line_items/items'
+                $ref: '#/components/schemas/CustomerOrderSimpleLineItem'
             required:
               - id
               - line_item_id
@@ -1064,6 +1058,43 @@ components:
         - restock
         - user_id
         - refund_line_items
+    CustomerOrderShipping:
+      type: object
+      properties:
+        id:
+          type: number
+        carrier_identifier:
+          type: string
+          nullable: true
+        code:
+          type: string
+          nullable: true
+        discounted_price:
+          type: string
+        discounted_price_set:
+          $ref: '#/components/schemas/CustomerOrderMoney'
+        phone:
+          type: string
+          nullable: true
+        price:
+          type: string
+        price_set:
+          $ref: '#/components/schemas/CustomerOrderMoney'
+        requested_fulfillment_service_id:
+          type: string
+          nullable: true
+        source:
+          type: string
+        title:
+          type: string
+      required:
+        - id
+        - discounted_price
+        - discounted_price_set
+        - price
+        - price_set
+        - source
+        - title
     CustomerOrderFulfillment:
       type: object
       properties:
@@ -1110,15 +1141,7 @@ components:
         line_items:
           type: array
           items:
-            type: object
-            properties:
-              id:
-                type: number
-              name:
-                type: string
-            required:
-              - id
-              - name
+            $ref: '#/components/schemas/CustomerOrderSimpleLineItem'
       required:
         - id
         - admin_graphql_api_id
