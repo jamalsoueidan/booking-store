@@ -1,30 +1,24 @@
-import {Button, Divider, Group, SimpleGrid, Text, Title} from '@mantine/core';
+import {Button, Divider, Group, SimpleGrid, Title} from '@mantine/core';
 import {Link, useLoaderData} from '@remix-run/react';
 import {json, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
 import {BookingCard} from '~/components/BookingCard';
 import {getBookingShopifyApi} from '~/lib/api/bookingShopifyApi';
-import type {CustomerBooking, CustomerBookingsListMode} from '~/lib/api/model';
+import {type CustomerOrder} from '~/lib/api/model';
 import {getCustomer} from '~/lib/get-customer';
 
-export async function loader({request, context}: LoaderFunctionArgs) {
-  const url = new URL(request.url);
-  const searchParams = url.searchParams;
+export async function loader({context}: LoaderFunctionArgs) {
   const customer = await getCustomer({context});
-  const response = await getBookingShopifyApi().customerBookingsList(
+  const {payload: bookings} = await getBookingShopifyApi().customerOrderList(
     customer.id,
-    {
-      mode:
-        (searchParams.get('mode') as CustomerBookingsListMode) || 'upcoming',
-    },
+    2023,
+    12,
   );
 
-  return json({
-    bookings: response.payload,
-  });
+  return json(bookings);
 }
 
 export default function AccountBookings() {
-  const {bookings} = useLoaderData<typeof loader>();
+  const bookings = useLoaderData<CustomerOrder[]>();
 
   return (
     <>
@@ -39,37 +33,11 @@ export default function AccountBookings() {
       </Group>
       <Divider my="md" />
 
-      {bookings && (
-        <AccountBookingHistory
-          bookings={bookings as unknown as CustomerBooking[]}
-        />
-      )}
+      <SimpleGrid cols={3}>
+        {bookings.map((booking) => (
+          <BookingCard key={booking.id} booking={booking} />
+        ))}
+      </SimpleGrid>
     </>
-  );
-}
-
-function AccountBookingHistory({bookings}: {bookings: CustomerBooking[]}) {
-  return bookings?.length ? (
-    <Bookings bookings={bookings} />
-  ) : (
-    <EmptyBookings />
-  );
-}
-
-function EmptyBookings() {
-  return (
-    <div>
-      <Text>Du har ingen bestilinger</Text>
-    </div>
-  );
-}
-
-function Bookings({bookings}: {bookings: CustomerBooking[]}) {
-  return (
-    <SimpleGrid cols={3}>
-      {bookings.map((booking) => (
-        <BookingCard booking={booking} key={booking.orderId} />
-      ))}
-    </SimpleGrid>
   );
 }
