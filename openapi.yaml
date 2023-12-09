@@ -608,6 +608,551 @@ components:
       required:
         - success
         - payload
+    CustomerOrder:
+      type: object
+      properties:
+        id:
+          type: number
+        admin_graphql_api_id:
+          type: string
+        buyer_accepts_marketing:
+          type: boolean
+        cancel_reason:
+          type: string
+          nullable: true
+        cancelled_at:
+          type: string
+          format: date-time
+          nullable: true
+        client_details:
+          type: object
+          properties:
+            accept_language:
+              type: string
+              nullable: true
+            browser_height:
+              type: number
+              nullable: true
+            browser_ip:
+              type: string
+            browser_width:
+              type: number
+              nullable: true
+            session_hash:
+              type: string
+              nullable: true
+            user_agent:
+              type: string
+              nullable: true
+        closed_at:
+          type: string
+          format: date-time
+          nullable: true
+        confirmed:
+          type: boolean
+        contact_email:
+          type: string
+          nullable: true
+        created_at:
+          type: string
+          format: date-time
+        currency:
+          type: string
+        current_subtotal_price:
+          type: string
+        current_subtotal_price_set:
+          $ref: '#/components/schemas/CustomerOrderLineItem/properties/price_set'
+        current_total_additional_fees_set:
+          $ref: '#/components/schemas/CustomerOrderLineItem/properties/price_set'
+          nullable: true
+        current_total_discounts:
+          type: string
+        current_total_discounts_set:
+          $ref: '#/components/schemas/CustomerOrderLineItem/properties/price_set'
+        current_total_duties_set:
+          $ref: '#/components/schemas/CustomerOrderLineItem/properties/price_set'
+          nullable: true
+        current_total_price:
+          type: string
+        current_total_price_set:
+          $ref: '#/components/schemas/CustomerOrderLineItem/properties/price_set'
+        current_total_tax:
+          type: string
+        current_total_tax_set:
+          $ref: '#/components/schemas/CustomerOrderLineItem/properties/price_set'
+        customer:
+          $ref: '#/components/schemas/CustomerOrderCustomer'
+        fulfillments:
+          type: array
+          items:
+            $ref: '#/components/schemas/CustomerOrderFulfillment'
+        line_items:
+          type: array
+          items:
+            $ref: '#/components/schemas/CustomerOrderLineItem'
+        refunds:
+          type: array
+          items:
+            $ref: '#/components/schemas/CustomerOrderRefund'
+        shipping_address:
+          nullable: true
+          type: object
+          properties:
+            first_name:
+              type: string
+            address1:
+              type: string
+            phone:
+              type: string
+            city:
+              type: string
+            zip:
+              type: string
+            province:
+              type: string
+              nullable: true
+            country:
+              type: string
+            last_name:
+              type: string
+            address2:
+              type: string
+              nullable: true
+            company:
+              type: string
+              nullable: true
+            latitude:
+              type: number
+              nullable: true
+            longitude:
+              type: number
+              nullable: true
+            name:
+              type: string
+            country_code:
+              type: string
+            province_code:
+              type: string
+              nullable: true
+        shipping_lines:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: number
+              carrier_identifier:
+                type: string
+                nullable: true
+              code:
+                type: string
+                nullable: true
+              discounted_price:
+                type: string
+              discounted_price_set:
+                $ref: '#/components/schemas/CustomerOrderLineItem/properties/price_set'
+              phone:
+                type: string
+                nullable: true
+              price:
+                type: string
+              price_set:
+                $ref: '#/components/schemas/CustomerOrderLineItem/properties/price_set'
+              requested_fulfillment_service_id:
+                type: string
+                nullable: true
+              source:
+                type: string
+              title:
+                type: string
+            required:
+              - id
+              - discounted_price
+              - discounted_price_set
+              - price
+              - price_set
+              - source
+              - title
+      required:
+        - id
+        - admin_graphql_api_id
+        - buyer_accepts_marketing
+        - confirmed
+        - created_at
+        - currency
+        - customer
+        - current_subtotal_price
+        - current_subtotal_price_set
+        - current_total_discounts
+        - current_total_discounts_set
+        - current_total_price
+        - current_total_price_set
+        - current_total_tax
+        - current_total_tax_set
+        - fulfillments
+        - line_items
+        - refunds
+        - shipping_lines
+    CustomerOrderCustomer:
+      type: object
+      properties:
+        id:
+          type: number
+        email:
+          type: string
+          nullable: true
+        accepts_marketing:
+          type: boolean
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+        first_name:
+          type: string
+        last_name:
+          type: string
+        state:
+          type: string
+        note:
+          type: string
+          nullable: true
+        verified_email:
+          type: boolean
+        multipass_identifier:
+          type: string
+          nullable: true
+        tax_exempt:
+          type: boolean
+        phone:
+          type: string
+          nullable: true
+        email_marketing_consent:
+          type: boolean
+          nullable: true
+        sms_marketing_consent:
+          type: object
+          properties:
+            state:
+              type: string
+            opt_in_level:
+              type: string
+            consent_updated_at:
+              type: string
+              format: date-time
+            consent_collected_from:
+              type: string
+          nullable: true
+        tags:
+          type: string
+        currency:
+          type: string
+        accepts_marketing_updated_at:
+          type: string
+        marketing_opt_in_level:
+          type: string
+          nullable: true
+        tax_exemptions:
+          type: array
+          items:
+            type: string
+        admin_graphql_api_id:
+          type: string
+        default_address:
+          $ref: '#/components/schemas/CustomerOrder/properties/shipping_address'
+          nullable: true
+      required:
+        - id
+        - accepts_marketing
+        - created_at
+        - updated_at
+        - first_name
+        - last_name
+        - state
+        - verified_email
+        - tax_exempt
+        - tags
+        - currency
+        - admin_graphql_api_id
+    CustomerOrderLineItem:
+      type: object
+      properties:
+        id:
+          type: number
+        admin_graphql_api_id:
+          type: string
+        fulfillable_quantity:
+          type: number
+        fulfillment_service:
+          type: string
+        fulfillment_status:
+          type: string
+          nullable: true
+        gift_card:
+          type: boolean
+        grams:
+          type: number
+        name:
+          type: string
+        price:
+          type: string
+        price_set:
+          type: object
+          properties:
+            shop_money:
+              type: object
+              properties:
+                amount:
+                  type: string
+                currency_code:
+                  type: string
+              required:
+                - amount
+                - currency_code
+            presentment_money:
+              type: object
+              properties:
+                amount:
+                  type: string
+                currency_code:
+                  type: string
+              required:
+                - amount
+                - currency_code
+          required:
+            - shop_money
+            - presentment_money
+        product_exists:
+          type: boolean
+        product_id:
+          type: number
+          nullable: true
+        properties:
+          type: array
+          items:
+            type: object
+            properties:
+              name:
+                type: string
+              value:
+                oneOf:
+                  - type: string
+                  - type: number
+                  - type: string
+                    format: date-time
+              kind:
+                type: string
+            required:
+              - name
+              - value
+              - kind
+        quantity:
+          type: number
+        requires_shipping:
+          type: boolean
+        sku:
+          type: string
+          nullable: true
+        taxable:
+          type: boolean
+        title:
+          type: string
+        total_discount:
+          type: string
+        total_discount_set:
+          $ref: '#/components/schemas/CustomerOrderLineItem/properties/price_set'
+        variant_id:
+          type: number
+          nullable: true
+        variant_inventory_management:
+          type: string
+          nullable: true
+        variant_title:
+          type: string
+          nullable: true
+        vendor:
+          type: string
+          nullable: true
+      required:
+        - id
+        - admin_graphql_api_id
+        - fulfillable_quantity
+        - fulfillment_service
+        - gift_card
+        - grams
+        - name
+        - price
+        - properties
+        - price_set
+        - product_exists
+        - quantity
+        - requires_shipping
+        - taxable
+        - title
+        - total_discount
+        - total_discount_set
+    CustomerOrderRefund:
+      type: object
+      properties:
+        id:
+          type: number
+        admin_graphql_api_id:
+          type: string
+        created_at:
+          type: string
+          format: date-time
+        note:
+          type: string
+          nullable: true
+        order_id:
+          type: number
+        processed_at:
+          type: string
+          format: date-time
+        restock:
+          type: boolean
+        total_duties_set:
+          $ref: '#/components/schemas/CustomerOrderLineItem/properties/price_set'
+          nullable: true
+        user_id:
+          type: number
+        refund_line_items:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: number
+              line_item_id:
+                type: number
+              location_id:
+                type: number
+              quantity:
+                type: number
+              restock_type:
+                type: string
+              subtotal:
+                oneOf:
+                  - type: string
+                  - type: number
+              subtotal_set:
+                $ref: '#/components/schemas/CustomerOrderLineItem/properties/price_set'
+              total_tax:
+                oneOf:
+                  - type: string
+                  - type: number
+              total_tax_set:
+                $ref: '#/components/schemas/CustomerOrderLineItem/properties/price_set'
+              line_item:
+                $ref: '#/components/schemas/CustomerOrderFulfillment/properties/line_items/items'
+            required:
+              - id
+              - line_item_id
+              - location_id
+              - quantity
+              - restock_type
+              - subtotal
+              - subtotal_set
+              - line_item
+      required:
+        - id
+        - admin_graphql_api_id
+        - created_at
+        - order_id
+        - processed_at
+        - restock
+        - user_id
+        - refund_line_items
+    CustomerOrderFulfillment:
+      type: object
+      properties:
+        id:
+          type: number
+        admin_graphql_api_id:
+          type: string
+        created_at:
+          type: string
+          format: date-time
+        location_id:
+          type: number
+        name:
+          type: string
+        order_id:
+          type: number
+        service:
+          type: string
+        shipment_status:
+          type: string
+          nullable: true
+        status:
+          type: string
+        tracking_company:
+          type: string
+          nullable: true
+        tracking_number:
+          type: string
+          nullable: true
+        tracking_numbers:
+          type: array
+          items:
+            type: string
+        tracking_url:
+          type: string
+          nullable: true
+        tracking_urls:
+          type: array
+          items:
+            type: string
+        updated_at:
+          type: string
+          format: date-time
+        line_items:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: number
+              name:
+                type: string
+            required:
+              - id
+              - name
+      required:
+        - id
+        - admin_graphql_api_id
+        - created_at
+        - location_id
+        - name
+        - order_id
+        - service
+        - status
+        - line_items
+    CustomerOrderGetResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: true
+        payload:
+          $ref: '#/components/schemas/CustomerOrder'
+      required:
+        - success
+        - payload
+    CustomerOrderListResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: true
+        payload:
+          type: array
+          items:
+            $ref: '#/components/schemas/CustomerOrder'
+      required:
+        - success
+        - payload
     CustomerProductList:
       type: object
       allOf:
@@ -2774,6 +3319,84 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/CustomerBookingListResponse'
+        '400':
+          $ref: '#/components/responses/BadResponse'
+        '401':
+          $ref: '#/components/responses/UnauthorizedResponse'
+        '403':
+          $ref: '#/components/responses/ForbiddenResponse'
+        '404':
+          $ref: '#/components/responses/NotFoundResponse'
+      security: []
+  '/customer/{customerId}/orders/{year}/{month}':
+    get:
+      parameters:
+        - name: customerId
+          in: path
+          description: customerId for the customer
+          required: true
+          schema:
+            type: string
+        - name: year
+          in: path
+          description: year 2023
+          required: true
+          schema:
+            type: number
+        - name: month
+          in: path
+          description: 'month 1,2,3,4...'
+          required: true
+          schema:
+            type: number
+      tags:
+        - CustomerOrder
+      operationId: customerOrderList
+      summary: GET Get all order for customer in one month
+      description: This endpoint get all orders in one month
+      responses:
+        '200':
+          description: Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CustomerOrderListResponse'
+        '400':
+          $ref: '#/components/responses/BadResponse'
+        '401':
+          $ref: '#/components/responses/UnauthorizedResponse'
+        '403':
+          $ref: '#/components/responses/ForbiddenResponse'
+        '404':
+          $ref: '#/components/responses/NotFoundResponse'
+      security: []
+  '/customer/{customerId}/lineItemId/{lineItemId}':
+    get:
+      parameters:
+        - name: customerId
+          in: path
+          description: customerId for the customer
+          required: true
+          schema:
+            type: string
+        - name: lineItemId
+          in: path
+          description: lineItemId for the order
+          required: true
+          schema:
+            type: string
+      tags:
+        - CustomerOrder
+      operationId: customerOrderGet
+      summary: GET Get order with lineItem
+      description: This endpoint gets order with lineItem object
+      responses:
+        '200':
+          description: Response with payload
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CustomerOrderGetResponse'
         '400':
           $ref: '#/components/responses/BadResponse'
         '401':
