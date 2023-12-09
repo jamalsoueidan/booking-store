@@ -17,12 +17,12 @@ export interface CustomerOrder {
   admin_graphql_api_id: string;
   buyer_accepts_marketing: boolean;
   cancel_reason?: string | null;
-  cancelled_at?: Date | null;
+  cancelled_at?: string;
   client_details?: CustomerOrderClient;
-  closed_at?: Date | null;
+  closed_at?: string | null;
   confirmed: boolean;
   contact_email?: string | null;
-  created_at: Date;
+  created_at: string;
   currency: string;
   current_subtotal_price: string;
   current_subtotal_price_set: CustomerOrderMoney;
@@ -37,7 +37,7 @@ export interface CustomerOrder {
   customer: CustomerOrderCustomer;
   fulfillments: CustomerOrderFulfillment[];
   id: number;
-  line_items: CustomerOrderLineItem[];
+  line_items: CustomerOrderLineItem;
   refunds: CustomerOrderRefund[];
   shipping_address?: CustomerOrderAddress;
   shipping_lines: CustomerOrderShipping[];

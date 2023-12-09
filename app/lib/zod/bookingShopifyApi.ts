@@ -1470,7 +1470,7 @@ export const customerOrderListResponse = zod.object({
       admin_graphql_api_id: zod.string(),
       buyer_accepts_marketing: zod.boolean(),
       cancel_reason: zod.string().nullish(),
-      cancelled_at: zod.string().datetime().nullish(),
+      cancelled_at: zod.string().optional(),
       client_details: zod
         .object({
           accept_language: zod.string().nullish(),
@@ -1481,10 +1481,10 @@ export const customerOrderListResponse = zod.object({
           user_agent: zod.string().nullish(),
         })
         .optional(),
-      closed_at: zod.string().datetime().nullish(),
+      closed_at: zod.string().nullish(),
       confirmed: zod.boolean(),
       contact_email: zod.string().nullish(),
-      created_at: zod.string().datetime(),
+      created_at: zod.string(),
       currency: zod.string(),
       current_subtotal_price: zod.string(),
       current_subtotal_price_set: zod.object({
@@ -1558,8 +1558,8 @@ export const customerOrderListResponse = zod.object({
         id: zod.number(),
         email: zod.string().nullish(),
         accepts_marketing: zod.boolean(),
-        created_at: zod.string().datetime(),
-        updated_at: zod.string().datetime(),
+        created_at: zod.string(),
+        updated_at: zod.string(),
         first_name: zod.string(),
         last_name: zod.string(),
         state: zod.string(),
@@ -1573,7 +1573,7 @@ export const customerOrderListResponse = zod.object({
           .object({
             state: zod.string().optional(),
             opt_in_level: zod.string().optional(),
-            consent_updated_at: zod.string().datetime().optional(),
+            consent_updated_at: zod.string().optional(),
             consent_collected_from: zod.string().optional(),
           })
           .nullish(),
@@ -1607,7 +1607,7 @@ export const customerOrderListResponse = zod.object({
         zod.object({
           id: zod.number(),
           admin_graphql_api_id: zod.string(),
-          created_at: zod.string().datetime(),
+          created_at: zod.string(),
           location_id: zod.number(),
           name: zod.string(),
           order_id: zod.number(),
@@ -1619,7 +1619,7 @@ export const customerOrderListResponse = zod.object({
           tracking_numbers: zod.array(zod.string()).optional(),
           tracking_url: zod.string().nullish(),
           tracking_urls: zod.array(zod.string()).optional(),
-          updated_at: zod.string().datetime().optional(),
+          updated_at: zod.string().optional(),
           line_items: zod.array(
             zod.object({
               id: zod.number(),
@@ -1628,66 +1628,64 @@ export const customerOrderListResponse = zod.object({
           ),
         }),
       ),
-      line_items: zod.array(
-        zod.object({
-          id: zod.number(),
-          admin_graphql_api_id: zod.string(),
-          fulfillable_quantity: zod.number(),
-          fulfillment_service: zod.string(),
-          fulfillment_status: zod.string().nullish(),
-          gift_card: zod.boolean(),
-          grams: zod.number(),
-          name: zod.string(),
-          price: zod.string(),
-          price_set: zod.object({
-            shop_money: zod.object({
-              amount: zod.string(),
-              currency_code: zod.string(),
-            }),
-            presentment_money: zod.object({
-              amount: zod.string(),
-              currency_code: zod.string(),
-            }),
+      line_items: zod.object({
+        id: zod.number(),
+        admin_graphql_api_id: zod.string(),
+        fulfillable_quantity: zod.number(),
+        fulfillment_service: zod.string(),
+        fulfillment_status: zod.string().nullish(),
+        gift_card: zod.boolean(),
+        grams: zod.number(),
+        name: zod.string(),
+        price: zod.string(),
+        price_set: zod.object({
+          shop_money: zod.object({
+            amount: zod.string(),
+            currency_code: zod.string(),
           }),
-          product_exists: zod.boolean(),
-          product_id: zod.number().nullish(),
-          properties: zod.array(
-            zod.object({
-              name: zod.string(),
-              value: zod.string().or(zod.number()).or(zod.string().datetime()),
-              kind: zod.string(),
-            }),
-          ),
-          quantity: zod.number(),
-          requires_shipping: zod.boolean(),
-          sku: zod.string().nullish(),
-          taxable: zod.boolean(),
-          title: zod.string(),
-          total_discount: zod.string(),
-          total_discount_set: zod.object({
-            shop_money: zod.object({
-              amount: zod.string(),
-              currency_code: zod.string(),
-            }),
-            presentment_money: zod.object({
-              amount: zod.string(),
-              currency_code: zod.string(),
-            }),
+          presentment_money: zod.object({
+            amount: zod.string(),
+            currency_code: zod.string(),
           }),
-          variant_id: zod.number().nullish(),
-          variant_inventory_management: zod.string().nullish(),
-          variant_title: zod.string().nullish(),
-          vendor: zod.string().nullish(),
         }),
-      ),
+        product_exists: zod.boolean(),
+        product_id: zod.number().nullish(),
+        properties: zod.array(
+          zod.object({
+            name: zod.string(),
+            value: zod.string().or(zod.number()),
+            kind: zod.string(),
+          }),
+        ),
+        quantity: zod.number(),
+        requires_shipping: zod.boolean(),
+        sku: zod.string().nullish(),
+        taxable: zod.boolean(),
+        title: zod.string(),
+        total_discount: zod.string(),
+        total_discount_set: zod.object({
+          shop_money: zod.object({
+            amount: zod.string(),
+            currency_code: zod.string(),
+          }),
+          presentment_money: zod.object({
+            amount: zod.string(),
+            currency_code: zod.string(),
+          }),
+        }),
+        variant_id: zod.number().nullish(),
+        variant_inventory_management: zod.string().nullish(),
+        variant_title: zod.string().nullish(),
+        vendor: zod.string().nullish(),
+      }),
       refunds: zod.array(
         zod.object({
           id: zod.number(),
           admin_graphql_api_id: zod.string(),
-          created_at: zod.string().datetime(),
+          created_at: zod.string(),
           note: zod.string().nullish(),
           order_id: zod.number(),
-          processed_at: zod.string().datetime(),
+          processed_at: zod.string(),
           restock: zod.boolean(),
           total_duties_set: zod
             .object({
@@ -1813,7 +1811,7 @@ export const customerOrderGetResponse = zod.object({
     admin_graphql_api_id: zod.string(),
     buyer_accepts_marketing: zod.boolean(),
     cancel_reason: zod.string().nullish(),
-    cancelled_at: zod.string().datetime().nullish(),
+    cancelled_at: zod.string().optional(),
     client_details: zod
       .object({
         accept_language: zod.string().nullish(),
@@ -1824,10 +1822,10 @@ export const customerOrderGetResponse = zod.object({
         user_agent: zod.string().nullish(),
       })
       .optional(),
-    closed_at: zod.string().datetime().nullish(),
+    closed_at: zod.string().nullish(),
     confirmed: zod.boolean(),
     contact_email: zod.string().nullish(),
-    created_at: zod.string().datetime(),
+    created_at: zod.string(),
     currency: zod.string(),
     current_subtotal_price: zod.string(),
     current_subtotal_price_set: zod.object({
@@ -1901,8 +1899,8 @@ export const customerOrderGetResponse = zod.object({
       id: zod.number(),
       email: zod.string().nullish(),
       accepts_marketing: zod.boolean(),
-      created_at: zod.string().datetime(),
-      updated_at: zod.string().datetime(),
+      created_at: zod.string(),
+      updated_at: zod.string(),
       first_name: zod.string(),
       last_name: zod.string(),
       state: zod.string(),
@@ -1916,7 +1914,7 @@ export const customerOrderGetResponse = zod.object({
         .object({
           state: zod.string().optional(),
           opt_in_level: zod.string().optional(),
-          consent_updated_at: zod.string().datetime().optional(),
+          consent_updated_at: zod.string().optional(),
           consent_collected_from: zod.string().optional(),
         })
         .nullish(),
@@ -1950,7 +1948,7 @@ export const customerOrderGetResponse = zod.object({
       zod.object({
         id: zod.number(),
         admin_graphql_api_id: zod.string(),
-        created_at: zod.string().datetime(),
+        created_at: zod.string(),
         location_id: zod.number(),
         name: zod.string(),
         order_id: zod.number(),
@@ -1962,7 +1960,7 @@ export const customerOrderGetResponse = zod.object({
         tracking_numbers: zod.array(zod.string()).optional(),
         tracking_url: zod.string().nullish(),
         tracking_urls: zod.array(zod.string()).optional(),
-        updated_at: zod.string().datetime().optional(),
+        updated_at: zod.string().optional(),
         line_items: zod.array(
           zod.object({
             id: zod.number(),
@@ -1971,66 +1969,64 @@ export const customerOrderGetResponse = zod.object({
         ),
       }),
     ),
-    line_items: zod.array(
-      zod.object({
-        id: zod.number(),
-        admin_graphql_api_id: zod.string(),
-        fulfillable_quantity: zod.number(),
-        fulfillment_service: zod.string(),
-        fulfillment_status: zod.string().nullish(),
-        gift_card: zod.boolean(),
-        grams: zod.number(),
-        name: zod.string(),
-        price: zod.string(),
-        price_set: zod.object({
-          shop_money: zod.object({
-            amount: zod.string(),
-            currency_code: zod.string(),
-          }),
-          presentment_money: zod.object({
-            amount: zod.string(),
-            currency_code: zod.string(),
-          }),
+    line_items: zod.object({
+      id: zod.number(),
+      admin_graphql_api_id: zod.string(),
+      fulfillable_quantity: zod.number(),
+      fulfillment_service: zod.string(),
+      fulfillment_status: zod.string().nullish(),
+      gift_card: zod.boolean(),
+      grams: zod.number(),
+      name: zod.string(),
+      price: zod.string(),
+      price_set: zod.object({
+        shop_money: zod.object({
+          amount: zod.string(),
+          currency_code: zod.string(),
         }),
-        product_exists: zod.boolean(),
-        product_id: zod.number().nullish(),
-        properties: zod.array(
-          zod.object({
-            name: zod.string(),
-            value: zod.string().or(zod.number()).or(zod.string().datetime()),
-            kind: zod.string(),
-          }),
-        ),
-        quantity: zod.number(),
-        requires_shipping: zod.boolean(),
-        sku: zod.string().nullish(),
-        taxable: zod.boolean(),
-        title: zod.string(),
-        total_discount: zod.string(),
-        total_discount_set: zod.object({
-          shop_money: zod.object({
-            amount: zod.string(),
-            currency_code: zod.string(),
-          }),
-          presentment_money: zod.object({
-            amount: zod.string(),
-            currency_code: zod.string(),
-          }),
+        presentment_money: zod.object({
+          amount: zod.string(),
+          currency_code: zod.string(),
         }),
-        variant_id: zod.number().nullish(),
-        variant_inventory_management: zod.string().nullish(),
-        variant_title: zod.string().nullish(),
-        vendor: zod.string().nullish(),
       }),
-    ),
+      product_exists: zod.boolean(),
+      product_id: zod.number().nullish(),
+      properties: zod.array(
+        zod.object({
+          name: zod.string(),
+          value: zod.string().or(zod.number()),
+          kind: zod.string(),
+        }),
+      ),
+      quantity: zod.number(),
+      requires_shipping: zod.boolean(),
+      sku: zod.string().nullish(),
+      taxable: zod.boolean(),
+      title: zod.string(),
+      total_discount: zod.string(),
+      total_discount_set: zod.object({
+        shop_money: zod.object({
+          amount: zod.string(),
+          currency_code: zod.string(),
+        }),
+        presentment_money: zod.object({
+          amount: zod.string(),
+          currency_code: zod.string(),
+        }),
+      }),
+      variant_id: zod.number().nullish(),
+      variant_inventory_management: zod.string().nullish(),
+      variant_title: zod.string().nullish(),
+      vendor: zod.string().nullish(),
+    }),
     refunds: zod.array(
       zod.object({
         id: zod.number(),
         admin_graphql_api_id: zod.string(),
-        created_at: zod.string().datetime(),
+        created_at: zod.string(),
         note: zod.string().nullish(),
         order_id: zod.number(),
-        processed_at: zod.string().datetime(),
+        processed_at: zod.string(),
         restock: zod.boolean(),
         total_duties_set: zod
           .object({

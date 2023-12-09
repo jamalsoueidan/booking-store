@@ -622,13 +622,10 @@ components:
           nullable: true
         cancelled_at:
           type: string
-          format: date-time
-          nullable: true
         client_details:
           $ref: '#/components/schemas/CustomerOrderClient'
         closed_at:
           type: string
-          format: date-time
           nullable: true
         confirmed:
           type: boolean
@@ -637,7 +634,6 @@ components:
           nullable: true
         created_at:
           type: string
-          format: date-time
         currency:
           type: string
         current_subtotal_price:
@@ -669,9 +665,7 @@ components:
           items:
             $ref: '#/components/schemas/CustomerOrderFulfillment'
         line_items:
-          type: array
-          items:
-            $ref: '#/components/schemas/CustomerOrderLineItem'
+          $ref: '#/components/schemas/CustomerOrderLineItem'
         refunds:
           type: array
           items:
@@ -823,10 +817,8 @@ components:
           type: boolean
         created_at:
           type: string
-          format: date-time
         updated_at:
           type: string
-          format: date-time
         first_name:
           type: string
         last_name:
@@ -858,7 +850,6 @@ components:
               type: string
             consent_updated_at:
               type: string
-              format: date-time
             consent_collected_from:
               type: string
           nullable: true
@@ -933,8 +924,6 @@ components:
                 oneOf:
                   - type: string
                   - type: number
-                  - type: string
-                    format: date-time
               kind:
                 type: string
             required:
@@ -995,7 +984,6 @@ components:
           type: string
         created_at:
           type: string
-          format: date-time
         note:
           type: string
           nullable: true
@@ -1003,7 +991,6 @@ components:
           type: number
         processed_at:
           type: string
-          format: date-time
         restock:
           type: boolean
         total_duties_set:
@@ -1104,7 +1091,6 @@ components:
           type: string
         created_at:
           type: string
-          format: date-time
         location_id:
           type: number
         name:
@@ -1137,7 +1123,6 @@ components:
             type: string
         updated_at:
           type: string
-          format: date-time
         line_items:
           type: array
           items:

@@ -7,7 +7,7 @@
 
 export type CustomerOrderCustomerSmsMarketingConsent = {
   consent_collected_from?: string;
-  consent_updated_at?: Date;
+  consent_updated_at?: string;
   opt_in_level?: string;
   state?: string;
 } | null;

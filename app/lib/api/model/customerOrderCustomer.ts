@@ -11,7 +11,7 @@ export interface CustomerOrderCustomer {
   accepts_marketing: boolean;
   accepts_marketing_updated_at?: string;
   admin_graphql_api_id: string;
-  created_at: Date;
+  created_at: string;
   currency: string;
   default_address?: CustomerOrderAddress;
   email?: string | null;
@@ -28,6 +28,6 @@ export interface CustomerOrderCustomer {
   tags: string;
   tax_exempt: boolean;
   tax_exemptions?: string[];
-  updated_at: Date;
+  updated_at: string;
   verified_email: boolean;
 }

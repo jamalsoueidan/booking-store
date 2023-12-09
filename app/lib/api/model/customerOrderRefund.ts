@@ -9,11 +9,11 @@ import type {CustomerOrderMoney} from './customerOrderMoney';
 
 export interface CustomerOrderRefund {
   admin_graphql_api_id: string;
-  created_at: Date;
+  created_at: string;
   id: number;
   note?: string | null;
   order_id: number;
-  processed_at: Date;
+  processed_at: string;
   refund_line_items: CustomerOrderRefundRefundLineItemsItem[];
   restock: boolean;
   total_duties_set?: CustomerOrderMoney;

@@ -8,7 +8,7 @@ import type {CustomerOrderSimpleLineItem} from './customerOrderSimpleLineItem';
 
 export interface CustomerOrderFulfillment {
   admin_graphql_api_id: string;
-  created_at: Date;
+  created_at: string;
   id: number;
   line_items: CustomerOrderSimpleLineItem[];
   location_id: number;
@@ -22,5 +22,5 @@ export interface CustomerOrderFulfillment {
   tracking_numbers?: string[];
   tracking_url?: string | null;
   tracking_urls?: string[];
-  updated_at?: Date;
+  updated_at?: string;
 }
