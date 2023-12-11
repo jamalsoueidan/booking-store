@@ -8,6 +8,14 @@
   --color-light: #fff;
 }
 
+.fc-event {
+  cursor: pointer;
+}
+
+.event-custom .fc-event-main-frame {
+  flex-direction: column;
+}
+
 /*
 * --------------------------------------------------
 * components/Aside
