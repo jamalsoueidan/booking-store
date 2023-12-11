@@ -175,6 +175,7 @@ export default function ArtistTreatmentsBooking() {
         <AddToCartTreatment
           products={data.products}
           availability={data.availability}
+          location={data.location}
         />
       </Group>
     </>

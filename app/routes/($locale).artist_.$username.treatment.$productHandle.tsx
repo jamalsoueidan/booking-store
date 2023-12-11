@@ -95,6 +95,8 @@ export default function Product() {
     },
   ];
 
+  console.log(product.selectedVariant?.price);
+
   return (
     <SimpleGrid cols={{base: 1, md: 2}} spacing={0}>
       <ProductImage image={product.selectedVariant?.image} />
@@ -137,7 +139,11 @@ export default function Product() {
   );
 }
 
-function ProductImage({image}: {image: ProductVariantFragment['image']}) {
+export function ProductImage({
+  image,
+}: {
+  image: ProductVariantFragment['image'];
+}) {
   if (!image) {
     return <div className="product-image" />;
   }
