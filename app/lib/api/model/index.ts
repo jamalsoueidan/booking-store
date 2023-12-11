@@ -54,6 +54,7 @@ export * from './customerOrderGetResponse';
 export * from './customerOrderLineItem';
 export * from './customerOrderLineItemPropertiesItem';
 export * from './customerOrderLineItemPropertiesItemValue';
+export * from './customerOrderListParams';
 export * from './customerOrderListResponse';
 export * from './customerOrderMoney';
 export * from './customerOrderMoneyPresentmentMoney';

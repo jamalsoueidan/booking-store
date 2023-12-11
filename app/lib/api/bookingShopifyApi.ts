@@ -24,6 +24,7 @@ import type {
   CustomerLocationUpdateBody,
   CustomerLocationUpdateResponse,
   CustomerOrderGetResponse,
+  CustomerOrderListParams,
   CustomerOrderListResponse,
   CustomerProductDestroyResponse,
   CustomerProductGetResponse,
@@ -468,17 +469,17 @@ export const getBookingShopifyApi = () => {
   };
 
   /**
-   * This endpoint get all orders in one month
-   * @summary GET Get all order for customer in one month
+   * This endpoint get all orders
+   * @summary GET Get all order for customer
    */
   const customerOrderList = (
     customerId: string,
-    year: number,
-    month: number,
+    params: CustomerOrderListParams,
   ) => {
     return queryClient<CustomerOrderListResponse>({
-      url: `/customer/${customerId}/orders/${year}/${month}`,
+      url: `/customer/${customerId}/orders`,
       method: 'get',
+      params,
     });
   };
 

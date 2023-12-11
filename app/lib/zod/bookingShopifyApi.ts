@@ -1453,13 +1453,16 @@ export const customerBookingsListResponse = zod.object({
 });
 
 /**
- * This endpoint get all orders in one month
- * @summary GET Get all order for customer in one month
+ * This endpoint get all orders
+ * @summary GET Get all order for customer
  */
 export const customerOrderListParams = zod.object({
   customerId: zod.string(),
-  year: zod.number(),
-  month: zod.number(),
+});
+
+export const customerOrderListQueryParams = zod.object({
+  start: zod.string(),
+  end: zod.string(),
 });
 
 export const customerOrderListResponse = zod.object({
@@ -1467,6 +1470,7 @@ export const customerOrderListResponse = zod.object({
   payload: zod.array(
     zod.object({
       id: zod.number(),
+      order_number: zod.number(),
       admin_graphql_api_id: zod.string(),
       buyer_accepts_marketing: zod.boolean(),
       cancel_reason: zod.string().nullish(),
@@ -1585,21 +1589,24 @@ export const customerOrderListResponse = zod.object({
         admin_graphql_api_id: zod.string(),
         default_address: zod
           .object({
-            first_name: zod.string().optional(),
+            customer_id: zod.number().optional(),
+            first_name: zod.string(),
             address1: zod.string().optional(),
             phone: zod.string().optional(),
             city: zod.string().optional(),
             zip: zod.string().optional(),
             province: zod.string().nullish(),
             country: zod.string().optional(),
-            last_name: zod.string().optional(),
+            last_name: zod.string(),
             address2: zod.string().nullish(),
             company: zod.string().nullish(),
             latitude: zod.number().nullish(),
             longitude: zod.number().nullish(),
-            name: zod.string().optional(),
-            country_code: zod.string().optional(),
-            province_code: zod.string().nullish(),
+            name: zod.string(),
+            country_code: zod.string(),
+            country_name: zod.string().optional(),
+            province_code: zod.string().optional(),
+            default: zod.boolean(),
           })
           .optional(),
       }),
@@ -1741,21 +1748,24 @@ export const customerOrderListResponse = zod.object({
       ),
       shipping_address: zod
         .object({
-          first_name: zod.string().optional(),
+          customer_id: zod.number().optional(),
+          first_name: zod.string(),
           address1: zod.string().optional(),
           phone: zod.string().optional(),
           city: zod.string().optional(),
           zip: zod.string().optional(),
           province: zod.string().nullish(),
           country: zod.string().optional(),
-          last_name: zod.string().optional(),
+          last_name: zod.string(),
           address2: zod.string().nullish(),
           company: zod.string().nullish(),
           latitude: zod.number().nullish(),
           longitude: zod.number().nullish(),
-          name: zod.string().optional(),
-          country_code: zod.string().optional(),
-          province_code: zod.string().nullish(),
+          name: zod.string(),
+          country_code: zod.string(),
+          country_name: zod.string().optional(),
+          province_code: zod.string().optional(),
+          default: zod.boolean(),
         })
         .optional(),
       shipping_lines: zod.array(
@@ -1791,6 +1801,9 @@ export const customerOrderListResponse = zod.object({
           title: zod.string(),
         }),
       ),
+      start: zod.string(),
+      end: zod.string(),
+      title: zod.string(),
     }),
   ),
 });
@@ -1808,6 +1821,7 @@ export const customerOrderGetResponse = zod.object({
   success: zod.boolean(),
   payload: zod.object({
     id: zod.number(),
+    order_number: zod.number(),
     admin_graphql_api_id: zod.string(),
     buyer_accepts_marketing: zod.boolean(),
     cancel_reason: zod.string().nullish(),
@@ -1926,21 +1940,24 @@ export const customerOrderGetResponse = zod.object({
       admin_graphql_api_id: zod.string(),
       default_address: zod
         .object({
-          first_name: zod.string().optional(),
+          customer_id: zod.number().optional(),
+          first_name: zod.string(),
           address1: zod.string().optional(),
           phone: zod.string().optional(),
           city: zod.string().optional(),
           zip: zod.string().optional(),
           province: zod.string().nullish(),
           country: zod.string().optional(),
-          last_name: zod.string().optional(),
+          last_name: zod.string(),
           address2: zod.string().nullish(),
           company: zod.string().nullish(),
           latitude: zod.number().nullish(),
           longitude: zod.number().nullish(),
-          name: zod.string().optional(),
-          country_code: zod.string().optional(),
-          province_code: zod.string().nullish(),
+          name: zod.string(),
+          country_code: zod.string(),
+          country_name: zod.string().optional(),
+          province_code: zod.string().optional(),
+          default: zod.boolean(),
         })
         .optional(),
     }),
@@ -2082,21 +2099,24 @@ export const customerOrderGetResponse = zod.object({
     ),
     shipping_address: zod
       .object({
-        first_name: zod.string().optional(),
+        customer_id: zod.number().optional(),
+        first_name: zod.string(),
         address1: zod.string().optional(),
         phone: zod.string().optional(),
         city: zod.string().optional(),
         zip: zod.string().optional(),
         province: zod.string().nullish(),
         country: zod.string().optional(),
-        last_name: zod.string().optional(),
+        last_name: zod.string(),
         address2: zod.string().nullish(),
         company: zod.string().nullish(),
         latitude: zod.number().nullish(),
         longitude: zod.number().nullish(),
-        name: zod.string().optional(),
-        country_code: zod.string().optional(),
-        province_code: zod.string().nullish(),
+        name: zod.string(),
+        country_code: zod.string(),
+        country_name: zod.string().optional(),
+        province_code: zod.string().optional(),
+        default: zod.boolean(),
       })
       .optional(),
     shipping_lines: zod.array(
@@ -2132,6 +2152,9 @@ export const customerOrderGetResponse = zod.object({
         title: zod.string(),
       }),
     ),
+    start: zod.string(),
+    end: zod.string(),
+    title: zod.string(),
   }),
 });
 

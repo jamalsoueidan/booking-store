@@ -18,6 +18,11 @@
   "dependencies": {
     "@conform-to/react": "^0.9.0",
     "@conform-to/zod": "^0.9.0",
+    "@fullcalendar/core": "^6.1.10",
+    "@fullcalendar/daygrid": "^6.1.10",
+    "@fullcalendar/interaction": "^6.1.10",
+    "@fullcalendar/react": "^6.1.10",
+    "@fullcalendar/timegrid": "^6.1.10",
     "@mantine/carousel": "^7.2.2",
     "@mantine/core": "^7.2.2",
     "@mantine/hooks": "^7.2.2",
