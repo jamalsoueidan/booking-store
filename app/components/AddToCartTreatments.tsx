@@ -3,7 +3,7 @@ import {type CartLineInput} from '@shopify/hydrogen/storefront-api-types';
 import {format} from 'date-fns';
 import da from 'date-fns/locale/da';
 import {type ArtistServicesProductsQuery} from 'storefrontapi.generated';
-import {CustomerLocation, type UserAvailabilitySingle} from '~/lib/api/model';
+import type {CustomerLocation, UserAvailabilitySingle} from '~/lib/api/model';
 import {durationToTime} from '~/lib/duration';
 import {AddToCartButton} from '~/routes/($locale).products.$handle';
 
@@ -51,6 +51,10 @@ export function AddToCartTreatment({
           {
             key: '_locationId',
             value: location._id,
+          },
+          {
+            key: '_freeShipping',
+            value: 'true',
           },
           {
             key: 'Skønhedsekspert',
