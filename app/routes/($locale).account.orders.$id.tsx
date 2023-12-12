@@ -177,8 +177,18 @@ function OrderLineRow({lineItem}: {lineItem: OrderLineItemFullFragment}) {
         </Link>
       </Table.Td>
       <Table.Td valign="top" width="100%">
-        <Text>{lineItem.title}</Text>
-        <small>({lineItem.variant!.title})</small>
+        <Text mb="xs">
+          {lineItem.title} <small>({lineItem.variant!.title})</small>
+        </Text>
+        {lineItem.customAttributes
+          .filter((option) => {
+            return option.key[0] !== '_';
+          })
+          .map((option, index, all) => (
+            <Text key={option.key} size="xs">
+              <strong>{option.key}</strong>: {option.value}
+            </Text>
+          ))}
       </Table.Td>
       <Table.Td valign="top">
         <Money data={lineItem.variant!.price!} />
@@ -258,6 +268,10 @@ const CUSTOMER_ORDER_QUERY = `#graphql
     }
     discountedTotalPrice {
       ...OrderMoney
+    }
+    customAttributes {
+      key
+      value
     }
     variant {
       ...OrderLineProductVariant
