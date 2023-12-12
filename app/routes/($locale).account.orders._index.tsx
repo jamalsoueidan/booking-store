@@ -1,6 +1,9 @@
+import {Button, Divider, Flex, Table, Title} from '@mantine/core';
 import {Link, useLoaderData, type MetaFunction} from '@remix-run/react';
 import {Money, Pagination, getPaginationVariables} from '@shopify/hydrogen';
 import {json, redirect, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
+import {format} from 'date-fns';
+import {da} from 'date-fns/locale';
 import type {
   CustomerOrdersFragment,
   OrderItemFragment,
@@ -50,13 +53,13 @@ export default function Orders() {
   const {customer} = useLoaderData<{customer: CustomerOrdersFragment}>();
   const {orders, numberOfOrders} = customer;
   return (
-    <div className="orders">
-      <h2>
+    <>
+      <Title>
         Orders <small>({numberOfOrders})</small>
-      </h2>
-      <br />
+      </Title>
+      <Divider my="md" />
       {orders.nodes.length ? <OrdersTable orders={orders} /> : <EmptyOrders />}
-    </div>
+    </>
   );
 }
 
@@ -68,15 +71,35 @@ function OrdersTable({orders}: Pick<CustomerOrdersFragment, 'orders'>) {
           {({nodes, isLoading, PreviousLink, NextLink}) => {
             return (
               <>
-                <PreviousLink>
-                  {isLoading ? 'Loading...' : <span>↑ Load previous</span>}
-                </PreviousLink>
-                {nodes.map((order) => {
-                  return <OrderItem key={order.id} order={order} />;
-                })}
-                <NextLink>
-                  {isLoading ? 'Loading...' : <span>Load more ↓</span>}
-                </NextLink>
+                <Flex justify="center">
+                  <Button component={PreviousLink} loading={isLoading}>
+                    ↑ Hent tidligere
+                  </Button>
+                </Flex>
+                <Table>
+                  <Table.Thead>
+                    <Table.Tr>
+                      <Table.Th>#</Table.Th>
+                      <Table.Th>Dato</Table.Th>
+                      <Table.Th>Betaling</Table.Th>
+                      <Table.Th>Status</Table.Th>
+                      <Table.Th>Beløb</Table.Th>
+                      <Table.Th></Table.Th>
+                    </Table.Tr>
+                  </Table.Thead>
+                  <Table.Tbody>
+                    {nodes.map((order) => {
+                      return <OrderItem key={order.id} order={order} />;
+                    })}
+                  </Table.Tbody>
+                </Table>
+
+                <br />
+                <Flex justify="center">
+                  <Button component={NextLink} loading={isLoading}>
+                    Hent flere ↓
+                  </Button>
+                </Flex>
               </>
             );
           }}
@@ -102,19 +125,30 @@ function EmptyOrders() {
 
 function OrderItem({order}: {order: OrderItemFragment}) {
   return (
-    <>
-      <fieldset>
+    <Table.Tr>
+      <Table.Td>
         <Link to={`/account/orders/${order.id}`}>
           <strong>#{order.orderNumber}</strong>
         </Link>
-        <p>{new Date(order.processedAt).toDateString()}</p>
-        <p>{order.financialStatus}</p>
-        <p>{order.fulfillmentStatus}</p>
+      </Table.Td>
+      <Table.Td>
+        {format(new Date(order.processedAt), 'PPPP', {locale: da})}
+      </Table.Td>
+      <Table.Td>{order.financialStatus}</Table.Td>
+      <Table.Td>{order.fulfillmentStatus}</Table.Td>
+      <Table.Td>
         <Money data={order.currentTotalPrice} />
-        <Link to={`/account/orders/${btoa(order.id)}`}>View Order →</Link>
-      </fieldset>
-      <br />
-    </>
+      </Table.Td>
+      <Table.Td>
+        <Button
+          size="compact-sm"
+          component={Link}
+          to={`/account/orders/${btoa(order.id)}`}
+        >
+          Vis ordre
+        </Button>
+      </Table.Td>
+    </Table.Tr>
   );
 }
 

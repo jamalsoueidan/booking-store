@@ -1,6 +1,20 @@
-import {json, redirect, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
+import {
+  ActionIcon,
+  Badge,
+  Card,
+  Divider,
+  Flex,
+  SimpleGrid,
+  Table,
+  Text,
+  Title,
+} from '@mantine/core';
 import {Link, useLoaderData, type MetaFunction} from '@remix-run/react';
-import {Money, Image, flattenConnection} from '@shopify/hydrogen';
+import {Image, Money, flattenConnection} from '@shopify/hydrogen';
+import {json, redirect, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
+import {IconArrowLeft} from '@tabler/icons-react';
+import {format} from 'date-fns';
+import {da} from 'date-fns/locale';
 import type {OrderLineItemFullFragment} from 'storefrontapi.generated';
 
 export const meta: MetaFunction<typeof loader> = ({data}) => {
@@ -53,142 +67,126 @@ export default function OrderRoute() {
   const {order, lineItems, discountValue, discountPercentage} =
     useLoaderData<typeof loader>();
   return (
-    <div className="account-order">
-      <h2>Order {order.name}</h2>
-      <p>Placed on {new Date(order.processedAt!).toDateString()}</p>
-      <br />
-      <div>
-        <table>
-          <thead>
-            <tr>
-              <th scope="col">Product</th>
-              <th scope="col">Price</th>
-              <th scope="col">Quantity</th>
-              <th scope="col">Total</th>
-            </tr>
-          </thead>
-          <tbody>
-            {lineItems.map((lineItem, lineItemIndex) => (
-              // eslint-disable-next-line react/no-array-index-key
-              <OrderLineRow key={lineItemIndex} lineItem={lineItem} />
-            ))}
-          </tbody>
-          <tfoot>
-            {((discountValue && discountValue.amount) ||
-              discountPercentage) && (
-              <tr>
-                <th scope="row" colSpan={3}>
-                  <p>Discounts</p>
-                </th>
-                <th scope="row">
-                  <p>Discounts</p>
-                </th>
-                <td>
-                  {discountPercentage ? (
-                    <span>-{discountPercentage}% OFF</span>
-                  ) : (
-                    discountValue && <Money data={discountValue!} />
-                  )}
-                </td>
-              </tr>
-            )}
-            <tr>
-              <th scope="row" colSpan={3}>
-                <p>Subtotal</p>
-              </th>
-              <th scope="row">
-                <p>Subtotal</p>
-              </th>
-              <td>
-                <Money data={order.subtotalPriceV2!} />
-              </td>
-            </tr>
-            <tr>
-              <th scope="row" colSpan={3}>
-                Tax
-              </th>
-              <th scope="row">
-                <p>Tax</p>
-              </th>
-              <td>
-                <Money data={order.totalTaxV2!} />
-              </td>
-            </tr>
-            <tr>
-              <th scope="row" colSpan={3}>
-                Total
-              </th>
-              <th scope="row">
-                <p>Total</p>
-              </th>
-              <td>
-                <Money data={order.totalPriceV2!} />
-              </td>
-            </tr>
-          </tfoot>
-        </table>
+    <>
+      <Flex direction={'row'} align={'center'}>
+        <Link to="/account/orders">
+          <ActionIcon
+            variant="transparent"
+            size="xl"
+            aria-label="Back"
+            color="black"
+          >
+            <IconArrowLeft style={{width: '70%', height: '70%'}} stroke={1.5} />
+          </ActionIcon>
+        </Link>
         <div>
-          <h3>Shipping Address</h3>
+          <Title>Order {order.name}</Title>
+          <Text c="dimmed" size="sm">
+            Købt {format(new Date(order.processedAt!), 'PPPP', {locale: da})}
+            <Badge ml="xs">{order.fulfillmentStatus}</Badge>
+          </Text>
+        </div>
+      </Flex>
+      <Divider my="md" />
+
+      <Table>
+        <Table.Thead>
+          <Table.Tr>
+            <Table.Th>Produkt</Table.Th>
+            <Table.Th>Pris</Table.Th>
+            <Table.Th>Antal</Table.Th>
+            <Table.Th> Total</Table.Th>
+          </Table.Tr>
+        </Table.Thead>
+        <Table.Tbody>
+          {lineItems.map((lineItem, lineItemIndex) => (
+            // eslint-disable-next-line react/no-array-index-key
+            <OrderLineRow key={lineItemIndex} lineItem={lineItem} />
+          ))}
+        </Table.Tbody>
+      </Table>
+      <SimpleGrid cols={{base: 1, md: 2}} mt="lg">
+        <Card shadow="0" padding="md" radius="md" withBorder>
+          <Text fw={500} size="lg" mb="md">
+            Summary
+          </Text>
+
+          {((discountValue && discountValue.amount) || discountPercentage) && (
+            <Flex justify="space-between" mb="cs">
+              <Text>Discounts</Text>
+
+              {discountPercentage ? (
+                <span>-{discountPercentage}% OFF</span>
+              ) : (
+                discountValue && <Money data={discountValue!} />
+              )}
+            </Flex>
+          )}
+
+          <Flex justify="space-between" mb="xs">
+            <Text>Subtotal</Text>
+            <Money data={order.subtotalPriceV2!} />
+          </Flex>
+          <Flex justify="space-between" mb="xs">
+            <Text>Moms</Text>
+            <Money data={order.totalTaxV2!} />
+          </Flex>
+          <Flex justify="space-between">
+            <Text>Total</Text>
+            <Money data={order.totalPriceV2!} />
+          </Flex>
+        </Card>
+        <Card shadow="0" padding="md" radius="md" withBorder>
+          <Text fw={500} size="lg" mb="md">
+            Forsendelse
+          </Text>
           {order?.shippingAddress ? (
-            <address>
-              <p>
+            <>
+              <Text>
                 {order.shippingAddress.firstName &&
                   order.shippingAddress.firstName + ' '}
                 {order.shippingAddress.lastName}
-              </p>
+              </Text>
               {order?.shippingAddress?.formatted ? (
                 order.shippingAddress.formatted.map((line: string) => (
-                  <p key={line}>{line}</p>
+                  <Text key={line}>{line}</Text>
                 ))
               ) : (
                 <></>
               )}
-            </address>
+            </>
           ) : (
-            <p>No shipping address defined</p>
+            <Text>No shipping address defined</Text>
           )}
-          <h3>Status</h3>
-          <div>
-            <p>{order.fulfillmentStatus}</p>
-          </div>
-        </div>
-      </div>
-      <br />
-      <p>
-        <a target="_blank" href={order.statusUrl} rel="noreferrer">
-          View Order Status →
-        </a>
-      </p>
-    </div>
+        </Card>
+      </SimpleGrid>
+    </>
   );
 }
 
 function OrderLineRow({lineItem}: {lineItem: OrderLineItemFullFragment}) {
   return (
-    <tr key={lineItem.variant!.id}>
-      <td>
-        <div>
-          <Link to={`/products/${lineItem.variant!.product!.handle}`}>
-            {lineItem?.variant?.image && (
-              <div>
-                <Image data={lineItem.variant.image} width={96} height={96} />
-              </div>
-            )}
-          </Link>
-          <div>
-            <p>{lineItem.title}</p>
-            <small>{lineItem.variant!.title}</small>
-          </div>
-        </div>
-      </td>
-      <td>
+    <Table.Tr>
+      <Table.Td>
+        <Link to={`/products/${lineItem.variant!.product!.handle}`}>
+          {lineItem?.variant?.image && (
+            <div>
+              <Image data={lineItem.variant.image} width={96} height={96} />
+            </div>
+          )}
+        </Link>
+      </Table.Td>
+      <Table.Td valign="top" width="100%">
+        <Text>{lineItem.title}</Text>
+        <small>({lineItem.variant!.title})</small>
+      </Table.Td>
+      <Table.Td valign="top">
         <Money data={lineItem.variant!.price!} />
-      </td>
-      <td>{lineItem.quantity}</td>
-      <td>
+      </Table.Td>
+      <Table.Td valign="top">
         <Money data={lineItem.discountedTotalPrice!} />
-      </td>
-    </tr>
+      </Table.Td>
+    </Table.Tr>
   );
 }
 
