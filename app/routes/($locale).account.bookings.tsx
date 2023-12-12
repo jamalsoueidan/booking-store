@@ -22,7 +22,6 @@ import {IconCar} from '@tabler/icons-react';
 import {differenceInMinutes, format} from 'date-fns';
 import {da} from 'date-fns/locale';
 import {useState} from 'react';
-import {createRoot} from 'react-dom/client';
 import {type ProductFragment} from 'storefrontapi.generated';
 import type {
   CustomerLocationIsDefault,
@@ -83,33 +82,6 @@ export default function AccountBookings() {
             input.color = '#cccccc';
           }
           return input;
-        }}
-        eventDidMount={(info) => {
-          const eventElement = info.el.querySelector(
-            '.fc-event-title-container',
-          );
-
-          const order = info.event.extendedProps as CustomerOrder;
-          if (eventElement && order.line_items.properties.shippingId) {
-            // Create a container for your React component
-            const descriptionElement = document.createElement('span');
-            descriptionElement.classList.add('fc-event-icon');
-            eventElement.prepend(descriptionElement);
-
-            // Use createRoot to render the React component
-            const root = createRoot(descriptionElement);
-            root.render(<CustomDescription />);
-          }
-        }}
-        eventWillUnmount={(info) => {
-          const descriptionElement = info.el.querySelector(
-            '.fc-event-title-container > div',
-          );
-          if (descriptionElement) {
-            // Clean up the React component
-            const root = createRoot(descriptionElement);
-            root.unmount();
-          }
         }}
         themeSystem="standard"
         events="/api/orders"
