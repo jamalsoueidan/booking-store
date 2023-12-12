@@ -1,4 +1,4 @@
-import {Group, Image, Radio, Text, UnstyledButton} from '@mantine/core';
+import {Group, Image, Radio, Text, UnstyledButton, rem} from '@mantine/core';
 import {useUncontrolled} from '@mantine/hooks';
 import {type CustomerLocation} from '~/lib/api/model';
 import estimate from '../../../public/estimate.svg';
@@ -48,24 +48,22 @@ export function AristLocationRadioCard({
           <Image src={precision} height="80" />
         )}
         <div style={{flex: 1}}>
-          <Text tt="uppercase" c="dimmed" fw={700} size="xs">
-            {location.name}
-          </Text>
-          <Text mb="md" c="black" fw={700}>
-            {location.fullAddress}
-          </Text>
-          <Group gap="xs" wrap="nowrap">
+          <Text tt="uppercase" c="dimmed" fw={700} size="xs" mb={rem(3)}>
             {location.locationType === 'destination' ? (
-              <Text size="xs">Kører til din adresse</Text>
+              <>Kører til din adresse</>
             ) : null}
             {location.locationType !== 'destination' ? (
               <>
-                <Text size="xs">
-                  {location.originType === 'home' ? 'Hjemmeadrsese' : 'Salon'}
-                </Text>
+                {location.originType === 'home'
+                  ? 'Hjemme adresse'
+                  : 'Salon adresse'}
               </>
             ) : null}
-          </Group>
+          </Text>
+          <Text mb="xs" c="black" fw={700} lineClamp={1}>
+            {location.fullAddress}
+          </Text>
+          <Text size="xs">{location.name}</Text>
         </div>
       </Group>
 

@@ -95,8 +95,6 @@ export default function Product() {
     },
   ];
 
-  console.log(product.selectedVariant?.price);
-
   return (
     <SimpleGrid cols={{base: 1, md: 2}} spacing={0}>
       <ProductImage image={product.selectedVariant?.image} />

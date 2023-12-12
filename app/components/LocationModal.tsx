@@ -61,6 +61,11 @@ export function LocationModal({
               køre hen, for at kunne estimere udgifterne ved at komme til dig.
             </Text>
 
+            <Text size="sm">
+              Skønhedseksperten vil kører fra{' '}
+              <strong>{location?.fullAddress}</strong>
+            </Text>
+
             <input
               type="hidden"
               name="customerId"
@@ -68,11 +73,15 @@ export function LocationModal({
             />
             <input type="hidden" name="locationId" value={location?._id} />
 
-            <TextInput label="Navn (hotel):" name="destination.name" />
+            <TextInput
+              label="Navn:"
+              name="destination.name"
+              placeholder="Hotel navn?"
+            />
 
             <AddressAutocompleteInput
-              label="Hvor skal der køresr til?"
-              placeholder="Sigridsvej 45, 8220 Brabrand"
+              label="Hvor skal skønhedseksperten køre til?"
+              placeholder={location?.fullAddress || ''}
               name="destination.fullAddress"
             />
 

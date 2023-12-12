@@ -161,7 +161,7 @@ export default function Component() {
                 type={undefined}
                 allowNegative={false}
                 allowDecimal={false}
-                suffix=" kr"
+                leftSection=" kr"
               />
 
               <NumberInput
@@ -170,7 +170,7 @@ export default function Component() {
                 type={undefined}
                 allowNegative={false}
                 allowDecimal={false}
-                suffix=" kr"
+                leftSection=" kr"
               />
 
               <NumberInput
@@ -179,7 +179,7 @@ export default function Component() {
                 type={undefined}
                 allowNegative={false}
                 allowDecimal={false}
-                suffix=" kr"
+                leftSection=" kr"
               />
 
               <NumberInput
@@ -188,7 +188,7 @@ export default function Component() {
                 type={undefined}
                 allowNegative={false}
                 allowDecimal={false}
-                suffix=" km"
+                leftSection=" km"
               />
 
               <NumberInput
@@ -197,7 +197,7 @@ export default function Component() {
                 type={undefined}
                 allowNegative={false}
                 allowDecimal={false}
-                suffix=" km"
+                leftSection=" km"
               />
 
               <NumberInput
@@ -206,7 +206,7 @@ export default function Component() {
                 type={undefined}
                 allowNegative={false}
                 allowDecimal={false}
-                suffix=" km"
+                leftSection=" km"
               />
             </>
           ) : (
