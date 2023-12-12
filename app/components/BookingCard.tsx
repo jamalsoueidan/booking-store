@@ -4,11 +4,8 @@ import {da} from 'date-fns/locale';
 import {type CustomerOrder} from '~/lib/api/model';
 
 export function BookingCard({booking}: {booking: CustomerOrder}) {
-  const from = booking.line_items.properties.find(
-    (p) => p.name === '_from',
-  )?.value;
-
-  const to = booking.line_items.properties.find((p) => p.name === '_to')?.value;
+  const from = booking.line_items.properties.from;
+  const to = booking.line_items.properties.to;
 
   return (
     <Card shadow="sm" padding="md" radius="md" withBorder>
