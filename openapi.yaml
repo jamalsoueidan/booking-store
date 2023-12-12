@@ -818,6 +818,24 @@ components:
         - code
         - amount
         - type
+    CustomerOrderLineItemProperties:
+      type: object
+      properties:
+        customer_id:
+          type: number
+        from:
+          type: string
+        to:
+          type: string
+        locationId:
+          type: string
+        shippingId:
+          type: string
+      required:
+        - from
+        - to
+        - customer_id
+        - locationId
     CustomerOrderSimpleLineItem:
       type: object
       properties:
@@ -937,22 +955,7 @@ components:
           type: number
           nullable: true
         properties:
-          type: array
-          items:
-            type: object
-            properties:
-              name:
-                type: string
-              value:
-                oneOf:
-                  - type: string
-                  - type: number
-              kind:
-                type: string
-            required:
-              - name
-              - value
-              - kind
+          $ref: '#/components/schemas/CustomerOrderLineItemProperties'
         quantity:
           type: number
         requires_shipping:
@@ -2204,6 +2207,17 @@ components:
         - success
         - payload
     ShippingCalculateResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: true
+        payload:
+          $ref: '#/components/schemas/Shipping'
+      required:
+        - success
+        - payload
+    ShippingGetResponse:
       type: object
       properties:
         success:
@@ -4045,7 +4059,7 @@ paths:
   /shipping/create:
     post:
       tags:
-        - ShippingCreate
+        - Shipping
       operationId: shippingCreate
       summary: POST create shipping
       requestBody:
@@ -4071,7 +4085,7 @@ paths:
   /shipping/calculate:
     post:
       tags:
-        - ShippingCalculate
+        - Shipping
       operationId: shippingCalculate
       summary: POST get shipping calculate
       requestBody:
@@ -4093,6 +4107,35 @@ paths:
           $ref: '#/components/responses/UnauthorizedResponse'
         '403':
           $ref: '#/components/responses/ForbiddenResponse'
+      security: []
+  '/shipping/{shippingId}':
+    get:
+      parameters:
+        - name: shippingId
+          in: path
+          required: true
+          schema:
+            type: string
+      tags:
+        - Shipping
+      operationId: shippingGet
+      summary: GET Get shipping
+      description: This endpoint gets shipping object
+      responses:
+        '200':
+          description: Response with payload
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ShippingGetResponse'
+        '400':
+          $ref: '#/components/responses/BadResponse'
+        '401':
+          $ref: '#/components/responses/UnauthorizedResponse'
+        '403':
+          $ref: '#/components/responses/ForbiddenResponse'
+        '404':
+          $ref: '#/components/responses/NotFoundResponse'
       security: []
   /orchestrators/upload:
     post:
