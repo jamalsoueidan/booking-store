@@ -5,7 +5,7 @@
  * OpenAPI spec version: 1.0.0
  */
 import type {CustomerOrderMoney} from './customerOrderMoney';
-import type {CustomerOrderLineItemPropertiesItem} from './customerOrderLineItemPropertiesItem';
+import type {CustomerOrderLineItemProperties} from './customerOrderLineItemProperties';
 
 export interface CustomerOrderLineItem {
   admin_graphql_api_id: string;
@@ -20,7 +20,7 @@ export interface CustomerOrderLineItem {
   price_set: CustomerOrderMoney;
   product_exists: boolean;
   product_id?: number | null;
-  properties: CustomerOrderLineItemPropertiesItem[];
+  properties: CustomerOrderLineItemProperties;
   quantity: number;
   requires_shipping: boolean;
   sku?: string | null;

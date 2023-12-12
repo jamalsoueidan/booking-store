@@ -11,14 +11,17 @@ export interface CustomerOrderAddress {
   city?: string;
   company?: string | null;
   country?: string;
-  country_code?: string;
-  first_name?: string;
-  last_name?: string;
+  country_code: string;
+  country_name?: string;
+  customer_id?: number;
+  default: boolean;
+  first_name: string;
+  last_name: string;
   latitude?: number | null;
   longitude?: number | null;
-  name?: string;
+  name: string;
   phone?: string;
   province?: string | null;
-  province_code?: string | null;
+  province_code?: string;
   zip?: string;
 }

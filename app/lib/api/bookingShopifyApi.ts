@@ -24,6 +24,7 @@ import type {
   CustomerLocationUpdateBody,
   CustomerLocationUpdateResponse,
   CustomerOrderGetResponse,
+  CustomerOrderListParams,
   CustomerOrderListResponse,
   CustomerProductDestroyResponse,
   CustomerProductGetResponse,
@@ -59,6 +60,7 @@ import type {
   ShippingBody,
   ShippingCalculateResponse,
   ShippingCreateResponse,
+  ShippingGetResponse,
   UploadBody,
   UploadResponse,
   UserAvailabilityGeResponse,
@@ -468,17 +470,17 @@ export const getBookingShopifyApi = () => {
   };
 
   /**
-   * This endpoint get all orders in one month
-   * @summary GET Get all order for customer in one month
+   * This endpoint get all orders
+   * @summary GET Get all order for customer
    */
   const customerOrderList = (
     customerId: string,
-    year: number,
-    month: number,
+    params: CustomerOrderListParams,
   ) => {
     return queryClient<CustomerOrderListResponse>({
-      url: `/customer/${customerId}/orders/${year}/${month}`,
+      url: `/customer/${customerId}/orders`,
       method: 'get',
+      params,
     });
   };
 
@@ -761,6 +763,17 @@ export const getBookingShopifyApi = () => {
   };
 
   /**
+   * This endpoint gets shipping object
+   * @summary GET Get shipping
+   */
+  const shippingGet = (shippingId: string) => {
+    return queryClient<ShippingGetResponse>({
+      url: `/shipping/${shippingId}`,
+      method: 'get',
+    });
+  };
+
+  /**
    * This endpoint is used to upload new image for customer
    * @summary POST Upload new customer image
    */
@@ -826,6 +839,7 @@ export const getBookingShopifyApi = () => {
     locationGetTravelTime,
     shippingCreate,
     shippingCalculate,
+    shippingGet,
     upload,
   };
 };
@@ -1116,6 +1130,9 @@ export type ShippingCalculateResult = NonNullable<
   Awaited<
     ReturnType<ReturnType<typeof getBookingShopifyApi>['shippingCalculate']>
   >
+>;
+export type ShippingGetResult = NonNullable<
+  Awaited<ReturnType<ReturnType<typeof getBookingShopifyApi>['shippingGet']>>
 >;
 export type UploadResult = NonNullable<
   Awaited<ReturnType<ReturnType<typeof getBookingShopifyApi>['upload']>>

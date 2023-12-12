@@ -56,7 +56,22 @@ export const VARIANTS_QUERY_ID = `#graphql
   }
 ` as const;
 
+export const PRODUCT_SELECTED_OPTIONS_QUERY_ID = `#graphql
+${PRODUCT_SELECTED_OPTIONS_FRAGMENT}
+  query ProductId(
+    $country: CountryCode
+    $Id: ID!
+    $language: LanguageCode
+    $selectedOptions: [SelectedOptionInput!]!
+  ) @inContext(country: $country, language: $language) {
+    product(id: $Id) {
+      ...Product
+    }
+  }
+` as const;
+
 export const PRODUCT_SELECTED_OPTIONS_QUERY = `#graphql
+${PRODUCT_SELECTED_OPTIONS_FRAGMENT}
   query Product(
     $country: CountryCode
     $productHandle: String!
@@ -67,5 +82,4 @@ export const PRODUCT_SELECTED_OPTIONS_QUERY = `#graphql
       ...Product
     }
   }
-  ${PRODUCT_SELECTED_OPTIONS_FRAGMENT}
 ` as const;

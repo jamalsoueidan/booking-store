@@ -8,6 +8,27 @@
   --color-light: #fff;
 }
 
+.fc-event {
+  cursor: pointer;
+}
+
+.event-custom .fc-event-main-frame {
+  flex-direction: column;
+}
+
+.event-custom .fc-event-main-frame {
+  flex-direction: column;
+}
+
+.event-custom .fc-event-title-container {
+  display: flex;
+  align-content: 'center';
+}
+
+.event-custom .fc-event-icon {
+  margin-right: 4px;
+}
+
 /*
 * --------------------------------------------------
 * components/Aside

@@ -3,18 +3,20 @@ import {type CartLineInput} from '@shopify/hydrogen/storefront-api-types';
 import {format} from 'date-fns';
 import da from 'date-fns/locale/da';
 import {type ArtistServicesProductsQuery} from 'storefrontapi.generated';
-import {type UserAvailabilitySingle} from '~/lib/api/model';
+import type {CustomerLocation, UserAvailabilitySingle} from '~/lib/api/model';
 import {durationToTime} from '~/lib/duration';
 import {AddToCartButton} from '~/routes/($locale).products.$handle';
 
 type AddToCartTreatmentProps = {
   availability: UserAvailabilitySingle;
   products: ArtistServicesProductsQuery['products'];
+  location: CustomerLocation;
 };
 
 export function AddToCartTreatment({
   availability,
   products,
+  location,
 }: AddToCartTreatmentProps) {
   const lines: Array<CartLineInput> = products.nodes
     .filter((product) => {
@@ -45,6 +47,14 @@ export function AddToCartTreatment({
           {
             key: '_customerId',
             value: availability.customer.customerId.toString(),
+          },
+          {
+            key: '_locationId',
+            value: location._id,
+          },
+          {
+            key: '_freeShipping',
+            value: 'true',
           },
           {
             key: 'Skønhedsekspert',

@@ -35,10 +35,14 @@ export interface CustomerOrder {
   current_total_tax: string;
   current_total_tax_set: CustomerOrderMoney;
   customer: CustomerOrderCustomer;
+  end: string;
   fulfillments: CustomerOrderFulfillment[];
   id: number;
   line_items: CustomerOrderLineItem;
+  order_number: number;
   refunds: CustomerOrderRefund[];
   shipping_address?: CustomerOrderAddress;
   shipping_lines: CustomerOrderShipping[];
+  start: string;
+  title: string;
 }
