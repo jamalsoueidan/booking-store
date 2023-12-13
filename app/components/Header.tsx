@@ -66,7 +66,12 @@ export function Header({header, isLoggedIn, cart}: HeaderProps) {
           />
         </Flex>
       </header>
-      <HeaderMenuMobile drawerOpened={drawerOpened} closeDrawer={closeDrawer}>
+      <HeaderMenuMobile
+        drawerOpened={drawerOpened}
+        closeDrawer={closeDrawer}
+        menu={menu}
+        primaryDomainUrl={header.shop.primaryDomain.url}
+      >
         <HeaderCtas isLoggedIn={isLoggedIn} cart={cart} />
       </HeaderMenuMobile>
     </Box>
@@ -103,7 +108,7 @@ export function HeaderMenu({
           style={activeLinkStyle}
           to="/"
         >
-          Home
+          Hjem
         </NavLink>
       )}
       {(menu || FALLBACK_HEADER_MENU).items.map((link) => {
@@ -206,11 +211,18 @@ function HeaderMenuMobile({
   children,
   drawerOpened,
   closeDrawer,
+  primaryDomainUrl,
+  menu,
 }: {
   children: JSX.Element;
   drawerOpened: boolean;
+  menu: HeaderProps['header']['menu'];
+  primaryDomainUrl: HeaderQuery['shop']['primaryDomain']['url'];
   closeDrawer: () => void;
 }) {
+  const location = useLocation();
+  const {publicStoreDomain} = useRootLoaderData();
+
   return (
     <Drawer
       opened={drawerOpened}
@@ -222,19 +234,31 @@ function HeaderMenuMobile({
       zIndex={1000000}
     >
       <ScrollArea h={`calc(100vh - ${rem(80)})`} mx="-md">
-        <Divider my="sm" />
+        <Divider mb="sm" />
 
-        <a href="a" className={classes.link}>
-          Home
-        </a>
+        {(menu || FALLBACK_HEADER_MENU).items.map((link) => {
+          if (!link.url) return null;
 
-        <a href="b" className={classes.link}>
-          Learn
-        </a>
+          // if the url is internal, we strip the domain
+          const url =
+            link.url.includes('myshopify.com') ||
+            link.url.includes(publicStoreDomain) ||
+            link.url.includes(primaryDomainUrl)
+              ? new URL(link.url).pathname
+              : link.url;
 
-        <a href="c" className={classes.link}>
-          Academy
-        </a>
+          return (
+            <Link
+              key={link.id}
+              to={url}
+              onClick={closeDrawer}
+              className={classes.link}
+              data-active={location?.pathname.includes(url) || undefined}
+            >
+              {link.title}
+            </Link>
+          );
+        })}
 
         <Divider my="sm" />
 

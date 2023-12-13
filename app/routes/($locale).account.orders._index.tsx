@@ -80,10 +80,8 @@ function OrdersTable({orders}: Pick<CustomerOrdersFragment, 'orders'>) {
                 <Table>
                   <Table.Thead>
                     <Table.Tr>
-                      <Table.Th>#</Table.Th>
                       <Table.Th>Dato</Table.Th>
                       <Table.Th>Betaling</Table.Th>
-                      <Table.Th>Status</Table.Th>
                       <Table.Th>Beløb</Table.Th>
                       <Table.Th></Table.Th>
                     </Table.Tr>
@@ -132,15 +130,9 @@ function OrderItem({order}: {order: OrderItemFragment}) {
   return (
     <Table.Tr>
       <Table.Td>
-        <Link to={`/account/orders/${order.id}`}>
-          <strong>#{order.orderNumber}</strong>
-        </Link>
-      </Table.Td>
-      <Table.Td>
         {format(new Date(order.processedAt), 'PPPP', {locale: da})}
       </Table.Td>
       <Table.Td>{order.financialStatus}</Table.Td>
-      <Table.Td>{order.fulfillmentStatus}</Table.Td>
       <Table.Td>
         <Money data={order.currentTotalPrice} />
       </Table.Td>
@@ -150,7 +142,7 @@ function OrderItem({order}: {order: OrderItemFragment}) {
           component={Link}
           to={`/account/orders/${btoa(order.id)}`}
         >
-          Vis ordre
+          Vis ordre #{order.orderNumber}
         </Button>
       </Table.Td>
     </Table.Tr>

@@ -94,7 +94,6 @@ export default function OrderRoute() {
           <Table.Tr>
             <Table.Th>Produkt</Table.Th>
             <Table.Th>Pris</Table.Th>
-            <Table.Th>Antal</Table.Th>
             <Table.Th> Total</Table.Th>
           </Table.Tr>
         </Table.Thead>
@@ -189,9 +188,6 @@ function OrderLineRow({lineItem}: {lineItem: OrderLineItemFullFragment}) {
               <strong>{option.key}</strong>: {option.value}
             </Text>
           ))}
-      </Table.Td>
-      <Table.Td valign="top">
-        <Money data={lineItem.variant!.price!} />
       </Table.Td>
       <Table.Td valign="top">
         <Money data={lineItem.discountedTotalPrice!} />
