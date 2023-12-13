@@ -66,7 +66,7 @@ export default function ArtistIndex() {
           {({payload}) => <ArtistSchedulesMenu data={payload} />}
         </Await>
       </Suspense>
-      <SimpleGrid cols={{base: 1, lg: 4, md: 3, sm: 2}} spacing={0}>
+      <SimpleGrid cols={{base: 2, md: 3}} spacing={0} m="sm">
         <Suspense
           fallback={
             <div>
@@ -96,7 +96,6 @@ function ArtistSchedulesMenu({data}: {data: UserScheduleWithLocations[]}) {
   const location = useLocation();
 
   if (data.length <= 1) return null;
-
   return (
     <Form method="get">
       <Flex gap="lg">

@@ -39,7 +39,9 @@ export function ArtistHero({artist}: {artist: User}) {
           </Title>
           <Text c="dimmed" size={!isMobile ? rem(20) : undefined}>
             {artist.aboutMe} <br />
-            Årserfaring: {artist.yearsExperience}
+          </Text>
+          <Text c="dimmed" size={!isMobile ? rem(20) : undefined}>
+            {artist.yearsExperience} årserfaring
           </Text>
           <Stack gap="xs">
             <Group gap="xs">
