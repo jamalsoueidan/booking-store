@@ -80,7 +80,7 @@ export default function OrderRoute() {
           </ActionIcon>
         </Link>
         <div>
-          <Title>Order {order.name}</Title>
+          <Title>Ordre {order.name}</Title>
           <Text c="dimmed" size="sm">
             Købt {format(new Date(order.processedAt!), 'PPPP', {locale: da})}
             <Badge ml="xs">{order.fulfillmentStatus}</Badge>

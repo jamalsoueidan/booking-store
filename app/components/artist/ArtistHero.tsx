@@ -21,7 +21,7 @@ export function ArtistHero({artist}: {artist: User}) {
   if (!artist) return null;
   return (
     <Flex mb="xl" align={'center'} gap="md">
-      <Avatar src={artist.images?.profile?.url} size={150} radius={150} />
+      <Avatar src={artist.images?.profile?.url} size={200} radius={200} />
       <Stack gap="xs">
         <div>
           <Title order={2} fw={500}>

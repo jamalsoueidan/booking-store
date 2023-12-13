@@ -55,8 +55,8 @@ export function AristLocationRadioCard({
             {location.locationType !== 'destination' ? (
               <>
                 {location.originType === 'home'
-                  ? 'Hjemme adresse'
-                  : 'Salon adresse'}
+                  ? 'Hjemme hos skønhedseksperten'
+                  : 'I Salonen'}
               </>
             ) : null}
           </Text>

@@ -1,7 +1,8 @@
-import {Button, Divider, Flex, Table, Title} from '@mantine/core';
+import {Button, Card, Divider, Flex, Table, Title} from '@mantine/core';
 import {Link, useLoaderData, type MetaFunction} from '@remix-run/react';
 import {Money, Pagination, getPaginationVariables} from '@shopify/hydrogen';
 import {json, redirect, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
+import {IconHeartHandshake} from '@tabler/icons-react';
 import {format} from 'date-fns';
 import {da} from 'date-fns/locale';
 import type {
@@ -65,7 +66,7 @@ export default function Orders() {
 
 function OrdersTable({orders}: Pick<CustomerOrdersFragment, 'orders'>) {
   return (
-    <div className="acccount-orders">
+    <>
       {orders?.nodes.length ? (
         <Pagination connection={orders}>
           {({nodes, isLoading, PreviousLink, NextLink}) => {
@@ -107,19 +108,23 @@ function OrdersTable({orders}: Pick<CustomerOrdersFragment, 'orders'>) {
       ) : (
         <EmptyOrders />
       )}
-    </div>
+    </>
   );
 }
 
 function EmptyOrders() {
   return (
-    <div>
-      <p>You haven&apos;t placed any orders yet.</p>
-      <br />
-      <p>
-        <Link to="/collections">Start Shopping →</Link>
-      </p>
-    </div>
+    <Card>
+      <Flex direction="column" align="center">
+        <IconHeartHandshake size="25%" opacity={0.7} stroke={1} />
+        <Title order={3} fw={500} mb="lg">
+          Du har ikke afgivet nogen ordre endnu
+        </Title>
+        <Button component={Link} to="/">
+          Gå til forside →
+        </Button>
+      </Flex>
+    </Card>
   );
 }
 
