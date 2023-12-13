@@ -62,13 +62,13 @@ export function AddToCartTreatment({
           },
           {
             key: 'Tid',
-            value: `${format(new Date(slotProduct.from), 'iiii', {
-              locale: da,
-            })}, ${format(new Date(slotProduct.from), 'PPP', {
-              locale: da,
-            }).slice(0, -4)} ${format(new Date(slotProduct.from), 'p', {
-              locale: da,
-            })}`,
+            value: `${format(
+              new Date(slotProduct.from),
+              "EEEE 'den' M'.' LLL 'kl 'HH:mm",
+              {
+                locale: da,
+              },
+            )}`,
           },
           {
             key: 'Varighed',

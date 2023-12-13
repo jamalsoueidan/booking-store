@@ -236,6 +236,15 @@ function HeaderMenuMobile({
       <ScrollArea h={`calc(100vh - ${rem(80)})`} mx="-md">
         <Divider mb="sm" />
 
+        <Link
+          to="/"
+          onClick={closeDrawer}
+          className={classes.link}
+          data-active={location.pathname === '/' || undefined}
+        >
+          Hjem
+        </Link>
+
         {(menu || FALLBACK_HEADER_MENU).items.map((link) => {
           if (!link.url) return null;
 

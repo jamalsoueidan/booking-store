@@ -1,6 +1,7 @@
 import {
   ActionIcon,
   Badge,
+  Button,
   Card,
   Divider,
   Flex,
@@ -16,6 +17,7 @@ import {IconArrowLeft} from '@tabler/icons-react';
 import {format} from 'date-fns';
 import {da} from 'date-fns/locale';
 import type {OrderLineItemFullFragment} from 'storefrontapi.generated';
+import {type CustomerOrderLineItemProperties} from '~/lib/api/model';
 
 export const meta: MetaFunction<typeof loader> = ({data}) => {
   return [{title: `Order ${data?.order?.name}`}];
@@ -66,6 +68,13 @@ export async function loader({params, context}: LoaderFunctionArgs) {
 export default function OrderRoute() {
   const {order, lineItems, discountValue, discountPercentage} =
     useLoaderData<typeof loader>();
+
+  const treatmentsLineItems = lineItems.filter(
+    (p) => p.customAttributes.length > 0,
+  );
+  const productsLineItems = lineItems.filter(
+    (p) => p.customAttributes.length === 0,
+  );
   return (
     <>
       <Flex direction={'row'} align={'center'}>
@@ -89,21 +98,58 @@ export default function OrderRoute() {
       </Flex>
       <Divider my="md" />
 
-      <Table>
-        <Table.Thead>
-          <Table.Tr>
-            <Table.Th>Produkt</Table.Th>
-            <Table.Th>Pris</Table.Th>
-            <Table.Th> Total</Table.Th>
-          </Table.Tr>
-        </Table.Thead>
-        <Table.Tbody>
-          {lineItems.map((lineItem, lineItemIndex) => (
-            // eslint-disable-next-line react/no-array-index-key
-            <OrderLineRow key={lineItemIndex} lineItem={lineItem} />
-          ))}
-        </Table.Tbody>
-      </Table>
+      {treatmentsLineItems.length > 0 ? (
+        <Card withBorder>
+          <Title order={3} mb="md">
+            Behandlinger
+          </Title>
+          <Table>
+            <Table.Thead>
+              <Table.Tr>
+                <Table.Th>Billed:</Table.Th>
+                <Table.Th>Detaljer:</Table.Th>
+                <Table.Th>Total</Table.Th>
+              </Table.Tr>
+            </Table.Thead>
+            <Table.Tbody>
+              {treatmentsLineItems.map((lineItem, lineItemIndex) => (
+                <OrderLineRow
+                  key={lineItem.title + lineItem.quantity}
+                  lineItem={lineItem}
+                  type="treatment"
+                />
+              ))}
+            </Table.Tbody>
+          </Table>
+        </Card>
+      ) : null}
+
+      {productsLineItems.length > 0 ? (
+        <Card withBorder>
+          <Title order={3} mb="md">
+            Produkter:
+          </Title>
+          <Table>
+            <Table.Thead>
+              <Table.Tr>
+                <Table.Th>Billed:</Table.Th>
+                <Table.Th>Beskrivelse</Table.Th>
+                <Table.Th> Total</Table.Th>
+              </Table.Tr>
+            </Table.Thead>
+            <Table.Tbody>
+              {productsLineItems.map((lineItem, lineItemIndex) => (
+                <OrderLineRow
+                  key={lineItem.title + lineItem.quantity}
+                  lineItem={lineItem}
+                  type="product"
+                />
+              ))}
+            </Table.Tbody>
+          </Table>
+        </Card>
+      ) : null}
+
       <SimpleGrid cols={{base: 1, md: 2}} mt="lg">
         <Card shadow="0" padding="md" radius="md" withBorder>
           <Text fw={500} size="lg" mb="md">
@@ -163,7 +209,24 @@ export default function OrderRoute() {
   );
 }
 
-function OrderLineRow({lineItem}: {lineItem: OrderLineItemFullFragment}) {
+function OrderLineRow({
+  lineItem,
+  type,
+}: {
+  lineItem: OrderLineItemFullFragment;
+  type: 'product' | 'treatment';
+}) {
+  const customAttributesObject = lineItem.customAttributes
+    .filter((option) => option.key[0] === '_')
+    .reduce((acc: any, attr) => {
+      const key = attr.key.replace(
+        '_',
+        '',
+      ) as keyof CustomerOrderLineItemProperties;
+      acc[key] = attr.value;
+      return acc;
+    }, {} as Partial<CustomerOrderLineItemProperties>);
+
   return (
     <Table.Tr>
       <Table.Td>
@@ -179,15 +242,23 @@ function OrderLineRow({lineItem}: {lineItem: OrderLineItemFullFragment}) {
         <Text mb="xs">
           {lineItem.title} <small>({lineItem.variant!.title})</small>
         </Text>
-        {lineItem.customAttributes
-          .filter((option) => {
-            return option.key[0] !== '_';
-          })
-          .map((option, index, all) => (
-            <Text key={option.key} size="xs">
-              <strong>{option.key}</strong>: {option.value}
-            </Text>
-          ))}
+        {customAttributesObject.from ? (
+          <Text size="sm">
+            {format(
+              new Date(customAttributesObject.from || ''),
+              "EEEE 'd.' d'.' LLL 'kl 'HH:mm",
+              {
+                locale: da,
+              },
+            )}{' '}
+          </Text>
+        ) : null}
+
+        {type === 'treatment' ? (
+          <Button size="compact-sm" mt="xs">
+            Vis behandlingsdetaljer
+          </Button>
+        ) : null}
       </Table.Td>
       <Table.Td valign="top">
         <Money data={lineItem.discountedTotalPrice!} />

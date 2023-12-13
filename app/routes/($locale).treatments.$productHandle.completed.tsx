@@ -149,20 +149,16 @@ export default function ArtistTreatmentsBooking() {
         <Text size="lg" mb="md" fw="bold">
           Dato & Tid
         </Text>
-        {data && (
-          <>
-            <Text size="md" fw={500}>
-              {format(new Date(data?.availability.date || ''), 'PPPP', {
+        {data?.availability.slot.from && (
+          <Text size="md" fw={500}>
+            {format(
+              new Date(data?.availability.slot.from || ''),
+              "EEEE 'd.' d'.' LLL 'kl 'HH:mm",
+              {
                 locale: da,
-              })}{' '}
-            </Text>
-            <Text size="md" fw={500}>
-              kl.{' '}
-              {format(new Date(data?.availability.slot.from || ''), 'HH:mm', {
-                locale: da,
-              })}
-            </Text>
-          </>
+              },
+            )}
+          </Text>
         )}
         <Card.Section pt="md" pb="md">
           <Divider />
