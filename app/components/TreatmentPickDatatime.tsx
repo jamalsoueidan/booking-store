@@ -1,10 +1,19 @@
 import {Carousel} from '@mantine/carousel';
-import {Button, SimpleGrid, Stack, Text, Title} from '@mantine/core';
+import {
+  Button,
+  Group,
+  SimpleGrid,
+  Stack,
+  Text,
+  ThemeIcon,
+  Title,
+  rem,
+} from '@mantine/core';
 
 import {useSearchParams} from '@remix-run/react';
+import {IconArrowLeft, IconArrowRight} from '@tabler/icons-react';
 import {format} from 'date-fns';
 import {da} from 'date-fns/locale';
-import {MultilineButton} from '~/components/MultilineButton';
 import type {
   UserAvailability,
   UserAvailabilityMulti,
@@ -74,6 +83,22 @@ export default function TreatmentPickDatetime({
           slideSize={{base: '100px'}}
           align="start"
           slideGap="sm"
+          nextControlIcon={
+            <ThemeIcon color="#ccc" radius="xl">
+              <IconArrowRight
+                color="black"
+                style={{width: rem(16), height: rem(16)}}
+              />
+            </ThemeIcon>
+          }
+          previousControlIcon={
+            <ThemeIcon color="#ccc" radius="xl">
+              <IconArrowLeft
+                color="black"
+                style={{width: rem(16), height: rem(16)}}
+              />
+            </ThemeIcon>
+          }
           controlsOffset="xs"
           controlSize={40}
           containScroll="trimSnaps"
@@ -85,7 +110,7 @@ export default function TreatmentPickDatetime({
 
       {slots ? (
         <div>
-          <Title order={3} mb="sm">
+          <Title order={4} mb="sm" fw={400}>
             Vælge tid:
           </Title>
           <SimpleGrid cols={3} spacing="sm">
@@ -106,23 +131,29 @@ function AvailabilityDay({
   selected: string | null;
   onClick: () => void;
 }) {
+  const isSelected =
+    availability.date.substring(0, 10) === selected?.substring(0, 10);
   return (
     <Carousel.Slide key={availability.date}>
-      <MultilineButton
+      <Button
         onClick={onClick}
-        variant={
-          availability.date.substring(0, 10) === selected?.substring(0, 10)
-            ? 'filled'
-            : 'light'
-        }
+        color={isSelected ? 'black' : '#e5e5e5'}
+        bg={isSelected ? '#e5e5e5' : undefined}
+        variant="outline"
+        h="56"
       >
-        <Text size="sm" ta="center" fw={500}>
-          {format(new Date(availability.date), 'EEEE', {locale: da})}
-        </Text>
-        <Text size="md" ta="center" fw={500}>
-          {format(new Date(availability.date), 'PP', {locale: da}).slice(0, -6)}
-        </Text>
-      </MultilineButton>
+        <Group gap="2" align="center" justify="center" p="0">
+          <Text size="xs" ta="center" fw={300} c="black">
+            {format(new Date(availability.date), 'EEEE', {locale: da})}
+          </Text>
+          <Text size="sm" ta="center" fw={isSelected ? 700 : 400} c="black">
+            {format(new Date(availability.date), 'PP', {locale: da}).slice(
+              0,
+              -6,
+            )}
+          </Text>
+        </Group>
+      </Button>
     </Carousel.Slide>
   );
 }
@@ -136,12 +167,17 @@ function AvailabilityTime({
   selected?: string | null;
   onClick: () => void;
 }) {
+  const isSelected = slot.from === selected;
   return (
     <Button
-      variant={slot.from === selected ? 'filled' : 'light'}
       onClick={onClick}
+      color={isSelected ? 'black' : '#e5e5e5'}
+      bg={isSelected ? '#e5e5e5' : undefined}
+      variant="outline"
     >
-      {format(new Date(slot.from), 'HH:mm', {locale: da})}
+      <Text size="sm" ta="center" fw={isSelected ? 700 : 400} c="black">
+        {format(new Date(slot.from), 'HH:mm', {locale: da})}
+      </Text>
     </Button>
   );
 }
