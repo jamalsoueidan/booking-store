@@ -128,15 +128,7 @@ components:
         description:
           type: string
         selectedOptions:
-          type: object
-          properties:
-            name:
-              type: string
-            value:
-              type: string
-          required:
-            - name
-            - value
+          $ref: '#/components/schemas/CustomerProductSelectedOptions'
         price:
           type: object
           properties:
@@ -200,6 +192,16 @@ components:
       enum:
         - weeks
         - months
+    CustomerProductSelectedOptions:
+      type: object
+      properties:
+        name:
+          type: string
+        value:
+          type: string
+      required:
+        - name
+        - value
     CustomerProductNoticePeriod:
       type: object
       properties:
@@ -666,8 +668,6 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/CustomerOrderFulfillment'
-        line_items:
-          $ref: '#/components/schemas/CustomerOrderLineItem'
         refunds:
           type: array
           items:
@@ -702,13 +702,32 @@ components:
         - current_total_tax
         - current_total_tax_set
         - fulfillments
-        - line_items
         - refunds
         - shipping_lines
         - start
         - end
         - title
         - order_number
+    CustomerOrderArrayLineItems:
+      allOf:
+        - $ref: '#/components/schemas/CustomerOrder'
+        - type: object
+          properties:
+            line_items:
+              type: array
+              items:
+                $ref: '#/components/schemas/CustomerOrderLineItem'
+          required:
+            - line_items
+    CustomerOrderSingleLineItem:
+      allOf:
+        - $ref: '#/components/schemas/CustomerOrder'
+        - type: object
+          properties:
+            line_items:
+              $ref: '#/components/schemas/CustomerOrderLineItem'
+          required:
+            - line_items
     CustomerOrderMoney:
       type: object
       properties:
@@ -953,7 +972,6 @@ components:
           type: boolean
         product_id:
           type: number
-          nullable: true
         properties:
           $ref: '#/components/schemas/CustomerOrderLineItemProperties'
         quantity:
@@ -995,6 +1013,7 @@ components:
         - properties
         - price_set
         - product_exists
+        - product_id
         - quantity
         - requires_shipping
         - taxable
@@ -1163,6 +1182,37 @@ components:
         - service
         - status
         - line_items
+    CustomerOrderGetLineItem:
+      type: object
+      properties:
+        order:
+          $ref: '#/components/schemas/CustomerOrderSingleLineItem'
+        product:
+          type: object
+          properties:
+            selectedOptions:
+              $ref: '#/components/schemas/CustomerProductSelectedOptions'
+          required:
+            - selectedOptions
+        location:
+          $ref: '#/components/schemas/CustomerLocationIsDefault'
+        shipping:
+          $ref: '#/components/schemas/Shipping'
+      required:
+        - order
+        - product
+        - location
+    CustomerOrderGetLineItemResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: true
+        payload:
+          $ref: '#/components/schemas/CustomerOrderGetLineItem'
+      required:
+        - success
+        - payload
     CustomerOrderGetResponse:
       type: object
       properties:
@@ -1170,7 +1220,7 @@ components:
           type: boolean
           example: true
         payload:
-          $ref: '#/components/schemas/CustomerOrder'
+          $ref: '#/components/schemas/CustomerOrderArrayLineItems'
       required:
         - success
         - payload
@@ -1183,7 +1233,7 @@ components:
         payload:
           type: array
           items:
-            $ref: '#/components/schemas/CustomerOrder'
+            $ref: '#/components/schemas/CustomerOrderSingleLineItem'
       required:
         - success
         - payload
@@ -3415,7 +3465,7 @@ paths:
         '404':
           $ref: '#/components/responses/NotFoundResponse'
       security: []
-  '/customer/{customerId}/lineItemId/{lineItemId}':
+  '/customer/{customerId}/lineItem/{lineItemId}':
     get:
       parameters:
         - name: customerId
@@ -3432,9 +3482,45 @@ paths:
             type: string
       tags:
         - CustomerOrder
-      operationId: customerOrderGet
+      operationId: customerOrderGetLineItem
       summary: GET Get order with lineItem
       description: This endpoint gets order with lineItem object
+      responses:
+        '200':
+          description: Response with payload
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CustomerOrderGetLineItemResponse'
+        '400':
+          $ref: '#/components/responses/BadResponse'
+        '401':
+          $ref: '#/components/responses/UnauthorizedResponse'
+        '403':
+          $ref: '#/components/responses/ForbiddenResponse'
+        '404':
+          $ref: '#/components/responses/NotFoundResponse'
+      security: []
+  '/customer/{customerId}/orders/{orderId}':
+    get:
+      parameters:
+        - name: customerId
+          in: path
+          description: customerId for the customer
+          required: true
+          schema:
+            type: string
+        - name: orderId
+          in: path
+          description: orderId for the order
+          required: true
+          schema:
+            type: string
+      tags:
+        - CustomerOrder
+      operationId: customerOrderGet
+      summary: GET Get order with lineItems array
+      description: This endpoint gets order with lineItems array of objects
       responses:
         '200':
           description: Response with payload
