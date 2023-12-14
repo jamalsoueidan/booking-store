@@ -1468,7 +1468,795 @@ export const customerOrderListQueryParams = zod.object({
 export const customerOrderListResponse = zod.object({
   success: zod.boolean(),
   payload: zod.array(
-    zod.object({
+    zod
+      .object({
+        id: zod.number(),
+        order_number: zod.number(),
+        admin_graphql_api_id: zod.string(),
+        buyer_accepts_marketing: zod.boolean(),
+        cancel_reason: zod.string().nullish(),
+        cancelled_at: zod.string().optional(),
+        client_details: zod
+          .object({
+            accept_language: zod.string().nullish(),
+            browser_height: zod.number().nullish(),
+            browser_ip: zod.string().optional(),
+            browser_width: zod.number().nullish(),
+            session_hash: zod.string().nullish(),
+            user_agent: zod.string().nullish(),
+          })
+          .optional(),
+        closed_at: zod.string().nullish(),
+        confirmed: zod.boolean(),
+        contact_email: zod.string().nullish(),
+        created_at: zod.string(),
+        currency: zod.string(),
+        current_subtotal_price: zod.string(),
+        current_subtotal_price_set: zod.object({
+          shop_money: zod.object({
+            amount: zod.string(),
+            currency_code: zod.string(),
+          }),
+          presentment_money: zod.object({
+            amount: zod.string(),
+            currency_code: zod.string(),
+          }),
+        }),
+        current_total_additional_fees_set: zod
+          .object({
+            shop_money: zod.object({
+              amount: zod.string(),
+              currency_code: zod.string(),
+            }),
+            presentment_money: zod.object({
+              amount: zod.string(),
+              currency_code: zod.string(),
+            }),
+          })
+          .optional(),
+        current_total_discounts: zod.string(),
+        current_total_discounts_set: zod.object({
+          shop_money: zod.object({
+            amount: zod.string(),
+            currency_code: zod.string(),
+          }),
+          presentment_money: zod.object({
+            amount: zod.string(),
+            currency_code: zod.string(),
+          }),
+        }),
+        current_total_duties_set: zod
+          .object({
+            shop_money: zod.object({
+              amount: zod.string(),
+              currency_code: zod.string(),
+            }),
+            presentment_money: zod.object({
+              amount: zod.string(),
+              currency_code: zod.string(),
+            }),
+          })
+          .optional(),
+        current_total_price: zod.string(),
+        current_total_price_set: zod.object({
+          shop_money: zod.object({
+            amount: zod.string(),
+            currency_code: zod.string(),
+          }),
+          presentment_money: zod.object({
+            amount: zod.string(),
+            currency_code: zod.string(),
+          }),
+        }),
+        current_total_tax: zod.string(),
+        current_total_tax_set: zod.object({
+          shop_money: zod.object({
+            amount: zod.string(),
+            currency_code: zod.string(),
+          }),
+          presentment_money: zod.object({
+            amount: zod.string(),
+            currency_code: zod.string(),
+          }),
+        }),
+        customer: zod.object({
+          id: zod.number(),
+          email: zod.string().nullish(),
+          accepts_marketing: zod.boolean(),
+          created_at: zod.string(),
+          updated_at: zod.string(),
+          first_name: zod.string(),
+          last_name: zod.string(),
+          state: zod.string(),
+          note: zod.string().nullish(),
+          verified_email: zod.boolean(),
+          multipass_identifier: zod.string().nullish(),
+          tax_exempt: zod.boolean(),
+          phone: zod.string().nullish(),
+          email_marketing_consent: zod.boolean().nullish(),
+          sms_marketing_consent: zod
+            .object({
+              state: zod.string().optional(),
+              opt_in_level: zod.string().optional(),
+              consent_updated_at: zod.string().optional(),
+              consent_collected_from: zod.string().optional(),
+            })
+            .nullish(),
+          tags: zod.string(),
+          currency: zod.string(),
+          accepts_marketing_updated_at: zod.string().optional(),
+          marketing_opt_in_level: zod.string().nullish(),
+          tax_exemptions: zod.array(zod.string()).optional(),
+          admin_graphql_api_id: zod.string(),
+          default_address: zod
+            .object({
+              customer_id: zod.number().optional(),
+              first_name: zod.string(),
+              address1: zod.string().optional(),
+              phone: zod.string().optional(),
+              city: zod.string().optional(),
+              zip: zod.string().optional(),
+              province: zod.string().nullish(),
+              country: zod.string().optional(),
+              last_name: zod.string(),
+              address2: zod.string().nullish(),
+              company: zod.string().nullish(),
+              latitude: zod.number().nullish(),
+              longitude: zod.number().nullish(),
+              name: zod.string(),
+              country_code: zod.string(),
+              country_name: zod.string().optional(),
+              province_code: zod.string().optional(),
+              default: zod.boolean(),
+            })
+            .optional(),
+        }),
+        fulfillments: zod.array(
+          zod.object({
+            id: zod.number(),
+            admin_graphql_api_id: zod.string(),
+            created_at: zod.string(),
+            location_id: zod.number(),
+            name: zod.string(),
+            order_id: zod.number(),
+            service: zod.string(),
+            shipment_status: zod.string().nullish(),
+            status: zod.string(),
+            tracking_company: zod.string().nullish(),
+            tracking_number: zod.string().nullish(),
+            tracking_numbers: zod.array(zod.string()).optional(),
+            tracking_url: zod.string().nullish(),
+            tracking_urls: zod.array(zod.string()).optional(),
+            updated_at: zod.string().optional(),
+            line_items: zod.array(
+              zod.object({
+                id: zod.number(),
+                name: zod.string(),
+              }),
+            ),
+          }),
+        ),
+        refunds: zod.array(
+          zod.object({
+            id: zod.number(),
+            admin_graphql_api_id: zod.string(),
+            created_at: zod.string(),
+            note: zod.string().nullish(),
+            order_id: zod.number(),
+            processed_at: zod.string(),
+            restock: zod.boolean(),
+            total_duties_set: zod
+              .object({
+                shop_money: zod.object({
+                  amount: zod.string(),
+                  currency_code: zod.string(),
+                }),
+                presentment_money: zod.object({
+                  amount: zod.string(),
+                  currency_code: zod.string(),
+                }),
+              })
+              .optional(),
+            user_id: zod.number(),
+            refund_line_items: zod.array(
+              zod.object({
+                id: zod.number(),
+                line_item_id: zod.number(),
+                location_id: zod.number(),
+                quantity: zod.number(),
+                restock_type: zod.string(),
+                subtotal: zod.string().or(zod.number()),
+                subtotal_set: zod.object({
+                  shop_money: zod.object({
+                    amount: zod.string(),
+                    currency_code: zod.string(),
+                  }),
+                  presentment_money: zod.object({
+                    amount: zod.string(),
+                    currency_code: zod.string(),
+                  }),
+                }),
+                total_tax: zod.string().or(zod.number()).optional(),
+                total_tax_set: zod
+                  .object({
+                    shop_money: zod.object({
+                      amount: zod.string(),
+                      currency_code: zod.string(),
+                    }),
+                    presentment_money: zod.object({
+                      amount: zod.string(),
+                      currency_code: zod.string(),
+                    }),
+                  })
+                  .optional(),
+                line_item: zod.object({
+                  id: zod.number(),
+                  name: zod.string(),
+                }),
+              }),
+            ),
+          }),
+        ),
+        shipping_address: zod
+          .object({
+            customer_id: zod.number().optional(),
+            first_name: zod.string(),
+            address1: zod.string().optional(),
+            phone: zod.string().optional(),
+            city: zod.string().optional(),
+            zip: zod.string().optional(),
+            province: zod.string().nullish(),
+            country: zod.string().optional(),
+            last_name: zod.string(),
+            address2: zod.string().nullish(),
+            company: zod.string().nullish(),
+            latitude: zod.number().nullish(),
+            longitude: zod.number().nullish(),
+            name: zod.string(),
+            country_code: zod.string(),
+            country_name: zod.string().optional(),
+            province_code: zod.string().optional(),
+            default: zod.boolean(),
+          })
+          .optional(),
+        shipping_lines: zod.array(
+          zod.object({
+            id: zod.number(),
+            carrier_identifier: zod.string().nullish(),
+            code: zod.string().nullish(),
+            discounted_price: zod.string(),
+            discounted_price_set: zod.object({
+              shop_money: zod.object({
+                amount: zod.string(),
+                currency_code: zod.string(),
+              }),
+              presentment_money: zod.object({
+                amount: zod.string(),
+                currency_code: zod.string(),
+              }),
+            }),
+            phone: zod.string().nullish(),
+            price: zod.string(),
+            price_set: zod.object({
+              shop_money: zod.object({
+                amount: zod.string(),
+                currency_code: zod.string(),
+              }),
+              presentment_money: zod.object({
+                amount: zod.string(),
+                currency_code: zod.string(),
+              }),
+            }),
+            requested_fulfillment_service_id: zod.string().nullish(),
+            source: zod.string(),
+            title: zod.string(),
+          }),
+        ),
+        start: zod.string(),
+        end: zod.string(),
+        title: zod.string(),
+      })
+      .and(
+        zod.object({
+          line_items: zod.object({
+            id: zod.number(),
+            admin_graphql_api_id: zod.string(),
+            fulfillable_quantity: zod.number(),
+            fulfillment_service: zod.string(),
+            fulfillment_status: zod.string().nullish(),
+            gift_card: zod.boolean(),
+            grams: zod.number(),
+            name: zod.string(),
+            price: zod.string(),
+            price_set: zod.object({
+              shop_money: zod.object({
+                amount: zod.string(),
+                currency_code: zod.string(),
+              }),
+              presentment_money: zod.object({
+                amount: zod.string(),
+                currency_code: zod.string(),
+              }),
+            }),
+            product_exists: zod.boolean(),
+            product_id: zod.number(),
+            properties: zod.object({
+              customer_id: zod.number(),
+              from: zod.string(),
+              to: zod.string(),
+              locationId: zod.string(),
+              shippingId: zod.string().optional(),
+            }),
+            quantity: zod.number(),
+            requires_shipping: zod.boolean(),
+            sku: zod.string().nullish(),
+            taxable: zod.boolean(),
+            title: zod.string(),
+            total_discount: zod.string(),
+            total_discount_set: zod.object({
+              shop_money: zod.object({
+                amount: zod.string(),
+                currency_code: zod.string(),
+              }),
+              presentment_money: zod.object({
+                amount: zod.string(),
+                currency_code: zod.string(),
+              }),
+            }),
+            variant_id: zod.number().nullish(),
+            variant_inventory_management: zod.string().nullish(),
+            variant_title: zod.string().nullish(),
+            vendor: zod.string().nullish(),
+          }),
+        }),
+      ),
+  ),
+});
+
+/**
+ * This endpoint gets order with lineItem object
+ * @summary GET Get order with lineItem
+ */
+export const customerOrderGetLineItemParams = zod.object({
+  customerId: zod.string(),
+  lineItemId: zod.string(),
+});
+
+export const customerOrderGetLineItemResponse = zod.object({
+  success: zod.boolean(),
+  payload: zod.object({
+    order: zod
+      .object({
+        id: zod.number(),
+        order_number: zod.number(),
+        admin_graphql_api_id: zod.string(),
+        buyer_accepts_marketing: zod.boolean(),
+        cancel_reason: zod.string().nullish(),
+        cancelled_at: zod.string().optional(),
+        client_details: zod
+          .object({
+            accept_language: zod.string().nullish(),
+            browser_height: zod.number().nullish(),
+            browser_ip: zod.string().optional(),
+            browser_width: zod.number().nullish(),
+            session_hash: zod.string().nullish(),
+            user_agent: zod.string().nullish(),
+          })
+          .optional(),
+        closed_at: zod.string().nullish(),
+        confirmed: zod.boolean(),
+        contact_email: zod.string().nullish(),
+        created_at: zod.string(),
+        currency: zod.string(),
+        current_subtotal_price: zod.string(),
+        current_subtotal_price_set: zod.object({
+          shop_money: zod.object({
+            amount: zod.string(),
+            currency_code: zod.string(),
+          }),
+          presentment_money: zod.object({
+            amount: zod.string(),
+            currency_code: zod.string(),
+          }),
+        }),
+        current_total_additional_fees_set: zod
+          .object({
+            shop_money: zod.object({
+              amount: zod.string(),
+              currency_code: zod.string(),
+            }),
+            presentment_money: zod.object({
+              amount: zod.string(),
+              currency_code: zod.string(),
+            }),
+          })
+          .optional(),
+        current_total_discounts: zod.string(),
+        current_total_discounts_set: zod.object({
+          shop_money: zod.object({
+            amount: zod.string(),
+            currency_code: zod.string(),
+          }),
+          presentment_money: zod.object({
+            amount: zod.string(),
+            currency_code: zod.string(),
+          }),
+        }),
+        current_total_duties_set: zod
+          .object({
+            shop_money: zod.object({
+              amount: zod.string(),
+              currency_code: zod.string(),
+            }),
+            presentment_money: zod.object({
+              amount: zod.string(),
+              currency_code: zod.string(),
+            }),
+          })
+          .optional(),
+        current_total_price: zod.string(),
+        current_total_price_set: zod.object({
+          shop_money: zod.object({
+            amount: zod.string(),
+            currency_code: zod.string(),
+          }),
+          presentment_money: zod.object({
+            amount: zod.string(),
+            currency_code: zod.string(),
+          }),
+        }),
+        current_total_tax: zod.string(),
+        current_total_tax_set: zod.object({
+          shop_money: zod.object({
+            amount: zod.string(),
+            currency_code: zod.string(),
+          }),
+          presentment_money: zod.object({
+            amount: zod.string(),
+            currency_code: zod.string(),
+          }),
+        }),
+        customer: zod.object({
+          id: zod.number(),
+          email: zod.string().nullish(),
+          accepts_marketing: zod.boolean(),
+          created_at: zod.string(),
+          updated_at: zod.string(),
+          first_name: zod.string(),
+          last_name: zod.string(),
+          state: zod.string(),
+          note: zod.string().nullish(),
+          verified_email: zod.boolean(),
+          multipass_identifier: zod.string().nullish(),
+          tax_exempt: zod.boolean(),
+          phone: zod.string().nullish(),
+          email_marketing_consent: zod.boolean().nullish(),
+          sms_marketing_consent: zod
+            .object({
+              state: zod.string().optional(),
+              opt_in_level: zod.string().optional(),
+              consent_updated_at: zod.string().optional(),
+              consent_collected_from: zod.string().optional(),
+            })
+            .nullish(),
+          tags: zod.string(),
+          currency: zod.string(),
+          accepts_marketing_updated_at: zod.string().optional(),
+          marketing_opt_in_level: zod.string().nullish(),
+          tax_exemptions: zod.array(zod.string()).optional(),
+          admin_graphql_api_id: zod.string(),
+          default_address: zod
+            .object({
+              customer_id: zod.number().optional(),
+              first_name: zod.string(),
+              address1: zod.string().optional(),
+              phone: zod.string().optional(),
+              city: zod.string().optional(),
+              zip: zod.string().optional(),
+              province: zod.string().nullish(),
+              country: zod.string().optional(),
+              last_name: zod.string(),
+              address2: zod.string().nullish(),
+              company: zod.string().nullish(),
+              latitude: zod.number().nullish(),
+              longitude: zod.number().nullish(),
+              name: zod.string(),
+              country_code: zod.string(),
+              country_name: zod.string().optional(),
+              province_code: zod.string().optional(),
+              default: zod.boolean(),
+            })
+            .optional(),
+        }),
+        fulfillments: zod.array(
+          zod.object({
+            id: zod.number(),
+            admin_graphql_api_id: zod.string(),
+            created_at: zod.string(),
+            location_id: zod.number(),
+            name: zod.string(),
+            order_id: zod.number(),
+            service: zod.string(),
+            shipment_status: zod.string().nullish(),
+            status: zod.string(),
+            tracking_company: zod.string().nullish(),
+            tracking_number: zod.string().nullish(),
+            tracking_numbers: zod.array(zod.string()).optional(),
+            tracking_url: zod.string().nullish(),
+            tracking_urls: zod.array(zod.string()).optional(),
+            updated_at: zod.string().optional(),
+            line_items: zod.array(
+              zod.object({
+                id: zod.number(),
+                name: zod.string(),
+              }),
+            ),
+          }),
+        ),
+        refunds: zod.array(
+          zod.object({
+            id: zod.number(),
+            admin_graphql_api_id: zod.string(),
+            created_at: zod.string(),
+            note: zod.string().nullish(),
+            order_id: zod.number(),
+            processed_at: zod.string(),
+            restock: zod.boolean(),
+            total_duties_set: zod
+              .object({
+                shop_money: zod.object({
+                  amount: zod.string(),
+                  currency_code: zod.string(),
+                }),
+                presentment_money: zod.object({
+                  amount: zod.string(),
+                  currency_code: zod.string(),
+                }),
+              })
+              .optional(),
+            user_id: zod.number(),
+            refund_line_items: zod.array(
+              zod.object({
+                id: zod.number(),
+                line_item_id: zod.number(),
+                location_id: zod.number(),
+                quantity: zod.number(),
+                restock_type: zod.string(),
+                subtotal: zod.string().or(zod.number()),
+                subtotal_set: zod.object({
+                  shop_money: zod.object({
+                    amount: zod.string(),
+                    currency_code: zod.string(),
+                  }),
+                  presentment_money: zod.object({
+                    amount: zod.string(),
+                    currency_code: zod.string(),
+                  }),
+                }),
+                total_tax: zod.string().or(zod.number()).optional(),
+                total_tax_set: zod
+                  .object({
+                    shop_money: zod.object({
+                      amount: zod.string(),
+                      currency_code: zod.string(),
+                    }),
+                    presentment_money: zod.object({
+                      amount: zod.string(),
+                      currency_code: zod.string(),
+                    }),
+                  })
+                  .optional(),
+                line_item: zod.object({
+                  id: zod.number(),
+                  name: zod.string(),
+                }),
+              }),
+            ),
+          }),
+        ),
+        shipping_address: zod
+          .object({
+            customer_id: zod.number().optional(),
+            first_name: zod.string(),
+            address1: zod.string().optional(),
+            phone: zod.string().optional(),
+            city: zod.string().optional(),
+            zip: zod.string().optional(),
+            province: zod.string().nullish(),
+            country: zod.string().optional(),
+            last_name: zod.string(),
+            address2: zod.string().nullish(),
+            company: zod.string().nullish(),
+            latitude: zod.number().nullish(),
+            longitude: zod.number().nullish(),
+            name: zod.string(),
+            country_code: zod.string(),
+            country_name: zod.string().optional(),
+            province_code: zod.string().optional(),
+            default: zod.boolean(),
+          })
+          .optional(),
+        shipping_lines: zod.array(
+          zod.object({
+            id: zod.number(),
+            carrier_identifier: zod.string().nullish(),
+            code: zod.string().nullish(),
+            discounted_price: zod.string(),
+            discounted_price_set: zod.object({
+              shop_money: zod.object({
+                amount: zod.string(),
+                currency_code: zod.string(),
+              }),
+              presentment_money: zod.object({
+                amount: zod.string(),
+                currency_code: zod.string(),
+              }),
+            }),
+            phone: zod.string().nullish(),
+            price: zod.string(),
+            price_set: zod.object({
+              shop_money: zod.object({
+                amount: zod.string(),
+                currency_code: zod.string(),
+              }),
+              presentment_money: zod.object({
+                amount: zod.string(),
+                currency_code: zod.string(),
+              }),
+            }),
+            requested_fulfillment_service_id: zod.string().nullish(),
+            source: zod.string(),
+            title: zod.string(),
+          }),
+        ),
+        start: zod.string(),
+        end: zod.string(),
+        title: zod.string(),
+      })
+      .and(
+        zod.object({
+          line_items: zod.object({
+            id: zod.number(),
+            admin_graphql_api_id: zod.string(),
+            fulfillable_quantity: zod.number(),
+            fulfillment_service: zod.string(),
+            fulfillment_status: zod.string().nullish(),
+            gift_card: zod.boolean(),
+            grams: zod.number(),
+            name: zod.string(),
+            price: zod.string(),
+            price_set: zod.object({
+              shop_money: zod.object({
+                amount: zod.string(),
+                currency_code: zod.string(),
+              }),
+              presentment_money: zod.object({
+                amount: zod.string(),
+                currency_code: zod.string(),
+              }),
+            }),
+            product_exists: zod.boolean(),
+            product_id: zod.number(),
+            properties: zod.object({
+              customer_id: zod.number(),
+              from: zod.string(),
+              to: zod.string(),
+              locationId: zod.string(),
+              shippingId: zod.string().optional(),
+            }),
+            quantity: zod.number(),
+            requires_shipping: zod.boolean(),
+            sku: zod.string().nullish(),
+            taxable: zod.boolean(),
+            title: zod.string(),
+            total_discount: zod.string(),
+            total_discount_set: zod.object({
+              shop_money: zod.object({
+                amount: zod.string(),
+                currency_code: zod.string(),
+              }),
+              presentment_money: zod.object({
+                amount: zod.string(),
+                currency_code: zod.string(),
+              }),
+            }),
+            variant_id: zod.number().nullish(),
+            variant_inventory_management: zod.string().nullish(),
+            variant_title: zod.string().nullish(),
+            vendor: zod.string().nullish(),
+          }),
+        }),
+      ),
+    product: zod.object({
+      selectedOptions: zod.object({
+        name: zod.string(),
+        value: zod.string(),
+      }),
+    }),
+    location: zod
+      .object({
+        _id: zod.string(),
+        locationType: zod.enum(['origin', 'destination']),
+        customerId: zod.string(),
+        originType: zod.enum(['home', 'commercial']),
+        name: zod.string(),
+        fullAddress: zod.string(),
+        geoLocation: zod.object({
+          type: zod.enum(['Point']),
+          coordinates: zod.array(zod.number()),
+        }),
+        distanceForFree: zod.number(),
+        distanceHourlyRate: zod.number(),
+        fixedRatePerKm: zod.number(),
+        minDriveDistance: zod.number(),
+        maxDriveDistance: zod.number(),
+        startFee: zod.number(),
+      })
+      .and(
+        zod.object({
+          isDefault: zod.boolean(),
+        }),
+      ),
+    shipping: zod
+      .object({
+        duration: zod.object({
+          text: zod.string(),
+          value: zod.number(),
+        }),
+        distance: zod.object({
+          text: zod.string(),
+          value: zod.number(),
+        }),
+      })
+      .and(
+        zod.object({
+          _id: zod.string(),
+          location: zod.string(),
+          origin: zod.object({
+            _id: zod.string(),
+            locationType: zod.enum(['origin', 'destination']),
+            customerId: zod.string(),
+            originType: zod.enum(['home', 'commercial']),
+            name: zod.string(),
+            fullAddress: zod.string(),
+            geoLocation: zod.object({
+              type: zod.enum(['Point']),
+              coordinates: zod.array(zod.number()),
+            }),
+            distanceForFree: zod.number(),
+            distanceHourlyRate: zod.number(),
+            fixedRatePerKm: zod.number(),
+            minDriveDistance: zod.number(),
+            maxDriveDistance: zod.number(),
+            startFee: zod.number(),
+          }),
+          destination: zod.object({
+            name: zod.string(),
+            fullAddress: zod.string(),
+          }),
+          cost: zod.object({
+            currency: zod.string(),
+            value: zod.number(),
+          }),
+        }),
+      )
+      .optional(),
+  }),
+});
+
+/**
+ * This endpoint gets order with lineItems array of objects
+ * @summary GET Get order with lineItems array
+ */
+export const customerOrderGetParams = zod.object({
+  customerId: zod.string(),
+  orderId: zod.string(),
+});
+
+export const customerOrderGetResponse = zod.object({
+  success: zod.boolean(),
+  payload: zod
+    .object({
       id: zod.number(),
       order_number: zod.number(),
       admin_graphql_api_id: zod.string(),
@@ -1635,56 +2423,6 @@ export const customerOrderListResponse = zod.object({
           ),
         }),
       ),
-      line_items: zod.object({
-        id: zod.number(),
-        admin_graphql_api_id: zod.string(),
-        fulfillable_quantity: zod.number(),
-        fulfillment_service: zod.string(),
-        fulfillment_status: zod.string().nullish(),
-        gift_card: zod.boolean(),
-        grams: zod.number(),
-        name: zod.string(),
-        price: zod.string(),
-        price_set: zod.object({
-          shop_money: zod.object({
-            amount: zod.string(),
-            currency_code: zod.string(),
-          }),
-          presentment_money: zod.object({
-            amount: zod.string(),
-            currency_code: zod.string(),
-          }),
-        }),
-        product_exists: zod.boolean(),
-        product_id: zod.number().nullish(),
-        properties: zod.object({
-          customer_id: zod.number(),
-          from: zod.string(),
-          to: zod.string(),
-          locationId: zod.string(),
-          shippingId: zod.string().optional(),
-        }),
-        quantity: zod.number(),
-        requires_shipping: zod.boolean(),
-        sku: zod.string().nullish(),
-        taxable: zod.boolean(),
-        title: zod.string(),
-        total_discount: zod.string(),
-        total_discount_set: zod.object({
-          shop_money: zod.object({
-            amount: zod.string(),
-            currency_code: zod.string(),
-          }),
-          presentment_money: zod.object({
-            amount: zod.string(),
-            currency_code: zod.string(),
-          }),
-        }),
-        variant_id: zod.number().nullish(),
-        variant_inventory_management: zod.string().nullish(),
-        variant_title: zod.string().nullish(),
-        vendor: zod.string().nullish(),
-      }),
       refunds: zod.array(
         zod.object({
           id: zod.number(),
@@ -1804,269 +2542,21 @@ export const customerOrderListResponse = zod.object({
       start: zod.string(),
       end: zod.string(),
       title: zod.string(),
-    }),
-  ),
-});
-
-/**
- * This endpoint gets order with lineItem object
- * @summary GET Get order with lineItem
- */
-export const customerOrderGetParams = zod.object({
-  customerId: zod.string(),
-  lineItemId: zod.string(),
-});
-
-export const customerOrderGetResponse = zod.object({
-  success: zod.boolean(),
-  payload: zod.object({
-    id: zod.number(),
-    order_number: zod.number(),
-    admin_graphql_api_id: zod.string(),
-    buyer_accepts_marketing: zod.boolean(),
-    cancel_reason: zod.string().nullish(),
-    cancelled_at: zod.string().optional(),
-    client_details: zod
-      .object({
-        accept_language: zod.string().nullish(),
-        browser_height: zod.number().nullish(),
-        browser_ip: zod.string().optional(),
-        browser_width: zod.number().nullish(),
-        session_hash: zod.string().nullish(),
-        user_agent: zod.string().nullish(),
-      })
-      .optional(),
-    closed_at: zod.string().nullish(),
-    confirmed: zod.boolean(),
-    contact_email: zod.string().nullish(),
-    created_at: zod.string(),
-    currency: zod.string(),
-    current_subtotal_price: zod.string(),
-    current_subtotal_price_set: zod.object({
-      shop_money: zod.object({
-        amount: zod.string(),
-        currency_code: zod.string(),
-      }),
-      presentment_money: zod.object({
-        amount: zod.string(),
-        currency_code: zod.string(),
-      }),
-    }),
-    current_total_additional_fees_set: zod
-      .object({
-        shop_money: zod.object({
-          amount: zod.string(),
-          currency_code: zod.string(),
-        }),
-        presentment_money: zod.object({
-          amount: zod.string(),
-          currency_code: zod.string(),
-        }),
-      })
-      .optional(),
-    current_total_discounts: zod.string(),
-    current_total_discounts_set: zod.object({
-      shop_money: zod.object({
-        amount: zod.string(),
-        currency_code: zod.string(),
-      }),
-      presentment_money: zod.object({
-        amount: zod.string(),
-        currency_code: zod.string(),
-      }),
-    }),
-    current_total_duties_set: zod
-      .object({
-        shop_money: zod.object({
-          amount: zod.string(),
-          currency_code: zod.string(),
-        }),
-        presentment_money: zod.object({
-          amount: zod.string(),
-          currency_code: zod.string(),
-        }),
-      })
-      .optional(),
-    current_total_price: zod.string(),
-    current_total_price_set: zod.object({
-      shop_money: zod.object({
-        amount: zod.string(),
-        currency_code: zod.string(),
-      }),
-      presentment_money: zod.object({
-        amount: zod.string(),
-        currency_code: zod.string(),
-      }),
-    }),
-    current_total_tax: zod.string(),
-    current_total_tax_set: zod.object({
-      shop_money: zod.object({
-        amount: zod.string(),
-        currency_code: zod.string(),
-      }),
-      presentment_money: zod.object({
-        amount: zod.string(),
-        currency_code: zod.string(),
-      }),
-    }),
-    customer: zod.object({
-      id: zod.number(),
-      email: zod.string().nullish(),
-      accepts_marketing: zod.boolean(),
-      created_at: zod.string(),
-      updated_at: zod.string(),
-      first_name: zod.string(),
-      last_name: zod.string(),
-      state: zod.string(),
-      note: zod.string().nullish(),
-      verified_email: zod.boolean(),
-      multipass_identifier: zod.string().nullish(),
-      tax_exempt: zod.boolean(),
-      phone: zod.string().nullish(),
-      email_marketing_consent: zod.boolean().nullish(),
-      sms_marketing_consent: zod
-        .object({
-          state: zod.string().optional(),
-          opt_in_level: zod.string().optional(),
-          consent_updated_at: zod.string().optional(),
-          consent_collected_from: zod.string().optional(),
-        })
-        .nullish(),
-      tags: zod.string(),
-      currency: zod.string(),
-      accepts_marketing_updated_at: zod.string().optional(),
-      marketing_opt_in_level: zod.string().nullish(),
-      tax_exemptions: zod.array(zod.string()).optional(),
-      admin_graphql_api_id: zod.string(),
-      default_address: zod
-        .object({
-          customer_id: zod.number().optional(),
-          first_name: zod.string(),
-          address1: zod.string().optional(),
-          phone: zod.string().optional(),
-          city: zod.string().optional(),
-          zip: zod.string().optional(),
-          province: zod.string().nullish(),
-          country: zod.string().optional(),
-          last_name: zod.string(),
-          address2: zod.string().nullish(),
-          company: zod.string().nullish(),
-          latitude: zod.number().nullish(),
-          longitude: zod.number().nullish(),
-          name: zod.string(),
-          country_code: zod.string(),
-          country_name: zod.string().optional(),
-          province_code: zod.string().optional(),
-          default: zod.boolean(),
-        })
-        .optional(),
-    }),
-    fulfillments: zod.array(
+    })
+    .and(
       zod.object({
-        id: zod.number(),
-        admin_graphql_api_id: zod.string(),
-        created_at: zod.string(),
-        location_id: zod.number(),
-        name: zod.string(),
-        order_id: zod.number(),
-        service: zod.string(),
-        shipment_status: zod.string().nullish(),
-        status: zod.string(),
-        tracking_company: zod.string().nullish(),
-        tracking_number: zod.string().nullish(),
-        tracking_numbers: zod.array(zod.string()).optional(),
-        tracking_url: zod.string().nullish(),
-        tracking_urls: zod.array(zod.string()).optional(),
-        updated_at: zod.string().optional(),
         line_items: zod.array(
           zod.object({
             id: zod.number(),
+            admin_graphql_api_id: zod.string(),
+            fulfillable_quantity: zod.number(),
+            fulfillment_service: zod.string(),
+            fulfillment_status: zod.string().nullish(),
+            gift_card: zod.boolean(),
+            grams: zod.number(),
             name: zod.string(),
-          }),
-        ),
-      }),
-    ),
-    line_items: zod.object({
-      id: zod.number(),
-      admin_graphql_api_id: zod.string(),
-      fulfillable_quantity: zod.number(),
-      fulfillment_service: zod.string(),
-      fulfillment_status: zod.string().nullish(),
-      gift_card: zod.boolean(),
-      grams: zod.number(),
-      name: zod.string(),
-      price: zod.string(),
-      price_set: zod.object({
-        shop_money: zod.object({
-          amount: zod.string(),
-          currency_code: zod.string(),
-        }),
-        presentment_money: zod.object({
-          amount: zod.string(),
-          currency_code: zod.string(),
-        }),
-      }),
-      product_exists: zod.boolean(),
-      product_id: zod.number().nullish(),
-      properties: zod.object({
-        customer_id: zod.number(),
-        from: zod.string(),
-        to: zod.string(),
-        locationId: zod.string(),
-        shippingId: zod.string().optional(),
-      }),
-      quantity: zod.number(),
-      requires_shipping: zod.boolean(),
-      sku: zod.string().nullish(),
-      taxable: zod.boolean(),
-      title: zod.string(),
-      total_discount: zod.string(),
-      total_discount_set: zod.object({
-        shop_money: zod.object({
-          amount: zod.string(),
-          currency_code: zod.string(),
-        }),
-        presentment_money: zod.object({
-          amount: zod.string(),
-          currency_code: zod.string(),
-        }),
-      }),
-      variant_id: zod.number().nullish(),
-      variant_inventory_management: zod.string().nullish(),
-      variant_title: zod.string().nullish(),
-      vendor: zod.string().nullish(),
-    }),
-    refunds: zod.array(
-      zod.object({
-        id: zod.number(),
-        admin_graphql_api_id: zod.string(),
-        created_at: zod.string(),
-        note: zod.string().nullish(),
-        order_id: zod.number(),
-        processed_at: zod.string(),
-        restock: zod.boolean(),
-        total_duties_set: zod
-          .object({
-            shop_money: zod.object({
-              amount: zod.string(),
-              currency_code: zod.string(),
-            }),
-            presentment_money: zod.object({
-              amount: zod.string(),
-              currency_code: zod.string(),
-            }),
-          })
-          .optional(),
-        user_id: zod.number(),
-        refund_line_items: zod.array(
-          zod.object({
-            id: zod.number(),
-            line_item_id: zod.number(),
-            location_id: zod.number(),
-            quantity: zod.number(),
-            restock_type: zod.string(),
-            subtotal: zod.string().or(zod.number()),
-            subtotal_set: zod.object({
+            price: zod.string(),
+            price_set: zod.object({
               shop_money: zod.object({
                 amount: zod.string(),
                 currency_code: zod.string(),
@@ -2076,86 +2566,39 @@ export const customerOrderGetResponse = zod.object({
                 currency_code: zod.string(),
               }),
             }),
-            total_tax: zod.string().or(zod.number()).optional(),
-            total_tax_set: zod
-              .object({
-                shop_money: zod.object({
-                  amount: zod.string(),
-                  currency_code: zod.string(),
-                }),
-                presentment_money: zod.object({
-                  amount: zod.string(),
-                  currency_code: zod.string(),
-                }),
-              })
-              .optional(),
-            line_item: zod.object({
-              id: zod.number(),
-              name: zod.string(),
+            product_exists: zod.boolean(),
+            product_id: zod.number(),
+            properties: zod.object({
+              customer_id: zod.number(),
+              from: zod.string(),
+              to: zod.string(),
+              locationId: zod.string(),
+              shippingId: zod.string().optional(),
             }),
+            quantity: zod.number(),
+            requires_shipping: zod.boolean(),
+            sku: zod.string().nullish(),
+            taxable: zod.boolean(),
+            title: zod.string(),
+            total_discount: zod.string(),
+            total_discount_set: zod.object({
+              shop_money: zod.object({
+                amount: zod.string(),
+                currency_code: zod.string(),
+              }),
+              presentment_money: zod.object({
+                amount: zod.string(),
+                currency_code: zod.string(),
+              }),
+            }),
+            variant_id: zod.number().nullish(),
+            variant_inventory_management: zod.string().nullish(),
+            variant_title: zod.string().nullish(),
+            vendor: zod.string().nullish(),
           }),
         ),
       }),
     ),
-    shipping_address: zod
-      .object({
-        customer_id: zod.number().optional(),
-        first_name: zod.string(),
-        address1: zod.string().optional(),
-        phone: zod.string().optional(),
-        city: zod.string().optional(),
-        zip: zod.string().optional(),
-        province: zod.string().nullish(),
-        country: zod.string().optional(),
-        last_name: zod.string(),
-        address2: zod.string().nullish(),
-        company: zod.string().nullish(),
-        latitude: zod.number().nullish(),
-        longitude: zod.number().nullish(),
-        name: zod.string(),
-        country_code: zod.string(),
-        country_name: zod.string().optional(),
-        province_code: zod.string().optional(),
-        default: zod.boolean(),
-      })
-      .optional(),
-    shipping_lines: zod.array(
-      zod.object({
-        id: zod.number(),
-        carrier_identifier: zod.string().nullish(),
-        code: zod.string().nullish(),
-        discounted_price: zod.string(),
-        discounted_price_set: zod.object({
-          shop_money: zod.object({
-            amount: zod.string(),
-            currency_code: zod.string(),
-          }),
-          presentment_money: zod.object({
-            amount: zod.string(),
-            currency_code: zod.string(),
-          }),
-        }),
-        phone: zod.string().nullish(),
-        price: zod.string(),
-        price_set: zod.object({
-          shop_money: zod.object({
-            amount: zod.string(),
-            currency_code: zod.string(),
-          }),
-          presentment_money: zod.object({
-            amount: zod.string(),
-            currency_code: zod.string(),
-          }),
-        }),
-        requested_fulfillment_service_id: zod.string().nullish(),
-        source: zod.string(),
-        title: zod.string(),
-      }),
-    ),
-    start: zod.string(),
-    end: zod.string(),
-    title: zod.string(),
-  }),
 });
 
 /**

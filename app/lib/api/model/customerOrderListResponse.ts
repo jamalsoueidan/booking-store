@@ -4,9 +4,9 @@
  * Booking Shopify Api
  * OpenAPI spec version: 1.0.0
  */
-import type {CustomerOrder} from './customerOrder';
+import type {CustomerOrderSingleLineItem} from './customerOrderSingleLineItem';
 
 export interface CustomerOrderListResponse {
-  payload: CustomerOrder[];
+  payload: CustomerOrderSingleLineItem[];
   success: boolean;
 }
