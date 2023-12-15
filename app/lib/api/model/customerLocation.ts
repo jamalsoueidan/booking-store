@@ -4,6 +4,7 @@
  * Booking Shopify Api
  * OpenAPI spec version: 1.0.0
  */
+import type {CustomerLocationBase} from './customerLocationBase';
 import type {CustomerLocationAllOf} from './customerLocationAllOf';
 
-export type CustomerLocation = CustomerLocation & CustomerLocationAllOf;
+export type CustomerLocation = CustomerLocationBase & CustomerLocationAllOf;

@@ -1512,7 +1512,7 @@ components:
     CustomerLocation:
       type: object
       allOf:
-        - $ref: '#/components/schemas/CustomerLocation'
+        - $ref: '#/components/schemas/CustomerLocationBase'
         - type: object
           properties:
             _id:
