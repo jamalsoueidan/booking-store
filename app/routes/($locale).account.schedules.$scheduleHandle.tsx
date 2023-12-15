@@ -24,14 +24,13 @@ import {
   Divider,
   Flex,
   Menu,
-  Modal,
   Select,
   SimpleGrid,
   Stack,
   Table,
   rem,
 } from '@mantine/core';
-import {useDisclosure, useMediaQuery} from '@mantine/hooks';
+import {useDisclosure} from '@mantine/hooks';
 import {
   IconAdjustments,
   IconEdit,
@@ -40,6 +39,7 @@ import {
 } from '@tabler/icons-react';
 import {addMinutes, format, set} from 'date-fns';
 import {useRef, useState} from 'react';
+import MobileModal from '~/components/MobileModal';
 import {SubmitButton} from '~/components/form/SubmitButton';
 import {CustomerScheduleSlotDay, type CustomerSchedule} from '~/lib/api/model';
 import {getCustomer} from '~/lib/get-customer';
@@ -323,7 +323,6 @@ function MenuToggle({
 }) {
   const [opened, {open, close}] = useDisclosure(false);
   const formRef = useRef<HTMLFormElement>(null);
-  const isMobile = useMediaQuery('(max-width: 62em)');
 
   return (
     <>
@@ -364,15 +363,9 @@ function MenuToggle({
           </Menu.Item>
         </Menu.Dropdown>
       </Menu>
-      <Modal
-        opened={opened}
-        fullScreen={isMobile}
-        onClose={close}
-        title="Opdater navn"
-        centered
-      >
+      <MobileModal opened={opened} onClose={close} title="Opdater navn">
         <AccountSchedulesEdit close={close} />
-      </Modal>
+      </MobileModal>
     </>
   );
 }

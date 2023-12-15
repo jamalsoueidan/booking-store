@@ -4,18 +4,17 @@ import {
   Flex,
   Group,
   Loader,
-  Modal,
   Stack,
   Text,
   rem,
 } from '@mantine/core';
-import {useMediaQuery} from '@mantine/hooks';
 import {Money} from '@shopify/hydrogen';
 import {IconBuilding, IconCar, IconHome} from '@tabler/icons-react';
 import {differenceInMinutes, format} from 'date-fns';
 import {da} from 'date-fns/locale';
 import {durationToTime} from '~/lib/duration';
 import {type ApiOrdersLineItem} from '~/routes/($locale).api.orders.$productId.lineitem.$lineItem';
+import MobileModal from '../MobileModal';
 
 const CustomDescription = () => (
   <IconCar style={{width: rem(24), height: rem(24)}} stroke={1.5} />
@@ -32,24 +31,19 @@ export default function ModalBooking({
   close: () => void;
   type: 'booking' | 'order';
 }) {
-  const isMobile = useMediaQuery('(max-width: 62em)');
   return (
-    <Modal
+    <MobileModal
       opened={opened}
       onClose={close}
       title={`OrderId: ${data?.order.order_number}`}
-      centered
       size="lg"
-      fullScreen={isMobile}
-      withCloseButton
-      zIndex={1001}
     >
       {data ? (
         <ModalContent data={data} type={type} />
       ) : (
         <Loader color="blue" />
       )}
-    </Modal>
+    </MobileModal>
   );
 }
 

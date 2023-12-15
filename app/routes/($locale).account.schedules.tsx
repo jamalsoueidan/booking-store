@@ -1,7 +1,8 @@
-import {Button, Divider, Flex, Group, Modal, Title} from '@mantine/core';
-import {useDisclosure, useMediaQuery} from '@mantine/hooks';
+import {Button, Divider, Flex, Group, Title} from '@mantine/core';
+import {useDisclosure} from '@mantine/hooks';
 import {Link, Outlet, useLoaderData, useLocation} from '@remix-run/react';
 import {type LoaderFunctionArgs} from '@shopify/remix-oxygen';
+import MobileModal from '~/components/MobileModal';
 import {getBookingShopifyApi} from '~/lib/api/bookingShopifyApi';
 import {getCustomer} from '~/lib/get-customer';
 import AccountSchedulesCreate from './($locale).account.schedules.create';
@@ -19,7 +20,6 @@ export default function AccountSchedulesIndex() {
   const loaderData = useLoaderData<typeof loader>();
   const location = useLocation();
   const [opened, {open, close}] = useDisclosure(false);
-  const isMobile = useMediaQuery('(max-width: 62em)');
 
   return (
     <>
@@ -45,15 +45,9 @@ export default function AccountSchedulesIndex() {
       </Flex>
       <Outlet key={location.pathname} />
 
-      <Modal
-        opened={opened}
-        fullScreen={isMobile}
-        onClose={close}
-        title="Opret vagtplan"
-        centered
-      >
+      <MobileModal opened={opened} onClose={close} title="Opret vagtplan">
         <AccountSchedulesCreate close={close} />
-      </Modal>
+      </MobileModal>
     </>
   );
 }

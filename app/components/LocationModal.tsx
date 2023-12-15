@@ -1,8 +1,9 @@
-import {Button, Group, Modal, Stack, Text, TextInput} from '@mantine/core';
+import {Button, Group, Stack, Text, TextInput} from '@mantine/core';
 import {useFetcher} from '@remix-run/react';
 import {useEffect, useState} from 'react';
 import {AddressAutocompleteInput} from '~/components/AddressAutocompleteInput';
 import {type CustomerLocation, type Shipping} from '~/lib/api/model';
+import MobileModal from './MobileModal';
 
 type LocationModalProps = {
   location?: CustomerLocation;
@@ -40,14 +41,13 @@ export function LocationModal({
   }, [createShippingFetcher, onAccept, opened]);
 
   return (
-    <Modal
+    <MobileModal
       opened={opened}
       onClose={onCancel}
       overlayProps={{
         backgroundOpacity: 0.55,
         blur: 3,
       }}
-      centered
       title="Lokation"
     >
       {view === 'init' ? (
@@ -145,6 +145,6 @@ export function LocationModal({
           </Stack>
         </createShippingFetcher.Form>
       )}
-    </Modal>
+    </MobileModal>
   );
 }
