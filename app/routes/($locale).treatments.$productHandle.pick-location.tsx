@@ -6,7 +6,7 @@ import {LocationModal} from '~/components/LocationModal';
 import {AristLocationRadioCard} from '~/components/artist/ArtistLocationRadioCard';
 import {getBookingShopifyApi} from '~/lib/api/bookingShopifyApi';
 import {
-  CustomerLocationLocationType,
+  CustomerLocationBaseLocationType,
   type CustomerLocation,
 } from '~/lib/api/model';
 
@@ -89,7 +89,9 @@ export default function TreatmentHandlePickLocation() {
 
   const onChange = (location: CustomerLocation) => () => {
     setLocationId(location);
-    if (location.locationType === CustomerLocationLocationType.destination) {
+    if (
+      location.locationType === CustomerLocationBaseLocationType.destination
+    ) {
       open();
     }
   };
