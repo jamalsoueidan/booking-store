@@ -7,6 +7,6 @@
 import type {CustomerOrderGet} from './customerOrderGet';
 
 export interface CustomerOrderGetResponse {
-  payload?: CustomerOrderGet;
+  payload: CustomerOrderGet;
   success: boolean;
 }

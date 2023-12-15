@@ -1,6 +1,6 @@
 // custom-instance.ts
 
-import {Errors} from '../model';
+import {type Errors} from '../model';
 
 const baseURL = 'https://booking-shopify-api.azurewebsites.net/api'; // use your own URL here or environment variable
 
