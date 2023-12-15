@@ -62,7 +62,6 @@ export function Header({header, isLoggedIn, cart}: HeaderProps) {
             opened={drawerOpened}
             onClick={toggleDrawer}
             hiddenFrom="md"
-            style={{position: 'absolute', top: '18px', right: '10px'}}
           />
         </Flex>
       </header>

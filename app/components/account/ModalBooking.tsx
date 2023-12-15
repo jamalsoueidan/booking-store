@@ -42,6 +42,7 @@ export default function ModalBooking({
       size="lg"
       fullScreen={isMobile}
       withCloseButton
+      zIndex={1001}
     >
       {data ? (
         <ModalContent data={data} type={type} />
