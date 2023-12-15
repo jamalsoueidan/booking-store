@@ -53,11 +53,10 @@ export async function loader({params, context}: LoaderFunctionArgs) {
     throw new Response('Order not found', {status: 404});
   }
 
-  const {payload: treatmentOrder} =
-    await getBookingShopifyApi().customerOrderGet(
-      parseGid(customer.id).id,
-      parseGid(order.id).id,
-    );
+  const treatment = await getBookingShopifyApi().customerOrderGet(
+    parseGid(customer.id).id,
+    parseGid(order.id).id,
+  );
 
   const lineItems = flattenConnection(order.lineItems);
   const discountApplications = flattenConnection(order.discountApplications);
@@ -72,7 +71,7 @@ export async function loader({params, context}: LoaderFunctionArgs) {
     firstDiscount?.percentage;
 
   return json({
-    treatmentOrder,
+    treatmentOrder: treatment.payload || null,
     order,
     lineItems,
     discountValue,
@@ -111,7 +110,9 @@ export default function OrderRoute() {
       </Flex>
       <Divider my="md" />
 
-      <TreatmentTable treatmentOrder={treatmentOrder} lineItems={lineItems} />
+      {treatmentOrder ? (
+        <TreatmentTable treatmentOrder={treatmentOrder} lineItems={lineItems} />
+      ) : null}
 
       {productsLineItems.length > 0 ? (
         <Card withBorder>

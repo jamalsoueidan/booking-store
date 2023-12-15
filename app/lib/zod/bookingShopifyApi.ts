@@ -2680,7 +2680,8 @@ export const customerOrderGetResponse = zod.object({
             ),
         ),
       }),
-    ),
+    )
+    .optional(),
 });
 
 /**

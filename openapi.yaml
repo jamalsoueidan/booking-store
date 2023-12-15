@@ -1241,7 +1241,6 @@ components:
           $ref: '#/components/schemas/CustomerOrderGet'
       required:
         - success
-        - payload
     CustomerOrderList:
       allOf:
         - $ref: '#/components/schemas/CustomerOrder'
