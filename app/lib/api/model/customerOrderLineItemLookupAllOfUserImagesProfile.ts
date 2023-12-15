@@ -5,7 +5,8 @@
  * OpenAPI spec version: 1.0.0
  */
 
-export type ShippingAllOfCost = {
-  currency: string;
-  value: number;
+export type CustomerOrderLineItemLookupAllOfUserImagesProfile = {
+  height?: number;
+  url?: string;
+  width?: number;
 };

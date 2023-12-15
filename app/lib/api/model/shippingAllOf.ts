@@ -4,14 +4,10 @@
  * Booking Shopify Api
  * OpenAPI spec version: 1.0.0
  */
-import type {ShippingAllOfCost} from './shippingAllOfCost';
-import type {ShippingAllOfDestination} from './shippingAllOfDestination';
 import type {CustomerLocation} from './customerLocation';
 
 export type ShippingAllOf = {
   _id: string;
-  cost: ShippingAllOfCost;
-  destination: ShippingAllOfDestination;
   location: string;
   origin: CustomerLocation;
 };

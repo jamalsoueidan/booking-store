@@ -19,7 +19,7 @@ export interface CustomerOrderLineItem {
   price: string;
   price_set: CustomerOrderMoney;
   product_exists: boolean;
-  product_id?: number | null;
+  product_id: number;
   properties: CustomerOrderLineItemProperties;
   quantity: number;
   requires_shipping: boolean;
@@ -28,7 +28,7 @@ export interface CustomerOrderLineItem {
   title: string;
   total_discount: string;
   total_discount_set: CustomerOrderMoney;
-  variant_id?: number | null;
+  variant_id: number;
   variant_inventory_management?: string | null;
   variant_title?: string | null;
   vendor?: string | null;

@@ -6,8 +6,6 @@
  */
 import type {LocationTravelTime} from './locationTravelTime';
 import type {ShippingCostDestination} from './shippingCostDestination';
-import type {ShippingAllOf} from './shippingAllOf';
 
-export type Shipping = LocationTravelTime &
-  ShippingCostDestination &
-  ShippingAllOf;
+export type CustomerOrderLineItemLookupAllOfShipping = LocationTravelTime &
+  ShippingCostDestination;

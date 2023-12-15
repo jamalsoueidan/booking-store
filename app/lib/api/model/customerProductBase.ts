@@ -8,7 +8,7 @@ import type {CustomerProductBookingPeriod} from './customerProductBookingPeriod'
 import type {CustomerProductBaseCompareAtPrice} from './customerProductBaseCompareAtPrice';
 import type {CustomerProductNoticePeriod} from './customerProductNoticePeriod';
 import type {CustomerProductBasePrice} from './customerProductBasePrice';
-import type {CustomerProductBaseSelectedOptions} from './customerProductBaseSelectedOptions';
+import type {CustomerProductSelectedOptions} from './customerProductSelectedOptions';
 
 export interface CustomerProductBase {
   bookingPeriod: CustomerProductBookingPeriod;
@@ -20,6 +20,6 @@ export interface CustomerProductBase {
   price: CustomerProductBasePrice;
   productHandle?: string;
   productId: number;
-  selectedOptions: CustomerProductBaseSelectedOptions;
+  selectedOptions: CustomerProductSelectedOptions;
   variantId: number;
 }

@@ -23,6 +23,7 @@ import type {
   CustomerLocationSetDefaultResponse,
   CustomerLocationUpdateBody,
   CustomerLocationUpdateResponse,
+  CustomerOrderGetLineItemResponse,
   CustomerOrderGetResponse,
   CustomerOrderListParams,
   CustomerOrderListResponse,
@@ -488,9 +489,20 @@ export const getBookingShopifyApi = () => {
    * This endpoint gets order with lineItem object
    * @summary GET Get order with lineItem
    */
-  const customerOrderGet = (customerId: string, lineItemId: string) => {
+  const customerOrderGetLineItem = (customerId: string, lineItemId: string) => {
+    return queryClient<CustomerOrderGetLineItemResponse>({
+      url: `/customer/${customerId}/lineItem/${lineItemId}`,
+      method: 'get',
+    });
+  };
+
+  /**
+   * This endpoint gets order with lineItems array of objects
+   * @summary GET Get order with lineItems array
+   */
+  const customerOrderGet = (customerId: string, orderId: string) => {
     return queryClient<CustomerOrderGetResponse>({
-      url: `/customer/${customerId}/lineItemId/${lineItemId}`,
+      url: `/customer/${customerId}/orders/${orderId}`,
       method: 'get',
     });
   };
@@ -817,6 +829,7 @@ export const getBookingShopifyApi = () => {
     customerBookingGet,
     customerBookingsList,
     customerOrderList,
+    customerOrderGetLineItem,
     customerOrderGet,
     customerScheduleCreate,
     customerScheduleList,
@@ -999,6 +1012,13 @@ export type CustomerBookingsListResult = NonNullable<
 export type CustomerOrderListResult = NonNullable<
   Awaited<
     ReturnType<ReturnType<typeof getBookingShopifyApi>['customerOrderList']>
+  >
+>;
+export type CustomerOrderGetLineItemResult = NonNullable<
+  Awaited<
+    ReturnType<
+      ReturnType<typeof getBookingShopifyApi>['customerOrderGetLineItem']
+    >
   >
 >;
 export type CustomerOrderGetResult = NonNullable<

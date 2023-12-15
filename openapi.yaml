@@ -128,15 +128,7 @@ components:
         description:
           type: string
         selectedOptions:
-          type: object
-          properties:
-            name:
-              type: string
-            value:
-              type: string
-          required:
-            - name
-            - value
+          $ref: '#/components/schemas/CustomerProductSelectedOptions'
         price:
           type: object
           properties:
@@ -200,6 +192,16 @@ components:
       enum:
         - weeks
         - months
+    CustomerProductSelectedOptions:
+      type: object
+      properties:
+        name:
+          type: string
+        value:
+          type: string
+      required:
+        - name
+        - value
     CustomerProductNoticePeriod:
       type: object
       properties:
@@ -666,8 +668,6 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/CustomerOrderFulfillment'
-        line_items:
-          $ref: '#/components/schemas/CustomerOrderLineItem'
         refunds:
           type: array
           items:
@@ -702,7 +702,6 @@ components:
         - current_total_tax
         - current_total_tax_set
         - fulfillments
-        - line_items
         - refunds
         - shipping_lines
         - start
@@ -805,19 +804,6 @@ components:
         user_agent:
           type: string
           nullable: true
-    CustomerOrderDiscount:
-      type: object
-      properties:
-        code:
-          type: string
-        amount:
-          type: string
-        type:
-          type: string
-      required:
-        - code
-        - amount
-        - type
     CustomerOrderLineItemProperties:
       type: object
       properties:
@@ -953,7 +939,6 @@ components:
           type: boolean
         product_id:
           type: number
-          nullable: true
         properties:
           $ref: '#/components/schemas/CustomerOrderLineItemProperties'
         quantity:
@@ -973,7 +958,6 @@ components:
           $ref: '#/components/schemas/CustomerOrderMoney'
         variant_id:
           type: number
-          nullable: true
         variant_inventory_management:
           type: string
           nullable: true
@@ -995,12 +979,58 @@ components:
         - properties
         - price_set
         - product_exists
+        - product_id
+        - variant_id
         - quantity
         - requires_shipping
         - taxable
         - title
         - total_discount
         - total_discount_set
+    CustomerOrderLineItemLookup:
+      allOf:
+        - $ref: '#/components/schemas/CustomerOrderLineItem'
+        - type: object
+          properties:
+            user:
+              type: object
+              properties:
+                customerId:
+                  type: number
+                fullname:
+                  type: string
+                username:
+                  type: string
+                shortDescription:
+                  type: string
+                images:
+                  type: object
+                  properties:
+                    profile:
+                      type: object
+                      properties:
+                        url:
+                          type: string
+                          format: uri
+                        width:
+                          type: integer
+                        height:
+                          type: integer
+              required:
+                - customerId
+                - fullname
+                - username
+                - shortDescription
+                - images
+            location:
+              $ref: '#/components/schemas/CustomerLocationBase'
+            shipping:
+              allOf:
+                - $ref: '#/components/schemas/LocationTravelTime'
+                - $ref: '#/components/schemas/ShippingCostDestination'
+          required:
+            - user
+            - location
     CustomerOrderRefund:
       type: object
       properties:
@@ -1163,6 +1193,44 @@ components:
         - service
         - status
         - line_items
+    CustomerOrderGetLineItem:
+      allOf:
+        - $ref: '#/components/schemas/CustomerOrder'
+        - type: object
+          properties:
+            line_items:
+              allOf:
+                - $ref: '#/components/schemas/CustomerOrderLineItemLookup'
+                - type: object
+                  properties:
+                    selectedOptions:
+                      $ref: '#/components/schemas/CustomerProductSelectedOptions'
+                  required:
+                    - selectedOptions
+          required:
+            - line_items
+    CustomerOrderGetLineItemResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: true
+        payload:
+          $ref: '#/components/schemas/CustomerOrderGetLineItem'
+      required:
+        - success
+        - payload
+    CustomerOrderGet:
+      allOf:
+        - $ref: '#/components/schemas/CustomerOrder'
+        - type: object
+          properties:
+            line_items:
+              type: array
+              items:
+                $ref: '#/components/schemas/CustomerOrderLineItemLookup'
+          required:
+            - line_items
     CustomerOrderGetResponse:
       type: object
       properties:
@@ -1170,10 +1238,19 @@ components:
           type: boolean
           example: true
         payload:
-          $ref: '#/components/schemas/CustomerOrder'
+          $ref: '#/components/schemas/CustomerOrderGet'
       required:
         - success
         - payload
+    CustomerOrderList:
+      allOf:
+        - $ref: '#/components/schemas/CustomerOrder'
+        - type: object
+          properties:
+            line_items:
+              $ref: '#/components/schemas/CustomerOrderLineItem'
+          required:
+            - line_items
     CustomerOrderListResponse:
       type: object
       properties:
@@ -1183,7 +1260,7 @@ components:
         payload:
           type: array
           items:
-            $ref: '#/components/schemas/CustomerOrder'
+            $ref: '#/components/schemas/CustomerOrderList'
       required:
         - success
         - payload
@@ -1406,11 +1483,9 @@ components:
       required:
         - success
         - payload
-    CustomerLocation:
+    CustomerLocationBase:
       type: object
       properties:
-        _id:
-          type: string
         locationType:
           type: string
           enum:
@@ -1428,46 +1503,55 @@ components:
           type: string
         fullAddress:
           type: string
-        geoLocation:
-          type: object
-          required:
-            - type
-            - coordinates
-          properties:
-            type:
-              type: string
-              enum:
-                - Point
-            coordinates:
-              type: array
-              items:
-                type: number
-        distanceForFree:
-          type: number
-        distanceHourlyRate:
-          type: number
-        fixedRatePerKm:
-          type: number
-        minDriveDistance:
-          type: number
-        maxDriveDistance:
-          type: number
-        startFee:
-          type: number
       required:
-        - _id
         - locationType
         - originType
         - customerId
         - name
         - fullAddress
-        - geoLocation
-        - distanceForFree
-        - distanceHourlyRate
-        - fixedRatePerKm
-        - minDriveDistance
-        - maxDriveDistance
-        - startFee
+    CustomerLocation:
+      type: object
+      allOf:
+        - $ref: '#/components/schemas/CustomerLocationBase'
+        - type: object
+          properties:
+            _id:
+              type: string
+            geoLocation:
+              type: object
+              required:
+                - type
+                - coordinates
+              properties:
+                type:
+                  type: string
+                  enum:
+                    - Point
+                coordinates:
+                  type: array
+                  items:
+                    type: number
+            distanceForFree:
+              type: number
+            distanceHourlyRate:
+              type: number
+            fixedRatePerKm:
+              type: number
+            minDriveDistance:
+              type: number
+            maxDriveDistance:
+              type: number
+            startFee:
+              type: number
+          required:
+            - _id
+            - geoLocation
+            - distanceForFree
+            - distanceHourlyRate
+            - fixedRatePerKm
+            - minDriveDistance
+            - maxDriveDistance
+            - startFee
     CustomerLocationIsDefault:
       type: object
       allOf:
@@ -2141,6 +2225,7 @@ components:
       type: object
       allOf:
         - $ref: '#/components/schemas/LocationTravelTime'
+        - $ref: '#/components/schemas/ShippingCostDestination'
         - type: object
           properties:
             _id:
@@ -2149,32 +2234,36 @@ components:
               type: string
             origin:
               $ref: '#/components/schemas/CustomerLocation'
-            destination:
-              type: object
-              properties:
-                name:
-                  type: string
-                fullAddress:
-                  type: string
-              required:
-                - name
-                - fullAddress
-            cost:
-              type: object
-              properties:
-                currency:
-                  type: string
-                value:
-                  type: integer
-              required:
-                - currency
-                - value
           required:
             - _id
             - location
             - origin
-            - destination
-            - cost
+    ShippingCostDestination:
+      type: object
+      properties:
+        destination:
+          type: object
+          properties:
+            name:
+              type: string
+            fullAddress:
+              type: string
+          required:
+            - name
+            - fullAddress
+        cost:
+          type: object
+          properties:
+            currency:
+              type: string
+            value:
+              type: integer
+          required:
+            - currency
+            - value
+      required:
+        - destination
+        - cost
     ShippingBody:
       type: object
       properties:
@@ -3415,7 +3504,7 @@ paths:
         '404':
           $ref: '#/components/responses/NotFoundResponse'
       security: []
-  '/customer/{customerId}/lineItemId/{lineItemId}':
+  '/customer/{customerId}/lineItem/{lineItemId}':
     get:
       parameters:
         - name: customerId
@@ -3432,9 +3521,45 @@ paths:
             type: string
       tags:
         - CustomerOrder
-      operationId: customerOrderGet
+      operationId: customerOrderGetLineItem
       summary: GET Get order with lineItem
       description: This endpoint gets order with lineItem object
+      responses:
+        '200':
+          description: Response with payload
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CustomerOrderGetLineItemResponse'
+        '400':
+          $ref: '#/components/responses/BadResponse'
+        '401':
+          $ref: '#/components/responses/UnauthorizedResponse'
+        '403':
+          $ref: '#/components/responses/ForbiddenResponse'
+        '404':
+          $ref: '#/components/responses/NotFoundResponse'
+      security: []
+  '/customer/{customerId}/orders/{orderId}':
+    get:
+      parameters:
+        - name: customerId
+          in: path
+          description: customerId for the customer
+          required: true
+          schema:
+            type: string
+        - name: orderId
+          in: path
+          description: orderId for the order
+          required: true
+          schema:
+            type: string
+      tags:
+        - CustomerOrder
+      operationId: customerOrderGet
+      summary: GET Get order with lineItems array
+      description: This endpoint gets order with lineItems array of objects
       responses:
         '200':
           description: Response with payload

@@ -5,10 +5,10 @@
  * OpenAPI spec version: 1.0.0
  */
 
-export type CustomerLocationGeoLocationType =
-  (typeof CustomerLocationGeoLocationType)[keyof typeof CustomerLocationGeoLocationType];
+export type CustomerLocationAllOfGeoLocationType =
+  (typeof CustomerLocationAllOfGeoLocationType)[keyof typeof CustomerLocationAllOfGeoLocationType];
 
 // eslint-disable-next-line @typescript-eslint/no-redeclare
-export const CustomerLocationGeoLocationType = {
+export const CustomerLocationAllOfGeoLocationType = {
   Point: 'Point',
 } as const;

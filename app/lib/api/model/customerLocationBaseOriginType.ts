@@ -5,11 +5,11 @@
  * OpenAPI spec version: 1.0.0
  */
 
-export type CustomerLocationOriginType =
-  (typeof CustomerLocationOriginType)[keyof typeof CustomerLocationOriginType];
+export type CustomerLocationBaseOriginType =
+  (typeof CustomerLocationBaseOriginType)[keyof typeof CustomerLocationBaseOriginType];
 
 // eslint-disable-next-line @typescript-eslint/no-redeclare
-export const CustomerLocationOriginType = {
+export const CustomerLocationBaseOriginType = {
   home: 'home',
   commercial: 'commercial',
 } as const;

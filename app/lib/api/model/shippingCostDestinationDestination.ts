@@ -5,8 +5,7 @@
  * OpenAPI spec version: 1.0.0
  */
 
-export interface CustomerOrderDiscount {
-  amount: string;
-  code: string;
-  type: string;
-}
+export type ShippingCostDestinationDestination = {
+  fullAddress: string;
+  name: string;
+};

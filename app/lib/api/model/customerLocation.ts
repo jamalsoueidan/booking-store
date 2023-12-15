@@ -4,22 +4,7 @@
  * Booking Shopify Api
  * OpenAPI spec version: 1.0.0
  */
-import type {CustomerLocationGeoLocation} from './customerLocationGeoLocation';
-import type {CustomerLocationLocationType} from './customerLocationLocationType';
-import type {CustomerLocationOriginType} from './customerLocationOriginType';
+import type {CustomerLocationBase} from './customerLocationBase';
+import type {CustomerLocationAllOf} from './customerLocationAllOf';
 
-export interface CustomerLocation {
-  _id: string;
-  customerId: string;
-  distanceForFree: number;
-  distanceHourlyRate: number;
-  fixedRatePerKm: number;
-  fullAddress: string;
-  geoLocation: CustomerLocationGeoLocation;
-  locationType: CustomerLocationLocationType;
-  maxDriveDistance: number;
-  minDriveDistance: number;
-  name: string;
-  originType: CustomerLocationOriginType;
-  startFee: number;
-}
+export type CustomerLocation = CustomerLocationBase & CustomerLocationAllOf;
