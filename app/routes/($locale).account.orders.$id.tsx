@@ -27,10 +27,7 @@ import type {OrderLineItemFullFragment} from 'storefrontapi.generated';
 import ModalBooking from '~/components/account/ModalBooking';
 import {isEqualGid} from '~/data/isEqualGid';
 import {getBookingShopifyApi} from '~/lib/api/bookingShopifyApi';
-import type {
-  CustomerOrderArrayLineItems,
-  CustomerOrderLineItem,
-} from '~/lib/api/model';
+import type {CustomerOrderGet, CustomerOrderLineItem} from '~/lib/api/model';
 import {getCustomer} from '~/lib/get-customer';
 import {type ApiOrdersLineItem} from './($locale).api.orders.$productId.lineitem.$lineItem';
 
@@ -201,7 +198,7 @@ function TreatmentTable({
   treatmentOrder,
   lineItems,
 }: {
-  treatmentOrder: CustomerOrderArrayLineItems;
+  treatmentOrder: CustomerOrderGet;
   lineItems: OrderLineItemFullFragment[];
 }) {
   const [opened, {open, close}] = useDisclosure(false);

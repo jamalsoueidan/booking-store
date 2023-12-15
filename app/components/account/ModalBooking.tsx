@@ -34,7 +34,7 @@ export default function ModalBooking({
     <Modal
       opened={opened}
       onClose={close}
-      title={`OrderId: ${data?.order.order.order_number}`}
+      title={`OrderId: ${data?.order.order_number}`}
       centered
       size="auto"
       withCloseButton
@@ -45,8 +45,7 @@ export default function ModalBooking({
 }
 
 function ModalContent({data}: {data: ApiOrdersLineItem}) {
-  const {product} = data;
-  const {order, location, shipping} = data.order;
+  const {product, order} = data;
   const from = order.line_items.properties.from;
   const to = order.line_items.properties.to;
 
@@ -100,26 +99,27 @@ function ModalContent({data}: {data: ApiOrdersLineItem}) {
       <Text size="lg" mb="md" fw="bold">
         Lokation
       </Text>
-      {shipping ? (
+      {order.line_items.shipping ? (
         <Stack gap={rem(4)}>
           <Flex align="center" gap="xs">
             <CustomDescription />
             <Text size="md" fw={500}>
-              {shipping?.destination.fullAddress}
+              {order.line_items.shipping?.destination.fullAddress}
             </Text>
           </Flex>
           <Text size="xs" c="red" fw={500}>
             Udgifterne bliver beregnet under købsprocessen{' '}
-            {shipping?.cost.value} {shipping?.cost.currency}
+            {order.line_items.shipping?.cost.value}{' '}
+            {order.line_items.shipping?.cost.currency}
           </Text>
         </Stack>
       ) : (
         <>
           <Text size="md" fw={500}>
-            {location.name}
+            {order.line_items.location.name}
           </Text>
           <Text size="md" fw={500}>
-            {location.fullAddress}
+            {order.line_items.location.fullAddress}
           </Text>
         </>
       )}

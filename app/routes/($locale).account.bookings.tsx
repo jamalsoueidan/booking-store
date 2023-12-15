@@ -10,7 +10,7 @@ import {useFetcher} from '@remix-run/react';
 import {IconCar} from '@tabler/icons-react';
 import {createRoot} from 'react-dom/client';
 import ModalBooking from '~/components/account/ModalBooking';
-import {type CustomerOrderSingleLineItem} from '~/lib/api/model';
+import {type CustomerOrderList} from '~/lib/api/model';
 import {type ApiOrdersLineItem} from './($locale).api.orders.$productId.lineitem.$lineItem';
 
 const CustomDescription = () => (
@@ -21,7 +21,7 @@ export default function AccountBookings() {
   const [opened, {open, close}] = useDisclosure(false);
   const fetcher = useFetcher<ApiOrdersLineItem>();
 
-  const openModal = (order: CustomerOrderSingleLineItem) => {
+  const openModal = (order: CustomerOrderList) => {
     fetcher.load(
       `/api/orders/${order.line_items.product_id}/lineitem/${order.line_items.id}`,
     );
@@ -41,7 +41,7 @@ export default function AccountBookings() {
           right: 'dayGridMonth,timeGridWeek',
         }}
         eventDataTransform={(input: EventInput) => {
-          const order = input as unknown as CustomerOrderSingleLineItem;
+          const order = input as unknown as CustomerOrderList;
           input.color = 'green';
           input.display = 'block';
           input.className = 'event-custom';
@@ -55,7 +55,7 @@ export default function AccountBookings() {
             '.fc-event-title-container',
           );
 
-          const order = info.event.extendedProps as CustomerOrderSingleLineItem;
+          const order = info.event.extendedProps as CustomerOrderList;
           if (eventElement && order.line_items.properties.shippingId) {
             // Create a container for your React component
             const descriptionElement = document.createElement('span');
@@ -96,7 +96,7 @@ export default function AccountBookings() {
           meridiem: false,
         }}
         eventClick={({event}) => {
-          const order = event.extendedProps as CustomerOrderSingleLineItem;
+          const order = event.extendedProps as CustomerOrderList;
           openModal(order);
         }}
       />

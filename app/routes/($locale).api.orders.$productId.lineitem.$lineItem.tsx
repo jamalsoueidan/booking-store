@@ -3,7 +3,8 @@ import {json, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
 import {type ProductFragment} from 'storefrontapi.generated';
 import {PRODUCT_SELECTED_OPTIONS_QUERY_ID} from '~/data/queries';
 import {getBookingShopifyApi} from '~/lib/api/bookingShopifyApi';
-import type {CustomerOrderGetLineItem} from '~/lib/api/model';
+import {type CustomerOrderGetLineItem} from '~/lib/api/model';
+
 import {getCustomer} from '~/lib/get-customer';
 
 export type ApiOrdersLineItem = {
@@ -28,7 +29,7 @@ export async function loader({params, context}: LoaderFunctionArgs) {
     {
       variables: {
         Id: `gid://shopify/Product/${productId}`,
-        selectedOptions: order.product.selectedOptions,
+        selectedOptions: order.line_items.selectedOptions,
         country: context.storefront.i18n.country,
         language: context.storefront.i18n.language,
       },
