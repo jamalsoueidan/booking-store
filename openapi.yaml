@@ -3462,7 +3462,7 @@ paths:
         '404':
           $ref: '#/components/responses/NotFoundResponse'
       security: []
-  '/customer/{customerId}/orders':
+  '/customer/{customerId}/orders-range':
     get:
       parameters:
         - name: customerId

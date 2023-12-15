@@ -479,7 +479,7 @@ export const getBookingShopifyApi = () => {
     params: CustomerOrderListParams,
   ) => {
     return queryClient<CustomerOrderListResponse>({
-      url: `/customer/${customerId}/orders`,
+      url: `/customer/${customerId}/orders-range`,
       method: 'get',
       params,
     });
