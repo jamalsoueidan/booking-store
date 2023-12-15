@@ -322,8 +322,8 @@ function MenuToggle({
   schedule: Pick<CustomerSchedule, '_id' | 'name'>;
 }) {
   const [opened, {open, close}] = useDisclosure(false);
-  const isMobile = useMediaQuery('(max-width: 50em)');
   const formRef = useRef<HTMLFormElement>(null);
+  const isMobile = useMediaQuery('(max-width: 62em)');
 
   return (
     <>

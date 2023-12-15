@@ -19,7 +19,7 @@ export default function AccountSchedulesIndex() {
   const loaderData = useLoaderData<typeof loader>();
   const location = useLocation();
   const [opened, {open, close}] = useDisclosure(false);
-  const isMobile = useMediaQuery('(max-width: 50em)');
+  const isMobile = useMediaQuery('(max-width: 62em)');
 
   return (
     <>
