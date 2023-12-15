@@ -5,7 +5,6 @@
  * OpenAPI spec version: 1.0.0
  */
 import type {CustomerOrder} from './customerOrder';
-import type {CustomerOrderGetLineItemAllOf} from './customerOrderGetLineItemAllOf';
+import type {CustomerOrderListAllOf} from './customerOrderListAllOf';
 
-export type CustomerOrderGetLineItem = CustomerOrder &
-  CustomerOrderGetLineItemAllOf;
+export type CustomerOrderList = CustomerOrder & CustomerOrderListAllOf;

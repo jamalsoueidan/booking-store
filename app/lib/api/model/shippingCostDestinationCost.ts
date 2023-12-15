@@ -5,7 +5,7 @@
  * OpenAPI spec version: 1.0.0
  */
 
-export type ShippingAllOfDestination = {
-  fullAddress: string;
-  name: string;
+export type ShippingCostDestinationCost = {
+  currency: string;
+  value: number;
 };

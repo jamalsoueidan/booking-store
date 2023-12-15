@@ -6,6 +6,6 @@
  */
 import type {CustomerProductSelectedOptions} from './customerProductSelectedOptions';
 
-export type CustomerOrderGetLineItemProduct = {
+export type CustomerOrderGetLineItemAllOfLineItemsAllOf = {
   selectedOptions: CustomerProductSelectedOptions;
 };

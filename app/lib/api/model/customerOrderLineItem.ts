@@ -28,7 +28,7 @@ export interface CustomerOrderLineItem {
   title: string;
   total_discount: string;
   total_discount_set: CustomerOrderMoney;
-  variant_id?: number | null;
+  variant_id: number;
   variant_inventory_management?: string | null;
   variant_title?: string | null;
   vendor?: string | null;
