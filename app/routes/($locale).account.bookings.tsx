@@ -101,7 +101,12 @@ export default function AccountBookings() {
         }}
       />
 
-      <ModalBooking opened={opened} data={fetcher.data} close={close} />
+      <ModalBooking
+        type="booking"
+        opened={opened}
+        data={fetcher.data}
+        close={close}
+      />
     </>
   );
 }

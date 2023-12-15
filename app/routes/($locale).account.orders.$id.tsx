@@ -251,7 +251,12 @@ function TreatmentTable({
         </Table>
       </Card>
 
-      <ModalBooking opened={opened} data={fetcher.data} close={close} />
+      <ModalBooking
+        type="order"
+        opened={opened}
+        data={fetcher.data}
+        close={close}
+      />
     </>
   );
 }

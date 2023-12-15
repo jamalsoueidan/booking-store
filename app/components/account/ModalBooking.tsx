@@ -25,10 +25,12 @@ export default function ModalBooking({
   opened,
   data,
   close,
+  type,
 }: {
   data?: ApiOrdersLineItem;
   opened: boolean;
   close: () => void;
+  type: 'booking' | 'order';
 }) {
   const isMobile = useMediaQuery('(max-width: 62em)');
   return (
@@ -41,12 +43,22 @@ export default function ModalBooking({
       fullScreen={isMobile}
       withCloseButton
     >
-      {data ? <ModalContent data={data} /> : <Loader color="blue" />}
+      {data ? (
+        <ModalContent data={data} type={type} />
+      ) : (
+        <Loader color="blue" />
+      )}
     </Modal>
   );
 }
 
-function ModalContent({data}: {data: ApiOrdersLineItem}) {
+function ModalContent({
+  data,
+  type,
+}: {
+  data: ApiOrdersLineItem;
+  type: 'booking' | 'order';
+}) {
   const {product, order} = data;
   const from = order.line_items.properties.from;
   const to = order.line_items.properties.to;
@@ -77,23 +89,47 @@ function ModalContent({data}: {data: ApiOrdersLineItem}) {
         </div>
       </Group>
       <Divider my="lg" />
-      <Text size="lg" mb="md" fw="bold">
-        Skønhedsekspert:
-      </Text>
-      {user ? (
-        <Group gap="xs">
-          {user.images.profile?.url ? (
-            <Avatar src={user.images.profile?.url} size="md" radius="sm" />
+      {type === 'booking' ? (
+        <>
+          <Text size="lg" mb="md" fw="bold">
+            Kunde:
+          </Text>
+          {order.customer ? (
+            <Group gap="xs">
+              <div>
+                <Text>
+                  {order.customer.first_name} {order.customer.last_name}
+                </Text>
+                <Text c="dimmed" size="sm">
+                  {order.customer.phone}
+                </Text>
+              </div>
+            </Group>
           ) : null}
-          <div>
-            <Text>{user.fullname}</Text>
-            <Text c="dimmed" size="sm">
-              {user.shortDescription}
-            </Text>
-          </div>
-        </Group>
+          <Divider my="lg" />
+        </>
       ) : null}
-      <Divider my="lg" />
+      {type === 'order' ? (
+        <>
+          <Text size="lg" mb="md" fw="bold">
+            Skønhedsekspert:
+          </Text>
+          {user ? (
+            <Group gap="xs">
+              {user.images.profile?.url ? (
+                <Avatar src={user.images.profile?.url} size="md" radius="sm" />
+              ) : null}
+              <div>
+                <Text>{user.fullname}</Text>
+                <Text c="dimmed" size="sm">
+                  {user.shortDescription}
+                </Text>
+              </div>
+            </Group>
+          ) : null}
+          <Divider my="lg" />
+        </>
+      ) : null}
       <Text size="lg" mb="md" fw="bold">
         Dato & Tid
       </Text>
