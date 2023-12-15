@@ -7,11 +7,11 @@ import {
   Modal,
   Stack,
   Text,
-  Title,
   rem,
 } from '@mantine/core';
+import {useMediaQuery} from '@mantine/hooks';
 import {Money} from '@shopify/hydrogen';
-import {IconCar} from '@tabler/icons-react';
+import {IconBuilding, IconCar, IconHome} from '@tabler/icons-react';
 import {differenceInMinutes, format} from 'date-fns';
 import {da} from 'date-fns/locale';
 import {durationToTime} from '~/lib/duration';
@@ -30,13 +30,15 @@ export default function ModalBooking({
   opened: boolean;
   close: () => void;
 }) {
+  const isMobile = useMediaQuery('(max-width: 62em)');
   return (
     <Modal
       opened={opened}
       onClose={close}
       title={`OrderId: ${data?.order.order_number}`}
       centered
-      size="auto"
+      size="lg"
+      fullScreen={isMobile}
       withCloseButton
     >
       {data ? <ModalContent data={data} /> : <Loader color="blue" />}
@@ -49,16 +51,21 @@ function ModalContent({data}: {data: ApiOrdersLineItem}) {
   const from = order.line_items.properties.from;
   const to = order.line_items.properties.to;
 
+  const {location, user, shipping} = order.line_items;
+
   return (
     <>
+      <Text size="lg" mb="md" fw="bold">
+        Behandling:
+      </Text>
       <Group>
         <Avatar
           src={product.selectedVariant?.image?.url}
-          size="lg"
-          radius="md"
+          size="md"
+          radius="sm"
         />
         <div>
-          <Title order={2}>{product.title}</Title>
+          <Text>{product.title}</Text>
           {order.line_items.price_set.shop_money && (
             <Money
               data={{
@@ -69,6 +76,23 @@ function ModalContent({data}: {data: ApiOrdersLineItem}) {
           )}
         </div>
       </Group>
+      <Divider my="lg" />
+      <Text size="lg" mb="md" fw="bold">
+        Skønhedsekspert:
+      </Text>
+      {user ? (
+        <Group gap="xs">
+          {user.images.profile?.url ? (
+            <Avatar src={user.images.profile?.url} size="md" radius="sm" />
+          ) : null}
+          <div>
+            <Text>{user.fullname}</Text>
+            <Text c="dimmed" size="sm">
+              {user.shortDescription}
+            </Text>
+          </div>
+        </Group>
+      ) : null}
       <Divider my="lg" />
       <Text size="lg" mb="md" fw="bold">
         Dato & Tid
@@ -99,27 +123,27 @@ function ModalContent({data}: {data: ApiOrdersLineItem}) {
       <Text size="lg" mb="md" fw="bold">
         Lokation
       </Text>
-      {order.line_items.shipping ? (
+      {shipping ? (
         <Stack gap={rem(4)}>
           <Flex align="center" gap="xs">
             <CustomDescription />
             <Text size="md" fw={500}>
-              {order.line_items.shipping?.destination.fullAddress}
+              {shipping.destination.fullAddress}
             </Text>
           </Flex>
           <Text size="xs" c="red" fw={500}>
-            Udgifterne bliver beregnet under købsprocessen{' '}
-            {order.line_items.shipping?.cost.value}{' '}
-            {order.line_items.shipping?.cost.currency}
+            Udgifterne bliver beregnet under købsprocessen.
+            {shipping.cost.value} {shipping.cost.currency}
           </Text>
         </Stack>
       ) : (
         <>
           <Text size="md" fw={500}>
-            {order.line_items.location.name}
+            {location?.name}{' '}
+            {location?.originType === 'home' ? <IconHome /> : <IconBuilding />}
           </Text>
           <Text size="md" fw={500}>
-            {order.line_items.location.fullAddress}
+            {location?.fullAddress}
           </Text>
         </>
       )}

@@ -27,7 +27,12 @@ import type {OrderLineItemFullFragment} from 'storefrontapi.generated';
 import ModalBooking from '~/components/account/ModalBooking';
 import {isEqualGid} from '~/data/isEqualGid';
 import {getBookingShopifyApi} from '~/lib/api/bookingShopifyApi';
-import type {CustomerOrderGet, CustomerOrderLineItem} from '~/lib/api/model';
+import type {
+  CustomerOrderGet,
+  CustomerOrderGetResponse,
+  CustomerOrderLineItem,
+  CustomerOrderLineItemLookup,
+} from '~/lib/api/model';
 import {getCustomer} from '~/lib/get-customer';
 import {type ApiOrdersLineItem} from './($locale).api.orders.$productId.lineitem.$lineItem';
 
@@ -53,10 +58,13 @@ export async function loader({params, context}: LoaderFunctionArgs) {
     throw new Response('Order not found', {status: 404});
   }
 
-  const treatment = await getBookingShopifyApi().customerOrderGet(
-    parseGid(customer.id).id,
-    parseGid(order.id).id,
-  );
+  let treatment: CustomerOrderGetResponse | undefined = undefined;
+  try {
+    treatment = await getBookingShopifyApi().customerOrderGet(
+      parseGid(customer.id).id,
+      parseGid(order.id).id,
+    );
+  } catch (error) {}
 
   const lineItems = flattenConnection(order.lineItems);
   const discountApplications = flattenConnection(order.discountApplications);
@@ -71,7 +79,7 @@ export async function loader({params, context}: LoaderFunctionArgs) {
     firstDiscount?.percentage;
 
   return json({
-    treatmentOrder: treatment.payload || null,
+    treatmentOrder: treatment ? treatment.payload : null,
     order,
     lineItems,
     discountValue,
@@ -253,7 +261,7 @@ function TreatmentLineRow({
   orderLineItem,
   openModal,
 }: {
-  lineItem: CustomerOrderLineItem;
+  lineItem: CustomerOrderLineItemLookup;
   orderLineItem: OrderLineItemFullFragment;
   openModal: (lineItem: CustomerOrderLineItem) => void;
 }) {
@@ -274,9 +282,19 @@ function TreatmentLineRow({
       </Table.Td>
       <Table.Td valign="top" width="100%">
         <Text mb="xs">
-          {lineItem.title} <small>({orderLineItem.variant!.title})</small>
+          {lineItem.title}{' '}
+          {orderLineItem.variant ? (
+            <small>({orderLineItem.variant.title})</small>
+          ) : null}
         </Text>
         <Text size="sm">
+          <strong>Hos: </strong>{' '}
+          <Link to={`/artist/${lineItem.user.username}`}>
+            {lineItem.user.fullname}
+          </Link>
+        </Text>
+        <Text size="sm">
+          <strong>Tid:</strong>{' '}
           {format(
             new Date(lineItem.properties.from || ''),
             "EEEE 'd.' d'.' LLL 'kl 'HH:mm",
@@ -307,17 +325,20 @@ function OrderLineRow({lineItem}: {lineItem: OrderLineItemFullFragment}) {
   return (
     <Table.Tr>
       <Table.Td>
-        <Link to={`/products/${lineItem.variant!.product!.handle}`}>
-          {lineItem?.variant?.image && (
-            <div>
-              <Image data={lineItem.variant.image} width={96} height={96} />
-            </div>
-          )}
-        </Link>
+        {lineItem.variant ? (
+          <Link to={`/products/${lineItem.variant.product.handle}`}>
+            {lineItem.variant.image && (
+              <div>
+                <Image data={lineItem.variant.image} width={96} height={96} />
+              </div>
+            )}
+          </Link>
+        ) : null}
       </Table.Td>
       <Table.Td valign="top" width="100%">
         <Text mb="xs">
-          {lineItem.title} <small>({lineItem.variant!.title})</small>
+          {lineItem.title}{' '}
+          {lineItem.variant ? <small>({lineItem.variant.title})</small> : null}
         </Text>
       </Table.Td>
       <Table.Td valign="top">
