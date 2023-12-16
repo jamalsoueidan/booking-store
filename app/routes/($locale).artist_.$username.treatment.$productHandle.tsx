@@ -23,6 +23,7 @@ import {IconArrowLeft} from '@tabler/icons-react';
 import {TreatmentStepper} from '~/components/TreatmentStepper';
 import {PRODUCT_SELECTED_OPTIONS_QUERY} from '~/data/queries';
 import {getBookingShopifyApi} from '~/lib/api/bookingShopifyApi';
+import {durationToTime} from '~/lib/duration';
 
 export const meta: MetaFunction<typeof loader> = ({data}) => {
   return [{title: `BySisters | ${data?.product.title ?? ''}`}];
@@ -61,39 +62,39 @@ export async function loader({params, request, context}: LoaderFunctionArgs) {
       });
     }
 
-    return json({product, artist});
+    return json({product, artist, userProduct});
   } catch (err) {
     throw new Response('Username or product handle is wrong', {status: 404});
   }
 }
 
 export default function Product() {
-  const {product, artist} = useLoaderData<typeof loader>();
+  const {product, artist, userProduct} = useLoaderData<typeof loader>();
   const isMobile = useMediaQuery('(max-width: 62em)');
 
   const paths = [
     {
-      title: 'Beskrivelse',
+      title: '',
       path: '',
     },
     {
-      title: 'Lokation?',
+      title: 'Lokation',
       path: 'pick-location',
       required: ['locationId'],
       text: 'Vælge en lokation før du kan forsætte...',
     },
     {
-      title: 'Andre behandlinger?',
+      title: 'Flere behandlinger',
       path: 'pick-more',
     },
     {
-      title: 'Dato & Tid?',
+      title: 'Dato & Tid',
       path: 'pick-datetime',
       required: ['fromDate', 'toDate'],
       text: 'Vælge en tid før du kan forsætte...',
     },
     {
-      title: 'Godkend',
+      title: 'Køb',
       path: 'completed',
     },
   ];
@@ -101,7 +102,7 @@ export default function Product() {
   return (
     <div
       style={{
-        backgroundColor: 'rgb(213, 83, 77)',
+        backgroundColor: 'rgb(168, 139, 248)',
         paddingTop: rem(isMobile ? 0 : 60),
       }}
     >
@@ -111,7 +112,7 @@ export default function Product() {
           withBorder={!isMobile}
           mih="calc(100vh - 144px)"
         >
-          <Card.Section bg="teal.1">
+          <Card.Section bg="rgba(168, 139, 248, 0.2)">
             <Box p={rem(isMobile ? 16 : 28)}>
               <Anchor
                 component={Link}
@@ -157,7 +158,7 @@ export default function Product() {
               </Box>
               <Divider orientation="vertical" />
               <Box p="md">
-                <Text>-</Text>
+                <Text>{durationToTime(userProduct?.duration ?? 0)}</Text>
               </Box>
             </Flex>
             <Divider />

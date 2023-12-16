@@ -80,12 +80,16 @@ export function TreatmentStepper({paths}: StepperProps) {
     >
       <Group justify="space-between">
         <Group gap="xs">
-          <Text c="dimmed" size={rem(20)}>
-            {currenctActive + 1}/{Object.keys(paths).length}
-          </Text>
-          <Text fw={500} tt="uppercase" size={rem(20)}>
-            {currentPath.title}
-          </Text>
+          {currenctActive > 0 ? (
+            <>
+              <Text c="dimmed" size={rem(20)}>
+                {currenctActive}/{Object.keys(paths).length - 1}
+              </Text>
+              <Text fw={500} tt="uppercase" size={rem(20)}>
+                {currentPath.title}
+              </Text>
+            </>
+          ) : null}
         </Group>
         {currentPath.path !== 'completed' && (
           <Group gap="xs">
@@ -93,8 +97,7 @@ export function TreatmentStepper({paths}: StepperProps) {
               <>
                 <ActionIcon
                   variant="filled"
-                  color="yellow"
-                  c="black"
+                  color="black"
                   radius="xl"
                   size="xl"
                   aria-label="Tilbage"
@@ -113,8 +116,7 @@ export function TreatmentStepper({paths}: StepperProps) {
                 >
                   <ActionIcon
                     variant="filled"
-                    color="yellow"
-                    c="black"
+                    color="black"
                     radius="xl"
                     size="xl"
                     aria-label="Næste"
@@ -132,9 +134,7 @@ export function TreatmentStepper({paths}: StepperProps) {
             ) : (
               <Button
                 variant="filled"
-                color="yellow"
-                c="black"
-                radius="xl"
+                color="black"
                 size="md"
                 rightSection={<IconArrowRight />}
                 onClick={nextStep}

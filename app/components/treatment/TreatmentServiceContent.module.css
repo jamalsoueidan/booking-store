@@ -16,8 +16,4 @@
   border-bottom: var(--_card-section-border-bottom, unset);
   border-top: var(--_card-section-border-top, unset);
   display: block;
-  margin-left: -10px;
-  margin-right: -10px;
-  padding-left: var(--_card-section-padding, 0);
-  padding-right: var(--_card-section-padding, 0);
 }

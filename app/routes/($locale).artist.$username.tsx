@@ -33,7 +33,7 @@ export default function ArtistIndex() {
     <Flex direction={isMobile ? 'column' : 'row'}>
       <div
         style={{
-          backgroundColor: 'rgb(213, 83, 77)',
+          backgroundColor: 'rgb(168, 139, 248)',
           ...(!isMobile && {flex: '0 0 30%'}),
         }}
       >

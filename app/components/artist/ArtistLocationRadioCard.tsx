@@ -70,6 +70,7 @@ export function AristLocationRadioCard({
       <Radio
         checked={isChecked}
         value={value}
+        color="gray"
         onChange={() => {}}
         tabIndex={-1}
       />

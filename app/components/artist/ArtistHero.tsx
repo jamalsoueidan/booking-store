@@ -44,14 +44,14 @@ export function ArtistHero({artist}: {artist: User}) {
           <Stack gap="xs">
             <Group gap="xs">
               {artist.professions.map((p) => (
-                <Badge key={p} variant="outline" color="teal.1">
+                <Badge key={p} variant="outline" color="white">
                   {p}
                 </Badge>
               ))}
             </Group>
             <Group gap="xs">
               {artist.specialties.map((p) => (
-                <Badge key={p} variant="outline" color="teal.1">
+                <Badge key={p} variant="outline" color="white">
                   {p}
                 </Badge>
               ))}
