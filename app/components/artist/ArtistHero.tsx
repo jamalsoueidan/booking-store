@@ -24,7 +24,7 @@ export function ArtistHero({artist}: {artist: User}) {
 
   if (!artist) return null;
   return (
-    <Grid columns={12} gutter={{md: 'xl'}} m={isMobile ? 0 : 'xl'} grow>
+    <Grid columns={12} gutter={{base: 'sm', md: 'xl'}} grow>
       <Grid.Col span={{base: 'auto', md: 12}}>
         <Avatar
           src={artist.images?.profile?.url}
@@ -34,26 +34,24 @@ export function ArtistHero({artist}: {artist: User}) {
       </Grid.Col>
       <Grid.Col span={{base: 6, md: 12}}>
         <Stack gap={isMobile ? 'xs' : 'md'}>
-          <Title order={isMobile ? 2 : 1} fw={500}>
-            {artist.fullname}
-          </Title>
-          <Text c="dimmed" size={!isMobile ? rem(20) : undefined}>
+          <Title order={isMobile ? 2 : 1}>{artist.fullname}</Title>
+          <Text size={!isMobile ? rem(18) : undefined}>
             {artist.aboutMe} <br />
           </Text>
-          <Text c="dimmed" size={!isMobile ? rem(20) : undefined}>
+          <Text size={!isMobile ? rem(18) : undefined}>
             {artist.yearsExperience} årserfaring
           </Text>
           <Stack gap="xs">
             <Group gap="xs">
               {artist.professions.map((p) => (
-                <Badge key={p} variant="outline" color="blue">
+                <Badge key={p} variant="outline" color="teal.1">
                   {p}
                 </Badge>
               ))}
             </Group>
             <Group gap="xs">
               {artist.specialties.map((p) => (
-                <Badge key={p} variant="outline" color="gray">
+                <Badge key={p} variant="outline" color="teal.1">
                   {p}
                 </Badge>
               ))}

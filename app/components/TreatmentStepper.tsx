@@ -1,5 +1,4 @@
 import {
-  Outlet,
   useLocation,
   useNavigate,
   useNavigation,
@@ -17,7 +16,6 @@ import {
 } from '@mantine/core';
 import {IconArrowLeft, IconArrowRight} from '@tabler/icons-react';
 import {type ReactNode} from 'react';
-import {type ProductFragment} from 'storefrontapi.generated';
 import {determineStepFromURL} from '~/lib/determineStepFromURL';
 
 type PathFragment = {
@@ -29,10 +27,9 @@ type PathFragment = {
 
 type StepperProps = {
   paths: PathFragment[];
-  product: ProductFragment;
 };
 
-export function TreatmentStepper({paths, product}: StepperProps) {
+export function TreatmentStepper({paths}: StepperProps) {
   const navigate = useNavigate();
   const location = useLocation();
   const [searchParams] = useSearchParams();
@@ -74,7 +71,13 @@ export function TreatmentStepper({paths, product}: StepperProps) {
   const disabled = (missingParams && missingParams.length > 0) || false;
 
   return (
-    <>
+    <Box
+      pos="sticky"
+      bottom="0px"
+      bg="white"
+      p="lg"
+      style={{boxShadow: '0 -4px 4px rgba(0,0,0,.1)'}}
+    >
       <Group justify="space-between">
         <Group gap="xs">
           <Text c="dimmed" size={rem(20)}>
@@ -142,11 +145,7 @@ export function TreatmentStepper({paths, product}: StepperProps) {
           </Group>
         )}
       </Group>
-
-      <Box mt="xl">
-        <Outlet context={{product}} />
-      </Box>
-    </>
+    </Box>
   );
 }
 

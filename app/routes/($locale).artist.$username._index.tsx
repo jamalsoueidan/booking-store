@@ -1,6 +1,6 @@
 import {defer, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
 
-import {Button, Flex, SimpleGrid, Skeleton, Stack} from '@mantine/core';
+import {Button, Flex, rem, SimpleGrid, Skeleton, Stack} from '@mantine/core';
 import {useMediaQuery} from '@mantine/hooks';
 import {Await, Form, Link, useLoaderData, useLocation} from '@remix-run/react';
 import {Suspense} from 'react';
@@ -68,7 +68,11 @@ export default function ArtistIndex() {
           {({payload}) => <ArtistSchedulesMenu data={payload} />}
         </Await>
       </Suspense>
-      <SimpleGrid cols={{base: 2, md: 3}} spacing={0} m={isMobile ? 0 : 'sm'}>
+      <SimpleGrid
+        cols={{base: 2}}
+        spacing={isMobile ? 'xs' : 'md'}
+        m={rem(isMobile ? 0 : 42)}
+      >
         <Suspense
           fallback={
             <div>

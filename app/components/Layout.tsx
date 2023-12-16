@@ -34,7 +34,7 @@ export function Layout({
 
   return (
     <>
-      {!path.includes('/account') ? (
+      {!path.includes('/account/') && !path.includes('/artist/') ? (
         <>
           <CartAside cart={cart} />
           <SearchAside />
@@ -43,7 +43,7 @@ export function Layout({
         </>
       ) : null}
       <main>{children}</main>
-      {!path.includes('/account') ? (
+      {!path.includes('/account/') && !path.includes('/artist/') ? (
         <Suspense>
           <Await resolve={footer}>
             {(footer) => <Footer menu={footer.menu} shop={header.shop} />}

@@ -1,4 +1,13 @@
-import {Anchor, Card, Divider, Flex, Group, Stack, Text} from '@mantine/core';
+import {
+  Anchor,
+  Box,
+  Card,
+  Divider,
+  Flex,
+  Group,
+  Stack,
+  Text,
+} from '@mantine/core';
 import {useLoaderData} from '@remix-run/react';
 import {Money, parseGid} from '@shopify/hydrogen';
 import {json, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
@@ -108,65 +117,64 @@ export default function ArtistTreatmentsBooking() {
   });
 
   return (
-    <>
-      <Card shadow="sm" p="lg" mt="xl" radius="md" withBorder>
-        <Text size="lg" mb="md" fw="bold">
-          Skønhedsekspert
-        </Text>
-        <TreatmentArtistCardComplete artist={data.user} />
-        <Card.Section pt="md" pb="md">
-          <Divider />
-        </Card.Section>
-        <Text size="lg" mb="md" fw="bold">
-          Lokation
-        </Text>
-        {data?.location.locationType === 'destination' ? (
-          <>
-            <Text size="md" fw={500}>
-              {data?.availability.shipping?.destination.fullAddress}
-            </Text>
-            <Text size="xs" c="red" fw={500}>
-              Udgifterne bliver beregnet under købsprocessen{' '}
-              {data?.availability.shipping?.cost.value}{' '}
-              {data?.availability.shipping?.cost.currency}
-            </Text>
-          </>
-        ) : (
-          <>
-            <Text size="md" fw={500}>
-              {data?.location.name}
-            </Text>
-            <Text size="md" fw={500}>
-              {data?.location.fullAddress}
-            </Text>
-            <Anchor href="googlemap">Se google map</Anchor>
-          </>
-        )}
-        <Card.Section pt="md" pb="md">
-          <Divider />
-        </Card.Section>
-        <Text size="lg" mb="md" fw="bold">
-          Dato & Tid
-        </Text>
-        {data?.availability.slot.from && (
+    <Box mt="lg">
+      <Text size="lg" mb="md" fw="bold">
+        Skønhedsekspert
+      </Text>
+      <TreatmentArtistCardComplete artist={data.user} />
+      <Card.Section pt="md" pb="md">
+        <Divider />
+      </Card.Section>
+      <Text size="lg" mb="md" fw="bold">
+        Lokation
+      </Text>
+      {data?.location.locationType === 'destination' ? (
+        <>
           <Text size="md" fw={500}>
-            {format(
-              new Date(data?.availability.slot.from || ''),
-              "EEEE 'd.' d'.' LLL 'kl 'HH:mm",
-              {
-                locale: da,
-              },
-            )}
+            {data?.availability.shipping?.destination.fullAddress}
           </Text>
-        )}
-        <Card.Section pt="md" pb="md">
-          <Divider />
-        </Card.Section>
-        <Text size="lg" mb="md" fw="bold">
-          Ydelser
+          <Text size="xs" c="red" fw={500}>
+            Udgifterne bliver beregnet under købsprocessen{' '}
+            {data?.availability.shipping?.cost.value}{' '}
+            {data?.availability.shipping?.cost.currency}
+          </Text>
+        </>
+      ) : (
+        <>
+          <Text size="md" fw={500}>
+            {data?.location.name}
+          </Text>
+          <Text size="md" fw={500}>
+            {data?.location.fullAddress}
+          </Text>
+          <Anchor href="googlemap">Se google map</Anchor>
+        </>
+      )}
+      <Card.Section pt="md" pb="md">
+        <Divider />
+      </Card.Section>
+      <Text size="lg" mb="md" fw="bold">
+        Dato & Tid
+      </Text>
+      {data?.availability.slot.from && (
+        <Text size="md" fw={500}>
+          {format(
+            new Date(data?.availability.slot.from || ''),
+            "EEEE 'd.' d'.' LLL 'kl 'HH:mm",
+            {
+              locale: da,
+            },
+          )}
         </Text>
-        <Stack gap="xs">{productMarkup}</Stack>
-      </Card>
+      )}
+      <Card.Section pt="md" pb="md">
+        <Divider />
+      </Card.Section>
+      <Text size="lg" mb="md" fw="bold">
+        Ydelser
+      </Text>
+      <Stack gap="xs">{productMarkup}</Stack>
+
       <Group m="xl" justify="center">
         <AddToCartTreatment
           products={data.products}
@@ -174,6 +182,6 @@ export default function ArtistTreatmentsBooking() {
           location={data.location}
         />
       </Group>
-    </>
+    </Box>
   );
 }

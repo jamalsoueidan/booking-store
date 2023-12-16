@@ -1,4 +1,4 @@
-import {Link, useLoaderData, type MetaFunction} from '@remix-run/react';
+import {Link, Outlet, useLoaderData, type MetaFunction} from '@remix-run/react';
 import {json, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
 import type {ProductVariantFragment} from 'storefrontapi.generated';
 
@@ -7,15 +7,17 @@ import {
   Anchor,
   AspectRatio,
   Avatar,
-  Badge,
   Box,
+  Card,
+  Container,
+  Divider,
+  Flex,
   Group,
-  SimpleGrid,
-  Stack,
   Text,
   Title,
   rem,
 } from '@mantine/core';
+import {useMediaQuery} from '@mantine/hooks';
 import {Image, Money} from '@shopify/hydrogen';
 import {IconArrowLeft} from '@tabler/icons-react';
 import {TreatmentStepper} from '~/components/TreatmentStepper';
@@ -67,6 +69,7 @@ export async function loader({params, request, context}: LoaderFunctionArgs) {
 
 export default function Product() {
   const {product, artist} = useLoaderData<typeof loader>();
+  const isMobile = useMediaQuery('(max-width: 62em)');
 
   const paths = [
     {
@@ -96,44 +99,75 @@ export default function Product() {
   ];
 
   return (
-    <SimpleGrid cols={{base: 1, md: 2}} spacing={0}>
-      <ProductImage image={product.selectedVariant?.image} />
-      <Box p={rem(28)} bg="#fafafb">
-        <Anchor component={Link} to={`/artist/${artist.username}`}>
-          <Group gap="0">
-            <ActionIcon
-              variant="transparent"
-              size="xl"
-              aria-label="Back"
-              color="black"
-            >
-              <IconArrowLeft
-                style={{width: '70%', height: '70%'}}
-                stroke={1.5}
-              />
-            </ActionIcon>
-            <Text>{artist.fullname}</Text>
-          </Group>
-        </Anchor>
+    <div
+      style={{
+        backgroundColor: 'rgb(213, 83, 77)',
+        paddingTop: rem(isMobile ? 0 : 60),
+      }}
+    >
+      <Container size={isMobile ? '100%' : 'sm'} p={0}>
+        <Card
+          radius={isMobile ? 0 : '25px 25px 0 0'}
+          withBorder={!isMobile}
+          mih="calc(100vh - 144px)"
+        >
+          <Card.Section bg="teal.1">
+            <Box p={rem(isMobile ? 16 : 28)}>
+              <Anchor
+                component={Link}
+                to={`/artist/${artist.username}`}
+                c="black"
+                underline="never"
+              >
+                <Group gap="0">
+                  <ActionIcon
+                    variant="transparent"
+                    size="xl"
+                    aria-label="Back"
+                    color="black"
+                  >
+                    <IconArrowLeft
+                      style={{width: '70%', height: '70%'}}
+                      stroke={1.5}
+                    />
+                  </ActionIcon>
+                  <Text>{artist.fullname}</Text>
+                </Group>
+              </Anchor>
 
-        <Stack mb="xl" gap={0}>
-          <Group gap="xs">
-            <Title order={1} mb="xs">
-              {product?.title}
-            </Title>
+              <Flex justify="space-between" align="center">
+                <Title order={1} mb="xs">
+                  {product?.title}
+                </Title>
 
-            <Avatar src={artist.images?.profile?.url} size={32} radius={32} />
-          </Group>
-          {product.selectedVariant?.price && (
-            <Badge variant="light" color="blue" size="lg">
-              <Money data={product.selectedVariant?.price} />
-            </Badge>
-          )}
-        </Stack>
+                <Avatar
+                  src={artist.images?.profile?.url}
+                  size="xl"
+                  radius="100%"
+                />
+              </Flex>
+            </Box>
+          </Card.Section>
+          <Card.Section>
+            <Flex justify="space-between">
+              <Box p="md">
+                {product.selectedVariant?.price && (
+                  <Money data={product.selectedVariant?.price} as={Text} />
+                )}
+              </Box>
+              <Divider orientation="vertical" />
+              <Box p="md">
+                <Text>-</Text>
+              </Box>
+            </Flex>
+            <Divider />
+          </Card.Section>
 
-        <TreatmentStepper paths={paths} product={product} />
-      </Box>
-    </SimpleGrid>
+          <Outlet context={{product}} />
+        </Card>
+        <TreatmentStepper paths={paths} />
+      </Container>
+    </div>
   );
 }
 
