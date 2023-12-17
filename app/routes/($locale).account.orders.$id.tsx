@@ -155,24 +155,24 @@ export default function OrderRoute() {
               <Text>Discounts</Text>
 
               {discountPercentage ? (
-                <span>-{discountPercentage}% OFF</span>
+                <Text>-{discountPercentage}% OFF</Text>
               ) : (
-                discountValue && <Money data={discountValue!} />
+                discountValue && <Money data={discountValue!} as={Text} />
               )}
             </Flex>
           )}
 
           <Flex justify="space-between" mb="xs">
             <Text>Subtotal</Text>
-            <Money data={order.subtotalPriceV2!} />
+            <Money data={order.subtotalPriceV2!} as={Text} />
           </Flex>
           <Flex justify="space-between" mb="xs">
             <Text>Moms</Text>
-            <Money data={order.totalTaxV2!} />
+            <Money data={order.totalTaxV2!} as={Text} />
           </Flex>
           <Flex justify="space-between">
             <Text>Total</Text>
-            <Money data={order.totalPriceV2!} />
+            <Money data={order.totalPriceV2!} as={Text} />
           </Flex>
         </Card>
         <Card shadow="0" padding="md" radius="md" withBorder>

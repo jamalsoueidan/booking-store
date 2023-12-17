@@ -7,7 +7,9 @@ import {
   Group,
   Stack,
   Text,
+  rem,
 } from '@mantine/core';
+import {useMediaQuery} from '@mantine/hooks';
 import {useLoaderData} from '@remix-run/react';
 import {Money, parseGid} from '@shopify/hydrogen';
 import {json, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
@@ -88,6 +90,7 @@ export const loader = async ({
 
 export default function ArtistTreatmentsBooking() {
   const data = useLoaderData<typeof loader>();
+  const isMobile = useMediaQuery('(max-width: 62em)');
 
   const productMarkup = data.products.nodes.map((product) => {
     const slotProduct = data.availability.slot.products.find(
@@ -108,7 +111,7 @@ export default function ArtistTreatmentsBooking() {
           </Text>
           {slotProduct?.price && (
             <Text size="xs" c="dimmed" fw={500}>
-              <Money data={slotProduct?.price as any} />
+              <Money data={slotProduct?.price as any} as="span" />
             </Text>
           )}
         </Flex>
@@ -117,7 +120,7 @@ export default function ArtistTreatmentsBooking() {
   });
 
   return (
-    <Box mt="lg">
+    <Box mt="lg" mb="100">
       <Text size="lg" mb="md" fw="bold">
         Skønhedsekspert
       </Text>
@@ -175,13 +178,34 @@ export default function ArtistTreatmentsBooking() {
       </Text>
       <Stack gap="xs">{productMarkup}</Stack>
 
-      <Group m="xl" justify="center">
-        <AddToCartTreatment
-          products={data.products}
-          availability={data.availability}
-          location={data.location}
-        />
-      </Group>
+      <Box
+        pos="fixed"
+        bottom="0"
+        left="50%"
+        w={isMobile ? '100%' : '720px'}
+        p="lg"
+        bg="white"
+        style={{
+          transform: 'translate(-50%, 0)',
+          boxShadow: '0 -4px 4px rgba(0,0,0,.1)',
+        }}
+      >
+        <Group justify="space-between">
+          <Group gap="xs">
+            <Text c="dimmed" size={rem(20)}>
+              4/4
+            </Text>
+            <Text fw={500} tt="uppercase" size={rem(20)}>
+              Færdig
+            </Text>
+          </Group>
+          <AddToCartTreatment
+            products={data.products}
+            availability={data.availability}
+            location={data.location}
+          />
+        </Group>
+      </Box>
     </Box>
   );
 }

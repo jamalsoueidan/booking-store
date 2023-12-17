@@ -100,7 +100,7 @@ export default function ArtistTreatmentsBooking() {
           </Text>
           {slotProduct?.price && (
             <Text size="xs" c="dimmed" fw={500}>
-              <Money data={slotProduct?.price as any} />
+              <Money data={slotProduct?.price as any} as="span" />
             </Text>
           )}
         </Flex>

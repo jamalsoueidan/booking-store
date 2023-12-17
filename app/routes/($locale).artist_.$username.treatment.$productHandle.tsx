@@ -166,6 +166,7 @@ export default function Product() {
 
           <Outlet context={{product}} />
         </Card>
+
         <TreatmentStepper paths={paths} />
       </Container>
     </div>

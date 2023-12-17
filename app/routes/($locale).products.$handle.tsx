@@ -240,14 +240,18 @@ function ProductPrice({
       {selectedVariant?.compareAtPrice ? (
         <>
           <div className="product-price-on-sale">
-            {selectedVariant ? <Money data={selectedVariant.price} /> : null}
+            {selectedVariant ? (
+              <Money data={selectedVariant.price} as="span" />
+            ) : null}
             <s>
-              <Money data={selectedVariant.compareAtPrice} />
+              <Money data={selectedVariant.compareAtPrice} as="span" />
             </s>
           </div>
         </>
       ) : (
-        selectedVariant?.price && <Money data={selectedVariant?.price} />
+        selectedVariant?.price && (
+          <Money data={selectedVariant?.price} as="span" />
+        )
       )}
     </Text>
   );
@@ -328,10 +332,8 @@ export function AddToCartButton({
           />
           <Button
             variant="filled"
-            color="yellow"
-            c="black"
-            radius="xl"
-            size="lg"
+            color="black"
+            size="md"
             type="submit"
             onClick={onClick}
             leftSection={<IconShoppingCart />}

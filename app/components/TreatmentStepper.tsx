@@ -72,6 +72,8 @@ export function TreatmentStepper({paths}: StepperProps) {
 
   return (
     <Box
+      hidden={currentPath.path === 'completed'}
+      id="stepper"
       pos="sticky"
       bottom="0px"
       bg="white"
