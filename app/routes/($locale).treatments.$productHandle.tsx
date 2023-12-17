@@ -95,7 +95,7 @@ export default function Product() {
           <Title order={1}>{product?.title}</Title>
         </Box>
 
-        <TreatmentStepper paths={paths} product={product} />
+        <TreatmentStepper paths={paths} />
       </Box>
     </SimpleGrid>
   );
