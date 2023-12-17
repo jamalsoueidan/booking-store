@@ -9,7 +9,7 @@ export default function ProductDescription() {
   return (
     <>
       <Text
-        size="xl"
+        size="lg"
         c="dimmed"
         fw={400}
         dangerouslySetInnerHTML={{__html: descriptionHtml}}

@@ -7,6 +7,7 @@ import {
   Anchor,
   AspectRatio,
   Avatar,
+  Badge,
   Box,
   Card,
   Container,
@@ -19,7 +20,7 @@ import {
 } from '@mantine/core';
 import {useMediaQuery} from '@mantine/hooks';
 import {Image, Money} from '@shopify/hydrogen';
-import {IconArrowLeft} from '@tabler/icons-react';
+import {IconArrowLeft, IconClockHour4} from '@tabler/icons-react';
 import {TreatmentStepper} from '~/components/TreatmentStepper';
 import {PRODUCT_SELECTED_OPTIONS_QUERY} from '~/data/queries';
 import {getBookingShopifyApi} from '~/lib/api/bookingShopifyApi';
@@ -153,13 +154,24 @@ export default function Product() {
             <Flex justify="space-between">
               <Box p="md">
                 {product.selectedVariant?.price && (
-                  <Money data={product.selectedVariant?.price} as={Text} />
+                  <Badge
+                    variant="outline"
+                    color="#ebeaeb"
+                    size="lg"
+                    bg="#f7f7f7"
+                    fz="sm"
+                    c="black"
+                    py="sm"
+                  >
+                    <Money data={product.selectedVariant?.price} />
+                  </Badge>
                 )}
               </Box>
               <Divider orientation="vertical" />
-              <Box p="md">
+              <Group gap="xs" p="md">
+                <IconClockHour4 />
                 <Text>{durationToTime(userProduct?.duration ?? 0)}</Text>
-              </Box>
+              </Group>
             </Flex>
             <Divider />
           </Card.Section>
