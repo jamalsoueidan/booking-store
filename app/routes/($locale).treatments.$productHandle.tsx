@@ -1,14 +1,56 @@
-import {useLoaderData, type MetaFunction} from '@remix-run/react';
-import {json, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
-import type {ProductVariantFragment} from 'storefrontapi.generated';
+import {
+  defer,
+  type LoaderFunctionArgs,
+  type MetaFunction,
+} from '@shopify/remix-oxygen';
 
-import {AspectRatio, Box, SimpleGrid, Title, rem} from '@mantine/core';
-import {Image, getSelectedProductOptions} from '@shopify/hydrogen';
-import {TreatmentStepper} from '~/components/TreatmentStepper';
-import {PRODUCT_SELECTED_OPTIONS_QUERY} from '~/data/queries';
+import {
+  Await,
+  ShouldRevalidateFunctionArgs,
+  useLoaderData,
+  useNavigate,
+  useSearchParams,
+  type FetcherWithComponents,
+} from '@remix-run/react';
+import {getSelectedProductOptions, Image, parseGid} from '@shopify/hydrogen';
+import {Suspense, useEffect, useState} from 'react';
+import type {
+  ProductFragment,
+  ProductVariantFragment,
+} from 'storefrontapi.generated';
+import {PRODUCT_SELECTED_OPTIONS_QUERY, VARIANTS_QUERY} from '~/data/queries';
+import {getBookingShopifyApi} from '~/lib/api/bookingShopifyApi';
 
-export function shouldRevalidate() {
-  return false;
+import {
+  AspectRatio,
+  Box,
+  Button,
+  rem,
+  Select,
+  SimpleGrid,
+  Stack,
+  Text,
+  Title,
+} from '@mantine/core';
+import {CartForm, VariantSelector, type VariantOption} from '@shopify/hydrogen';
+import type {CartLineInput} from '@shopify/hydrogen/storefront-api-types';
+import {TreatmentPickArtistRadioCard} from '~/components/treatment/TreatmentPickArtistRadioCard';
+import {type ProductsGetUsersByVariant} from '~/lib/api/model';
+
+export function shouldRevalidate({
+  currentUrl,
+  nextUrl,
+}: ShouldRevalidateFunctionArgs) {
+  const currentSearchParams = currentUrl.searchParams;
+  const nextSearchParams = nextUrl.searchParams;
+
+  const currentParamsCopy = new URLSearchParams(currentSearchParams);
+  const nextParamsCopy = new URLSearchParams(nextSearchParams);
+
+  currentParamsCopy.delete('username');
+  nextParamsCopy.delete('username');
+
+  return currentParamsCopy.toString() !== nextParamsCopy.toString();
 }
 
 export const meta: MetaFunction<typeof loader> = ({data}) => {
@@ -28,7 +70,8 @@ export async function loader({params, request, context}: LoaderFunctionArgs) {
       !option.name.startsWith('_ss') &&
       !option.name.startsWith('_v') &&
       // Filter out third party tracking params
-      !option.name.startsWith('fbclid'),
+      !option.name.startsWith('fbclid') &&
+      !option.name.startsWith('username'),
   );
 
   if (!productHandle) {
@@ -44,47 +87,29 @@ export async function loader({params, request, context}: LoaderFunctionArgs) {
     throw new Response(null, {status: 404});
   }
 
-  const firstVariant = product.variants.nodes[0];
-  product.selectedVariant = firstVariant;
+  const users = getBookingShopifyApi().productsGetUsersByVariant({
+    productId: parseGid(product.id).id,
+    ...(product.selectedVariant
+      ? {variantId: parseGid(product.selectedVariant.id).id}
+      : {}),
+  });
 
-  return json({product});
+  product.selectedVariant = product.variants.nodes[0];
+
+  // In order to show which variants are available in the UI, we need to query
+  // all of them. But there might be a *lot*, so instead separate the variants
+  // into it's own separate query that is deferred. So there's a brief moment
+  // where variant options might show as available when they're not, but after
+  // this deffered query resolves, the UI will update.
+  const variants = storefront.query(VARIANTS_QUERY, {
+    variables: {handle: productHandle},
+  });
+
+  return defer({product, variantsUsers: Promise.all([variants, users])});
 }
 
-const paths = [
-  {
-    title: 'Beskrivelse',
-    path: '',
-  },
-  {
-    title: 'Skønhedsekspert?',
-    path: 'pick-username',
-    required: ['username'],
-    text: 'Vælge en skønhedsekspert før du kan forsætte...',
-  },
-  {
-    title: 'Lokation?',
-    path: 'pick-location',
-    required: ['locationId'],
-    text: 'Vælge en lokation før du kan forsætte...',
-  },
-  {
-    title: 'Andre behandlinger?',
-    path: 'pick-more',
-  },
-  {
-    title: 'Dato & Tid?',
-    path: 'pick-datetime',
-    required: ['fromDate', 'toDate'],
-    text: 'Vælge en tid før du kan forsætte...',
-  },
-  {
-    title: 'Godkend',
-    path: 'completed',
-  },
-];
-
 export default function Product() {
-  const {product} = useLoaderData<typeof loader>();
+  const {product, variantsUsers} = useLoaderData<typeof loader>();
   const {selectedVariant} = product;
 
   return (
@@ -95,7 +120,43 @@ export default function Product() {
           <Title order={1}>{product?.title}</Title>
         </Box>
 
-        <TreatmentStepper paths={paths} />
+        <Text
+          size="xl"
+          c="dimmed"
+          fw={400}
+          dangerouslySetInnerHTML={{__html: product.descriptionHtml}}
+        ></Text>
+
+        <Stack gap="md">
+          <Suspense
+            fallback={
+              <ProductForm
+                product={product}
+                selectedVariant={selectedVariant}
+                variants={[]}
+              />
+            }
+          >
+            <Await
+              errorElement="There was a problem loading..."
+              resolve={variantsUsers}
+            >
+              {([data, users]) => (
+                <>
+                  <ProductForm
+                    product={product}
+                    selectedVariant={selectedVariant}
+                    variants={data.product?.variants.nodes || []}
+                  />
+                  <PickArtistsForm
+                    users={users.payload.result}
+                    variants={data.product?.variants.nodes || []}
+                  />
+                </>
+              )}
+            </Await>
+          </Suspense>
+        </Stack>
       </Box>
     </SimpleGrid>
   );
@@ -115,5 +176,166 @@ function ProductImage({image}: {image: ProductVariantFragment['image']}) {
         sizes="(min-width: 45em) 50vw, 100vw"
       />
     </AspectRatio>
+  );
+}
+
+function PickArtistsForm({
+  users,
+  variants,
+}: {
+  users: ProductsGetUsersByVariant[];
+  variants: Array<ProductVariantFragment>;
+}) {
+  const [searchParams, setSearchParams] = useSearchParams();
+
+  const onChange = (artist: ProductsGetUsersByVariant) => () => {
+    const newSearchParams = new URLSearchParams();
+    newSearchParams.set('username', artist.username);
+    setSearchParams(newSearchParams, {
+      state: {
+        key: 'booking',
+      },
+    });
+  };
+
+  const username = searchParams.get('username');
+
+  return (
+    <SimpleGrid cols={{base: 2, sm: 3}}>
+      {users.map((user) => {
+        const variant = variants.find(
+          (v) => parseGid(v.id).id === user.variantId.toString(),
+        );
+        return (
+          <TreatmentPickArtistRadioCard
+            artist={user}
+            checked={username === user.username}
+            value={user.username}
+            onChange={onChange(user)}
+            key={user.customerId}
+            variant={variant}
+          />
+        );
+      })}
+    </SimpleGrid>
+  );
+}
+
+function ProductForm({
+  product,
+  selectedVariant,
+  variants,
+}: {
+  product: ProductFragment;
+  selectedVariant: ProductFragment['selectedVariant'];
+  variants: Array<ProductVariantFragment>;
+}) {
+  return (
+    <VariantSelector
+      handle={product.handle}
+      options={product.options}
+      variants={variants}
+      productPath="treatments"
+    >
+      {({option}) => (
+        <ProductOptions
+          key={option.name}
+          option={option}
+          selectedVariant={selectedVariant}
+        />
+      )}
+    </VariantSelector>
+  );
+}
+
+function ProductOptions({
+  option,
+  selectedVariant,
+}: {
+  option: VariantOption;
+  selectedVariant: ProductFragment['selectedVariant'];
+}) {
+  const [_, setSearchParams] = useSearchParams();
+  const navigate = useNavigate();
+  const [active, setActive] = useState<string>();
+  const data = option.values.map(
+    ({value: label, isAvailable, isActive, to}) => {
+      const value = to.indexOf('?') > -1 ? to.substring(to.indexOf('?')) : '';
+      return {value, label: label.substring(7), isActive};
+    },
+  );
+
+  const onChange = (value: string | null) => {
+    if (value) {
+      navigate(value);
+    }
+  };
+
+  const onClearable = () => {
+    setSearchParams([]);
+  };
+
+  useEffect(() => {
+    const filterData = data.filter(
+      (l) => l.label === selectedVariant?.title.substring(7),
+    );
+
+    if (filterData.length > 0) {
+      const isActive = filterData[0];
+      setActive(isActive.value);
+    } else {
+      setActive(undefined);
+    }
+  }, [data, selectedVariant]);
+
+  return (
+    <Select
+      label="Pris"
+      placeholder="Filtre pris"
+      data={data}
+      value={active}
+      allowDeselect={false}
+      onChange={onChange}
+      clearable
+      clearButtonProps={{onClick: onClearable}}
+    />
+  );
+}
+
+export function AddToCartButton({
+  analytics,
+  children,
+  disabled,
+  lines,
+  onClick,
+}: {
+  analytics?: unknown;
+  children: React.ReactNode;
+  disabled?: boolean;
+  lines: CartLineInput[];
+  onClick?: () => void;
+}) {
+  return (
+    <CartForm route="/cart" inputs={{lines}} action={CartForm.ACTIONS.LinesAdd}>
+      {(fetcher: FetcherWithComponents<any>) => (
+        <>
+          <input
+            name="analytics"
+            type="hidden"
+            value={JSON.stringify(analytics)}
+          />
+          <Button
+            variant="default"
+            radius="xl"
+            size="lg"
+            type="submit"
+            onClick={onClick}
+            disabled={disabled ?? fetcher.state !== 'idle'}
+          >
+            {children}
+          </Button>
+        </>
+      )}
+    </CartForm>
   );
 }

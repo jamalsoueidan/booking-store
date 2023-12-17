@@ -30,7 +30,7 @@ export function ArtistServiceContent({
     <>
       {product.featuredImage && (
         <AspectRatio ratio={1080 / 740}>
-          <Image data={product.featuredImage} loading={loading} />
+          <Image data={product.featuredImage} loading={loading} sizes="10vw" />
         </AspectRatio>
       )}
       <Title

@@ -34,12 +34,16 @@ export function Layout({
 
   return (
     <>
-      {!path.includes('/account/') && !path.includes('/artist/') ? (
+      {!path.includes('/account/') ? (
         <>
           <CartAside cart={cart} />
-          <SearchAside />
-          <MobileMenuAside menu={header.menu} shop={header.shop} />
-          <Header header={header} cart={cart} isLoggedIn={isLoggedIn} />
+          {!path.includes('/artist/') ? (
+            <>
+              <SearchAside />
+              <MobileMenuAside menu={header.menu} shop={header.shop} />
+              <Header header={header} cart={cart} isLoggedIn={isLoggedIn} />
+            </>
+          ) : null}
         </>
       ) : null}
       <main>{children}</main>

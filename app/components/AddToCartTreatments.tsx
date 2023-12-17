@@ -1,7 +1,9 @@
+import {useFetchers} from '@remix-run/react';
 import {parseGid} from '@shopify/hydrogen';
 import {type CartLineInput} from '@shopify/hydrogen/storefront-api-types';
 import {format} from 'date-fns';
 import da from 'date-fns/locale/da';
+import {useState} from 'react';
 import {type ArtistServicesProductsQuery} from 'storefrontapi.generated';
 import type {CustomerLocation, UserAvailabilitySingle} from '~/lib/api/model';
 import {durationToTime} from '~/lib/duration';
@@ -18,6 +20,8 @@ export function AddToCartTreatment({
   products,
   location,
 }: AddToCartTreatmentProps) {
+  const [disabled, setDisabled] = useState(false);
+  const fetcher = useFetchers();
   const lines: Array<CartLineInput> = products.nodes
     .filter((product) => {
       const slotProductExists = availability.slot.products.some(

@@ -102,7 +102,7 @@ export async function loader({params, request, context}: LoaderFunctionArgs) {
   return defer({product, variants});
 }
 
-function redirectToFirstVariant({
+export function redirectToFirstVariant({
   product,
   request,
 }: {
@@ -314,35 +314,39 @@ export function AddToCartButton({
   disabled,
   lines,
   onClick,
+  onFinish,
 }: {
   analytics?: unknown;
   children: React.ReactNode;
   disabled?: boolean;
   lines: CartLineInput[];
   onClick?: () => void;
+  onFinish?: () => void;
 }) {
   return (
     <CartForm route="/cart" inputs={{lines}} action={CartForm.ACTIONS.LinesAdd}>
-      {(fetcher: FetcherWithComponents<any>) => (
-        <>
-          <input
-            name="analytics"
-            type="hidden"
-            value={JSON.stringify(analytics)}
-          />
-          <Button
-            variant="filled"
-            color="black"
-            size="md"
-            type="submit"
-            onClick={onClick}
-            leftSection={<IconShoppingCart />}
-            disabled={disabled ?? fetcher.state !== 'idle'}
-          >
-            {children}
-          </Button>
-        </>
-      )}
+      {(fetcher: FetcherWithComponents<any>) => {
+        return (
+          <>
+            <input
+              name="analytics"
+              type="hidden"
+              value={JSON.stringify(analytics)}
+            />
+            <Button
+              variant="filled"
+              color="black"
+              size="md"
+              type="submit"
+              onClick={onClick}
+              leftSection={<IconShoppingCart />}
+              disabled={disabled ?? fetcher.state !== 'idle'}
+            >
+              {children}
+            </Button>
+          </>
+        );
+      }}
     </CartForm>
   );
 }

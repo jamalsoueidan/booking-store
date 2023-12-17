@@ -2,6 +2,8 @@ import {
   ActionIcon,
   Avatar,
   Badge,
+  Box,
+  Button,
   Grid,
   Group,
   Stack,
@@ -16,6 +18,7 @@ import {
   IconBrandInstagram,
   IconBrandX,
   IconBrandYoutube,
+  IconHome,
 } from '@tabler/icons-react';
 import {type User} from '~/lib/api/model';
 
@@ -130,6 +133,20 @@ export function ArtistHero({artist}: {artist: User}) {
             </ActionIcon>
           )}
         </Group>
+        <Box pos="fixed" bottom="var(--mantine-spacing-xl)">
+          <Button
+            variant="outline"
+            color="black"
+            size="xl"
+            radius="lg"
+            component={Link}
+            to="/"
+          >
+            <Group gap="xs">
+              <IconHome /> By Sisters
+            </Group>
+          </Button>
+        </Box>
       </Grid.Col>
     </Grid>
   );
