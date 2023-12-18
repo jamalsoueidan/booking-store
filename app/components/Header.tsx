@@ -39,7 +39,7 @@ export function Header({header, isLoggedIn, cart}: HeaderProps) {
   return (
     <Box>
       <header className={classes.header}>
-        <Flex h="100%" align="center">
+        <Flex h="100%" align="center" justify="space-between">
           <NavLink prefetch="intent" to="/" style={activeLinkStyle} end>
             <img
               src={logo}

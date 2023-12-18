@@ -1,55 +1,29 @@
-import {
-  AspectRatio,
-  CheckIcon,
-  Radio,
-  Stack,
-  Text,
-  UnstyledButton,
-} from '@mantine/core';
-import {useUncontrolled} from '@mantine/hooks';
+import {AspectRatio, Card, Stack, Text} from '@mantine/core';
 
+import {Link} from '@remix-run/react';
 import {Image, Money} from '@shopify/hydrogen';
 import type {ProductVariantFragment} from 'storefrontapi.generated';
 import {type ProductsGetUsersByVariant} from '~/lib/api/model';
 import classes from './TreatmentPickArtistRadioCard.module.css';
 
 interface TreatmentPickArtistRadioCardProps {
-  checked?: boolean;
-  value: string;
-  defaultChecked?: boolean;
-  onChange?(checked: boolean): void;
   artist: ProductsGetUsersByVariant;
   variant?: ProductVariantFragment;
 }
 
 export function TreatmentPickArtistRadioCard({
-  checked,
-  defaultChecked,
-  value,
-  onChange,
-  className,
-  children,
   artist,
   variant,
-  ...others
 }: TreatmentPickArtistRadioCardProps &
   Omit<
     React.ComponentPropsWithoutRef<'button'>,
     keyof TreatmentPickArtistRadioCardProps
   >) {
-  const [isChecked, handleChange] = useUncontrolled({
-    value: checked,
-    defaultValue: defaultChecked,
-    finalValue: false,
-    onChange,
-  });
-
   return (
-    <UnstyledButton
-      {...others}
-      onClick={() => handleChange(!isChecked)}
-      data-checked={isChecked || undefined}
-      className={classes.button}
+    <Card
+      withBorder
+      component={Link}
+      to={`/artist/${artist.username}/treatment/${variant?.product.handle}`}
     >
       <Stack gap="xs" justify="center" align="center">
         <AspectRatio ratio={1 / 1} style={{width: '75px'}}>
@@ -67,21 +41,10 @@ export function TreatmentPickArtistRadioCard({
 
         {variant && (
           <Text size="xs" c="dimmed" fw={500}>
-            <Money data={variant.price} />
+            <Money data={variant.price} as="span" />
           </Text>
         )}
       </Stack>
-      <Radio
-        checked={isChecked}
-        value={value}
-        icon={CheckIcon}
-        onChange={() => {}}
-        size="lg"
-        tabIndex={-1}
-        classNames={{
-          root: isChecked ? classes.radioChecked : classes.radioUnchecked,
-        }}
-      />
-    </UnstyledButton>
+    </Card>
   );
 }
