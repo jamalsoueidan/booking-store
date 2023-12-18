@@ -1,4 +1,4 @@
-import {SimpleGrid, Skeleton, Text} from '@mantine/core';
+import {Box, SimpleGrid, Skeleton, Text} from '@mantine/core';
 import {Await, useLoaderData} from '@remix-run/react';
 import {defer, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
 import {Suspense} from 'react';
@@ -52,33 +52,36 @@ export default function ArtistTreatments() {
   const {products, services} = useLoaderData<typeof loader>();
 
   return (
-    <Suspense
-      fallback={
-        <SimpleGrid cols={{base: 1}} spacing="xl">
-          <Skeleton height={50} width="100%" circle mb="xl" />
-          <Skeleton height={50} width="100%" radius="xl" />
-        </SimpleGrid>
-      }
-    >
-      <Await resolve={products}>
-        {({products}) => {
-          if (products.nodes.length > 0) {
-            return (
-              <RenderArtistProducts
-                products={products.nodes}
-                services={services}
-              />
-            );
-          } else {
-            return (
-              <Text c="dimmed">
-                Der kan ikke kombinseres andre behandlinger med dette behandling
-              </Text>
-            );
-          }
-        }}
-      </Await>
-    </Suspense>
+    <Box mt="lg">
+      <Suspense
+        fallback={
+          <SimpleGrid cols={{base: 1}} spacing="xl">
+            <Skeleton height={50} width="100%" circle mb="xl" />
+            <Skeleton height={50} width="100%" radius="xl" />
+          </SimpleGrid>
+        }
+      >
+        <Await resolve={products}>
+          {({products}) => {
+            if (products.nodes.length > 0) {
+              return (
+                <RenderArtistProducts
+                  products={products.nodes}
+                  services={services}
+                />
+              );
+            } else {
+              return (
+                <Text c="dimmed">
+                  Der kan ikke kombinseres andre behandlinger med dette
+                  behandling
+                </Text>
+              );
+            }
+          }}
+        </Await>
+      </Suspense>
+    </Box>
   );
 }
 

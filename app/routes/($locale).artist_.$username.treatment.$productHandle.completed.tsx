@@ -1,4 +1,15 @@
-import {Anchor, Card, Divider, Flex, Group, Stack, Text} from '@mantine/core';
+import {
+  Anchor,
+  Box,
+  Card,
+  Divider,
+  Flex,
+  Group,
+  Stack,
+  Text,
+  rem,
+} from '@mantine/core';
+import {useMediaQuery} from '@mantine/hooks';
 import {useLoaderData} from '@remix-run/react';
 import {Money, parseGid} from '@shopify/hydrogen';
 import {json, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
@@ -79,6 +90,7 @@ export const loader = async ({
 
 export default function ArtistTreatmentsBooking() {
   const data = useLoaderData<typeof loader>();
+  const isMobile = useMediaQuery('(max-width: 62em)');
 
   const productMarkup = data.products.nodes.map((product) => {
     const slotProduct = data.availability.slot.products.find(
@@ -99,7 +111,7 @@ export default function ArtistTreatmentsBooking() {
           </Text>
           {slotProduct?.price && (
             <Text size="xs" c="dimmed" fw={500}>
-              <Money data={slotProduct?.price as any} />
+              <Money data={slotProduct?.price as any} as="span" />
             </Text>
           )}
         </Flex>
@@ -108,72 +120,92 @@ export default function ArtistTreatmentsBooking() {
   });
 
   return (
-    <>
-      <Card shadow="sm" p="lg" mt="xl" radius="md" withBorder>
-        <Text size="lg" mb="md" fw="bold">
-          Skønhedsekspert
-        </Text>
-        <TreatmentArtistCardComplete artist={data.user} />
-        <Card.Section pt="md" pb="md">
-          <Divider />
-        </Card.Section>
-        <Text size="lg" mb="md" fw="bold">
-          Lokation
-        </Text>
-        {data?.location.locationType === 'destination' ? (
-          <>
-            <Text size="md" fw={500}>
-              {data?.availability.shipping?.destination.fullAddress}
-            </Text>
-            <Text size="xs" c="red" fw={500}>
-              Udgifterne bliver beregnet under købsprocessen{' '}
-              {data?.availability.shipping?.cost.value}{' '}
-              {data?.availability.shipping?.cost.currency}
-            </Text>
-          </>
-        ) : (
-          <>
-            <Text size="md" fw={500}>
-              {data?.location.name}
-            </Text>
-            <Text size="md" fw={500}>
-              {data?.location.fullAddress}
-            </Text>
-            <Anchor href="googlemap">Se google map</Anchor>
-          </>
-        )}
-        <Card.Section pt="md" pb="md">
-          <Divider />
-        </Card.Section>
-        <Text size="lg" mb="md" fw="bold">
-          Dato & Tid
-        </Text>
-        {data?.availability.slot.from && (
+    <Box mt="lg" mb="100">
+      <Text size="lg" mb="md" fw="bold">
+        Skønhedsekspert
+      </Text>
+      <TreatmentArtistCardComplete artist={data.user} />
+      <Card.Section pt="md" pb="md">
+        <Divider />
+      </Card.Section>
+      <Text size="lg" mb="md" fw="bold">
+        Lokation
+      </Text>
+      {data?.location.locationType === 'destination' ? (
+        <>
           <Text size="md" fw={500}>
-            {format(
-              new Date(data?.availability.slot.from || ''),
-              "EEEE 'd.' d'.' LLL 'kl 'HH:mm",
-              {
-                locale: da,
-              },
-            )}
+            {data?.availability.shipping?.destination.fullAddress}
           </Text>
-        )}
-        <Card.Section pt="md" pb="md">
-          <Divider />
-        </Card.Section>
-        <Text size="lg" mb="md" fw="bold">
-          Ydelser
+          <Text size="xs" c="red" fw={500}>
+            Udgifterne bliver beregnet under købsprocessen{' '}
+            {data?.availability.shipping?.cost.value}{' '}
+            {data?.availability.shipping?.cost.currency}
+          </Text>
+        </>
+      ) : (
+        <>
+          <Text size="md" fw={500}>
+            {data?.location.name}
+          </Text>
+          <Text size="md" fw={500}>
+            {data?.location.fullAddress}
+          </Text>
+          <Anchor href="googlemap">Se google map</Anchor>
+        </>
+      )}
+      <Card.Section pt="md" pb="md">
+        <Divider />
+      </Card.Section>
+      <Text size="lg" mb="md" fw="bold">
+        Dato & Tid
+      </Text>
+      {data?.availability.slot.from && (
+        <Text size="md" fw={500}>
+          {format(
+            new Date(data?.availability.slot.from || ''),
+            "EEEE 'd.' d'.' LLL 'kl 'HH:mm",
+            {
+              locale: da,
+            },
+          )}
         </Text>
-        <Stack gap="xs">{productMarkup}</Stack>
-      </Card>
-      <Group m="xl" justify="center">
-        <AddToCartTreatment
-          products={data.products}
-          availability={data.availability}
-          location={data.location}
-        />
-      </Group>
-    </>
+      )}
+      <Card.Section pt="md" pb="md">
+        <Divider />
+      </Card.Section>
+      <Text size="lg" mb="md" fw="bold">
+        Ydelser
+      </Text>
+      <Stack gap="xs">{productMarkup}</Stack>
+
+      <Box
+        pos="fixed"
+        bottom="0"
+        left="50%"
+        w={isMobile ? '100%' : '720px'}
+        p="lg"
+        bg="white"
+        style={{
+          transform: 'translate(-50%, 0)',
+          boxShadow: '0 -4px 4px rgba(0,0,0,.1)',
+        }}
+      >
+        <Group justify="space-between">
+          <Group gap="xs">
+            <Text c="dimmed" size={rem(20)}>
+              4/4
+            </Text>
+            <Text fw={500} tt="uppercase" size={rem(20)}>
+              Færdig
+            </Text>
+          </Group>
+          <AddToCartTreatment
+            products={data.products}
+            availability={data.availability}
+            location={data.location}
+          />
+        </Group>
+      </Box>
+    </Box>
   );
 }

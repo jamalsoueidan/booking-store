@@ -13,13 +13,13 @@
   );
 
   &[data-checked] {
-    border-color: var(--mantine-color-blue-filled);
-    background-color: var(--mantine-color-blue-light);
+    border-color: var(--mantine-color-gray-filled);
+    background-color: var(--mantine-color-gray-light);
   }
 
   &:hover {
-    border-color: var(--mantine-color-blue-filled);
-    background-color: var(--mantine-color-blue-light);
+    border-color: var(--mantine-color-gray-filled);
+    background-color: var(--mantine-color-gray-light);
   }
 }
 

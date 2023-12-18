@@ -1,3 +1,6 @@
+import {formatDuration, intervalToDuration} from 'date-fns';
+import {da} from 'date-fns/locale';
+
 export function durationToTime(minutesString: number | string) {
   let minutes;
   if (typeof minutesString === 'string') {
@@ -5,16 +8,8 @@ export function durationToTime(minutesString: number | string) {
   } else {
     minutes = minutesString;
   }
+  const milliseconds = minutes * 60 * 1000;
 
-  const hours = Math.floor(minutes / 60); // Get the whole number of hours
-  const remainingMinutes = minutes % 60; // Get the remaining minutes
-
-  if (remainingMinutes === 0) {
-    return hours + ' time(r)';
-  }
-  if (hours === 0) {
-    return remainingMinutes + ' min';
-  }
-
-  return hours + ' time(r) ' + remainingMinutes + ' min';
+  const duration = intervalToDuration({start: 0, end: milliseconds});
+  return formatDuration(duration, {locale: da});
 }

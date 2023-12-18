@@ -1,4 +1,4 @@
-import {Flex, Skeleton} from '@mantine/core';
+import {Box, Flex, Skeleton} from '@mantine/core';
 import {useDisclosure} from '@mantine/hooks';
 import {Await, useLoaderData, useSearchParams} from '@remix-run/react';
 import {defer, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
@@ -42,19 +42,21 @@ export default function ArtistTreatmentPickLocation() {
   const {schedule} = useLoaderData<typeof loader>();
 
   return (
-    <Suspense
-      fallback={
-        <div>
-          <Skeleton height={50} mb="xl" />
-          <Skeleton height={50} mb="xl" />
-          <Skeleton height={50} mb="xl" />
-        </div>
-      }
-    >
-      <Await resolve={schedule}>
-        {({payload}) => <TreatmentHandlePickLocation schedule={payload} />}
-      </Await>
-    </Suspense>
+    <Box mt="lg">
+      <Suspense
+        fallback={
+          <div>
+            <Skeleton height={50} mb="xl" />
+            <Skeleton height={50} mb="xl" />
+            <Skeleton height={50} mb="xl" />
+          </div>
+        }
+      >
+        <Await resolve={schedule}>
+          {({payload}) => <TreatmentHandlePickLocation schedule={payload} />}
+        </Await>
+      </Suspense>
+    </Box>
   );
 }
 

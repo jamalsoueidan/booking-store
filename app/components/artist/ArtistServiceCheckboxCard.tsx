@@ -33,8 +33,8 @@ export function ArtistServiceCheckboxCard({
 
   const style: React.CSSProperties = {
     position: 'absolute',
-    right: 'var(--mantine-spacing-lg)',
-    top: ' var(--mantine-spacing-lg)',
+    right: 'var(--mantine-spacing-sm)',
+    top: ' var(--mantine-spacing-sm)',
   };
 
   return (

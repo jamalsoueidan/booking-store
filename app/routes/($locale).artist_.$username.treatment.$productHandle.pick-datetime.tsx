@@ -1,4 +1,4 @@
-import {Group, Skeleton} from '@mantine/core';
+import {Box, Group, Skeleton} from '@mantine/core';
 import {
   Await,
   useLoaderData,
@@ -70,18 +70,20 @@ export default function ArtistTreatmentPickDatetime() {
   const {availability} = useLoaderData<typeof loader>();
 
   return (
-    <Suspense
-      fallback={
-        <Group gap="md">
-          <Skeleton height={20} />
-          <Skeleton height={20} />
-          <Skeleton height={20} />
-        </Group>
-      }
-    >
-      <Await resolve={availability}>
-        {({payload}) => <TreatmentPickDatetime availability={payload} />}
-      </Await>
-    </Suspense>
+    <Box mt="lg">
+      <Suspense
+        fallback={
+          <Group gap="md">
+            <Skeleton height={20} />
+            <Skeleton height={20} />
+            <Skeleton height={20} />
+          </Group>
+        }
+      >
+        <Await resolve={availability}>
+          {({payload}) => <TreatmentPickDatetime availability={payload} />}
+        </Await>
+      </Suspense>
+    </Box>
   );
 }

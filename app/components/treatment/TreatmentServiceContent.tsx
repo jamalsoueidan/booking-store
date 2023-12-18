@@ -1,5 +1,14 @@
-import {Divider, Flex, Group, Text, Title, rem} from '@mantine/core';
-import {Image} from '@shopify/hydrogen';
+import {
+  Box,
+  Divider,
+  Flex,
+  Group,
+  Image,
+  Text,
+  Title,
+  rem,
+} from '@mantine/core';
+import {Image as ShopifyImage} from '@shopify/hydrogen';
 import {type ProductItemFragment} from 'storefrontapi.generated';
 import classes from './TreatmentServiceContent.module.css';
 
@@ -17,18 +26,19 @@ export function TreatmentServiceContent({
   loading?: 'eager' | 'lazy';
 }) {
   return (
-    <div>
-      <Group wrap="nowrap">
-        {product.featuredImage && (
+    <Flex>
+      {product.featuredImage && (
+        <div style={{flex: '0 0 18%'}}>
           <Image
+            component={ShopifyImage}
             data={product.featuredImage}
-            aspectRatio="1/1"
+            h="auto"
             loading={loading}
-            sizes="(min-width: 45em) 20vw, 50vw"
-            style={{flex: 0}}
           />
-        )}
-        <div style={{flex: 1}}>
+        </div>
+      )}
+      <div style={{flex: '1'}}>
+        <Box p="xs">
           <Title order={4} className={classes.title} mb={rem(4)} fw={500}>
             {product.title}
           </Title>
@@ -38,20 +48,21 @@ export function TreatmentServiceContent({
             justify="flex-start"
             style={{flexGrow: 1, position: 'relative'}}
           >
-            <Text c="dimmed" size="xs" tt="uppercase" fw={400} lineClamp={2}>
+            <Text c="dimmed" size="sm" fw={400} lineClamp={2}>
               {description || product.description || 'ingen beskrivelse'}
             </Text>
           </Flex>
-          <div className={classes.unset}>
-            <Divider my="xs" />
-          </div>
+        </Box>
 
+        <Divider />
+
+        <Box p="xs">
           <Group justify="space-between">
             {leftSection}
             {rightSection}
           </Group>
-        </div>
-      </Group>
-    </div>
+        </Box>
+      </div>
+    </Flex>
   );
 }

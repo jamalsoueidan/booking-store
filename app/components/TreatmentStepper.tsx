@@ -1,5 +1,4 @@
 import {
-  Outlet,
   useLocation,
   useNavigate,
   useNavigation,
@@ -17,7 +16,6 @@ import {
 } from '@mantine/core';
 import {IconArrowLeft, IconArrowRight} from '@tabler/icons-react';
 import {type ReactNode} from 'react';
-import {type ProductFragment} from 'storefrontapi.generated';
 import {determineStepFromURL} from '~/lib/determineStepFromURL';
 
 type PathFragment = {
@@ -29,10 +27,9 @@ type PathFragment = {
 
 type StepperProps = {
   paths: PathFragment[];
-  product: ProductFragment;
 };
 
-export function TreatmentStepper({paths, product}: StepperProps) {
+export function TreatmentStepper({paths}: StepperProps) {
   const navigate = useNavigate();
   const location = useLocation();
   const [searchParams] = useSearchParams();
@@ -74,15 +71,27 @@ export function TreatmentStepper({paths, product}: StepperProps) {
   const disabled = (missingParams && missingParams.length > 0) || false;
 
   return (
-    <>
+    <Box
+      hidden={currentPath.path === 'completed'}
+      id="stepper"
+      pos="sticky"
+      bottom="0px"
+      bg="white"
+      p="lg"
+      style={{boxShadow: '0 -4px 4px rgba(0,0,0,.1)'}}
+    >
       <Group justify="space-between">
         <Group gap="xs">
-          <Text c="dimmed" size={rem(20)}>
-            {currenctActive + 1}/{Object.keys(paths).length}
-          </Text>
-          <Text fw={500} tt="uppercase" size={rem(20)}>
-            {currentPath.title}
-          </Text>
+          {currenctActive > 0 ? (
+            <>
+              <Text c="dimmed" size={rem(20)}>
+                {currenctActive}/{Object.keys(paths).length - 1}
+              </Text>
+              <Text fw={500} tt="uppercase" size={rem(20)}>
+                {currentPath.title}
+              </Text>
+            </>
+          ) : null}
         </Group>
         {currentPath.path !== 'completed' && (
           <Group gap="xs">
@@ -90,8 +99,7 @@ export function TreatmentStepper({paths, product}: StepperProps) {
               <>
                 <ActionIcon
                   variant="filled"
-                  color="yellow"
-                  c="black"
+                  color="black"
                   radius="xl"
                   size="xl"
                   aria-label="Tilbage"
@@ -110,8 +118,7 @@ export function TreatmentStepper({paths, product}: StepperProps) {
                 >
                   <ActionIcon
                     variant="filled"
-                    color="yellow"
-                    c="black"
+                    color="black"
                     radius="xl"
                     size="xl"
                     aria-label="Næste"
@@ -129,9 +136,7 @@ export function TreatmentStepper({paths, product}: StepperProps) {
             ) : (
               <Button
                 variant="filled"
-                color="yellow"
-                c="black"
-                radius="xl"
+                color="black"
                 size="md"
                 rightSection={<IconArrowRight />}
                 onClick={nextStep}
@@ -142,11 +147,7 @@ export function TreatmentStepper({paths, product}: StepperProps) {
           </Group>
         )}
       </Group>
-
-      <Box mt="xl">
-        <Outlet context={{product}} />
-      </Box>
-    </>
+    </Box>
   );
 }
 

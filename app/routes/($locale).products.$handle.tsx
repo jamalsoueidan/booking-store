@@ -102,7 +102,7 @@ export async function loader({params, request, context}: LoaderFunctionArgs) {
   return defer({product, variants});
 }
 
-function redirectToFirstVariant({
+export function redirectToFirstVariant({
   product,
   request,
 }: {
@@ -240,14 +240,18 @@ function ProductPrice({
       {selectedVariant?.compareAtPrice ? (
         <>
           <div className="product-price-on-sale">
-            {selectedVariant ? <Money data={selectedVariant.price} /> : null}
+            {selectedVariant ? (
+              <Money data={selectedVariant.price} as="span" />
+            ) : null}
             <s>
-              <Money data={selectedVariant.compareAtPrice} />
+              <Money data={selectedVariant.compareAtPrice} as="span" />
             </s>
           </div>
         </>
       ) : (
-        selectedVariant?.price && <Money data={selectedVariant?.price} />
+        selectedVariant?.price && (
+          <Money data={selectedVariant?.price} as="span" />
+        )
       )}
     </Text>
   );
@@ -310,37 +314,39 @@ export function AddToCartButton({
   disabled,
   lines,
   onClick,
+  onFinish,
 }: {
   analytics?: unknown;
   children: React.ReactNode;
   disabled?: boolean;
   lines: CartLineInput[];
   onClick?: () => void;
+  onFinish?: () => void;
 }) {
   return (
     <CartForm route="/cart" inputs={{lines}} action={CartForm.ACTIONS.LinesAdd}>
-      {(fetcher: FetcherWithComponents<any>) => (
-        <>
-          <input
-            name="analytics"
-            type="hidden"
-            value={JSON.stringify(analytics)}
-          />
-          <Button
-            variant="filled"
-            color="yellow"
-            c="black"
-            radius="xl"
-            size="lg"
-            type="submit"
-            onClick={onClick}
-            leftSection={<IconShoppingCart />}
-            disabled={disabled ?? fetcher.state !== 'idle'}
-          >
-            {children}
-          </Button>
-        </>
-      )}
+      {(fetcher: FetcherWithComponents<any>) => {
+        return (
+          <>
+            <input
+              name="analytics"
+              type="hidden"
+              value={JSON.stringify(analytics)}
+            />
+            <Button
+              variant="filled"
+              color="black"
+              size="md"
+              type="submit"
+              onClick={onClick}
+              leftSection={<IconShoppingCart />}
+              disabled={disabled ?? fetcher.state !== 'idle'}
+            >
+              {children}
+            </Button>
+          </>
+        );
+      }}
     </CartForm>
   );
 }

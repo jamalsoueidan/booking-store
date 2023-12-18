@@ -1,6 +1,6 @@
 import {defer, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
 
-import {Container, Grid, Skeleton} from '@mantine/core';
+import {Flex, Skeleton} from '@mantine/core';
 import {useMediaQuery} from '@mantine/hooks';
 import {Await, Outlet, useLoaderData} from '@remix-run/react';
 import {Suspense} from 'react';
@@ -30,9 +30,19 @@ export default function ArtistIndex() {
   const isMobile = useMediaQuery('(max-width: 62em)');
 
   return (
-    <Container fluid py="xl">
-      <Grid columns={12} gutter={{base: 'xl'}} grow>
-        <Grid.Col span={isMobile ? 12 : 3}>
+    <Flex direction={isMobile ? 'column' : 'row'}>
+      <div
+        style={{
+          backgroundColor: 'rgb(168, 139, 248)',
+          ...(!isMobile && {flex: '0 0 30%'}),
+        }}
+      >
+        <div
+          style={{
+            padding: '2rem',
+            ...(!isMobile && {position: 'sticky', top: 0, padding: '3rem'}),
+          }}
+        >
           <Suspense
             fallback={
               <div>
@@ -46,11 +56,9 @@ export default function ArtistIndex() {
               {({payload: artist}) => <ArtistHero artist={artist} />}
             </Await>
           </Suspense>
-        </Grid.Col>
-        <Grid.Col span={{base: 12, md: 8}}>
-          <Outlet />
-        </Grid.Col>
-      </Grid>
-    </Container>
+        </div>
+      </div>
+      <Outlet />
+    </Flex>
   );
 }

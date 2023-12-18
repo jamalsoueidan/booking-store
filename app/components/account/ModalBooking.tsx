@@ -79,6 +79,7 @@ function ModalContent({
                 currencyCode: 'DKK',
                 ...order.line_items.price_set.shop_money,
               }}
+              as={Text}
             />
           )}
         </div>
