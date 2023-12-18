@@ -1,16 +1,16 @@
 import {
   defer,
+  redirect,
   type LoaderFunctionArgs,
   type MetaFunction,
 } from '@shopify/remix-oxygen';
 
 import {
   Await,
-  ShouldRevalidateFunctionArgs,
   useLoaderData,
   useNavigate,
   useSearchParams,
-  type FetcherWithComponents,
+  type ShouldRevalidateFunctionArgs,
 } from '@remix-run/react';
 import {getSelectedProductOptions, Image, parseGid} from '@shopify/hydrogen';
 import {Suspense, useEffect, useState} from 'react';
@@ -24,7 +24,6 @@ import {getBookingShopifyApi} from '~/lib/api/bookingShopifyApi';
 import {
   AspectRatio,
   Box,
-  Button,
   rem,
   Select,
   SimpleGrid,
@@ -32,10 +31,11 @@ import {
   Text,
   Title,
 } from '@mantine/core';
-import {CartForm, VariantSelector, type VariantOption} from '@shopify/hydrogen';
-import type {CartLineInput} from '@shopify/hydrogen/storefront-api-types';
+import {VariantSelector, type VariantOption} from '@shopify/hydrogen';
+import type {SelectedOption} from '@shopify/hydrogen/storefront-api-types';
 import {TreatmentPickArtistRadioCard} from '~/components/treatment/TreatmentPickArtistRadioCard';
 import {type ProductsGetUsersByVariant} from '~/lib/api/model';
+import {getVariantUrlForTreatment} from '~/utils';
 
 export function shouldRevalidate({
   currentUrl,
@@ -94,7 +94,23 @@ export async function loader({params, request, context}: LoaderFunctionArgs) {
       : {}),
   });
 
-  product.selectedVariant = product.variants.nodes[0];
+  const firstVariant = product.variants.nodes[0];
+  const firstVariantIsDefault = Boolean(
+    firstVariant.selectedOptions.find(
+      (option: SelectedOption) =>
+        option.name === 'Title' && option.value === 'Default Title',
+    ),
+  );
+
+  if (firstVariantIsDefault) {
+    product.selectedVariant = firstVariant;
+  } else {
+    // if no selected variant was returned from the selected options,
+    // we redirect to the first variant's url with it's selected options applied
+    if (!product.selectedVariant) {
+      throw redirectToFirstVariant({product, request});
+    }
+  }
 
   // In order to show which variants are available in the UI, we need to query
   // all of them. But there might be a *lot*, so instead separate the variants
@@ -302,40 +318,25 @@ function ProductOptions({
   );
 }
 
-export function AddToCartButton({
-  analytics,
-  children,
-  disabled,
-  lines,
-  onClick,
+export function redirectToFirstVariant({
+  product,
+  request,
 }: {
-  analytics?: unknown;
-  children: React.ReactNode;
-  disabled?: boolean;
-  lines: CartLineInput[];
-  onClick?: () => void;
+  product: ProductFragment;
+  request: Request;
 }) {
-  return (
-    <CartForm route="/cart" inputs={{lines}} action={CartForm.ACTIONS.LinesAdd}>
-      {(fetcher: FetcherWithComponents<any>) => (
-        <>
-          <input
-            name="analytics"
-            type="hidden"
-            value={JSON.stringify(analytics)}
-          />
-          <Button
-            variant="default"
-            radius="xl"
-            size="lg"
-            type="submit"
-            onClick={onClick}
-            disabled={disabled ?? fetcher.state !== 'idle'}
-          >
-            {children}
-          </Button>
-        </>
-      )}
-    </CartForm>
+  const url = new URL(request.url);
+  const firstVariant = product.variants.nodes[0];
+
+  return redirect(
+    getVariantUrlForTreatment({
+      pathname: url.pathname,
+      handle: product.handle,
+      selectedOptions: firstVariant.selectedOptions,
+      searchParams: new URLSearchParams(url.search),
+    }),
+    {
+      status: 302,
+    },
   );
 }
