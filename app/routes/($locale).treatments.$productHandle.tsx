@@ -219,20 +219,24 @@ function PickArtistsForm({
   return (
     <div>
       <Text mb={rem(2)}>Skønhedsekspert</Text>
-      <SimpleGrid cols={{base: 2, sm: 3}}>
-        {users.map((user) => {
-          const variant = variants.find(
-            (v) => parseGid(v.id).id === user.variantId.toString(),
-          );
-          return (
-            <TreatmentPickArtistRadioCard
-              artist={user}
-              key={user.customerId}
-              variant={variant}
-            />
-          );
-        })}
-      </SimpleGrid>
+      {users.length > 0 ? (
+        <SimpleGrid cols={{base: 2, sm: 3}}>
+          {users.map((user) => {
+            const variant = variants.find(
+              (v) => parseGid(v.id).id === user.variantId.toString(),
+            );
+            return (
+              <TreatmentPickArtistRadioCard
+                artist={user}
+                key={user.customerId}
+                variant={variant}
+              />
+            );
+          })}
+        </SimpleGrid>
+      ) : (
+        <Text fw="500">Ingen skønhedseksperter til den pågældende pris.</Text>
+      )}
     </div>
   );
 }
