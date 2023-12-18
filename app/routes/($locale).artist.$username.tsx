@@ -39,7 +39,7 @@ export default function ArtistIndex() {
       >
         <div
           style={{
-            padding: '2rem',
+            padding: isMobile ? '1rem' : '2rem',
             ...(!isMobile && {position: 'sticky', top: 0, padding: '3rem'}),
           }}
         >

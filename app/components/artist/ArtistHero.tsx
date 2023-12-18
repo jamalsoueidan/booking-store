@@ -31,7 +31,7 @@ export function ArtistHero({artist}: {artist: User}) {
       <Grid.Col span={{base: 'auto', md: 12}}>
         <Avatar
           src={artist.images?.profile?.url}
-          size={isMobile ? 200 : 250}
+          size={isMobile ? 140 : 250}
           radius="100%"
         />
       </Grid.Col>
@@ -44,7 +44,7 @@ export function ArtistHero({artist}: {artist: User}) {
           <Text size={!isMobile ? rem(18) : undefined}>
             {artist.yearsExperience} årserfaring
           </Text>
-          <Stack gap="xs">
+          <Stack gap="xs" visibleFrom="md">
             <Group gap="xs">
               {artist.professions.map((p) => (
                 <Badge key={p} variant="outline" color="white">
@@ -60,6 +60,24 @@ export function ArtistHero({artist}: {artist: User}) {
               ))}
             </Group>
           </Stack>
+        </Stack>
+      </Grid.Col>
+      <Grid.Col span={{base: 12}} hiddenFrom="md">
+        <Stack gap="xs" mt="md">
+          <Group gap="xs">
+            {artist.professions.map((p) => (
+              <Badge key={p} variant="outline" color="white">
+                {p}
+              </Badge>
+            ))}
+          </Group>
+          <Group gap="xs">
+            {artist.specialties.map((p) => (
+              <Badge key={p} variant="outline" color="white">
+                {p}
+              </Badge>
+            ))}
+          </Group>
         </Stack>
       </Grid.Col>
       <Grid.Col span={{base: 'content', md: 12}}>
