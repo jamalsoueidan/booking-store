@@ -227,9 +227,6 @@ function PickArtistsForm({
           return (
             <TreatmentPickArtistRadioCard
               artist={user}
-              checked={username === user.username}
-              value={user.username}
-              onChange={onChange(user)}
               key={user.customerId}
               variant={variant}
             />
