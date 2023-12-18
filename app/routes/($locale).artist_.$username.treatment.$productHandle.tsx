@@ -111,7 +111,7 @@ export default function Product() {
         <Card
           radius={isMobile ? 0 : '25px 25px 0 0'}
           withBorder={!isMobile}
-          mih={`calc(100vh - ${isMobile ? 84 : 144})px`}
+          mih={`calc(100vh - ${isMobile ? 84 : 144}px)`}
         >
           <Card.Section bg="rgba(168, 139, 248, 0.2)">
             <Box p={rem(isMobile ? 16 : 28)}>
