@@ -14,6 +14,7 @@ import {
   Tooltip,
   rem,
 } from '@mantine/core';
+import {useMediaQuery} from '@mantine/hooks';
 import {IconArrowLeft, IconArrowRight} from '@tabler/icons-react';
 import {type ReactNode} from 'react';
 import {determineStepFromURL} from '~/lib/determineStepFromURL';
@@ -30,6 +31,7 @@ type StepperProps = {
 };
 
 export function TreatmentStepper({paths}: StepperProps) {
+  const isMobile = useMediaQuery('(max-width: 62em)');
   const navigate = useNavigate();
   const location = useLocation();
   const [searchParams] = useSearchParams();
@@ -77,17 +79,17 @@ export function TreatmentStepper({paths}: StepperProps) {
       pos="sticky"
       bottom="0px"
       bg="white"
-      p="lg"
+      p={isMobile ? 'md' : 'lg'}
       style={{boxShadow: '0 -4px 4px rgba(0,0,0,.1)'}}
     >
       <Group justify="space-between">
         <Group gap="xs">
           {currenctActive > 0 ? (
             <>
-              <Text c="dimmed" size={rem(20)}>
+              <Text c="dimmed" size={rem(isMobile ? 16 : 20)}>
                 {currenctActive}/{Object.keys(paths).length - 1}
               </Text>
-              <Text fw={500} tt="uppercase" size={rem(20)}>
+              <Text fw={500} tt="uppercase" size={rem(isMobile ? 16 : 20)}>
                 {currentPath.title}
               </Text>
             </>
@@ -100,16 +102,13 @@ export function TreatmentStepper({paths}: StepperProps) {
                 <ActionIcon
                   variant="filled"
                   color="black"
-                  radius="xl"
-                  size="xl"
+                  radius={isMobile ? 'lg' : 'xl'}
+                  size={isMobile ? 'lg' : 'xl'}
                   aria-label="Tilbage"
                   onClick={prevStep}
                   loading={navigation.state === 'loading'}
                 >
-                  <IconArrowLeft
-                    style={{width: '70%', height: '70%'}}
-                    stroke={1.5}
-                  />
+                  <IconArrowLeft stroke={1.5} />
                 </ActionIcon>
 
                 <ConditionalTooltip
@@ -119,17 +118,14 @@ export function TreatmentStepper({paths}: StepperProps) {
                   <ActionIcon
                     variant="filled"
                     color="black"
-                    radius="xl"
-                    size="xl"
+                    radius={isMobile ? 'lg' : 'xl'}
+                    size={isMobile ? 'lg' : 'xl'}
                     aria-label="Næste"
                     onClick={nextStep}
                     disabled={disabled}
                     loading={navigation.state === 'loading'}
                   >
-                    <IconArrowRight
-                      style={{width: '70%', height: '70%'}}
-                      stroke={1.5}
-                    />
+                    <IconArrowRight stroke={1.5} />
                   </ActionIcon>
                 </ConditionalTooltip>
               </>

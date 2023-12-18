@@ -183,7 +183,7 @@ export default function ArtistTreatmentsBooking() {
         bottom="0"
         left="50%"
         w={isMobile ? '100%' : '720px'}
-        p="lg"
+        p={isMobile ? 'md' : 'lg'}
         bg="white"
         style={{
           transform: 'translate(-50%, 0)',
@@ -192,10 +192,10 @@ export default function ArtistTreatmentsBooking() {
       >
         <Group justify="space-between">
           <Group gap="xs">
-            <Text c="dimmed" size={rem(20)}>
+            <Text c="dimmed" size={rem(isMobile ? 16 : 20)}>
               4/4
             </Text>
-            <Text fw={500} tt="uppercase" size={rem(20)}>
+            <Text fw={500} tt="uppercase" size={rem(isMobile ? 16 : 20)}>
               Færdig
             </Text>
           </Group>

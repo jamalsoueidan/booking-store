@@ -111,7 +111,7 @@ export default function Product() {
         <Card
           radius={isMobile ? 0 : '25px 25px 0 0'}
           withBorder={!isMobile}
-          mih={`calc(100vh - ${isMobile ? 84 : 144}px)`}
+          mih={`calc(100vh - ${isMobile ? 58 : 144}px)`}
         >
           <Card.Section bg="rgba(168, 139, 248, 0.2)">
             <Box p={rem(isMobile ? 16 : 28)}>
@@ -138,7 +138,7 @@ export default function Product() {
               </Anchor>
 
               <Flex justify="space-between" align="center">
-                <Title order={1} mb="xs">
+                <Title order={1} mb="xs" size={rem(isMobile ? 24 : 32)}>
                   {product?.title}
                 </Title>
 
