@@ -217,23 +217,26 @@ function PickArtistsForm({
   const username = searchParams.get('username');
 
   return (
-    <SimpleGrid cols={{base: 2, sm: 3}}>
-      {users.map((user) => {
-        const variant = variants.find(
-          (v) => parseGid(v.id).id === user.variantId.toString(),
-        );
-        return (
-          <TreatmentPickArtistRadioCard
-            artist={user}
-            checked={username === user.username}
-            value={user.username}
-            onChange={onChange(user)}
-            key={user.customerId}
-            variant={variant}
-          />
-        );
-      })}
-    </SimpleGrid>
+    <div>
+      <Text mb={rem(2)}>Skønhedsekspert</Text>
+      <SimpleGrid cols={{base: 2, sm: 3}}>
+        {users.map((user) => {
+          const variant = variants.find(
+            (v) => parseGid(v.id).id === user.variantId.toString(),
+          );
+          return (
+            <TreatmentPickArtistRadioCard
+              artist={user}
+              checked={username === user.username}
+              value={user.username}
+              onChange={onChange(user)}
+              key={user.customerId}
+              variant={variant}
+            />
+          );
+        })}
+      </SimpleGrid>
+    </div>
   );
 }
 

@@ -27,16 +27,9 @@ export function TreatmentPickArtistRadioCard({
   defaultChecked,
   value,
   onChange,
-  className,
-  children,
   artist,
   variant,
-  ...others
-}: TreatmentPickArtistRadioCardProps &
-  Omit<
-    React.ComponentPropsWithoutRef<'button'>,
-    keyof TreatmentPickArtistRadioCardProps
-  >) {
+}: TreatmentPickArtistRadioCardProps) {
   const [isChecked, handleChange] = useUncontrolled({
     value: checked,
     defaultValue: defaultChecked,
@@ -46,7 +39,6 @@ export function TreatmentPickArtistRadioCard({
 
   return (
     <UnstyledButton
-      {...others}
       onClick={() => handleChange(!isChecked)}
       data-checked={isChecked || undefined}
       className={classes.button}
