@@ -1,5 +1,6 @@
 import {AspectRatio, Card, Stack, Text} from '@mantine/core';
 
+import {Link} from '@remix-run/react';
 import {Image, Money} from '@shopify/hydrogen';
 import type {ProductVariantFragment} from 'storefrontapi.generated';
 import {type ProductsGetUsersByVariant} from '~/lib/api/model';
@@ -15,7 +16,11 @@ export function TreatmentPickArtistRadioCard({
   variant,
 }: TreatmentPickArtistRadioCardProps) {
   return (
-    <Card withBorder>
+    <Card
+      withBorder
+      component={Link}
+      to={`/artist/${artist.username}/treatment/${variant?.product.handle}`}
+    >
       <Stack gap="xs" justify="center" align="center">
         <AspectRatio ratio={1 / 1} style={{width: '75px'}}>
           <Image
