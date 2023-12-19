@@ -1,25 +1,28 @@
 import {Button, Flex} from '@mantine/core';
-import {useDisclosure, useMediaQuery} from '@mantine/hooks';
+import {useDisclosure} from '@mantine/hooks';
 import {Link, Outlet, useLoaderData, useLocation} from '@remix-run/react';
-import {type LoaderFunctionArgs} from '@shopify/remix-oxygen';
+import {redirect, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
 import MobileModal from '~/components/MobileModal';
 import {AccountTitle} from '~/components/account/AccountTitle';
 import {getBookingShopifyApi} from '~/lib/api/bookingShopifyApi';
 import {getCustomer} from '~/lib/get-customer';
 import AccountSchedulesCreate from './($locale).account.schedules.create';
 
-export async function loader({context}: LoaderFunctionArgs) {
+export async function loader({context, request}: LoaderFunctionArgs) {
   const customer = await getCustomer({context});
   const response = await getBookingShopifyApi().customerScheduleList(
     customer.id,
   );
 
+  const url = new URL(request.url);
+  if (url.pathname === '/account/schedules' && response.payload.length > 0) {
+    return redirect(response.payload[0]._id);
+  }
   return response.payload;
 }
 
 export default function AccountSchedulesIndex() {
   const loaderData = useLoaderData<typeof loader>();
-  const isMobile = useMediaQuery('(max-width: 62em)');
   const location = useLocation();
   const [opened, {open, close}] = useDisclosure(false);
 

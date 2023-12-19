@@ -39,7 +39,7 @@ export function AccountTitle({
             {heading}
           </Title>
         </Flex>
-        <div>{children}</div>
+        {children ? <div>{children}</div> : null}
       </Stack>
       <Divider my={{base: 'xs', md: 'md'}} />
     </>
