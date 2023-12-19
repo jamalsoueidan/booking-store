@@ -25,12 +25,11 @@ import {
   Flex,
   Menu,
   Select,
-  SimpleGrid,
   Stack,
   Table,
   rem,
 } from '@mantine/core';
-import {useDisclosure} from '@mantine/hooks';
+import {useDisclosure, useMediaQuery} from '@mantine/hooks';
 import {
   IconAdjustments,
   IconEdit,
@@ -212,21 +211,31 @@ function SlotInput({
     }
   };
 
+  const trans: any = {
+    monday: 'mandag',
+    tuesday: 'tirsdag',
+    wednesday: 'onsdag',
+    thursday: 'torsdag',
+    friday: 'fredag',
+    saturday: 'lørdag',
+    sunday: 'søndag',
+  };
+
   return (
     <Table.Tr>
-      <Table.Td valign="top">
+      <Table.Td valign="middle">
         <input {...conform.input(day, {hidden: true})} />
         <Checkbox
           checked={checked}
           onChange={onChange}
-          label={day.defaultValue}
+          label={trans[day.defaultValue || '']}
           size="md"
         />
       </Table.Td>
       <Table.Td>
         <Stack gap="sm">
           {intervalsList.length === 0 && <>Ingen tider</>}
-          {intervalsList.map((interval, index) => (
+          {intervalsList.map((interval: any, index: number) => (
             <Flex gap="sm" w="100%" key={interval.key}>
               <IntervalInput config={interval} form={form} />
               {index > 0 ? (
@@ -253,6 +262,7 @@ function SlotInput({
     </Table.Tr>
   );
 }
+
 function IntervalInput({
   config,
   form,
@@ -260,14 +270,16 @@ function IntervalInput({
   config: FieldConfig<z.infer<typeof intervalsSchema.element>>;
   form: any;
 }) {
+  const isMobile = useMediaQuery('(max-width: 62em)');
   const {from, to} = useFieldset<z.infer<typeof intervalsSchema.element>>(
     form.ref,
     config,
   );
 
   return (
-    <SimpleGrid cols={2}>
+    <Flex gap={isMobile ? 'xs' : 'md'}>
       <Select
+        size={isMobile ? 'sm' : 'md'}
         placeholder="Fra"
         data={generateTimeSlots(4, 20, 30)}
         {...conform.select(from)}
@@ -275,13 +287,14 @@ function IntervalInput({
         error={from.error}
       />
       <Select
+        size={isMobile ? 'sm' : 'md'}
         placeholder="Til"
         {...conform.select(to)}
         defaultValue={config.defaultValue.to}
         data={generateTimeSlots(4, 20, 30)}
         error={to.error}
       />
-    </SimpleGrid>
+    </Flex>
   );
 }
 

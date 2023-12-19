@@ -1,5 +1,5 @@
 import {AppShell, Burger, Container} from '@mantine/core';
-import {useDisclosure} from '@mantine/hooks';
+import {useDisclosure, useMediaQuery} from '@mantine/hooks';
 import {Outlet, useLoaderData} from '@remix-run/react';
 import {parseGid} from '@shopify/hydrogen';
 import {json, redirect, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
@@ -131,12 +131,13 @@ function AccountLayout({
 }: {
   children: React.ReactNode;
 } & AccountOutlet) {
+  const isMobile = useMediaQuery('(max-width: 62em)');
   const [opened, {toggle, close}] = useDisclosure(false);
 
   return (
     <AppShell
       navbar={{width: 300, breakpoint: 'sm', collapsed: {mobile: !opened}}}
-      padding="md"
+      padding={isMobile ? 'xs' : 'md'}
     >
       <AppShell.Navbar
         style={{
@@ -157,7 +158,9 @@ function AccountLayout({
         >
           <Burger opened={opened} onClick={toggle} hiddenFrom="sm" size="sm" />
         </div>
-        <Container fluid>{children}</Container>
+        <Container p={isMobile ? '0' : 'md'} fluid>
+          {children}
+        </Container>
       </AppShell.Main>
     </AppShell>
   );
