@@ -18,7 +18,7 @@ export function AccountTitle({
 }: TitleProps & {heading: string | React.ReactNode; linkBack?: string}) {
   return (
     <>
-      <Stack gap="xs">
+      <Stack gap={'2'}>
         <Flex direction="row" align="center">
           {linkBack ? (
             <ActionIcon
