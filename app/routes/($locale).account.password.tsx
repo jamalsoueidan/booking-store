@@ -106,11 +106,7 @@ export default function AccountPassword() {
 
   return (
     <>
-      <AccountTitle heading="Skift adgangskode">
-        <Text c="dimmed" size="sm" mt={5}>
-          Har du ikke en konto endnu?
-        </Text>
-      </AccountTitle>
+      <AccountTitle heading="Skift adgangskode" />
 
       <AccountContent>
         <Form method="PUT">
