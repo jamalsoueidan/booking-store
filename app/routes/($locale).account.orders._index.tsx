@@ -58,7 +58,7 @@ export default function Orders() {
       <Title>
         Orders <small>({numberOfOrders})</small>
       </Title>
-      <Divider my="md" />
+      <Divider my={{base: 'xs', md: 'md'}} />
       {orders.nodes.length ? <OrdersTable orders={orders} /> : <EmptyOrders />}
     </>
   );

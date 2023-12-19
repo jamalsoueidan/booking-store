@@ -163,7 +163,7 @@ export default function AccountProfile() {
   return (
     <>
       <Title>Personlige oplysninger</Title>
-      <Divider my="md" />
+      <Divider my={{base: 'xs', md: 'md'}} />
 
       {comingFromBusiness ? (
         <Blockquote color="lime" my="md">

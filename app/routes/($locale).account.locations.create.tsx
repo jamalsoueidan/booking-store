@@ -112,7 +112,7 @@ export default function Component() {
         </Link>
         <Title>Opret en lokation</Title>
       </Flex>
-      <Divider my="md" />
+      <Divider my={{base: 'xs', md: 'md'}} />
 
       <Form method="POST">
         <Stack>

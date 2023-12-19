@@ -55,7 +55,7 @@ export function ArtistServiceContent({
         </Text>
       </Flex>
       <div className={classes.unset}>
-        <Divider my="md" />
+        <Divider my={{base: 'xs', md: 'md'}} />
       </div>
 
       <Group justify="space-between">

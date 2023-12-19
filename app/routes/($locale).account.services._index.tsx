@@ -53,7 +53,7 @@ export default function AccountServicesIndex() {
           Tilføj ydelse
         </Button>
       </Group>
-      <Divider my="md" />
+      <Divider my={{base: 'xs', md: 'md'}} />
 
       <Grid align="stretch">
         {storeProducts.nodes.map((product) => {

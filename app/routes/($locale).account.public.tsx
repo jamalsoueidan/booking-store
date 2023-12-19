@@ -98,7 +98,7 @@ export default function AccountBusiness() {
   return (
     <>
       <Title>Din profil</Title>
-      <Divider my="md" />
+      <Divider my={{base: 'xs', md: 'md'}} />
 
       <Form method="POST">
         <Stack gap="md">

@@ -31,7 +31,7 @@ export default function AccountBookings() {
   return (
     <>
       <Title>Bestillinger</Title>
-      <Divider my="md" />
+      <Divider my={{base: 'xs', md: 'md'}} />
 
       <FullCalendar
         plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}

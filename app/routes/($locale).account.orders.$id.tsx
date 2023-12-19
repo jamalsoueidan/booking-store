@@ -116,7 +116,7 @@ export default function OrderRoute() {
           </Text>
         </div>
       </Flex>
-      <Divider my="md" />
+      <Divider my={{base: 'xs', md: 'md'}} />
 
       {treatmentOrder ? (
         <TreatmentTable treatmentOrder={treatmentOrder} lineItems={lineItems} />

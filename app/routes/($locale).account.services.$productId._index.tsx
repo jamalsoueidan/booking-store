@@ -175,7 +175,7 @@ export default function EditAddress() {
         </Link>
         <Title>Redigere {selectedProduct.title} </Title>
       </Flex>
-      <Divider my="md" />
+      <Divider my={{base: 'xs', md: 'md'}} />
 
       <Form method="put" {...form.props}>
         <Stack>

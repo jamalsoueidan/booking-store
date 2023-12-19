@@ -55,7 +55,7 @@ export default function AccountIndex() {
     <>
       <Title>{heading}</Title>
 
-      <Divider my="md" />
+      <Divider my={{base: 'xs', md: 'md'}} />
 
       {isOfficialBusinessPartner ? (
         <div className="flex items-center justify-center mb-6 bg-green-100 rounded">

@@ -176,7 +176,7 @@ export default function AccountServicesCreate() {
         </Link>
         <Title>Opret en ydelse</Title>
       </Flex>
-      <Divider my="md" />
+      <Divider my={{base: 'xs', md: 'md'}} />
 
       <Form method="post" {...form.props}>
         <Stack>

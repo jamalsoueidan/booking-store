@@ -87,7 +87,7 @@ export default function Component() {
         </Link>
         <Title>Tilføj eksisterende lokation</Title>
       </Flex>
-      <Divider my="md" />
+      <Divider my={{base: 'xs', md: 'md'}} />
 
       <Form method="POST" {...form.props}>
         <Stack>

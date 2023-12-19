@@ -143,7 +143,7 @@ export default function AccountSchedules() {
 
   return (
     <>
-      <Divider my="md" />
+      <Divider my={{base: 'xs', md: 'md'}} />
       <Form method="PUT" {...form.props}>
         <Table mt="lg" withTableBorder>
           <Table.Thead>
@@ -248,7 +248,7 @@ function SlotInput({
               ) : (
                 <button
                   {...list.insert(intervals.name, {
-                    defaultValue: {from: '', to: ''},
+                    defaultValue: {from: '05:00', to: '13:00'}, //default time
                   })}
                   style={{display: 'flex', alignItems: 'center'}}
                 >
@@ -285,6 +285,7 @@ function IntervalInput({
         {...conform.select(from)}
         defaultValue={config.defaultValue.from}
         error={from.error}
+        withCheckIcon={false}
       />
       <Select
         size={isMobile ? 'sm' : 'md'}
@@ -293,6 +294,7 @@ function IntervalInput({
         defaultValue={config.defaultValue.to}
         data={generateTimeSlots(4, 20, 30)}
         error={to.error}
+        withCheckIcon={false}
       />
     </Flex>
   );

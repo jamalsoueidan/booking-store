@@ -206,7 +206,7 @@ export default function AccountBusiness() {
       <Flex direction={'row'} align={'center'}>
         <Title>Register selvstændig</Title>
       </Flex>
-      <Divider my="md" />
+      <Divider my={{base: 'xs', md: 'md'}} />
       <Text mb="md">
         Du er igang med at register dig på bySisters som selvstændig
         skønhedsekspert, det betyder at du nu kan modtag bookings fra kunder der

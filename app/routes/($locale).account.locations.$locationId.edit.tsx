@@ -101,7 +101,7 @@ export default function AccountLocationsEdit() {
             : 'Redigere hjemme lokation'}
         </Title>
       </Flex>
-      <Divider my="md" />
+      <Divider my={{base: 'xs', md: 'md'}} />
 
       <Form method="PUT" {...form.props}>
         <Stack>

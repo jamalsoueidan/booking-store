@@ -1,5 +1,5 @@
-import {Button, Divider, Flex, Group, Title} from '@mantine/core';
-import {useDisclosure} from '@mantine/hooks';
+import {Button, Divider, Flex, Title} from '@mantine/core';
+import {useDisclosure, useMediaQuery} from '@mantine/hooks';
 import {Link, Outlet, useLoaderData, useLocation} from '@remix-run/react';
 import {type LoaderFunctionArgs} from '@shopify/remix-oxygen';
 import MobileModal from '~/components/MobileModal';
@@ -18,25 +18,29 @@ export async function loader({context}: LoaderFunctionArgs) {
 
 export default function AccountSchedulesIndex() {
   const loaderData = useLoaderData<typeof loader>();
+  const isMobile = useMediaQuery('(max-width: 62em)');
   const location = useLocation();
   const [opened, {open, close}] = useDisclosure(false);
 
   return (
     <>
-      <Title>Vagtplaner</Title>
-      <Group mt="md">
-        <Button onClick={open} radius="xl" size="md">
-          Opret ny vagtplan
-        </Button>
-      </Group>
-      <Divider my="md" />
+      <Flex gap={isMobile ? 'xs' : 'xs'} direction={isMobile ? 'row' : 'row'}>
+        <Title>Vagtplaner</Title>
+
+        <div>
+          <Button onClick={open} radius="xl" size="sm">
+            Opret ny vagtplan
+          </Button>
+        </div>
+      </Flex>
+      <Divider my={{base: 'xs', md: 'md'}} />
       <Flex gap="xs">
         {loaderData.map((d) => (
           <Button
             key={d._id}
             component={Link}
             variant={location.pathname.includes(d._id) ? 'light' : 'outline'}
-            size="xs"
+            size="sm"
             to={d._id}
           >
             {d.name}

@@ -30,14 +30,14 @@ export default function AccountLocationsIndex() {
     <>
       <Title>Lokationer</Title>
       <Group mt="md">
-        <Button component={Link} to={'create'} radius="xl" size="md">
+        <Button component={Link} to={'create'} radius="xl" size="sm">
           Opret lokation
         </Button>
-        <Button component={Link} to={'add'} radius="xl" size="md">
+        <Button component={Link} to={'add'} radius="xl" size="sm">
           Tilføj eksisterende
         </Button>
       </Group>
-      <Divider my="md" />
+      <Divider my={{base: 'xs', md: 'md'}} />
       <Grid align="stretch">
         {loaderData.map((d) => (
           <Grid.Col key={d._id} span={{base: 12, md: 6, lg: 4}}>

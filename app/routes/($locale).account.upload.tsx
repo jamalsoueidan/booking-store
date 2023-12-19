@@ -126,7 +126,7 @@ export default function AccountUpload() {
   return (
     <>
       <Title>Skift billed</Title>
-      <Divider my="md" />
+      <Divider my={{base: 'xs', md: 'md'}} />
 
       {imageUploaded ? (
         <Alert
