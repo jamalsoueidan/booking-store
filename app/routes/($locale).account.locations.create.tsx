@@ -1,4 +1,4 @@
-import {Form, Link, useActionData, useLoaderData} from '@remix-run/react';
+import {Form, useActionData, useLoaderData} from '@remix-run/react';
 import {
   json,
   redirect,
@@ -11,19 +11,11 @@ import {customerLocationCreateBody} from '~/lib/zod/bookingShopifyApi';
 
 import {conform, useForm} from '@conform-to/react';
 import {parse} from '@conform-to/zod';
-import {
-  ActionIcon,
-  Divider,
-  Flex,
-  NumberInput,
-  Stack,
-  TextInput,
-  Title,
-} from '@mantine/core';
+import {NumberInput, Stack, TextInput} from '@mantine/core';
 import {parseGid} from '@shopify/hydrogen';
-import {IconArrowLeft} from '@tabler/icons-react';
 import {useState} from 'react';
 import {AddressAutocompleteInput} from '~/components/AddressAutocompleteInput';
+import {AccountTitle} from '~/components/account/AccountTitle';
 import {RadioGroup} from '~/components/form/RadioGroup';
 import {SubmitButton} from '~/components/form/SubmitButton';
 import {getBookingShopifyApi} from '~/lib/api/bookingShopifyApi';
@@ -99,20 +91,7 @@ export default function Component() {
 
   return (
     <>
-      <Flex direction={'row'} align={'center'}>
-        <Link to="/account/locations">
-          <ActionIcon
-            variant="transparent"
-            size="xl"
-            aria-label="Back"
-            color="black"
-          >
-            <IconArrowLeft style={{width: '70%', height: '70%'}} stroke={1.5} />
-          </ActionIcon>
-        </Link>
-        <Title>Opret en lokation</Title>
-      </Flex>
-      <Divider my={{base: 'xs', md: 'md'}} />
+      <AccountTitle linkBack="/account/locations" heading="Opret en lokation" />
 
       <Form method="POST">
         <Stack>

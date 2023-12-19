@@ -1,8 +1,9 @@
-import {Button, Divider, Flex, Title} from '@mantine/core';
+import {Button, Flex} from '@mantine/core';
 import {useDisclosure, useMediaQuery} from '@mantine/hooks';
 import {Link, Outlet, useLoaderData, useLocation} from '@remix-run/react';
 import {type LoaderFunctionArgs} from '@shopify/remix-oxygen';
 import MobileModal from '~/components/MobileModal';
+import {AccountTitle} from '~/components/account/AccountTitle';
 import {getBookingShopifyApi} from '~/lib/api/bookingShopifyApi';
 import {getCustomer} from '~/lib/get-customer';
 import AccountSchedulesCreate from './($locale).account.schedules.create';
@@ -24,16 +25,12 @@ export default function AccountSchedulesIndex() {
 
   return (
     <>
-      <Flex gap={isMobile ? 'xs' : 'xs'} direction={isMobile ? 'row' : 'row'}>
-        <Title>Vagtplaner</Title>
+      <AccountTitle heading="Vagtplaner">
+        <Button onClick={open} radius="xl" size="sm">
+          Opret ny vagtplan
+        </Button>
+      </AccountTitle>
 
-        <div>
-          <Button onClick={open} radius="xl" size="sm">
-            Opret ny vagtplan
-          </Button>
-        </div>
-      </Flex>
-      <Divider my={{base: 'xs', md: 'md'}} />
       <Flex gap="xs">
         {loaderData.map((d) => (
           <Button

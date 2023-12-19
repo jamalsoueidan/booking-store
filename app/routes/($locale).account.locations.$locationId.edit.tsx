@@ -1,6 +1,6 @@
 import {conform, useForm} from '@conform-to/react';
 import {parse} from '@conform-to/zod';
-import {Form, Link, useActionData, useLoaderData} from '@remix-run/react';
+import {Form, useActionData, useLoaderData} from '@remix-run/react';
 
 import {
   json,
@@ -12,18 +12,10 @@ import {getBookingShopifyApi} from '~/lib/api/bookingShopifyApi';
 import {getCustomer} from '~/lib/get-customer';
 import {customerLocationUpdateBody} from '~/lib/zod/bookingShopifyApi';
 
-import {
-  ActionIcon,
-  Divider,
-  Flex,
-  NumberInput,
-  Stack,
-  TextInput,
-  Title,
-} from '@mantine/core';
+import {NumberInput, Stack, TextInput} from '@mantine/core';
 import {parseGid} from '@shopify/hydrogen';
-import {IconArrowLeft} from '@tabler/icons-react';
 import {AddressAutocompleteInput} from '~/components/AddressAutocompleteInput';
+import {AccountTitle} from '~/components/account/AccountTitle';
 import {SubmitButton} from '~/components/form/SubmitButton';
 
 const schema = customerLocationUpdateBody;
@@ -84,24 +76,14 @@ export default function AccountLocationsEdit() {
 
   return (
     <>
-      <Flex direction={'row'} align={'center'}>
-        <Link to="/account/locations">
-          <ActionIcon
-            variant="transparent"
-            size="xl"
-            aria-label="Back"
-            color="black"
-          >
-            <IconArrowLeft style={{width: '70%', height: '70%'}} stroke={1.5} />
-          </ActionIcon>
-        </Link>
-        <Title>
-          {defaultValue.originType === 'commercial'
+      <AccountTitle
+        linkBack="/account/locations"
+        heading={
+          defaultValue.originType === 'commercial'
             ? 'Redigere butik lokation'
-            : 'Redigere hjemme lokation'}
-        </Title>
-      </Flex>
-      <Divider my={{base: 'xs', md: 'md'}} />
+            : 'Redigere hjemme lokation'
+        }
+      />
 
       <Form method="PUT" {...form.props}>
         <Stack>

@@ -4,11 +4,12 @@ import dayGridPlugin from '@fullcalendar/daygrid';
 import interactionPlugin from '@fullcalendar/interaction';
 import FullCalendar from '@fullcalendar/react';
 import timeGridPlugin from '@fullcalendar/timegrid';
-import {Divider, Title, rem} from '@mantine/core';
-import {useDisclosure} from '@mantine/hooks';
+import {rem} from '@mantine/core';
+import {useDisclosure, useMediaQuery} from '@mantine/hooks';
 import {useFetcher} from '@remix-run/react';
 import {IconCar} from '@tabler/icons-react';
 import {createRoot} from 'react-dom/client';
+import {AccountTitle} from '~/components/account/AccountTitle';
 import ModalBooking from '~/components/account/ModalBooking';
 import {type CustomerOrderList} from '~/lib/api/model';
 import {type ApiOrdersLineItem} from './($locale).api.orders.$productId.lineitem.$lineItem';
@@ -20,6 +21,7 @@ const CustomDescription = () => (
 export default function AccountBookings() {
   const [opened, {open, close}] = useDisclosure(false);
   const fetcher = useFetcher<ApiOrdersLineItem>();
+  const isMobile = useMediaQuery('(max-width: 62em)');
 
   const openModal = (order: CustomerOrderList) => {
     fetcher.load(
@@ -30,15 +32,14 @@ export default function AccountBookings() {
 
   return (
     <>
-      <Title>Bestillinger</Title>
-      <Divider my={{base: 'xs', md: 'md'}} />
+      <AccountTitle heading="Bestillinger" />
 
       <FullCalendar
         plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
         headerToolbar={{
-          left: 'prev,next today',
+          left: isMobile ? 'prev,next' : 'prev,next today',
           center: 'title',
-          right: 'dayGridMonth,timeGridWeek',
+          right: isMobile ? '' : 'dayGridMonth,timeGridWeek',
         }}
         eventDataTransform={(input: EventInput) => {
           const order = input as unknown as CustomerOrderList;
@@ -79,7 +80,7 @@ export default function AccountBookings() {
         }}
         themeSystem="standard"
         events="/api/orders"
-        initialView="dayGridMonth"
+        initialView={isMobile ? 'timeGridDay' : 'dayGridMonth'}
         buttonText={{
           prev: '<',
           next: '>',
@@ -95,6 +96,7 @@ export default function AccountBookings() {
           minute: '2-digit',
           meridiem: false,
         }}
+        height="auto"
         eventClick={({event}) => {
           const order = event.extendedProps as CustomerOrderList;
           openModal(order);

@@ -1,6 +1,6 @@
 import {conform, useForm} from '@conform-to/react';
-import {ActionIcon, Divider, Flex, Select, Stack, Title} from '@mantine/core';
-import {Form, Link, useActionData, useLoaderData} from '@remix-run/react';
+import {Select, Stack} from '@mantine/core';
+import {Form, useActionData, useLoaderData} from '@remix-run/react';
 
 import {
   json,
@@ -13,7 +13,7 @@ import {getCustomer} from '~/lib/get-customer';
 import {customerLocationAddParams} from '~/lib/zod/bookingShopifyApi';
 
 import {parse} from '@conform-to/zod';
-import {IconArrowLeft} from '@tabler/icons-react';
+import {AccountTitle} from '~/components/account/AccountTitle';
 import {SubmitButton} from '~/components/form/SubmitButton';
 import {redirectWithNotification} from '~/lib/show-notification';
 
@@ -74,20 +74,10 @@ export default function Component() {
 
   return (
     <>
-      <Flex direction={'row'} align={'center'}>
-        <Link to="/account/locations">
-          <ActionIcon
-            variant="transparent"
-            size="xl"
-            aria-label="Back"
-            color="black"
-          >
-            <IconArrowLeft style={{width: '70%', height: '70%'}} stroke={1.5} />
-          </ActionIcon>
-        </Link>
-        <Title>Tilføj eksisterende lokation</Title>
-      </Flex>
-      <Divider my={{base: 'xs', md: 'md'}} />
+      <AccountTitle
+        heading="Tilføj eksisterende lokation"
+        linkBack="/account/locations"
+      />
 
       <Form method="POST" {...form.props}>
         <Stack>

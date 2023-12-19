@@ -1,4 +1,4 @@
-import {Button, Divider, Stack, Text, TextInput, Title} from '@mantine/core';
+import {Button, Stack, Text, TextInput} from '@mantine/core';
 import {
   Form,
   useActionData,
@@ -13,6 +13,7 @@ import {
   type LoaderFunctionArgs,
 } from '@shopify/remix-oxygen';
 import type {CustomerFragment} from 'storefrontapi.generated';
+import {AccountTitle} from '~/components/account/AccountTitle';
 
 export type ActionResponse = {
   error: string | null;
@@ -104,11 +105,11 @@ export default function AccountPassword() {
 
   return (
     <>
-      <Title>Skift adgangskode</Title>
-      <Text c="dimmed" size="sm" mt={5}>
-        Har du ikke en konto endnu?
-      </Text>
-      <Divider my={{base: 'xs', md: 'md'}} />
+      <AccountTitle heading="Skift adgangskode">
+        <Text c="dimmed" size="sm" mt={5}>
+          Har du ikke en konto endnu?
+        </Text>
+      </AccountTitle>
 
       <Form method="PUT">
         <Stack>

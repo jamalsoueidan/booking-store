@@ -1,12 +1,4 @@
-import {
-  Button,
-  Divider,
-  Stack,
-  Text,
-  ThemeIcon,
-  Timeline,
-  Title,
-} from '@mantine/core';
+import {Button, Stack, Text, ThemeIcon, Timeline} from '@mantine/core';
 import {
   Link,
   useLoaderData,
@@ -16,6 +8,7 @@ import {
 import {parseGid} from '@shopify/hydrogen';
 import {json, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
 import {IconCheck, IconX} from '@tabler/icons-react';
+import {AccountTitle} from '~/components/account/AccountTitle';
 import {getBookingShopifyApi} from '~/lib/api/bookingShopifyApi';
 import {type CustomerStatus} from '~/lib/api/model';
 import {getCustomer} from '~/lib/get-customer';
@@ -53,9 +46,7 @@ export default function AccountIndex() {
 
   return (
     <>
-      <Title>{heading}</Title>
-
-      <Divider my={{base: 'xs', md: 'md'}} />
+      <AccountTitle heading={heading} />
 
       {isOfficialBusinessPartner ? (
         <div className="flex items-center justify-center mb-6 bg-green-100 rounded">

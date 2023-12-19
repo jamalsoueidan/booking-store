@@ -1,0 +1,5 @@
+.title {
+  @media (max-width: $mantine-breakpoint-md) {
+    font-size: var(--mantine-h3-font-size);
+  }
+}

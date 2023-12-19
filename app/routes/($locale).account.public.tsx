@@ -1,13 +1,4 @@
-import {
-  Divider,
-  Group,
-  Radio,
-  Stack,
-  TextInput,
-  Textarea,
-  Title,
-  rem,
-} from '@mantine/core';
+import {Group, Radio, Stack, TextInput, Textarea, rem} from '@mantine/core';
 import {Form, useActionData, useLoaderData} from '@remix-run/react';
 import {parseGid} from '@shopify/hydrogen';
 import {
@@ -19,6 +10,7 @@ import {
 import {conform, useFieldset, useForm} from '@conform-to/react';
 import {parse} from '@conform-to/zod';
 import {IconAt} from '@tabler/icons-react';
+import {AccountTitle} from '~/components/account/AccountTitle';
 import {MultiTags} from '~/components/form/MultiTags';
 import {SubmitButton} from '~/components/form/SubmitButton';
 import {getBookingShopifyApi} from '~/lib/api/bookingShopifyApi';
@@ -97,8 +89,7 @@ export default function AccountBusiness() {
 
   return (
     <>
-      <Title>Din profil</Title>
-      <Divider my={{base: 'xs', md: 'md'}} />
+      <AccountTitle heading="Din profil" />
 
       <Form method="POST">
         <Stack gap="md">

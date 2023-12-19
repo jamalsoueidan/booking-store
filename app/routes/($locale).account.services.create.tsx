@@ -1,22 +1,13 @@
 import {conform, useForm} from '@conform-to/react';
 import {parse} from '@conform-to/zod';
-import {
-  ActionIcon,
-  Divider,
-  Flex,
-  Select,
-  Stack,
-  TextInput,
-  Title,
-} from '@mantine/core';
-import {Form, Link, useActionData, useLoaderData} from '@remix-run/react';
+import {Flex, Select, Stack, TextInput} from '@mantine/core';
+import {Form, useActionData, useLoaderData} from '@remix-run/react';
 import {
   json,
   redirect,
   type ActionFunctionArgs,
   type LoaderFunctionArgs,
 } from '@shopify/remix-oxygen';
-import {IconArrowLeft} from '@tabler/icons-react';
 import {z} from 'zod';
 import PeriodInput from '~/components/form/PeriodInput';
 import {RadioGroupVariantsProduct} from '~/components/form/RadioGroupVariantProducts';
@@ -30,6 +21,7 @@ import {VARIANTS_QUERY_ID} from '~/data/queries';
 import {getBookingShopifyApi} from '~/lib/api/bookingShopifyApi';
 
 import {useState} from 'react';
+import {AccountTitle} from '~/components/account/AccountTitle';
 import {isEqualGid} from '~/data/isEqualGid';
 import {getCustomer} from '~/lib/get-customer';
 import {customerProductUpsertBody} from '~/lib/zod/bookingShopifyApi';
@@ -163,20 +155,7 @@ export default function AccountServicesCreate() {
 
   return (
     <>
-      <Flex direction={'row'} align={'center'}>
-        <Link to="/account/services">
-          <ActionIcon
-            variant="transparent"
-            size="xl"
-            aria-label="Back"
-            color="black"
-          >
-            <IconArrowLeft style={{width: '70%', height: '70%'}} stroke={1.5} />
-          </ActionIcon>
-        </Link>
-        <Title>Opret en ydelse</Title>
-      </Flex>
-      <Divider my={{base: 'xs', md: 'md'}} />
+      <AccountTitle linkBack="/account/services" heading="Opret en ydelse" />
 
       <Form method="post" {...form.props}>
         <Stack>

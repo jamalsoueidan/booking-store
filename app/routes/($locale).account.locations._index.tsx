@@ -1,16 +1,9 @@
-import {
-  Button,
-  Card,
-  Divider,
-  Grid,
-  Group,
-  SimpleGrid,
-  Title,
-} from '@mantine/core';
+import {Button, Card, Grid, Group, SimpleGrid} from '@mantine/core';
 import {Form, Link, useLoaderData} from '@remix-run/react';
 
 import {json, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
 import {AccountLocation} from '~/components/AccountLocation';
+import {AccountTitle} from '~/components/account/AccountTitle';
 import {getBookingShopifyApi} from '~/lib/api/bookingShopifyApi';
 import {getCustomer} from '~/lib/get-customer';
 
@@ -28,16 +21,17 @@ export default function AccountLocationsIndex() {
 
   return (
     <>
-      <Title>Lokationer</Title>
-      <Group mt="md">
-        <Button component={Link} to={'create'} radius="xl" size="sm">
-          Opret lokation
-        </Button>
-        <Button component={Link} to={'add'} radius="xl" size="sm">
-          Tilføj eksisterende
-        </Button>
-      </Group>
-      <Divider my={{base: 'xs', md: 'md'}} />
+      <AccountTitle heading="Lokationer">
+        <Group mt="md">
+          <Button component={Link} to={'create'} radius="xl" size="sm">
+            Opret lokation
+          </Button>
+          <Button component={Link} to={'add'} radius="xl" size="sm">
+            Tilføj eksisterende
+          </Button>
+        </Group>
+      </AccountTitle>
+
       <Grid align="stretch">
         {loaderData.map((d) => (
           <Grid.Col key={d._id} span={{base: 12, md: 6, lg: 4}}>

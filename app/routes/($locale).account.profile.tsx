@@ -2,12 +2,10 @@ import {
   Blockquote,
   Button,
   Checkbox,
-  Divider,
   Group,
   Stack,
   Text,
   TextInput,
-  Title,
 } from '@mantine/core';
 import {
   Form,
@@ -26,6 +24,7 @@ import {
   type LoaderFunctionArgs,
 } from '@shopify/remix-oxygen';
 import type {CustomerFragment} from 'storefrontapi.generated';
+import {AccountTitle} from '~/components/account/AccountTitle';
 import {getBookingShopifyApi} from '~/lib/api/bookingShopifyApi';
 import {CUSTOMER_QUERY} from './($locale).account';
 export type ActionResponse = {
@@ -162,8 +161,7 @@ export default function AccountProfile() {
 
   return (
     <>
-      <Title>Personlige oplysninger</Title>
-      <Divider my={{base: 'xs', md: 'md'}} />
+      <AccountTitle heading="Personlige oplysninger" />
 
       {comingFromBusiness ? (
         <Blockquote color="lime" my="md">

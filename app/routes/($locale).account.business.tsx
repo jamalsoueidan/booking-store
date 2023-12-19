@@ -1,15 +1,12 @@
 import {conform, useFieldset, useForm} from '@conform-to/react';
 import {parse} from '@conform-to/zod';
 import {
-  Divider,
-  Flex,
   Group,
   Radio,
   Stack,
   Text,
   TextInput,
   Textarea,
-  Title,
   rem,
 } from '@mantine/core';
 import {Form, useActionData, useFetcher, useLoaderData} from '@remix-run/react';
@@ -24,6 +21,7 @@ import {SubmitButton} from '~/components/form/SubmitButton';
 
 import {IconAt, IconCheck, IconExclamationCircle} from '@tabler/icons-react';
 import {type z} from 'zod';
+import {AccountTitle} from '~/components/account/AccountTitle';
 import {MultiTags} from '~/components/form/MultiTags';
 import {getBookingShopifyApi} from '~/lib/api/bookingShopifyApi';
 import {type UserUsernameTakenResponsePayload} from '~/lib/api/model';
@@ -203,10 +201,8 @@ export default function AccountBusiness() {
 
   return (
     <>
-      <Flex direction={'row'} align={'center'}>
-        <Title>Register selvstændig</Title>
-      </Flex>
-      <Divider my={{base: 'xs', md: 'md'}} />
+      <AccountTitle heading="Register selvstændig" />
+
       <Text mb="md">
         Du er igang med at register dig på bySisters som selvstændig
         skønhedsekspert, det betyder at du nu kan modtag bookings fra kunder der

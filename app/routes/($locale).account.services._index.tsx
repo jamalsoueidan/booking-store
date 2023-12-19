@@ -1,17 +1,9 @@
-import {
-  Button,
-  Card,
-  Divider,
-  Grid,
-  Group,
-  SimpleGrid,
-  Text,
-  Title,
-} from '@mantine/core';
+import {Button, Card, Grid, SimpleGrid, Text, Title} from '@mantine/core';
 import {Form, Link, useLoaderData} from '@remix-run/react';
 import {Money, parseGid} from '@shopify/hydrogen';
 import {type ProductConnection} from '@shopify/hydrogen/storefront-api-types';
 import {json, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
+import {AccountTitle} from '~/components/account/AccountTitle';
 import {PRODUCT_ITEM_FRAGMENT} from '~/data/fragments';
 import {getBookingShopifyApi} from '~/lib/api/bookingShopifyApi';
 import {getCustomer} from '~/lib/get-customer';
@@ -47,13 +39,11 @@ export default function AccountServicesIndex() {
 
   return (
     <>
-      <Title>Ydelser</Title>
-      <Group mt="md">
+      <AccountTitle heading="Ydelser">
         <Button component={Link} to={'create'} radius="xl" size="md">
           Tilføj ydelse
         </Button>
-      </Group>
-      <Divider my={{base: 'xs', md: 'md'}} />
+      </AccountTitle>
 
       <Grid align="stretch">
         {storeProducts.nodes.map((product) => {

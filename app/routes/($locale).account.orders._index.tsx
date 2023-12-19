@@ -1,4 +1,4 @@
-import {Button, Card, Divider, Flex, Table, Title} from '@mantine/core';
+import {Button, Card, Flex, Table, Title} from '@mantine/core';
 import {Link, useLoaderData, type MetaFunction} from '@remix-run/react';
 import {Money, Pagination, getPaginationVariables} from '@shopify/hydrogen';
 import {json, redirect, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
@@ -9,6 +9,7 @@ import type {
   CustomerOrdersFragment,
   OrderItemFragment,
 } from 'storefrontapi.generated';
+import {AccountTitle} from '~/components/account/AccountTitle';
 
 export const meta: MetaFunction = () => {
   return [{title: 'Orders'}];
@@ -55,10 +56,13 @@ export default function Orders() {
   const {orders, numberOfOrders} = customer;
   return (
     <>
-      <Title>
-        Orders <small>({numberOfOrders})</small>
-      </Title>
-      <Divider my={{base: 'xs', md: 'md'}} />
+      <AccountTitle
+        heading={
+          <>
+            Orders <small>({numberOfOrders})</small>
+          </>
+        }
+      />
       {orders.nodes.length ? <OrdersTable orders={orders} /> : <EmptyOrders />}
     </>
   );
@@ -142,7 +146,7 @@ function OrderItem({order}: {order: OrderItemFragment}) {
           component={Link}
           to={`/account/orders/${btoa(order.id)}`}
         >
-          Vis ordre #{order.orderNumber}
+          #{order.orderNumber}
         </Button>
       </Table.Td>
     </Table.Tr>
