@@ -15,6 +15,7 @@ import {customerLocationUpdateBody} from '~/lib/zod/bookingShopifyApi';
 import {NumberInput, Stack, TextInput} from '@mantine/core';
 import {parseGid} from '@shopify/hydrogen';
 import {AddressAutocompleteInput} from '~/components/AddressAutocompleteInput';
+import {AccountContent} from '~/components/account/AccountContent';
 import {AccountTitle} from '~/components/account/AccountTitle';
 import {SubmitButton} from '~/components/form/SubmitButton';
 
@@ -85,93 +86,95 @@ export default function AccountLocationsEdit() {
         }
       />
 
-      <Form method="PUT" {...form.props}>
-        <Stack>
-          <TextInput
-            label="Navn"
-            placeholder="BySisters"
-            {...conform.input(fields.name)}
-          />
-          <AddressAutocompleteInput
-            label={
-              defaultValue.locationType === 'destination'
-                ? 'Hvor vil du kører fra?'
-                : 'Hvor skal kunden køre til?'
-            }
-            placeholder="Sigridsvej 45, 8220 Brabrand"
-            {...conform.input(fields.fullAddress)}
-          />
-          <input type="hidden" {...conform.input(fields.originType)} />
-          {defaultValue.locationType === 'destination' ? (
-            <>
-              <NumberInput
-                label="Udgifter for turen"
-                {...conform.input(fields.startFee)}
-                type={undefined}
-                allowNegative={false}
-                allowDecimal={false}
-                suffix=" kr"
-              />
+      <AccountContent>
+        <Form method="PUT" {...form.props}>
+          <Stack>
+            <TextInput
+              label="Navn"
+              placeholder="BySisters"
+              {...conform.input(fields.name)}
+            />
+            <AddressAutocompleteInput
+              label={
+                defaultValue.locationType === 'destination'
+                  ? 'Hvor vil du kører fra?'
+                  : 'Hvor skal kunden køre til?'
+              }
+              placeholder="Sigridsvej 45, 8220 Brabrand"
+              {...conform.input(fields.fullAddress)}
+            />
+            <input type="hidden" {...conform.input(fields.originType)} />
+            {defaultValue.locationType === 'destination' ? (
+              <>
+                <NumberInput
+                  label="Udgifter for turen"
+                  {...conform.input(fields.startFee)}
+                  type={undefined}
+                  allowNegative={false}
+                  allowDecimal={false}
+                  suffix=" kr"
+                />
 
-              <NumberInput
-                label="Timepris for kørsel"
-                {...conform.input(fields.distanceHourlyRate)}
-                type={undefined}
-                allowNegative={false}
-                allowDecimal={false}
-                suffix=" kr"
-              />
+                <NumberInput
+                  label="Timepris for kørsel"
+                  {...conform.input(fields.distanceHourlyRate)}
+                  type={undefined}
+                  allowNegative={false}
+                  allowDecimal={false}
+                  suffix=" kr"
+                />
 
-              <NumberInput
-                label="Pris pr. kilometer"
-                {...conform.input(fields.fixedRatePerKm)}
-                type={undefined}
-                allowNegative={false}
-                allowDecimal={false}
-                suffix=" kr"
-              />
+                <NumberInput
+                  label="Pris pr. kilometer"
+                  {...conform.input(fields.fixedRatePerKm)}
+                  type={undefined}
+                  allowNegative={false}
+                  allowDecimal={false}
+                  suffix=" kr"
+                />
 
-              <NumberInput
-                label="Afstanden der køres gratis, inden takstberegningen påbegyndes."
-                {...conform.input(fields.distanceForFree)}
-                type={undefined}
-                allowNegative={false}
-                allowDecimal={false}
-                suffix=" km"
-              />
+                <NumberInput
+                  label="Afstanden der køres gratis, inden takstberegningen påbegyndes."
+                  {...conform.input(fields.distanceForFree)}
+                  type={undefined}
+                  allowNegative={false}
+                  allowDecimal={false}
+                  suffix=" km"
+                />
 
-              <NumberInput
-                label="Minimum der skal køres for at acceptere en kørselsopgave"
-                {...conform.input(fields.minDriveDistance)}
-                type={undefined}
-                allowNegative={false}
-                allowDecimal={false}
-                suffix=" km"
-              />
+                <NumberInput
+                  label="Minimum der skal køres for at acceptere en kørselsopgave"
+                  {...conform.input(fields.minDriveDistance)}
+                  type={undefined}
+                  allowNegative={false}
+                  allowDecimal={false}
+                  suffix=" km"
+                />
 
-              <NumberInput
-                label="Maximum der køres"
-                {...conform.input(fields.maxDriveDistance)}
-                type={undefined}
-                allowNegative={false}
-                allowDecimal={false}
-                suffix=" km"
-              />
-            </>
-          ) : (
-            <>
-              <input type="hidden" name="distanceForFree" value="0" />
-              <input type="hidden" name="fixedRatePerKm" value="0" />
-              <input type="hidden" name="distanceHourlyRate" value="0" />
-              <input type="hidden" name="minDriveDistance" value="0" />
-              <input type="hidden" name="maxDriveDistance" value="500" />
-              <input type="hidden" name="startFee" value="0" />
-            </>
-          )}
+                <NumberInput
+                  label="Maximum der køres"
+                  {...conform.input(fields.maxDriveDistance)}
+                  type={undefined}
+                  allowNegative={false}
+                  allowDecimal={false}
+                  suffix=" km"
+                />
+              </>
+            ) : (
+              <>
+                <input type="hidden" name="distanceForFree" value="0" />
+                <input type="hidden" name="fixedRatePerKm" value="0" />
+                <input type="hidden" name="distanceHourlyRate" value="0" />
+                <input type="hidden" name="minDriveDistance" value="0" />
+                <input type="hidden" name="maxDriveDistance" value="500" />
+                <input type="hidden" name="startFee" value="0" />
+              </>
+            )}
 
-          <SubmitButton>Opdatere</SubmitButton>
-        </Stack>
-      </Form>
+            <SubmitButton>Opdatere</SubmitButton>
+          </Stack>
+        </Form>
+      </AccountContent>
     </>
   );
 }

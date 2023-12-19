@@ -9,6 +9,7 @@ import {useDisclosure, useMediaQuery} from '@mantine/hooks';
 import {useFetcher} from '@remix-run/react';
 import {IconCar} from '@tabler/icons-react';
 import {createRoot} from 'react-dom/client';
+import {AccountContent} from '~/components/account/AccountContent';
 import {AccountTitle} from '~/components/account/AccountTitle';
 import ModalBooking from '~/components/account/ModalBooking';
 import {type CustomerOrderList} from '~/lib/api/model';
@@ -33,76 +34,76 @@ export default function AccountBookings() {
   return (
     <>
       <AccountTitle heading="Bestillinger" />
+      <AccountContent>
+        <FullCalendar
+          plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
+          headerToolbar={{
+            left: isMobile ? 'prev,next' : 'prev,next today',
+            center: 'title',
+            right: isMobile ? '' : 'dayGridMonth,timeGridWeek',
+          }}
+          eventDataTransform={(input: EventInput) => {
+            const order = input as unknown as CustomerOrderList;
+            input.color = 'green';
+            input.display = 'block';
+            input.className = 'event-custom';
+            if (order.refunds.length > 0) {
+              input.color = '#cccccc';
+            }
+            return input;
+          }}
+          eventDidMount={(info) => {
+            const eventElement = info.el.querySelector(
+              '.fc-event-title-container',
+            );
 
-      <FullCalendar
-        plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
-        headerToolbar={{
-          left: isMobile ? 'prev,next' : 'prev,next today',
-          center: 'title',
-          right: isMobile ? '' : 'dayGridMonth,timeGridWeek',
-        }}
-        eventDataTransform={(input: EventInput) => {
-          const order = input as unknown as CustomerOrderList;
-          input.color = 'green';
-          input.display = 'block';
-          input.className = 'event-custom';
-          if (order.refunds.length > 0) {
-            input.color = '#cccccc';
-          }
-          return input;
-        }}
-        eventDidMount={(info) => {
-          const eventElement = info.el.querySelector(
-            '.fc-event-title-container',
-          );
+            const order = info.event.extendedProps as CustomerOrderList;
+            if (eventElement && order.line_items.properties.shippingId) {
+              // Create a container for your React component
+              const descriptionElement = document.createElement('span');
+              descriptionElement.classList.add('fc-event-icon');
+              eventElement.prepend(descriptionElement);
 
-          const order = info.event.extendedProps as CustomerOrderList;
-          if (eventElement && order.line_items.properties.shippingId) {
-            // Create a container for your React component
-            const descriptionElement = document.createElement('span');
-            descriptionElement.classList.add('fc-event-icon');
-            eventElement.prepend(descriptionElement);
-
-            // Use createRoot to render the React component
-            const root = createRoot(descriptionElement);
-            root.render(<CustomDescription />);
-          }
-        }}
-        eventWillUnmount={(info) => {
-          const descriptionElement = info.el.querySelector(
-            '.fc-event-title-container > div',
-          );
-          if (descriptionElement) {
-            // Clean up the React component
-            const root = createRoot(descriptionElement);
-            root.unmount();
-          }
-        }}
-        themeSystem="standard"
-        events="/api/orders"
-        initialView={isMobile ? 'timeGridDay' : 'dayGridMonth'}
-        buttonText={{
-          prev: '<',
-          next: '>',
-        }}
-        locale={daLocale}
-        firstDay={1}
-        slotMinTime={'06:00:00'}
-        slotMaxTime={'21:00:00'}
-        allDaySlot={false}
-        displayEventEnd={true}
-        eventTimeFormat={{
-          hour: '2-digit',
-          minute: '2-digit',
-          meridiem: false,
-        }}
-        height="auto"
-        eventClick={({event}) => {
-          const order = event.extendedProps as CustomerOrderList;
-          openModal(order);
-        }}
-      />
-
+              // Use createRoot to render the React component
+              const root = createRoot(descriptionElement);
+              root.render(<CustomDescription />);
+            }
+          }}
+          eventWillUnmount={(info) => {
+            const descriptionElement = info.el.querySelector(
+              '.fc-event-title-container > div',
+            );
+            if (descriptionElement) {
+              // Clean up the React component
+              const root = createRoot(descriptionElement);
+              root.unmount();
+            }
+          }}
+          themeSystem="standard"
+          events="/api/orders"
+          initialView={isMobile ? 'timeGridDay' : 'dayGridMonth'}
+          buttonText={{
+            prev: '<',
+            next: '>',
+          }}
+          locale={daLocale}
+          firstDay={1}
+          slotMinTime={'06:00:00'}
+          slotMaxTime={'21:00:00'}
+          allDaySlot={false}
+          displayEventEnd={true}
+          eventTimeFormat={{
+            hour: '2-digit',
+            minute: '2-digit',
+            meridiem: false,
+          }}
+          height="auto"
+          eventClick={({event}) => {
+            const order = event.extendedProps as CustomerOrderList;
+            openModal(order);
+          }}
+        />
+      </AccountContent>
       <ModalBooking
         type="booking"
         opened={opened}

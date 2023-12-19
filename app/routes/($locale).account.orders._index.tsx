@@ -9,6 +9,7 @@ import type {
   CustomerOrdersFragment,
   OrderItemFragment,
 } from 'storefrontapi.generated';
+import {AccountContent} from '~/components/account/AccountContent';
 import {AccountTitle} from '~/components/account/AccountTitle';
 
 export const meta: MetaFunction = () => {
@@ -63,7 +64,13 @@ export default function Orders() {
           </>
         }
       />
-      {orders.nodes.length ? <OrdersTable orders={orders} /> : <EmptyOrders />}
+      <AccountContent>
+        {orders.nodes.length ? (
+          <OrdersTable orders={orders} />
+        ) : (
+          <EmptyOrders />
+        )}
+      </AccountContent>
     </>
   );
 }

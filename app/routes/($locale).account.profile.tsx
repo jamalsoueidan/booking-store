@@ -24,6 +24,7 @@ import {
   type LoaderFunctionArgs,
 } from '@shopify/remix-oxygen';
 import type {CustomerFragment} from 'storefrontapi.generated';
+import {AccountContent} from '~/components/account/AccountContent';
 import {AccountTitle} from '~/components/account/AccountTitle';
 import {getBookingShopifyApi} from '~/lib/api/bookingShopifyApi';
 import {CUSTOMER_QUERY} from './($locale).account';
@@ -163,81 +164,83 @@ export default function AccountProfile() {
     <>
       <AccountTitle heading="Personlige oplysninger" />
 
-      {comingFromBusiness ? (
-        <Blockquote color="lime" my="md">
-          Før du kan register dig som skønhedsekspert, bedes du udfylde du
-          udfylder alle felter og trykke på opdatere.
-        </Blockquote>
-      ) : undefined}
+      <AccountContent>
+        {comingFromBusiness ? (
+          <Blockquote color="lime" my="md">
+            Før du kan register dig som skønhedsekspert, bedes du udfylde du
+            udfylder alle felter og trykke på opdatere.
+          </Blockquote>
+        ) : undefined}
 
-      <Form method="PUT">
-        <Stack>
-          <TextInput
-            label="Fornavn"
-            id="firstName"
-            name="firstName"
-            type="text"
-            autoComplete="given-name"
-            placeholder="Fornavn"
-            aria-label="Fornavn"
-            defaultValue={customer.firstName ?? ''}
-            required
-            minLength={2}
-          />
-          <TextInput
-            label="Efternavn"
-            id="lastName"
-            name="lastName"
-            type="text"
-            autoComplete="family-name"
-            placeholder="Efternavn"
-            aria-label="Efternavn"
-            defaultValue={customer.lastName ?? ''}
-            required
-            minLength={2}
-          />
-          <TextInput
-            label="Mobil"
-            id="phone"
-            name="phone"
-            type="tel"
-            autoComplete="tel"
-            placeholder="Mobil"
-            aria-label="Mobil"
-            defaultValue={customer.phone ?? ''}
-          />
-          <TextInput
-            label="Emailadresse"
-            id="email"
-            name="email"
-            type="email"
-            autoComplete="email"
-            placeholder="Emailadresse"
-            aria-label="Emailadresse"
-            defaultValue={customer.email ?? ''}
-            required
-          />
-          <Group>
-            <Checkbox
-              id="acceptsMarketing"
-              name="acceptsMarketing"
-              label="Tilmeldt markedsføringskommunikation"
-              defaultChecked={customer.acceptsMarketing}
+        <Form method="PUT">
+          <Stack>
+            <TextInput
+              label="Fornavn"
+              id="firstName"
+              name="firstName"
+              type="text"
+              autoComplete="given-name"
+              placeholder="Fornavn"
+              aria-label="Fornavn"
+              defaultValue={customer.firstName ?? ''}
+              required
+              minLength={2}
             />
-          </Group>
+            <TextInput
+              label="Efternavn"
+              id="lastName"
+              name="lastName"
+              type="text"
+              autoComplete="family-name"
+              placeholder="Efternavn"
+              aria-label="Efternavn"
+              defaultValue={customer.lastName ?? ''}
+              required
+              minLength={2}
+            />
+            <TextInput
+              label="Mobil"
+              id="phone"
+              name="phone"
+              type="tel"
+              autoComplete="tel"
+              placeholder="Mobil"
+              aria-label="Mobil"
+              defaultValue={customer.phone ?? ''}
+            />
+            <TextInput
+              label="Emailadresse"
+              id="email"
+              name="email"
+              type="email"
+              autoComplete="email"
+              placeholder="Emailadresse"
+              aria-label="Emailadresse"
+              defaultValue={customer.email ?? ''}
+              required
+            />
+            <Group>
+              <Checkbox
+                id="acceptsMarketing"
+                name="acceptsMarketing"
+                label="Tilmeldt markedsføringskommunikation"
+                defaultChecked={customer.acceptsMarketing}
+              />
+            </Group>
 
-          {action?.error && (
-            <Text color="red" size="sm">
-              {action.error}
-            </Text>
-          )}
-          <div>
-            <Button type="submit" loading={state !== 'idle'}>
-              {comingFromBusiness ? 'Gem og gå videre...' : 'Opdater'}
-            </Button>
-          </div>
-        </Stack>
-      </Form>
+            {action?.error && (
+              <Text color="red" size="sm">
+                {action.error}
+              </Text>
+            )}
+            <div>
+              <Button type="submit" loading={state !== 'idle'}>
+                {comingFromBusiness ? 'Gem og gå videre...' : 'Opdater'}
+              </Button>
+            </div>
+          </Stack>
+        </Form>
+      </AccountContent>
     </>
   );
 }

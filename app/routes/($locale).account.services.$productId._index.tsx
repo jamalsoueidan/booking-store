@@ -9,6 +9,7 @@ import {
   type LoaderFunctionArgs,
 } from '@shopify/remix-oxygen';
 import {z} from 'zod';
+import {AccountContent} from '~/components/account/AccountContent';
 import {AccountTitle} from '~/components/account/AccountTitle';
 import PeriodInput from '~/components/form/PeriodInput';
 import {RadioGroupVariantsProduct} from '~/components/form/RadioGroupVariantProducts';
@@ -159,69 +160,71 @@ export default function EditAddress() {
         heading={<>Redigere {selectedProduct.title}</>}
       />
 
-      <Form method="put" {...form.props}>
-        <Stack>
-          <TextInput
-            label="Hvilken ydelse vil du tilbyde?"
-            disabled
-            value={selectedProduct.title}
-          />
-
-          <RadioGroupVariantsProduct
-            label="Hvad skal ydelsen koste?"
-            productId={defaultValue.productId}
-            field={fields.variantId}
-          />
-
-          <SwitchGroupLocations
-            label="Fra hvilken lokation(er) vil du tilbyde den ydelse?"
-            description="Mindst (1) skal være valgt."
-            field={fields.locations}
-            data={locations}
-          />
-
-          <Select
-            label="Hvilken vagtplan vil du tilknytte den ydelse på."
-            data={selectSchedules}
-            {...conform.select(fields.scheduleId)}
-            defaultValue={fields.scheduleId.defaultValue}
-          />
-
-          <Flex align={'flex-end'} gap="xs">
+      <AccountContent>
+        <Form method="put" {...form.props}>
+          <Stack>
             <TextInput
-              w="50%"
-              label="Behandlingstid:"
-              rightSection="min"
-              {...conform.input(fields.duration)}
+              label="Hvilken ydelse vil du tilbyde?"
+              disabled
+              value={selectedProduct.title}
             />
-            <TextInput
-              w="50%"
-              label="Pause efter behandling:"
-              rightSection="min"
-              {...conform.input(fields.breakTime)}
+
+            <RadioGroupVariantsProduct
+              label="Hvad skal ydelsen koste?"
+              productId={defaultValue.productId}
+              field={fields.variantId}
             />
-          </Flex>
 
-          <PeriodInput
-            field={fields.bookingPeriod}
-            label="Hvor langt ude i fremtiden vil du acceptere bookinger?"
-            data={[
-              {value: 'months', label: 'Måneder'},
-              {value: 'hours', label: 'Timer'},
-            ]}
-          />
+            <SwitchGroupLocations
+              label="Fra hvilken lokation(er) vil du tilbyde den ydelse?"
+              description="Mindst (1) skal være valgt."
+              field={fields.locations}
+              data={locations}
+            />
 
-          <PeriodInput
-            field={fields.noticePeriod}
-            label="Hvor hurtigt kan du være klar?"
-            data={[
-              {value: 'days', label: 'Dage'},
-              {value: 'hours', label: 'Timer'},
-            ]}
-          />
-          <SubmitButton>Opdatere</SubmitButton>
-        </Stack>
-      </Form>
+            <Select
+              label="Hvilken vagtplan vil du tilknytte den ydelse på."
+              data={selectSchedules}
+              {...conform.select(fields.scheduleId)}
+              defaultValue={fields.scheduleId.defaultValue}
+            />
+
+            <Flex align={'flex-end'} gap="xs">
+              <TextInput
+                w="50%"
+                label="Behandlingstid:"
+                rightSection="min"
+                {...conform.input(fields.duration)}
+              />
+              <TextInput
+                w="50%"
+                label="Pause efter behandling:"
+                rightSection="min"
+                {...conform.input(fields.breakTime)}
+              />
+            </Flex>
+
+            <PeriodInput
+              field={fields.bookingPeriod}
+              label="Hvor langt ude i fremtiden vil du acceptere bookinger?"
+              data={[
+                {value: 'months', label: 'Måneder'},
+                {value: 'hours', label: 'Timer'},
+              ]}
+            />
+
+            <PeriodInput
+              field={fields.noticePeriod}
+              label="Hvor hurtigt kan du være klar?"
+              data={[
+                {value: 'days', label: 'Dage'},
+                {value: 'hours', label: 'Timer'},
+              ]}
+            />
+            <SubmitButton>Opdatere</SubmitButton>
+          </Stack>
+        </Form>
+      </AccountContent>
     </>
   );
 }

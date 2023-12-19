@@ -21,6 +21,7 @@ import {VARIANTS_QUERY_ID} from '~/data/queries';
 import {getBookingShopifyApi} from '~/lib/api/bookingShopifyApi';
 
 import {useState} from 'react';
+import {AccountContent} from '~/components/account/AccountContent';
 import {AccountTitle} from '~/components/account/AccountTitle';
 import {isEqualGid} from '~/data/isEqualGid';
 import {getCustomer} from '~/lib/get-customer';
@@ -156,74 +157,75 @@ export default function AccountServicesCreate() {
   return (
     <>
       <AccountTitle linkBack="/account/services" heading="Opret en ydelse" />
-
-      <Form method="post" {...form.props}>
-        <Stack>
-          <SelectSearchable
-            label="Hvilken ydelse vil du tilbyde?"
-            placeholder="Vælg ydelse"
-            field={fields.productId}
-            onChange={setProductId}
-          />
-
-          {productId && (
-            <RadioGroupVariantsProduct
-              label="Hvad skal ydelsen koste?"
-              productId={productId}
-              field={fields.variantId}
+      <AccountContent>
+        <Form method="post" {...form.props}>
+          <Stack>
+            <SelectSearchable
+              label="Hvilken ydelse vil du tilbyde?"
+              placeholder="Vælg ydelse"
+              field={fields.productId}
+              onChange={setProductId}
             />
-          )}
 
-          <SwitchGroupLocations
-            label="Fra hvilken lokation(er) vil du tilbyde den ydelse?"
-            description="Mindst (1) skal være valgt."
-            field={fields.locations}
-            data={locations}
-          />
+            {productId && (
+              <RadioGroupVariantsProduct
+                label="Hvad skal ydelsen koste?"
+                productId={productId}
+                field={fields.variantId}
+              />
+            )}
 
-          <Select
-            label="Hvilken vagtplan vil du tilknytte den ydelse på."
-            data={selectSchedules}
-            {...conform.select(fields.scheduleId)}
-            defaultValue={fields.scheduleId.defaultValue}
-          />
-
-          <Flex align={'flex-end'} gap="xs">
-            <TextInput
-              w="50%"
-              label="Behandlingstid:"
-              rightSection="min"
-              {...conform.input(fields.duration)}
+            <SwitchGroupLocations
+              label="Fra hvilken lokation(er) vil du tilbyde den ydelse?"
+              description="Mindst (1) skal være valgt."
+              field={fields.locations}
+              data={locations}
             />
-            <TextInput
-              w="50%"
-              label="Pause efter behandling:"
-              rightSection="min"
-              {...conform.input(fields.breakTime)}
+
+            <Select
+              label="Hvilken vagtplan vil du tilknytte den ydelse på."
+              data={selectSchedules}
+              {...conform.select(fields.scheduleId)}
+              defaultValue={fields.scheduleId.defaultValue}
             />
-          </Flex>
 
-          <PeriodInput
-            field={fields.bookingPeriod}
-            label="Hvor langt ude i fremtiden vil du acceptere bookinger?"
-            data={[
-              {value: 'months', label: 'Måneder'},
-              {value: 'hours', label: 'Timer'},
-            ]}
-          />
+            <Flex align={'flex-end'} gap="xs">
+              <TextInput
+                w="50%"
+                label="Behandlingstid:"
+                rightSection="min"
+                {...conform.input(fields.duration)}
+              />
+              <TextInput
+                w="50%"
+                label="Pause efter behandling:"
+                rightSection="min"
+                {...conform.input(fields.breakTime)}
+              />
+            </Flex>
 
-          <PeriodInput
-            field={fields.noticePeriod}
-            label="Hvor hurtigt kan du være klar?"
-            data={[
-              {value: 'days', label: 'Dage'},
-              {value: 'hours', label: 'Timer'},
-            ]}
-          />
+            <PeriodInput
+              field={fields.bookingPeriod}
+              label="Hvor langt ude i fremtiden vil du acceptere bookinger?"
+              data={[
+                {value: 'months', label: 'Måneder'},
+                {value: 'hours', label: 'Timer'},
+              ]}
+            />
 
-          <SubmitButton>Tilføj ny ydelse</SubmitButton>
-        </Stack>
-      </Form>
+            <PeriodInput
+              field={fields.noticePeriod}
+              label="Hvor hurtigt kan du være klar?"
+              data={[
+                {value: 'days', label: 'Dage'},
+                {value: 'hours', label: 'Timer'},
+              ]}
+            />
+
+            <SubmitButton>Tilføj ny ydelse</SubmitButton>
+          </Stack>
+        </Form>
+      </AccountContent>
     </>
   );
 }

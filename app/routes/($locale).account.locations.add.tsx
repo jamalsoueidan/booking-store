@@ -13,6 +13,7 @@ import {getCustomer} from '~/lib/get-customer';
 import {customerLocationAddParams} from '~/lib/zod/bookingShopifyApi';
 
 import {parse} from '@conform-to/zod';
+import {AccountContent} from '~/components/account/AccountContent';
 import {AccountTitle} from '~/components/account/AccountTitle';
 import {SubmitButton} from '~/components/form/SubmitButton';
 import {redirectWithNotification} from '~/lib/show-notification';
@@ -79,19 +80,21 @@ export default function Component() {
         linkBack="/account/locations"
       />
 
-      <Form method="POST" {...form.props}>
-        <Stack>
-          <Select
-            label="Vælg lokation"
-            description="hvis lokationen allerede er oprettet, kan du tilføje dig selv til den,
+      <AccountContent>
+        <Form method="POST" {...form.props}>
+          <Stack>
+            <Select
+              label="Vælg lokation"
+              description="hvis lokationen allerede er oprettet, kan du tilføje dig selv til den,
         så kan du nemlig tilbyde service fra det sted."
-            data={data}
-            {...conform.select(locationId)}
-            defaultValue=""
-          />
-          <SubmitButton>Tilføj</SubmitButton>
-        </Stack>
-      </Form>
+              data={data}
+              {...conform.select(locationId)}
+              defaultValue=""
+            />
+            <SubmitButton>Tilføj</SubmitButton>
+          </Stack>
+        </Form>
+      </AccountContent>
     </>
   );
 }

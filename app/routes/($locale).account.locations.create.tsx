@@ -15,6 +15,7 @@ import {NumberInput, Stack, TextInput} from '@mantine/core';
 import {parseGid} from '@shopify/hydrogen';
 import {useState} from 'react';
 import {AddressAutocompleteInput} from '~/components/AddressAutocompleteInput';
+import {AccountContent} from '~/components/account/AccountContent';
 import {AccountTitle} from '~/components/account/AccountTitle';
 import {RadioGroup} from '~/components/form/RadioGroup';
 import {SubmitButton} from '~/components/form/SubmitButton';
@@ -93,115 +94,117 @@ export default function Component() {
     <>
       <AccountTitle linkBack="/account/locations" heading="Opret en lokation" />
 
-      <Form method="POST">
-        <Stack>
-          <RadioGroup
-            label={'Hvilken type location vil du oprette?'}
-            onChange={setLocationType}
-            field={fields.locationType}
-            data={[
-              {
-                label: 'Opret en fast arbejdslokation.',
-                value: 'origin',
-              },
-              {
-                label:
-                  'Opret en mobil arbejdslokation (Du vil kører til kunden).',
-                value: 'destination',
-              },
-            ]}
-          />
+      <AccountContent>
+        <Form method="POST">
+          <Stack>
+            <RadioGroup
+              label={'Hvilken type location vil du oprette?'}
+              onChange={setLocationType}
+              field={fields.locationType}
+              data={[
+                {
+                  label: 'Opret en fast arbejdslokation.',
+                  value: 'origin',
+                },
+                {
+                  label:
+                    'Opret en mobil arbejdslokation (Du vil kører til kunden).',
+                  value: 'destination',
+                },
+              ]}
+            />
 
-          <TextInput
-            label="Navn"
-            placeholder="BySisters"
-            error={fields.name.error}
-            {...conform.input(fields.name)}
-          />
+            <TextInput
+              label="Navn"
+              placeholder="BySisters"
+              error={fields.name.error}
+              {...conform.input(fields.name)}
+            />
 
-          <AddressAutocompleteInput
-            label={
-              locationType === 'destination'
-                ? 'Hvor vil du kører fra?'
-                : 'Hvor skal kunden køre til?'
-            }
-            placeholder="Sigridsvej 45, 8220 Brabrand"
-            error={fields.fullAddress.error}
-            {...conform.input(fields.fullAddress)}
-          />
+            <AddressAutocompleteInput
+              label={
+                locationType === 'destination'
+                  ? 'Hvor vil du kører fra?'
+                  : 'Hvor skal kunden køre til?'
+              }
+              placeholder="Sigridsvej 45, 8220 Brabrand"
+              error={fields.fullAddress.error}
+              {...conform.input(fields.fullAddress)}
+            />
 
-          <input type="hidden" {...conform.input(fields.originType)} />
+            <input type="hidden" {...conform.input(fields.originType)} />
 
-          {locationType === 'destination' ? (
-            <>
-              <NumberInput
-                label="Udgifter for turen"
-                {...conform.input(fields.startFee)}
-                type={undefined}
-                allowNegative={false}
-                allowDecimal={false}
-                leftSection=" kr"
-              />
+            {locationType === 'destination' ? (
+              <>
+                <NumberInput
+                  label="Udgifter for turen"
+                  {...conform.input(fields.startFee)}
+                  type={undefined}
+                  allowNegative={false}
+                  allowDecimal={false}
+                  leftSection=" kr"
+                />
 
-              <NumberInput
-                label="Timepris for kørsel"
-                {...conform.input(fields.distanceHourlyRate)}
-                type={undefined}
-                allowNegative={false}
-                allowDecimal={false}
-                leftSection=" kr"
-              />
+                <NumberInput
+                  label="Timepris for kørsel"
+                  {...conform.input(fields.distanceHourlyRate)}
+                  type={undefined}
+                  allowNegative={false}
+                  allowDecimal={false}
+                  leftSection=" kr"
+                />
 
-              <NumberInput
-                label="Pris pr. kilometer"
-                {...conform.input(fields.fixedRatePerKm)}
-                type={undefined}
-                allowNegative={false}
-                allowDecimal={false}
-                leftSection=" kr"
-              />
+                <NumberInput
+                  label="Pris pr. kilometer"
+                  {...conform.input(fields.fixedRatePerKm)}
+                  type={undefined}
+                  allowNegative={false}
+                  allowDecimal={false}
+                  leftSection=" kr"
+                />
 
-              <NumberInput
-                label="Afstanden der køres gratis, inden takstberegningen påbegyndes."
-                {...conform.input(fields.distanceForFree)}
-                type={undefined}
-                allowNegative={false}
-                allowDecimal={false}
-                leftSection=" km"
-              />
+                <NumberInput
+                  label="Afstanden der køres gratis, inden takstberegningen påbegyndes."
+                  {...conform.input(fields.distanceForFree)}
+                  type={undefined}
+                  allowNegative={false}
+                  allowDecimal={false}
+                  leftSection=" km"
+                />
 
-              <NumberInput
-                label="Minimum der skal køres for at acceptere en kørselsopgave"
-                {...conform.input(fields.minDriveDistance)}
-                type={undefined}
-                allowNegative={false}
-                allowDecimal={false}
-                leftSection=" km"
-              />
+                <NumberInput
+                  label="Minimum der skal køres for at acceptere en kørselsopgave"
+                  {...conform.input(fields.minDriveDistance)}
+                  type={undefined}
+                  allowNegative={false}
+                  allowDecimal={false}
+                  leftSection=" km"
+                />
 
-              <NumberInput
-                label="Maximum der køres"
-                {...conform.input(fields.maxDriveDistance)}
-                type={undefined}
-                allowNegative={false}
-                allowDecimal={false}
-                leftSection=" km"
-              />
-            </>
-          ) : (
-            <>
-              <input type="hidden" name="startFee" value="0" />
-              <input type="hidden" name="distanceForFree" value="0" />
-              <input type="hidden" name="fixedRatePerKm" value="0" />
-              <input type="hidden" name="distanceHourlyRate" value="0" />
-              <input type="hidden" name="minDriveDistance" value="0" />
-              <input type="hidden" name="maxDriveDistance" value="500" />
-            </>
-          )}
+                <NumberInput
+                  label="Maximum der køres"
+                  {...conform.input(fields.maxDriveDistance)}
+                  type={undefined}
+                  allowNegative={false}
+                  allowDecimal={false}
+                  leftSection=" km"
+                />
+              </>
+            ) : (
+              <>
+                <input type="hidden" name="startFee" value="0" />
+                <input type="hidden" name="distanceForFree" value="0" />
+                <input type="hidden" name="fixedRatePerKm" value="0" />
+                <input type="hidden" name="distanceHourlyRate" value="0" />
+                <input type="hidden" name="minDriveDistance" value="0" />
+                <input type="hidden" name="maxDriveDistance" value="500" />
+              </>
+            )}
 
-          <SubmitButton>Tilføj</SubmitButton>
-        </Stack>
-      </Form>
+            <SubmitButton>Tilføj</SubmitButton>
+          </Stack>
+        </Form>
+      </AccountContent>
     </>
   );
 }
