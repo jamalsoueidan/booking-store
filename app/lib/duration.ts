@@ -11,5 +11,7 @@ export function durationToTime(minutesString: number | string) {
   const milliseconds = minutes * 60 * 1000;
 
   const duration = intervalToDuration({start: 0, end: milliseconds});
-  return formatDuration(duration, {locale: da});
+  return formatDuration(duration, {locale: da})
+    .replace('minutter', 'min')
+    .replace('time', 't');
 }

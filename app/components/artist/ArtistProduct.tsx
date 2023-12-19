@@ -1,4 +1,5 @@
 import {Badge, Card, Text} from '@mantine/core';
+import {useMediaQuery} from '@mantine/hooks';
 import {Link} from '@remix-run/react';
 import {Money, parseGid} from '@shopify/hydrogen';
 import {type AccountServicesProductsQuery} from 'storefrontapi.generated';
@@ -13,6 +14,7 @@ export type ArtistProductProps = {
 };
 
 export function ArtistProduct({product, services}: ArtistProductProps) {
+  const isMobile = useMediaQuery('(max-width: 62em)');
   const artistService = services.find(({productId}) => {
     return productId.toString() === parseGid(product.id).id;
   });
@@ -24,7 +26,7 @@ export function ArtistProduct({product, services}: ArtistProductProps) {
   );
 
   const rightSection = artistService?.price && (
-    <Badge variant="light" color="gray" size="lg">
+    <Badge variant="light" color="gray" size={isMobile ? 'sm' : 'lg'}>
       <Money data={artistService?.price as any} />
     </Badge>
   );

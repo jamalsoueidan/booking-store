@@ -1,4 +1,5 @@
 .card {
+  padding: var(--mantine-spacing-xs);
   transition: transform 150ms ease, box-shadow 150ms ease;
 
   @media (min-width: $mantine-breakpoint-md) {
