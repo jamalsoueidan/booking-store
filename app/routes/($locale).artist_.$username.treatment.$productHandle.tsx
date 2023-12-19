@@ -3,7 +3,6 @@ import {json, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
 import type {ProductVariantFragment} from 'storefrontapi.generated';
 
 import {
-  ActionIcon,
   Anchor,
   AspectRatio,
   Avatar,
@@ -14,6 +13,7 @@ import {
   Divider,
   Flex,
   Group,
+  Stack,
   Text,
   Title,
   rem,
@@ -111,28 +111,22 @@ export default function Product() {
         <Card
           radius={isMobile ? 0 : '25px 25px 0 0'}
           withBorder={!isMobile}
+          p={isMobile ? 'sm' : 'md'}
           mih={`calc(100vh - ${isMobile ? 58 : 144}px)`}
         >
           <Card.Section bg="rgba(168, 139, 248, 0.2)">
-            <Box p={rem(isMobile ? 16 : 28)}>
+            <Stack gap={isMobile ? 'xs' : 'sm'} p={rem(isMobile ? 16 : 28)}>
               <Anchor
                 component={Link}
                 to={`/artist/${artist.username}`}
                 c="black"
                 underline="never"
               >
-                <Group gap="0">
-                  <ActionIcon
-                    variant="transparent"
-                    size="xl"
-                    aria-label="Back"
-                    color="black"
-                  >
-                    <IconArrowLeft
-                      style={{width: '70%', height: '70%'}}
-                      stroke={1.5}
-                    />
-                  </ActionIcon>
+                <Group gap={isMobile ? '2px' : 'xs'}>
+                  <IconArrowLeft
+                    style={{width: '24px', height: '24px'}}
+                    stroke={1.5}
+                  />
                   <Text>{artist.fullname}</Text>
                 </Group>
               </Anchor>
@@ -148,7 +142,7 @@ export default function Product() {
                   radius="100%"
                 />
               </Flex>
-            </Box>
+            </Stack>
           </Card.Section>
           <Card.Section>
             <Flex justify="space-between">
