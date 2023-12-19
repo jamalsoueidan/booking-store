@@ -21,6 +21,7 @@ import {SubmitButton} from '~/components/form/SubmitButton';
 
 import {IconAt, IconCheck, IconExclamationCircle} from '@tabler/icons-react';
 import {type z} from 'zod';
+import {AccountContent} from '~/components/account/AccountContent';
 import {AccountTitle} from '~/components/account/AccountTitle';
 import {MultiTags} from '~/components/form/MultiTags';
 import {getBookingShopifyApi} from '~/lib/api/bookingShopifyApi';
@@ -203,123 +204,128 @@ export default function AccountBusiness() {
     <>
       <AccountTitle heading="Register selvstændig" />
 
-      <Text mb="md">
-        Du er igang med at register dig på bySisters som selvstændig
-        skønhedsekspert, det betyder at du nu kan modtag bookings fra kunder der
-        er interesseret i din ydelser som du tilbyder via bysisters.dk
-      </Text>
+      <AccountContent>
+        <Text mb="md">
+          Du er igang med at register dig på bySisters som selvstændig
+          skønhedsekspert, det betyder at du nu kan modtag bookings fra kunder
+          der er interesseret i din ydelser som du tilbyder via bysisters.dk
+        </Text>
 
-      <Form method="post" {...form.props}>
-        <Stack gap="md">
-          <TextInput
-            label="Vælge en profilnavn"
-            {...conform.input(username)}
-            onChange={onChangeUsername}
-            rightSection={
-              fetcher.data?.usernameTaken ? (
-                <IconExclamationCircle
-                  style={{width: rem(20), height: rem(20)}}
-                  color="var(--mantine-color-error)"
-                />
-              ) : (
-                <IconCheck
-                  style={{width: rem(20), height: rem(20)}}
-                  color="var(--mantine-color-green-filled)"
-                />
-              )
-            }
-          />
+        <Form method="post" {...form.props}>
+          <Stack gap="md">
+            <TextInput
+              label="Vælge en profilnavn"
+              {...conform.input(username)}
+              onChange={onChangeUsername}
+              rightSection={
+                fetcher.data?.usernameTaken ? (
+                  <IconExclamationCircle
+                    style={{width: rem(20), height: rem(20)}}
+                    color="var(--mantine-color-error)"
+                  />
+                ) : (
+                  <IconCheck
+                    style={{width: rem(20), height: rem(20)}}
+                    color="var(--mantine-color-green-filled)"
+                  />
+                )
+              }
+            />
 
-          <Radio.Group
-            label="Hvad er din køn?"
-            withAsterisk
-            {...conform.input(gender)}
-          >
-            <Group mt="xs">
-              <Radio value="woman" label="Kvinde" />
+            <Radio.Group
+              label="Hvad er din køn?"
+              withAsterisk
+              {...conform.input(gender)}
+            >
+              <Group mt="xs">
+                <Radio value="woman" label="Kvinde" />
 
-              <Radio value="man" label="Mand" />
-            </Group>
-          </Radio.Group>
+                <Radio value="man" label="Mand" />
+              </Group>
+            </Radio.Group>
 
-          <MultiTags
-            field={professions}
-            data={professionOptions}
-            name="professions"
-            label="Professioner"
-            placeholder="Vælg professioner"
-          />
+            <MultiTags
+              field={professions}
+              data={professionOptions}
+              name="professions"
+              label="Professioner"
+              placeholder="Vælg professioner"
+            />
 
-          <TextInput label="Års erfaring" {...conform.input(yearsExperience)} />
+            <TextInput
+              label="Års erfaring"
+              {...conform.input(yearsExperience)}
+            />
 
-          <MultiTags
-            field={specialties}
-            data={specialityOptions}
-            name="specialties"
-            label="Hvad er dine specialer?"
-            placeholder="Vælge special(er)?"
-          />
+            <MultiTags
+              field={specialties}
+              data={specialityOptions}
+              name="specialties"
+              label="Hvad er dine specialer?"
+              placeholder="Vælge special(er)?"
+            />
 
-          <MultiTags
-            field={speaks}
-            data={[
-              {label: 'Dansk', value: 'danish'},
-              {label: 'Engelsk', value: 'english'},
-            ]}
-            name="speaks"
-            label="Hvilken sprog taler du"
-            placeholder="Vælge sprog"
-          />
+            <MultiTags
+              field={speaks}
+              data={[
+                {label: 'Dansk', value: 'danish'},
+                {label: 'Engelsk', value: 'english'},
+              ]}
+              name="speaks"
+              label="Hvilken sprog taler du"
+              placeholder="Vælge sprog"
+            />
 
-          <TextInput
-            label="Skriv kort beskrivelse"
-            {...conform.input(shortDescription)}
-          />
-          <Textarea
-            label="Om mig"
-            placeholder="Fortæl om dig selv"
-            {...conform.input(aboutMe)}
-            error={aboutMe.error && 'Udfyld venligst din biografi'}
-            minRows={10}
-          />
+            <TextInput
+              label="Skriv kort beskrivelse"
+              {...conform.input(shortDescription)}
+            />
+            <Textarea
+              label="Om mig"
+              placeholder="Fortæl om dig selv"
+              {...conform.input(aboutMe)}
+              error={aboutMe.error && 'Udfyld venligst din biografi'}
+              minRows={10}
+            />
 
-          <TextInput
-            leftSectionPointerEvents="none"
-            leftSection={<IconAt style={{width: rem(16), height: rem(16)}} />}
-            label="Instagram"
-            placeholder="Instagram profil"
-            {...conform.input(instagram)}
-          />
+            <TextInput
+              leftSectionPointerEvents="none"
+              leftSection={<IconAt style={{width: rem(16), height: rem(16)}} />}
+              label="Instagram"
+              placeholder="Instagram profil"
+              {...conform.input(instagram)}
+            />
 
-          <TextInput
-            leftSectionPointerEvents="none"
-            leftSection={<IconAt style={{width: rem(16), height: rem(16)}} />}
-            label="Twitter (X)"
-            placeholder="Twitter (X)"
-            {...conform.input(x)}
-          />
+            <TextInput
+              leftSectionPointerEvents="none"
+              leftSection={<IconAt style={{width: rem(16), height: rem(16)}} />}
+              label="Twitter (X)"
+              placeholder="Twitter (X)"
+              {...conform.input(x)}
+            />
 
-          <TextInput
-            leftSectionPointerEvents="none"
-            leftSection={<IconAt style={{width: rem(16), height: rem(16)}} />}
-            label="Facebook"
-            placeholder="Facebook profil"
-            {...conform.input(facebook)}
-          />
+            <TextInput
+              leftSectionPointerEvents="none"
+              leftSection={<IconAt style={{width: rem(16), height: rem(16)}} />}
+              label="Facebook"
+              placeholder="Facebook profil"
+              {...conform.input(facebook)}
+            />
 
-          <TextInput
-            leftSectionPointerEvents="none"
-            leftSection={<IconAt style={{width: rem(16), height: rem(16)}} />}
-            label="Youtube"
-            placeholder="Youtube profil"
-            {...conform.input(youtube)}
-          />
+            <TextInput
+              leftSectionPointerEvents="none"
+              leftSection={<IconAt style={{width: rem(16), height: rem(16)}} />}
+              label="Youtube"
+              placeholder="Youtube profil"
+              {...conform.input(youtube)}
+            />
 
-          <div>
-            <SubmitButton>Opret en business konto</SubmitButton>
-          </div>
-        </Stack>
-      </Form>
+            <div>
+              <SubmitButton>Opret en business konto</SubmitButton>
+            </div>
+          </Stack>
+        </Form>
+      </AccountContent>
     </>
   );
 }

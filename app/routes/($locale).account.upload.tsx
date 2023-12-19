@@ -1,12 +1,4 @@
-import {
-  Alert,
-  Button,
-  Divider,
-  FileInput,
-  Stack,
-  Title,
-  rem,
-} from '@mantine/core';
+import {Alert, Button, FileInput, Stack, rem} from '@mantine/core';
 import {
   useLoaderData,
   useNavigation,
@@ -21,6 +13,8 @@ import {
 } from '@shopify/remix-oxygen';
 import {IconFileCv, IconInfoCircle} from '@tabler/icons-react';
 import {useEffect, useRef, useState} from 'react';
+import {AccountContent} from '~/components/account/AccountContent';
+import {AccountTitle} from '~/components/account/AccountTitle';
 import {getBookingShopifyApi} from '~/lib/api/bookingShopifyApi';
 import {getCustomer} from '~/lib/get-customer';
 import {redirectWithNotification} from '~/lib/show-notification';
@@ -125,48 +119,49 @@ export default function AccountUpload() {
 
   return (
     <>
-      <Title>Skift billed</Title>
-      <Divider my={{base: 'xs', md: 'md'}} />
+      <AccountTitle heading="Skift billed" />
 
-      {imageUploaded ? (
-        <Alert
-          variant="light"
-          color="lime"
-          title="Din profil billed er nu uploaded!"
-          icon={<IconInfoCircle />}
-        >
-          Vi har modtaget dit billed, der går lidt tid før du ser dit billed
-          opdateret.
-        </Alert>
-      ) : (
-        <form
-          method="post"
-          encType="multipart/form-data"
-          onSubmit={handleSubmit}
-          ref={formRef}
-        >
-          <Stack gap="md">
-            <FileInput
-              accept="image/png,image/jpeg"
-              leftSection={
-                <IconFileCv
-                  style={{width: rem(18), height: rem(18)}}
-                  stroke={1.5}
-                />
-              }
-              name="file"
-              onChange={handleFileChange}
-              label="Vælge billed"
-              placeholder="Dit billed"
-              leftSectionPointerEvents="none"
-            />
+      <AccountContent>
+        {imageUploaded ? (
+          <Alert
+            variant="light"
+            color="lime"
+            title="Din profil billed er nu uploaded!"
+            icon={<IconInfoCircle />}
+          >
+            Vi har modtaget dit billed, der går lidt tid før du ser dit billed
+            opdateret.
+          </Alert>
+        ) : (
+          <form
+            method="post"
+            encType="multipart/form-data"
+            onSubmit={handleSubmit}
+            ref={formRef}
+          >
+            <Stack gap="md">
+              <FileInput
+                accept="image/png,image/jpeg"
+                leftSection={
+                  <IconFileCv
+                    style={{width: rem(18), height: rem(18)}}
+                    stroke={1.5}
+                  />
+                }
+                name="file"
+                onChange={handleFileChange}
+                label="Vælge billed"
+                placeholder="Dit billed"
+                leftSectionPointerEvents="none"
+              />
 
-            <Button type="submit" loading={formState === 'submitting'}>
-              {formState === 'submitting' ? 'Uploader...' : 'Skift billed'}
-            </Button>
-          </Stack>
-        </form>
-      )}
+              <Button type="submit" loading={formState === 'submitting'}>
+                {formState === 'submitting' ? 'Uploader...' : 'Skift billed'}
+              </Button>
+            </Stack>
+          </form>
+        )}
+      </AccountContent>
     </>
   );
 }

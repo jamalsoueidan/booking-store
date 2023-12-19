@@ -8,6 +8,7 @@ import {
 import {parseGid} from '@shopify/hydrogen';
 import {json, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
 import {IconCheck, IconX} from '@tabler/icons-react';
+import {AccountContent} from '~/components/account/AccountContent';
 import {AccountTitle} from '~/components/account/AccountTitle';
 import {getBookingShopifyApi} from '~/lib/api/bookingShopifyApi';
 import {type CustomerStatus} from '~/lib/api/model';
@@ -48,17 +49,19 @@ export default function AccountIndex() {
     <>
       <AccountTitle heading={heading} />
 
-      {isOfficialBusinessPartner ? (
-        <div className="flex items-center justify-center mb-6 bg-green-100 rounded">
-          <p className="m-4 text-sm text-green-900">
-            Du har nu registeret dig som en selvstændig partner på vores
-            hjemmeside, nu mangler du bare oprette din uge vagtplan og tilføje
-            de ydelser du tilbyder.
-          </p>
-        </div>
-      ) : null}
+      <AccountContent>
+        {isOfficialBusinessPartner ? (
+          <div className="flex items-center justify-center mb-6 bg-green-100 rounded">
+            <p className="m-4 text-sm text-green-900">
+              Du har nu registeret dig som en selvstændig partner på vores
+              hjemmeside, nu mangler du bare oprette din uge vagtplan og tilføje
+              de ydelser du tilbyder.
+            </p>
+          </div>
+        ) : null}
 
-      {isBusiness ? <BusinessAccount status={status} /> : <BuyerAccount />}
+        {isBusiness ? <BusinessAccount status={status} /> : <BuyerAccount />}
+      </AccountContent>
     </>
   );
 }

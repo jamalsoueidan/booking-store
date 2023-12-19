@@ -13,6 +13,7 @@ import {
   type LoaderFunctionArgs,
 } from '@shopify/remix-oxygen';
 import type {CustomerFragment} from 'storefrontapi.generated';
+import {AccountContent} from '~/components/account/AccountContent';
 import {AccountTitle} from '~/components/account/AccountTitle';
 
 export type ActionResponse = {
@@ -111,54 +112,56 @@ export default function AccountPassword() {
         </Text>
       </AccountTitle>
 
-      <Form method="PUT">
-        <Stack>
-          <TextInput
-            label="Nuværende adgangskode"
-            id="currentPassword"
-            name="currentPassword"
-            type="password"
-            placeholder="Indtast nuværende adgangskode"
-            autoComplete="current-password"
-            aria-label="Nuværende adgangskode"
-            required
-            minLength={8}
-          />
+      <AccountContent>
+        <Form method="PUT">
+          <Stack>
+            <TextInput
+              label="Nuværende adgangskode"
+              id="currentPassword"
+              name="currentPassword"
+              type="password"
+              placeholder="Indtast nuværende adgangskode"
+              autoComplete="current-password"
+              aria-label="Nuværende adgangskode"
+              required
+              minLength={8}
+            />
 
-          <TextInput
-            label="Ny adgangskode"
-            id="newPassword"
-            name="newPassword"
-            type="password"
-            placeholder="Indtast ny adgangskode"
-            aria-label="Ny adgangskode"
-            required
-            minLength={8}
-          />
+            <TextInput
+              label="Ny adgangskode"
+              id="newPassword"
+              name="newPassword"
+              type="password"
+              placeholder="Indtast ny adgangskode"
+              aria-label="Ny adgangskode"
+              required
+              minLength={8}
+            />
 
-          <TextInput
-            label="Bekræft ny adgangskode"
-            id="newPasswordConfirm"
-            name="newPasswordConfirm"
-            type="password"
-            placeholder="Bekræft ny adgangskode"
-            aria-label="Bekræft ny adgangskode"
-            required
-            minLength={8}
-          />
-          <Text size="sm">Adgangskoden skal være mindst 8 tegn.</Text>
+            <TextInput
+              label="Bekræft ny adgangskode"
+              id="newPasswordConfirm"
+              name="newPasswordConfirm"
+              type="password"
+              placeholder="Bekræft ny adgangskode"
+              aria-label="Bekræft ny adgangskode"
+              required
+              minLength={8}
+            />
+            <Text size="sm">Adgangskoden skal være mindst 8 tegn.</Text>
 
-          {action?.error ? (
-            <Text color="red" size="sm">
-              {action.error}
-            </Text>
-          ) : null}
+            {action?.error ? (
+              <Text color="red" size="sm">
+                {action.error}
+              </Text>
+            ) : null}
 
-          <Button type="submit" disabled={state !== 'idle'}>
-            {state !== 'idle' ? 'Opdaterer...' : 'Opdater'}
-          </Button>
-        </Stack>
-      </Form>
+            <Button type="submit" disabled={state !== 'idle'}>
+              {state !== 'idle' ? 'Opdaterer...' : 'Opdater'}
+            </Button>
+          </Stack>
+        </Form>
+      </AccountContent>
     </>
   );
 }

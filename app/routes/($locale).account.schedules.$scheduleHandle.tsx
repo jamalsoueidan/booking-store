@@ -21,7 +21,6 @@ import {parse} from '@conform-to/zod';
 import {
   ActionIcon,
   Checkbox,
-  Divider,
   Flex,
   Menu,
   Select,
@@ -143,7 +142,6 @@ export default function AccountSchedules() {
 
   return (
     <>
-      <Divider my={{base: 'xs', md: 'md'}} />
       <Form method="PUT" {...form.props}>
         <Table mt="lg" withTableBorder>
           <Table.Thead>

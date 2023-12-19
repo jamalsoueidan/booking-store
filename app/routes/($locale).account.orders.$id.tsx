@@ -21,6 +21,7 @@ import {json, redirect, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
 import {format} from 'date-fns';
 import {da} from 'date-fns/locale';
 import type {OrderLineItemFullFragment} from 'storefrontapi.generated';
+import {AccountContent} from '~/components/account/AccountContent';
 import {AccountTitle} from '~/components/account/AccountTitle';
 import ModalBooking from '~/components/account/ModalBooking';
 import {isEqualGid} from '~/data/isEqualGid';
@@ -100,98 +101,100 @@ export default function OrderRoute() {
         heading={<>Ordre {order.name}</>}
       />
 
-      <Stack gap="lg">
-        <Text c="dimmed" size="sm">
-          Købt {format(new Date(order.processedAt!), 'PPPP', {locale: da})}
-          <Badge ml="xs">{order.fulfillmentStatus}</Badge>
-        </Text>
+      <AccountContent>
+        <Stack gap="lg">
+          <Text c="dimmed" size="sm">
+            Købt {format(new Date(order.processedAt!), 'PPPP', {locale: da})}
+            <Badge ml="xs">{order.fulfillmentStatus}</Badge>
+          </Text>
 
-        {treatmentOrder ? (
-          <TreatmentTable
-            treatmentOrder={treatmentOrder}
-            lineItems={lineItems}
-          />
-        ) : null}
+          {treatmentOrder ? (
+            <TreatmentTable
+              treatmentOrder={treatmentOrder}
+              lineItems={lineItems}
+            />
+          ) : null}
 
-        {productsLineItems.length > 0 ? (
-          <Card withBorder>
-            <Title order={3} mb="md">
-              Produkter:
-            </Title>
-            <Table>
-              <Table.Thead>
-                <Table.Tr>
-                  <Table.Th>Billed:</Table.Th>
-                  <Table.Th>Beskrivelse</Table.Th>
-                  <Table.Th> Total</Table.Th>
-                </Table.Tr>
-              </Table.Thead>
-              <Table.Tbody>
-                {productsLineItems.map((l) => (
-                  <OrderLineRow key={l.title + l.quantity} lineItem={l} />
-                ))}
-              </Table.Tbody>
-            </Table>
-          </Card>
-        ) : null}
+          {productsLineItems.length > 0 ? (
+            <Card withBorder>
+              <Title order={3} mb="md">
+                Produkter:
+              </Title>
+              <Table>
+                <Table.Thead>
+                  <Table.Tr>
+                    <Table.Th>Billed:</Table.Th>
+                    <Table.Th>Beskrivelse</Table.Th>
+                    <Table.Th> Total</Table.Th>
+                  </Table.Tr>
+                </Table.Thead>
+                <Table.Tbody>
+                  {productsLineItems.map((l) => (
+                    <OrderLineRow key={l.title + l.quantity} lineItem={l} />
+                  ))}
+                </Table.Tbody>
+              </Table>
+            </Card>
+          ) : null}
 
-        <SimpleGrid cols={{base: 1, md: 2}}>
-          <Card shadow="0" padding="md" radius="md" withBorder>
-            <Text fw={500} size="lg" mb="md">
-              Summary
-            </Text>
+          <SimpleGrid cols={{base: 1, md: 2}}>
+            <Card shadow="0" padding="md" radius="md" withBorder>
+              <Text fw={500} size="lg" mb="md">
+                Summary
+              </Text>
 
-            {((discountValue && discountValue.amount) ||
-              discountPercentage) && (
-              <Flex justify="space-between" mb="cs">
-                <Text>Discounts</Text>
+              {((discountValue && discountValue.amount) ||
+                discountPercentage) && (
+                <Flex justify="space-between" mb="cs">
+                  <Text>Discounts</Text>
 
-                {discountPercentage ? (
-                  <Text>-{discountPercentage}% OFF</Text>
-                ) : (
-                  discountValue && <Money data={discountValue!} as={Text} />
-                )}
+                  {discountPercentage ? (
+                    <Text>-{discountPercentage}% OFF</Text>
+                  ) : (
+                    discountValue && <Money data={discountValue!} as={Text} />
+                  )}
+                </Flex>
+              )}
+
+              <Flex justify="space-between" mb="xs">
+                <Text>Subtotal</Text>
+                <Money data={order.subtotalPriceV2!} as={Text} />
               </Flex>
-            )}
-
-            <Flex justify="space-between" mb="xs">
-              <Text>Subtotal</Text>
-              <Money data={order.subtotalPriceV2!} as={Text} />
-            </Flex>
-            <Flex justify="space-between" mb="xs">
-              <Text>Moms</Text>
-              <Money data={order.totalTaxV2!} as={Text} />
-            </Flex>
-            <Flex justify="space-between">
-              <Text>Total</Text>
-              <Money data={order.totalPriceV2!} as={Text} />
-            </Flex>
-          </Card>
-          <Card shadow="0" padding="md" radius="md" withBorder>
-            <Text fw={500} size="lg" mb="md">
-              Forsendelse
-            </Text>
-            {order?.shippingAddress ? (
-              <>
-                <Text>
-                  {order.shippingAddress.firstName &&
-                    order.shippingAddress.firstName + ' '}
-                  {order.shippingAddress.lastName}
-                </Text>
-                {order?.shippingAddress?.formatted ? (
-                  order.shippingAddress.formatted.map((line: string) => (
-                    <Text key={line}>{line}</Text>
-                  ))
-                ) : (
-                  <></>
-                )}
-              </>
-            ) : (
-              <Text>Ingen forsendelse</Text>
-            )}
-          </Card>
-        </SimpleGrid>
-      </Stack>
+              <Flex justify="space-between" mb="xs">
+                <Text>Moms</Text>
+                <Money data={order.totalTaxV2!} as={Text} />
+              </Flex>
+              <Flex justify="space-between">
+                <Text>Total</Text>
+                <Money data={order.totalPriceV2!} as={Text} />
+              </Flex>
+            </Card>
+            <Card shadow="0" padding="md" radius="md" withBorder>
+              <Text fw={500} size="lg" mb="md">
+                Forsendelse
+              </Text>
+              {order?.shippingAddress ? (
+                <>
+                  <Text>
+                    {order.shippingAddress.firstName &&
+                      order.shippingAddress.firstName + ' '}
+                    {order.shippingAddress.lastName}
+                  </Text>
+                  {order?.shippingAddress?.formatted ? (
+                    order.shippingAddress.formatted.map((line: string) => (
+                      <Text key={line}>{line}</Text>
+                    ))
+                  ) : (
+                    <></>
+                  )}
+                </>
+              ) : (
+                <Text>Ingen forsendelse</Text>
+              )}
+            </Card>
+          </SimpleGrid>
+        </Stack>
+      </AccountContent>
     </>
   );
 }
