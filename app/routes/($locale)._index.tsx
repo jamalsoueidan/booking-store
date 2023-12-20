@@ -81,15 +81,23 @@ export default function Homepage() {
           backgroundColor: '#ebedff',
           marginTop: '-70px',
           paddingTop: '70px',
-          //borderBottomRightRadius: '40% 15%',
-          //borderBottomLeftRadius: '40% 15%',
+          borderBottomRightRadius: '40% 15%',
+          borderBottomLeftRadius: '40% 15%',
         }}
       >
-        <FrontpageHero />
+        <Container size="lg" py={0} h="100%">
+          <FrontpageHero />
+        </Container>
       </div>
-      <Container size="xl" style={{marginTop: '-65px'}}>
-        <Card bg="white" shadow="lg" radius="lg" px="xl" pt="lg">
-          <Flex gap="xl">
+      <Container size="lg" style={{marginTop: '-80px'}}>
+        <Card
+          bg="white"
+          shadow="lg"
+          radius="lg"
+          px={isMobile ? 'sm' : 'xl'}
+          pt={isMobile ? 'md' : 'lg'}
+        >
+          <Flex gap={isMobile ? 'sm' : 'xl'} wrap="wrap">
             {data.collections.nodes.map((c) => (
               <Anchor
                 component={Link}
@@ -131,7 +139,7 @@ export default function Homepage() {
           </Flex>
         </Card>
       </Container>
-      <Container size="xl" py="60px">
+      <Container size="lg" py="60px">
         <Stack gap={rem(64)}>
           <FeaturedArtists artists={data.artists} />
           <RecommendedTreatments
