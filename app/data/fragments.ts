@@ -11,6 +11,14 @@ export const COLLECTION_ITEM_FRAGMENT = `#graphql
       width
       height
     }
+    icon:  metafield(namespace:"custom",  key: "icon") {
+      type
+      value
+    }
+    color:  metafield(namespace:"custom",  key: "color") {
+      type
+      value
+    }
   }
 ` as const;
 
