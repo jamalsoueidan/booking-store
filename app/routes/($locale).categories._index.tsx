@@ -81,7 +81,7 @@ function CollectionsGrid({collections}: {collections: CollectionFragment[]}) {
   );
 }
 
-const COLLECTIONS_QUERY = `#graphql
+export const COLLECTIONS_QUERY = `#graphql
   ${COLLECTION_ITEM_FRAGMENT}
   query StoreTreatment(
     $country: CountryCode

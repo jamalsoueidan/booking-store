@@ -1,15 +1,20 @@
 import {Carousel} from '@mantine/carousel';
 import {
+  ActionIcon,
+  Anchor,
   Box,
+  Card,
   Container,
+  Flex,
   Group,
+  Image,
   Skeleton,
   Stack,
   Text,
   Title,
   rem,
 } from '@mantine/core';
-import {Await, useLoaderData, type MetaFunction} from '@remix-run/react';
+import {Await, Link, useLoaderData, type MetaFunction} from '@remix-run/react';
 import {parseGid} from '@shopify/hydrogen';
 import {defer, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
 import {Suspense} from 'react';
@@ -22,9 +27,12 @@ import {ProductCard} from '~/components/ProductCard';
 import {ArtistCard} from '~/components/artists/ArtistCard';
 import {TreatmentCard} from '~/components/treatment/TreatmentCard';
 
+import {useMediaQuery} from '@mantine/hooks';
 import {PRODUCT_ITEM_FRAGMENT} from '~/data/fragments';
 import {getBookingShopifyApi} from '~/lib/api/bookingShopifyApi';
 import type {ProductsGetUsersImage, UsersListResponse} from '~/lib/api/model';
+import {parseTE} from '~/lib/clean';
+import {COLLECTIONS_QUERY} from './($locale).categories._index';
 
 export const meta: MetaFunction = () => {
   return [{title: 'BySisters | Home'}];
@@ -49,20 +57,81 @@ export async function loader({context}: LoaderFunctionArgs) {
     sortOrder: 'desc',
   });
 
+  const {collections} = await context.storefront.query(COLLECTIONS_QUERY, {
+    variables: {first: 10},
+  });
+
   return defer({
     recommendedProducts,
     recommendedTreatmentsProductsUsers,
     recommendedTreatments,
+    collections,
     artists,
   });
 }
 
 export default function Homepage() {
   const data = useLoaderData<typeof loader>();
+  const isMobile = useMediaQuery('(max-width: 62em)');
+
   return (
     <>
-      <FrontpageHero />
-      <Container size="xl" py="xl">
+      <div
+        style={{
+          backgroundColor: '#ebedff',
+          marginTop: '-70px',
+          paddingTop: '70px',
+          //borderBottomRightRadius: '40% 15%',
+          //borderBottomLeftRadius: '40% 15%',
+        }}
+      >
+        <FrontpageHero />
+      </div>
+      <Container size="xl" style={{marginTop: '-65px'}}>
+        <Card bg="white" shadow="lg" radius="lg" px="xl" pt="lg">
+          <Flex gap="xl">
+            {data.collections.nodes.map((c) => (
+              <Anchor
+                component={Link}
+                to={`/categories/${c.handle}`}
+                key={c.id}
+                style={{flex: 1}}
+              >
+                <Flex
+                  justify="center"
+                  align="center"
+                  direction="column"
+                  gap="sm"
+                >
+                  <ActionIcon
+                    variant="light"
+                    color={c.color?.value || 'yellow'}
+                    size={rem(isMobile ? 30 : 60)}
+                    radius="xl"
+                    aria-label="Settings"
+                  >
+                    <Image
+                      src={`/categories/${
+                        c.icon?.value || 'reshot-icon-beauty-mirror'
+                      }.svg`}
+                      alt="ok"
+                    />
+                  </ActionIcon>
+                  <Text
+                    c="black"
+                    fw="500"
+                    fz={isMobile ? 12 : undefined}
+                    lineClamp={1}
+                  >
+                    {parseTE(c.title)}
+                  </Text>
+                </Flex>
+              </Anchor>
+            ))}
+          </Flex>
+        </Card>
+      </Container>
+      <Container size="xl" py="60px">
         <Stack gap={rem(64)}>
           <FeaturedArtists artists={data.artists} />
           <RecommendedTreatments

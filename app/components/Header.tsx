@@ -37,7 +37,7 @@ export function Header({header, isLoggedIn, cart}: HeaderProps) {
     useDisclosure(false);
 
   return (
-    <Box>
+    <Box style={{zIndex: 2}}>
       <header className={classes.header}>
         <Flex h="100%" align="center" justify="space-between">
           <NavLink prefetch="intent" to="/" style={activeLinkStyle} end>
