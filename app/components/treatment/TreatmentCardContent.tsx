@@ -1,10 +1,10 @@
 import {
   AspectRatio,
+  Card,
   Divider,
   Flex,
   Group,
   Text,
-  Title,
   rem,
 } from '@mantine/core';
 import {Image} from '@shopify/hydrogen';
@@ -36,31 +36,32 @@ export function TreatmentCardContent({
           />
         </AspectRatio>
       )}
-      <Title
-        order={3}
+      <Text
         className={classes.title}
-        mt={product.featuredImage ? 'sm' : undefined}
-        size={rem(18)}
-        mb={rem(4)}
+        size={rem(20)}
         fw={500}
+        m="sm"
+        mb="4px"
+        lineClamp={1}
       >
         {product.title}
-      </Title>
+      </Text>
       <Flex
         gap="sm"
         direction="column"
         justify="flex-start"
         style={{flexGrow: 1, position: 'relative'}}
+        mih="38px"
       >
-        <Text c="dimmed" size="xs" tt="uppercase" fw={400} lineClamp={2}>
+        <Text c="dimmed" size="xs" fw={400} lineClamp={2} mx="sm">
           {description || product.description || 'ingen beskrivelse'}
         </Text>
       </Flex>
-      <div className={classes.unset}>
-        <Divider my={{base: 'xs', md: 'md'}} />
-      </div>
+      <Card.Section>
+        <Divider mt="sm" />
+      </Card.Section>
 
-      <Group justify="space-between">
+      <Group justify="space-between" m="sm">
         {leftSection}
         {rightSection}
       </Group>

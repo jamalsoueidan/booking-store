@@ -103,7 +103,7 @@ function ProductsGrid({
   productsUsers: ProductsGetUsersImage[];
 }) {
   return (
-    <SimpleGrid cols={{base: 1, md: 4}} spacing={0}>
+    <SimpleGrid cols={{base: 1, md: 4}} spacing="lg">
       {products.map((product, index) => {
         const productUsers = productsUsers.find(
           (p) => p.productId.toString() === parseGid(product.id).id,

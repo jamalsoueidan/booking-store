@@ -40,7 +40,7 @@ export function Header({header, isLoggedIn, cart}: HeaderProps) {
     <Box style={{zIndex: 2}}>
       <header className={classes.header}>
         <Flex h="100%" align="center" justify="space-between">
-          <NavLink prefetch="intent" to="/" style={activeLinkStyle} end>
+          <NavLink prefetch="intent" to="/" end>
             <img
               src={logo}
               alt={shop.name}
@@ -55,7 +55,7 @@ export function Header({header, isLoggedIn, cart}: HeaderProps) {
               primaryDomainUrl={header.shop.primaryDomain.url}
             />
           </Group>
-          <Group visibleFrom="md">
+          <Group visibleFrom="md" w="150px" justify="flex-end">
             <HeaderCtas isLoggedIn={isLoggedIn} cart={cart} />
           </Group>
           <Burger

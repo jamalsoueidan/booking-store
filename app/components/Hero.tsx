@@ -4,7 +4,7 @@ import {Link} from '@remix-run/react';
 import image from '../../public/beauty-image.png';
 import classes from './Hero.module.css';
 
-export function FrontpageHero() {
+export function Hero() {
   const isMobile = useMediaQuery('(max-width: 62em)');
 
   return (
@@ -23,15 +23,15 @@ export function FrontpageHero() {
       >
         <Title
           order={1}
-          size={rem(isMobile ? 38 : 60)}
+          size={rem(isMobile ? 26 : 60)}
           ta="center"
+          lts="1px"
           style={{lineHeight: isMobile ? '40px' : '50px'}}
         >
-          Din Skønhed
-          <br />
+          Din Skønhed {isMobile ? ' - ' : <br />}
           Vores Passion
         </Title>
-        <Text c="dimmed" size={rem(isMobile ? 22 : 30)} ta="center">
+        <Text c="dimmed" size={rem(isMobile ? 20 : 30)} ta="center" lts="1px">
           Book skønhedstjenester fra hundredvis af skønhedsprofessionelle i
           nærheden af dig.
         </Text>

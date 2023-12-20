@@ -43,16 +43,16 @@ export function TreatmentCard({
     <Card
       key={product.handle}
       withBorder
-      radius={0}
-      padding="md"
+      radius="xl"
       className={classes.card}
       component={Link}
+      p="0"
       to={`/treatments/${product.handle}`}
     >
       <TreatmentCardContent
         product={product}
         rightSection={
-          <Button variant="default" size="xs">
+          <Button variant="default" size="xs" radius="lg">
             Se behandling
           </Button>
         }

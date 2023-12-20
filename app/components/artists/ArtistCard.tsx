@@ -1,9 +1,9 @@
-import {Avatar, Button, Paper, Text} from '@mantine/core';
+import {Avatar, Button, Card, Text} from '@mantine/core';
 import {Link} from '@remix-run/react';
 import type {User} from '~/lib/api/model';
 
 export const ArtistCard = ({artist}: {artist: User}) => (
-  <Paper
+  <Card
     radius="md"
     withBorder
     p="lg"
@@ -27,5 +27,5 @@ export const ArtistCard = ({artist}: {artist: User}) => (
     <Button variant="default" fullWidth mt="md">
       Vis profile
     </Button>
-  </Paper>
+  </Card>
 );

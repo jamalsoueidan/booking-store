@@ -22,7 +22,7 @@ import type {
   RecommendedProductsQuery,
   RecommendedTreatmentsQuery,
 } from 'storefrontapi.generated';
-import {FrontpageHero} from '~/components/Hero';
+import {Hero} from '~/components/Hero';
 import {ProductCard} from '~/components/ProductCard';
 import {ArtistCard} from '~/components/artists/ArtistCard';
 import {TreatmentCard} from '~/components/treatment/TreatmentCard';
@@ -86,7 +86,7 @@ export default function Homepage() {
         }}
       >
         <Container size="lg" py={0} h="100%">
-          <FrontpageHero />
+          <Hero />
         </Container>
       </div>
       <Container size="lg" style={{marginTop: '-80px'}}>
@@ -122,6 +122,8 @@ export default function Homepage() {
                       src={`/categories/${
                         c.icon?.value || 'reshot-icon-beauty-mirror'
                       }.svg`}
+                      h="80%"
+                      w="80%"
                       alt="ok"
                     />
                   </ActionIcon>
@@ -139,56 +141,57 @@ export default function Homepage() {
           </Flex>
         </Card>
       </Container>
-      <Container size="lg" py="60px">
-        <Stack gap={rem(64)}>
-          <FeaturedArtists artists={data.artists} />
-          <RecommendedTreatments
-            products={data.recommendedTreatments}
-            productsUsers={data.recommendedTreatmentsProductsUsers}
-          />
-          <RecommendedProducts products={data.recommendedProducts} />
-        </Stack>
-      </Container>
+
+      <Stack>
+        <FeaturedArtists artists={data.artists} />
+        <RecommendedTreatments
+          products={data.recommendedTreatments}
+          productsUsers={data.recommendedTreatmentsProductsUsers}
+        />
+        <RecommendedProducts products={data.recommendedProducts} />
+      </Stack>
     </>
   );
 }
 
 function FeaturedArtists({artists}: {artists: Promise<UsersListResponse>}) {
+  const isMobile = useMediaQuery('(max-width: 62em)');
   if (!artists) return null;
   return (
-    <Stack gap="lg">
-      <span>
-        <Title order={2} fw={400} mb="xs">
-          Skønhedseksperter
-        </Title>
-        <Text c="dimmed">Vælge en af skønhedseksperter.</Text>
-      </span>
-      <Suspense
-        fallback={
-          <Group>
-            <Skeleton height={50} mb="xl" />
-          </Group>
-        }
-      >
-        <Await resolve={artists}>
-          {({payload}) => (
-            <Carousel
-              slideSize={{base: '75%', md: '23%', sm: '33.333%'}}
-              slideGap="sm"
-              align="start"
-              containScroll="trimSnaps"
-              withControls={false}
-            >
-              {payload.results.map((artist) => (
-                <Carousel.Slide key={artist.customerId}>
-                  <ArtistCard artist={artist} />
-                </Carousel.Slide>
-              ))}
-            </Carousel>
-          )}
-        </Await>
-      </Suspense>
-    </Stack>
+    <Box>
+      <Container size="lg" pt={isMobile ? '50px' : '100px'} pb="40px">
+        <Stack gap="lg">
+          <Title order={2} fw={600} c="orange" lts="1px">
+            Skønhedseksperter
+          </Title>
+          <Suspense
+            fallback={
+              <Group>
+                <Skeleton height={50} />
+              </Group>
+            }
+          >
+            <Await resolve={artists}>
+              {({payload}) => (
+                <Carousel
+                  slideSize={{base: '75%', md: '25%'}}
+                  slideGap="sm"
+                  align="start"
+                  containScroll="trimSnaps"
+                  withControls={false}
+                >
+                  {payload.results.map((artist) => (
+                    <Carousel.Slide key={artist.customerId}>
+                      <ArtistCard artist={artist} />
+                    </Carousel.Slide>
+                  ))}
+                </Carousel>
+              )}
+            </Await>
+          </Suspense>
+        </Stack>
+      </Container>
+    </Box>
   );
 }
 
@@ -200,46 +203,47 @@ function RecommendedTreatments({
   productsUsers: ProductsGetUsersImage[];
 }) {
   return (
-    <Stack gap="0">
-      <span>
-        <Title order={2} fw={400} mb="xs">
-          Anbefalt behandlinger
-        </Title>
-        <Text c="dimmed">Behandlinger du kan være interesseret i.</Text>
-      </span>
+    <Box bg="pink.1">
+      <Container size="lg">
+        <Stack gap="lg" py="xl">
+          <Title order={2} fw={500} lts="1px">
+            Anbefalt behandlinger
+          </Title>
 
-      <Suspense fallback={<div>Loading...</div>}>
-        <Await resolve={products}>
-          {({products}) => (
-            <Carousel
-              slideSize={{base: '75%', md: '23%', sm: '33.333%'}}
-              slideGap="0"
-              align="start"
-              containScroll="trimSnaps"
-              withControls={false}
-            >
-              {products.nodes.map((product) => {
-                const productUsers = productsUsers.find(
-                  (p) => p.productId.toString() === parseGid(product.id).id,
-                );
+          <Suspense fallback={<div>Loading...</div>}>
+            <Await resolve={products}>
+              {({products}) => (
+                <Carousel
+                  slideSize={{base: '75%', md: '25%'}}
+                  slideGap="0"
+                  align="start"
+                  containScroll="trimSnaps"
+                  withControls={false}
+                >
+                  {products.nodes.map((product) => {
+                    const productUsers = productsUsers.find(
+                      (p) => p.productId.toString() === parseGid(product.id).id,
+                    );
 
-                return (
-                  <Carousel.Slide key={product.id}>
-                    <Box px={rem(6)} py="md">
-                      <TreatmentCard
-                        product={product}
-                        productUsers={productUsers}
-                        loading={'eager'}
-                      />
-                    </Box>
-                  </Carousel.Slide>
-                );
-              })}
-            </Carousel>
-          )}
-        </Await>
-      </Suspense>
-    </Stack>
+                    return (
+                      <Carousel.Slide key={product.id}>
+                        <Box px={rem(6)}>
+                          <TreatmentCard
+                            product={product}
+                            productUsers={productUsers}
+                            loading={'eager'}
+                          />
+                        </Box>
+                      </Carousel.Slide>
+                    );
+                  })}
+                </Carousel>
+              )}
+            </Await>
+          </Suspense>
+        </Stack>
+      </Container>
+    </Box>
   );
 }
 
@@ -249,35 +253,36 @@ function RecommendedProducts({
   products: Promise<RecommendedProductsQuery>;
 }) {
   return (
-    <Stack gap="0">
-      <span>
-        <Title order={2} fw={400} mb="xs">
-          Anbefalt produkter
-        </Title>
-        <Text c="dimmed">Nogle produkter som kunder har købt.</Text>
-      </span>
-      <Suspense fallback={<div>Loading...</div>}>
-        <Await resolve={products}>
-          {({products}) => (
-            <Carousel
-              slideSize={{base: '75%', md: '23%', sm: '33.333%'}}
-              slideGap="0"
-              align="start"
-              containScroll="trimSnaps"
-              withControls={false}
-            >
-              {products.nodes.map((product) => (
-                <Carousel.Slide key={product.id}>
-                  <Box px={rem(6)} py="md">
-                    <ProductCard product={product} loading="eager" />
-                  </Box>
-                </Carousel.Slide>
-              ))}
-            </Carousel>
-          )}
-        </Await>
-      </Suspense>
-    </Stack>
+    <Box>
+      <Container size="lg">
+        <Stack gap="lg" py="xl">
+          <Title order={2} fw={500} lts="1px">
+            Anbefalt produkter
+          </Title>
+          <Suspense fallback={<div>Loading...</div>}>
+            <Await resolve={products}>
+              {({products}) => (
+                <Carousel
+                  slideSize={{base: '75%', md: '28%'}}
+                  slideGap="0"
+                  align="start"
+                  containScroll="trimSnaps"
+                  withControls={false}
+                >
+                  {products.nodes.map((product) => (
+                    <Carousel.Slide key={product.id}>
+                      <Box px={rem(6)}>
+                        <ProductCard product={product} loading="eager" />
+                      </Box>
+                    </Carousel.Slide>
+                  ))}
+                </Carousel>
+              )}
+            </Await>
+          </Suspense>
+        </Stack>
+      </Container>
+    </Box>
   );
 }
 
