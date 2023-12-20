@@ -20,7 +20,7 @@ export function ArtistProduct({product, services}: ArtistProductProps) {
   });
 
   const leftSection = (
-    <Text c="dimmed" size="xs" tt="uppercase" fw={700}>
+    <Text c="dimmed" fz={isMobile ? 11 : 'xs'} tt="uppercase" fw={700}>
       {durationToTime(artistService?.duration ?? 0)}
     </Text>
   );

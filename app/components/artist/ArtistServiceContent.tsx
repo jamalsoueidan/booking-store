@@ -58,7 +58,7 @@ export function ArtistServiceContent({
         <Divider my={{base: 'xs', md: 'md'}} />
       </div>
 
-      <Group justify="space-between">
+      <Group justify="space-between" gap="0">
         {leftSection}
         {rightSection}
       </Group>

@@ -71,7 +71,7 @@ export default function ArtistIndex() {
       <SimpleGrid
         cols={{base: 2}}
         spacing={isMobile ? 'xs' : 'md'}
-        m={rem(isMobile ? 0 : 42)}
+        m={rem(isMobile ? 12 : 42)}
       >
         <Suspense
           fallback={
