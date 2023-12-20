@@ -1,8 +1,8 @@
 .root {
   background-repeat: no-repeat;
-  background-size: 40%;
+  background-size: 42%;
   height: 500px;
-  background-position: 80% 25%;
+  background-position: 90% 25%;
 
   @media (max-width: $mantine-breakpoint-md) {
     height: 350px;

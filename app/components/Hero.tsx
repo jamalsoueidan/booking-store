@@ -29,7 +29,9 @@ export function FrontpageHero() {
             ta="center"
             style={{lineHeight: isMobile ? '40px' : '50px'}}
           >
-            Udforsk skønhed omkring dig
+            Din Skønhed
+            <br />
+            Vores Passion
           </Title>
           <Text c="dimmed" size={rem(isMobile ? 22 : 30)} ta="center">
             Book skønhedstjenester fra hundredvis af skønhedsprofessionelle i
