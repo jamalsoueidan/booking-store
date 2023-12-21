@@ -28,6 +28,9 @@ import {ArtistCard} from '~/components/artists/ArtistCard';
 import {TreatmentCard} from '~/components/treatment/TreatmentCard';
 
 import {useMediaQuery} from '@mantine/hooks';
+import {IconArrowRight} from '@tabler/icons-react';
+import {IndexCarousel} from '~/components/index/IndexCarousel';
+import {IndexTopBackground} from '~/components/index/IndexTopBackground';
 import {PRODUCT_ITEM_FRAGMENT} from '~/data/fragments';
 import {getBookingShopifyApi} from '~/lib/api/bookingShopifyApi';
 import type {ProductsGetUsersImage, UsersListResponse} from '~/lib/api/model';
@@ -76,19 +79,10 @@ export default function Homepage() {
 
   return (
     <>
-      <div
-        style={{
-          backgroundColor: '#ebedff',
-          marginTop: '-70px',
-          paddingTop: '70px',
-          borderBottomRightRadius: '40% 15%',
-          borderBottomLeftRadius: '40% 15%',
-        }}
-      >
-        <Container size="lg" py={0} h="100%">
-          <Hero />
-        </Container>
-      </div>
+      <IndexTopBackground bg="#ebedff">
+        <Hero />
+      </IndexTopBackground>
+
       <Container size="lg" style={{marginTop: '-80px'}}>
         <Card
           bg="white"
@@ -142,7 +136,7 @@ export default function Homepage() {
         </Card>
       </Container>
 
-      <Stack>
+      <Stack pt="30px">
         <FeaturedArtists artists={data.artists} />
         <RecommendedTreatments
           products={data.recommendedTreatments}
@@ -155,15 +149,30 @@ export default function Homepage() {
 }
 
 function FeaturedArtists({artists}: {artists: Promise<UsersListResponse>}) {
-  const isMobile = useMediaQuery('(max-width: 62em)');
   if (!artists) return null;
   return (
     <Box>
-      <Container size="lg" pt={isMobile ? '50px' : '100px'} pb="40px">
-        <Stack gap="lg">
-          <Title order={2} fw={600} c="orange" lts="1px">
-            Skønhedseksperter
-          </Title>
+      <Container size="lg">
+        <Stack gap="lg" py="xl">
+          <Group gap="2">
+            <Title order={2} fw={600} c="pink" lts="1px">
+              Skønhedseksperter
+            </Title>
+            <ActionIcon
+              variant="transparent"
+              color="pink"
+              size="lg"
+              aria-label="Settings"
+              component={Link}
+              to="/artists"
+            >
+              <IconArrowRight
+                style={{width: '70%', height: '70%'}}
+                stroke={1.5}
+              />
+            </ActionIcon>
+          </Group>
+
           <Suspense
             fallback={
               <Group>
@@ -173,19 +182,13 @@ function FeaturedArtists({artists}: {artists: Promise<UsersListResponse>}) {
           >
             <Await resolve={artists}>
               {({payload}) => (
-                <Carousel
-                  slideSize={{base: '75%', md: '25%'}}
-                  slideGap="sm"
-                  align="start"
-                  containScroll="trimSnaps"
-                  withControls={false}
-                >
+                <IndexCarousel>
                   {payload.results.map((artist) => (
                     <Carousel.Slide key={artist.customerId}>
                       <ArtistCard artist={artist} />
                     </Carousel.Slide>
                   ))}
-                </Carousel>
+                </IndexCarousel>
               )}
             </Await>
           </Suspense>
@@ -203,23 +206,32 @@ function RecommendedTreatments({
   productsUsers: ProductsGetUsersImage[];
 }) {
   return (
-    <Box bg="pink.1">
+    <Box bg="grape.1">
       <Container size="lg">
         <Stack gap="lg" py="xl">
-          <Title order={2} fw={500} lts="1px">
-            Anbefalt behandlinger
-          </Title>
+          <Group gap="2">
+            <Title order={2} fw={500} lts="1px" c="black">
+              Anbefalt behandlinger
+            </Title>
+            <ActionIcon
+              variant="transparent"
+              color="black"
+              size="lg"
+              aria-label="Settings"
+              component={Link}
+              to="/treatments"
+            >
+              <IconArrowRight
+                style={{width: '70%', height: '70%'}}
+                stroke={1.5}
+              />
+            </ActionIcon>
+          </Group>
 
           <Suspense fallback={<div>Loading...</div>}>
             <Await resolve={products}>
               {({products}) => (
-                <Carousel
-                  slideSize={{base: '75%', md: '25%'}}
-                  slideGap="0"
-                  align="start"
-                  containScroll="trimSnaps"
-                  withControls={false}
-                >
+                <IndexCarousel>
                   {products.nodes.map((product) => {
                     const productUsers = productsUsers.find(
                       (p) => p.productId.toString() === parseGid(product.id).id,
@@ -227,17 +239,15 @@ function RecommendedTreatments({
 
                     return (
                       <Carousel.Slide key={product.id}>
-                        <Box px={rem(6)}>
-                          <TreatmentCard
-                            product={product}
-                            productUsers={productUsers}
-                            loading={'eager'}
-                          />
-                        </Box>
+                        <TreatmentCard
+                          product={product}
+                          productUsers={productUsers}
+                          loading={'eager'}
+                        />
                       </Carousel.Slide>
                     );
                   })}
-                </Carousel>
+                </IndexCarousel>
               )}
             </Await>
           </Suspense>
@@ -256,27 +266,35 @@ function RecommendedProducts({
     <Box>
       <Container size="lg">
         <Stack gap="lg" py="xl">
-          <Title order={2} fw={500} lts="1px">
-            Anbefalt produkter
-          </Title>
+          <Group gap="2">
+            <Title order={2} fw={500} lts="1px" c="orange">
+              Anbefalt produkter
+            </Title>
+            <ActionIcon
+              variant="transparent"
+              color="orange"
+              size="lg"
+              aria-label="Settings"
+              component={Link}
+              to="/collections"
+            >
+              <IconArrowRight
+                style={{width: '70%', height: '70%'}}
+                stroke={1.5}
+              />
+            </ActionIcon>
+          </Group>
+
           <Suspense fallback={<div>Loading...</div>}>
             <Await resolve={products}>
               {({products}) => (
-                <Carousel
-                  slideSize={{base: '75%', md: '28%'}}
-                  slideGap="0"
-                  align="start"
-                  containScroll="trimSnaps"
-                  withControls={false}
-                >
+                <IndexCarousel>
                   {products.nodes.map((product) => (
                     <Carousel.Slide key={product.id}>
-                      <Box px={rem(6)}>
-                        <ProductCard product={product} loading="eager" />
-                      </Box>
+                      <ProductCard product={product} loading="eager" />
                     </Carousel.Slide>
                   ))}
-                </Carousel>
+                </IndexCarousel>
               )}
             </Await>
           </Suspense>

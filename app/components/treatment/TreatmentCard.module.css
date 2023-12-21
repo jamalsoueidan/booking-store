@@ -1,11 +1,10 @@
 .card {
-  transition: transform 150ms ease, box-shadow 150ms ease;
+  /*transition: transform 150ms ease, box-shadow 150ms ease;
 
   &:hover {
     transform: scale(1.02);
     box-shadow: var(--mantine-shadow-sm);
-    z-index: 10;
-  }
+  }*/
 }
 
 .title {

@@ -1,9 +1,11 @@
-import {Container, SimpleGrid, Stack, Title, rem} from '@mantine/core';
+import {Box, Container, SimpleGrid} from '@mantine/core';
 import {useLoaderData} from '@remix-run/react';
 import {json, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
 import {useState} from 'react';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import {ArtistCard} from '~/components/artists/ArtistCard';
+import {IndexTitle} from '~/components/index/IndexTitle';
+import {IndexTopBackground} from '~/components/index/IndexTopBackground';
 import {getBookingShopifyApi} from '~/lib/api/bookingShopifyApi';
 import {type User} from '~/lib/api/model';
 
@@ -17,22 +19,25 @@ export const loader = async ({request, context}: LoaderFunctionArgs) => {
 export default function Collections() {
   const data = useLoaderData<typeof loader>();
   return (
-    <Container fluid>
-      <Stack pt={rem(30)} pb={rem(60)} gap="xs">
-        <Title order={5} c="dimmed" tt="uppercase" fw={300} ta="center">
-          Skønhedseksperter
-        </Title>
-        <Title order={1} size={rem(54)} fw={400} ta="center">
+    <>
+      <IndexTopBackground bg="red.1" mb="70">
+        <IndexTitle
+          overtitle="Skønhedseksperter"
+          subtitle="Booke tid hos en skønhedsekspert, der passer perfekt til dine behov."
+        >
           Find den perfekte skønhedsekspert til dine behov!
-        </Title>
-        <Title order={3} c="dimmed" ta="center" fw={300}>
-          Booke tid hos en skønhedsekspert, der passer perfekt til dine behov.
-        </Title>
-      </Stack>
-      <Container size="xl">
-        <UserList initialData={data.results} initialCursor={data.nextCursor} />
-      </Container>
-    </Container>
+        </IndexTitle>
+      </IndexTopBackground>
+
+      <Box my="xl">
+        <Container size="lg">
+          <UserList
+            initialData={data.results}
+            initialCursor={data.nextCursor}
+          />
+        </Container>
+      </Box>
+    </>
   );
 }
 
