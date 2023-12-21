@@ -1,4 +1,4 @@
-import {Badge, Card, Stack, Text} from '@mantine/core';
+import {Badge, Card, Group, Text} from '@mantine/core';
 import {Link} from '@remix-run/react';
 import {Image, Money} from '@shopify/hydrogen';
 import {type ProductItemFragment} from 'storefrontapi.generated';
@@ -29,7 +29,7 @@ export function ProductCard({
         <Card.Section className={classes.imageSection}>
           <Image
             alt={product.featuredImage.altText || product.title}
-            aspectRatio="1/2"
+            aspectRatio="1/3"
             data={product.featuredImage}
             loading={loading}
             sizes="(min-width: 45em) 400px, 100vw"
@@ -37,12 +37,17 @@ export function ProductCard({
         </Card.Section>
       )}
 
-      <Stack mt="md" gap="xs">
-        <Text fw={500}>{product.title}</Text>
+      <Group justify="space-between" mt="md">
+        <div>
+          <Text fw={500}>{product.title}</Text>
+          <Text fz="xs" c="dimmed">
+            {product.handle}
+          </Text>
+        </div>
         <Badge variant="outline">
           <Money data={product.priceRange.minVariantPrice} />
         </Badge>
-      </Stack>
+      </Group>
     </Card>
   );
 }

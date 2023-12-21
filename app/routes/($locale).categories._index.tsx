@@ -1,10 +1,16 @@
-import {Box, Button, Container, Flex, SimpleGrid} from '@mantine/core';
+import {
+  Button,
+  Container,
+  Flex,
+  SimpleGrid,
+  Stack,
+  Title,
+  rem,
+} from '@mantine/core';
 import {useLoaderData} from '@remix-run/react';
 import {Pagination, getPaginationVariables} from '@shopify/hydrogen';
 import {json, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
 import type {CollectionFragment} from 'storefrontapi.generated';
-import {IndexTitle} from '~/components/index/IndexTitle';
-import {IndexTopBackground} from '~/components/index/IndexTopBackground';
 import {CategoryCard} from '~/components/treatment/CategoryCard';
 import {COLLECTION_ITEM_FRAGMENT} from '~/data/fragments';
 
@@ -24,39 +30,38 @@ export default function Collections() {
   const {collections} = useLoaderData<typeof loader>();
 
   return (
-    <>
-      <IndexTopBackground bg="grape.1" mb="70">
-        <IndexTitle
-          overtitle="Kategorier"
-          subtitle="Vælg din næste skønhedsoplevelse."
-        >
+    <Container fluid pt="xl">
+      <Stack pt={rem(30)} pb={rem(60)} gap="xs">
+        <Title order={5} c="dimmed" tt="uppercase" fw={300} ta="center">
+          Kategorier
+        </Title>
+        <Title order={1} size={rem(54)} fw={400} ta="center">
           Udforsk behandlinger, og book din tid – alt sammen på ét sted.
-        </IndexTitle>
-      </IndexTopBackground>
+        </Title>
+        <Title order={3} c="dimmed" ta="center" fw={300}>
+          Vælg din næste skønhedsoplevelse.
+        </Title>
+      </Stack>
 
-      <Box my="xl">
-        <Container size="lg">
-          <Pagination connection={collections}>
-            {({nodes, isLoading, PreviousLink, NextLink}) => (
-              <>
-                <Flex justify="center">
-                  <Button component={PreviousLink} loading={isLoading}>
-                    ↑ Hent tidligere
-                  </Button>
-                </Flex>
-                <CollectionsGrid collections={nodes} />
-                <br />
-                <Flex justify="center">
-                  <Button component={NextLink} loading={isLoading}>
-                    Hent flere ↓
-                  </Button>
-                </Flex>
-              </>
-            )}
-          </Pagination>
-        </Container>
-      </Box>
-    </>
+      <Pagination connection={collections}>
+        {({nodes, isLoading, PreviousLink, NextLink}) => (
+          <>
+            <Flex justify="center">
+              <Button component={PreviousLink} loading={isLoading}>
+                ↑ Hent tidligere
+              </Button>
+            </Flex>
+            <CollectionsGrid collections={nodes} />
+            <br />
+            <Flex justify="center">
+              <Button component={NextLink} loading={isLoading}>
+                Hent flere ↓
+              </Button>
+            </Flex>
+          </>
+        )}
+      </Pagination>
+    </Container>
   );
 }
 
