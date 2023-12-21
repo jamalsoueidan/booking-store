@@ -25,8 +25,8 @@
   }
 
   [data-mantine-color-scheme] &[data-active] {
-    background-color: var(--mantine-color-pink-filled);
-    color: var(--mantine-color-white);
+    background-color: #fff;
+    color: #000;
   }
 }
 

@@ -21,7 +21,7 @@ export default function Collections() {
   return (
     <>
       <HeroTitle
-        bg="cyan.1"
+        bg="red.1"
         overtitle="Skønhedseksperter"
         subtitle="Find den perfekte skønhedsekspert til dine behov!"
       >

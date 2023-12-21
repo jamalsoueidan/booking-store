@@ -26,7 +26,7 @@ export default function Collections() {
   return (
     <>
       <HeroTitle
-        bg="grape.1"
+        bg="orange.1"
         overtitle="Kollektioner"
         subtitle="Køb produkter hos os som vi bruger."
       >
