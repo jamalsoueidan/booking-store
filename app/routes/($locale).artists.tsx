@@ -1,9 +1,10 @@
-import {Box, Container, SimpleGrid} from '@mantine/core';
+import {SimpleGrid} from '@mantine/core';
 import {useLoaderData} from '@remix-run/react';
 import {json, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
 import {useState} from 'react';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import {HeroTitle} from '~/components/HeroTitle';
+import {Wrapper} from '~/components/Wrapper';
 import {ArtistCard} from '~/components/artists/ArtistCard';
 import {getBookingShopifyApi} from '~/lib/api/bookingShopifyApi';
 import {type User} from '~/lib/api/model';
@@ -27,14 +28,9 @@ export default function Collections() {
         Book tid hos en skønhedsekspert
       </HeroTitle>
 
-      <Box my="xl">
-        <Container size="lg">
-          <UserList
-            initialData={data.results}
-            initialCursor={data.nextCursor}
-          />
-        </Container>
-      </Box>
+      <Wrapper>
+        <UserList initialData={data.results} initialCursor={data.nextCursor} />
+      </Wrapper>
     </>
   );
 }
