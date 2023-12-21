@@ -28,6 +28,7 @@ import {ArtistCard} from '~/components/artists/ArtistCard';
 import {TreatmentCard} from '~/components/treatment/TreatmentCard';
 
 import {useMediaQuery} from '@mantine/hooks';
+import {IconArrowRight} from '@tabler/icons-react';
 import {Wrapper} from '~/components/Wrapper';
 import {PRODUCT_ITEM_FRAGMENT} from '~/data/fragments';
 import {getBookingShopifyApi} from '~/lib/api/bookingShopifyApi';
@@ -160,9 +161,24 @@ function FeaturedArtists({artists}: {artists: Promise<UsersListResponse>}) {
   return (
     <Wrapper>
       <Stack gap="lg">
-        <Title order={2} fw={600} c="orange" lts="1px">
-          Skønhedseksperter
-        </Title>
+        <Group gap="2">
+          <Title order={2} fw={600} c="pink" lts="1px">
+            Skønhedseksperter
+          </Title>
+          <ActionIcon
+            variant="transparent"
+            color="pink"
+            size="lg"
+            aria-label="Settings"
+            component={Link}
+            to="/artists"
+          >
+            <IconArrowRight
+              style={{width: '70%', height: '70%'}}
+              stroke={1.5}
+            />
+          </ActionIcon>
+        </Group>
         <Suspense
           fallback={
             <Group>
@@ -203,9 +219,24 @@ function RecommendedTreatments({
   return (
     <Wrapper bg="pink.1">
       <Stack gap="lg" py="xl">
-        <Title order={2} fw={500} lts="1px">
-          Anbefalt behandlinger
-        </Title>
+        <Group gap="2">
+          <Title order={2} fw={500} lts="1px" c="black">
+            Anbefalt behandlinger
+          </Title>
+          <ActionIcon
+            variant="transparent"
+            color="black"
+            size="lg"
+            aria-label="Settings"
+            component={Link}
+            to="/treatments"
+          >
+            <IconArrowRight
+              style={{width: '70%', height: '70%'}}
+              stroke={1.5}
+            />
+          </ActionIcon>
+        </Group>
 
         <Suspense fallback={<div>Loading...</div>}>
           <Await resolve={products}>
@@ -251,9 +282,24 @@ function RecommendedProducts({
   return (
     <Wrapper>
       <Stack gap="lg" py="xl">
-        <Title order={2} fw={500} lts="1px">
-          Anbefalt produkter
-        </Title>
+        <Group gap="2">
+          <Title order={2} fw={500} lts="1px" c="orange">
+            Anbefalt produkter
+          </Title>
+          <ActionIcon
+            variant="transparent"
+            color="orange"
+            size="lg"
+            aria-label="Settings"
+            component={Link}
+            to="/collections"
+          >
+            <IconArrowRight
+              style={{width: '70%', height: '70%'}}
+              stroke={1.5}
+            />
+          </ActionIcon>
+        </Group>
         <Suspense fallback={<div>Loading...</div>}>
           <Await resolve={products}>
             {({products}) => (

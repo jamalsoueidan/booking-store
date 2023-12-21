@@ -1,19 +1,12 @@
-import {
-  Button,
-  Container,
-  Flex,
-  SimpleGrid,
-  Stack,
-  Title,
-  rem,
-} from '@mantine/core';
-import {Link, useLoaderData} from '@remix-run/react';
-import {Image, Pagination, getPaginationVariables} from '@shopify/hydrogen';
+import {Button, Flex, SimpleGrid} from '@mantine/core';
+import {useLoaderData} from '@remix-run/react';
+import {Pagination, getPaginationVariables} from '@shopify/hydrogen';
 import {json, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
-import type {CollectionFragment} from 'storefrontapi.generated';
+import {type CollectionFragment} from 'storefrontapi.generated';
 import {CollectionCard} from '~/components/CollectionCard';
+import {HeroTitle} from '~/components/HeroTitle';
+import {Wrapper} from '~/components/Wrapper';
 import {COLLECTION_ITEM_FRAGMENT} from '~/data/fragments';
-import {parseCT} from '~/lib/clean';
 
 export async function loader({context, request}: LoaderFunctionArgs) {
   const paginationVariables = getPaginationVariables(request, {
@@ -31,81 +24,50 @@ export default function Collections() {
   const {collections} = useLoaderData<typeof loader>();
 
   return (
-    <Container fluid pt="xl">
-      <Stack pt={rem(30)} pb={rem(60)} gap="xs">
-        <Title order={5} c="dimmed" tt="uppercase" fw={300} ta="center">
-          Kollektioner
-        </Title>
-        <Title order={1} size={rem(54)} fw={400} ta="center">
-          Køb produkter hos os som vi bruger.
-        </Title>
-        <Title order={3} c="dimmed" ta="center" fw={300}>
-          Køb produkter hos os som vi bruger.
-        </Title>
-      </Stack>
+    <>
+      <HeroTitle
+        bg="grape.1"
+        overtitle="Kollektioner"
+        subtitle="Køb produkter hos os som vi bruger."
+      >
+        Køb produkter hos os som vi bruger.
+      </HeroTitle>
 
-      <Pagination connection={collections}>
-        {({nodes, isLoading, PreviousLink, NextLink}) => (
-          <>
-            <Flex justify="center">
-              <Button component={PreviousLink} loading={isLoading}>
-                ↑ Hent tidligere
-              </Button>
-            </Flex>
-            <CollectionsGrid collections={nodes} />
-            <br />
-            <Flex justify="center">
-              <Button component={NextLink} loading={isLoading}>
-                Hent flere ↓
-              </Button>
-            </Flex>
-          </>
-        )}
-      </Pagination>
-    </Container>
+      <Wrapper>
+        <Pagination connection={collections}>
+          {({nodes, isLoading, PreviousLink, NextLink}) => (
+            <>
+              <Flex justify="center">
+                <Button component={PreviousLink} loading={isLoading}>
+                  ↑ Hent tidligere
+                </Button>
+              </Flex>
+              <CollectionsGrid collections={nodes} />
+              <br />
+              <Flex justify="center">
+                <Button component={NextLink} loading={isLoading}>
+                  Hent flere ↓
+                </Button>
+              </Flex>
+            </>
+          )}
+        </Pagination>
+      </Wrapper>
+    </>
   );
 }
 
 function CollectionsGrid({collections}: {collections: CollectionFragment[]}) {
   return (
-    <Container>
-      <SimpleGrid cols={{base: 1, sm: 2}} spacing="xl">
-        {collections.map((collection, index) => (
-          <CollectionCard
-            key={collection.id}
-            collection={collection}
-            index={index}
-          />
-        ))}
-      </SimpleGrid>
-    </Container>
-  );
-}
-
-function CollectionItem({
-  collection,
-  index,
-}: {
-  collection: CollectionFragment;
-  index: number;
-}) {
-  return (
-    <Link
-      className="collection-item"
-      key={collection.id}
-      to={`/collections/${collection.handle}`}
-      prefetch="intent"
-    >
-      {collection?.image && (
-        <Image
-          alt={collection.image.altText || collection.title}
-          aspectRatio="1/1"
-          data={collection.image}
-          loading={index < 3 ? 'eager' : undefined}
+    <SimpleGrid cols={{base: 1, sm: 2}} spacing="xl">
+      {collections.map((collection, index) => (
+        <CollectionCard
+          key={collection.id}
+          collection={collection}
+          index={index}
         />
-      )}
-      <h5>{parseCT(collection.title)}</h5>
-    </Link>
+      ))}
+    </SimpleGrid>
   );
 }
 

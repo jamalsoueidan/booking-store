@@ -1,16 +1,10 @@
-import {
-  Button,
-  Container,
-  Flex,
-  SimpleGrid,
-  Stack,
-  Title,
-  rem,
-} from '@mantine/core';
+import {Button, Flex, SimpleGrid} from '@mantine/core';
 import {useLoaderData} from '@remix-run/react';
 import {Pagination, getPaginationVariables} from '@shopify/hydrogen';
 import {json, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
 import type {CollectionFragment} from 'storefrontapi.generated';
+import {HeroTitle} from '~/components/HeroTitle';
+import {Wrapper} from '~/components/Wrapper';
 import {CategoryCard} from '~/components/treatment/CategoryCard';
 import {COLLECTION_ITEM_FRAGMENT} from '~/data/fragments';
 
@@ -30,54 +24,50 @@ export default function Collections() {
   const {collections} = useLoaderData<typeof loader>();
 
   return (
-    <Container fluid pt="xl">
-      <Stack pt={rem(30)} pb={rem(60)} gap="xs">
-        <Title order={5} c="dimmed" tt="uppercase" fw={300} ta="center">
-          Kategorier
-        </Title>
-        <Title order={1} size={rem(54)} fw={400} ta="center">
-          Udforsk behandlinger, og book din tid – alt sammen på ét sted.
-        </Title>
-        <Title order={3} c="dimmed" ta="center" fw={300}>
-          Vælg din næste skønhedsoplevelse.
-        </Title>
-      </Stack>
+    <>
+      <HeroTitle
+        bg="grape.1"
+        overtitle="Kategorier"
+        subtitle="Vælg din næste skønhedsoplevelse."
+      >
+        Udforsk behandlinger, og book din tid – alt sammen på ét sted.
+      </HeroTitle>
 
-      <Pagination connection={collections}>
-        {({nodes, isLoading, PreviousLink, NextLink}) => (
-          <>
-            <Flex justify="center">
-              <Button component={PreviousLink} loading={isLoading}>
-                ↑ Hent tidligere
-              </Button>
-            </Flex>
-            <CollectionsGrid collections={nodes} />
-            <br />
-            <Flex justify="center">
-              <Button component={NextLink} loading={isLoading}>
-                Hent flere ↓
-              </Button>
-            </Flex>
-          </>
-        )}
-      </Pagination>
-    </Container>
+      <Wrapper>
+        <Pagination connection={collections}>
+          {({nodes, isLoading, PreviousLink, NextLink}) => (
+            <>
+              <Flex justify="center">
+                <Button component={PreviousLink} loading={isLoading}>
+                  ↑ Hent tidligere
+                </Button>
+              </Flex>
+              <CollectionsGrid collections={nodes} />
+              <br />
+              <Flex justify="center">
+                <Button component={NextLink} loading={isLoading}>
+                  Hent flere ↓
+                </Button>
+              </Flex>
+            </>
+          )}
+        </Pagination>
+      </Wrapper>
+    </>
   );
 }
 
 function CollectionsGrid({collections}: {collections: CollectionFragment[]}) {
   return (
-    <Container size="xl">
-      <SimpleGrid cols={{base: 1, md: 3, sm: 2}} spacing={'xl'}>
-        {collections.map((collection, index) => (
-          <CategoryCard
-            key={collection.id}
-            collection={collection}
-            index={index}
-          />
-        ))}
-      </SimpleGrid>
-    </Container>
+    <SimpleGrid cols={{base: 1, md: 3, sm: 2}} spacing={'xl'}>
+      {collections.map((collection, index) => (
+        <CategoryCard
+          key={collection.id}
+          collection={collection}
+          index={index}
+        />
+      ))}
+    </SimpleGrid>
   );
 }
 
