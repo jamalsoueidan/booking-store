@@ -2,7 +2,6 @@ import {Avatar, Button, Card} from '@mantine/core';
 import {Link} from '@remix-run/react';
 import {type ProductItemFragment} from 'storefrontapi.generated';
 import {type ProductsGetUsersImage} from '~/lib/api/model';
-import classes from './TreatmentCard.module.css';
 import {TreatmentCardContent} from './TreatmentCardContent';
 
 export function TreatmentCard({
@@ -44,7 +43,6 @@ export function TreatmentCard({
       key={product.handle}
       withBorder
       radius="xl"
-      className={classes.card}
       component={Link}
       p="0"
       to={`/treatments/${product.handle}`}
