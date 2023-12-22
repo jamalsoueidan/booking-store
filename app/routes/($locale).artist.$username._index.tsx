@@ -1,7 +1,6 @@
 import {defer, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
 
-import {Button, Flex, rem, SimpleGrid, Skeleton, Stack} from '@mantine/core';
-import {useMediaQuery} from '@mantine/hooks';
+import {Button, Flex, SimpleGrid, Skeleton, Stack} from '@mantine/core';
 import {Await, Form, Link, useLoaderData, useLocation} from '@remix-run/react';
 import {Suspense} from 'react';
 import {ArtistProduct} from '~/components/artist/ArtistProduct';
@@ -53,7 +52,6 @@ export async function loader({request, params, context}: LoaderFunctionArgs) {
 
 export default function ArtistIndex() {
   const data = useLoaderData<typeof loader>();
-  const isMobile = useMediaQuery('(max-width: 62em)');
 
   return (
     <Stack gap="lg">
@@ -68,11 +66,8 @@ export default function ArtistIndex() {
           {({payload}) => <ArtistSchedulesMenu data={payload} />}
         </Await>
       </Suspense>
-      <SimpleGrid
-        cols={{base: 2}}
-        spacing={isMobile ? 'xs' : 'md'}
-        m={rem(isMobile ? 12 : 42)}
-      >
+
+      <SimpleGrid cols={{base: 1, md: 2}} spacing="md">
         <Suspense
           fallback={
             <div>
