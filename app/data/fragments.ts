@@ -78,6 +78,15 @@ export const PRODUCT_ITEM_FRAGMENT = `#graphql
         }
       }
     }
+    collections(first:1) {
+      nodes {
+        title
+        icon:  metafield(namespace:"custom",  key: "icon") {
+          type
+          value
+        }
+      }
+    }
   }
 ` as const;
 

@@ -129,52 +129,54 @@ export default function Product() {
   const {selectedVariant} = product;
 
   return (
-    <SimpleGrid cols={{base: 1, md: 2}} spacing={0}>
-      <ProductImage image={selectedVariant?.image} />
-      <Box p={{base: rem(10), md: rem(42)}} bg="#fafafb">
-        <Box mb="md">
-          <Title order={1}>{product?.title}</Title>
-        </Box>
+    <>
+      <SimpleGrid cols={{base: 1, md: 2}} spacing={0}>
+        <ProductImage image={selectedVariant?.image} />
+        <Box p={{base: rem(10), md: rem(42)}} bg="#fafafb">
+          <Box mb="md">
+            <Title order={1}>{product?.title}</Title>
+          </Box>
 
-        <Text
-          size="xl"
-          c="dimmed"
-          fw={400}
-          dangerouslySetInnerHTML={{__html: product.descriptionHtml}}
-        ></Text>
+          <Text
+            size="xl"
+            c="dimmed"
+            fw={400}
+            dangerouslySetInnerHTML={{__html: product.descriptionHtml}}
+          ></Text>
 
-        <Stack gap="md">
-          <Suspense
-            fallback={
-              <ProductForm
-                product={product}
-                selectedVariant={selectedVariant}
-                variants={[]}
-              />
-            }
-          >
-            <Await
-              errorElement="There was a problem loading..."
-              resolve={variantsUsers}
+          <Stack gap="md">
+            <Suspense
+              fallback={
+                <ProductForm
+                  product={product}
+                  selectedVariant={selectedVariant}
+                  variants={[]}
+                />
+              }
             >
-              {([data, users]) => (
-                <>
-                  <ProductForm
-                    product={product}
-                    selectedVariant={selectedVariant}
-                    variants={data.product?.variants.nodes || []}
-                  />
-                  <PickArtistsForm
-                    users={users.payload.result}
-                    variants={data.product?.variants.nodes || []}
-                  />
-                </>
-              )}
-            </Await>
-          </Suspense>
-        </Stack>
-      </Box>
-    </SimpleGrid>
+              <Await
+                errorElement="There was a problem loading..."
+                resolve={variantsUsers}
+              >
+                {([data, users]) => (
+                  <>
+                    <ProductForm
+                      product={product}
+                      selectedVariant={selectedVariant}
+                      variants={data.product?.variants.nodes || []}
+                    />
+                    <PickArtistsForm
+                      users={users.payload.result}
+                      variants={data.product?.variants.nodes || []}
+                    />
+                  </>
+                )}
+              </Await>
+            </Suspense>
+          </Stack>
+        </Box>
+      </SimpleGrid>
+    </>
   );
 }
 

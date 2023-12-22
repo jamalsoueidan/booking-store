@@ -30,7 +30,7 @@ export default function ArtistIndex() {
   const isMobile = useMediaQuery('(max-width: 62em)');
 
   return (
-    <Flex direction={isMobile ? 'column' : 'row'}>
+    <Flex direction={isMobile ? 'column' : 'row'} mih="100vh">
       <div
         style={{
           backgroundColor: 'rgb(168, 139, 248)',

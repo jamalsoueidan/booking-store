@@ -1,8 +1,11 @@
 .card {
+  border-radius: var(--mantine-spacing-md);
   padding: var(--mantine-spacing-xs);
   transition: transform 150ms ease, box-shadow 150ms ease;
 
   @media (min-width: $mantine-breakpoint-md) {
+    border-radius: var(--mantine-spacing-xl);
+    padding: var(--mantine-spacing-md);
     &:hover {
       transform: scale(1.01);
     }

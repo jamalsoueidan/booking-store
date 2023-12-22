@@ -1,5 +1,7 @@
 import {useLoaderData, type MetaFunction} from '@remix-run/react';
 import {json, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
+import {HeroTitle} from '~/components/HeroTitle';
+import {Wrapper} from '~/components/Wrapper';
 
 export const meta: MetaFunction<typeof loader> = ({data}) => {
   return [{title: `BySisters | ${data?.page.title ?? ''}`}];
@@ -27,12 +29,14 @@ export default function Page() {
   const {page} = useLoaderData<typeof loader>();
 
   return (
-    <div className="page">
-      <header>
-        <h1>{page.title}</h1>
-      </header>
-      <main dangerouslySetInnerHTML={{__html: page.body}} />
-    </div>
+    <>
+      <HeroTitle bg="gray.1" subtitle="" overtitle="">
+        {page.title}
+      </HeroTitle>
+      <Wrapper>
+        <main dangerouslySetInnerHTML={{__html: page.body}} />
+      </Wrapper>
+    </>
   );
 }
 
