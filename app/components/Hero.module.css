@@ -14,7 +14,7 @@
   height: 80%;
   gap: var(--mantine-spacing-lg);
   @media (min-width: $mantine-breakpoint-md) {
-    gap: var(--mantine-spacing-xl);
+    gap: var(--mantine-spacing-lg);
     height: 90%;
     width: 50%;
   }
@@ -25,7 +25,7 @@
   font-weight: 600;
   line-height: 40px;
   @media (min-width: $mantine-breakpoint-md) {
-    font-size: rem(60);
+    font-size: rem(52);
     line-height: 60px;
   }
 }
@@ -42,8 +42,8 @@
   --button-padding-x: rem(18);
   --button-fz: rem(18);
   @media (min-width: $mantine-breakpoint-md) {
-    --button-height: rem(46);
-    --button-padding-x: rem(26);
+    --button-height: rem(50);
+    --button-padding-x: rem(20);
     --button-fz: rem(22);
   }
 }

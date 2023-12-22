@@ -1,18 +1,12 @@
 import {Carousel} from '@mantine/carousel';
 import {
   ActionIcon,
-  Anchor,
   Box,
-  Card,
   Container,
-  Flex,
   Group,
-  Image,
   Skeleton,
   Stack,
-  Text,
   Title,
-  rem,
 } from '@mantine/core';
 import {Await, Link, useLoaderData, type MetaFunction} from '@remix-run/react';
 import {parseGid} from '@shopify/hydrogen';
@@ -29,11 +23,11 @@ import {TreatmentCard} from '~/components/treatment/TreatmentCard';
 
 import {useMediaQuery} from '@mantine/hooks';
 import {IconArrowRight} from '@tabler/icons-react';
+import HeroCategories from '~/components/HeroCategories';
 import {Wrapper} from '~/components/Wrapper';
 import {PRODUCT_ITEM_FRAGMENT} from '~/data/fragments';
 import {getBookingShopifyApi} from '~/lib/api/bookingShopifyApi';
 import type {ProductsGetUsersImage, UsersListResponse} from '~/lib/api/model';
-import {parseTE} from '~/lib/clean';
 import {COLLECTIONS_QUERY} from './($locale).categories._index';
 
 export const meta: MetaFunction = () => {
@@ -91,56 +85,9 @@ export default function Homepage() {
           <Hero />
         </Container>
       </div>
+
       <Container size="lg" style={{marginTop: '-80px'}}>
-        <Card
-          bg="white"
-          shadow="lg"
-          radius="lg"
-          px={isMobile ? 'sm' : 'xl'}
-          pt={isMobile ? 'md' : 'lg'}
-        >
-          <Flex gap={isMobile ? 'sm' : 'xl'} wrap="wrap" justify="center">
-            {data.collections.nodes.map((c) => (
-              <Anchor
-                component={Link}
-                to={`/categories/${c.handle}`}
-                key={c.id}
-              >
-                <Flex
-                  justify="center"
-                  align="center"
-                  direction="column"
-                  gap="sm"
-                >
-                  <ActionIcon
-                    variant="light"
-                    color={c.color?.value || 'yellow'}
-                    size={rem(isMobile ? 30 : 60)}
-                    radius="xl"
-                    aria-label="Settings"
-                  >
-                    <Image
-                      src={`/categories/${
-                        c.icon?.value || 'reshot-icon-beauty-mirror'
-                      }.svg`}
-                      h="80%"
-                      w="80%"
-                      alt="ok"
-                    />
-                  </ActionIcon>
-                  <Text
-                    c="black"
-                    fw="500"
-                    fz={isMobile ? 12 : undefined}
-                    lineClamp={1}
-                  >
-                    {parseTE(c.title)}
-                  </Text>
-                </Flex>
-              </Anchor>
-            ))}
-          </Flex>
-        </Card>
+        <HeroCategories collections={data.collections.nodes} />
       </Container>
 
       <Box pt={isMobile ? '25px' : '50px'}>
