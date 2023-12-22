@@ -69,7 +69,7 @@ export default function ArtistIndex() {
         </Await>
       </Suspense>
       <SimpleGrid
-        cols={{base: 2}}
+        cols={{base: 1, md: 2}}
         spacing={isMobile ? 'xs' : 'md'}
         m={rem(isMobile ? 12 : 42)}
       >
