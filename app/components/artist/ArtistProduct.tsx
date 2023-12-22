@@ -54,8 +54,7 @@ export function ArtistProduct({product, services}: ArtistProductProps) {
               alt="ok"
             />
           }
-          size="xs"
-          fz="xs"
+          size="lg"
           radius="md"
           variant="outline"
           color="#ebeaeb"
