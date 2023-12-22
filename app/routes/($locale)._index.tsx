@@ -99,13 +99,12 @@ export default function Homepage() {
           px={isMobile ? 'sm' : 'xl'}
           pt={isMobile ? 'md' : 'lg'}
         >
-          <Flex gap={isMobile ? 'sm' : 'xl'} wrap="wrap">
+          <Flex gap={isMobile ? 'sm' : 'xl'} wrap="wrap" justify="center">
             {data.collections.nodes.map((c) => (
               <Anchor
                 component={Link}
                 to={`/categories/${c.handle}`}
                 key={c.id}
-                style={{flex: 1}}
               >
                 <Flex
                   justify="center"
