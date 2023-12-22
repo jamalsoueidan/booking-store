@@ -144,14 +144,14 @@ export default function Homepage() {
         </Card>
       </Container>
 
-      <Stack pt={isMobile ? '25px' : '50px'}>
+      <Box pt={isMobile ? '25px' : '50px'}>
         <FeaturedArtists artists={data.artists} />
         <RecommendedTreatments
           products={data.recommendedTreatments}
           productsUsers={data.recommendedTreatmentsProductsUsers}
         />
         <RecommendedProducts products={data.recommendedProducts} />
-      </Stack>
+      </Box>
     </>
   );
 }
@@ -190,7 +190,7 @@ function FeaturedArtists({artists}: {artists: Promise<UsersListResponse>}) {
             {({payload}) => (
               <Carousel
                 slideSize={{base: '75%', md: '25%'}}
-                slideGap="sm"
+                slideGap="lg"
                 align="start"
                 containScroll="trimSnaps"
                 withControls={false}
@@ -217,8 +217,8 @@ function RecommendedTreatments({
   productsUsers: ProductsGetUsersImage[];
 }) {
   return (
-    <Wrapper bg="pink.1">
-      <Stack gap="lg" py="xl">
+    <Wrapper bg="pink.1" py={'xl'}>
+      <Stack gap="lg">
         <Group gap="2">
           <Title order={2} fw={500} lts="1px" c="black">
             Anbefalt behandlinger
@@ -243,7 +243,7 @@ function RecommendedTreatments({
             {({products}) => (
               <Carousel
                 slideSize={{base: '75%', md: '25%'}}
-                slideGap="0"
+                slideGap="lg"
                 align="start"
                 containScroll="trimSnaps"
                 withControls={false}
@@ -255,13 +255,11 @@ function RecommendedTreatments({
 
                   return (
                     <Carousel.Slide key={product.id}>
-                      <Box px={rem(6)}>
-                        <TreatmentCard
-                          product={product}
-                          productUsers={productUsers}
-                          loading={'eager'}
-                        />
-                      </Box>
+                      <TreatmentCard
+                        product={product}
+                        productUsers={productUsers}
+                        loading={'eager'}
+                      />
                     </Carousel.Slide>
                   );
                 })}
@@ -281,7 +279,7 @@ function RecommendedProducts({
 }) {
   return (
     <Wrapper>
-      <Stack gap="lg" py="xl">
+      <Stack gap="lg">
         <Group gap="2">
           <Title order={2} fw={500} lts="1px" c="orange">
             Anbefalt produkter
@@ -305,16 +303,14 @@ function RecommendedProducts({
             {({products}) => (
               <Carousel
                 slideSize={{base: '75%', md: '28%'}}
-                slideGap="0"
+                slideGap="lg"
                 align="start"
                 containScroll="trimSnaps"
                 withControls={false}
               >
                 {products.nodes.map((product) => (
                   <Carousel.Slide key={product.id}>
-                    <Box px={rem(6)}>
-                      <ProductCard product={product} loading="eager" />
-                    </Box>
+                    <ProductCard product={product} loading="eager" />
                   </Carousel.Slide>
                 ))}
               </Carousel>
