@@ -4,7 +4,6 @@
   "sideEffects": false,
   "version": "1.0.0",
   "scripts": {
-    "tunnel": "ssh -R 80:localhost:3000 serveo.net",
     "build": "shopify hydrogen build",
     "dev": "shopify hydrogen dev --codegen",
     "preview": "npm run build && shopify hydrogen preview",

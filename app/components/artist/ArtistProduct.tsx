@@ -10,6 +10,7 @@ import {
   Title,
   rem,
 } from '@mantine/core';
+import {useMediaQuery} from '@mantine/hooks';
 import {Link} from '@remix-run/react';
 import {Money, parseGid} from '@shopify/hydrogen';
 import {IconArrowRight} from '@tabler/icons-react';
@@ -25,6 +26,7 @@ export type ArtistProductProps = {
 };
 
 export function ArtistProduct({product, services}: ArtistProductProps) {
+  const isMobile = useMediaQuery('(max-width: 62em)');
   const artistService = services.find(({productId}) => {
     return productId.toString() === parseGid(product.id).id;
   });
@@ -46,38 +48,42 @@ export function ArtistProduct({product, services}: ArtistProductProps) {
                 'reshot-icon-beauty-mirror'
               }.svg`}
               style={{
-                width: rem(18),
-                height: rem(18),
+                width: rem(isMobile ? 12 : 18),
+                height: rem(isMobile ? 12 : 18),
               }}
               alt="ok"
             />
           }
           radius="md"
-          py="md"
           variant="outline"
           color="#ebeaeb"
+          size={isMobile ? 'xs' : 'sm'}
           bg="#f7f7f7"
-          c="gray.5"
-          size="xs"
           fz="xs"
+          c="gray.5"
+          py={isMobile ? 'xs' : 'md'}
         >
           {parseTE(product.collections.nodes[0].title)}
         </Badge>
-
-        <ActionIcon
-          variant="outline"
-          color="black"
-          radius="lg"
-          size="md"
-          aria-label="Settings"
-        >
-          <IconArrowRight style={{width: '70%', height: '70%'}} stroke={1.5} />
-        </ActionIcon>
+        {!isMobile && (
+          <ActionIcon
+            variant="outline"
+            color="black"
+            radius="lg"
+            size="md"
+            aria-label="Settings"
+          >
+            <IconArrowRight
+              style={{width: '70%', height: '70%'}}
+              stroke={1.5}
+            />
+          </ActionIcon>
+        )}
       </Group>
       <Title
         order={2}
-        size={rem(24)}
-        mt={rem(12)}
+        size={rem(isMobile ? 16 : 24)}
+        mt={rem(isMobile ? 8 : 16)}
         mb={rem(4)}
         fw={600}
         lts=".5px"
@@ -91,7 +97,7 @@ export function ArtistProduct({product, services}: ArtistProductProps) {
         justify="flex-start"
         style={{flexGrow: 1, position: 'relative'}}
       >
-        <Text c="dimmed" size="md" fw={400} lineClamp={2}>
+        <Text c="dimmed" size={isMobile ? 'xs' : 'md'} fw={400} lineClamp={2}>
           {artistService?.description ||
             product.description ||
             'ingen beskrivelse'}
@@ -103,12 +109,12 @@ export function ArtistProduct({product, services}: ArtistProductProps) {
       </Card.Section>
 
       <Group justify="space-between" gap="0">
-        <Text c="dimmed" fz="xs" tt="uppercase" fw={700}>
+        <Text c="dimmed" fz={isMobile ? 11 : 'xs'} tt="uppercase" fw={700}>
           {durationToTime(artistService?.duration ?? 0)}
         </Text>
 
         {artistService?.price && (
-          <Badge variant="light" color="gray" size="lg">
+          <Badge variant="light" color="gray" size={isMobile ? 'sm' : 'lg'}>
             <Money data={artistService?.price as any} />
           </Badge>
         )}
