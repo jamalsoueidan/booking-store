@@ -1,4 +1,4 @@
-import {Flex} from '@mantine/core';
+import {Box, Flex} from '@mantine/core';
 import {Outlet} from '@remix-run/react';
 import React from 'react';
 import classes from './ArtistPage.module.css';
@@ -14,7 +14,9 @@ export default function ArtistPage({children}: {children: React.ReactNode}) {
       >
         <div className={classes.sticky}>{children}</div>
       </div>
-      <Outlet />
+      <Box className={classes.box}>
+        <Outlet />
+      </Box>
     </Flex>
   );
 }

@@ -20,3 +20,10 @@
     padding: 3rem;
   }
 }
+
+.box {
+  padding: rem(16);
+  @media (min-width: $mantine-breakpoint-md) {
+    padding: rem(64);
+  }
+}
