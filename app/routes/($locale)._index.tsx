@@ -1,18 +1,24 @@
 import {Carousel} from '@mantine/carousel';
 import {
+  Accordion,
   ActionIcon,
   Box,
   Container,
   Group,
+  SimpleGrid,
   Skeleton,
   Stack,
+  Text,
   Title,
+  rem,
 } from '@mantine/core';
 import {Await, Link, useLoaderData, type MetaFunction} from '@remix-run/react';
 import {parseGid} from '@shopify/hydrogen';
 import {defer, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
 import {Suspense} from 'react';
 import type {
+  FaqFragment,
+  FaqPagesQuestionsQuery,
   RecommendedProductsQuery,
   RecommendedTreatmentsQuery,
 } from 'storefrontapi.generated';
@@ -57,12 +63,28 @@ export async function loader({context}: LoaderFunctionArgs) {
     variables: {first: 10},
   });
 
+  const {page: faqPage} = await context.storefront.query(FAQ_QUERY);
+
+  const embeddedQuestionPages = convertToEmbedArray(
+    faqPage?.metafield?.value || '',
+  );
+
+  const faqQuestions = context.storefront.query(FAQ_QUESTIONS_QUERY, {
+    variables: {
+      query: embeddedQuestionPages.map((p) => parseGid(p).id).join(' OR '),
+      country: context.storefront.i18n.country,
+      language: context.storefront.i18n.language,
+    },
+  });
+
   return defer({
     recommendedProducts,
     recommendedTreatmentsProductsUsers,
     recommendedTreatments,
     collections,
     artists,
+    faqQuestions,
+    faqPage,
   });
 }
 
@@ -90,13 +112,14 @@ export default function Homepage() {
         <HeroCategories collections={data.collections.nodes} />
       </Container>
 
-      <Box pt={isMobile ? '25px' : '50px'}>
+      <Box>
         <FeaturedArtists artists={data.artists} />
         <RecommendedTreatments
           products={data.recommendedTreatments}
           productsUsers={data.recommendedTreatmentsProductsUsers}
         />
         <RecommendedProducts products={data.recommendedProducts} />
+        <FaqQuestions page={data.faqPage} questions={data.faqQuestions} />
       </Box>
     </>
   );
@@ -268,6 +291,51 @@ function RecommendedProducts({
   );
 }
 
+function FaqQuestions({
+  page,
+  questions,
+}: {
+  page?: FaqFragment | null;
+  questions: Promise<FaqPagesQuestionsQuery>;
+}) {
+  return (
+    <Wrapper bg="yellow.1" variant="frontpage">
+      <SimpleGrid cols={{base: 1, md: 2}}>
+        <div>
+          <Title order={2} fw={500} fz={rem(60)} lts="1px">
+            {page?.title}
+          </Title>
+          <Text
+            size="lg"
+            fw={400}
+            dangerouslySetInnerHTML={{__html: page?.body || ''}}
+          ></Text>
+        </div>
+        <Suspense fallback={<div>Loading...</div>}>
+          <Await resolve={questions}>
+            {({pages}) => (
+              <Accordion variant="filled">
+                {pages.nodes.map((page) => (
+                  <Accordion.Item key={page.id} value={page.title}>
+                    <Accordion.Control>
+                      <Text fz="lg" fw={500}>
+                        {page.title}
+                      </Text>
+                    </Accordion.Control>
+                    <Accordion.Panel>
+                      <div dangerouslySetInnerHTML={{__html: page.body}} />
+                    </Accordion.Panel>
+                  </Accordion.Item>
+                ))}
+              </Accordion>
+            )}
+          </Await>
+        </Suspense>
+      </SimpleGrid>
+    </Wrapper>
+  );
+}
+
 const RECOMMENDED_PRODUCTS_QUERY = `#graphql
   ${PRODUCT_ITEM_FRAGMENT}
   query RecommendedProducts ($country: CountryCode, $language: LanguageCode)
@@ -287,6 +355,40 @@ const RECOMMENDED_TREATMENT_QUERY = `#graphql
     products(first: 8, sortKey: RELEVANCE, reverse: true, query: "tag:treatments") {
       nodes {
         ...ProductItem
+      }
+    }
+  }
+` as const;
+
+export const FAQ_FRAGMENT = `#graphql
+  fragment Faq on Page {
+    id
+    title
+    body
+    metafield(namespace:"custom", key: "faq") {
+      id
+      value
+    }
+  }
+` as const;
+
+const FAQ_QUERY = `#graphql
+  ${FAQ_FRAGMENT}
+  query FaqQuestions ($country: CountryCode, $language: LanguageCode)
+    @inContext(country: $country, language: $language) {
+    page(handle: "sporgsmal") {
+      ...Faq
+    }
+  }
+` as const;
+
+const FAQ_QUESTIONS_QUERY = `#graphql
+  ${FAQ_FRAGMENT}
+  query FaqPagesQuestions ($country: CountryCode, $language: LanguageCode, $query: String)
+    @inContext(country: $country, language: $language) {
+    pages(first: 10, query: $query) {
+      nodes {
+        ...Faq
       }
     }
   }
