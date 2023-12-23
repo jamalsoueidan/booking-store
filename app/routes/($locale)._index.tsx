@@ -128,7 +128,7 @@ export default function Homepage() {
 function FeaturedArtists({artists}: {artists: Promise<UsersListResponse>}) {
   if (!artists) return null;
   return (
-    <Wrapper>
+    <Wrapper variant="frontpage">
       <Stack gap="lg">
         <Group gap="2">
           <Title order={2} fw={600} c="pink" lts="1px">
@@ -186,7 +186,7 @@ function RecommendedTreatments({
   productsUsers: ProductsGetUsersImage[];
 }) {
   return (
-    <Wrapper bg="pink.1" py={'xl'}>
+    <Wrapper bg="pink.1" variant="frontpage">
       <Stack gap="lg">
         <Group gap="2">
           <Title order={2} fw={500} lts="1px" c="black">
@@ -247,7 +247,7 @@ function RecommendedProducts({
   products: Promise<RecommendedProductsQuery>;
 }) {
   return (
-    <Wrapper>
+    <Wrapper variant="frontpage">
       <Stack gap="lg">
         <Group gap="2">
           <Title order={2} fw={500} lts="1px" c="orange">
