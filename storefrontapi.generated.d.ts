@@ -725,9 +725,11 @@ export type RecommendedTreatmentsQuery = {
 };
 
 export type FaqFragment = Pick<StorefrontAPI.Page, 'id' | 'title' | 'body'> & {
-  metafield?: StorefrontAPI.Maybe<
-    Pick<StorefrontAPI.Metafield, 'id' | 'value'>
-  >;
+  metafield?: StorefrontAPI.Maybe<{
+    references?: StorefrontAPI.Maybe<{
+      nodes: Array<Pick<StorefrontAPI.Page, 'id' | 'body' | 'title'>>;
+    }>;
+  }>;
 };
 
 export type FaqQuestionsQueryVariables = StorefrontAPI.Exact<{
@@ -738,29 +740,13 @@ export type FaqQuestionsQueryVariables = StorefrontAPI.Exact<{
 export type FaqQuestionsQuery = {
   page?: StorefrontAPI.Maybe<
     Pick<StorefrontAPI.Page, 'id' | 'title' | 'body'> & {
-      metafield?: StorefrontAPI.Maybe<
-        Pick<StorefrontAPI.Metafield, 'id' | 'value'>
-      >;
+      metafield?: StorefrontAPI.Maybe<{
+        references?: StorefrontAPI.Maybe<{
+          nodes: Array<Pick<StorefrontAPI.Page, 'id' | 'body' | 'title'>>;
+        }>;
+      }>;
     }
   >;
-};
-
-export type FaqPagesQuestionsQueryVariables = StorefrontAPI.Exact<{
-  country?: StorefrontAPI.InputMaybe<StorefrontAPI.CountryCode>;
-  language?: StorefrontAPI.InputMaybe<StorefrontAPI.LanguageCode>;
-  query?: StorefrontAPI.InputMaybe<StorefrontAPI.Scalars['String']['input']>;
-}>;
-
-export type FaqPagesQuestionsQuery = {
-  pages: {
-    nodes: Array<
-      Pick<StorefrontAPI.Page, 'id' | 'title' | 'body'> & {
-        metafield?: StorefrontAPI.Maybe<
-          Pick<StorefrontAPI.Metafield, 'id' | 'value'>
-        >;
-      }
-    >;
-  };
 };
 
 export type CustomerAddressUpdateMutationVariables = StorefrontAPI.Exact<{
@@ -2397,13 +2383,9 @@ interface GeneratedQueryTypes {
     return: RecommendedTreatmentsQuery;
     variables: RecommendedTreatmentsQueryVariables;
   };
-  '#graphql\n  #graphql\n  fragment Faq on Page {\n    id\n    title\n    body\n    metafield(namespace:"custom", key: "faq") {\n      id\n      value\n    }\n  }\n\n  query FaqQuestions ($country: CountryCode, $language: LanguageCode)\n    @inContext(country: $country, language: $language) {\n    page(handle: "sporgsmal") {\n      ...Faq\n    }\n  }\n': {
+  '#graphql\n  #graphql\n  fragment Faq on Page {\n    id\n    title\n    body\n    metafield(namespace: "custom", key: "faq") {\n      references(first: 10) {\n        nodes {\n          ... on Page {\n            id\n            body\n            title\n          }\n        }\n      }\n    }\n  }\n\n  query FaqQuestions ($country: CountryCode, $language: LanguageCode)\n    @inContext(country: $country, language: $language) {\n    page(handle: "sporgsmal") {\n      ...Faq\n    }\n  }\n': {
     return: FaqQuestionsQuery;
     variables: FaqQuestionsQueryVariables;
-  };
-  '#graphql\n  #graphql\n  fragment Faq on Page {\n    id\n    title\n    body\n    metafield(namespace:"custom", key: "faq") {\n      id\n      value\n    }\n  }\n\n  query FaqPagesQuestions ($country: CountryCode, $language: LanguageCode, $query: String)\n    @inContext(country: $country, language: $language) {\n    pages(first: 10, query: $query) {\n      nodes {\n        ...Faq\n      }\n    }\n  }\n': {
-    return: FaqPagesQuestionsQuery;
-    variables: FaqPagesQuestionsQueryVariables;
   };
   '#graphql\n  fragment OrderMoney on MoneyV2 {\n    amount\n    currencyCode\n  }\n  fragment AddressFull on MailingAddress {\n    address1\n    address2\n    city\n    company\n    country\n    countryCodeV2\n    firstName\n    formatted\n    id\n    lastName\n    name\n    phone\n    province\n    provinceCode\n    zip\n  }\n  fragment DiscountApplication on DiscountApplication {\n    value {\n      __typename\n      ... on MoneyV2 {\n        ...OrderMoney\n      }\n      ... on PricingPercentageValue {\n        percentage\n      }\n    }\n  }\n  fragment OrderLineProductVariant on ProductVariant {\n    id\n    image {\n      altText\n      height\n      url\n      id\n      width\n    }\n    price {\n      ...OrderMoney\n    }\n    product {\n      id\n      handle\n    }\n    sku\n    title\n  }\n  fragment OrderLineItemFull on OrderLineItem {\n    title\n    quantity\n    discountAllocations {\n      allocatedAmount {\n        ...OrderMoney\n      }\n      discountApplication {\n        ...DiscountApplication\n      }\n    }\n    originalTotalPrice {\n      ...OrderMoney\n    }\n    discountedTotalPrice {\n      ...OrderMoney\n    }\n    customAttributes {\n      key\n      value\n    }\n    variant {\n      ...OrderLineProductVariant\n    }\n  }\n  fragment Order on Order {\n    id\n    name\n    orderNumber\n    statusUrl\n    processedAt\n    fulfillmentStatus\n    totalTaxV2 {\n      ...OrderMoney\n    }\n    totalPriceV2 {\n      ...OrderMoney\n    }\n    subtotalPriceV2 {\n      ...OrderMoney\n    }\n    shippingAddress {\n      ...AddressFull\n    }\n    discountApplications(first: 100) {\n      nodes {\n        ...DiscountApplication\n      }\n    }\n    lineItems(first: 100) {\n      nodes {\n        ...OrderLineItemFull\n      }\n    }\n  }\n  query Order(\n    $country: CountryCode\n    $language: LanguageCode\n    $orderId: ID!\n  ) @inContext(country: $country, language: $language) {\n    order: node(id: $orderId) {\n      ... on Order {\n        ...Order\n      }\n    }\n  }\n': {
     return: OrderQuery;

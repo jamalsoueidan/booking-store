@@ -18,7 +18,6 @@ import {defer, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
 import {Suspense} from 'react';
 import type {
   FaqFragment,
-  FaqPagesQuestionsQuery,
   RecommendedProductsQuery,
   RecommendedTreatmentsQuery,
 } from 'storefrontapi.generated';
@@ -26,11 +25,9 @@ import {Hero} from '~/components/Hero';
 import {ProductCard} from '~/components/ProductCard';
 import {TreatmentCard} from '~/components/treatment/TreatmentCard';
 
-import {useMediaQuery} from '@mantine/hooks';
 import {IconArrowRight} from '@tabler/icons-react';
 import HeroCategories from '~/components/HeroCategories';
 import {Wrapper} from '~/components/Wrapper';
-import {convertToEmbedArray} from '~/data/convert-to-array';
 import {PRODUCT_ITEM_FRAGMENT} from '~/data/fragments';
 import {getBookingShopifyApi} from '~/lib/api/bookingShopifyApi';
 import type {ProductsGetUsersImage, UsersListResponse} from '~/lib/api/model';
@@ -66,32 +63,18 @@ export async function loader({context}: LoaderFunctionArgs) {
 
   const {page: faqPage} = await context.storefront.query(FAQ_QUERY);
 
-  const embeddedQuestionPages = convertToEmbedArray(
-    faqPage?.metafield?.value || '',
-  );
-
-  const faqQuestions = context.storefront.query(FAQ_QUESTIONS_QUERY, {
-    variables: {
-      query: embeddedQuestionPages.map((p) => parseGid(p).id).join(' OR '),
-      country: context.storefront.i18n.country,
-      language: context.storefront.i18n.language,
-    },
-  });
-
   return defer({
     recommendedProducts,
     recommendedTreatmentsProductsUsers,
     recommendedTreatments,
     collections,
     artists,
-    faqQuestions,
     faqPage,
   });
 }
 
 export default function Homepage() {
   const data = useLoaderData<typeof loader>();
-  const isMobile = useMediaQuery('(max-width: 62em)');
 
   return (
     <>
@@ -120,7 +103,7 @@ export default function Homepage() {
           productsUsers={data.recommendedTreatmentsProductsUsers}
         />
         <RecommendedProducts products={data.recommendedProducts} />
-        <FaqQuestions page={data.faqPage} questions={data.faqQuestions} />
+        <FaqQuestions page={data.faqPage} />
       </Box>
     </>
   );
@@ -292,13 +275,7 @@ function RecommendedProducts({
   );
 }
 
-function FaqQuestions({
-  page,
-  questions,
-}: {
-  page?: FaqFragment | null;
-  questions: Promise<FaqPagesQuestionsQuery>;
-}) {
+function FaqQuestions({page}: {page?: FaqFragment | null}) {
   return (
     <Wrapper bg="yellow.1" variant="frontpage">
       <SimpleGrid cols={{base: 1, md: 2}}>
@@ -312,26 +289,20 @@ function FaqQuestions({
             dangerouslySetInnerHTML={{__html: page?.body || ''}}
           ></Text>
         </div>
-        <Suspense fallback={<div>Loading...</div>}>
-          <Await resolve={questions}>
-            {({pages}) => (
-              <Accordion variant="filled">
-                {pages.nodes.map((page) => (
-                  <Accordion.Item key={page.id} value={page.title}>
-                    <Accordion.Control>
-                      <Text fz="lg" fw={500}>
-                        {page.title}
-                      </Text>
-                    </Accordion.Control>
-                    <Accordion.Panel>
-                      <div dangerouslySetInnerHTML={{__html: page.body}} />
-                    </Accordion.Panel>
-                  </Accordion.Item>
-                ))}
-              </Accordion>
-            )}
-          </Await>
-        </Suspense>
+        <Accordion variant="filled">
+          {page?.metafield?.references?.nodes.map((page) => (
+            <Accordion.Item key={page.id} value={page.title}>
+              <Accordion.Control>
+                <Text fz="lg" fw={500}>
+                  {page.title}
+                </Text>
+              </Accordion.Control>
+              <Accordion.Panel>
+                <div dangerouslySetInnerHTML={{__html: page.body}} />
+              </Accordion.Panel>
+            </Accordion.Item>
+          ))}
+        </Accordion>
       </SimpleGrid>
     </Wrapper>
   );
@@ -366,9 +337,16 @@ export const FAQ_FRAGMENT = `#graphql
     id
     title
     body
-    metafield(namespace:"custom", key: "faq") {
-      id
-      value
+    metafield(namespace: "custom", key: "faq") {
+      references(first: 10) {
+        nodes {
+          ... on Page {
+            id
+            body
+            title
+          }
+        }
+      }
     }
   }
 ` as const;
@@ -379,18 +357,6 @@ const FAQ_QUERY = `#graphql
     @inContext(country: $country, language: $language) {
     page(handle: "sporgsmal") {
       ...Faq
-    }
-  }
-` as const;
-
-const FAQ_QUESTIONS_QUERY = `#graphql
-  ${FAQ_FRAGMENT}
-  query FaqPagesQuestions ($country: CountryCode, $language: LanguageCode, $query: String)
-    @inContext(country: $country, language: $language) {
-    pages(first: 10, query: $query) {
-      nodes {
-        ...Faq
-      }
     }
   }
 ` as const;
