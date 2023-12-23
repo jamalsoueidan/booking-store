@@ -2,9 +2,9 @@
   height: 350px;
   @media (min-width: $mantine-breakpoint-md) {
     background-repeat: no-repeat;
-    background-size: 55%;
+    background-size: 50%;
     height: 500px;
-    background-position: 105% 30%;
+    background-position: 100% 25%;
     background-image: url('/beauty-image.png');
   }
 }
@@ -14,9 +14,8 @@
   height: 80%;
   gap: var(--mantine-spacing-lg);
   @media (min-width: $mantine-breakpoint-md) {
-    position: relative;
     gap: var(--mantine-spacing-lg);
-    height: 85%;
+    height: 90%;
     width: 50%;
   }
 }

@@ -7,10 +7,7 @@ export function HeroTitle({
   subtitle,
   overtitle,
   bg,
-}: TitleProps & {
-  subtitle: string | React.ReactNode;
-  overtitle: string | React.ReactNode;
-}) {
+}: TitleProps & {subtitle: string; overtitle: string}) {
   return (
     <HeroBackground bg={bg}>
       <Stack pt={rem(30)} pb={rem(50)} gap="xs">
