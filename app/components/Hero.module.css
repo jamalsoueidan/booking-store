@@ -2,9 +2,9 @@
   height: 350px;
   @media (min-width: $mantine-breakpoint-md) {
     background-repeat: no-repeat;
-    background-size: 50%;
+    background-size: 55%;
     height: 500px;
-    background-position: 100% 25%;
+    background-position: 105% 25%;
     background-image: url('/beauty-image.png');
   }
 }

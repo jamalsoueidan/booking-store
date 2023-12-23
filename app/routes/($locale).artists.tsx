@@ -1,13 +1,20 @@
-import {SimpleGrid} from '@mantine/core';
-import {useLoaderData} from '@remix-run/react';
+import {
+  Avatar,
+  Button,
+  Card,
+  Flex,
+  SimpleGrid,
+  Stack,
+  Text,
+} from '@mantine/core';
+import {Link, useLoaderData} from '@remix-run/react';
 import {json, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
 import {useState} from 'react';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import {HeroTitle} from '~/components/HeroTitle';
 import {Wrapper} from '~/components/Wrapper';
-import {ArtistCard} from '~/components/artists/ArtistCard';
 import {getBookingShopifyApi} from '~/lib/api/bookingShopifyApi';
-import {type User} from '~/lib/api/model';
+import type {User} from '~/lib/api/model';
 
 const LIMIT = '25';
 
@@ -75,3 +82,38 @@ export const UserList = ({initialData, initialCursor}: UserListProps) => {
     </InfiniteScroll>
   );
 };
+
+export const ArtistCard = ({artist}: {artist: User}) => (
+  <Card
+    radius="md"
+    withBorder
+    p="lg"
+    bg="var(--mantine-color-body)"
+    component={Link}
+    to={`/artist/${artist.username}`}
+  >
+    <Stack gap="md">
+      <Avatar
+        src={artist.images?.profile?.url}
+        w="100%"
+        radius="100%"
+        h="auto"
+        mah="250px"
+      />
+      <div>
+        <Text ta="center" fz="lg" fw={500} c="black">
+          {artist.fullname}
+        </Text>
+        <Text ta="center" c="dimmed" fz="sm">
+          {artist.shortDescription}
+        </Text>
+      </div>
+
+      <Flex justify="center">
+        <Button variant="default" size="xs" radius="lg">
+          Vis profile
+        </Button>
+      </Flex>
+    </Stack>
+  </Card>
+);

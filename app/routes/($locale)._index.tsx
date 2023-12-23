@@ -24,16 +24,17 @@ import type {
 } from 'storefrontapi.generated';
 import {Hero} from '~/components/Hero';
 import {ProductCard} from '~/components/ProductCard';
-import {ArtistCard} from '~/components/artists/ArtistCard';
 import {TreatmentCard} from '~/components/treatment/TreatmentCard';
 
 import {useMediaQuery} from '@mantine/hooks';
 import {IconArrowRight} from '@tabler/icons-react';
 import HeroCategories from '~/components/HeroCategories';
 import {Wrapper} from '~/components/Wrapper';
+import {convertToEmbedArray} from '~/data/convert-to-array';
 import {PRODUCT_ITEM_FRAGMENT} from '~/data/fragments';
 import {getBookingShopifyApi} from '~/lib/api/bookingShopifyApi';
 import type {ProductsGetUsersImage, UsersListResponse} from '~/lib/api/model';
+import {ArtistCard} from './($locale).artists';
 import {COLLECTIONS_QUERY} from './($locale).categories._index';
 
 export const meta: MetaFunction = () => {
