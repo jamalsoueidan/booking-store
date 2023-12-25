@@ -97,8 +97,7 @@ export const ArtistCard = ({artist}: {artist: User}) => (
         src={artist.images?.profile?.url}
         w="100%"
         radius="100%"
-        h="auto"
-        mah="220px"
+        h="300px"
       />
       <div>
         <Text ta="center" fz="lg" fw={500} c="black">

@@ -1,4 +1,4 @@
-import {Carousel} from '@mantine/carousel';
+import {Carousel, type Embla} from '@mantine/carousel';
 import {
   Accordion,
   ActionIcon,
@@ -17,7 +17,7 @@ import {
 import {Await, Link, useLoaderData, type MetaFunction} from '@remix-run/react';
 import {parseGid} from '@shopify/hydrogen';
 import {defer, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
-import {Suspense} from 'react';
+import {Suspense, useCallback, useState} from 'react';
 import type {
   FaqFragment,
   RecommendedProductsQuery,
@@ -113,45 +113,25 @@ export default function Homepage() {
 }
 
 function FeaturedArtists({artists}: {artists: Promise<UsersListResponse>}) {
+  const [embla, setEmbla] = useState<Embla | null>(null);
+
+  const scrollPrev = useCallback(() => {
+    if (embla) embla.scrollPrev();
+  }, [embla]);
+
+  const scrollNext = useCallback(() => {
+    if (embla) embla.scrollNext();
+  }, [embla]);
+
   if (!artists) return null;
+
   return (
-    <Wrapper variant="frontpage">
-      <Stack gap="lg">
-        <Group justify="space-between">
-          <Button
-            variant="transparent"
-            color="pink"
-            size="compact-xl"
-            aria-label="Settings"
-            component={Link}
-            to="/artists"
-            rightSection={<IconArrowRight stroke={1.5} />}
-          >
-            Skønhedseksperter
-          </Button>
-
-          <Group>
-            <ActionIcon
-              variant="filled"
-              color="pink"
-              radius={'lg'}
-              size={'lg'}
-              aria-label="Tilbage"
-            >
-              <IconArrowLeft stroke={1.5} />
-            </ActionIcon>
-            <ActionIcon
-              variant="filled"
-              color="pink"
-              radius={'lg'}
-              size={'lg'}
-              aria-label="Right"
-            >
-              <IconArrowRight stroke={1.5} />
-            </ActionIcon>
-          </Group>
-        </Group>
-
+    <div
+      style={{
+        overflow: 'hidden',
+      }}
+    >
+      <Wrapper variant="frontpage">
         <Suspense
           fallback={
             <Flex gap="lg">
@@ -164,24 +144,56 @@ function FeaturedArtists({artists}: {artists: Promise<UsersListResponse>}) {
         >
           <Await resolve={artists}>
             {({payload}) => (
-              <Carousel
-                slideSize={{base: '75%', md: '25%'}}
-                slideGap="lg"
-                align="start"
-                containScroll="trimSnaps"
-                withControls={false}
-              >
-                {payload.results.map((artist) => (
-                  <Carousel.Slide key={artist.customerId}>
-                    <ArtistCard artist={artist} />
-                  </Carousel.Slide>
-                ))}
-              </Carousel>
+              <Stack gap="lg">
+                <Group justify="space-between">
+                  <Button
+                    variant="transparent"
+                    color="pink"
+                    size="compact-xl"
+                    aria-label="Settings"
+                    component={Link}
+                    to="/artists"
+                    rightSection={<IconArrowRight stroke={1.5} />}
+                  >
+                    Skønhedseksperter
+                  </Button>
+
+                  <Group>
+                    <ActionIcon
+                      variant="filled"
+                      color="pink"
+                      radius={'lg'}
+                      size={'lg'}
+                      aria-label="Tilbage"
+                      onClick={scrollPrev}
+                    >
+                      <IconArrowLeft stroke={1.5} />
+                    </ActionIcon>
+                    <ActionIcon
+                      variant="filled"
+                      color="pink"
+                      radius={'lg'}
+                      size={'lg'}
+                      aria-label="Right"
+                      onClick={scrollNext}
+                    >
+                      <IconArrowRight stroke={1.5} />
+                    </ActionIcon>
+                  </Group>
+                </Group>
+                <Slider getEmblaApi={setEmbla}>
+                  {payload.results.map((artist) => (
+                    <Carousel.Slide key={artist.customerId}>
+                      <ArtistCard artist={artist} />
+                    </Carousel.Slide>
+                  ))}
+                </Slider>
+              </Stack>
             )}
           </Await>
         </Suspense>
-      </Stack>
-    </Wrapper>
+      </Wrapper>
+    </div>
   );
 }
 
@@ -192,6 +204,16 @@ function RecommendedTreatments({
   products: RecommendedTreatmentsQuery;
   productsUsers: ProductsGetUsersImage[];
 }) {
+  const [embla, setEmbla] = useState<Embla | null>(null);
+
+  const scrollPrev = useCallback(() => {
+    if (embla) embla.scrollPrev();
+  }, [embla]);
+
+  const scrollNext = useCallback(() => {
+    if (embla) embla.scrollNext();
+  }, [embla]);
+
   return (
     <div
       style={{
@@ -202,12 +224,11 @@ function RecommendedTreatments({
       <Wrapper bg="pink.1" variant="frontpage">
         <Stack gap="lg">
           <Title order={2} fw={500} lts="1px" c="black">
-            Anbefalt behandlinger
+            Vælg din næste skønhedsoplevelse.
           </Title>
 
           <Text>
-            Opdag vores udvalg af de bedste behandlinger for en forfriskende
-            oplevelse og skønhedsforvandling.
+            Udforsk behandlinger, og book din tid – alt sammen på ét sted.
           </Text>
 
           <span>
@@ -241,7 +262,7 @@ function RecommendedTreatments({
           >
             <Await resolve={products}>
               {({products}) => (
-                <Slider>
+                <Slider getEmblaApi={setEmbla}>
                   {products.nodes.map((product) => {
                     const productUsers = productsUsers.find(
                       (p) => p.productId.toString() === parseGid(product.id).id,
@@ -261,6 +282,28 @@ function RecommendedTreatments({
               )}
             </Await>
           </Suspense>
+          <Group>
+            <ActionIcon
+              variant="filled"
+              color="black"
+              radius={'lg'}
+              size={'lg'}
+              aria-label="Tilbage"
+              onClick={scrollPrev}
+            >
+              <IconArrowLeft stroke={1.5} />
+            </ActionIcon>
+            <ActionIcon
+              variant="filled"
+              color="black"
+              radius={'lg'}
+              size={'lg'}
+              aria-label="Right"
+              onClick={scrollNext}
+            >
+              <IconArrowRight stroke={1.5} />
+            </ActionIcon>
+          </Group>
         </Stack>
       </Wrapper>
     </div>

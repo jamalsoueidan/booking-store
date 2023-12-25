@@ -4,12 +4,12 @@ import classes from './Slider.module.css';
 export function Slider({children, ...props}: CarouselProps) {
   return (
     <Carousel
+      dragFree
       slideSize={{base: '100%', md: '25%'}}
       slideGap="lg"
-      align="start"
-      withControls={false}
-      containScroll="keepSnaps"
       classNames={{viewport: classes.viewport}}
+      withControls={false}
+      align="start"
       {...props}
     >
       {children}

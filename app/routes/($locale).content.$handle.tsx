@@ -2,7 +2,7 @@ import {useLoaderData, type MetaFunction} from '@remix-run/react';
 import {json, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
 import {Icon12Hours} from '@tabler/icons-react';
 import {type ComponentItemFragment} from 'storefrontapi.generated';
-import {FeatureProps, Features} from '~/components/Features';
+import {Features, type FeatureProps} from '~/components/Features';
 import {HeroTitle} from '~/components/HeroTitle';
 
 export const meta: MetaFunction<typeof loader> = ({data}) => {
