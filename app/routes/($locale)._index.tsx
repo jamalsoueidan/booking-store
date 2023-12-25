@@ -5,6 +5,7 @@ import {
   Box,
   Button,
   Container,
+  Flex,
   Group,
   SimpleGrid,
   Skeleton,
@@ -153,12 +154,12 @@ function FeaturedArtists({artists}: {artists: Promise<UsersListResponse>}) {
 
         <Suspense
           fallback={
-            <Group gap="lg">
+            <Flex gap="lg">
               <Skeleton height={50} />
               <Skeleton height={50} />
               <Skeleton height={50} />
               <Skeleton height={50} />
-            </Group>
+            </Flex>
           }
         >
           <Await resolve={artists}>
@@ -230,12 +231,12 @@ function RecommendedTreatments({
 
           <Suspense
             fallback={
-              <Group gap="lg">
+              <Flex gap="lg">
                 <Skeleton height={50} />
                 <Skeleton height={50} />
                 <Skeleton height={50} />
                 <Skeleton height={50} />
-              </Group>
+              </Flex>
             }
           >
             <Await resolve={products}>
@@ -318,7 +319,7 @@ function RecommendedProducts({
 
 function FaqQuestions({page}: {page?: FaqFragment | null}) {
   return (
-    <Wrapper bg="yellow.1" variant="frontpage">
+    <Wrapper bg="yellow.1" variant="frontpage" mb="0">
       <SimpleGrid cols={{base: 1, md: 2}}>
         <div>
           <Title order={2} fw={500} fz={rem(48)} lts="1px">
