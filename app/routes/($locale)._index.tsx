@@ -26,7 +26,7 @@ import {Hero} from '~/components/Hero';
 import {ProductCard} from '~/components/ProductCard';
 import {TreatmentCard} from '~/components/treatment/TreatmentCard';
 
-import {IconArrowRight} from '@tabler/icons-react';
+import {IconArrowLeft, IconArrowRight} from '@tabler/icons-react';
 import HeroCategories from '~/components/HeroCategories';
 import {Slider} from '~/components/Slider';
 import {Wrapper} from '~/components/Wrapper';
@@ -116,28 +116,47 @@ function FeaturedArtists({artists}: {artists: Promise<UsersListResponse>}) {
   return (
     <Wrapper variant="frontpage">
       <Stack gap="lg">
-        <Group gap="2">
-          <Title order={2} fw={600} c="pink" lts="1px">
-            Skønhedseksperter
-          </Title>
-          <ActionIcon
+        <Group justify="space-between">
+          <Button
             variant="transparent"
             color="pink"
-            size="lg"
+            size="compact-xl"
             aria-label="Settings"
             component={Link}
             to="/artists"
+            rightSection={<IconArrowRight stroke={1.5} />}
           >
-            <IconArrowRight
-              style={{width: '70%', height: '70%'}}
-              stroke={1.5}
-            />
-          </ActionIcon>
+            Skønhedseksperter
+          </Button>
+
+          <Group>
+            <ActionIcon
+              variant="filled"
+              color="pink"
+              radius={'lg'}
+              size={'lg'}
+              aria-label="Tilbage"
+            >
+              <IconArrowLeft stroke={1.5} />
+            </ActionIcon>
+            <ActionIcon
+              variant="filled"
+              color="pink"
+              radius={'lg'}
+              size={'lg'}
+              aria-label="Right"
+            >
+              <IconArrowRight stroke={1.5} />
+            </ActionIcon>
+          </Group>
         </Group>
 
         <Suspense
           fallback={
-            <Group>
+            <Group gap="lg">
+              <Skeleton height={50} />
+              <Skeleton height={50} />
+              <Skeleton height={50} />
               <Skeleton height={50} />
             </Group>
           }
@@ -209,7 +228,16 @@ function RecommendedTreatments({
             </Button>
           </span>
 
-          <Suspense fallback={<div>Loading...</div>}>
+          <Suspense
+            fallback={
+              <Group gap="lg">
+                <Skeleton height={50} />
+                <Skeleton height={50} />
+                <Skeleton height={50} />
+                <Skeleton height={50} />
+              </Group>
+            }
+          >
             <Await resolve={products}>
               {({products}) => (
                 <Slider>
@@ -293,7 +321,7 @@ function FaqQuestions({page}: {page?: FaqFragment | null}) {
     <Wrapper bg="yellow.1" variant="frontpage">
       <SimpleGrid cols={{base: 1, md: 2}}>
         <div>
-          <Title order={2} fw={500} fz={rem(60)} lts="1px">
+          <Title order={2} fw={500} fz={rem(48)} lts="1px">
             {page?.title}
           </Title>
           <Text
@@ -301,6 +329,7 @@ function FaqQuestions({page}: {page?: FaqFragment | null}) {
             fw={400}
             dangerouslySetInnerHTML={{__html: page?.body || ''}}
           ></Text>
+          <Button color="yellow">Kontakt os</Button>
         </div>
         <Accordion variant="filled">
           {page?.metafield?.references?.nodes.map((page) => (
