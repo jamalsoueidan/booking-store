@@ -92,13 +92,15 @@ export const ArtistCard = ({artist}: {artist: User}) => (
     component={Link}
     to={`/artist/${artist.username}`}
   >
-    <Stack gap="md">
-      <Avatar
-        src={artist.images?.profile?.url}
-        w="100%"
-        radius="100%"
-        h="300px"
-      />
+    <Stack gap="md" justify="center">
+      <Flex justify="center">
+        <Avatar
+          src={artist.images?.profile?.url}
+          radius="100%"
+          w="220px"
+          h="220px"
+        />
+      </Flex>
       <div>
         <Text ta="center" fz="lg" fw={500} c="black">
           {artist.fullname}
