@@ -98,7 +98,7 @@ export const ArtistCard = ({artist}: {artist: User}) => (
         w="100%"
         radius="100%"
         h="auto"
-        mah="250px"
+        mah="220px"
       />
       <div>
         <Text ta="center" fz="lg" fw={500} c="black">

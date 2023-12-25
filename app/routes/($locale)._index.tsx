@@ -3,6 +3,7 @@ import {
   Accordion,
   ActionIcon,
   Box,
+  Button,
   Container,
   Group,
   SimpleGrid,
@@ -27,6 +28,7 @@ import {TreatmentCard} from '~/components/treatment/TreatmentCard';
 
 import {IconArrowRight} from '@tabler/icons-react';
 import HeroCategories from '~/components/HeroCategories';
+import {Slider} from '~/components/Slider';
 import {Wrapper} from '~/components/Wrapper';
 import {PRODUCT_ITEM_FRAGMENT} from '~/data/fragments';
 import {getBookingShopifyApi} from '~/lib/api/bookingShopifyApi';
@@ -132,6 +134,7 @@ function FeaturedArtists({artists}: {artists: Promise<UsersListResponse>}) {
             />
           </ActionIcon>
         </Group>
+
         <Suspense
           fallback={
             <Group>
@@ -170,58 +173,68 @@ function RecommendedTreatments({
   productsUsers: ProductsGetUsersImage[];
 }) {
   return (
-    <Wrapper bg="pink.1" variant="frontpage">
-      <Stack gap="lg">
-        <Group gap="2">
+    <div
+      style={{
+        overflow: 'hidden',
+        backgroundColor: 'var(--mantine-color-pink-1)',
+      }}
+    >
+      <Wrapper bg="pink.1" variant="frontpage">
+        <Stack gap="lg">
           <Title order={2} fw={500} lts="1px" c="black">
             Anbefalt behandlinger
           </Title>
-          <ActionIcon
-            variant="transparent"
-            color="black"
-            size="lg"
-            aria-label="Settings"
-            component={Link}
-            to="/treatments"
-          >
-            <IconArrowRight
-              style={{width: '70%', height: '70%'}}
-              stroke={1.5}
-            />
-          </ActionIcon>
-        </Group>
 
-        <Suspense fallback={<div>Loading...</div>}>
-          <Await resolve={products}>
-            {({products}) => (
-              <Carousel
-                slideSize={{base: '75%', md: '25%'}}
-                slideGap="lg"
-                align="start"
-                containScroll="trimSnaps"
-                withControls={false}
-              >
-                {products.nodes.map((product) => {
-                  const productUsers = productsUsers.find(
-                    (p) => p.productId.toString() === parseGid(product.id).id,
-                  );
+          <Text>
+            Opdag vores udvalg af de bedste behandlinger for en forfriskende
+            oplevelse og skønhedsforvandling.
+          </Text>
 
-                  return (
-                    <Carousel.Slide key={product.id}>
-                      <TreatmentCard
-                        product={product}
-                        productUsers={productUsers}
-                        loading={'eager'}
-                      />
-                    </Carousel.Slide>
-                  );
-                })}
-              </Carousel>
-            )}
-          </Await>
-        </Suspense>
-      </Stack>
-    </Wrapper>
+          <span>
+            <Button
+              variant="filled"
+              color="black"
+              size="md"
+              aria-label="Settings"
+              component={Link}
+              to="/categories"
+              rightSection={
+                <IconArrowRight
+                  style={{width: '70%', height: '70%'}}
+                  stroke={1.5}
+                />
+              }
+            >
+              Vis Kategorier
+            </Button>
+          </span>
+
+          <Suspense fallback={<div>Loading...</div>}>
+            <Await resolve={products}>
+              {({products}) => (
+                <Slider>
+                  {products.nodes.map((product) => {
+                    const productUsers = productsUsers.find(
+                      (p) => p.productId.toString() === parseGid(product.id).id,
+                    );
+
+                    return (
+                      <Carousel.Slide key={product.id}>
+                        <TreatmentCard
+                          product={product}
+                          productUsers={productUsers}
+                          loading={'eager'}
+                        />
+                      </Carousel.Slide>
+                    );
+                  })}
+                </Slider>
+              )}
+            </Await>
+          </Suspense>
+        </Stack>
+      </Wrapper>
+    </div>
   );
 }
 

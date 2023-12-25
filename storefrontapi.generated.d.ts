@@ -2044,6 +2044,47 @@ export type StoreCollectionsQuery = {
   };
 };
 
+export type ContentQueryVariables = StorefrontAPI.Exact<{
+  language?: StorefrontAPI.InputMaybe<StorefrontAPI.LanguageCode>;
+  country?: StorefrontAPI.InputMaybe<StorefrontAPI.CountryCode>;
+  handle: StorefrontAPI.Scalars['String']['input'];
+}>;
+
+export type ContentQuery = {
+  metaobject?: StorefrontAPI.Maybe<{
+    fields: Array<
+      Pick<StorefrontAPI.MetaobjectField, 'value' | 'key'> & {
+        references?: StorefrontAPI.Maybe<{
+          nodes: Array<
+            Pick<StorefrontAPI.Metaobject, 'id' | 'type'> & {
+              fields: Array<
+                Pick<StorefrontAPI.MetaobjectField, 'value' | 'key'> & {
+                  references?: StorefrontAPI.Maybe<{
+                    nodes: Array<
+                      Pick<StorefrontAPI.Metaobject, 'id'> & {
+                        fields: Array<
+                          Pick<StorefrontAPI.MetaobjectField, 'value' | 'key'>
+                        >;
+                      }
+                    >;
+                  }>;
+                  reference?: StorefrontAPI.Maybe<
+                    Pick<StorefrontAPI.Metaobject, 'id' | 'type'> & {
+                      fields: Array<
+                        Pick<StorefrontAPI.MetaobjectField, 'value' | 'key'>
+                      >;
+                    }
+                  >;
+                }
+              >;
+            }
+          >;
+        }>;
+      }
+    >;
+  }>;
+};
+
 export type PageQueryVariables = StorefrontAPI.Exact<{
   language?: StorefrontAPI.InputMaybe<StorefrontAPI.LanguageCode>;
   country?: StorefrontAPI.InputMaybe<StorefrontAPI.CountryCode>;
@@ -2442,6 +2483,10 @@ interface GeneratedQueryTypes {
   '#graphql\n  #graphql\n  fragment Collection on Collection {\n    id\n    title\n    handle\n    description\n    image {\n      id\n      url\n      altText\n      width\n      height\n    }\n    icon:  metafield(namespace:"custom",  key: "icon") {\n      type\n      value\n    }\n    color:  metafield(namespace:"custom",  key: "color") {\n      type\n      value\n    }\n  }\n\n  query StoreCollections(\n    $country: CountryCode\n    $endCursor: String\n    $first: Int\n    $language: LanguageCode\n    $last: Int\n    $startCursor: String\n  ) @inContext(country: $country, language: $language) {\n    collections(\n      first: $first,\n      last: $last,\n      before: $startCursor,\n      after: $endCursor,\n      query: "title:products:*"\n    ) {\n      nodes {\n        ...Collection\n      }\n      pageInfo {\n        hasNextPage\n        hasPreviousPage\n        startCursor\n        endCursor\n      }\n    }\n  }\n': {
     return: StoreCollectionsQuery;
     variables: StoreCollectionsQueryVariables;
+  };
+  '#graphql\n  query Content(\n    $language: LanguageCode,\n    $country: CountryCode,\n    $handle: String!\n  )\n  @inContext(language: $language, country: $country) {\n    metaobject(handle: {handle: $handle, type: "content"}) {\n      fields {\n        value\n        key\n        references(first: 10) {\n          nodes {\n            ... on Metaobject {\n              id\n              type\n              fields {\n                value\n                key\n                references(first: 10) {\n                  nodes {\n                    ... on Metaobject {\n                      id\n                      fields {\n                        value\n                        key\n                      }\n                    }\n                  }\n                }\n                reference {\n                  ... on Metaobject {\n                    id\n                    type\n                    fields {\n                      value\n                      key\n                    }\n                  }\n                }\n              }\n            }\n          }\n        }\n      }\n    }\n  }\n': {
+    return: ContentQuery;
+    variables: ContentQueryVariables;
   };
   '#graphql\n  query Page(\n    $language: LanguageCode,\n    $country: CountryCode,\n    $handle: String!\n  )\n  @inContext(language: $language, country: $country) {\n    page(handle: $handle) {\n      id\n      title\n      body\n      seo {\n        description\n        title\n      }\n    }\n  }\n': {
     return: PageQuery;
