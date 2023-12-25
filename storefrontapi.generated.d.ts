@@ -2044,6 +2044,61 @@ export type StoreCollectionsQuery = {
   };
 };
 
+export type ComponentItemFragment = Pick<
+  StorefrontAPI.Metaobject,
+  'id' | 'type'
+> & {
+  fields: Array<
+    Pick<StorefrontAPI.MetaobjectField, 'value' | 'key'> & {
+      references?: StorefrontAPI.Maybe<{
+        nodes: Array<
+          Pick<StorefrontAPI.Metaobject, 'id'> & {
+            fields: Array<Pick<StorefrontAPI.MetaobjectField, 'value' | 'key'>>;
+          }
+        >;
+      }>;
+      reference?: StorefrontAPI.Maybe<
+        Pick<StorefrontAPI.Metaobject, 'id' | 'type'> & {
+          fields: Array<Pick<StorefrontAPI.MetaobjectField, 'value' | 'key'>>;
+        }
+      >;
+    }
+  >;
+};
+
+export type MetafieldItemFragment = {
+  fields: Array<
+    Pick<StorefrontAPI.MetaobjectField, 'value' | 'key'> & {
+      references?: StorefrontAPI.Maybe<{
+        nodes: Array<
+          Pick<StorefrontAPI.Metaobject, 'id' | 'type'> & {
+            fields: Array<
+              Pick<StorefrontAPI.MetaobjectField, 'value' | 'key'> & {
+                references?: StorefrontAPI.Maybe<{
+                  nodes: Array<
+                    Pick<StorefrontAPI.Metaobject, 'id'> & {
+                      fields: Array<
+                        Pick<StorefrontAPI.MetaobjectField, 'value' | 'key'>
+                      >;
+                    }
+                  >;
+                }>;
+                reference?: StorefrontAPI.Maybe<
+                  Pick<StorefrontAPI.Metaobject, 'id' | 'type'> & {
+                    fields: Array<
+                      Pick<StorefrontAPI.MetaobjectField, 'value' | 'key'>
+                    >;
+                  }
+                >;
+              }
+            >;
+          }
+        >;
+      }>;
+    }
+  >;
+};
+
 export type ContentQueryVariables = StorefrontAPI.Exact<{
   language?: StorefrontAPI.InputMaybe<StorefrontAPI.LanguageCode>;
   country?: StorefrontAPI.InputMaybe<StorefrontAPI.CountryCode>;
@@ -2484,7 +2539,7 @@ interface GeneratedQueryTypes {
     return: StoreCollectionsQuery;
     variables: StoreCollectionsQueryVariables;
   };
-  '#graphql\n  query Content(\n    $language: LanguageCode,\n    $country: CountryCode,\n    $handle: String!\n  )\n  @inContext(language: $language, country: $country) {\n    metaobject(handle: {handle: $handle, type: "content"}) {\n      fields {\n        value\n        key\n        references(first: 10) {\n          nodes {\n            ... on Metaobject {\n              id\n              type\n              fields {\n                value\n                key\n                references(first: 10) {\n                  nodes {\n                    ... on Metaobject {\n                      id\n                      fields {\n                        value\n                        key\n                      }\n                    }\n                  }\n                }\n                reference {\n                  ... on Metaobject {\n                    id\n                    type\n                    fields {\n                      value\n                      key\n                    }\n                  }\n                }\n              }\n            }\n          }\n        }\n      }\n    }\n  }\n': {
+  '#graphql\n  #graphql\n  #graphql\n  fragment ComponentItem on Metaobject {\n    id\n    type\n    fields {\n      value\n      key\n      references(first: 10) {\n        nodes {\n          ... on Metaobject {\n            id\n            fields {\n              value\n              key\n            }\n          }\n        }\n      }\n      reference {\n        ... on Metaobject {\n          id\n          type\n          fields {\n            value\n            key\n          }\n        }\n      }\n    }\n  }\n\n  fragment MetafieldItem on Metaobject {\n    fields {\n      value\n      key\n      references(first: 10) {\n        nodes {\n          ...ComponentItem\n        }\n      }\n    }\n  }\n\n  query Content(\n    $language: LanguageCode,\n    $country: CountryCode,\n    $handle: String!\n  )\n  @inContext(language: $language, country: $country) {\n    metaobject(handle: {handle: $handle, type: "content"}) {\n      ...MetafieldItem\n    }\n  }\n': {
     return: ContentQuery;
     variables: ContentQueryVariables;
   };
