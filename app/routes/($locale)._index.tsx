@@ -3,7 +3,9 @@ import {
   Accordion,
   ActionIcon,
   Box,
+  Button,
   Container,
+  Flex,
   Group,
   SimpleGrid,
   Skeleton,
@@ -25,8 +27,9 @@ import {Hero} from '~/components/Hero';
 import {ProductCard} from '~/components/ProductCard';
 import {TreatmentCard} from '~/components/treatment/TreatmentCard';
 
-import {IconArrowRight} from '@tabler/icons-react';
+import {IconArrowLeft, IconArrowRight} from '@tabler/icons-react';
 import HeroCategories from '~/components/HeroCategories';
+import {Slider} from '~/components/Slider';
 import {Wrapper} from '~/components/Wrapper';
 import {PRODUCT_ITEM_FRAGMENT} from '~/data/fragments';
 import {getBookingShopifyApi} from '~/lib/api/bookingShopifyApi';
@@ -114,29 +117,49 @@ function FeaturedArtists({artists}: {artists: Promise<UsersListResponse>}) {
   return (
     <Wrapper variant="frontpage">
       <Stack gap="lg">
-        <Group gap="2">
-          <Title order={2} fw={600} c="pink" lts="1px">
-            Skønhedseksperter
-          </Title>
-          <ActionIcon
+        <Group justify="space-between">
+          <Button
             variant="transparent"
             color="pink"
-            size="lg"
+            size="compact-xl"
             aria-label="Settings"
             component={Link}
             to="/artists"
+            rightSection={<IconArrowRight stroke={1.5} />}
           >
-            <IconArrowRight
-              style={{width: '70%', height: '70%'}}
-              stroke={1.5}
-            />
-          </ActionIcon>
+            Skønhedseksperter
+          </Button>
+
+          <Group>
+            <ActionIcon
+              variant="filled"
+              color="pink"
+              radius={'lg'}
+              size={'lg'}
+              aria-label="Tilbage"
+            >
+              <IconArrowLeft stroke={1.5} />
+            </ActionIcon>
+            <ActionIcon
+              variant="filled"
+              color="pink"
+              radius={'lg'}
+              size={'lg'}
+              aria-label="Right"
+            >
+              <IconArrowRight stroke={1.5} />
+            </ActionIcon>
+          </Group>
         </Group>
+
         <Suspense
           fallback={
-            <Group>
+            <Flex gap="lg">
               <Skeleton height={50} />
-            </Group>
+              <Skeleton height={50} />
+              <Skeleton height={50} />
+              <Skeleton height={50} />
+            </Flex>
           }
         >
           <Await resolve={artists}>
@@ -170,58 +193,77 @@ function RecommendedTreatments({
   productsUsers: ProductsGetUsersImage[];
 }) {
   return (
-    <Wrapper bg="pink.1" variant="frontpage">
-      <Stack gap="lg">
-        <Group gap="2">
+    <div
+      style={{
+        overflow: 'hidden',
+        backgroundColor: 'var(--mantine-color-pink-1)',
+      }}
+    >
+      <Wrapper bg="pink.1" variant="frontpage">
+        <Stack gap="lg">
           <Title order={2} fw={500} lts="1px" c="black">
             Anbefalt behandlinger
           </Title>
-          <ActionIcon
-            variant="transparent"
-            color="black"
-            size="lg"
-            aria-label="Settings"
-            component={Link}
-            to="/treatments"
+
+          <Text>
+            Opdag vores udvalg af de bedste behandlinger for en forfriskende
+            oplevelse og skønhedsforvandling.
+          </Text>
+
+          <span>
+            <Button
+              variant="filled"
+              color="black"
+              size="md"
+              aria-label="Settings"
+              component={Link}
+              to="/categories"
+              rightSection={
+                <IconArrowRight
+                  style={{width: '70%', height: '70%'}}
+                  stroke={1.5}
+                />
+              }
+            >
+              Vis Kategorier
+            </Button>
+          </span>
+
+          <Suspense
+            fallback={
+              <Flex gap="lg">
+                <Skeleton height={50} />
+                <Skeleton height={50} />
+                <Skeleton height={50} />
+                <Skeleton height={50} />
+              </Flex>
+            }
           >
-            <IconArrowRight
-              style={{width: '70%', height: '70%'}}
-              stroke={1.5}
-            />
-          </ActionIcon>
-        </Group>
+            <Await resolve={products}>
+              {({products}) => (
+                <Slider>
+                  {products.nodes.map((product) => {
+                    const productUsers = productsUsers.find(
+                      (p) => p.productId.toString() === parseGid(product.id).id,
+                    );
 
-        <Suspense fallback={<div>Loading...</div>}>
-          <Await resolve={products}>
-            {({products}) => (
-              <Carousel
-                slideSize={{base: '75%', md: '25%'}}
-                slideGap="lg"
-                align="start"
-                containScroll="trimSnaps"
-                withControls={false}
-              >
-                {products.nodes.map((product) => {
-                  const productUsers = productsUsers.find(
-                    (p) => p.productId.toString() === parseGid(product.id).id,
-                  );
-
-                  return (
-                    <Carousel.Slide key={product.id}>
-                      <TreatmentCard
-                        product={product}
-                        productUsers={productUsers}
-                        loading={'eager'}
-                      />
-                    </Carousel.Slide>
-                  );
-                })}
-              </Carousel>
-            )}
-          </Await>
-        </Suspense>
-      </Stack>
-    </Wrapper>
+                    return (
+                      <Carousel.Slide key={product.id}>
+                        <TreatmentCard
+                          product={product}
+                          productUsers={productUsers}
+                          loading={'eager'}
+                        />
+                      </Carousel.Slide>
+                    );
+                  })}
+                </Slider>
+              )}
+            </Await>
+          </Suspense>
+        </Stack>
+      </Wrapper>
+    </div>
   );
 }
 
@@ -277,10 +319,10 @@ function RecommendedProducts({
 
 function FaqQuestions({page}: {page?: FaqFragment | null}) {
   return (
-    <Wrapper bg="yellow.1" variant="frontpage">
+    <Wrapper bg="yellow.1" variant="frontpage" mb="0">
       <SimpleGrid cols={{base: 1, md: 2}}>
         <div>
-          <Title order={2} fw={500} fz={rem(60)} lts="1px">
+          <Title order={2} fw={500} fz={rem(48)} lts="1px">
             {page?.title}
           </Title>
           <Text
@@ -288,6 +330,7 @@ function FaqQuestions({page}: {page?: FaqFragment | null}) {
             fw={400}
             dangerouslySetInnerHTML={{__html: page?.body || ''}}
           ></Text>
+          <Button color="yellow">Kontakt os</Button>
         </div>
         <Accordion variant="filled">
           {page?.metafield?.references?.nodes.map((page) => (

@@ -1,10 +1,6 @@
 import {ActionIcon, Anchor, Group, rem} from '@mantine/core';
-import {NavLink} from '@remix-run/react';
-import {
-  IconBrandInstagram,
-  IconBrandTwitter,
-  IconBrandYoutube,
-} from '@tabler/icons-react';
+import {Link, NavLink} from '@remix-run/react';
+import {IconBrandFacebook, IconBrandInstagram} from '@tabler/icons-react';
 import type {FooterQuery, HeaderQuery} from 'storefrontapi.generated';
 import {useRootLoaderData} from '~/root';
 import logo from '../../public/logo.avif';
@@ -24,19 +20,27 @@ export function Footer({
         <FooterMenu menu={menu} primaryDomainUrl={shop.primaryDomain.url} />
 
         <Group gap="xs" justify="flex-end" wrap="nowrap">
-          <ActionIcon size="lg" variant="default" radius="xl">
-            <IconBrandTwitter
+          <ActionIcon
+            size="lg"
+            variant="default"
+            radius="xl"
+            component={Link}
+            to="https://www.facebook.com/makeuphair.sisters/"
+            target="_blank"
+          >
+            <IconBrandFacebook
               style={{width: rem(18), height: rem(18)}}
               stroke={1.5}
             />
           </ActionIcon>
-          <ActionIcon size="lg" variant="default" radius="xl">
-            <IconBrandYoutube
-              style={{width: rem(18), height: rem(18)}}
-              stroke={1.5}
-            />
-          </ActionIcon>
-          <ActionIcon size="lg" variant="default" radius="xl">
+          <ActionIcon
+            size="lg"
+            variant="default"
+            radius="xl"
+            component={Link}
+            to="https://www.instagram.com/__bysisters/"
+            target="_blank"
+          >
             <IconBrandInstagram
               style={{width: rem(18), height: rem(18)}}
               stroke={1.5}
