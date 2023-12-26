@@ -132,55 +132,56 @@ function FeaturedArtists({artists}: {artists: Promise<UsersListResponse>}) {
       }}
     >
       <Wrapper variant="frontpage">
-        <Suspense
-          fallback={
-            <Flex gap="lg">
-              <Skeleton height={50} />
-              <Skeleton height={50} />
-              <Skeleton height={50} />
-              <Skeleton height={50} />
-            </Flex>
-          }
-        >
-          <Await resolve={artists}>
-            {({payload}) => (
-              <Stack gap="lg">
-                <Group justify="space-between">
-                  <Button
-                    variant="transparent"
-                    color="pink"
-                    size="compact-xl"
-                    aria-label="Settings"
-                    component={Link}
-                    to="/artists"
-                    rightSection={<IconArrowRight stroke={1.5} />}
-                  >
-                    Skønhedseksperter
-                  </Button>
+        <Stack gap="lg">
+          <Group justify="space-between">
+            <Button
+              variant="transparent"
+              color="pink"
+              size="compact-xl"
+              aria-label="Settings"
+              component={Link}
+              to="/artists"
+              p={0}
+              rightSection={<IconArrowRight stroke={1.5} />}
+            >
+              Skønhedseksperter
+            </Button>
 
-                  <Group>
-                    <ActionIcon
-                      variant="filled"
-                      color="pink"
-                      radius={'lg'}
-                      size={'lg'}
-                      aria-label="Tilbage"
-                      onClick={scrollPrev}
-                    >
-                      <IconArrowLeft stroke={1.5} />
-                    </ActionIcon>
-                    <ActionIcon
-                      variant="filled"
-                      color="pink"
-                      radius={'lg'}
-                      size={'lg'}
-                      aria-label="Right"
-                      onClick={scrollNext}
-                    >
-                      <IconArrowRight stroke={1.5} />
-                    </ActionIcon>
-                  </Group>
-                </Group>
+            <Group>
+              <ActionIcon
+                variant="filled"
+                color="pink"
+                radius={'lg'}
+                size={'lg'}
+                aria-label="Tilbage"
+                onClick={scrollPrev}
+              >
+                <IconArrowLeft stroke={1.5} />
+              </ActionIcon>
+              <ActionIcon
+                variant="filled"
+                color="pink"
+                radius={'lg'}
+                size={'lg'}
+                aria-label="Right"
+                onClick={scrollNext}
+              >
+                <IconArrowRight stroke={1.5} />
+              </ActionIcon>
+            </Group>
+          </Group>
+          <Suspense
+            fallback={
+              <Flex gap="lg">
+                <Skeleton height={50} />
+                <Skeleton height={50} />
+                <Skeleton height={50} />
+                <Skeleton height={50} />
+              </Flex>
+            }
+          >
+            <Await resolve={artists}>
+              {({payload}) => (
                 <Slider getEmblaApi={setEmbla}>
                   {payload.results.map((artist) => (
                     <Carousel.Slide key={artist.customerId}>
@@ -188,10 +189,10 @@ function FeaturedArtists({artists}: {artists: Promise<UsersListResponse>}) {
                     </Carousel.Slide>
                   ))}
                 </Slider>
-              </Stack>
-            )}
-          </Await>
-        </Suspense>
+              )}
+            </Await>
+          </Suspense>
+        </Stack>
       </Wrapper>
     </div>
   );
@@ -338,21 +339,19 @@ function RecommendedProducts({
         </Group>
         <Suspense fallback={<div>Loading...</div>}>
           <Await resolve={products}>
-            {({products}) => (
-              <Carousel
-                slideSize={{base: '75%', md: '28%'}}
-                slideGap="lg"
-                align="start"
-                containScroll="trimSnaps"
-                withControls={false}
-              >
-                {products.nodes.map((product) => (
-                  <Carousel.Slide key={product.id}>
-                    <ProductCard product={product} loading="eager" />
-                  </Carousel.Slide>
-                ))}
-              </Carousel>
-            )}
+            {({products}) => {
+              return (
+                <SimpleGrid cols={4}>
+                  {products.nodes.map((product) => (
+                    <ProductCard
+                      key={product.id}
+                      product={product}
+                      loading="eager"
+                    />
+                  ))}
+                </SimpleGrid>
+              );
+            }}
           </Await>
         </Suspense>
       </Stack>

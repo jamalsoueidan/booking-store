@@ -1,54 +1,37 @@
-import {Button, Card, Mark, Overlay, Text} from '@mantine/core';
+import {Card, Group, Mark, Text} from '@mantine/core';
 import {Link} from '@remix-run/react';
-import {IconArrowRight} from '@tabler/icons-react';
 import {type CollectionFragment} from 'storefrontapi.generated';
 import {parseTE} from '~/lib/clean';
 import classes from './CategoryCard.module.css';
 
-export function CategoryCard({
-  collection,
-  index,
-}: {
-  collection: CollectionFragment;
-  index: number;
-}) {
+export function CategoryCard({collection}: {collection: CollectionFragment}) {
   return (
     <Card
-      radius="md"
+      p="lg"
+      shadow="lg"
       className={classes.card}
-      style={{
-        backgroundImage: `url(${collection.image?.url})`,
-      }}
+      radius="md"
       component={Link}
       to={`/categories/${collection.handle}`}
       prefetch="intent"
     >
-      <Overlay className={classes.overlay} opacity={0.3} zIndex={0} />
+      <div
+        className={classes.image}
+        style={{
+          backgroundImage: `url(${collection.image?.url})`,
+        }}
+      />
+      <div className={classes.overlay} />
 
       <div className={classes.content}>
-        <Text
-          size="lg"
-          mb="lg"
-          fw={700}
-          className={classes.title}
-          tt="uppercase"
-        >
-          <Mark p="xs">{parseTE(collection.title)}</Mark>
+        <Text size="lg" className={classes.title} fw={500} mb="lg">
+          <Mark p="sm">{parseTE(collection.title)}</Mark>
         </Text>
-
-        <Text size="sm" className={classes.description} lineClamp={5}>
-          {collection.description}
-        </Text>
-
-        <Button
-          className={classes.action}
-          variant="white"
-          color="dark"
-          size="md"
-          rightSection={<IconArrowRight size={28} />}
-        >
-          Se behandlinger
-        </Button>
+        <Group justify="space-between" gap="xs">
+          <Text size="sm" className={classes.body} lineClamp={3}>
+            {collection.description}
+          </Text>
+        </Group>
       </div>
     </Card>
   );

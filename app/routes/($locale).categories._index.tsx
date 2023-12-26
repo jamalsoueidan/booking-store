@@ -59,13 +59,9 @@ export default function Collections() {
 
 function CollectionsGrid({collections}: {collections: CollectionFragment[]}) {
   return (
-    <SimpleGrid cols={{base: 1, md: 3, sm: 2}} spacing={'xl'}>
-      {collections.map((collection, index) => (
-        <CategoryCard
-          key={collection.id}
-          collection={collection}
-          index={index}
-        />
+    <SimpleGrid cols={{base: 1, md: 2}} spacing={'xl'}>
+      {collections.map((collection) => (
+        <CategoryCard key={collection.id} collection={collection} />
       ))}
     </SimpleGrid>
   );
@@ -85,6 +81,7 @@ export const COLLECTIONS_QUERY = `#graphql
       first: $first,
       last: $last,
       before: $startCursor,
+      sortKey: TITLE,
       after: $endCursor,
       query: "title:treatments:*"
     ) {
