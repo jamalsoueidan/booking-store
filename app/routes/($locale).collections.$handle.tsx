@@ -120,7 +120,8 @@ const COLLECTION_QUERY = `#graphql
         first: $first,
         last: $last,
         before: $startCursor,
-        after: $endCursor
+        after: $endCursor,
+        sortKey: TITLE
       ) {
         nodes {
           ...ProductItem

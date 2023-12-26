@@ -1,5 +1,5 @@
 .root {
-  height: 350px;
+  height: 320px;
   @media (min-width: $mantine-breakpoint-md) {
     background-repeat: no-repeat;
     background-size: 55%;
@@ -21,7 +21,7 @@
 }
 
 .title {
-  font-size: rem(26);
+  font-size: rem(24);
   font-weight: 600;
   line-height: 40px;
   @media (min-width: $mantine-breakpoint-md) {
@@ -31,7 +31,7 @@
 }
 
 .subtitle {
-  font-size: rem(20);
+  font-size: rem(16);
   @media (min-width: $mantine-breakpoint-md) {
     font-size: rem(28);
   }
