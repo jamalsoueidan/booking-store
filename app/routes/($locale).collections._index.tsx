@@ -86,7 +86,8 @@ const COLLECTIONS_QUERY = `#graphql
       last: $last,
       before: $startCursor,
       after: $endCursor,
-      query: "title:products:*"
+      query: "title:products:*",
+      sortKey: TITLE
     ) {
       nodes {
         ...Collection
