@@ -4,13 +4,7 @@ import {useMediaQuery} from '@mantine/hooks';
 export default function MobileModal({children, ...props}: ModalProps) {
   const isMobile = useMediaQuery('(max-width: 62em)');
   return (
-    <Modal
-      fullScreen={isMobile}
-      withCloseButton
-      zIndex={1001}
-      centered
-      {...props}
-    >
+    <Modal fullScreen={isMobile} withCloseButton centered {...props}>
       {children}
     </Modal>
   );

@@ -83,10 +83,10 @@ function TreatmentHandlePickLocation({
   const setLocationId = (value: CustomerLocation | undefined) => {
     const newSearchParams = new URLSearchParams(searchParams);
     newSearchParams.delete('locationId');
+    newSearchParams.delete('shippingId');
     if (value) {
       newSearchParams.set('locationId', value._id);
     }
-    newSearchParams.delete('shippingId');
     setSearchParams(newSearchParams, {
       state: {
         key: 'booking',
@@ -141,12 +141,14 @@ function TreatmentHandlePickLocation({
         {markup}
       </Flex>
 
-      <LocationModal
-        location={selectedLocation}
-        onAccept={onAccept}
-        onCancel={onCancel}
-        opened={opened}
-      />
+      {opened && (
+        <LocationModal
+          location={selectedLocation}
+          onAccept={onAccept}
+          onCancel={onCancel}
+          opened={true}
+        />
+      )}
     </>
   );
 }

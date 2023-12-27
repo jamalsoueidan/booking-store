@@ -69,9 +69,13 @@ export function LocationModal({
             <input
               type="hidden"
               name="customerId"
-              value={location?.customerId}
+              value={location?.customerId || ''}
             />
-            <input type="hidden" name="locationId" value={location?._id} />
+            <input
+              type="hidden"
+              name="locationId"
+              value={location?._id || ''}
+            />
 
             <TextInput
               label="Navn:"
