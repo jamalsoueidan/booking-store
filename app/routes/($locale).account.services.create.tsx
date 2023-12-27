@@ -215,7 +215,7 @@ export default function AccountServicesCreate() {
 
             <PeriodInput
               field={fields.noticePeriod}
-              label="Hvor hurtigt kan du være klar?"
+              label="Minimum tid før ankomst en kunde kan booke online?"
               data={[
                 {value: 'days', label: 'Dage'},
                 {value: 'hours', label: 'Timer'},

@@ -317,45 +317,49 @@ function RecommendedProducts({
   products: Promise<RecommendedProductsQuery>;
 }) {
   return (
-    <Wrapper variant="frontpage">
-      <Stack gap="lg">
-        <Group gap="2">
-          <Title order={2} fw={500} lts="1px" c="orange">
-            Anbefalt produkter
-          </Title>
-          <ActionIcon
-            variant="transparent"
-            color="orange"
-            size="lg"
-            aria-label="Settings"
-            component={Link}
-            to="/collections"
-          >
-            <IconArrowRight
-              style={{width: '70%', height: '70%'}}
-              stroke={1.5}
-            />
-          </ActionIcon>
-        </Group>
-        <Suspense fallback={<div>Loading...</div>}>
-          <Await resolve={products}>
-            {({products}) => {
-              return (
-                <SimpleGrid cols={4}>
-                  {products.nodes.map((product) => (
-                    <ProductCard
-                      key={product.id}
-                      product={product}
-                      loading="eager"
-                    />
-                  ))}
-                </SimpleGrid>
-              );
-            }}
-          </Await>
-        </Suspense>
-      </Stack>
-    </Wrapper>
+    <div
+      style={{
+        overflow: 'hidden',
+      }}
+    >
+      <Wrapper variant="frontpage">
+        <Stack gap="lg">
+          <Group gap="2">
+            <Title order={2} fw={500} lts="1px" c="orange">
+              Anbefalt produkter
+            </Title>
+            <ActionIcon
+              variant="transparent"
+              color="orange"
+              size="lg"
+              aria-label="Settings"
+              component={Link}
+              to="/collections"
+            >
+              <IconArrowRight
+                style={{width: '70%', height: '70%'}}
+                stroke={1.5}
+              />
+            </ActionIcon>
+          </Group>
+          <Suspense fallback={<div>Loading...</div>}>
+            <Await resolve={products}>
+              {({products}) => {
+                return (
+                  <Slider>
+                    {products.nodes.map((product) => (
+                      <Carousel.Slide key={product.id}>
+                        <ProductCard product={product} loading="eager" />
+                      </Carousel.Slide>
+                    ))}
+                  </Slider>
+                );
+              }}
+            </Await>
+          </Suspense>
+        </Stack>
+      </Wrapper>
+    </div>
   );
 }
 
@@ -374,10 +378,10 @@ function FaqQuestions({page}: {page?: FaqFragment | null}) {
           ></Text>
           <Button color="yellow">Kontakt os</Button>
         </div>
-        <Accordion variant="filled">
+        <Accordion variant="default">
           {page?.metafield?.references?.nodes.map((page) => (
             <Accordion.Item key={page.id} value={page.title}>
-              <Accordion.Control>
+              <Accordion.Control p={0}>
                 <Text fz="lg" fw={500}>
                   {page.title}
                 </Text>
