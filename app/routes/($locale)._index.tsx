@@ -37,6 +37,10 @@ import type {ProductsGetUsersImage, UsersListResponse} from '~/lib/api/model';
 import {ArtistCard} from './($locale).artists';
 import {COLLECTIONS_QUERY} from './($locale).categories._index';
 
+export function shouldRevalidate() {
+  return false;
+}
+
 export const meta: MetaFunction = () => {
   return [{title: 'BySisters | Home'}];
 };

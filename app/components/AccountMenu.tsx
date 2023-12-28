@@ -4,7 +4,6 @@ import {
   Divider,
   Group,
   Text,
-  Tooltip,
   UnstyledButton,
 } from '@mantine/core';
 import {Form, Link, NavLink} from '@remix-run/react';
@@ -142,24 +141,30 @@ export function AccountMenu({
     <>
       <div className={classes.navbarMain}>
         <Container pt="sm">
-          <UnstyledButton component={Link} to="/account">
-            <Group>
-              {user && (
-                <Tooltip label={user.customerId}>
-                  <Avatar src={user.images?.profile?.url} radius="xl" />
-                </Tooltip>
-              )}
-              <div style={{flex: 1}}>
-                <Text size="sm" fw={500} c="black">
-                  {customer?.firstName} {customer?.lastName}
-                </Text>
+          <Group maw="90%">
+            {user && (
+              <Avatar
+                src={user.images?.profile?.url}
+                radius="xl"
+                component={Link}
+                to="/account/upload"
+              />
+            )}
+            <UnstyledButton
+              style={{flex: 1}}
+              component={Link}
+              to={`/artist/${user?.username}`}
+              target="_blank"
+            >
+              <Text size="sm" fw={500} c="black">
+                {customer?.firstName} {customer?.lastName}
+              </Text>
 
-                <Text c="dimmed" size="xs">
-                  {customer?.email}
-                </Text>
-              </div>
-            </Group>
-          </UnstyledButton>
+              <Text c="dimmed" size="xs">
+                {customer?.email}
+              </Text>
+            </UnstyledButton>
+          </Group>
         </Container>
         <Divider my="xs" />
         {isBusiness ? topLinks : bottomLinks}

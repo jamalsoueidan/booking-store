@@ -9,7 +9,7 @@ export default function ArtistPage({children}: {children: React.ReactNode}) {
       <div
         className={classes.innerFlex}
         style={{
-          backgroundColor: 'rgb(168, 139, 248)',
+          backgroundColor: '#a88bf8',
         }}
       >
         <div className={classes.sticky}>{children}</div>
