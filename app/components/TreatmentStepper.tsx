@@ -79,7 +79,7 @@ export function TreatmentStepper({paths}: StepperProps) {
       pos="sticky"
       bottom="0px"
       bg="white"
-      p={isMobile ? 'md' : 'lg'}
+      p={isMobile ? 'sm' : 'lg'}
       style={{boxShadow: '0 -4px 4px rgba(0,0,0,.1)'}}
     >
       <Group justify="space-between">

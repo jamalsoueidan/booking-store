@@ -7,6 +7,14 @@
   }
 }
 
+.image {
+  display: none;
+  @media (min-width: $mantine-breakpoint-sm) {
+    display: block;
+    flex: 0 0 20%;
+  }
+}
+
 .title {
   font-family: 'Greycliff CF', var(--mantine-font-family);
   font-weight: bold;

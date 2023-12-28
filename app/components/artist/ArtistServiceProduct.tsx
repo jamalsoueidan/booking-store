@@ -1,12 +1,24 @@
-import {Badge, Text} from '@mantine/core';
+import {
+  Badge,
+  Box,
+  Divider,
+  Flex,
+  Group,
+  Image,
+  Text,
+  Title,
+  rem,
+} from '@mantine/core';
 import {useSearchParams} from '@remix-run/react';
-import {Money, parseGid} from '@shopify/hydrogen';
+
+import {Money, Image as ShopifyImage, parseGid} from '@shopify/hydrogen';
 import {type ProductItemFragment} from 'storefrontapi.generated';
 import {type CustomerProductBase} from '~/lib/api/model';
 
+import {useMediaQuery} from '@mantine/hooks';
 import {ArtistServiceCheckboxCard} from '~/components/artist/ArtistServiceCheckboxCard';
-import {TreatmentServiceContent} from '~/components/treatment/TreatmentServiceContent';
 import {durationToTime} from '~/lib/duration';
+import classes from './ArtistServiceProduct.module.css';
 
 type ArtistServiceProductProps = {
   product: ProductItemFragment;
@@ -20,6 +32,7 @@ export function ArtistServiceProduct({
   defaultChecked,
 }: ArtistServiceProductProps) {
   const [searchParams, setSearchParams] = useSearchParams();
+  const isMobile = useMediaQuery('(max-width: 62em)');
 
   const onChange = (checked: boolean) => {
     const newSearchParams = new URLSearchParams(searchParams);
@@ -71,12 +84,46 @@ export function ArtistServiceProduct({
       onChange={onChange}
       name="productIds"
     >
-      <TreatmentServiceContent
-        product={product}
-        description={artistService?.description}
-        leftSection={leftSection}
-        rightSection={rightSection}
-      />
+      <Flex>
+        {product.featuredImage && (
+          <div className={classes.image}>
+            <Image
+              component={ShopifyImage}
+              data={product.featuredImage}
+              h="auto"
+              loading="lazy"
+            />
+          </div>
+        )}
+        <div style={{flex: '1'}}>
+          <Box p="xs">
+            <Title order={4} className={classes.title} mb={rem(4)} fw={500}>
+              {product.title}
+            </Title>
+            <Flex
+              gap="sm"
+              direction="column"
+              justify="flex-start"
+              style={{flexGrow: 1, position: 'relative'}}
+            >
+              <Text c="dimmed" size="sm" fw={400} lineClamp={isMobile ? 4 : 2}>
+                {artistService?.description ||
+                  product.description ||
+                  'ingen beskrivelse'}
+              </Text>
+            </Flex>
+          </Box>
+
+          <Divider />
+
+          <Box p="xs">
+            <Group justify="space-between">
+              {leftSection}
+              {rightSection}
+            </Group>
+          </Box>
+        </div>
+      </Flex>
     </ArtistServiceCheckboxCard>
   );
 }
