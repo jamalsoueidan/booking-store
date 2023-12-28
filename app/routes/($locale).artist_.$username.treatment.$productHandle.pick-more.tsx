@@ -52,7 +52,7 @@ export default function ArtistTreatments() {
   const {products, services} = useLoaderData<typeof loader>();
 
   return (
-    <Box mt="lg">
+    <Box my="lg">
       <Suspense
         fallback={
           <SimpleGrid cols={{base: 1}} spacing="xl">
