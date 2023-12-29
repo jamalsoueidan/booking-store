@@ -7,18 +7,22 @@ export function Faq({
   description,
   pages,
 }: {
-  title: string;
-  description: string;
+  title?: string | null;
+  description?: string | null;
   pages: Array<PageComponentPageFragment>;
 }) {
   return (
     <Container size="sm" className={classes.wrapper}>
-      <Title ta="center" className={classes.title}>
-        {title}
-      </Title>
-      <Text ta="center" className={classes.description}>
-        {description}
-      </Text>
+      {title && (
+        <Title ta="center" className={classes.title}>
+          {title}
+        </Title>
+      )}
+      {description && (
+        <Text ta="center" className={classes.description}>
+          {description}
+        </Text>
+      )}
 
       <Accordion variant="separated">
         {pages.map((page) => (

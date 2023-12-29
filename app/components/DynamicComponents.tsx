@@ -54,9 +54,10 @@ export function WrapperFeatures({
 }
 
 export function WrapperFaq({component}: {component: PageComponentFragment}) {
-  const title = component.fields.find(({key}) => key === 'title')?.value || '';
-  const description =
-    component.fields.find(({key}) => key === 'description')?.value || '';
+  const title = component.fields.find(({key}) => key === 'title')?.value;
+  const description = component.fields.find(
+    ({key}) => key === 'description',
+  )?.value;
   const pages = component.fields.find(({key}) => key === 'pages')?.references
     ?.nodes as unknown as Array<PageComponentPageFragment>;
 
