@@ -1,6 +1,7 @@
-import {Accordion, Container, Text, Title} from '@mantine/core';
+import {Accordion, Text, Title} from '@mantine/core';
 import {type PageComponentPageFragment} from 'storefrontapi.generated';
 import classes from './Faq.module.css';
+import {Wrapper} from './Wrapper';
 
 export function Faq({
   title,
@@ -12,7 +13,7 @@ export function Faq({
   pages: Array<PageComponentPageFragment>;
 }) {
   return (
-    <Container size="sm" className={classes.wrapper}>
+    <Wrapper>
       {title && (
         <Title ta="center" className={classes.title}>
           {title}
@@ -42,6 +43,6 @@ export function Faq({
           </Accordion.Item>
         ))}
       </Accordion>
-    </Container>
+    </Wrapper>
   );
 }

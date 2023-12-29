@@ -49,9 +49,12 @@ export default function Page() {
       <HeroTitle bg="gray.1" subtitle="" overtitle="">
         {page.title}
       </HeroTitle>
-      <Wrapper>
-        <main dangerouslySetInnerHTML={{__html: page.body}} />
-      </Wrapper>
+
+      {page.body && (
+        <Wrapper>
+          <main dangerouslySetInnerHTML={{__html: page.body}} />
+        </Wrapper>
+      )}
 
       {markup}
     </>
