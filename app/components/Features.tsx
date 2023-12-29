@@ -58,7 +58,7 @@ export function Features({
   items: Array<FeatureProps>;
 }) {
   const features = items.map((feature) => (
-    <Feature {...feature} key={feature.title} />
+    <Feature {...feature} key={feature.title + feature.description} />
   ));
 
   return (

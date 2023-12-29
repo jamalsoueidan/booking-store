@@ -724,12 +724,14 @@ export type RecommendedTreatmentsQuery = {
   };
 };
 
-export type FaqFragment = Pick<StorefrontAPI.Page, 'id' | 'title' | 'body'> & {
-  metafield?: StorefrontAPI.Maybe<{
-    references?: StorefrontAPI.Maybe<{
-      nodes: Array<Pick<StorefrontAPI.Page, 'id' | 'body' | 'title'>>;
-    }>;
-  }>;
+export type FaqFragment = Pick<StorefrontAPI.Metaobject, 'id'> & {
+  fields: Array<
+    Pick<StorefrontAPI.MetaobjectField, 'value' | 'key'> & {
+      references?: StorefrontAPI.Maybe<{
+        nodes: Array<Pick<StorefrontAPI.Page, 'id' | 'title' | 'body'>>;
+      }>;
+    }
+  >;
 };
 
 export type FaqQuestionsQueryVariables = StorefrontAPI.Exact<{
@@ -738,13 +740,15 @@ export type FaqQuestionsQueryVariables = StorefrontAPI.Exact<{
 }>;
 
 export type FaqQuestionsQuery = {
-  page?: StorefrontAPI.Maybe<
-    Pick<StorefrontAPI.Page, 'id' | 'title' | 'body'> & {
-      metafield?: StorefrontAPI.Maybe<{
-        references?: StorefrontAPI.Maybe<{
-          nodes: Array<Pick<StorefrontAPI.Page, 'id' | 'body' | 'title'>>;
-        }>;
-      }>;
+  metaobject?: StorefrontAPI.Maybe<
+    Pick<StorefrontAPI.Metaobject, 'id'> & {
+      fields: Array<
+        Pick<StorefrontAPI.MetaobjectField, 'value' | 'key'> & {
+          references?: StorefrontAPI.Maybe<{
+            nodes: Array<Pick<StorefrontAPI.Page, 'id' | 'title' | 'body'>>;
+          }>;
+        }
+      >;
     }
   >;
 };
@@ -2140,6 +2144,62 @@ export type ContentQuery = {
   }>;
 };
 
+export type PageComponentPageFragment = Pick<
+  StorefrontAPI.Page,
+  'id' | 'title' | 'body'
+>;
+
+export type PageComponentMetaobjectFragment = Pick<
+  StorefrontAPI.Metaobject,
+  'type'
+> & {fields: Array<Pick<StorefrontAPI.MetaobjectField, 'key' | 'value'>>};
+
+export type PageComponentFragment = Pick<
+  StorefrontAPI.Metaobject,
+  'id' | 'type'
+> & {
+  fields: Array<
+    Pick<StorefrontAPI.MetaobjectField, 'value' | 'type' | 'key'> & {
+      references?: StorefrontAPI.Maybe<{
+        nodes: Array<
+          | (Pick<StorefrontAPI.Metaobject, 'type'> & {
+              fields: Array<
+                Pick<StorefrontAPI.MetaobjectField, 'key' | 'value'>
+              >;
+            })
+          | Pick<StorefrontAPI.Page, 'id' | 'title' | 'body'>
+        >;
+      }>;
+    }
+  >;
+};
+
+export type PageFragment = Pick<StorefrontAPI.Page, 'id' | 'title' | 'body'> & {
+  seo?: StorefrontAPI.Maybe<Pick<StorefrontAPI.Seo, 'description' | 'title'>>;
+  components?: StorefrontAPI.Maybe<{
+    references?: StorefrontAPI.Maybe<{
+      nodes: Array<
+        Pick<StorefrontAPI.Metaobject, 'id' | 'type'> & {
+          fields: Array<
+            Pick<StorefrontAPI.MetaobjectField, 'value' | 'type' | 'key'> & {
+              references?: StorefrontAPI.Maybe<{
+                nodes: Array<
+                  | (Pick<StorefrontAPI.Metaobject, 'type'> & {
+                      fields: Array<
+                        Pick<StorefrontAPI.MetaobjectField, 'key' | 'value'>
+                      >;
+                    })
+                  | Pick<StorefrontAPI.Page, 'id' | 'title' | 'body'>
+                >;
+              }>;
+            }
+          >;
+        }
+      >;
+    }>;
+  }>;
+};
+
 export type PageQueryVariables = StorefrontAPI.Exact<{
   language?: StorefrontAPI.InputMaybe<StorefrontAPI.LanguageCode>;
   country?: StorefrontAPI.InputMaybe<StorefrontAPI.CountryCode>;
@@ -2152,6 +2212,31 @@ export type PageQuery = {
       seo?: StorefrontAPI.Maybe<
         Pick<StorefrontAPI.Seo, 'description' | 'title'>
       >;
+      components?: StorefrontAPI.Maybe<{
+        references?: StorefrontAPI.Maybe<{
+          nodes: Array<
+            Pick<StorefrontAPI.Metaobject, 'id' | 'type'> & {
+              fields: Array<
+                Pick<
+                  StorefrontAPI.MetaobjectField,
+                  'value' | 'type' | 'key'
+                > & {
+                  references?: StorefrontAPI.Maybe<{
+                    nodes: Array<
+                      | (Pick<StorefrontAPI.Metaobject, 'type'> & {
+                          fields: Array<
+                            Pick<StorefrontAPI.MetaobjectField, 'key' | 'value'>
+                          >;
+                        })
+                      | Pick<StorefrontAPI.Page, 'id' | 'title' | 'body'>
+                    >;
+                  }>;
+                }
+              >;
+            }
+          >;
+        }>;
+      }>;
     }
   >;
 };
@@ -2479,7 +2564,7 @@ interface GeneratedQueryTypes {
     return: RecommendedTreatmentsQuery;
     variables: RecommendedTreatmentsQueryVariables;
   };
-  '#graphql\n  #graphql\n  fragment Faq on Page {\n    id\n    title\n    body\n    metafield(namespace: "custom", key: "faq") {\n      references(first: 10) {\n        nodes {\n          ... on Page {\n            id\n            body\n            title\n          }\n        }\n      }\n    }\n  }\n\n  query FaqQuestions ($country: CountryCode, $language: LanguageCode)\n    @inContext(country: $country, language: $language) {\n    page(handle: "sporgsmal") {\n      ...Faq\n    }\n  }\n': {
+  '#graphql\n  #graphql\n  fragment Faq on Metaobject {\n    id\n    fields {\n      value\n      key\n      references(first: 10) {\n        nodes {\n          ... on Page {\n            id\n            title\n            body\n          }\n        }\n      }\n    }\n  }\n\n  query FaqQuestions ($country: CountryCode, $language: LanguageCode)\n    @inContext(country: $country, language: $language) {\n    metaobject(handle: {handle: "index-faq", type: "faq"}) {\n      ...Faq\n    }\n  }\n': {
     return: FaqQuestionsQuery;
     variables: FaqQuestionsQueryVariables;
   };
@@ -2543,7 +2628,7 @@ interface GeneratedQueryTypes {
     return: ContentQuery;
     variables: ContentQueryVariables;
   };
-  '#graphql\n  query Page(\n    $language: LanguageCode,\n    $country: CountryCode,\n    $handle: String!\n  )\n  @inContext(language: $language, country: $country) {\n    page(handle: $handle) {\n      id\n      title\n      body\n      seo {\n        description\n        title\n      }\n    }\n  }\n': {
+  '#graphql\n  #graphql\n  fragment PageComponentPage on Page {\n    id\n    title\n    body\n  }\n\n  fragment PageComponentMetaobject on Metaobject {\n    type\n    fields {\n      key\n      value\n    }\n  }\n\n  fragment PageComponent on Metaobject {\n    id\n    type\n    fields {\n      value\n      type\n      key\n      references(first: 10) {\n        nodes {\n          ...PageComponentMetaobject\n          ...PageComponentPage\n        }\n      }\n    }\n  }\n\n  fragment Page on Page {\n    id\n    title\n    body\n    seo {\n      description\n      title\n    }\n    components: metafield(namespace: "custom", key: "components") {\n      references(first: 5) {\n        nodes {\n          ...PageComponent\n        }\n      }\n    }\n  }\n\n  query Page(\n    $language: LanguageCode,\n    $country: CountryCode,\n    $handle: String!\n  )\n  @inContext(language: $language, country: $country) {\n    page(handle: $handle) {\n      ...Page\n    }\n  }\n': {
     return: PageQuery;
     variables: PageQueryVariables;
   };

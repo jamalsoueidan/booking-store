@@ -68,7 +68,7 @@ export async function loader({context}: LoaderFunctionArgs) {
     variables: {first: 10},
   });
 
-  const {page: faqPage} = await context.storefront.query(FAQ_QUERY);
+  const {metaobject: faq} = await context.storefront.query(FAQ_QUERY);
 
   return defer({
     recommendedProducts,
@@ -76,7 +76,7 @@ export async function loader({context}: LoaderFunctionArgs) {
     recommendedTreatments,
     collections,
     artists,
-    faqPage,
+    faq,
   });
 }
 
@@ -110,7 +110,7 @@ export default function Homepage() {
           productsUsers={data.recommendedTreatmentsProductsUsers}
         />
         <RecommendedProducts products={data.recommendedProducts} />
-        <FaqQuestions page={data.faqPage} />
+        <FaqQuestions faq={data.faq} />
       </Box>
     </>
   );
@@ -367,23 +367,30 @@ function RecommendedProducts({
   );
 }
 
-function FaqQuestions({page}: {page?: FaqFragment | null}) {
+function FaqQuestions({faq}: {faq?: FaqFragment | null}) {
+  if (!faq) {
+    return null;
+  }
+
+  const title = faq.fields.find((p) => p.key === 'title')?.value || '';
+  const description =
+    faq.fields.find((p) => p.key === 'description')?.value || '';
+  const pages = faq.fields.find((p) => p.key === 'pages');
+
   return (
     <Wrapper bg="yellow.1" variant="frontpage" mb="0">
       <SimpleGrid cols={{base: 1, md: 2}}>
         <div>
           <Title order={2} fw={500} fz={rem(48)} lts="1px">
-            {page?.title}
+            {title}
           </Title>
-          <Text
-            size="lg"
-            fw={400}
-            dangerouslySetInnerHTML={{__html: page?.body || ''}}
-          ></Text>
+          <Text size="lg" fw={400}>
+            {description}
+          </Text>
           <Button color="yellow">Kontakt os</Button>
         </div>
         <Accordion variant="default">
-          {page?.metafield?.references?.nodes.map((page) => (
+          {pages?.references?.nodes.map((page) => (
             <Accordion.Item key={page.id} value={page.title}>
               <Accordion.Control p={0}>
                 <Text fz="lg" fw={500}>
@@ -426,17 +433,17 @@ const RECOMMENDED_TREATMENT_QUERY = `#graphql
 ` as const;
 
 export const FAQ_FRAGMENT = `#graphql
-  fragment Faq on Page {
+  fragment Faq on Metaobject {
     id
-    title
-    body
-    metafield(namespace: "custom", key: "faq") {
+    fields {
+      value
+      key
       references(first: 10) {
         nodes {
           ... on Page {
             id
-            body
             title
+            body
           }
         }
       }
@@ -448,7 +455,7 @@ const FAQ_QUERY = `#graphql
   ${FAQ_FRAGMENT}
   query FaqQuestions ($country: CountryCode, $language: LanguageCode)
     @inContext(country: $country, language: $language) {
-    page(handle: "sporgsmal") {
+    metaobject(handle: {handle: "index-faq", type: "faq"}) {
       ...Faq
     }
   }
