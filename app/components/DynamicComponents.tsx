@@ -7,6 +7,7 @@ import type {
 import {Faq} from './Faq';
 import {Features, type FeatureProps} from './Features';
 import {HeroTitle} from './HeroTitle';
+import {Wrapper} from './Wrapper';
 
 export function WrapperHeroTitle({
   component,
@@ -62,4 +63,22 @@ export function WrapperFaq({component}: {component: PageComponentFragment}) {
     ?.nodes as unknown as Array<PageComponentPageFragment>;
 
   return <Faq title={title} description={description} pages={pages || []} />;
+}
+
+export function WrapperMaps({component}: {component: PageComponentFragment}) {
+  const url = component.fields.find(({key}) => key === 'url')?.value;
+
+  return (
+    <Wrapper>
+      <iframe
+        title="Google Maps"
+        src={url + '&key=AIzaSyCRthKA4QW7B1UPbpWuiMJiZ8pPBh4l8uc' || ''}
+        width="600"
+        height="450"
+        allowFullScreen={false}
+        loading="lazy"
+        referrerPolicy="no-referrer-when-downgrade"
+      ></iframe>
+    </Wrapper>
+  );
 }

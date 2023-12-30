@@ -4,6 +4,7 @@ import {
   WrapperFaq,
   WrapperFeatures,
   WrapperHeroTitle,
+  WrapperMaps,
 } from '~/components/DynamicComponents';
 import {HeroTitle} from '~/components/HeroTitle';
 import {Wrapper} from '~/components/Wrapper';
@@ -40,6 +41,8 @@ export default function Page() {
       return <WrapperFeatures key={c.id} component={c} />;
     } else if (c.type === 'faq') {
       return <WrapperFaq key={c.id} component={c} />;
+    } else if (c.type === 'maps') {
+      return <WrapperMaps key={c.id} component={c} />;
     }
     return <>unknown {c.type}</>;
   });

@@ -1,0 +1,13 @@
+.googleMap {
+  padding-bottom: 50%;
+  position: relative;
+}
+
+.googleMapIframe {
+  height: 100%;
+  width: 100%;
+  left: 0;
+  top: 0;
+  position: absolute;
+  border: 0px;
+}
