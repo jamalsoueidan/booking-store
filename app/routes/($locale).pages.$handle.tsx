@@ -1,5 +1,11 @@
 import {useLoaderData, type MetaFunction} from '@remix-run/react';
 import {json, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
+import {
+  WrapperFaq,
+  WrapperFeatures,
+  WrapperHeroTitle,
+  WrapperMaps,
+} from '~/components/DynamicComponents';
 import {HeroTitle} from '~/components/HeroTitle';
 import {Wrapper} from '~/components/Wrapper';
 
@@ -28,19 +34,87 @@ export async function loader({params, context}: LoaderFunctionArgs) {
 export default function Page() {
   const {page} = useLoaderData<typeof loader>();
 
+  const markup = page.components?.references?.nodes.map((c) => {
+    if (c.type === 'hero') {
+      return <WrapperHeroTitle key={c.id} component={c} />;
+    } else if (c.type === 'features') {
+      return <WrapperFeatures key={c.id} component={c} />;
+    } else if (c.type === 'faq') {
+      return <WrapperFaq key={c.id} component={c} />;
+    } else if (c.type === 'maps') {
+      return <WrapperMaps key={c.id} component={c} />;
+    }
+    return <>unknown {c.type}</>;
+  });
+
   return (
     <>
       <HeroTitle bg="gray.1" subtitle="" overtitle="">
         {page.title}
       </HeroTitle>
-      <Wrapper>
-        <main dangerouslySetInnerHTML={{__html: page.body}} />
-      </Wrapper>
+
+      {page.body && (
+        <Wrapper>
+          <main dangerouslySetInnerHTML={{__html: page.body}} />
+        </Wrapper>
+      )}
+
+      {markup}
     </>
   );
 }
 
+const PAGE_FRAGMENT = `#graphql
+  fragment PageComponentPage on Page {
+    id
+    title
+    body
+  }
+
+  fragment PageComponentMetaobject on Metaobject {
+    type
+    fields {
+      key
+      value
+    }
+  }
+
+  fragment PageComponent on Metaobject {
+    id
+    type
+    fields {
+      value
+      type
+      key
+      references(first: 10) {
+        nodes {
+          ...PageComponentMetaobject
+          ...PageComponentPage
+        }
+      }
+    }
+  }
+
+  fragment Page on Page {
+    id
+    title
+    body
+    seo {
+      description
+      title
+    }
+    components: metafield(namespace: "custom", key: "components") {
+      references(first: 5) {
+        nodes {
+          ...PageComponent
+        }
+      }
+    }
+  }
+` as const;
+
 const PAGE_QUERY = `#graphql
+  ${PAGE_FRAGMENT}
   query Page(
     $language: LanguageCode,
     $country: CountryCode,
@@ -48,13 +122,7 @@ const PAGE_QUERY = `#graphql
   )
   @inContext(language: $language, country: $country) {
     page(handle: $handle) {
-      id
-      title
-      body
-      seo {
-        description
-        title
-      }
+      ...Page
     }
   }
 ` as const;

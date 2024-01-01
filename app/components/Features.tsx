@@ -14,6 +14,7 @@ import {
   IconUser,
 } from '@tabler/icons-react';
 import classes from './Features.module.css';
+import {Wrapper} from './Wrapper';
 
 export const MOCKDATA = [
   {
@@ -58,11 +59,11 @@ export function Features({
   items: Array<FeatureProps>;
 }) {
   const features = items.map((feature) => (
-    <Feature {...feature} key={feature.title} />
+    <Feature {...feature} key={feature.title + feature.description} />
   ));
 
   return (
-    <Container className={classes.wrapper}>
+    <Wrapper>
       <Title className={classes.title}>{title}</Title>
 
       <Container size={560} p={0}>
@@ -79,7 +80,7 @@ export function Features({
       >
         {features}
       </SimpleGrid>
-    </Container>
+    </Wrapper>
   );
 }
 
