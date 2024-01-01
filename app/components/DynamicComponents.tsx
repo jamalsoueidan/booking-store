@@ -4,6 +4,7 @@ import type {
   PageComponentMetaobjectFragment,
   PageComponentPageFragment,
 } from 'storefrontapi.generated';
+import classes from './DynamicComponents.module.css';
 import {Faq} from './Faq';
 import {Features, type FeatureProps} from './Features';
 import {HeroTitle} from './HeroTitle';
@@ -70,15 +71,18 @@ export function WrapperMaps({component}: {component: PageComponentFragment}) {
 
   return (
     <Wrapper>
-      <iframe
-        title="Google Maps"
-        src={url + '&key=AIzaSyCRthKA4QW7B1UPbpWuiMJiZ8pPBh4l8uc' || ''}
-        width="600"
-        height="450"
-        allowFullScreen={false}
-        loading="lazy"
-        referrerPolicy="no-referrer-when-downgrade"
-      ></iframe>
+      <div className={classes.googleMap}>
+        <iframe
+          title="Google Maps"
+          src={url + '&key=AIzaSyCRthKA4QW7B1UPbpWuiMJiZ8pPBh4l8uc' || ''}
+          width="600"
+          height="450"
+          allowFullScreen={false}
+          className={classes.googleMapIframe}
+          loading="lazy"
+          referrerPolicy="no-referrer-when-downgrade"
+        ></iframe>
+      </div>
     </Wrapper>
   );
 }

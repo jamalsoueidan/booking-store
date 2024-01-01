@@ -1,8 +1,8 @@
-import type {EntryContext} from '@shopify/remix-oxygen';
 import {RemixServer} from '@remix-run/react';
+import {createContentSecurityPolicy} from '@shopify/hydrogen';
+import type {EntryContext} from '@shopify/remix-oxygen';
 import isbot from 'isbot';
 import {renderToReadableStream} from 'react-dom/server';
-import {createContentSecurityPolicy} from '@shopify/hydrogen';
 
 export default async function handleRequest(
   request: Request,
@@ -32,7 +32,11 @@ export default async function handleRequest(
   }
 
   responseHeaders.set('Content-Type', 'text/html');
-  responseHeaders.set('Content-Security-Policy', header);
+  const newHeader = header.replace(
+    'https://shopify.com',
+    'https://shopify.com https://www.google.com',
+  );
+  responseHeaders.set('Content-Security-Policy', newHeader);
 
   return new Response(body, {
     headers: responseHeaders,
