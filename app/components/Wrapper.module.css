@@ -1,16 +1,19 @@
-.root {
-  padding-top: 50px;
-  padding-bottom: 50px;
-
-  @media (min-width: $mantine-breakpoint-sm) {
-    padding-top: 75px;
-    padding-bottom: 75px;
-  }
-}
-
 .padding {
+  padding-top: 25px;
+  padding-bottom: 25px;
+
   @media (min-width: $mantine-breakpoint-sm) {
     padding-top: 50px;
     padding-bottom: 50px;
+  }
+}
+
+.margin {
+  margin-top: 25px;
+  margin-bottom: 25px;
+
+  @media (min-width: $mantine-breakpoint-sm) {
+    margin-top: 50px;
+    margin-bottom: 50px;
   }
 }
