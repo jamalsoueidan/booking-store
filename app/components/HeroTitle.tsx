@@ -8,8 +8,8 @@ export function HeroTitle({
   overtitle,
   bg,
 }: TitleProps & {
-  subtitle: string | React.ReactNode;
-  overtitle: string | React.ReactNode;
+  subtitle?: string | React.ReactNode;
+  overtitle?: string | React.ReactNode;
 }) {
   return (
     <HeroBackground bg={bg}>

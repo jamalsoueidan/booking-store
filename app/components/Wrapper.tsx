@@ -6,9 +6,9 @@ export function Wrapper({
   variant,
   ...props
 }: BoxProps & {children: React.ReactNode; variant?: 'frontpage'}) {
-  const className = variant ? classes.root : undefined;
+  const className = props.bg ? classes.root : classes.padding;
   return (
-    <Box my="xl" className={className} {...props}>
+    <Box className={className} {...props}>
       <Container size="lg">{children}</Container>
     </Box>
   );

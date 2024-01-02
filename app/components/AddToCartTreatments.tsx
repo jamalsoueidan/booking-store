@@ -1,13 +1,13 @@
-import {useFetchers} from '@remix-run/react';
-import {parseGid} from '@shopify/hydrogen';
+import {Button} from '@mantine/core';
+import {type FetcherWithComponents} from '@remix-run/react';
+import {CartForm, parseGid} from '@shopify/hydrogen';
 import {type CartLineInput} from '@shopify/hydrogen/storefront-api-types';
+import {IconShoppingCart} from '@tabler/icons-react';
 import {format} from 'date-fns';
 import da from 'date-fns/locale/da';
-import {useState} from 'react';
 import {type ArtistServicesProductsQuery} from 'storefrontapi.generated';
 import type {CustomerLocation, UserAvailabilitySingle} from '~/lib/api/model';
 import {durationToTime} from '~/lib/duration';
-import {AddToCartButton} from '~/routes/($locale).products.$handle';
 
 type AddToCartTreatmentProps = {
   availability: UserAvailabilitySingle;
@@ -20,8 +20,6 @@ export function AddToCartTreatment({
   products,
   location,
 }: AddToCartTreatmentProps) {
-  const [disabled, setDisabled] = useState(false);
-  const fetcher = useFetchers();
   const lines: Array<CartLineInput> = products.nodes
     .filter((product) => {
       const slotProductExists = availability.slot.products.some(
@@ -91,14 +89,47 @@ export function AddToCartTreatment({
       return input;
     });
 
+  return <AddToCartButton lines={lines}>Tilføj indkøbskurv</AddToCartButton>;
+}
+
+export function AddToCartButton({
+  analytics,
+  children,
+  disabled,
+  lines,
+  onClick,
+}: {
+  analytics?: unknown;
+  children: React.ReactNode;
+  disabled?: boolean;
+  lines: CartLineInput[];
+  onClick?: () => void;
+}) {
   return (
-    <AddToCartButton
-      onClick={() => {
-        window.location.href = window.location.href + '#cart-aside';
+    <CartForm route="/cart" inputs={{lines}} action={CartForm.ACTIONS.LinesAdd}>
+      {(fetcher: FetcherWithComponents<any>) => {
+        return (
+          <>
+            <input type="hidden" name="redirectTo" defaultValue="cart" />
+            <input
+              name="analytics"
+              type="hidden"
+              value={JSON.stringify(analytics)}
+            />
+            <Button
+              variant="filled"
+              color="black"
+              size="md"
+              type="submit"
+              onClick={onClick}
+              leftSection={<IconShoppingCart />}
+              disabled={disabled ?? fetcher.state !== 'idle'}
+            >
+              {children}
+            </Button>
+          </>
+        );
       }}
-      lines={lines}
-    >
-      Tilføj indkøbskurv
-    </AddToCartButton>
+    </CartForm>
   );
 }
