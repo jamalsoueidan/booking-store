@@ -4,6 +4,8 @@ import {CartForm} from '@shopify/hydrogen';
 import {json, type ActionFunctionArgs} from '@shopify/remix-oxygen';
 import {Suspense} from 'react';
 import {CartMain} from '~/components/Cart';
+import {HeroTitle} from '~/components/HeroTitle';
+import {Wrapper} from '~/components/Wrapper';
 import {useRootLoaderData} from '~/root';
 
 export const meta: MetaFunction = () => {
@@ -17,6 +19,8 @@ export async function action({request, context}: ActionFunctionArgs) {
     request.formData(),
     session.get('customerAccessToken'),
   ]);
+
+  console.log(formData);
 
   const {action, inputs} = CartForm.getFormInput(formData);
 
@@ -89,18 +93,21 @@ export default function Cart() {
   const cartPromise = rootData.cart;
 
   return (
-    <div className="cart">
-      <h1>Indkøbskurv</h1>
-      <Suspense fallback={<p>Henter indkøbskurv ...</p>}>
-        <Await
-          resolve={cartPromise}
-          errorElement={<div>An error occurred</div>}
-        >
-          {(cart) => {
-            return <CartMain layout="page" cart={cart} />;
-          }}
-        </Await>
-      </Suspense>
-    </div>
+    <>
+      <HeroTitle bg="gray.1">Indkøbskurv</HeroTitle>
+
+      <Wrapper>
+        <Suspense fallback={<p>Henter indkøbskurv ...</p>}>
+          <Await
+            resolve={cartPromise}
+            errorElement={<div>An error occurred</div>}
+          >
+            {(cart) => {
+              return <CartMain layout="page" cart={cart} />;
+            }}
+          </Await>
+        </Suspense>
+      </Wrapper>
+    </>
   );
 }

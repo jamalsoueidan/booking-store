@@ -135,7 +135,7 @@ function FeaturedArtists({artists}: {artists: Promise<UsersListResponse>}) {
         overflow: 'hidden',
       }}
     >
-      <Wrapper variant="frontpage">
+      <Wrapper>
         <Stack gap="lg">
           <Group justify="space-between">
             <Button
@@ -223,10 +223,9 @@ function RecommendedTreatments({
     <div
       style={{
         overflow: 'hidden',
-        backgroundColor: 'var(--mantine-color-pink-1)',
       }}
     >
-      <Wrapper bg="pink.1" variant="frontpage">
+      <Wrapper bg="pink.1">
         <Stack gap="lg">
           <Title order={2} fw={500} lts="1px" c="black">
             Vælg din næste skønhedsoplevelse.
@@ -326,7 +325,7 @@ function RecommendedProducts({
         overflow: 'hidden',
       }}
     >
-      <Wrapper variant="frontpage">
+      <Wrapper>
         <Stack gap="lg">
           <Group gap="2">
             <Title order={2} fw={500} lts="1px" c="orange">
@@ -378,17 +377,16 @@ function FaqQuestions({faq}: {faq?: FaqFragment | null}) {
   const pages = faq.fields.find((p) => p.key === 'pages');
 
   return (
-    <Wrapper bg="yellow.1" variant="frontpage" mb="0">
-      <SimpleGrid cols={{base: 1, md: 2}}>
-        <div>
-          <Title order={2} fw={500} fz={rem(48)} lts="1px">
+    <Wrapper bg="yellow.1" mb="0">
+      <SimpleGrid cols={{base: 1, md: 2}} spacing="xl">
+        <Stack>
+          <Title order={2} fw={500} fz={rem(38)} lts="1px">
             {title}
           </Title>
           <Text size="lg" fw={400}>
             {description}
           </Text>
-          <Button color="yellow">Kontakt os</Button>
-        </div>
+        </Stack>
         <Accordion variant="default">
           {pages?.references?.nodes.map((page) => (
             <Accordion.Item key={page.id} value={page.title}>
