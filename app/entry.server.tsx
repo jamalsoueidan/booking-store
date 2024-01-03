@@ -10,7 +10,14 @@ export default async function handleRequest(
   responseHeaders: Headers,
   remixContext: EntryContext,
 ) {
-  const {nonce, header, NonceProvider} = createContentSecurityPolicy();
+  const {nonce, header, NonceProvider} = createContentSecurityPolicy({
+    connectSrc: [
+      "'self'",
+      'cdn.shopify.com',
+      'monorail-edge.shopifysvc.com',
+      'shopify-chat.shopifyapps.com', // Shopify Inbox
+    ],
+  });
 
   const body = await renderToReadableStream(
     <NonceProvider>
@@ -34,7 +41,7 @@ export default async function handleRequest(
   responseHeaders.set('Content-Type', 'text/html');
   const newHeader = header.replace(
     'https://shopify.com',
-    'https://shopify.com https://www.google.com https://notify.bugsnag.com/ https://js.hcaptcha.com https://newassets.hcaptcha.com https://api.hcaptcha.com https://api2.hcaptcha.com shopify-chat.shopifyapps.com',
+    'https://shopify.com https://www.google.com',
   );
   responseHeaders.set('Content-Security-Policy', newHeader);
 

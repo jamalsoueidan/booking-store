@@ -20,8 +20,6 @@ export async function action({request, context}: ActionFunctionArgs) {
     session.get('customerAccessToken'),
   ]);
 
-  console.log(formData);
-
   const {action, inputs} = CartForm.getFormInput(formData);
 
   if (!action) {
