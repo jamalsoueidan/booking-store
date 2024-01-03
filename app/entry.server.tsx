@@ -34,7 +34,7 @@ export default async function handleRequest(
   responseHeaders.set('Content-Type', 'text/html');
   const newHeader = header.replace(
     'https://shopify.com',
-    'https://shopify.com https://www.google.com https://notify.bugsnag.com shopify-chat.shopifyapps.com',
+    'https://shopify.com https://www.google.com notify.bugsnag.com https://js.hcaptcha.com https://newassets.hcaptcha.com https://api.hcaptcha.com https://api2.hcaptcha.com shopify-chat.shopifyapps.com',
   );
   responseHeaders.set('Content-Security-Policy', newHeader);
 
