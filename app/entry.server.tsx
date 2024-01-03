@@ -43,7 +43,7 @@ export default async function handleRequest(
     'https://shopify.com',
     'https://shopify.com https://www.google.com',
   );
-  responseHeaders.set('Content-Security-Policy', newHeader);
+  //responseHeaders.set('Content-Security-Policy', newHeader);
 
   return new Response(body, {
     headers: responseHeaders,
