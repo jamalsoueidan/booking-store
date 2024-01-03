@@ -24,7 +24,7 @@ import {
   type ShouldRevalidateFunction,
   type UIMatch,
 } from '@remix-run/react';
-import {Script, useNonce} from '@shopify/hydrogen';
+import {useNonce} from '@shopify/hydrogen';
 import type {CustomerAccessToken} from '@shopify/hydrogen/storefront-api-types';
 import {
   defer,
@@ -36,6 +36,7 @@ import {Layout} from '~/components/Layout';
 import favicon from '../public/favicon.svg';
 import {Error} from './components/Error';
 import {GlobalLoadingIndicator} from './components/NavigationProgress';
+import {ShopifyInbox} from './components/ShopifyInbox';
 import appStyles from './styles/app.css';
 import resetStyles from './styles/reset.css';
 
@@ -174,12 +175,20 @@ export default function App() {
               }}
             />
             <Scripts nonce={nonce} />
-            <Script
-              src="https://cdn.shopify.com/extensions/198ec1bd-2d1f-4f05-bce2-6980137d36eb/inbox-85/assets/shopifyChatV1Widget.js?button_color=%23080808&amp;sc=%23FFFFFF&amp;i=chat_bubble&amp;t=no_text&amp;p=bottom_right&amp;vp=lowest&amp;shop_id=hdmxnYE_11NztIDETGzKSZgOznVt7rZKTH8v4phINjo&amp;shop=bysistersdk.myshopify.com"
-              suppressHydrationWarning
-              async
-              nonce={nonce}
-            ></Script>
+            <ShopifyInbox
+              button={{
+                color: 'red',
+                style: 'icon',
+                horizontalPosition: 'button_right',
+                verticalPosition: 'lowest',
+                text: 'chat_with_us',
+                icon: 'chat_bubble',
+              }}
+              shop={{
+                domain: 'bysistersdk.myshopify.com',
+                id: 'hdmxnYE_11NztIDETGzKSZgOznVt7rZKTH8v4phINjo',
+              }}
+            />
             <LiveReload nonce={nonce} />
           </ModalsProvider>
         </MantineProvider>
