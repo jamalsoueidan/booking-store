@@ -24,7 +24,7 @@ import {
   type ShouldRevalidateFunction,
   type UIMatch,
 } from '@remix-run/react';
-import {useNonce} from '@shopify/hydrogen';
+import {Script, useNonce} from '@shopify/hydrogen';
 import type {CustomerAccessToken} from '@shopify/hydrogen/storefront-api-types';
 import {
   defer,
@@ -174,6 +174,11 @@ export default function App() {
               }}
             />
             <Scripts nonce={nonce} />
+            <Script
+              src="https://cdn.shopify.com/extensions/198ec1bd-2d1f-4f05-bce2-6980137d36eb/inbox-85/assets/shopifyChatV1Widget.js?button_color=%23080808&amp;sc=%23FFFFFF&amp;i=chat_bubble&amp;t=no_text&amp;p=bottom_right&amp;vp=lowest&amp;shop_id=hdmxnYE_11NztIDETGzKSZgOznVt7rZKTH8v4phINjo&amp;shop=bysistersdk.myshopify.com"
+              type="module"
+              async
+            ></Script>
             <LiveReload nonce={nonce} />
           </ModalsProvider>
         </MantineProvider>
