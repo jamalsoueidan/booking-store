@@ -22,6 +22,17 @@ export const COLLECTION_ITEM_FRAGMENT = `#graphql
   }
 ` as const;
 
+export const PRODUCT_COLLECTION_FRAGMENT = `#graphql
+  fragment ProductCollection on Collection {
+    title
+    handle
+    icon:  metafield(namespace:"custom",  key: "icon") {
+      type
+      value
+    }
+  }
+` as const;
+
 export const PRODUCT_SIMPLE_FRAGMENT = `#graphql
   fragment ProductSimple on Product {
     id
@@ -40,10 +51,12 @@ export const PRODUCT_SIMPLE_FRAGMENT = `#graphql
 ` as const;
 
 export const PRODUCT_ITEM_FRAGMENT = `#graphql
+  ${PRODUCT_COLLECTION_FRAGMENT}
   fragment MoneyProductItem on MoneyV2 {
     amount
     currencyCode
   }
+
   fragment ProductItem on Product {
     id
     title
@@ -80,11 +93,7 @@ export const PRODUCT_ITEM_FRAGMENT = `#graphql
     }
     collections(first:1) {
       nodes {
-        title
-        icon:  metafield(namespace:"custom",  key: "icon") {
-          type
-          value
-        }
+        ...ProductCollection
       }
     }
   }
@@ -139,6 +148,8 @@ export const PRODUCT_VARIANTS_FRAGMENT = `#graphql
 ` as const;
 
 export const PRODUCT_SELECTED_OPTIONS_FRAGMENT = `#graphql
+  ${PRODUCT_COLLECTION_FRAGMENT}
+
   fragment Product on Product {
     id
     title
@@ -156,6 +167,11 @@ export const PRODUCT_SELECTED_OPTIONS_FRAGMENT = `#graphql
     variants(first: 1) {
       nodes {
         ...ProductVariant
+      }
+    }
+    collections(first: 2) {
+      nodes {
+        ...ProductCollection
       }
     }
     seo {

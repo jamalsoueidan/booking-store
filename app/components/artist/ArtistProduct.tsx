@@ -5,19 +5,17 @@ import {
   Divider,
   Flex,
   Group,
-  Image,
   Text,
   Title,
   rem,
 } from '@mantine/core';
-import {useMediaQuery} from '@mantine/hooks';
 import {Link} from '@remix-run/react';
 import {Money, parseGid} from '@shopify/hydrogen';
 import {IconArrowRight} from '@tabler/icons-react';
 import {type AccountServicesProductsQuery} from 'storefrontapi.generated';
 import {type CustomerProductList} from '~/lib/api/model';
-import {parseTE} from '~/lib/clean';
 import {durationToTime} from '~/lib/duration';
+import {BadgeCollection} from '../BadgeCollection';
 import classes from './ArtistProduct.module.css';
 
 export type ArtistProductProps = {
@@ -26,7 +24,6 @@ export type ArtistProductProps = {
 };
 
 export function ArtistProduct({product, services}: ArtistProductProps) {
-  const isMobile = useMediaQuery('(max-width: 62em)');
   const artistService = services.find(({productId}) => {
     return productId.toString() === parseGid(product.id).id;
   });
@@ -40,29 +37,7 @@ export function ArtistProduct({product, services}: ArtistProductProps) {
       to={`treatment/${product.handle}`}
     >
       <Group justify="space-between" gap="0">
-        <Badge
-          leftSection={
-            <Image
-              src={`/categories/${
-                product.collections.nodes[0].icon?.value ||
-                'reshot-icon-beauty-mirror'
-              }.svg`}
-              style={{
-                width: rem(18),
-                height: rem(18),
-              }}
-              alt="ok"
-            />
-          }
-          size="lg"
-          radius="md"
-          variant="outline"
-          color="#ebeaeb"
-          bg="#f7f7f7"
-          c="gray.5"
-        >
-          {parseTE(product.collections.nodes[0].title)}
-        </Badge>
+        <BadgeCollection collection={product.collections.nodes[0]} />
         <ActionIcon variant="outline" color="black" radius="lg" size="md">
           <IconArrowRight style={{width: '70%', height: '70%'}} stroke={1.5} />
         </ActionIcon>

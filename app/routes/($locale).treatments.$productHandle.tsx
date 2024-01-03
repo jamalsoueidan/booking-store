@@ -22,6 +22,7 @@ import {getBookingShopifyApi} from '~/lib/api/bookingShopifyApi';
 import {
   AspectRatio,
   Box,
+  Group,
   rem,
   Select,
   SimpleGrid,
@@ -31,6 +32,7 @@ import {
   Title,
 } from '@mantine/core';
 import {VariantSelector, type VariantOption} from '@shopify/hydrogen';
+import {BadgeCollection} from '~/components/BadgeCollection';
 import {TreatmentPickArtistRadioCard} from '~/components/treatment/TreatmentPickArtistRadioCard';
 import {type ProductsGetUsersByVariant} from '~/lib/api/model';
 
@@ -89,14 +91,19 @@ export async function loader({params, request, context}: LoaderFunctionArgs) {
 export default function Product() {
   const {product, variantsUsers} = useLoaderData<typeof loader>();
 
+  const collection = product.collections.nodes.find((p) =>
+    p.title.includes('treatments'),
+  );
+
   return (
     <>
       <SimpleGrid cols={{base: 1, md: 2}} spacing={0}>
         <ProductImage image={product.selectedVariant?.image} />
         <Box p={{base: rem(10), md: rem(42)}} bg="#fafafb">
-          <Box mb="md">
+          <BadgeCollection collection={collection} linkBack />
+          <Group my="xs" justify="space-between">
             <Title order={1}>{product?.title}</Title>
-          </Box>
+          </Group>
 
           <Text
             size="xl"

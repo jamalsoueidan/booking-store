@@ -67,7 +67,7 @@ export default function ArtistIndex() {
         </Await>
       </Suspense>
 
-      <SimpleGrid cols={{base: 1, md: 2}} spacing="md">
+      <SimpleGrid cols={{base: 1, md: 2}} spacing="lg">
         <Suspense
           fallback={
             <div>
