@@ -24,9 +24,13 @@ export type ArtistProductProps = {
 };
 
 export function ArtistProduct({product, services}: ArtistProductProps) {
-  const artistService = services.find(({productId}) => {
-    return productId.toString() === parseGid(product.id).id;
-  });
+  const artistService = services.find(
+    ({productId}) => productId.toString() === parseGid(product.id).id,
+  );
+
+  const collection = product.collections.nodes.find((p) =>
+    p.title.includes('treatments'),
+  );
 
   return (
     <Card
@@ -37,7 +41,7 @@ export function ArtistProduct({product, services}: ArtistProductProps) {
       to={`treatment/${product.handle}`}
     >
       <Group justify="space-between" gap="0">
-        <BadgeCollection collection={product.collections.nodes[0]} />
+        <BadgeCollection collection={collection} />
         <ActionIcon variant="outline" color="black" radius="lg" size="md">
           <IconArrowRight style={{width: '70%', height: '70%'}} stroke={1.5} />
         </ActionIcon>

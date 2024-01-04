@@ -91,7 +91,7 @@ export const PRODUCT_ITEM_FRAGMENT = `#graphql
         }
       }
     }
-    collections(first:1) {
+    collections(first:2) {
       nodes {
         ...ProductCollection
       }
