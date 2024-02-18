@@ -3,9 +3,8 @@ import classes from './Wrapper.module.css';
 
 export function Wrapper({
   children,
-  variant,
   ...props
-}: BoxProps & {children: React.ReactNode; variant?: 'frontpage'}) {
+}: BoxProps & {children: React.ReactNode}) {
   const className = props.bg ? classes.padding : classes.margin;
   return (
     <Box className={className} {...props}>

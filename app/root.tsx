@@ -18,6 +18,7 @@ import {
   ScrollRestoration,
   isRouteErrorResponse,
   useLoaderData,
+  useLocation,
   useMatches,
   useRouteError,
   type Location,
@@ -133,6 +134,8 @@ export async function loader({context}: LoaderFunctionArgs) {
 }
 
 export default function App() {
+  const location = useLocation();
+  const path = location.pathname;
   const nonce = useNonce();
   const data = useLoaderData<typeof loader>();
   const theme = createTheme({
@@ -175,20 +178,22 @@ export default function App() {
               }}
             />
             <Scripts nonce={nonce} />
-            <ShopifyInbox
-              button={{
-                color: 'red',
-                style: 'icon',
-                horizontalPosition: 'button_right',
-                verticalPosition: 'lowest',
-                text: 'chat_with_us',
-                icon: 'chat_bubble',
-              }}
-              shop={{
-                domain: 'bysistersdk.myshopify.com',
-                id: 'hdmxnYE_11NztIDETGzKSZgOznVt7rZKTH8v4phINjo',
-              }}
-            />
+            {path === '/' ? (
+              <ShopifyInbox
+                button={{
+                  color: 'black',
+                  style: 'icon',
+                  horizontalPosition: 'button_right',
+                  verticalPosition: 'lowest',
+                  text: 'chat_with_us',
+                  icon: 'chat_bubble',
+                }}
+                shop={{
+                  domain: 'bysistersdk.myshopify.com',
+                  id: 'hdmxnYE_11NztIDETGzKSZgOznVt7rZKTH8v4phINjo',
+                }}
+              />
+            ) : null}
             <LiveReload nonce={nonce} />
           </ModalsProvider>
         </MantineProvider>
