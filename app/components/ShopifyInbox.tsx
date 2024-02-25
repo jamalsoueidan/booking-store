@@ -1,5 +1,4 @@
 // filename: app/components/ShopifyInbox.tsx
-import {Script} from '@shopify/hydrogen';
 
 export type ShopifyInboxProps = {
   env?: 'production' | 'development';
@@ -96,12 +95,14 @@ export function ShopifyInbox({
   const baseUrl = `https://cdn.shopify.com/shopifycloud/shopify_chat/storefront/shopifyChat${version}.js`;
   const buttonSearch = new URLSearchParams(buttonParams).toString();
 
-  return (
+  return <></>;
+  // remove the chat for a moment.
+  /*return (
     <Script
       id="shopify-inbox"
       suppressHydrationWarning
       async={true}
       src={`${baseUrl}?v=${version}&api_env=${env}&shop_id=${shop.id}&shop=${shop.domain}&${buttonSearch}`}
     />
-  );
+  );*/
 }
