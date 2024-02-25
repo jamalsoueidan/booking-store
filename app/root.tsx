@@ -136,6 +136,7 @@ export async function loader({context}: LoaderFunctionArgs) {
 export default function App() {
   const location = useLocation();
   const path = location.pathname;
+  console.log('path', path);
   const nonce = useNonce();
   const data = useLoaderData<typeof loader>();
   const theme = createTheme({
