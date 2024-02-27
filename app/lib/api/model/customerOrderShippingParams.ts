@@ -5,9 +5,13 @@
  * OpenAPI spec version: 1.0.0
  */
 
-export type CustomerBookingGetParams = {
+export type CustomerOrderShippingParams = {
   /**
-   * date for the lineItem (2014-12-12)
+   * start of date
    */
-  date: string;
+  start: string;
+  /**
+   * end of date
+   */
+  end: string;
 };

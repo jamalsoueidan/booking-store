@@ -1392,115 +1392,6 @@ export const customerProductDestroyResponse = zod.object({
 });
 
 /**
- * This endpoint gets booking object
- * @summary GET Get booking
- */
-export const customerBookingGetParams = zod.object({
-  customerId: zod.string(),
-  orderId: zod.string(),
-});
-
-export const customerBookingGetQueryParams = zod.object({
-  date: zod.string(),
-});
-
-export const customerBookingGetResponse = zod.object({
-  success: zod.boolean(),
-  payload: zod.object({
-    orderId: zod.number(),
-    buyer: zod.object({
-      id: zod.number(),
-      fullName: zod.string(),
-      phone: zod.string(),
-      email: zod.string(),
-    }),
-    lineItems: zod.array(
-      zod.object({
-        customerId: zod.number(),
-        from: zod.string().datetime(),
-        to: zod.string().datetime(),
-        productId: zod.number(),
-        variantId: zod.number(),
-        lineItemId: zod.number(),
-        title: zod.string(),
-        priceSet: zod.object({
-          amount: zod.string(),
-          currency_code: zod.string(),
-        }),
-        totalDiscountSet: zod.object({
-          amount: zod.string(),
-          currency_code: zod.string(),
-        }),
-        status: zod.enum([
-          'fulfilled',
-          'onhold',
-          'unfulfilled',
-          'cancelled',
-          'refunded',
-        ]),
-      }),
-    ),
-    cancelReason: zod.string(),
-    cancelledAt: zod.string().datetime(),
-  }),
-});
-
-/**
- * This endpoint get all bookings
- * @summary GET Get all bookings for customer
- */
-export const customerBookingsListParams = zod.object({
-  customerId: zod.string(),
-});
-
-export const customerBookingsListQueryParams = zod.object({
-  mode: zod.enum(['completed', 'upcoming']),
-});
-
-export const customerBookingsListResponse = zod.object({
-  success: zod.boolean(),
-  payload: zod.array(
-    zod.object({
-      orderId: zod.number(),
-      buyer: zod.object({
-        id: zod.number(),
-        fullName: zod.string(),
-        phone: zod.string(),
-        email: zod.string(),
-      }),
-      lineItems: zod.array(
-        zod.object({
-          customerId: zod.number(),
-          from: zod.string().datetime(),
-          to: zod.string().datetime(),
-          productId: zod.number(),
-          variantId: zod.number(),
-          lineItemId: zod.number(),
-          title: zod.string(),
-          priceSet: zod.object({
-            amount: zod.string(),
-            currency_code: zod.string(),
-          }),
-          totalDiscountSet: zod.object({
-            amount: zod.string(),
-            currency_code: zod.string(),
-          }),
-          status: zod.enum([
-            'fulfilled',
-            'onhold',
-            'unfulfilled',
-            'cancelled',
-            'refunded',
-          ]),
-        }),
-      ),
-      cancelReason: zod.string(),
-      cancelledAt: zod.string().datetime(),
-    }),
-  ),
-});
-
-/**
  * This endpoint get all orders
  * @summary GET Get all order for customer
  */
@@ -1858,6 +1749,136 @@ export const customerOrderListResponse = zod.object({
           }),
         }),
       ),
+  ),
+});
+
+/**
+ * Get all driving information that are included in the orders
+ * @summary GET Get only all orders destinations for customer
+ */
+export const customerOrderShippingParams = zod.object({
+  customerId: zod.string(),
+});
+
+export const customerOrderShippingQueryParams = zod.object({
+  start: zod.string(),
+  end: zod.string(),
+});
+
+export const customerOrderShippingResponse = zod.object({
+  success: zod.boolean(),
+  payload: zod.array(
+    zod.object({
+      id: zod.number(),
+      order_number: zod.number(),
+      customer: zod.object({
+        id: zod.number(),
+        email: zod.string().nullish(),
+        accepts_marketing: zod.boolean(),
+        created_at: zod.string(),
+        updated_at: zod.string(),
+        first_name: zod.string(),
+        last_name: zod.string(),
+        state: zod.string(),
+        note: zod.string().nullish(),
+        verified_email: zod.boolean(),
+        multipass_identifier: zod.string().nullish(),
+        tax_exempt: zod.boolean(),
+        phone: zod.string().nullish(),
+        email_marketing_consent: zod.boolean().nullish(),
+        sms_marketing_consent: zod
+          .object({
+            state: zod.string().optional(),
+            opt_in_level: zod.string().optional(),
+            consent_updated_at: zod.string().optional(),
+            consent_collected_from: zod.string().optional(),
+          })
+          .nullish(),
+        tags: zod.string(),
+        currency: zod.string(),
+        accepts_marketing_updated_at: zod.string().optional(),
+        marketing_opt_in_level: zod.string().nullish(),
+        tax_exemptions: zod.array(zod.string()).optional(),
+        admin_graphql_api_id: zod.string(),
+        default_address: zod
+          .object({
+            customer_id: zod.number().optional(),
+            first_name: zod.string(),
+            address1: zod.string().optional(),
+            phone: zod.string().optional(),
+            city: zod.string().optional(),
+            zip: zod.string().optional(),
+            province: zod.string().nullish(),
+            country: zod.string().optional(),
+            last_name: zod.string(),
+            address2: zod.string().nullish(),
+            company: zod.string().nullish(),
+            latitude: zod.number().nullish(),
+            longitude: zod.number().nullish(),
+            name: zod.string(),
+            country_code: zod.string(),
+            country_name: zod.string().optional(),
+            province_code: zod.string().optional(),
+            default: zod.boolean(),
+          })
+          .optional(),
+      }),
+      start: zod.string(),
+      end: zod.string(),
+      title: zod.string(),
+      shipping: zod
+        .object({
+          duration: zod.object({
+            text: zod.string(),
+            value: zod.number(),
+          }),
+          distance: zod.object({
+            text: zod.string(),
+            value: zod.number(),
+          }),
+        })
+        .and(
+          zod.object({
+            destination: zod.object({
+              name: zod.string(),
+              fullAddress: zod.string(),
+            }),
+            cost: zod.object({
+              currency: zod.string(),
+              value: zod.number(),
+            }),
+          }),
+        )
+        .and(
+          zod.object({
+            _id: zod.string(),
+            location: zod.string(),
+            origin: zod
+              .object({
+                locationType: zod.enum(['origin', 'destination']),
+                customerId: zod.string(),
+                originType: zod.enum(['home', 'commercial']),
+                name: zod.string(),
+                fullAddress: zod.string(),
+              })
+              .and(
+                zod.object({
+                  _id: zod.string(),
+                  geoLocation: zod.object({
+                    type: zod.enum(['Point']),
+                    coordinates: zod.array(zod.number()),
+                  }),
+                  distanceForFree: zod.number(),
+                  distanceHourlyRate: zod.number(),
+                  fixedRatePerKm: zod.number(),
+                  minDriveDistance: zod.number(),
+                  maxDriveDistance: zod.number(),
+                  startFee: zod.number(),
+                }),
+              ),
+          }),
+        ),
+    }),
   ),
 });
 

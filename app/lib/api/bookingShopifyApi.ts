@@ -5,10 +5,6 @@
  * OpenAPI spec version: 1.0.0
  */
 import type {
-  CustomerBookingGetParams,
-  CustomerBookingGetResponse,
-  CustomerBookingListResponse,
-  CustomerBookingsListParams,
   CustomerCreateBody,
   CustomerCreateResponse,
   CustomerGetResponse,
@@ -27,6 +23,8 @@ import type {
   CustomerOrderGetResponse,
   CustomerOrderListParams,
   CustomerOrderListResponse,
+  CustomerOrderShippingParams,
+  CustomerOrderShippingResponse,
   CustomerProductDestroyResponse,
   CustomerProductGetResponse,
   CustomerProductListIdsResponse,
@@ -440,37 +438,6 @@ export const getBookingShopifyApi = () => {
   };
 
   /**
-   * This endpoint gets booking object
-   * @summary GET Get booking
-   */
-  const customerBookingGet = (
-    customerId: string,
-    orderId: string,
-    params: CustomerBookingGetParams,
-  ) => {
-    return queryClient<CustomerBookingGetResponse>({
-      url: `/customer/${customerId}/booking/${orderId}`,
-      method: 'get',
-      params,
-    });
-  };
-
-  /**
-   * This endpoint get all bookings
-   * @summary GET Get all bookings for customer
-   */
-  const customerBookingsList = (
-    customerId: string,
-    params: CustomerBookingsListParams,
-  ) => {
-    return queryClient<CustomerBookingListResponse>({
-      url: `/customer/${customerId}/bookings`,
-      method: 'get',
-      params,
-    });
-  };
-
-  /**
    * This endpoint get all orders
    * @summary GET Get all order for customer
    */
@@ -480,6 +447,21 @@ export const getBookingShopifyApi = () => {
   ) => {
     return queryClient<CustomerOrderListResponse>({
       url: `/customer/${customerId}/orders-range`,
+      method: 'get',
+      params,
+    });
+  };
+
+  /**
+   * Get all driving information that are included in the orders
+   * @summary GET Get only all orders destinations for customer
+   */
+  const customerOrderShipping = (
+    customerId: string,
+    params: CustomerOrderShippingParams,
+  ) => {
+    return queryClient<CustomerOrderShippingResponse>({
+      url: `/customer/${customerId}/shipping-range`,
       method: 'get',
       params,
     });
@@ -826,9 +808,8 @@ export const getBookingShopifyApi = () => {
     customerProductGet,
     customerProductUpsert,
     customerProductDestroy,
-    customerBookingGet,
-    customerBookingsList,
     customerOrderList,
+    customerOrderShipping,
     customerOrderGetLineItem,
     customerOrderGet,
     customerScheduleCreate,
@@ -999,19 +980,14 @@ export type CustomerProductDestroyResult = NonNullable<
     >
   >
 >;
-export type CustomerBookingGetResult = NonNullable<
-  Awaited<
-    ReturnType<ReturnType<typeof getBookingShopifyApi>['customerBookingGet']>
-  >
->;
-export type CustomerBookingsListResult = NonNullable<
-  Awaited<
-    ReturnType<ReturnType<typeof getBookingShopifyApi>['customerBookingsList']>
-  >
->;
 export type CustomerOrderListResult = NonNullable<
   Awaited<
     ReturnType<ReturnType<typeof getBookingShopifyApi>['customerOrderList']>
+  >
+>;
+export type CustomerOrderShippingResult = NonNullable<
+  Awaited<
+    ReturnType<ReturnType<typeof getBookingShopifyApi>['customerOrderShipping']>
   >
 >;
 export type CustomerOrderGetLineItemResult = NonNullable<

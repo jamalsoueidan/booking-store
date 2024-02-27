@@ -6,17 +6,6 @@
  */
 
 export * from './badResponseResponse';
-export * from './customerBooking';
-export * from './customerBookingBuyer';
-export * from './customerBookingGetParams';
-export * from './customerBookingGetResponse';
-export * from './customerBookingLineItemsItem';
-export * from './customerBookingLineItemsItemPriceSet';
-export * from './customerBookingLineItemsItemStatus';
-export * from './customerBookingLineItemsItemTotalDiscountSet';
-export * from './customerBookingListResponse';
-export * from './customerBookingsListMode';
-export * from './customerBookingsListParams';
 export * from './customerCreateBody';
 export * from './customerCreateBodySocial';
 export * from './customerCreateResponse';
@@ -79,6 +68,9 @@ export * from './customerOrderRefundRefundLineItemsItem';
 export * from './customerOrderRefundRefundLineItemsItemSubtotal';
 export * from './customerOrderRefundRefundLineItemsItemTotalTax';
 export * from './customerOrderShipping';
+export * from './customerOrderShippingLines';
+export * from './customerOrderShippingParams';
+export * from './customerOrderShippingResponse';
 export * from './customerOrderSimpleLineItem';
 export * from './customerProduct';
 export * from './customerProductAllOf';

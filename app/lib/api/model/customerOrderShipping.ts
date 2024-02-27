@@ -4,18 +4,15 @@
  * Booking Shopify Api
  * OpenAPI spec version: 1.0.0
  */
-import type {CustomerOrderMoney} from './customerOrderMoney';
+import type {CustomerOrderCustomer} from './customerOrderCustomer';
+import type {Shipping} from './shipping';
 
 export interface CustomerOrderShipping {
-  carrier_identifier?: string | null;
-  code?: string | null;
-  discounted_price: string;
-  discounted_price_set: CustomerOrderMoney;
+  customer: CustomerOrderCustomer;
+  end: string;
   id: number;
-  phone?: string | null;
-  price: string;
-  price_set: CustomerOrderMoney;
-  requested_fulfillment_service_id?: string | null;
-  source: string;
+  order_number: number;
+  shipping: Shipping;
+  start: string;
   title: string;
 }
