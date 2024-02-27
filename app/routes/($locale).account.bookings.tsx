@@ -12,8 +12,22 @@ import {createRoot} from 'react-dom/client';
 import {AccountContent} from '~/components/account/AccountContent';
 import {AccountTitle} from '~/components/account/AccountTitle';
 import ModalBooking from '~/components/account/ModalBooking';
-import {type CustomerOrderList} from '~/lib/api/model';
+import type {CustomerOrderList, CustomerOrderShipping} from '~/lib/api/model';
 import {type ApiOrdersLineItem} from './($locale).api.orders.$productId.lineitem.$lineItem';
+
+// Type guard for CustomerOrderList
+function isCustomerOrderList(
+  order: CustomerOrderList | CustomerOrderShipping,
+): order is CustomerOrderList {
+  return (order as CustomerOrderList).refunds !== undefined;
+}
+
+// Type guard for CustomerOrderShipping
+function isCustomerOrderShipping(
+  order: CustomerOrderList | CustomerOrderShipping,
+): order is CustomerOrderShipping {
+  return (order as CustomerOrderShipping).shipping !== undefined;
+}
 
 const CustomDescription = () => (
   <IconCar style={{width: rem(24), height: rem(24)}} stroke={1.5} />
@@ -43,12 +57,19 @@ export default function AccountBookings() {
             right: isMobile ? '' : 'dayGridMonth,timeGridWeek',
           }}
           eventDataTransform={(input: EventInput) => {
-            const order = input as unknown as CustomerOrderList;
+            const order = input as unknown as
+              | CustomerOrderList
+              | CustomerOrderShipping;
             input.color = 'green';
             input.display = 'block';
             input.className = 'event-custom';
-            if (order.refunds.length > 0) {
-              input.color = '#cccccc';
+            if (isCustomerOrderList(order)) {
+              if (order.refunds?.length > 0) {
+                input.color = '#cccccc';
+              }
+            } else if (isCustomerOrderShipping(order)) {
+              input.color = '#c6c6c6';
+              input.title = 'Kørsel';
             }
             return input;
           }}
@@ -57,16 +78,25 @@ export default function AccountBookings() {
               '.fc-event-title-container',
             );
 
-            const order = info.event.extendedProps as CustomerOrderList;
-            if (eventElement && order.line_items.properties.shippingId) {
-              // Create a container for your React component
-              const descriptionElement = document.createElement('span');
-              descriptionElement.classList.add('fc-event-icon');
-              eventElement.prepend(descriptionElement);
+            const order = info.event.extendedProps as unknown as
+              | CustomerOrderList
+              | CustomerOrderShipping;
+            const orderHasShippingId =
+              isCustomerOrderList(order) &&
+              order.line_items?.properties?.shippingId;
+            const isShippingEvent = isCustomerOrderShipping(order);
 
-              // Use createRoot to render the React component
-              const root = createRoot(descriptionElement);
-              root.render(<CustomDescription />);
+            if (eventElement) {
+              if (orderHasShippingId || isShippingEvent) {
+                // Create a container for your React component
+                const descriptionElement = document.createElement('span');
+                descriptionElement.classList.add('fc-event-icon');
+                eventElement.prepend(descriptionElement);
+
+                // Use createRoot to render the React component
+                const root = createRoot(descriptionElement);
+                root.render(<CustomDescription />);
+              }
             }
           }}
           eventWillUnmount={(info) => {
@@ -80,7 +110,7 @@ export default function AccountBookings() {
             }
           }}
           themeSystem="standard"
-          events="/api/orders"
+          eventSources={['/api/orders', '/api/shippings']}
           initialView={isMobile ? 'timeGridDay' : 'dayGridMonth'}
           buttonText={{
             prev: '<',
