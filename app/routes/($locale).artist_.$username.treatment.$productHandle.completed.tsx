@@ -207,7 +207,7 @@ export default function ArtistTreatmentsBooking() {
             products={data.products}
             availability={data.availability}
             location={data.location}
-            groupId={groupId}
+            groupId={data.groupId}
           />
         </Group>
       </Box>
