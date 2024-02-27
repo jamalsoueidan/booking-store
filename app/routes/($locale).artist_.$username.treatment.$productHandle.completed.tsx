@@ -15,6 +15,7 @@ import {Money, parseGid} from '@shopify/hydrogen';
 import {json, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
 import {format} from 'date-fns';
 import da from 'date-fns/locale/da';
+import {v4 as uuidv4} from 'uuid';
 import {AddToCartTreatment} from '~/components/AddToCartTreatments';
 import {TreatmentArtistCardComplete} from '~/components/treatment/TreatmentArtistCardComplete';
 import {PRODUCT_SELECTED_OPTIONS_QUERY} from '~/data/queries';
@@ -77,11 +78,14 @@ export const loader = async ({
       },
     });
 
+    const groupId = uuidv4();
+
     return json({
       location,
       user,
       products,
       availability,
+      groupId,
     });
   } catch (err) {
     throw new Response('Username or product handle is wrong', {status: 404});
@@ -203,6 +207,7 @@ export default function ArtistTreatmentsBooking() {
             products={data.products}
             availability={data.availability}
             location={data.location}
+            groupId={groupId}
           />
         </Group>
       </Box>

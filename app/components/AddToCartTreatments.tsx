@@ -13,12 +13,14 @@ type AddToCartTreatmentProps = {
   availability: UserAvailabilitySingle;
   products: ArtistServicesProductsQuery['products'];
   location: CustomerLocation;
+  groupId: string;
 };
 
 export function AddToCartTreatment({
   availability,
   products,
   location,
+  groupId,
 }: AddToCartTreatmentProps) {
   const lines: Array<CartLineInput> = products.nodes
     .filter((product) => {
@@ -55,8 +57,8 @@ export function AddToCartTreatment({
             value: location._id,
           },
           {
-            key: '_freeShipping',
-            value: 'true',
+            key: '_groupId',
+            value: groupId,
           },
           {
             key: 'Skønhedsekspert',
@@ -80,10 +82,16 @@ export function AddToCartTreatment({
       };
 
       if (availability.shipping) {
-        input.attributes.push({
-          key: '_shippingId',
-          value: availability.shipping._id,
-        });
+        input.attributes.push(
+          {
+            key: '_shippingId',
+            value: availability.shipping._id,
+          },
+          {
+            key: '_freeShipping',
+            value: 'true',
+          },
+        );
       }
 
       return input;
