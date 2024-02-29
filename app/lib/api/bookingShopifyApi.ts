@@ -19,6 +19,7 @@ import type {
   CustomerLocationSetDefaultResponse,
   CustomerLocationUpdateBody,
   CustomerLocationUpdateResponse,
+  CustomerOrderGetByGroupIdResponse,
   CustomerOrderGetResponse,
   CustomerOrderRangeParams,
   CustomerOrderRangeResponse,
@@ -435,6 +436,21 @@ export const getBookingShopifyApi = () => {
   };
 
   /**
+   * This endpoint gets order with lineItems array of objects specific for groupId
+   * @summary GET Get order with lineItems array for specific groupId
+   */
+  const customerOrderGetByGroup = (
+    customerId: string,
+    orderId: string,
+    groupId: string,
+  ) => {
+    return queryClient<CustomerOrderGetByGroupIdResponse>({
+      url: `/customer/${customerId}/orders/${orderId}/group/${groupId}`,
+      method: 'get',
+    });
+  };
+
+  /**
    * This endpoint gets order with lineItems array of objects
    * @summary GET Get order with lineItems array
    */
@@ -779,6 +795,7 @@ export const getBookingShopifyApi = () => {
     customerProductGet,
     customerProductUpsert,
     customerProductDestroy,
+    customerOrderGetByGroup,
     customerOrderGet,
     customerOrderRange,
     customerScheduleCreate,
@@ -946,6 +963,13 @@ export type CustomerProductDestroyResult = NonNullable<
   Awaited<
     ReturnType<
       ReturnType<typeof getBookingShopifyApi>['customerProductDestroy']
+    >
+  >
+>;
+export type CustomerOrderGetByGroupResult = NonNullable<
+  Awaited<
+    ReturnType<
+      ReturnType<typeof getBookingShopifyApi>['customerOrderGetByGroup']
     >
   >
 >;

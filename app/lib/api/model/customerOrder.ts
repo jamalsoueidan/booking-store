@@ -8,6 +8,7 @@ import type {CustomerOrderClient} from './customerOrderClient';
 import type {CustomerOrderMoney} from './customerOrderMoney';
 import type {CustomerOrderCustomer} from './customerOrderCustomer';
 import type {CustomerOrderFulfillment} from './customerOrderFulfillment';
+import type {CustomerOrderLineItem} from './customerOrderLineItem';
 import type {CustomerOrderRefund} from './customerOrderRefund';
 import type {Shipping} from './shipping';
 import type {CustomerOrderAddress} from './customerOrderAddress';
@@ -37,7 +38,9 @@ export interface CustomerOrder {
   customer: CustomerOrderCustomer;
   end: string;
   fulfillments: CustomerOrderFulfillment[];
+  groupId: string;
   id: number;
+  line_items: CustomerOrderLineItem[];
   order_number: number;
   refunds: CustomerOrderRefund[];
   shipping?: Shipping;

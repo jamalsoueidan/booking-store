@@ -569,8 +569,14 @@ components:
           type: string
         title:
           type: string
+        groupId:
+          type: string
         shipping:
           $ref: '#/components/schemas/Shipping'
+        line_items:
+          type: array
+          items:
+            $ref: '#/components/schemas/CustomerOrderLineItem'
       required:
         - id
         - admin_graphql_api_id
@@ -590,10 +596,12 @@ components:
         - fulfillments
         - refunds
         - shipping_lines
+        - groupId
         - start
         - end
         - title
         - order_number
+        - line_items
     CustomerOrderMoney:
       type: object
       properties:
@@ -876,50 +884,6 @@ components:
         - title
         - total_discount
         - total_discount_set
-    CustomerOrderLineItemLookup:
-      allOf:
-        - $ref: '#/components/schemas/CustomerOrderLineItem'
-        - type: object
-          properties:
-            user:
-              type: object
-              properties:
-                customerId:
-                  type: number
-                fullname:
-                  type: string
-                username:
-                  type: string
-                shortDescription:
-                  type: string
-                images:
-                  type: object
-                  properties:
-                    profile:
-                      type: object
-                      properties:
-                        url:
-                          type: string
-                          format: uri
-                        width:
-                          type: integer
-                        height:
-                          type: integer
-              required:
-                - customerId
-                - fullname
-                - username
-                - shortDescription
-                - images
-            location:
-              $ref: '#/components/schemas/CustomerLocationBase'
-            shipping:
-              allOf:
-                - $ref: '#/components/schemas/LocationTravelTime'
-                - $ref: '#/components/schemas/ShippingCostDestination'
-          required:
-            - user
-            - location
     CustomerOrderRefund:
       type: object
       properties:
@@ -1082,17 +1046,46 @@ components:
         - service
         - status
         - line_items
-    CustomerOrderGet:
+    CustomerOrderWithLookup:
       allOf:
         - $ref: '#/components/schemas/CustomerOrder'
         - type: object
           properties:
-            line_items:
-              type: array
-              items:
-                $ref: '#/components/schemas/CustomerOrderLineItemLookup'
+            user:
+              type: object
+              properties:
+                customerId:
+                  type: number
+                fullname:
+                  type: string
+                username:
+                  type: string
+                shortDescription:
+                  type: string
+                images:
+                  type: object
+                  properties:
+                    profile:
+                      type: object
+                      properties:
+                        url:
+                          type: string
+                          format: uri
+                        width:
+                          type: integer
+                        height:
+                          type: integer
+              required:
+                - customerId
+                - fullname
+                - username
+                - shortDescription
+                - images
+            location:
+              $ref: '#/components/schemas/CustomerLocationBase'
           required:
-            - line_items
+            - user
+            - location
     CustomerOrderGetResponse:
       type: object
       properties:
@@ -1100,21 +1093,21 @@ components:
           type: boolean
           example: true
         payload:
-          $ref: '#/components/schemas/CustomerOrderGet'
+          $ref: '#/components/schemas/CustomerOrderWithLookup'
       required:
         - success
         - payload
-    CustomerOrderRange:
-      allOf:
-        - $ref: '#/components/schemas/CustomerOrder'
-        - type: object
-          properties:
-            line_items:
-              type: array
-              items:
-                $ref: '#/components/schemas/CustomerOrderLineItem'
-          required:
-            - line_items
+    CustomerOrderGetByGroupIdResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: true
+        payload:
+          $ref: '#/components/schemas/CustomerOrderWithLookup'
+      required:
+        - success
+        - payload
     CustomerOrderRangeResponse:
       type: object
       properties:
@@ -1124,7 +1117,7 @@ components:
         payload:
           type: array
           items:
-            $ref: '#/components/schemas/CustomerOrderRange'
+            $ref: '#/components/schemas/CustomerOrder'
       required:
         - success
         - payload
@@ -3236,6 +3229,48 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/CustomerProductDestroyResponse'
+        '400':
+          $ref: '#/components/responses/BadResponse'
+        '401':
+          $ref: '#/components/responses/UnauthorizedResponse'
+        '403':
+          $ref: '#/components/responses/ForbiddenResponse'
+        '404':
+          $ref: '#/components/responses/NotFoundResponse'
+      security: []
+  '/customer/{customerId}/orders/{orderId}/group/{groupId}':
+    get:
+      parameters:
+        - name: customerId
+          in: path
+          description: customerId for the customer
+          required: true
+          schema:
+            type: string
+        - name: orderId
+          in: path
+          description: orderId for the order
+          required: true
+          schema:
+            type: string
+        - name: groupId
+          in: path
+          description: groupId for the order
+          required: true
+          schema:
+            type: string
+      tags:
+        - CustomerOrder
+      operationId: customerOrderGetByGroup
+      summary: GET Get order with lineItems array for specific groupId
+      description: This endpoint gets order with lineItems array of objects specific for groupId
+      responses:
+        '200':
+          description: Response with payload
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CustomerOrderGetByGroupIdResponse'
         '400':
           $ref: '#/components/responses/BadResponse'
         '401':

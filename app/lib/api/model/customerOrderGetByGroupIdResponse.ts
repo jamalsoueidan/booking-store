@@ -6,7 +6,7 @@
  */
 import type {CustomerOrderWithLookup} from './customerOrderWithLookup';
 
-export interface CustomerOrderGetResponse {
+export interface CustomerOrderGetByGroupIdResponse {
   payload: CustomerOrderWithLookup;
   success: boolean;
 }
