@@ -494,122 +494,6 @@ components:
             $ref: '#/components/schemas/CustomerScheduleSlot'
       required:
         - slots
-    CustomerBooking:
-      type: object
-      properties:
-        orderId:
-          type: integer
-        buyer:
-          type: object
-          properties:
-            id:
-              type: integer
-            fullName:
-              type: string
-            phone:
-              type: string
-            email:
-              type: string
-          required:
-            - id
-            - fullName
-            - phone
-            - email
-        lineItems:
-          type: array
-          items:
-            type: object
-            properties:
-              customerId:
-                type: integer
-              from:
-                type: string
-                format: date-time
-              to:
-                type: string
-                format: date-time
-              productId:
-                type: integer
-              variantId:
-                type: integer
-              lineItemId:
-                type: integer
-              title:
-                type: string
-              priceSet:
-                type: object
-                properties:
-                  amount:
-                    type: string
-                  currency_code:
-                    type: string
-                required:
-                  - amount
-                  - currency_code
-              totalDiscountSet:
-                type: object
-                properties:
-                  amount:
-                    type: string
-                  currency_code:
-                    type: string
-                required:
-                  - amount
-                  - currency_code
-              status:
-                type: string
-                enum:
-                  - fulfilled
-                  - onhold
-                  - unfulfilled
-                  - cancelled
-                  - refunded
-            required:
-              - customerId
-              - from
-              - to
-              - productId
-              - variantId
-              - lineItemId
-              - title
-              - priceSet
-              - totalDiscountSet
-              - status
-        cancelReason:
-          type: string
-        cancelledAt:
-          type: string
-          format: date-time
-      required:
-        - orderId
-        - buyer
-        - lineItems
-        - cancelReason
-        - cancelledAt
-    CustomerBookingGetResponse:
-      type: object
-      properties:
-        success:
-          type: boolean
-          example: true
-        payload:
-          $ref: '#/components/schemas/CustomerBooking'
-      required:
-        - success
-        - payload
-    CustomerBookingListResponse:
-      type: object
-      properties:
-        success:
-          type: boolean
-          example: true
-        payload:
-          type: array
-          items:
-            $ref: '#/components/schemas/CustomerBooking'
-      required:
-        - success
-        - payload
     CustomerOrder:
       type: object
       properties:
@@ -678,13 +562,15 @@ components:
         shipping_lines:
           type: array
           items:
-            $ref: '#/components/schemas/CustomerOrderShipping'
+            $ref: '#/components/schemas/CustomerOrderShippingLines'
         start:
           type: string
         end:
           type: string
         title:
           type: string
+        shipping:
+          $ref: '#/components/schemas/Shipping'
       required:
         - id
         - admin_graphql_api_id
@@ -815,6 +701,8 @@ components:
           type: string
         locationId:
           type: string
+        groupId:
+          type: string
         shippingId:
           type: string
       required:
@@ -822,6 +710,7 @@ components:
         - to
         - customer_id
         - locationId
+        - groupId
     CustomerOrderSimpleLineItem:
       type: object
       properties:
@@ -1101,7 +990,7 @@ components:
         - restock
         - user_id
         - refund_line_items
-    CustomerOrderShipping:
+    CustomerOrderShippingLines:
       type: object
       properties:
         id:
@@ -1193,33 +1082,6 @@ components:
         - service
         - status
         - line_items
-    CustomerOrderGetLineItem:
-      allOf:
-        - $ref: '#/components/schemas/CustomerOrder'
-        - type: object
-          properties:
-            line_items:
-              allOf:
-                - $ref: '#/components/schemas/CustomerOrderLineItemLookup'
-                - type: object
-                  properties:
-                    selectedOptions:
-                      $ref: '#/components/schemas/CustomerProductSelectedOptions'
-                  required:
-                    - selectedOptions
-          required:
-            - line_items
-    CustomerOrderGetLineItemResponse:
-      type: object
-      properties:
-        success:
-          type: boolean
-          example: true
-        payload:
-          $ref: '#/components/schemas/CustomerOrderGetLineItem'
-      required:
-        - success
-        - payload
     CustomerOrderGet:
       allOf:
         - $ref: '#/components/schemas/CustomerOrder'
@@ -1242,16 +1104,18 @@ components:
       required:
         - success
         - payload
-    CustomerOrderList:
+    CustomerOrderRange:
       allOf:
         - $ref: '#/components/schemas/CustomerOrder'
         - type: object
           properties:
             line_items:
-              $ref: '#/components/schemas/CustomerOrderLineItem'
+              type: array
+              items:
+                $ref: '#/components/schemas/CustomerOrderLineItem'
           required:
             - line_items
-    CustomerOrderListResponse:
+    CustomerOrderRangeResponse:
       type: object
       properties:
         success:
@@ -1260,7 +1124,7 @@ components:
         payload:
           type: array
           items:
-            $ref: '#/components/schemas/CustomerOrderList'
+            $ref: '#/components/schemas/CustomerOrderRange'
       required:
         - success
         - payload
@@ -3381,7 +3245,7 @@ paths:
         '404':
           $ref: '#/components/responses/NotFoundResponse'
       security: []
-  '/customer/{customerId}/booking/{orderId}':
+  '/customer/{customerId}/orders/{orderId}':
     get:
       parameters:
         - name: customerId
@@ -3396,63 +3260,18 @@ paths:
           required: true
           schema:
             type: string
-        - name: date
-          in: query
-          description: date for the lineItem (2014-12-12)
-          required: true
-          schema:
-            type: string
       tags:
-        - CustomerBooking
-      operationId: customerBookingGet
-      summary: GET Get booking
-      description: This endpoint gets booking object
+        - CustomerOrder
+      operationId: customerOrderGet
+      summary: GET Get order with lineItems array
+      description: This endpoint gets order with lineItems array of objects
       responses:
         '200':
           description: Response with payload
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/CustomerBookingGetResponse'
-        '400':
-          $ref: '#/components/responses/BadResponse'
-        '401':
-          $ref: '#/components/responses/UnauthorizedResponse'
-        '403':
-          $ref: '#/components/responses/ForbiddenResponse'
-        '404':
-          $ref: '#/components/responses/NotFoundResponse'
-      security: []
-  '/customer/{customerId}/bookings':
-    get:
-      parameters:
-        - name: customerId
-          in: path
-          description: customerId for the customer
-          required: true
-          schema:
-            type: string
-        - name: mode
-          in: query
-          description: 'either "upcoming", "completed"'
-          required: true
-          schema:
-            type: string
-            enum:
-              - completed
-              - upcoming
-      tags:
-        - CustomerBooking
-      operationId: customerBookingsList
-      summary: GET Get all bookings for customer
-      description: This endpoint get all bookings
-      responses:
-        '200':
-          description: Response
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/CustomerBookingListResponse'
+                $ref: '#/components/schemas/CustomerOrderGetResponse'
         '400':
           $ref: '#/components/responses/BadResponse'
         '401':
@@ -3485,88 +3304,16 @@ paths:
             type: string
       tags:
         - CustomerOrder
-      operationId: customerOrderList
-      summary: GET Get all order for customer
-      description: This endpoint get all orders
+      operationId: customerOrderRange
+      summary: GET Get all bookings for customer from orders
+      description: This endpoint get all bookings from orders
       responses:
         '200':
           description: Response
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/CustomerOrderListResponse'
-        '400':
-          $ref: '#/components/responses/BadResponse'
-        '401':
-          $ref: '#/components/responses/UnauthorizedResponse'
-        '403':
-          $ref: '#/components/responses/ForbiddenResponse'
-        '404':
-          $ref: '#/components/responses/NotFoundResponse'
-      security: []
-  '/customer/{customerId}/lineItem/{lineItemId}':
-    get:
-      parameters:
-        - name: customerId
-          in: path
-          description: customerId for the customer
-          required: true
-          schema:
-            type: string
-        - name: lineItemId
-          in: path
-          description: lineItemId for the order
-          required: true
-          schema:
-            type: string
-      tags:
-        - CustomerOrder
-      operationId: customerOrderGetLineItem
-      summary: GET Get order with lineItem
-      description: This endpoint gets order with lineItem object
-      responses:
-        '200':
-          description: Response with payload
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/CustomerOrderGetLineItemResponse'
-        '400':
-          $ref: '#/components/responses/BadResponse'
-        '401':
-          $ref: '#/components/responses/UnauthorizedResponse'
-        '403':
-          $ref: '#/components/responses/ForbiddenResponse'
-        '404':
-          $ref: '#/components/responses/NotFoundResponse'
-      security: []
-  '/customer/{customerId}/orders/{orderId}':
-    get:
-      parameters:
-        - name: customerId
-          in: path
-          description: customerId for the customer
-          required: true
-          schema:
-            type: string
-        - name: orderId
-          in: path
-          description: orderId for the order
-          required: true
-          schema:
-            type: string
-      tags:
-        - CustomerOrder
-      operationId: customerOrderGet
-      summary: GET Get order with lineItems array
-      description: This endpoint gets order with lineItems array of objects
-      responses:
-        '200':
-          description: Response with payload
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/CustomerOrderGetResponse'
+                $ref: '#/components/schemas/CustomerOrderRangeResponse'
         '400':
           $ref: '#/components/responses/BadResponse'
         '401':

@@ -8,6 +8,7 @@
 export interface CustomerOrderLineItemProperties {
   customer_id: number;
   from: string;
+  groupId: string;
   locationId: string;
   shippingId?: string;
   to: string;

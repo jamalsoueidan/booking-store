@@ -6,7 +6,7 @@
  */
 import type {CustomerOrderMoney} from './customerOrderMoney';
 
-export interface CustomerOrderShipping {
+export interface CustomerOrderShippingLines {
   carrier_identifier?: string | null;
   code?: string | null;
   discounted_price: string;

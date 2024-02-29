@@ -4,9 +4,9 @@
  * Booking Shopify Api
  * OpenAPI spec version: 1.0.0
  */
-import type {CustomerBooking} from './customerBooking';
+import type {CustomerOrderRange} from './customerOrderRange';
 
-export interface CustomerBookingGetResponse {
-  payload: CustomerBooking;
+export interface CustomerOrderRangeResponse {
+  payload: CustomerOrderRange[];
   success: boolean;
 }

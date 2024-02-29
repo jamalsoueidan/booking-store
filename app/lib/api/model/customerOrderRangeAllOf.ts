@@ -6,6 +6,6 @@
  */
 import type {CustomerOrderLineItem} from './customerOrderLineItem';
 
-export type CustomerOrderListAllOf = {
-  line_items: CustomerOrderLineItem;
+export type CustomerOrderRangeAllOf = {
+  line_items: CustomerOrderLineItem[];
 };

@@ -9,8 +9,9 @@ import type {CustomerOrderMoney} from './customerOrderMoney';
 import type {CustomerOrderCustomer} from './customerOrderCustomer';
 import type {CustomerOrderFulfillment} from './customerOrderFulfillment';
 import type {CustomerOrderRefund} from './customerOrderRefund';
+import type {Shipping} from './shipping';
 import type {CustomerOrderAddress} from './customerOrderAddress';
-import type {CustomerOrderShipping} from './customerOrderShipping';
+import type {CustomerOrderShippingLines} from './customerOrderShippingLines';
 
 export interface CustomerOrder {
   admin_graphql_api_id: string;
@@ -39,8 +40,9 @@ export interface CustomerOrder {
   id: number;
   order_number: number;
   refunds: CustomerOrderRefund[];
+  shipping?: Shipping;
   shipping_address?: CustomerOrderAddress;
-  shipping_lines: CustomerOrderShipping[];
+  shipping_lines: CustomerOrderShippingLines[];
   start: string;
   title: string;
 }
