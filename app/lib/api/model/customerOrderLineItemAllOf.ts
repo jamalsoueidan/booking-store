@@ -8,7 +8,7 @@ import type {CustomerLocationBase} from './customerLocationBase';
 import type {Shipping} from './shipping';
 import type {User} from './user';
 
-export type CustomerOrderLineItemResponseAllOf = {
+export type CustomerOrderLineItemAllOf = {
   location: CustomerLocationBase;
   shipping?: Shipping;
   user: User;

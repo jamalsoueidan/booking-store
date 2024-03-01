@@ -5,7 +5,6 @@
  * OpenAPI spec version: 1.0.0
  */
 import type {CustomerBaseOrder} from './customerBaseOrder';
-import type {CustomerOrderResponseAllOf} from './customerOrderResponseAllOf';
+import type {CustomerOrderAllOf} from './customerOrderAllOf';
 
-export type CustomerOrderResponse = CustomerBaseOrder &
-  CustomerOrderResponseAllOf;
+export type CustomerOrder = CustomerBaseOrder & CustomerOrderAllOf;
