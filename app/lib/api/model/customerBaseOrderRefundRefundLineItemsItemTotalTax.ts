@@ -5,7 +5,6 @@
  * OpenAPI spec version: 1.0.0
  */
 
-export interface CustomerOrderSimpleLineItem {
-  id: number;
-  name: string;
-}
+export type CustomerBaseOrderRefundRefundLineItemsItemTotalTax =
+  | string
+  | number;

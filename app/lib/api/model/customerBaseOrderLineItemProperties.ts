@@ -5,7 +5,7 @@
  * OpenAPI spec version: 1.0.0
  */
 
-export interface CustomerOrderLineItemProperties {
+export interface CustomerBaseOrderLineItemProperties {
   customer_id: number;
   from: string;
   groupId: string;

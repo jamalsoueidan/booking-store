@@ -5,4 +5,7 @@
  * OpenAPI spec version: 1.0.0
  */
 
-export type CustomerOrderRefundRefundLineItemsItemTotalTax = string | number;
+export type CustomerBaseOrderShippingLinesPriceSetShopMoney = {
+  amount: string;
+  currency_code: string;
+};

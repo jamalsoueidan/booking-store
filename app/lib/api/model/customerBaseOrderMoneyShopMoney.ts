@@ -5,7 +5,7 @@
  * OpenAPI spec version: 1.0.0
  */
 
-export type CustomerOrderMoneyShopMoney = {
+export type CustomerBaseOrderMoneyShopMoney = {
   amount: string;
   currency_code: string;
 };

@@ -5,7 +5,7 @@
  * OpenAPI spec version: 1.0.0
  */
 
-export interface CustomerOrderAddress {
+export interface CustomerBaseOrderAddress {
   address1?: string;
   address2?: string | null;
   city?: string;

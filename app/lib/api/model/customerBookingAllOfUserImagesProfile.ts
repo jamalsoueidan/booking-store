@@ -5,7 +5,7 @@
  * OpenAPI spec version: 1.0.0
  */
 
-export type CustomerOrderWithLookupAllOfUserImagesProfile = {
+export type CustomerBookingAllOfUserImagesProfile = {
   height?: number;
   url?: string;
   width?: number;

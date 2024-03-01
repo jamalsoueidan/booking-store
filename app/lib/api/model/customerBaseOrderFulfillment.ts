@@ -4,13 +4,13 @@
  * Booking Shopify Api
  * OpenAPI spec version: 1.0.0
  */
-import type {CustomerOrderSimpleLineItem} from './customerOrderSimpleLineItem';
+import type {CustomerBaseOrderSimpleLineItem} from './customerBaseOrderSimpleLineItem';
 
-export interface CustomerOrderFulfillment {
+export interface CustomerBaseOrderFulfillment {
   admin_graphql_api_id: string;
   created_at: string;
   id: number;
-  line_items: CustomerOrderSimpleLineItem[];
+  line_items: CustomerBaseOrderSimpleLineItem[];
   location_id: number;
   name: string;
   order_id: number;

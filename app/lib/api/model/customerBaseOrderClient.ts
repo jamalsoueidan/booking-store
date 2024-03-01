@@ -5,7 +5,7 @@
  * OpenAPI spec version: 1.0.0
  */
 
-export interface CustomerOrderClient {
+export interface CustomerBaseOrderClient {
   accept_language?: string | null;
   browser_height?: number | null;
   browser_ip?: string;

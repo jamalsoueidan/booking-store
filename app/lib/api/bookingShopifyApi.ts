@@ -5,6 +5,9 @@
  * OpenAPI spec version: 1.0.0
  */
 import type {
+  CustomerBookingGetByGroupIdResponse,
+  CustomerBookingRangeParams,
+  CustomerBookingRangeResponse,
   CustomerCreateBody,
   CustomerCreateResponse,
   CustomerGetResponse,
@@ -19,10 +22,7 @@ import type {
   CustomerLocationSetDefaultResponse,
   CustomerLocationUpdateBody,
   CustomerLocationUpdateResponse,
-  CustomerOrderGetByGroupIdResponse,
   CustomerOrderGetResponse,
-  CustomerOrderRangeParams,
-  CustomerOrderRangeResponse,
   CustomerProductDestroyResponse,
   CustomerProductGetResponse,
   CustomerProductListIdsResponse,
@@ -439,14 +439,29 @@ export const getBookingShopifyApi = () => {
    * This endpoint gets order with lineItems array of objects specific for groupId
    * @summary GET Get order with lineItems array for specific groupId
    */
-  const customerOrderGetByGroup = (
+  const customerBookingGetByGroup = (
     customerId: string,
     orderId: string,
     groupId: string,
   ) => {
-    return queryClient<CustomerOrderGetByGroupIdResponse>({
-      url: `/customer/${customerId}/orders/${orderId}/group/${groupId}`,
+    return queryClient<CustomerBookingGetByGroupIdResponse>({
+      url: `/customer/${customerId}/bookings/${orderId}/group/${groupId}`,
       method: 'get',
+    });
+  };
+
+  /**
+   * This endpoint get all bookings from orders
+   * @summary GET Get all bookings for customer from orders
+   */
+  const customerBookingRange = (
+    customerId: string,
+    params: CustomerBookingRangeParams,
+  ) => {
+    return queryClient<CustomerBookingRangeResponse>({
+      url: `/customer/${customerId}/bookings/range`,
+      method: 'get',
+      params,
     });
   };
 
@@ -458,21 +473,6 @@ export const getBookingShopifyApi = () => {
     return queryClient<CustomerOrderGetResponse>({
       url: `/customer/${customerId}/orders/${orderId}`,
       method: 'get',
-    });
-  };
-
-  /**
-   * This endpoint get all bookings from orders
-   * @summary GET Get all bookings for customer from orders
-   */
-  const customerOrderRange = (
-    customerId: string,
-    params: CustomerOrderRangeParams,
-  ) => {
-    return queryClient<CustomerOrderRangeResponse>({
-      url: `/customer/${customerId}/orders-range`,
-      method: 'get',
-      params,
     });
   };
 
@@ -795,9 +795,9 @@ export const getBookingShopifyApi = () => {
     customerProductGet,
     customerProductUpsert,
     customerProductDestroy,
-    customerOrderGetByGroup,
+    customerBookingGetByGroup,
+    customerBookingRange,
     customerOrderGet,
-    customerOrderRange,
     customerScheduleCreate,
     customerScheduleList,
     customerScheduleGet,
@@ -966,21 +966,21 @@ export type CustomerProductDestroyResult = NonNullable<
     >
   >
 >;
-export type CustomerOrderGetByGroupResult = NonNullable<
+export type CustomerBookingGetByGroupResult = NonNullable<
   Awaited<
     ReturnType<
-      ReturnType<typeof getBookingShopifyApi>['customerOrderGetByGroup']
+      ReturnType<typeof getBookingShopifyApi>['customerBookingGetByGroup']
     >
+  >
+>;
+export type CustomerBookingRangeResult = NonNullable<
+  Awaited<
+    ReturnType<ReturnType<typeof getBookingShopifyApi>['customerBookingRange']>
   >
 >;
 export type CustomerOrderGetResult = NonNullable<
   Awaited<
     ReturnType<ReturnType<typeof getBookingShopifyApi>['customerOrderGet']>
-  >
->;
-export type CustomerOrderRangeResult = NonNullable<
-  Awaited<
-    ReturnType<ReturnType<typeof getBookingShopifyApi>['customerOrderRange']>
   >
 >;
 export type CustomerScheduleCreateResult = NonNullable<

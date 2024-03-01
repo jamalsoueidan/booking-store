@@ -4,16 +4,16 @@
  * Booking Shopify Api
  * OpenAPI spec version: 1.0.0
  */
-import type {CustomerOrderAddress} from './customerOrderAddress';
-import type {CustomerOrderCustomerSmsMarketingConsent} from './customerOrderCustomerSmsMarketingConsent';
+import type {CustomerBaseOrderAddress} from './customerBaseOrderAddress';
+import type {CustomerBaseOrderCustomerSmsMarketingConsent} from './customerBaseOrderCustomerSmsMarketingConsent';
 
-export interface CustomerOrderCustomer {
+export interface CustomerBaseOrderCustomer {
   accepts_marketing: boolean;
   accepts_marketing_updated_at?: string;
   admin_graphql_api_id: string;
   created_at: string;
   currency: string;
-  default_address?: CustomerOrderAddress;
+  default_address?: CustomerBaseOrderAddress;
   email?: string | null;
   email_marketing_consent?: boolean | null;
   first_name: string;
@@ -23,7 +23,7 @@ export interface CustomerOrderCustomer {
   multipass_identifier?: string | null;
   note?: string | null;
   phone?: string | null;
-  sms_marketing_consent?: CustomerOrderCustomerSmsMarketingConsent;
+  sms_marketing_consent?: CustomerBaseOrderCustomerSmsMarketingConsent;
   state: string;
   tags: string;
   tax_exempt: boolean;

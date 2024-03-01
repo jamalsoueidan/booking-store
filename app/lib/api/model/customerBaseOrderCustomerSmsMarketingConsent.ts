@@ -5,7 +5,7 @@
  * OpenAPI spec version: 1.0.0
  */
 
-export type CustomerOrderCustomerSmsMarketingConsent = {
+export type CustomerBaseOrderCustomerSmsMarketingConsent = {
   consent_collected_from?: string;
   consent_updated_at?: string;
   opt_in_level?: string;

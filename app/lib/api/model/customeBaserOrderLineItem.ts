@@ -4,10 +4,10 @@
  * Booking Shopify Api
  * OpenAPI spec version: 1.0.0
  */
-import type {CustomerOrderMoney} from './customerOrderMoney';
-import type {CustomerOrderLineItemProperties} from './customerOrderLineItemProperties';
+import type {CustomerBaseOrderMoney} from './customerBaseOrderMoney';
+import type {CustomerBaseOrderLineItemProperties} from './customerBaseOrderLineItemProperties';
 
-export interface CustomerOrderLineItem {
+export interface CustomeBaserOrderLineItem {
   admin_graphql_api_id: string;
   fulfillable_quantity: number;
   fulfillment_service: string;
@@ -17,17 +17,17 @@ export interface CustomerOrderLineItem {
   id: number;
   name: string;
   price: string;
-  price_set: CustomerOrderMoney;
+  price_set: CustomerBaseOrderMoney;
   product_exists: boolean;
   product_id: number;
-  properties: CustomerOrderLineItemProperties;
+  properties: CustomerBaseOrderLineItemProperties;
   quantity: number;
   requires_shipping: boolean;
   sku?: string | null;
   taxable: boolean;
   title: string;
   total_discount: string;
-  total_discount_set: CustomerOrderMoney;
+  total_discount_set: CustomerBaseOrderMoney;
   variant_id: number;
   variant_inventory_management?: string | null;
   variant_title?: string | null;
