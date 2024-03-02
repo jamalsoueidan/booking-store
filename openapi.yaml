@@ -494,7 +494,7 @@ components:
             $ref: '#/components/schemas/CustomerScheduleSlot'
       required:
         - slots
-    CustomerOrder:
+    CustomerBaseOrder:
       type: object
       properties:
         id:
@@ -511,7 +511,7 @@ components:
         cancelled_at:
           type: string
         client_details:
-          $ref: '#/components/schemas/CustomerOrderClient'
+          $ref: '#/components/schemas/CustomerBaseOrderClient'
         closed_at:
           type: string
           nullable: true
@@ -527,56 +527,77 @@ components:
         current_subtotal_price:
           type: string
         current_subtotal_price_set:
-          $ref: '#/components/schemas/CustomerOrderMoney'
+          $ref: '#/components/schemas/CustomerBaseOrderMoney'
         current_total_additional_fees_set:
-          $ref: '#/components/schemas/CustomerOrderMoney'
+          $ref: '#/components/schemas/CustomerBaseOrderMoney'
           nullable: true
         current_total_discounts:
           type: string
         current_total_discounts_set:
-          $ref: '#/components/schemas/CustomerOrderMoney'
+          $ref: '#/components/schemas/CustomerBaseOrderMoney'
         current_total_duties_set:
-          $ref: '#/components/schemas/CustomerOrderMoney'
+          $ref: '#/components/schemas/CustomerBaseOrderMoney'
           nullable: true
         current_total_price:
           type: string
         current_total_price_set:
-          $ref: '#/components/schemas/CustomerOrderMoney'
+          $ref: '#/components/schemas/CustomerBaseOrderMoney'
         current_total_tax:
           type: string
         current_total_tax_set:
-          $ref: '#/components/schemas/CustomerOrderMoney'
+          $ref: '#/components/schemas/CustomerBaseOrderMoney'
         customer:
-          $ref: '#/components/schemas/CustomerOrderCustomer'
+          $ref: '#/components/schemas/CustomerBaseOrderCustomer'
         fulfillments:
           type: array
           items:
-            $ref: '#/components/schemas/CustomerOrderFulfillment'
+            $ref: '#/components/schemas/CustomerBaseOrderFulfillment'
         refunds:
           type: array
           items:
-            $ref: '#/components/schemas/CustomerOrderRefund'
+            $ref: '#/components/schemas/CustomerBaseOrderRefund'
         shipping_address:
-          $ref: '#/components/schemas/CustomerOrderAddress'
+          $ref: '#/components/schemas/CustomerBaseOrderAddress'
           nullable: true
         shipping_lines:
           type: array
           items:
-            $ref: '#/components/schemas/CustomerOrderShippingLines'
-        start:
-          type: string
-        end:
-          type: string
-        title:
-          type: string
-        groupId:
-          type: string
-        shipping:
-          $ref: '#/components/schemas/Shipping'
-        line_items:
-          type: array
-          items:
-            $ref: '#/components/schemas/CustomerOrderLineItem'
+            type: object
+            properties:
+              id:
+                type: number
+              carrier_identifier:
+                type: string
+                nullable: true
+              code:
+                type: string
+                nullable: true
+              discounted_price:
+                type: string
+              discounted_price_set:
+                $ref: '#/components/schemas/CustomerBaseOrderMoney'
+              phone:
+                type: string
+                nullable: true
+              price:
+                type: string
+              price_set:
+                $ref: '#/components/schemas/CustomerBaseOrderMoney'
+              requested_fulfillment_service_id:
+                type: string
+                nullable: true
+              source:
+                type: string
+              title:
+                type: string
+            required:
+              - id
+              - discounted_price
+              - discounted_price_set
+              - price
+              - price_set
+              - source
+              - title
       required:
         - id
         - admin_graphql_api_id
@@ -596,13 +617,8 @@ components:
         - fulfillments
         - refunds
         - shipping_lines
-        - groupId
-        - start
-        - end
-        - title
         - order_number
-        - line_items
-    CustomerOrderMoney:
+    CustomerBaseOrderMoney:
       type: object
       properties:
         shop_money:
@@ -628,7 +644,7 @@ components:
       required:
         - shop_money
         - presentment_money
-    CustomerOrderAddress:
+    CustomerBaseOrderAddress:
       type: object
       properties:
         customer_id:
@@ -678,7 +694,7 @@ components:
         - name
         - country_code
         - default
-    CustomerOrderClient:
+    CustomerBaseOrderClient:
       type: object
       properties:
         accept_language:
@@ -698,7 +714,7 @@ components:
         user_agent:
           type: string
           nullable: true
-    CustomerOrderLineItemProperties:
+    CustomerBaseOrderLineItemProperties:
       type: object
       properties:
         customer_id:
@@ -719,7 +735,7 @@ components:
         - customer_id
         - locationId
         - groupId
-    CustomerOrderSimpleLineItem:
+    CustomerBaseOrderSimpleLineItem:
       type: object
       properties:
         id:
@@ -729,7 +745,7 @@ components:
       required:
         - id
         - name
-    CustomerOrderCustomer:
+    CustomerBaseOrderCustomer:
       type: object
       properties:
         id:
@@ -793,7 +809,7 @@ components:
         admin_graphql_api_id:
           type: string
         default_address:
-          $ref: '#/components/schemas/CustomerOrderAddress'
+          $ref: '#/components/schemas/CustomerBaseOrderAddress'
           nullable: true
       required:
         - id
@@ -808,7 +824,7 @@ components:
         - tags
         - currency
         - admin_graphql_api_id
-    CustomerOrderLineItem:
+    CustomeBaserOrderLineItem:
       type: object
       properties:
         id:
@@ -831,13 +847,13 @@ components:
         price:
           type: string
         price_set:
-          $ref: '#/components/schemas/CustomerOrderMoney'
+          $ref: '#/components/schemas/CustomerBaseOrderMoney'
         product_exists:
           type: boolean
         product_id:
           type: number
         properties:
-          $ref: '#/components/schemas/CustomerOrderLineItemProperties'
+          $ref: '#/components/schemas/CustomerBaseOrderLineItemProperties'
         quantity:
           type: number
         requires_shipping:
@@ -852,7 +868,7 @@ components:
         total_discount:
           type: string
         total_discount_set:
-          $ref: '#/components/schemas/CustomerOrderMoney'
+          $ref: '#/components/schemas/CustomerBaseOrderMoney'
         variant_id:
           type: number
         variant_inventory_management:
@@ -884,7 +900,7 @@ components:
         - title
         - total_discount
         - total_discount_set
-    CustomerOrderRefund:
+    CustomerBaseOrderRefund:
       type: object
       properties:
         id:
@@ -903,7 +919,7 @@ components:
         restock:
           type: boolean
         total_duties_set:
-          $ref: '#/components/schemas/CustomerOrderMoney'
+          $ref: '#/components/schemas/CustomerBaseOrderMoney'
           nullable: true
         user_id:
           type: number
@@ -927,15 +943,15 @@ components:
                   - type: string
                   - type: number
               subtotal_set:
-                $ref: '#/components/schemas/CustomerOrderMoney'
+                $ref: '#/components/schemas/CustomerBaseOrderMoney'
               total_tax:
                 oneOf:
                   - type: string
                   - type: number
               total_tax_set:
-                $ref: '#/components/schemas/CustomerOrderMoney'
+                $ref: '#/components/schemas/CustomerBaseOrderMoney'
               line_item:
-                $ref: '#/components/schemas/CustomerOrderSimpleLineItem'
+                $ref: '#/components/schemas/CustomerBaseOrderSimpleLineItem'
             required:
               - id
               - line_item_id
@@ -954,7 +970,7 @@ components:
         - restock
         - user_id
         - refund_line_items
-    CustomerOrderShippingLines:
+    CustomerBaseOrderShippingLines:
       type: object
       properties:
         id:
@@ -968,14 +984,38 @@ components:
         discounted_price:
           type: string
         discounted_price_set:
-          $ref: '#/components/schemas/CustomerOrderMoney'
+          $ref: '#/components/schemas/CustomerBaseOrderShippingLines/properties/price_set'
         phone:
           type: string
           nullable: true
         price:
           type: string
         price_set:
-          $ref: '#/components/schemas/CustomerOrderMoney'
+          type: object
+          properties:
+            shop_money:
+              type: object
+              properties:
+                amount:
+                  type: string
+                currency_code:
+                  type: string
+              required:
+                - amount
+                - currency_code
+            presentment_money:
+              type: object
+              properties:
+                amount:
+                  type: string
+                currency_code:
+                  type: string
+              required:
+                - amount
+                - currency_code
+          required:
+            - shop_money
+            - presentment_money
         requested_fulfillment_service_id:
           type: string
           nullable: true
@@ -991,7 +1031,7 @@ components:
         - price_set
         - source
         - title
-    CustomerOrderFulfillment:
+    CustomerBaseOrderFulfillment:
       type: object
       properties:
         id:
@@ -1035,7 +1075,7 @@ components:
         line_items:
           type: array
           items:
-            $ref: '#/components/schemas/CustomerOrderSimpleLineItem'
+            $ref: '#/components/schemas/CustomerBaseOrderSimpleLineItem'
       required:
         - id
         - admin_graphql_api_id
@@ -1046,11 +1086,57 @@ components:
         - service
         - status
         - line_items
-    CustomerOrderWithLookup:
+    CustomerOrder:
       allOf:
-        - $ref: '#/components/schemas/CustomerOrder'
+        - $ref: '#/components/schemas/CustomerBaseOrder'
         - type: object
           properties:
+            line_items:
+              type: array
+              items:
+                $ref: '#/components/schemas/CustomerOrderLineItem'
+          required:
+            - line_items
+    CustomerOrderLineItem:
+      allOf:
+        - $ref: '#/components/schemas/CustomeBaserOrderLineItem'
+        - type: object
+          properties:
+            user:
+              $ref: '#/components/schemas/CustomerBooking/allOf/1/properties/user'
+            location:
+              $ref: '#/components/schemas/CustomerLocationBase'
+            shipping:
+              $ref: '#/components/schemas/Shipping'
+          required:
+            - user
+            - location
+    CustomerOrderGetResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: true
+        payload:
+          $ref: '#/components/schemas/CustomerOrder'
+      required:
+        - success
+        - payload
+    CustomerBooking:
+      allOf:
+        - $ref: '#/components/schemas/CustomerBaseOrder'
+        - type: object
+          properties:
+            start:
+              type: string
+            end:
+              type: string
+            title:
+              type: string
+            groupId:
+              type: string
+            shipping:
+              $ref: '#/components/schemas/Shipping'
             user:
               type: object
               properties:
@@ -1083,32 +1169,30 @@ components:
                 - images
             location:
               $ref: '#/components/schemas/CustomerLocationBase'
+            line_items:
+              type: array
+              items:
+                $ref: '#/components/schemas/CustomeBaserOrderLineItem'
           required:
             - user
             - location
-    CustomerOrderGetResponse:
+            - groupId
+            - start
+            - end
+            - title
+            - line_items
+    CustomerBookingGetByGroupIdResponse:
       type: object
       properties:
         success:
           type: boolean
           example: true
         payload:
-          $ref: '#/components/schemas/CustomerOrderWithLookup'
+          $ref: '#/components/schemas/CustomerBooking'
       required:
         - success
         - payload
-    CustomerOrderGetByGroupIdResponse:
-      type: object
-      properties:
-        success:
-          type: boolean
-          example: true
-        payload:
-          $ref: '#/components/schemas/CustomerOrderWithLookup'
-      required:
-        - success
-        - payload
-    CustomerOrderRangeResponse:
+    CustomerBookingRangeResponse:
       type: object
       properties:
         success:
@@ -1117,7 +1201,7 @@ components:
         payload:
           type: array
           items:
-            $ref: '#/components/schemas/CustomerOrder'
+            $ref: '#/components/schemas/CustomerBooking'
       required:
         - success
         - payload
@@ -3238,7 +3322,7 @@ paths:
         '404':
           $ref: '#/components/responses/NotFoundResponse'
       security: []
-  '/customer/{customerId}/orders/{orderId}/group/{groupId}':
+  '/customer/{customerId}/bookings/{orderId}/group/{groupId}':
     get:
       parameters:
         - name: customerId
@@ -3260,8 +3344,8 @@ paths:
           schema:
             type: string
       tags:
-        - CustomerOrder
-      operationId: customerOrderGetByGroup
+        - CustomerBooking
+      operationId: customerBookingGetByGroup
       summary: GET Get order with lineItems array for specific groupId
       description: This endpoint gets order with lineItems array of objects specific for groupId
       responses:
@@ -3270,7 +3354,49 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/CustomerOrderGetByGroupIdResponse'
+                $ref: '#/components/schemas/CustomerBookingGetByGroupIdResponse'
+        '400':
+          $ref: '#/components/responses/BadResponse'
+        '401':
+          $ref: '#/components/responses/UnauthorizedResponse'
+        '403':
+          $ref: '#/components/responses/ForbiddenResponse'
+        '404':
+          $ref: '#/components/responses/NotFoundResponse'
+      security: []
+  '/customer/{customerId}/bookings/range':
+    get:
+      parameters:
+        - name: customerId
+          in: path
+          description: customerId for the customer
+          required: true
+          schema:
+            type: string
+        - name: start
+          in: query
+          description: start of date
+          required: true
+          schema:
+            type: string
+        - name: end
+          in: query
+          description: end of date
+          required: true
+          schema:
+            type: string
+      tags:
+        - CustomerBooking
+      operationId: customerBookingRange
+      summary: GET Get all bookings for customer from orders
+      description: This endpoint get all bookings from orders
+      responses:
+        '200':
+          description: Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CustomerBookingRangeResponse'
         '400':
           $ref: '#/components/responses/BadResponse'
         '401':
@@ -3307,48 +3433,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/CustomerOrderGetResponse'
-        '400':
-          $ref: '#/components/responses/BadResponse'
-        '401':
-          $ref: '#/components/responses/UnauthorizedResponse'
-        '403':
-          $ref: '#/components/responses/ForbiddenResponse'
-        '404':
-          $ref: '#/components/responses/NotFoundResponse'
-      security: []
-  '/customer/{customerId}/orders-range':
-    get:
-      parameters:
-        - name: customerId
-          in: path
-          description: customerId for the customer
-          required: true
-          schema:
-            type: string
-        - name: start
-          in: query
-          description: start of date
-          required: true
-          schema:
-            type: string
-        - name: end
-          in: query
-          description: end of date
-          required: true
-          schema:
-            type: string
-      tags:
-        - CustomerOrder
-      operationId: customerOrderRange
-      summary: GET Get all bookings for customer from orders
-      description: This endpoint get all bookings from orders
-      responses:
-        '200':
-          description: Response
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/CustomerOrderRangeResponse'
         '400':
           $ref: '#/components/responses/BadResponse'
         '401':
