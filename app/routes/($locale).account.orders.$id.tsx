@@ -1,6 +1,5 @@
 import {
   Badge,
-  Button,
   Card,
   Flex,
   SimpleGrid,
@@ -8,14 +7,9 @@ import {
   Table,
   Text,
   Title,
+  rem,
 } from '@mantine/core';
-import {useDisclosure} from '@mantine/hooks';
-import {
-  Link,
-  useFetcher,
-  useLoaderData,
-  type MetaFunction,
-} from '@remix-run/react';
+import {Link, useLoaderData, type MetaFunction} from '@remix-run/react';
 import {Image, Money, flattenConnection, parseGid} from '@shopify/hydrogen';
 import {json, redirect, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
 import {format} from 'date-fns';
@@ -23,17 +17,14 @@ import {da} from 'date-fns/locale';
 import type {OrderLineItemFullFragment} from 'storefrontapi.generated';
 import {AccountContent} from '~/components/account/AccountContent';
 import {AccountTitle} from '~/components/account/AccountTitle';
-import ModalBooking from '~/components/account/ModalBooking';
 import {isEqualGid} from '~/data/isEqualGid';
 import {getBookingShopifyApi} from '~/lib/api/bookingShopifyApi';
 import type {
-  CustomerOrderGet,
+  CustomerOrder,
   CustomerOrderGetResponse,
   CustomerOrderLineItem,
-  CustomerOrderLineItemLookup,
 } from '~/lib/api/model';
 import {getCustomer} from '~/lib/get-customer';
-import {type ApiOrdersLineItem} from './($locale).api.orders.$productId.lineitem.$lineItem';
 
 export const meta: MetaFunction<typeof loader> = ({data}) => {
   return [{title: `Order ${data?.order?.name}`}];
@@ -41,7 +32,7 @@ export const meta: MetaFunction<typeof loader> = ({data}) => {
 
 export async function loader({params, context}: LoaderFunctionArgs) {
   const customer = await getCustomer({context});
-  const {session, storefront} = context;
+  const {storefront} = context;
 
   if (!params.id) {
     return redirect('/account/orders');
@@ -90,8 +81,12 @@ export default function OrderRoute() {
   const {treatmentOrder, order, lineItems, discountValue, discountPercentage} =
     useLoaderData<typeof loader>();
 
-  const productsLineItems = lineItems.filter(
+  const productsInOrder = lineItems.filter(
     (p) => p.customAttributes.length === 0,
+  );
+
+  const orderLineItemsWithCustomAttributes = lineItems.filter(
+    (p) => p.customAttributes.length > 0,
   );
 
   return (
@@ -111,11 +106,11 @@ export default function OrderRoute() {
           {treatmentOrder ? (
             <TreatmentTable
               treatmentOrder={treatmentOrder}
-              lineItems={lineItems}
+              orderLineItems={orderLineItemsWithCustomAttributes}
             />
           ) : null}
 
-          {productsLineItems.length > 0 ? (
+          {productsInOrder.length > 0 ? (
             <Card withBorder>
               <Title order={3} mb="md">
                 Produkter:
@@ -129,7 +124,7 @@ export default function OrderRoute() {
                   </Table.Tr>
                 </Table.Thead>
                 <Table.Tbody>
-                  {productsLineItems.map((l) => (
+                  {productsInOrder.map((l) => (
                     <OrderLineRow key={l.title + l.quantity} lineItem={l} />
                   ))}
                 </Table.Tbody>
@@ -201,18 +196,11 @@ export default function OrderRoute() {
 
 function TreatmentTable({
   treatmentOrder,
-  lineItems,
+  orderLineItems,
 }: {
-  treatmentOrder: CustomerOrderGet;
-  lineItems: OrderLineItemFullFragment[];
+  treatmentOrder: CustomerOrder;
+  orderLineItems: OrderLineItemFullFragment[];
 }) {
-  const [opened, {open, close}] = useDisclosure(false);
-  const fetcher = useFetcher<ApiOrdersLineItem>();
-  const openModal = (lineItem: CustomerOrderLineItem) => {
-    fetcher.load(`/api/orders/${lineItem.product_id}/lineitem/${lineItem.id}`);
-    open();
-  };
-
   if (treatmentOrder.line_items.length === 0) return null;
 
   return (
@@ -230,47 +218,37 @@ function TreatmentTable({
             </Table.Tr>
           </Table.Thead>
           <Table.Tbody>
-            {treatmentOrder.line_items.map((l) => {
-              const lineItem = lineItems.find((p) =>
-                isEqualGid(p.variant?.id!, l.variant_id || 0),
+            {treatmentOrder.line_items.map((treatmentLineItem) => {
+              const orderLineItem = orderLineItems.find((p) =>
+                isEqualGid(p.variant?.id!, treatmentLineItem.variant_id || 0),
               );
               return (
                 <TreatmentLineRow
-                  key={l.id}
-                  lineItem={l}
-                  orderLineItem={lineItem!}
-                  openModal={openModal}
+                  key={treatmentLineItem.id}
+                  treatmentLineItem={treatmentLineItem}
+                  orderLineItem={orderLineItem!}
                 />
               );
             })}
           </Table.Tbody>
         </Table>
       </Card>
-
-      <ModalBooking
-        type="order"
-        opened={opened}
-        data={fetcher.data}
-        close={close}
-      />
     </>
   );
 }
 
 function TreatmentLineRow({
-  lineItem,
+  treatmentLineItem,
   orderLineItem,
-  openModal,
 }: {
-  lineItem: CustomerOrderLineItemLookup;
-  orderLineItem: OrderLineItemFullFragment;
-  openModal: (lineItem: CustomerOrderLineItem) => void;
+  treatmentLineItem: CustomerOrderLineItem;
+  orderLineItem?: OrderLineItemFullFragment;
 }) {
   return (
     <Table.Tr>
       <Table.Td>
         <Link to={`/products/`}>
-          {orderLineItem.variant?.image && (
+          {orderLineItem?.variant?.image && (
             <div>
               <Image
                 data={orderLineItem.variant.image}
@@ -283,21 +261,21 @@ function TreatmentLineRow({
       </Table.Td>
       <Table.Td valign="top" width="100%">
         <Text mb="xs">
-          {lineItem.title}{' '}
-          {orderLineItem.variant ? (
-            <small>({orderLineItem.variant.title})</small>
+          {treatmentLineItem.title}{' '}
+          {orderLineItem?.variant ? (
+            <small>({orderLineItem?.variant.title})</small>
           ) : null}
         </Text>
         <Text size="sm">
           <strong>Hos: </strong>{' '}
-          <Link to={`/artist/${lineItem.user.username}`}>
-            {lineItem.user.fullname}
+          <Link to={`/artist/${treatmentLineItem.user.username}`}>
+            {treatmentLineItem.user.fullname}
           </Link>
         </Text>
         <Text size="sm">
           <strong>Tid:</strong>{' '}
           {format(
-            new Date(lineItem.properties.from || ''),
+            new Date(treatmentLineItem.properties.from || ''),
             "EEEE 'd.' d'.' LLL 'kl 'HH:mm",
             {
               locale: da,
@@ -305,18 +283,29 @@ function TreatmentLineRow({
           )}
         </Text>
 
-        <Button
-          size="compact-sm"
-          mt="xs"
-          onClick={() => {
-            openModal(lineItem);
-          }}
-        >
-          Vis behandlingsdetaljer
-        </Button>
+        {treatmentLineItem.shipping ? (
+          <Stack gap={rem(4)}>
+            <Text size="sm">
+              <strong>Location:</strong>{' '}
+              {treatmentLineItem.shipping.destination.fullAddress}
+            </Text>
+            <Text size="xs" c="red" fw={500}>
+              Udgifterne bliver beregnet under købsprocessen.
+              {treatmentLineItem.shipping.cost.value}{' '}
+              {treatmentLineItem.shipping.cost.currency}
+            </Text>
+          </Stack>
+        ) : (
+          <>
+            <Text size="sm">
+              <strong>Location:</strong>{' '}
+              {treatmentLineItem.location?.fullAddress}
+            </Text>
+          </>
+        )}
       </Table.Td>
       <Table.Td valign="top">
-        <Money data={orderLineItem.discountedTotalPrice!} />
+        <Money data={orderLineItem?.discountedTotalPrice!} />
       </Table.Td>
     </Table.Tr>
   );

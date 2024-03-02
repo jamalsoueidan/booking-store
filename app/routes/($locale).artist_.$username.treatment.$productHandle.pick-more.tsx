@@ -74,7 +74,8 @@ export default function ArtistTreatments() {
               return (
                 <Text c="dimmed">
                   Der kan ikke kombinseres andre behandlinger med dette
-                  behandling
+                  behandling. <br />
+                  <strong>Tryk næste!</strong>
                 </Text>
               );
             }

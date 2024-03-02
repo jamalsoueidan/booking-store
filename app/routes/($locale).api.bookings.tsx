@@ -11,7 +11,7 @@ export async function loader({request, context}: LoaderFunctionArgs) {
   const start = searchParams.get('start') || '';
   const end = searchParams.get('end') || '';
 
-  const {payload: orders} = await getBookingShopifyApi().customerOrderList(
+  const {payload: orders} = await getBookingShopifyApi().customerBookingRange(
     customer.id,
     {start, end},
   );
