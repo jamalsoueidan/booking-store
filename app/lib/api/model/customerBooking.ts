@@ -4,13 +4,7 @@
  * Booking Shopify Api
  * OpenAPI spec version: 1.0.0
  */
-import type {CustomerBookingBuyer} from './customerBookingBuyer';
-import type {CustomerBookingLineItemsItem} from './customerBookingLineItemsItem';
+import type {CustomerBaseOrder} from './customerBaseOrder';
+import type {CustomerBookingAllOf} from './customerBookingAllOf';
 
-export interface CustomerBooking {
-  buyer: CustomerBookingBuyer;
-  cancelledAt: Date;
-  cancelReason: string;
-  lineItems: CustomerBookingLineItemsItem[];
-  orderId: number;
-}
+export type CustomerBooking = CustomerBaseOrder & CustomerBookingAllOf;

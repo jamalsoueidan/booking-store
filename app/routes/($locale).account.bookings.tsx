@@ -1,34 +1,39 @@
-import {type EventInput} from '@fullcalendar/core/index.js';
+import type {EventClickArg, EventInput} from '@fullcalendar/core/index.js';
 import daLocale from '@fullcalendar/core/locales/da';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import interactionPlugin from '@fullcalendar/interaction';
 import FullCalendar from '@fullcalendar/react';
 import timeGridPlugin from '@fullcalendar/timegrid';
 import {rem} from '@mantine/core';
-import {useDisclosure, useMediaQuery} from '@mantine/hooks';
-import {useFetcher} from '@remix-run/react';
+import {useMediaQuery} from '@mantine/hooks';
+import {Outlet, useNavigate, useOutlet} from '@remix-run/react';
 import {IconCar} from '@tabler/icons-react';
+import {useState} from 'react';
 import {createRoot} from 'react-dom/client';
+import MobileModal from '~/components/MobileModal';
 import {AccountContent} from '~/components/account/AccountContent';
 import {AccountTitle} from '~/components/account/AccountTitle';
-import ModalBooking from '~/components/account/ModalBooking';
-import {type CustomerOrderList} from '~/lib/api/model';
-import {type ApiOrdersLineItem} from './($locale).api.orders.$productId.lineitem.$lineItem';
+import type {CustomerBooking} from '~/lib/api/model';
 
 const CustomDescription = () => (
   <IconCar style={{width: rem(24), height: rem(24)}} stroke={1.5} />
 );
 
 export default function AccountBookings() {
-  const [opened, {open, close}] = useDisclosure(false);
-  const fetcher = useFetcher<ApiOrdersLineItem>();
   const isMobile = useMediaQuery('(max-width: 62em)');
+  const navigate = useNavigate();
+  const inOutlet = !!useOutlet();
+  const [order, setOrder] = useState<string>('');
 
-  const openModal = (order: CustomerOrderList) => {
-    fetcher.load(
-      `/api/orders/${order.line_items.product_id}/lineitem/${order.line_items.id}`,
-    );
-    open();
+  const openModal = ({event}: EventClickArg) => {
+    setOrder(event.id);
+    navigate(`${event.id}/group/${event.groupId}`, {
+      relative: 'path',
+    });
+  };
+
+  const closeModal = () => {
+    navigate(-1);
   };
 
   return (
@@ -36,18 +41,62 @@ export default function AccountBookings() {
       <AccountTitle heading="Bestillinger" />
       <AccountContent>
         <FullCalendar
+          slotDuration={'00:15:00'}
           plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
           headerToolbar={{
             left: isMobile ? 'prev,next' : 'prev,next today',
             center: 'title',
             right: isMobile ? '' : 'dayGridMonth,timeGridWeek',
           }}
+          eventSourceSuccess={(eventsInput: EventInput[]) => {
+            const newEvents: EventInput[] = [];
+            (eventsInput as unknown as CustomerBooking[]).forEach(
+              (event: CustomerBooking) => {
+                event.line_items.forEach((lineItem) => {
+                  newEvents.push({
+                    title: lineItem.title,
+                    start: lineItem.properties.from,
+                    end: lineItem.properties.to,
+                    id: event.id.toString(),
+                    groupId: lineItem.properties.groupId,
+                    extendedProps: lineItem,
+                  });
+                });
+
+                if (event.shipping) {
+                  newEvents.push({
+                    title: 'Kørsel til kunde',
+                    start: event.start,
+                    end: event.line_items[0].properties.from,
+                    id: event.id.toString(),
+                    groupId: event.line_items[0].properties.groupId,
+                    extendedProps: event,
+                  });
+                  newEvents.push({
+                    title: 'Kørsel hjem',
+                    start:
+                      event.line_items[event.line_items.length - 1].properties
+                        .to,
+                    end: event.end,
+                    id: event.id.toString(),
+                    groupId: event.line_items[0].properties.groupId,
+                    extendedProps: event,
+                  });
+                }
+              },
+            );
+
+            return newEvents;
+          }}
           eventDataTransform={(input: EventInput) => {
-            const order = input as unknown as CustomerOrderList;
+            const order = input.extendedProps as CustomerBooking;
             input.color = 'green';
             input.display = 'block';
             input.className = 'event-custom';
-            if (order.refunds.length > 0) {
+            if (order.shipping) {
+              input.color = '#666';
+            }
+            if (order.refunds?.length > 0) {
               input.color = '#cccccc';
             }
             return input;
@@ -57,8 +106,8 @@ export default function AccountBookings() {
               '.fc-event-title-container',
             );
 
-            const order = info.event.extendedProps as CustomerOrderList;
-            if (eventElement && order.line_items.properties.shippingId) {
+            const order = info.event.extendedProps as CustomerBooking;
+            if (eventElement && order.shipping) {
               // Create a container for your React component
               const descriptionElement = document.createElement('span');
               descriptionElement.classList.add('fc-event-icon');
@@ -80,7 +129,7 @@ export default function AccountBookings() {
             }
           }}
           themeSystem="standard"
-          events="/api/orders"
+          events="/api/bookings"
           initialView={isMobile ? 'timeGridDay' : 'dayGridMonth'}
           buttonText={{
             prev: '<',
@@ -98,18 +147,18 @@ export default function AccountBookings() {
             meridiem: false,
           }}
           height="auto"
-          eventClick={({event}) => {
-            const order = event.extendedProps as CustomerOrderList;
-            openModal(order);
-          }}
+          eventClick={openModal}
         />
       </AccountContent>
-      <ModalBooking
-        type="booking"
-        opened={opened}
-        data={fetcher.data}
-        close={close}
-      />
+
+      <MobileModal
+        opened={inOutlet}
+        onClose={closeModal}
+        title={`Order ${order}`}
+        size="lg"
+      >
+        <Outlet context={{closeModal}} />
+      </MobileModal>
     </>
   );
 }

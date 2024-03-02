@@ -5,10 +5,9 @@
  * OpenAPI spec version: 1.0.0
  */
 import type {
-  CustomerBookingGetParams,
-  CustomerBookingGetResponse,
-  CustomerBookingListResponse,
-  CustomerBookingsListParams,
+  CustomerBookingGetByGroupIdResponse,
+  CustomerBookingRangeParams,
+  CustomerBookingRangeResponse,
   CustomerCreateBody,
   CustomerCreateResponse,
   CustomerGetResponse,
@@ -23,10 +22,7 @@ import type {
   CustomerLocationSetDefaultResponse,
   CustomerLocationUpdateBody,
   CustomerLocationUpdateResponse,
-  CustomerOrderGetLineItemResponse,
   CustomerOrderGetResponse,
-  CustomerOrderListParams,
-  CustomerOrderListResponse,
   CustomerProductDestroyResponse,
   CustomerProductGetResponse,
   CustomerProductListIdsResponse,
@@ -440,59 +436,32 @@ export const getBookingShopifyApi = () => {
   };
 
   /**
-   * This endpoint gets booking object
-   * @summary GET Get booking
+   * This endpoint gets order with lineItems array of objects specific for groupId
+   * @summary GET Get order with lineItems array for specific groupId
    */
-  const customerBookingGet = (
+  const customerBookingGetByGroup = (
     customerId: string,
     orderId: string,
-    params: CustomerBookingGetParams,
+    groupId: string,
   ) => {
-    return queryClient<CustomerBookingGetResponse>({
-      url: `/customer/${customerId}/booking/${orderId}`,
+    return queryClient<CustomerBookingGetByGroupIdResponse>({
+      url: `/customer/${customerId}/bookings/${orderId}/group/${groupId}`,
       method: 'get',
-      params,
     });
   };
 
   /**
-   * This endpoint get all bookings
-   * @summary GET Get all bookings for customer
+   * This endpoint get all bookings from orders
+   * @summary GET Get all bookings for customer from orders
    */
-  const customerBookingsList = (
+  const customerBookingRange = (
     customerId: string,
-    params: CustomerBookingsListParams,
+    params: CustomerBookingRangeParams,
   ) => {
-    return queryClient<CustomerBookingListResponse>({
-      url: `/customer/${customerId}/bookings`,
+    return queryClient<CustomerBookingRangeResponse>({
+      url: `/customer/${customerId}/bookings/range`,
       method: 'get',
       params,
-    });
-  };
-
-  /**
-   * This endpoint get all orders
-   * @summary GET Get all order for customer
-   */
-  const customerOrderList = (
-    customerId: string,
-    params: CustomerOrderListParams,
-  ) => {
-    return queryClient<CustomerOrderListResponse>({
-      url: `/customer/${customerId}/orders-range`,
-      method: 'get',
-      params,
-    });
-  };
-
-  /**
-   * This endpoint gets order with lineItem object
-   * @summary GET Get order with lineItem
-   */
-  const customerOrderGetLineItem = (customerId: string, lineItemId: string) => {
-    return queryClient<CustomerOrderGetLineItemResponse>({
-      url: `/customer/${customerId}/lineItem/${lineItemId}`,
-      method: 'get',
     });
   };
 
@@ -826,10 +795,8 @@ export const getBookingShopifyApi = () => {
     customerProductGet,
     customerProductUpsert,
     customerProductDestroy,
-    customerBookingGet,
-    customerBookingsList,
-    customerOrderList,
-    customerOrderGetLineItem,
+    customerBookingGetByGroup,
+    customerBookingRange,
     customerOrderGet,
     customerScheduleCreate,
     customerScheduleList,
@@ -999,26 +966,16 @@ export type CustomerProductDestroyResult = NonNullable<
     >
   >
 >;
-export type CustomerBookingGetResult = NonNullable<
-  Awaited<
-    ReturnType<ReturnType<typeof getBookingShopifyApi>['customerBookingGet']>
-  >
->;
-export type CustomerBookingsListResult = NonNullable<
-  Awaited<
-    ReturnType<ReturnType<typeof getBookingShopifyApi>['customerBookingsList']>
-  >
->;
-export type CustomerOrderListResult = NonNullable<
-  Awaited<
-    ReturnType<ReturnType<typeof getBookingShopifyApi>['customerOrderList']>
-  >
->;
-export type CustomerOrderGetLineItemResult = NonNullable<
+export type CustomerBookingGetByGroupResult = NonNullable<
   Awaited<
     ReturnType<
-      ReturnType<typeof getBookingShopifyApi>['customerOrderGetLineItem']
+      ReturnType<typeof getBookingShopifyApi>['customerBookingGetByGroup']
     >
+  >
+>;
+export type CustomerBookingRangeResult = NonNullable<
+  Awaited<
+    ReturnType<ReturnType<typeof getBookingShopifyApi>['customerBookingRange']>
   >
 >;
 export type CustomerOrderGetResult = NonNullable<
