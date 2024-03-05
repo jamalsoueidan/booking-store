@@ -5,6 +5,13 @@
  * OpenAPI spec version: 1.0.0
  */
 import type {
+  CustomerBlockedCreateBody,
+  CustomerBlockedCreateResponse,
+  CustomerBlockedDestroyResponse,
+  CustomerBlockedListParams,
+  CustomerBlockedListResponse,
+  CustomerBlockedRangeParams,
+  CustomerBlockedRangeResponse,
   CustomerBookingGetByGroupIdResponse,
   CustomerBookingRangeParams,
   CustomerBookingRangeResponse,
@@ -767,6 +774,63 @@ export const getBookingShopifyApi = () => {
     });
   };
 
+  /**
+   * This endpoint create new blocked
+   * @summary POST Create blocked
+   */
+  const customerBlockedCreate = (
+    customerId: string,
+    customerBlockedCreateBody: BodyType<CustomerBlockedCreateBody>,
+  ) => {
+    return queryClient<CustomerBlockedCreateResponse>({
+      url: `/customer/${customerId}/blocked`,
+      method: 'post',
+      headers: {'Content-Type': 'application/json'},
+      data: customerBlockedCreateBody,
+    });
+  };
+
+  /**
+   * This endpoint destroy blocked for customer
+   * @summary DEL destroy blocked
+   */
+  const customerBlockedDestroy = (customerId: string, blockedId: string) => {
+    return queryClient<CustomerBlockedDestroyResponse>({
+      url: `/customer/${customerId}/blocked/(${blockedId})`,
+      method: 'delete',
+    });
+  };
+
+  /**
+   * This endpoint get all blocked documents for customer
+   * @summary GET Get all blocked documents for customer
+   */
+  const customerBlockedList = (
+    customerId: string,
+    params: CustomerBlockedListParams,
+  ) => {
+    return queryClient<CustomerBlockedListResponse>({
+      url: `/customer/${customerId}/blocked/list`,
+      method: 'get',
+      params,
+    });
+  };
+
+  /**
+   * This endpoint get all blocked documents
+   * @summary GET Get all blocked documents for customer
+   */
+  const customerBlockedRange = (
+    customerId: string,
+    params: CustomerBlockedRangeParams,
+  ) => {
+    return queryClient<CustomerBlockedRangeResponse>({
+      url: `/customer/${customerId}/blocked/range`,
+      method: 'get',
+      params,
+    });
+  };
+
   return {
     productsGetUsersImage,
     productsGetUsersByVariant,
@@ -821,6 +885,10 @@ export const getBookingShopifyApi = () => {
     shippingCalculate,
     shippingGet,
     upload,
+    customerBlockedCreate,
+    customerBlockedDestroy,
+    customerBlockedList,
+    customerBlockedRange,
   };
 };
 export type ProductsGetUsersImageResult = NonNullable<
@@ -1113,4 +1181,26 @@ export type ShippingGetResult = NonNullable<
 >;
 export type UploadResult = NonNullable<
   Awaited<ReturnType<ReturnType<typeof getBookingShopifyApi>['upload']>>
+>;
+export type CustomerBlockedCreateResult = NonNullable<
+  Awaited<
+    ReturnType<ReturnType<typeof getBookingShopifyApi>['customerBlockedCreate']>
+  >
+>;
+export type CustomerBlockedDestroyResult = NonNullable<
+  Awaited<
+    ReturnType<
+      ReturnType<typeof getBookingShopifyApi>['customerBlockedDestroy']
+    >
+  >
+>;
+export type CustomerBlockedListResult = NonNullable<
+  Awaited<
+    ReturnType<ReturnType<typeof getBookingShopifyApi>['customerBlockedList']>
+  >
+>;
+export type CustomerBlockedRangeResult = NonNullable<
+  Awaited<
+    ReturnType<ReturnType<typeof getBookingShopifyApi>['customerBlockedRange']>
+  >
 >;

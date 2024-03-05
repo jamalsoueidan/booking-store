@@ -3768,3 +3768,93 @@ export const uploadResponse = zod.object({
   suspendPostUri: zod.string(),
   resumePostUri: zod.string(),
 });
+
+/**
+ * This endpoint create new blocked
+ * @summary POST Create blocked
+ */
+export const customerBlockedCreateBody = zod.object({
+  title: zod.string(),
+  start: zod.string(),
+  end: zod.string(),
+});
+
+export const customerBlockedCreateResponse = zod.object({
+  success: zod.boolean(),
+  payload: zod.object({
+    _id: zod.string().optional(),
+    customerId: zod.number(),
+    start: zod.string(),
+    end: zod.string(),
+    title: zod.string(),
+  }),
+});
+
+/**
+ * This endpoint destroy blocked for customer
+ * @summary DEL destroy blocked
+ */
+export const customerBlockedDestroyParams = zod.object({
+  customerId: zod.string(),
+  blockedId: zod.string(),
+});
+
+export const customerBlockedDestroyResponse = zod.object({
+  success: zod.boolean(),
+  payload: zod.object({
+    deletedCount: zod.number(),
+    acknowledged: zod.boolean(),
+  }),
+});
+
+/**
+ * This endpoint get all blocked documents for customer
+ * @summary GET Get all blocked documents for customer
+ */
+export const customerBlockedListParams = zod.object({
+  customerId: zod.string(),
+});
+
+export const customerBlockedListQueryParams = zod.object({
+  nextCursor: zod.string().optional(),
+  limit: zod.string(),
+});
+
+export const customerBlockedListResponse = zod.object({
+  success: zod.boolean(),
+  payload: zod.array(
+    zod.object({
+      _id: zod.string().optional(),
+      customerId: zod.number(),
+      start: zod.string(),
+      end: zod.string(),
+      title: zod.string(),
+    }),
+  ),
+});
+
+/**
+ * This endpoint get all blocked documents
+ * @summary GET Get all blocked documents for customer
+ */
+export const customerBlockedRangeParams = zod.object({
+  customerId: zod.string(),
+});
+
+export const customerBlockedRangeQueryParams = zod.object({
+  start: zod.string(),
+  end: zod.string(),
+});
+
+export const customerBlockedRangeResponse = zod.object({
+  success: zod.boolean(),
+  payload: zod.array(
+    zod.object({
+      _id: zod.string().optional(),
+      customerId: zod.number(),
+      start: zod.string(),
+      end: zod.string(),
+      title: zod.string(),
+    }),
+  ),
+});
