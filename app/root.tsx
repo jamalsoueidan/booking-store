@@ -3,6 +3,7 @@ import {cssBundleHref} from '@remix-run/css-bundle';
 
 import '@mantine/carousel/styles.css';
 import '@mantine/core/styles.css';
+import '@mantine/dates/styles.css';
 import '@mantine/notifications/styles.css';
 import '@mantine/nprogress/styles.css';
 

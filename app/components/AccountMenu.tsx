@@ -9,15 +9,16 @@ import {
 import {Form, Link, NavLink} from '@remix-run/react';
 import {
   IconAddressBook,
-  IconBasket,
+  IconCalendarEvent,
+  IconClock,
   IconFingerprint,
+  IconHeartHandshake,
   IconHome,
   IconLocation,
   IconLogout,
-  IconMeeple,
-  IconPhoneCall,
   IconPhoto,
-  IconSocial,
+  IconPlaneDeparture,
+  IconShoppingBag,
   IconUser,
 } from '@tabler/icons-react';
 import {useState} from 'react';
@@ -29,7 +30,7 @@ const topMenu = [
   {
     link: '/account/public',
     label: 'Profile',
-    icon: IconSocial,
+    icon: IconHeartHandshake,
     isBusiness: true,
   },
   {
@@ -41,19 +42,25 @@ const topMenu = [
   {
     link: '/account/schedules',
     label: 'Vagtplan',
-    icon: IconMeeple,
+    icon: IconClock,
     isBusiness: true,
   },
   {
     link: '/account/services',
     label: 'Ydelser',
-    icon: IconBasket,
+    icon: IconAddressBook,
     isBusiness: true,
   },
   {
     link: '/account/bookings',
-    label: 'Reservationer',
-    icon: IconPhoneCall,
+    label: 'Bookinger',
+    icon: IconCalendarEvent,
+    isBusiness: true,
+  },
+  {
+    link: '/account/booked',
+    label: 'Ferie',
+    icon: IconPlaneDeparture,
     isBusiness: true,
   },
 ];
@@ -66,8 +73,8 @@ const bottomMenu = [
   },
   {
     link: '/account/orders',
-    label: 'Bestillinger',
-    icon: IconPhoneCall,
+    label: 'Købshistorik',
+    icon: IconShoppingBag,
   },
   {
     link: '/account/profile',

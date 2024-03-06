@@ -1122,6 +1122,108 @@ components:
       required:
         - success
         - payload
+    CustomerBlocked:
+      type: object
+      properties:
+        _id:
+          type: string
+        customerId:
+          type: number
+        start:
+          type: string
+        end:
+          type: string
+        title:
+          type: string
+      required:
+        - id
+        - customerId
+        - start
+        - end
+        - title
+    CustomerBlockedCreateBody:
+      type: object
+      properties:
+        title:
+          type: string
+        start:
+          type: string
+        end:
+          type: string
+      required:
+        - title
+        - start
+        - end
+    CustomerBlockedCreateResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: true
+        payload:
+          $ref: '#/components/schemas/CustomerBlocked'
+      required:
+        - success
+        - payload
+    CustomerBlockedDestroyResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: true
+        payload:
+          type: object
+          properties:
+            deletedCount:
+              type: number
+            acknowledged:
+              type: boolean
+          required:
+            - deletedCount
+            - acknowledged
+      required:
+        - success
+        - payload
+    CustomerBlockedList:
+      type: object
+      properties:
+        nextCursor:
+          type: string
+        totalCount:
+          type: boolean
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/CustomerBlocked'
+      required:
+        - totalCount
+        - results
+    CustomerBlockedListResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: true
+        payload:
+          type: array
+          items:
+            $ref: '#/components/schemas/CustomerBlocked'
+      required:
+        - success
+        - payload
+    CustomerBlockedRangeResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: true
+        payload:
+          type: array
+          items:
+            $ref: '#/components/schemas/CustomerBlocked'
+      required:
+        - success
+        - payload
     CustomerBooking:
       allOf:
         - $ref: '#/components/schemas/CustomerBaseOrder'
@@ -4154,4 +4256,156 @@ paths:
           $ref: '#/components/responses/UnauthorizedResponse'
         '403':
           $ref: '#/components/responses/ForbiddenResponse'
+      security: []
+  '/customer/{customerId}/blocked':
+    parameters:
+      - name: customerId
+        in: path
+        description: The ID of the customerId
+        required: true
+        schema:
+          type: string
+    post:
+      tags:
+        - CustomerBlocked
+      operationId: customerBlockedCreate
+      summary: POST Create blocked
+      description: This endpoint create new blocked
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CustomerBlockedCreateBody'
+      responses:
+        '200':
+          description: Response with blocked payload
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CustomerBlockedCreateResponse'
+        '400':
+          $ref: '#/components/responses/BadResponse'
+        '401':
+          $ref: '#/components/responses/UnauthorizedResponse'
+        '403':
+          $ref: '#/components/responses/ForbiddenResponse'
+        '404':
+          $ref: '#/components/responses/NotFoundResponse'
+      security: []
+  '/customer/{customerId}/blocked/({blockedId})':
+    delete:
+      parameters:
+        - name: customerId
+          in: path
+          description: The ID of the customerId
+          required: true
+          schema:
+            type: string
+        - name: blockedId
+          in: path
+          description: The ID of the blockedId to be destroyed
+          required: true
+          schema:
+            type: string
+      tags:
+        - CustomerBlocked
+      operationId: customerBlockedDestroy
+      summary: DEL destroy blocked
+      description: This endpoint destroy blocked for customer
+      responses:
+        '200':
+          description: Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CustomerBlockedDestroyResponse'
+        '400':
+          $ref: '#/components/responses/BadResponse'
+        '401':
+          $ref: '#/components/responses/UnauthorizedResponse'
+        '403':
+          $ref: '#/components/responses/ForbiddenResponse'
+      security: []
+  '/customer/{customerId}/blocked/list':
+    get:
+      parameters:
+        - name: customerId
+          in: path
+          description: The ID of the customerId
+          required: true
+          schema:
+            type: string
+        - name: nextCursor
+          in: query
+          description: paginate
+          required: false
+          schema:
+            type: string
+        - name: limit
+          in: query
+          description: limit counts of documents
+          required: true
+          schema:
+            type: string
+      tags:
+        - CustomerBlocked
+      operationId: customerBlockedList
+      summary: GET Get all blocked documents for customer
+      description: This endpoint get all blocked documents for customer
+      responses:
+        '200':
+          description: Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CustomerBlockedListResponse'
+        '400':
+          $ref: '#/components/responses/BadResponse'
+        '401':
+          $ref: '#/components/responses/UnauthorizedResponse'
+        '403':
+          $ref: '#/components/responses/ForbiddenResponse'
+      security: []
+  '/customer/{customerId}/blocked/range':
+    get:
+      parameters:
+        - name: customerId
+          in: path
+          description: customerId for the customer
+          required: true
+          schema:
+            type: string
+        - name: start
+          in: query
+          description: start of date
+          required: true
+          schema:
+            type: string
+        - name: end
+          in: query
+          description: end of date
+          required: true
+          schema:
+            type: string
+      tags:
+        - CustomerBlocked
+      operationId: customerBlockedRange
+      summary: GET Get all blocked documents for customer
+      description: This endpoint get all blocked documents
+      responses:
+        '200':
+          description: Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CustomerBlockedRangeResponse'
+        '400':
+          $ref: '#/components/responses/BadResponse'
+        '401':
+          $ref: '#/components/responses/UnauthorizedResponse'
+        '403':
+          $ref: '#/components/responses/ForbiddenResponse'
+        '404':
+          $ref: '#/components/responses/NotFoundResponse'
       security: []

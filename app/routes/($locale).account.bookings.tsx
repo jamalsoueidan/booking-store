@@ -4,13 +4,11 @@ import dayGridPlugin from '@fullcalendar/daygrid';
 import interactionPlugin from '@fullcalendar/interaction';
 import FullCalendar from '@fullcalendar/react';
 import timeGridPlugin from '@fullcalendar/timegrid';
-import {rem} from '@mantine/core';
+import {Modal, rem} from '@mantine/core';
 import {useMediaQuery} from '@mantine/hooks';
 import {Outlet, useNavigate, useOutlet} from '@remix-run/react';
 import {IconCar} from '@tabler/icons-react';
-import {useState} from 'react';
 import {createRoot} from 'react-dom/client';
-import MobileModal from '~/components/MobileModal';
 import {AccountContent} from '~/components/account/AccountContent';
 import {AccountTitle} from '~/components/account/AccountTitle';
 import type {CustomerBooking} from '~/lib/api/model';
@@ -23,10 +21,8 @@ export default function AccountBookings() {
   const isMobile = useMediaQuery('(max-width: 62em)');
   const navigate = useNavigate();
   const inOutlet = !!useOutlet();
-  const [order, setOrder] = useState<string>('');
 
   const openModal = ({event}: EventClickArg) => {
-    setOrder(event.id);
     navigate(`${event.id}/group/${event.groupId}`, {
       relative: 'path',
     });
@@ -41,12 +37,22 @@ export default function AccountBookings() {
       <AccountTitle heading="Bestillinger" />
       <AccountContent>
         <FullCalendar
+          customButtons={{
+            addVacation: {
+              text: 'Tilføj ferie',
+              click: () => {
+                navigate(`add-vacation`, {
+                  relative: 'path',
+                });
+              },
+            },
+          }}
           slotDuration={'00:15:00'}
           plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
           headerToolbar={{
             left: isMobile ? 'prev,next' : 'prev,next today',
             center: 'title',
-            right: isMobile ? '' : 'dayGridMonth,timeGridWeek',
+            right: isMobile ? '' : 'addVacation dayGridMonth,timeGridWeek',
           }}
           eventSourceSuccess={(eventsInput: EventInput[]) => {
             const newEvents: EventInput[] = [];
@@ -151,14 +157,17 @@ export default function AccountBookings() {
         />
       </AccountContent>
 
-      <MobileModal
+      <Modal.Root
         opened={inOutlet}
         onClose={closeModal}
-        title={`Order ${order}`}
-        size="lg"
+        fullScreen={isMobile}
+        centered
       >
-        <Outlet context={{closeModal}} />
-      </MobileModal>
+        <Modal.Overlay />
+        <Modal.Content>
+          <Outlet context={{closeModal}} />
+        </Modal.Content>
+      </Modal.Root>
     </>
   );
 }
