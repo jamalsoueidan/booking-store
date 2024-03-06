@@ -3817,7 +3817,7 @@ export const customerBlockedListParams = zod.object({
 
 export const customerBlockedListQueryParams = zod.object({
   nextCursor: zod.string().optional(),
-  limit: zod.string(),
+  limit: zod.string().optional(),
 });
 
 export const customerBlockedListResponse = zod.object({

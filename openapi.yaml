@@ -4305,7 +4305,7 @@ paths:
         - name: limit
           in: query
           description: limit counts of documents
-          required: true
+          required: false
           schema:
             type: string
       tags:

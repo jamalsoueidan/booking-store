@@ -807,7 +807,7 @@ export const getBookingShopifyApi = () => {
    */
   const customerBlockedList = (
     customerId: string,
-    params: CustomerBlockedListParams,
+    params?: CustomerBlockedListParams,
   ) => {
     return queryClient<CustomerBlockedListResponse>({
       url: `/customer/${customerId}/blocked/list`,

@@ -13,5 +13,5 @@ export type CustomerBlockedListParams = {
   /**
    * limit counts of documents
    */
-  limit: string;
+  limit?: string;
 };
