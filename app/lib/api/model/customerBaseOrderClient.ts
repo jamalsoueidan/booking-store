@@ -6,10 +6,10 @@
  */
 
 export interface CustomerBaseOrderClient {
-  accept_language?: string | null;
-  browser_height?: number | null;
+  accept_language?: string;
+  browser_height?: number;
   browser_ip?: string;
-  browser_width?: number | null;
-  session_hash?: string | null;
-  user_agent?: string | null;
+  browser_width?: number;
+  session_hash?: string;
+  user_agent?: string;
 }

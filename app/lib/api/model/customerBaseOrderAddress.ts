@@ -7,9 +7,9 @@
 
 export interface CustomerBaseOrderAddress {
   address1?: string;
-  address2?: string | null;
+  address2?: string;
   city?: string;
-  company?: string | null;
+  company?: string;
   country?: string;
   country_code: string;
   country_name?: string;
@@ -17,11 +17,11 @@ export interface CustomerBaseOrderAddress {
   default: boolean;
   first_name: string;
   last_name: string;
-  latitude?: number | null;
-  longitude?: number | null;
+  latitude?: number;
+  longitude?: number;
   name: string;
   phone?: string;
-  province?: string | null;
+  province?: string;
   province_code?: string;
   zip?: string;
 }

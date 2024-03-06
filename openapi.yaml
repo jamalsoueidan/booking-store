@@ -1,4 +1,4 @@
-openapi: 3.0.2
+openapi: 3.1.0
 info:
   version: 1.0.0
   title: Booking Shopify Api
@@ -507,19 +507,16 @@ components:
           type: boolean
         cancel_reason:
           type: string
-          nullable: true
         cancelled_at:
           type: string
         client_details:
           $ref: '#/components/schemas/CustomerBaseOrderClient'
         closed_at:
           type: string
-          nullable: true
         confirmed:
           type: boolean
         contact_email:
           type: string
-          nullable: true
         created_at:
           type: string
         currency:
@@ -568,24 +565,20 @@ components:
                 type: number
               carrier_identifier:
                 type: string
-                nullable: true
               code:
                 type: string
-                nullable: true
               discounted_price:
                 type: string
               discounted_price_set:
                 $ref: '#/components/schemas/CustomerBaseOrderMoney'
               phone:
                 type: string
-                nullable: true
               price:
                 type: string
               price_set:
                 $ref: '#/components/schemas/CustomerBaseOrderMoney'
               requested_fulfillment_service_id:
                 type: string
-                nullable: true
               source:
                 type: string
               title:
@@ -661,23 +654,18 @@ components:
           type: string
         province:
           type: string
-          nullable: true
         country:
           type: string
         last_name:
           type: string
         address2:
           type: string
-          nullable: true
         company:
           type: string
-          nullable: true
         latitude:
           type: number
-          nullable: true
         longitude:
           type: number
-          nullable: true
         name:
           type: string
         country_code:
@@ -699,21 +687,16 @@ components:
       properties:
         accept_language:
           type: string
-          nullable: true
         browser_height:
           type: number
-          nullable: true
         browser_ip:
           type: string
         browser_width:
           type: number
-          nullable: true
         session_hash:
           type: string
-          nullable: true
         user_agent:
           type: string
-          nullable: true
     CustomerBaseOrderLineItemProperties:
       type: object
       properties:
@@ -752,7 +735,6 @@ components:
           type: number
         email:
           type: string
-          nullable: true
         accepts_marketing:
           type: boolean
         created_at:
@@ -767,20 +749,16 @@ components:
           type: string
         note:
           type: string
-          nullable: true
         verified_email:
           type: boolean
         multipass_identifier:
           type: string
-          nullable: true
         tax_exempt:
           type: boolean
         phone:
           type: string
-          nullable: true
         email_marketing_consent:
           type: boolean
-          nullable: true
         sms_marketing_consent:
           type: object
           properties:
@@ -792,7 +770,6 @@ components:
               type: string
             consent_collected_from:
               type: string
-          nullable: true
         tags:
           type: string
         currency:
@@ -801,7 +778,6 @@ components:
           type: string
         marketing_opt_in_level:
           type: string
-          nullable: true
         tax_exemptions:
           type: array
           items:
@@ -837,7 +813,6 @@ components:
           type: string
         fulfillment_status:
           type: string
-          nullable: true
         gift_card:
           type: boolean
         grams:
@@ -860,7 +835,6 @@ components:
           type: boolean
         sku:
           type: string
-          nullable: true
         taxable:
           type: boolean
         title:
@@ -873,13 +847,10 @@ components:
           type: number
         variant_inventory_management:
           type: string
-          nullable: true
         variant_title:
           type: string
-          nullable: true
         vendor:
           type: string
-          nullable: true
       required:
         - id
         - admin_graphql_api_id
@@ -911,7 +882,6 @@ components:
           type: string
         note:
           type: string
-          nullable: true
         order_id:
           type: number
         processed_at:
@@ -977,17 +947,14 @@ components:
           type: number
         carrier_identifier:
           type: string
-          nullable: true
         code:
           type: string
-          nullable: true
         discounted_price:
           type: string
         discounted_price_set:
           $ref: '#/components/schemas/CustomerBaseOrderShippingLines/properties/price_set'
         phone:
           type: string
-          nullable: true
         price:
           type: string
         price_set:
@@ -1018,7 +985,6 @@ components:
             - presentment_money
         requested_fulfillment_service_id:
           type: string
-          nullable: true
         source:
           type: string
         title:
@@ -1050,22 +1016,18 @@ components:
           type: string
         shipment_status:
           type: string
-          nullable: true
         status:
           type: string
         tracking_company:
           type: string
-          nullable: true
         tracking_number:
           type: string
-          nullable: true
         tracking_numbers:
           type: array
           items:
             type: string
         tracking_url:
           type: string
-          nullable: true
         tracking_urls:
           type: array
           items:
@@ -1190,7 +1152,7 @@ components:
         nextCursor:
           type: string
         totalCount:
-          type: boolean
+          type: number
         results:
           type: array
           items:
@@ -1205,9 +1167,7 @@ components:
           type: boolean
           example: true
         payload:
-          type: array
-          items:
-            $ref: '#/components/schemas/CustomerBlocked'
+          $ref: '#/components/schemas/CustomerBlockedList'
       required:
         - success
         - payload

@@ -10,4 +10,4 @@ export type CustomerBaseOrderCustomerSmsMarketingConsent = {
   consent_updated_at?: string;
   opt_in_level?: string;
   state?: string;
-} | null;
+};

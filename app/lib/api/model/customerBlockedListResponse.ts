@@ -4,9 +4,9 @@
  * Booking Shopify Api
  * OpenAPI spec version: 1.0.0
  */
-import type {CustomerBlocked} from './customerBlocked';
+import type {CustomerBlockedList} from './customerBlockedList';
 
 export interface CustomerBlockedListResponse {
-  payload: CustomerBlocked[];
+  payload: CustomerBlockedList;
   success: boolean;
 }

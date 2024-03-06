@@ -15,12 +15,12 @@ import type {CustomerBaseOrderShippingLinesPropertyItem} from './customerBaseOrd
 export interface CustomerBaseOrder {
   admin_graphql_api_id: string;
   buyer_accepts_marketing: boolean;
-  cancel_reason?: string | null;
+  cancel_reason?: string;
   cancelled_at?: string;
   client_details?: CustomerBaseOrderClient;
-  closed_at?: string | null;
+  closed_at?: string;
   confirmed: boolean;
-  contact_email?: string | null;
+  contact_email?: string;
   created_at: string;
   currency: string;
   current_subtotal_price: string;

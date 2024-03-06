@@ -9,5 +9,5 @@ import type {CustomerBlocked} from './customerBlocked';
 export interface CustomerBlockedList {
   nextCursor?: string;
   results: CustomerBlocked[];
-  totalCount: boolean;
+  totalCount: number;
 }
