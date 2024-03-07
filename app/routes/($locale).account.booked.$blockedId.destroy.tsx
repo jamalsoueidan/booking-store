@@ -11,6 +11,7 @@ export const action: ActionFunction = async ({context, params}) => {
       customer.id,
       params.blockedId || '',
     );
+
     return redirectWithNotification(context, {
       redirectUrl: `/account/booked`,
       title: 'Ferie',

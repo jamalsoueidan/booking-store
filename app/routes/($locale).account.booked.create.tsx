@@ -56,7 +56,7 @@ export const action = async ({request, context}: ActionFunctionArgs) => {
     );
 
     return redirectWithNotification(context, {
-      redirectUrl: `/account/bookings`,
+      redirectUrl: `/account/booked`,
       title: 'Ferie',
       message: 'Ferie er nu tilføjet!',
       color: 'green',

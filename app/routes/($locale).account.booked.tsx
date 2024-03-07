@@ -1,9 +1,17 @@
-import {Button, ScrollArea, Table} from '@mantine/core';
-import {Form, useLoaderData} from '@remix-run/react';
+import {Button, Modal, ScrollArea, Table} from '@mantine/core';
+import {useMediaQuery} from '@mantine/hooks';
+import {
+  Form,
+  Outlet,
+  useLoaderData,
+  useNavigate,
+  useOutlet,
+} from '@remix-run/react';
 
 import {json, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
 import {format, parseISO} from 'date-fns';
 import {da} from 'date-fns/locale';
+import {AccountButton} from '~/components/account/AccountButton';
 import {AccountContent} from '~/components/account/AccountContent';
 import {AccountTitle} from '~/components/account/AccountTitle';
 import {getBookingShopifyApi} from '~/lib/api/bookingShopifyApi';
@@ -21,7 +29,14 @@ export async function loader({context}: LoaderFunctionArgs) {
 }
 
 export default function AccountBookings() {
+  const isMobile = useMediaQuery('(max-width: 62em)');
   const {blocked} = useLoaderData<typeof loader>();
+  const inOutlet = !!useOutlet();
+  const navigate = useNavigate();
+
+  const closeModal = () => {
+    navigate(-1);
+  };
 
   const rows = blocked.results.map((row) => (
     <Table.Tr key={row._id}>
@@ -52,7 +67,9 @@ export default function AccountBookings() {
 
   return (
     <>
-      <AccountTitle heading="Ferie" />
+      <AccountTitle heading="Ferie">
+        <AccountButton to={'create'}>Tilføj ferie</AccountButton>
+      </AccountTitle>
       <AccountContent>
         <ScrollArea>
           <Table w="100%">
@@ -68,6 +85,18 @@ export default function AccountBookings() {
           </Table>
         </ScrollArea>
       </AccountContent>
+
+      <Modal.Root
+        opened={inOutlet}
+        onClose={closeModal}
+        fullScreen={isMobile}
+        centered
+      >
+        <Modal.Overlay />
+        <Modal.Content>
+          <Outlet context={{closeModal}} />
+        </Modal.Content>
+      </Modal.Root>
     </>
   );
 }
