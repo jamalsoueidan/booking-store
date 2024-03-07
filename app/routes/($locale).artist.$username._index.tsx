@@ -1,14 +1,30 @@
 import {defer, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
 
-import {Button, Flex, SimpleGrid, Skeleton, Stack} from '@mantine/core';
-import {Await, Form, Link, useLoaderData, useLocation} from '@remix-run/react';
+import {
+  Button,
+  Flex,
+  SimpleGrid,
+  Skeleton,
+  Stack,
+  Title,
+  rem,
+} from '@mantine/core';
+import {
+  Await,
+  Form,
+  Link,
+  useLoaderData,
+  useLocation,
+  useOutletContext,
+} from '@remix-run/react';
 import {Suspense} from 'react';
 import {ArtistProduct} from '~/components/artist/ArtistProduct';
 import {PRODUCT_ITEM_FRAGMENT} from '~/data/fragments';
 import {getBookingShopifyApi} from '~/lib/api/bookingShopifyApi';
-import {
-  type UserProductsListByScheduleParams,
-  type UserScheduleWithLocations,
+import type {
+  User,
+  UserProductsListByScheduleParams,
+  UserScheduleWithLocations,
 } from '~/lib/api/model';
 
 export type SearchParams = {
@@ -52,6 +68,7 @@ export async function loader({request, params, context}: LoaderFunctionArgs) {
 
 export default function ArtistIndex() {
   const data = useLoaderData<typeof loader>();
+  const {artist} = useOutletContext<{artist: User}>();
 
   return (
     <Stack gap="lg">
@@ -89,6 +106,11 @@ export default function ArtistIndex() {
           </Await>
         </Suspense>
       </SimpleGrid>
+
+      <Stack gap="xs" mt="xl">
+        <Title size={rem(28)}>Om mig</Title>
+        {artist.aboutMe}
+      </Stack>
     </Stack>
   );
 }

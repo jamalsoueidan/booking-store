@@ -64,7 +64,7 @@ export function ArtistHero({artist}: {artist: User}) {
           >
             <Title order={isMobile ? 2 : 1}>{artist.fullname}</Title>
             <Text fz={{base: 'md', md: 'lg'}}>
-              {artist.aboutMe} <br />
+              {artist.shortDescription} <br />
             </Text>
             <Text fz={{base: 'md', md: 'lg'}}>
               {artist.yearsExperience} årserfaring

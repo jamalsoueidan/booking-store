@@ -21,7 +21,7 @@ export function BadgeCollection({
         collection.icon?.value || 'reshot-icon-beauty-mirror'
       }.svg`}
       style={{width: rem(18), height: rem(18)}}
-      alt="ok"
+      alt={collection.icon?.value || 'reshot-icon-beauty-mirror'}
     />
   );
 
@@ -30,10 +30,8 @@ export function BadgeCollection({
       leftSection={leftSection}
       size="lg"
       radius="md"
-      variant="outline"
-      color="#ebeaeb"
-      bg="#f7f7f7"
-      c="gray.5"
+      variant="light"
+      color="gray"
     >
       {parseTE(collection.title)}
     </Badge>

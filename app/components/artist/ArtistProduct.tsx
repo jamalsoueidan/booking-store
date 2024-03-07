@@ -51,7 +51,7 @@ export function ArtistProduct({product, services}: ArtistProductProps) {
         size={rem(24)}
         mt={rem(12)}
         mb={rem(4)}
-        fw={600}
+        fw={700}
         lts=".5px"
       >
         {product.title}

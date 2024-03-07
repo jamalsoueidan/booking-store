@@ -13,6 +13,7 @@ import {useMediaQuery} from '@mantine/hooks';
 import {useLoaderData} from '@remix-run/react';
 import {Money, parseGid} from '@shopify/hydrogen';
 import {json, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
+import {IconClockHour3, IconGps, IconHotelService} from '@tabler/icons-react';
 import {format} from 'date-fns';
 import da from 'date-fns/locale/da';
 import {v4 as uuidv4} from 'uuid';
@@ -125,16 +126,16 @@ export default function ArtistTreatmentsBooking() {
 
   return (
     <Box mt="lg" mb="100">
-      <Text size="lg" mb="md" fw="bold">
-        Skønhedsekspert
-      </Text>
       <TreatmentArtistCardComplete artist={data.user} />
       <Card.Section pt="md" pb="md">
         <Divider />
       </Card.Section>
-      <Text size="lg" mb="md" fw="bold">
-        Lokation
-      </Text>
+      <Group mb="xs" gap="xs">
+        <IconGps />
+        <Text size="lg" fw="bold">
+          Location
+        </Text>
+      </Group>
       {data?.location.locationType === 'destination' ? (
         <>
           <Text size="md" fw={500}>
@@ -160,26 +161,35 @@ export default function ArtistTreatmentsBooking() {
       <Card.Section pt="md" pb="md">
         <Divider />
       </Card.Section>
-      <Text size="lg" mb="md" fw="bold">
-        Dato & Tid
-      </Text>
+
+      <Group mb="xs" gap="xs">
+        <IconClockHour3 />
+        <Text size="lg" fw="bold">
+          Tid
+        </Text>
+      </Group>
       {data?.availability.slot.from && (
         <Text size="md" fw={500}>
           {format(
             new Date(data?.availability.slot.from || ''),
-            "EEEE 'd.' d'.' LLL 'kl 'HH:mm",
+            "EEEE',' 'd.' d'.' LLL 'kl 'HH:mm",
             {
               locale: da,
             },
           )}
         </Text>
       )}
+
       <Card.Section pt="md" pb="md">
         <Divider />
       </Card.Section>
-      <Text size="lg" mb="md" fw="bold">
-        Ydelser
-      </Text>
+
+      <Group mb="xs" gap="xs">
+        <IconHotelService />
+        <Text size="lg" fw="bold">
+          Ydelser
+        </Text>
+      </Group>
       <Stack gap="xs">{productMarkup}</Stack>
 
       <Box
