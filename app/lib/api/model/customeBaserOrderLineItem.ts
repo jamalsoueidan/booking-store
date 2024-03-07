@@ -11,7 +11,7 @@ export interface CustomeBaserOrderLineItem {
   admin_graphql_api_id: string;
   fulfillable_quantity: number;
   fulfillment_service: string;
-  fulfillment_status?: string | null;
+  fulfillment_status?: string;
   gift_card: boolean;
   grams: number;
   id: number;
@@ -23,13 +23,13 @@ export interface CustomeBaserOrderLineItem {
   properties: CustomerBaseOrderLineItemProperties;
   quantity: number;
   requires_shipping: boolean;
-  sku?: string | null;
+  sku?: string;
   taxable: boolean;
   title: string;
   total_discount: string;
   total_discount_set: CustomerBaseOrderMoney;
   variant_id: number;
-  variant_inventory_management?: string | null;
-  variant_title?: string | null;
-  vendor?: string | null;
+  variant_inventory_management?: string;
+  variant_title?: string;
+  vendor?: string;
 }

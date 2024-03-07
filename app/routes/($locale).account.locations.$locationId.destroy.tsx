@@ -10,5 +10,5 @@ export const action: ActionFunction = async ({context, params}) => {
     params.locationId || '',
   );
 
-  return redirect(`/accounts/locations`);
+  return redirect(`/account/locations`);
 };

@@ -11,7 +11,7 @@ export interface CustomerBaseOrderRefund {
   admin_graphql_api_id: string;
   created_at: string;
   id: number;
-  note?: string | null;
+  note?: string;
   order_id: number;
   processed_at: string;
   refund_line_items: CustomerBaseOrderRefundRefundLineItemsItem[];

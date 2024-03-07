@@ -15,12 +15,12 @@ export interface CustomerBaseOrderFulfillment {
   name: string;
   order_id: number;
   service: string;
-  shipment_status?: string | null;
+  shipment_status?: string;
   status: string;
-  tracking_company?: string | null;
-  tracking_number?: string | null;
+  tracking_company?: string;
+  tracking_number?: string;
   tracking_numbers?: string[];
-  tracking_url?: string | null;
+  tracking_url?: string;
   tracking_urls?: string[];
   updated_at?: string;
 }

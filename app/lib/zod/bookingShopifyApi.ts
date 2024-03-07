@@ -1409,21 +1409,21 @@ export const customerBookingGetByGroupResponse = zod.object({
       order_number: zod.number(),
       admin_graphql_api_id: zod.string(),
       buyer_accepts_marketing: zod.boolean(),
-      cancel_reason: zod.string().nullish(),
+      cancel_reason: zod.string().optional(),
       cancelled_at: zod.string().optional(),
       client_details: zod
         .object({
-          accept_language: zod.string().nullish(),
-          browser_height: zod.number().nullish(),
+          accept_language: zod.string().optional(),
+          browser_height: zod.number().optional(),
           browser_ip: zod.string().optional(),
-          browser_width: zod.number().nullish(),
-          session_hash: zod.string().nullish(),
-          user_agent: zod.string().nullish(),
+          browser_width: zod.number().optional(),
+          session_hash: zod.string().optional(),
+          user_agent: zod.string().optional(),
         })
         .optional(),
-      closed_at: zod.string().nullish(),
+      closed_at: zod.string().optional(),
       confirmed: zod.boolean(),
-      contact_email: zod.string().nullish(),
+      contact_email: zod.string().optional(),
       created_at: zod.string(),
       currency: zod.string(),
       current_subtotal_price: zod.string(),
@@ -1496,19 +1496,19 @@ export const customerBookingGetByGroupResponse = zod.object({
       }),
       customer: zod.object({
         id: zod.number(),
-        email: zod.string().nullish(),
+        email: zod.string().optional(),
         accepts_marketing: zod.boolean(),
         created_at: zod.string(),
         updated_at: zod.string(),
         first_name: zod.string(),
         last_name: zod.string(),
         state: zod.string(),
-        note: zod.string().nullish(),
+        note: zod.string().optional(),
         verified_email: zod.boolean(),
-        multipass_identifier: zod.string().nullish(),
+        multipass_identifier: zod.string().optional(),
         tax_exempt: zod.boolean(),
-        phone: zod.string().nullish(),
-        email_marketing_consent: zod.boolean().nullish(),
+        phone: zod.string().optional(),
+        email_marketing_consent: zod.boolean().optional(),
         sms_marketing_consent: zod
           .object({
             state: zod.string().optional(),
@@ -1516,11 +1516,11 @@ export const customerBookingGetByGroupResponse = zod.object({
             consent_updated_at: zod.string().optional(),
             consent_collected_from: zod.string().optional(),
           })
-          .nullish(),
+          .optional(),
         tags: zod.string(),
         currency: zod.string(),
         accepts_marketing_updated_at: zod.string().optional(),
-        marketing_opt_in_level: zod.string().nullish(),
+        marketing_opt_in_level: zod.string().optional(),
         tax_exemptions: zod.array(zod.string()).optional(),
         admin_graphql_api_id: zod.string(),
         default_address: zod
@@ -1531,13 +1531,13 @@ export const customerBookingGetByGroupResponse = zod.object({
             phone: zod.string().optional(),
             city: zod.string().optional(),
             zip: zod.string().optional(),
-            province: zod.string().nullish(),
+            province: zod.string().optional(),
             country: zod.string().optional(),
             last_name: zod.string(),
-            address2: zod.string().nullish(),
-            company: zod.string().nullish(),
-            latitude: zod.number().nullish(),
-            longitude: zod.number().nullish(),
+            address2: zod.string().optional(),
+            company: zod.string().optional(),
+            latitude: zod.number().optional(),
+            longitude: zod.number().optional(),
             name: zod.string(),
             country_code: zod.string(),
             country_name: zod.string().optional(),
@@ -1555,12 +1555,12 @@ export const customerBookingGetByGroupResponse = zod.object({
           name: zod.string(),
           order_id: zod.number(),
           service: zod.string(),
-          shipment_status: zod.string().nullish(),
+          shipment_status: zod.string().optional(),
           status: zod.string(),
-          tracking_company: zod.string().nullish(),
-          tracking_number: zod.string().nullish(),
+          tracking_company: zod.string().optional(),
+          tracking_number: zod.string().optional(),
           tracking_numbers: zod.array(zod.string()).optional(),
-          tracking_url: zod.string().nullish(),
+          tracking_url: zod.string().optional(),
           tracking_urls: zod.array(zod.string()).optional(),
           updated_at: zod.string().optional(),
           line_items: zod.array(
@@ -1576,7 +1576,7 @@ export const customerBookingGetByGroupResponse = zod.object({
           id: zod.number(),
           admin_graphql_api_id: zod.string(),
           created_at: zod.string(),
-          note: zod.string().nullish(),
+          note: zod.string().optional(),
           order_id: zod.number(),
           processed_at: zod.string(),
           restock: zod.boolean(),
@@ -1640,13 +1640,13 @@ export const customerBookingGetByGroupResponse = zod.object({
           phone: zod.string().optional(),
           city: zod.string().optional(),
           zip: zod.string().optional(),
-          province: zod.string().nullish(),
+          province: zod.string().optional(),
           country: zod.string().optional(),
           last_name: zod.string(),
-          address2: zod.string().nullish(),
-          company: zod.string().nullish(),
-          latitude: zod.number().nullish(),
-          longitude: zod.number().nullish(),
+          address2: zod.string().optional(),
+          company: zod.string().optional(),
+          latitude: zod.number().optional(),
+          longitude: zod.number().optional(),
           name: zod.string(),
           country_code: zod.string(),
           country_name: zod.string().optional(),
@@ -1657,8 +1657,8 @@ export const customerBookingGetByGroupResponse = zod.object({
       shipping_lines: zod.array(
         zod.object({
           id: zod.number(),
-          carrier_identifier: zod.string().nullish(),
-          code: zod.string().nullish(),
+          carrier_identifier: zod.string().optional(),
+          code: zod.string().optional(),
           discounted_price: zod.string(),
           discounted_price_set: zod.object({
             shop_money: zod.object({
@@ -1670,7 +1670,7 @@ export const customerBookingGetByGroupResponse = zod.object({
               currency_code: zod.string(),
             }),
           }),
-          phone: zod.string().nullish(),
+          phone: zod.string().optional(),
           price: zod.string(),
           price_set: zod.object({
             shop_money: zod.object({
@@ -1682,7 +1682,7 @@ export const customerBookingGetByGroupResponse = zod.object({
               currency_code: zod.string(),
             }),
           }),
-          requested_fulfillment_service_id: zod.string().nullish(),
+          requested_fulfillment_service_id: zod.string().optional(),
           source: zod.string(),
           title: zod.string(),
         }),
@@ -1775,7 +1775,7 @@ export const customerBookingGetByGroupResponse = zod.object({
             admin_graphql_api_id: zod.string(),
             fulfillable_quantity: zod.number(),
             fulfillment_service: zod.string(),
-            fulfillment_status: zod.string().nullish(),
+            fulfillment_status: zod.string().optional(),
             gift_card: zod.boolean(),
             grams: zod.number(),
             name: zod.string(),
@@ -1802,7 +1802,7 @@ export const customerBookingGetByGroupResponse = zod.object({
             }),
             quantity: zod.number(),
             requires_shipping: zod.boolean(),
-            sku: zod.string().nullish(),
+            sku: zod.string().optional(),
             taxable: zod.boolean(),
             title: zod.string(),
             total_discount: zod.string(),
@@ -1817,9 +1817,9 @@ export const customerBookingGetByGroupResponse = zod.object({
               }),
             }),
             variant_id: zod.number(),
-            variant_inventory_management: zod.string().nullish(),
-            variant_title: zod.string().nullish(),
-            vendor: zod.string().nullish(),
+            variant_inventory_management: zod.string().optional(),
+            variant_title: zod.string().optional(),
+            vendor: zod.string().optional(),
           }),
         ),
       }),
@@ -1848,21 +1848,21 @@ export const customerBookingRangeResponse = zod.object({
         order_number: zod.number(),
         admin_graphql_api_id: zod.string(),
         buyer_accepts_marketing: zod.boolean(),
-        cancel_reason: zod.string().nullish(),
+        cancel_reason: zod.string().optional(),
         cancelled_at: zod.string().optional(),
         client_details: zod
           .object({
-            accept_language: zod.string().nullish(),
-            browser_height: zod.number().nullish(),
+            accept_language: zod.string().optional(),
+            browser_height: zod.number().optional(),
             browser_ip: zod.string().optional(),
-            browser_width: zod.number().nullish(),
-            session_hash: zod.string().nullish(),
-            user_agent: zod.string().nullish(),
+            browser_width: zod.number().optional(),
+            session_hash: zod.string().optional(),
+            user_agent: zod.string().optional(),
           })
           .optional(),
-        closed_at: zod.string().nullish(),
+        closed_at: zod.string().optional(),
         confirmed: zod.boolean(),
-        contact_email: zod.string().nullish(),
+        contact_email: zod.string().optional(),
         created_at: zod.string(),
         currency: zod.string(),
         current_subtotal_price: zod.string(),
@@ -1935,19 +1935,19 @@ export const customerBookingRangeResponse = zod.object({
         }),
         customer: zod.object({
           id: zod.number(),
-          email: zod.string().nullish(),
+          email: zod.string().optional(),
           accepts_marketing: zod.boolean(),
           created_at: zod.string(),
           updated_at: zod.string(),
           first_name: zod.string(),
           last_name: zod.string(),
           state: zod.string(),
-          note: zod.string().nullish(),
+          note: zod.string().optional(),
           verified_email: zod.boolean(),
-          multipass_identifier: zod.string().nullish(),
+          multipass_identifier: zod.string().optional(),
           tax_exempt: zod.boolean(),
-          phone: zod.string().nullish(),
-          email_marketing_consent: zod.boolean().nullish(),
+          phone: zod.string().optional(),
+          email_marketing_consent: zod.boolean().optional(),
           sms_marketing_consent: zod
             .object({
               state: zod.string().optional(),
@@ -1955,11 +1955,11 @@ export const customerBookingRangeResponse = zod.object({
               consent_updated_at: zod.string().optional(),
               consent_collected_from: zod.string().optional(),
             })
-            .nullish(),
+            .optional(),
           tags: zod.string(),
           currency: zod.string(),
           accepts_marketing_updated_at: zod.string().optional(),
-          marketing_opt_in_level: zod.string().nullish(),
+          marketing_opt_in_level: zod.string().optional(),
           tax_exemptions: zod.array(zod.string()).optional(),
           admin_graphql_api_id: zod.string(),
           default_address: zod
@@ -1970,13 +1970,13 @@ export const customerBookingRangeResponse = zod.object({
               phone: zod.string().optional(),
               city: zod.string().optional(),
               zip: zod.string().optional(),
-              province: zod.string().nullish(),
+              province: zod.string().optional(),
               country: zod.string().optional(),
               last_name: zod.string(),
-              address2: zod.string().nullish(),
-              company: zod.string().nullish(),
-              latitude: zod.number().nullish(),
-              longitude: zod.number().nullish(),
+              address2: zod.string().optional(),
+              company: zod.string().optional(),
+              latitude: zod.number().optional(),
+              longitude: zod.number().optional(),
               name: zod.string(),
               country_code: zod.string(),
               country_name: zod.string().optional(),
@@ -1994,12 +1994,12 @@ export const customerBookingRangeResponse = zod.object({
             name: zod.string(),
             order_id: zod.number(),
             service: zod.string(),
-            shipment_status: zod.string().nullish(),
+            shipment_status: zod.string().optional(),
             status: zod.string(),
-            tracking_company: zod.string().nullish(),
-            tracking_number: zod.string().nullish(),
+            tracking_company: zod.string().optional(),
+            tracking_number: zod.string().optional(),
             tracking_numbers: zod.array(zod.string()).optional(),
-            tracking_url: zod.string().nullish(),
+            tracking_url: zod.string().optional(),
             tracking_urls: zod.array(zod.string()).optional(),
             updated_at: zod.string().optional(),
             line_items: zod.array(
@@ -2015,7 +2015,7 @@ export const customerBookingRangeResponse = zod.object({
             id: zod.number(),
             admin_graphql_api_id: zod.string(),
             created_at: zod.string(),
-            note: zod.string().nullish(),
+            note: zod.string().optional(),
             order_id: zod.number(),
             processed_at: zod.string(),
             restock: zod.boolean(),
@@ -2079,13 +2079,13 @@ export const customerBookingRangeResponse = zod.object({
             phone: zod.string().optional(),
             city: zod.string().optional(),
             zip: zod.string().optional(),
-            province: zod.string().nullish(),
+            province: zod.string().optional(),
             country: zod.string().optional(),
             last_name: zod.string(),
-            address2: zod.string().nullish(),
-            company: zod.string().nullish(),
-            latitude: zod.number().nullish(),
-            longitude: zod.number().nullish(),
+            address2: zod.string().optional(),
+            company: zod.string().optional(),
+            latitude: zod.number().optional(),
+            longitude: zod.number().optional(),
             name: zod.string(),
             country_code: zod.string(),
             country_name: zod.string().optional(),
@@ -2096,8 +2096,8 @@ export const customerBookingRangeResponse = zod.object({
         shipping_lines: zod.array(
           zod.object({
             id: zod.number(),
-            carrier_identifier: zod.string().nullish(),
-            code: zod.string().nullish(),
+            carrier_identifier: zod.string().optional(),
+            code: zod.string().optional(),
             discounted_price: zod.string(),
             discounted_price_set: zod.object({
               shop_money: zod.object({
@@ -2109,7 +2109,7 @@ export const customerBookingRangeResponse = zod.object({
                 currency_code: zod.string(),
               }),
             }),
-            phone: zod.string().nullish(),
+            phone: zod.string().optional(),
             price: zod.string(),
             price_set: zod.object({
               shop_money: zod.object({
@@ -2121,7 +2121,7 @@ export const customerBookingRangeResponse = zod.object({
                 currency_code: zod.string(),
               }),
             }),
-            requested_fulfillment_service_id: zod.string().nullish(),
+            requested_fulfillment_service_id: zod.string().optional(),
             source: zod.string(),
             title: zod.string(),
           }),
@@ -2214,7 +2214,7 @@ export const customerBookingRangeResponse = zod.object({
               admin_graphql_api_id: zod.string(),
               fulfillable_quantity: zod.number(),
               fulfillment_service: zod.string(),
-              fulfillment_status: zod.string().nullish(),
+              fulfillment_status: zod.string().optional(),
               gift_card: zod.boolean(),
               grams: zod.number(),
               name: zod.string(),
@@ -2241,7 +2241,7 @@ export const customerBookingRangeResponse = zod.object({
               }),
               quantity: zod.number(),
               requires_shipping: zod.boolean(),
-              sku: zod.string().nullish(),
+              sku: zod.string().optional(),
               taxable: zod.boolean(),
               title: zod.string(),
               total_discount: zod.string(),
@@ -2256,9 +2256,9 @@ export const customerBookingRangeResponse = zod.object({
                 }),
               }),
               variant_id: zod.number(),
-              variant_inventory_management: zod.string().nullish(),
-              variant_title: zod.string().nullish(),
-              vendor: zod.string().nullish(),
+              variant_inventory_management: zod.string().optional(),
+              variant_title: zod.string().optional(),
+              vendor: zod.string().optional(),
             }),
           ),
         }),
@@ -2283,21 +2283,21 @@ export const customerOrderGetResponse = zod.object({
       order_number: zod.number(),
       admin_graphql_api_id: zod.string(),
       buyer_accepts_marketing: zod.boolean(),
-      cancel_reason: zod.string().nullish(),
+      cancel_reason: zod.string().optional(),
       cancelled_at: zod.string().optional(),
       client_details: zod
         .object({
-          accept_language: zod.string().nullish(),
-          browser_height: zod.number().nullish(),
+          accept_language: zod.string().optional(),
+          browser_height: zod.number().optional(),
           browser_ip: zod.string().optional(),
-          browser_width: zod.number().nullish(),
-          session_hash: zod.string().nullish(),
-          user_agent: zod.string().nullish(),
+          browser_width: zod.number().optional(),
+          session_hash: zod.string().optional(),
+          user_agent: zod.string().optional(),
         })
         .optional(),
-      closed_at: zod.string().nullish(),
+      closed_at: zod.string().optional(),
       confirmed: zod.boolean(),
-      contact_email: zod.string().nullish(),
+      contact_email: zod.string().optional(),
       created_at: zod.string(),
       currency: zod.string(),
       current_subtotal_price: zod.string(),
@@ -2370,19 +2370,19 @@ export const customerOrderGetResponse = zod.object({
       }),
       customer: zod.object({
         id: zod.number(),
-        email: zod.string().nullish(),
+        email: zod.string().optional(),
         accepts_marketing: zod.boolean(),
         created_at: zod.string(),
         updated_at: zod.string(),
         first_name: zod.string(),
         last_name: zod.string(),
         state: zod.string(),
-        note: zod.string().nullish(),
+        note: zod.string().optional(),
         verified_email: zod.boolean(),
-        multipass_identifier: zod.string().nullish(),
+        multipass_identifier: zod.string().optional(),
         tax_exempt: zod.boolean(),
-        phone: zod.string().nullish(),
-        email_marketing_consent: zod.boolean().nullish(),
+        phone: zod.string().optional(),
+        email_marketing_consent: zod.boolean().optional(),
         sms_marketing_consent: zod
           .object({
             state: zod.string().optional(),
@@ -2390,11 +2390,11 @@ export const customerOrderGetResponse = zod.object({
             consent_updated_at: zod.string().optional(),
             consent_collected_from: zod.string().optional(),
           })
-          .nullish(),
+          .optional(),
         tags: zod.string(),
         currency: zod.string(),
         accepts_marketing_updated_at: zod.string().optional(),
-        marketing_opt_in_level: zod.string().nullish(),
+        marketing_opt_in_level: zod.string().optional(),
         tax_exemptions: zod.array(zod.string()).optional(),
         admin_graphql_api_id: zod.string(),
         default_address: zod
@@ -2405,13 +2405,13 @@ export const customerOrderGetResponse = zod.object({
             phone: zod.string().optional(),
             city: zod.string().optional(),
             zip: zod.string().optional(),
-            province: zod.string().nullish(),
+            province: zod.string().optional(),
             country: zod.string().optional(),
             last_name: zod.string(),
-            address2: zod.string().nullish(),
-            company: zod.string().nullish(),
-            latitude: zod.number().nullish(),
-            longitude: zod.number().nullish(),
+            address2: zod.string().optional(),
+            company: zod.string().optional(),
+            latitude: zod.number().optional(),
+            longitude: zod.number().optional(),
             name: zod.string(),
             country_code: zod.string(),
             country_name: zod.string().optional(),
@@ -2429,12 +2429,12 @@ export const customerOrderGetResponse = zod.object({
           name: zod.string(),
           order_id: zod.number(),
           service: zod.string(),
-          shipment_status: zod.string().nullish(),
+          shipment_status: zod.string().optional(),
           status: zod.string(),
-          tracking_company: zod.string().nullish(),
-          tracking_number: zod.string().nullish(),
+          tracking_company: zod.string().optional(),
+          tracking_number: zod.string().optional(),
           tracking_numbers: zod.array(zod.string()).optional(),
-          tracking_url: zod.string().nullish(),
+          tracking_url: zod.string().optional(),
           tracking_urls: zod.array(zod.string()).optional(),
           updated_at: zod.string().optional(),
           line_items: zod.array(
@@ -2450,7 +2450,7 @@ export const customerOrderGetResponse = zod.object({
           id: zod.number(),
           admin_graphql_api_id: zod.string(),
           created_at: zod.string(),
-          note: zod.string().nullish(),
+          note: zod.string().optional(),
           order_id: zod.number(),
           processed_at: zod.string(),
           restock: zod.boolean(),
@@ -2514,13 +2514,13 @@ export const customerOrderGetResponse = zod.object({
           phone: zod.string().optional(),
           city: zod.string().optional(),
           zip: zod.string().optional(),
-          province: zod.string().nullish(),
+          province: zod.string().optional(),
           country: zod.string().optional(),
           last_name: zod.string(),
-          address2: zod.string().nullish(),
-          company: zod.string().nullish(),
-          latitude: zod.number().nullish(),
-          longitude: zod.number().nullish(),
+          address2: zod.string().optional(),
+          company: zod.string().optional(),
+          latitude: zod.number().optional(),
+          longitude: zod.number().optional(),
           name: zod.string(),
           country_code: zod.string(),
           country_name: zod.string().optional(),
@@ -2531,8 +2531,8 @@ export const customerOrderGetResponse = zod.object({
       shipping_lines: zod.array(
         zod.object({
           id: zod.number(),
-          carrier_identifier: zod.string().nullish(),
-          code: zod.string().nullish(),
+          carrier_identifier: zod.string().optional(),
+          code: zod.string().optional(),
           discounted_price: zod.string(),
           discounted_price_set: zod.object({
             shop_money: zod.object({
@@ -2544,7 +2544,7 @@ export const customerOrderGetResponse = zod.object({
               currency_code: zod.string(),
             }),
           }),
-          phone: zod.string().nullish(),
+          phone: zod.string().optional(),
           price: zod.string(),
           price_set: zod.object({
             shop_money: zod.object({
@@ -2556,7 +2556,7 @@ export const customerOrderGetResponse = zod.object({
               currency_code: zod.string(),
             }),
           }),
-          requested_fulfillment_service_id: zod.string().nullish(),
+          requested_fulfillment_service_id: zod.string().optional(),
           source: zod.string(),
           title: zod.string(),
         }),
@@ -2571,7 +2571,7 @@ export const customerOrderGetResponse = zod.object({
               admin_graphql_api_id: zod.string(),
               fulfillable_quantity: zod.number(),
               fulfillment_service: zod.string(),
-              fulfillment_status: zod.string().nullish(),
+              fulfillment_status: zod.string().optional(),
               gift_card: zod.boolean(),
               grams: zod.number(),
               name: zod.string(),
@@ -2598,7 +2598,7 @@ export const customerOrderGetResponse = zod.object({
               }),
               quantity: zod.number(),
               requires_shipping: zod.boolean(),
-              sku: zod.string().nullish(),
+              sku: zod.string().optional(),
               taxable: zod.boolean(),
               title: zod.string(),
               total_discount: zod.string(),
@@ -2613,9 +2613,9 @@ export const customerOrderGetResponse = zod.object({
                 }),
               }),
               variant_id: zod.number(),
-              variant_inventory_management: zod.string().nullish(),
-              variant_title: zod.string().nullish(),
-              vendor: zod.string().nullish(),
+              variant_inventory_management: zod.string().optional(),
+              variant_title: zod.string().optional(),
+              vendor: zod.string().optional(),
             })
             .and(
               zod.object({
@@ -3767,4 +3767,101 @@ export const uploadResponse = zod.object({
   restartPostUri: zod.string(),
   suspendPostUri: zod.string(),
   resumePostUri: zod.string(),
+});
+
+/**
+ * This endpoint create new blocked
+ * @summary POST Create blocked
+ */
+export const customerBlockedCreateBody = zod.object({
+  title: zod.string(),
+  start: zod.string(),
+  end: zod.string(),
+});
+
+export const customerBlockedCreateResponse = zod.object({
+  success: zod.boolean(),
+  payload: zod.object({
+    _id: zod.string().optional(),
+    customerId: zod.number(),
+    start: zod.string(),
+    end: zod.string(),
+    title: zod.string(),
+    type: zod.string(),
+  }),
+});
+
+/**
+ * This endpoint destroy blocked for customer
+ * @summary DEL destroy blocked
+ */
+export const customerBlockedDestroyParams = zod.object({
+  customerId: zod.string(),
+  blockedId: zod.string(),
+});
+
+export const customerBlockedDestroyResponse = zod.object({
+  success: zod.boolean(),
+  payload: zod.object({
+    deletedCount: zod.number(),
+    acknowledged: zod.boolean(),
+  }),
+});
+
+/**
+ * This endpoint get all blocked documents for customer
+ * @summary GET Get all blocked documents for customer
+ */
+export const customerBlockedListParams = zod.object({
+  customerId: zod.string(),
+});
+
+export const customerBlockedListQueryParams = zod.object({
+  nextCursor: zod.string().optional(),
+  limit: zod.string().optional(),
+});
+
+export const customerBlockedListResponse = zod.object({
+  success: zod.boolean(),
+  payload: zod.object({
+    nextCursor: zod.string().optional(),
+    totalCount: zod.number(),
+    results: zod.array(
+      zod.object({
+        _id: zod.string().optional(),
+        customerId: zod.number(),
+        start: zod.string(),
+        end: zod.string(),
+        title: zod.string(),
+        type: zod.string(),
+      }),
+    ),
+  }),
+});
+
+/**
+ * This endpoint get all blocked documents
+ * @summary GET Get all blocked documents for customer
+ */
+export const customerBlockedRangeParams = zod.object({
+  customerId: zod.string(),
+});
+
+export const customerBlockedRangeQueryParams = zod.object({
+  start: zod.string(),
+  end: zod.string(),
+});
+
+export const customerBlockedRangeResponse = zod.object({
+  success: zod.boolean(),
+  payload: zod.array(
+    zod.object({
+      _id: zod.string().optional(),
+      customerId: zod.number(),
+      start: zod.string(),
+      end: zod.string(),
+      title: zod.string(),
+      type: zod.string(),
+    }),
+  ),
 });

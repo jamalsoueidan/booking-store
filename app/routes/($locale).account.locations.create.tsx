@@ -74,7 +74,7 @@ export default function Component() {
   const lastSubmission = useActionData<typeof action>();
   const defaultValue = useLoaderData<typeof loader>();
 
-  const [form, fields] = useForm({
+  const [, fields] = useForm({
     lastSubmission,
     defaultValue,
     onValidate({formData}) {
