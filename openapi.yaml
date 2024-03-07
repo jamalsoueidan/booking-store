@@ -4253,7 +4253,7 @@ paths:
         '404':
           $ref: '#/components/responses/NotFoundResponse'
       security: []
-  '/customer/{customerId}/blocked/({blockedId})':
+  '/customer/{customerId}/blocked/{blockedId}':
     delete:
       parameters:
         - name: customerId

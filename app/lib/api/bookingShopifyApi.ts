@@ -796,7 +796,7 @@ export const getBookingShopifyApi = () => {
    */
   const customerBlockedDestroy = (customerId: string, blockedId: string) => {
     return queryClient<CustomerBlockedDestroyResponse>({
-      url: `/customer/${customerId}/blocked/(${blockedId})`,
+      url: `/customer/${customerId}/blocked/${blockedId}`,
       method: 'delete',
     });
   };
