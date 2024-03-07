@@ -58,7 +58,7 @@ export default function AccountBookings() {
             const newEvents: EventInput[] = [];
             (eventsInput as unknown as CustomerBooking[]).forEach(
               (event: CustomerBooking) => {
-                event.line_items.forEach((lineItem) => {
+                event.line_items?.forEach((lineItem) => {
                   newEvents.push({
                     title: lineItem.title,
                     start: lineItem.properties.from,
@@ -135,7 +135,7 @@ export default function AccountBookings() {
             }
           }}
           themeSystem="standard"
-          events="/api/bookings"
+          eventSources={['/account/api/bookings', '/account/api/booked']}
           initialView={isMobile ? 'timeGridDay' : 'dayGridMonth'}
           buttonText={{
             prev: '<',
