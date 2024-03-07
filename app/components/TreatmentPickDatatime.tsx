@@ -1,19 +1,20 @@
-import {Carousel} from '@mantine/carousel';
+import {Carousel, Embla} from '@mantine/carousel';
 import {
+  ActionIcon,
   Button,
+  Flex,
   Group,
   SimpleGrid,
   Stack,
   Text,
-  ThemeIcon,
   Title,
-  rem,
 } from '@mantine/core';
 
 import {useSearchParams} from '@remix-run/react';
 import {IconArrowLeft, IconArrowRight} from '@tabler/icons-react';
 import {format} from 'date-fns';
 import {da} from 'date-fns/locale';
+import {useCallback, useState} from 'react';
 import type {
   UserAvailability,
   UserAvailabilityMulti,
@@ -27,6 +28,16 @@ type TreatmentPickDatetimeProps = {
 export default function TreatmentPickDatetime({
   availability,
 }: TreatmentPickDatetimeProps) {
+  const [embla, setEmbla] = useState<Embla | null>(null);
+
+  const scrollPrev = useCallback(() => {
+    if (embla) embla.scrollPrev();
+  }, [embla]);
+
+  const scrollNext = useCallback(() => {
+    if (embla) embla.scrollNext();
+  }, [embla]);
+
   const [searchParams, setSearchParams] = useSearchParams();
 
   const onChangeDate = (availability: UserAvailability) => () => {
@@ -77,32 +88,25 @@ export default function TreatmentPickDatetime({
     ));
 
   return (
-    <Stack gap="xl">
+    <Stack gap="lg">
+      <Flex justify="flex-end">
+        <Group>
+          <ActionIcon variant="default" onClick={scrollPrev} size="lg">
+            <IconArrowLeft />
+          </ActionIcon>
+          <ActionIcon variant="default" onClick={scrollNext} size="lg">
+            <IconArrowRight />
+          </ActionIcon>
+        </Group>
+      </Flex>
       {days ? (
         <Carousel
           slideSize={{base: '100px'}}
           align="start"
           slideGap="sm"
-          nextControlIcon={
-            <ThemeIcon color="#ccc" radius="xl">
-              <IconArrowRight
-                color="black"
-                style={{width: rem(16), height: rem(16)}}
-              />
-            </ThemeIcon>
-          }
-          previousControlIcon={
-            <ThemeIcon color="#ccc" radius="xl">
-              <IconArrowLeft
-                color="black"
-                style={{width: rem(16), height: rem(16)}}
-              />
-            </ThemeIcon>
-          }
-          controlsOffset="xs"
-          controlSize={40}
+          getEmblaApi={setEmbla}
+          withControls={false}
           containScroll="trimSnaps"
-          style={{paddingLeft: '60px', paddingRight: '60px'}}
         >
           {days}
         </Carousel>
@@ -110,7 +114,7 @@ export default function TreatmentPickDatetime({
 
       {slots ? (
         <div>
-          <Title order={4} mb="sm" fw={400}>
+          <Title order={4} mb="sm" fw={400} size="md">
             Vælge tid:
           </Title>
           <SimpleGrid cols={3} spacing="sm">
