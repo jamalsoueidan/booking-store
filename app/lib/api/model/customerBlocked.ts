@@ -11,4 +11,5 @@ export interface CustomerBlocked {
   end: string;
   start: string;
   title: string;
+  type: string;
 }

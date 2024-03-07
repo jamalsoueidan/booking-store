@@ -3787,6 +3787,7 @@ export const customerBlockedCreateResponse = zod.object({
     start: zod.string(),
     end: zod.string(),
     title: zod.string(),
+    type: zod.string(),
   }),
 });
 
@@ -3832,6 +3833,7 @@ export const customerBlockedListResponse = zod.object({
         start: zod.string(),
         end: zod.string(),
         title: zod.string(),
+        type: zod.string(),
       }),
     ),
   }),
@@ -3859,6 +3861,7 @@ export const customerBlockedRangeResponse = zod.object({
       start: zod.string(),
       end: zod.string(),
       title: zod.string(),
+      type: zod.string(),
     }),
   ),
 });

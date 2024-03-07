@@ -1097,12 +1097,15 @@ components:
           type: string
         title:
           type: string
+        type:
+          type: string
       required:
         - id
         - customerId
         - start
         - end
         - title
+        - type
     CustomerBlockedCreateBody:
       type: object
       properties:
