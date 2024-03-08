@@ -158,7 +158,7 @@ export default function AccountBusiness() {
             <TextEditor
               content={aboutMe.defaultValue}
               onUpdate={({editor}) => {
-                control.change(editor.getJSON() as any);
+                control.change(JSON.stringify(editor.getJSON()) as any);
               }}
             />
           </div>
