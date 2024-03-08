@@ -19,6 +19,7 @@ import {
 } from '@remix-run/react';
 import {Suspense} from 'react';
 import {ArtistProduct} from '~/components/artist/ArtistProduct';
+import {Viewer} from '~/components/richtext/viewer';
 import {PRODUCT_ITEM_FRAGMENT} from '~/data/fragments';
 import {getBookingShopifyApi} from '~/lib/api/bookingShopifyApi';
 import type {
@@ -107,10 +108,12 @@ export default function ArtistIndex() {
         </Suspense>
       </SimpleGrid>
 
-      <Stack gap="xs" mt="xl">
-        <Title size={rem(28)}>Om mig</Title>
-        {artist.aboutMe}
-      </Stack>
+      {artist.aboutMe ? (
+        <Stack gap="xs" mt="xl">
+          <Title size={rem(28)}>Om mig</Title>
+          <Viewer content={artist.aboutMe} />
+        </Stack>
+      ) : null}
     </Stack>
   );
 }
