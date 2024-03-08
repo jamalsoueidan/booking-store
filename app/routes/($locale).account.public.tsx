@@ -102,7 +102,7 @@ export default function AccountBusiness() {
             />
 
             <Radio.Group
-              label="Hvad er din køn?"
+              label="Hvad er dit køn?"
               withAsterisk
               {...conform.input(gender)}
             >
@@ -149,6 +149,7 @@ export default function AccountBusiness() {
               label="Skriv kort beskrivelse"
               {...conform.input(shortDescription)}
             />
+
             <Textarea
               label="Om mig"
               placeholder="Fortæl om dig selv"

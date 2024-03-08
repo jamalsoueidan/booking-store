@@ -6,14 +6,14 @@ export function setNotification(
   context: AppLoadContext,
   data: NotificationData,
 ) {
-  context.session.set('notify', data);
+  context.session.set('notify', {...data, withBorder: true});
 }
 
 export async function redirectWithNotification(
   context: AppLoadContext,
   data: NotificationData & {redirectUrl: string},
 ) {
-  context.session.set('notify', data);
+  context.session.set('notify', {...data, withBorder: true});
 
   return redirect(data.redirectUrl, {
     headers: {

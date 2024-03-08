@@ -15,6 +15,7 @@ import {
 import type {CustomerFragment} from 'storefrontapi.generated';
 import {AccountContent} from '~/components/account/AccountContent';
 import {AccountTitle} from '~/components/account/AccountTitle';
+import {setNotification} from '~/lib/show-notification';
 
 export type ActionResponse = {
   error: string | null;
@@ -86,6 +87,12 @@ export async function action({request, context}: ActionFunctionArgs) {
         updated.customerUpdate?.customerAccessToken,
       );
     }
+
+    setNotification(context, {
+      title: 'Adgangskode opdateret',
+      message: 'Din adgangskode er nu opdateret.',
+      type: 'success',
+    });
 
     return json(
       {error: null, customer: updated.customerUpdate?.customer},

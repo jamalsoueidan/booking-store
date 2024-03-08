@@ -1,10 +1,10 @@
-import {conform, useFieldset, useForm} from '@conform-to/react';
+import {conform, useForm} from '@conform-to/react';
 import {parse} from '@conform-to/zod';
 import {
+  Blockquote,
   Group,
   Radio,
   Stack,
-  Text,
   TextInput,
   Textarea,
   rem,
@@ -19,7 +19,7 @@ import {
 } from '@shopify/remix-oxygen';
 import {SubmitButton} from '~/components/form/SubmitButton';
 
-import {IconAt, IconCheck, IconExclamationCircle} from '@tabler/icons-react';
+import {IconCheck, IconExclamationCircle} from '@tabler/icons-react';
 import {type z} from 'zod';
 import {AccountContent} from '~/components/account/AccountContent';
 import {AccountTitle} from '~/components/account/AccountTitle';
@@ -35,6 +35,10 @@ export const schema = customerCreateBody.omit({
   customerId: true,
   phone: true,
   email: true,
+  aboutMe: true,
+  specialties: true,
+  social: true,
+  yearsExperience: true,
 });
 
 export async function action({request, params, context}: ActionFunctionArgs) {
@@ -64,13 +68,21 @@ export async function action({request, params, context}: ActionFunctionArgs) {
     if (!customer) {
       return redirect('/account/login');
     }
-
     await getBookingShopifyApi().customerCreate({
       ...submission.value,
       customerId: parseInt(parseGid(customer.id).id),
       phone: customer.phone || '',
       email: customer.email || '',
       fullname: `${customer.firstName} ${customer.lastName}`,
+      aboutMe: '',
+      yearsExperience: '1',
+      social: {
+        facebook: '',
+        instagram: '',
+        x: '',
+        youtube: '',
+      },
+      specialties: [],
     });
 
     return redirectWithNotification(context, {
@@ -122,9 +134,6 @@ export async function loader({context, params}: LoaderFunctionArgs) {
   const {payload: professionOptions} =
     await getBookingShopifyApi().metaProfessions();
 
-  const {payload: specialityOptions} =
-    await getBookingShopifyApi().metaspecialties();
-
   const username = convertToValidUrlPath(
     customer.firstName || '',
     customer.lastName || '',
@@ -135,7 +144,6 @@ export async function loader({context, params}: LoaderFunctionArgs) {
 
   return json({
     professionOptions,
-    specialityOptions,
     defaultValue: {
       username: !usernameTaken.usernameTaken
         ? username
@@ -144,55 +152,31 @@ export async function loader({context, params}: LoaderFunctionArgs) {
             customer.lastName || '',
             true,
           ),
-      aboutMe: '',
       shortDescription: '',
       professions: [],
-      specialties: [],
       speaks: [],
       yearsExperience: '1',
-      social: {
-        instagram: '',
-        facebook: '',
-        twitter: '',
-        youtube: '',
-        website: '',
-      },
-      gender: 'female',
+      gender: 'woman',
     } as z.infer<typeof schema>,
   });
 }
 
 export default function AccountBusiness() {
   const lastSubmission = useActionData<typeof action>();
-  const {professionOptions, defaultValue, specialityOptions} =
-    useLoaderData<typeof loader>();
+  const {professionOptions, defaultValue} = useLoaderData<typeof loader>();
 
-  const [
-    form,
-    {
-      username,
-      shortDescription,
-      aboutMe,
-      gender,
-      speaks,
-      yearsExperience,
-      social,
-      professions,
-      specialties,
-    },
-  ] = useForm({
-    lastSubmission,
-    defaultValue,
-    onValidate({formData}) {
-      return parse(formData, {
-        schema,
-      });
-    },
-    shouldValidate: 'onSubmit',
-    shouldRevalidate: 'onInput',
-  });
-
-  const {instagram, x, youtube, facebook} = useFieldset(form.ref, social);
+  const [form, {username, shortDescription, gender, speaks, professions}] =
+    useForm({
+      lastSubmission,
+      defaultValue,
+      onValidate({formData}) {
+        return parse(formData, {
+          schema,
+        });
+      },
+      shouldValidate: 'onSubmit',
+      shouldRevalidate: 'onInput',
+    });
 
   const fetcher = useFetcher<UserUsernameTakenResponsePayload>();
 
@@ -205,11 +189,19 @@ export default function AccountBusiness() {
       <AccountTitle heading="Register selvstændig" />
 
       <AccountContent>
-        <Text mb="md">
-          Du er igang med at register dig på bySisters som selvstændig
-          skønhedsekspert, det betyder at du nu kan modtag bookings fra kunder
-          der er interesseret i din ydelser som du tilbyder via bysisters.dk
-        </Text>
+        <Blockquote color="lime" my="md">
+          Du er i gang med at registrere dig som selvstændig skønhedsekspert, og
+          vi er begejstrede for at have dig med på holdet. Ved at blive en del
+          af bySisters, træder du ind i et fællesskab, hvor passion for skønhed
+          og ekspertise mødes for at skabe unikke oplevelser for kunderne.{' '}
+          <br />
+          For at fuldføre din registrering, bedes du udfylde de nødvendige
+          oplysninger om dig selv og de ydelser, du tilbyder. Dette vil gøre det
+          muligt for potentielle kunder at finde og booke dig gennem
+          bySisters.dk. Vi ser frem til at se, hvordan du vil berige vores
+          fællesskab med din ekspertise og passion for skønhed. Velkommen til
+          bySisters – sammen skaber vi skønhed!
+        </Blockquote>
 
         <Form method="post" {...form.props}>
           <Stack gap="md">
@@ -233,13 +225,12 @@ export default function AccountBusiness() {
             />
 
             <Radio.Group
-              label="Hvad er din køn?"
+              label="Hvad er dit køn?"
               withAsterisk
               {...conform.input(gender)}
             >
               <Group mt="xs">
                 <Radio value="woman" label="Kvinde" />
-
                 <Radio value="man" label="Mand" />
               </Group>
             </Radio.Group>
@@ -250,19 +241,6 @@ export default function AccountBusiness() {
               name="professions"
               label="Professioner"
               placeholder="Vælg professioner"
-            />
-
-            <TextInput
-              label="Års erfaring"
-              {...conform.input(yearsExperience)}
-            />
-
-            <MultiTags
-              field={specialties}
-              data={specialityOptions}
-              name="specialties"
-              label="Hvad er dine specialer?"
-              placeholder="Vælge special(er)?"
             />
 
             <MultiTags
@@ -276,48 +254,11 @@ export default function AccountBusiness() {
               placeholder="Vælge sprog"
             />
 
-            <TextInput
-              label="Skriv kort beskrivelse"
-              {...conform.input(shortDescription)}
-            />
             <Textarea
-              label="Om mig"
-              placeholder="Fortæl om dig selv"
-              {...conform.input(aboutMe)}
-              error={aboutMe.error && 'Udfyld venligst din biografi'}
+              label="Skriv kort beskrivelse om dig selv"
+              {...conform.input(shortDescription)}
+              error={shortDescription.error && 'Udfyld venligst'}
               minRows={10}
-            />
-
-            <TextInput
-              leftSectionPointerEvents="none"
-              leftSection={<IconAt style={{width: rem(16), height: rem(16)}} />}
-              label="Instagram"
-              placeholder="Instagram profil"
-              {...conform.input(instagram)}
-            />
-
-            <TextInput
-              leftSectionPointerEvents="none"
-              leftSection={<IconAt style={{width: rem(16), height: rem(16)}} />}
-              label="Twitter (X)"
-              placeholder="Twitter (X)"
-              {...conform.input(x)}
-            />
-
-            <TextInput
-              leftSectionPointerEvents="none"
-              leftSection={<IconAt style={{width: rem(16), height: rem(16)}} />}
-              label="Facebook"
-              placeholder="Facebook profil"
-              {...conform.input(facebook)}
-            />
-
-            <TextInput
-              leftSectionPointerEvents="none"
-              leftSection={<IconAt style={{width: rem(16), height: rem(16)}} />}
-              label="Youtube"
-              placeholder="Youtube profil"
-              {...conform.input(youtube)}
             />
 
             <div>

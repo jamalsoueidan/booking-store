@@ -167,8 +167,8 @@ export default function AccountProfile() {
       <AccountContent>
         {comingFromBusiness ? (
           <Blockquote color="lime" my="md">
-            Før du kan register dig som skønhedsekspert, bedes du udfylde du
-            udfylder alle felter og trykke på opdatere.
+            Før du kan register dig som skønhedsekspert, bedes du udfylde alle
+            felter og trykke på gem.
           </Blockquote>
         ) : undefined}
 
