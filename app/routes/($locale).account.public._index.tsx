@@ -152,7 +152,7 @@ export default function AccountBusiness() {
           />
 
           <div>
-            <Text size="sm" mb={rem(3)}>
+            <Text size="sm" mb={rem(2)} fw={500}>
               Fortæl om dig selv og din erfaring:
             </Text>
             <TextEditor
