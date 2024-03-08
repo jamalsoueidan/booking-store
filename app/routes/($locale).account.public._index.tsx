@@ -12,7 +12,7 @@ import {parse} from '@conform-to/zod';
 import {useRef} from 'react';
 import {MultiTags} from '~/components/form/MultiTags';
 import {SubmitButton} from '~/components/form/SubmitButton';
-import {Editor} from '~/components/richtext/Editor';
+import {TextEditor} from '~/components/richtext/TextEditor';
 import {getBookingShopifyApi} from '~/lib/api/bookingShopifyApi';
 import {getCustomer} from '~/lib/get-customer';
 import {redirectWithNotification} from '~/lib/show-notification';
@@ -155,7 +155,7 @@ export default function AccountBusiness() {
             <Text size="sm" mb={rem(3)}>
               Fortæl om dig selv og din erfaring:
             </Text>
-            <Editor
+            <TextEditor
               content={aboutMe.defaultValue}
               onUpdate={({editor}) => {
                 control.change(editor.getJSON() as any);

@@ -7,7 +7,7 @@ import Underline from '@tiptap/extension-underline';
 import {generateHTML} from '@tiptap/html';
 import StarterKit from '@tiptap/starter-kit';
 import {useMemo} from 'react';
-import {isJsonString} from './Editor';
+import {isJsonString} from './TextEditor';
 
 const defaultContent = {
   type: 'doc',
@@ -42,7 +42,7 @@ const defaultContent = {
   ],
 };
 
-export function Viewer({content}: {content: string}) {
+export function TextViewer({content}: {content: string}) {
   const haveContent = isJsonString(content as any);
   const contentJSON = haveContent ? JSON.parse(content as any) : defaultContent;
 

@@ -50,7 +50,7 @@ export function isJsonString(str: string) {
   return true;
 }
 
-export function Editor(options?: Partial<EditorOptions>) {
+export function TextEditor(options?: Partial<EditorOptions>) {
   const haveContent = options ? isJsonString(options?.content as any) : false;
   const content = haveContent
     ? JSON.parse(options?.content as any)
