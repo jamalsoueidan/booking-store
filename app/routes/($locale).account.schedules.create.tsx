@@ -1,8 +1,8 @@
-import {conform, useForm} from '@conform-to/react';
-import {parse} from '@conform-to/zod';
+import {getFormProps, getInputProps, useForm} from '@conform-to/react';
+import {parseWithZod} from '@conform-to/zod';
 import {FocusTrap, Stack, TextInput} from '@mantine/core';
 import {Form, useActionData} from '@remix-run/react';
-import {json, type ActionFunctionArgs} from '@shopify/remix-oxygen';
+import {type ActionFunctionArgs} from '@shopify/remix-oxygen';
 import {SubmitButton} from '~/components/form/SubmitButton';
 import {getBookingShopifyApi} from '~/lib/api/bookingShopifyApi';
 import {getCustomer} from '~/lib/get-customer';
@@ -14,10 +14,10 @@ const schema = customerScheduleCreateBody;
 export const action = async ({request, context}: ActionFunctionArgs) => {
   const customer = await getCustomer({context});
   const formData = await request.formData();
-  const submission = parse(formData, {schema});
+  const submission = parseWithZod(formData, {schema});
 
-  if (submission.intent !== 'submit' || !submission.value) {
-    return json(submission);
+  if (submission.status !== 'success') {
+    return submission.reply();
   }
 
   try {
@@ -33,20 +33,20 @@ export const action = async ({request, context}: ActionFunctionArgs) => {
       color: 'green',
     });
   } catch (error) {
-    return json(submission);
+    return submission.reply();
   }
 };
 
 export default function AccountSchedulesCreate({close}: {close: () => void}) {
-  const lastSubmission = useActionData<typeof action>();
+  const lastResult = useActionData<typeof action>();
 
   const [form, {name}] = useForm({
-    lastSubmission,
+    lastResult,
     defaultValue: {
       name: '',
     },
     onValidate({formData}) {
-      return parse(formData, {
+      return parseWithZod(formData, {
         schema,
       });
     },
@@ -59,12 +59,12 @@ export default function AccountSchedulesCreate({close}: {close: () => void}) {
 
   return (
     <FocusTrap active={true}>
-      <Form method="PUT" action="create" {...form.props}>
+      <Form method="PUT" action="create" {...getFormProps(form)}>
         <Stack>
           <TextInput
             label="Navn"
             autoComplete="off"
-            {...conform.input(name)}
+            {...getInputProps(name, {type: 'text'})}
             data-autofocus
           />
           <SubmitButton>Opret</SubmitButton>
