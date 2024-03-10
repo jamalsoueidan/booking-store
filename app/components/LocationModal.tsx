@@ -1,7 +1,7 @@
 import {Button, Group, Stack, Text, TextInput} from '@mantine/core';
 import {useFetcher} from '@remix-run/react';
 import {useEffect, useState} from 'react';
-import {AddressAutocompleteInput} from '~/components/AddressAutocompleteInput';
+import {AddressAutocompleteInput} from '~/components/form/AddressAutocompleteInput';
 import {type CustomerLocation, type Shipping} from '~/lib/api/model';
 import MobileModal from './MobileModal';
 

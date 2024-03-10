@@ -1,4 +1,3 @@
-import {type conform} from '@conform-to/react';
 import {Combobox, TextInput, useCombobox} from '@mantine/core';
 import {useFetcher} from '@remix-run/react';
 import {useEffect, useState} from 'react';
@@ -8,14 +7,16 @@ export type AddressAutocompleteInputProps = {
   label: string;
   placeholder: string;
   error?: string;
-} & ReturnType<typeof conform.input>;
+  defaultValue?: string;
+  name: string;
+};
 
 export function AddressAutocompleteInput({
   label,
   placeholder,
   defaultValue,
   error,
-  ...config
+  name,
 }: AddressAutocompleteInputProps) {
   const fetcher = useFetcher<Array<ApiAutoCompleteProposal>>();
   const [query, setQuery] = useState({
@@ -91,7 +92,7 @@ export function AddressAutocompleteInput({
           value={value}
           placeholder={placeholder}
           error={error}
-          {...config}
+          name={name}
           onChange={(event) => {
             setValue(event.currentTarget.value);
             setQuery({...query, q: event.currentTarget.value});

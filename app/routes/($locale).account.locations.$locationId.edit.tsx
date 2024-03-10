@@ -14,9 +14,9 @@ import {customerLocationUpdateBody} from '~/lib/zod/bookingShopifyApi';
 import {parseWithZod} from '@conform-to/zod';
 import {Stack, TextInput} from '@mantine/core';
 import {parseGid} from '@shopify/hydrogen';
-import {AddressAutocompleteInput} from '~/components/AddressAutocompleteInput';
 import {AccountContent} from '~/components/account/AccountContent';
 import {AccountTitle} from '~/components/account/AccountTitle';
+import {AddressAutocompleteInput} from '~/components/form/AddressAutocompleteInput';
 import {NumericInput} from '~/components/form/NumericInput';
 import {SubmitButton} from '~/components/form/SubmitButton';
 
