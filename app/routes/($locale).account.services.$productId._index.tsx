@@ -1,5 +1,10 @@
-import {conform, useForm} from '@conform-to/react';
-import {parse} from '@conform-to/zod';
+import {
+  getFormProps,
+  getInputProps,
+  getSelectProps,
+  useForm,
+} from '@conform-to/react';
+import {parseWithZod} from '@conform-to/zod';
 import {Flex, Select, Stack, TextInput} from '@mantine/core';
 import {Form, useActionData, useLoaderData} from '@remix-run/react';
 import {
@@ -47,12 +52,12 @@ export const action = async ({
   }
 
   const formData = await request.formData();
-  const submission = parse(formData, {
+  const submission = parseWithZod(formData, {
     schema,
   });
 
-  if (submission.intent !== 'submit' || !submission.value) {
-    return json(submission);
+  if (submission.status !== 'success') {
+    return submission.reply();
   }
 
   try {
@@ -84,7 +89,7 @@ export const action = async ({
 
     return redirect(`/account/services/${response.payload.productId}`);
   } catch (error) {
-    return json(submission);
+    return submission.reply();
   }
 };
 
@@ -135,12 +140,12 @@ export default function EditAddress() {
   const {locations, schedules, selectedProduct, defaultValue} =
     useLoaderData<typeof loader>();
 
-  const lastSubmission = useActionData<typeof action>();
+  const lastResult = useActionData<typeof action>();
   const [form, fields] = useForm({
-    lastSubmission,
+    lastResult,
     defaultValue,
     onValidate({formData}) {
-      return parse(formData, {
+      return parseWithZod(formData, {
         schema,
       });
     },
@@ -161,7 +166,7 @@ export default function EditAddress() {
       />
 
       <AccountContent>
-        <Form method="put" {...form.props}>
+        <Form method="put" {...getFormProps(form)}>
           <Stack>
             <TextInput
               label="Hvilken ydelse vil du tilbyde?"
@@ -185,8 +190,9 @@ export default function EditAddress() {
             <Select
               label="Hvilken vagtplan vil du tilknytte den ydelse på."
               data={selectSchedules}
-              {...conform.select(fields.scheduleId)}
-              defaultValue={fields.scheduleId.defaultValue}
+              {...getSelectProps(fields.scheduleId)}
+              allowDeselect={false}
+              defaultValue={fields.scheduleId.initialValue}
             />
 
             <Flex align={'flex-end'} gap="xs">
@@ -194,13 +200,13 @@ export default function EditAddress() {
                 w="50%"
                 label="Behandlingstid:"
                 rightSection="min"
-                {...conform.input(fields.duration)}
+                {...getInputProps(fields.duration, {type: 'number'})}
               />
               <TextInput
                 w="50%"
                 label="Pause efter behandling:"
                 rightSection="min"
-                {...conform.input(fields.breakTime)}
+                {...getInputProps(fields.breakTime, {type: 'number'})}
               />
             </Flex>
 

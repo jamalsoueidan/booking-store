@@ -1,5 +1,10 @@
-import {conform, useForm} from '@conform-to/react';
-import {parse} from '@conform-to/zod';
+import {
+  getFormProps,
+  getInputProps,
+  getSelectProps,
+  useForm,
+} from '@conform-to/react';
+import {parseWithZod} from '@conform-to/zod';
 import {Flex, Select, Stack, TextInput} from '@mantine/core';
 import {Form, useActionData, useLoaderData} from '@remix-run/react';
 import {
@@ -20,7 +25,6 @@ import {PRODUCT_ITEM_FRAGMENT} from '~/data/fragments';
 import {VARIANTS_QUERY_ID} from '~/data/queries';
 import {getBookingShopifyApi} from '~/lib/api/bookingShopifyApi';
 
-import {useState} from 'react';
 import {AccountContent} from '~/components/account/AccountContent';
 import {AccountTitle} from '~/components/account/AccountTitle';
 import {isEqualGid} from '~/data/isEqualGid';
@@ -46,12 +50,12 @@ export const action = async ({request, context}: ActionFunctionArgs) => {
   const customer = await getCustomer({context});
 
   const formData = await request.formData();
-  const submission = parse(formData, {
+  const submission = parseWithZod(formData, {
     schema,
   });
 
-  if (submission.intent !== 'submit' || !submission.value) {
-    return json(submission);
+  if (submission.status !== 'success') {
+    return submission.reply();
   }
 
   try {
@@ -85,7 +89,7 @@ export const action = async ({request, context}: ActionFunctionArgs) => {
 
     return redirect(`/account/services/${response.payload.productId}`);
   } catch (error) {
-    return json(submission);
+    return submission.reply();
   }
 };
 
@@ -109,8 +113,6 @@ export async function loader({context}: LoaderFunctionArgs) {
     locations: locations.payload,
     schedules: schedule.payload,
     defaultValue: {
-      productId: '',
-      variantId: 0,
       scheduleId: schedule.payload[0]._id,
       duration: 60,
       breakTime: 15,
@@ -134,14 +136,18 @@ export async function loader({context}: LoaderFunctionArgs) {
 
 export default function AccountServicesCreate() {
   const {locations, defaultValue, schedules} = useLoaderData<typeof loader>();
-  const lastSubmission = useActionData<typeof action>();
-  const [productId, setProductId] = useState<string | undefined>();
+  const lastResult = useActionData<typeof action>();
 
   const [form, fields] = useForm({
-    lastSubmission,
+    lastResult,
     defaultValue,
     onValidate({formData}) {
-      return parse(formData, {
+      console.log(
+        parseWithZod(formData, {
+          schema,
+        }),
+      );
+      return parseWithZod(formData, {
         schema,
       });
     },
@@ -158,19 +164,18 @@ export default function AccountServicesCreate() {
     <>
       <AccountTitle linkBack="/account/services" heading="Opret en ydelse" />
       <AccountContent>
-        <Form method="post" {...form.props}>
+        <Form method="post" {...getFormProps(form)}>
           <Stack>
             <SelectSearchable
               label="Hvilken ydelse vil du tilbyde?"
               placeholder="Vælg ydelse"
               field={fields.productId}
-              onChange={setProductId}
             />
 
-            {productId && (
+            {fields.productId.value && (
               <RadioGroupVariantsProduct
                 label="Hvad skal ydelsen koste?"
-                productId={productId}
+                productId={fields.productId.value}
                 field={fields.variantId}
               />
             )}
@@ -185,8 +190,9 @@ export default function AccountServicesCreate() {
             <Select
               label="Hvilken vagtplan vil du tilknytte den ydelse på."
               data={selectSchedules}
-              {...conform.select(fields.scheduleId)}
-              defaultValue={fields.scheduleId.defaultValue}
+              {...getSelectProps(fields.scheduleId)}
+              allowDeselect={false}
+              defaultValue={fields.scheduleId.initialValue}
             />
 
             <Flex align={'flex-end'} gap="xs">
@@ -194,13 +200,13 @@ export default function AccountServicesCreate() {
                 w="50%"
                 label="Behandlingstid:"
                 rightSection="min"
-                {...conform.input(fields.duration)}
+                {...getInputProps(fields.duration, {type: 'number'})}
               />
               <TextInput
                 w="50%"
                 label="Pause efter behandling:"
                 rightSection="min"
-                {...conform.input(fields.breakTime)}
+                {...getInputProps(fields.breakTime, {type: 'number'})}
               />
             </Flex>
 
