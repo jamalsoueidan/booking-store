@@ -5,7 +5,7 @@ import {Form, useActionData} from '@remix-run/react';
 import {parseGid} from '@shopify/hydrogen';
 import {json, redirect, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
 import type {ActionFunctionArgs} from 'react-router';
-import {z} from 'zod';
+import {type z} from 'zod';
 import DateTimeInput from '~/components/form/DateTimeInput';
 import {SubmitButton} from '~/components/form/SubmitButton';
 import {getBookingShopifyApi} from '~/lib/api/bookingShopifyApi';
