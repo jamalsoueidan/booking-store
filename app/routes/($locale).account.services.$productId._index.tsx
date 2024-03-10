@@ -1,4 +1,5 @@
 import {
+  FormProvider,
   getFormProps,
   getInputProps,
   getSelectProps,
@@ -166,70 +167,72 @@ export default function EditAddress() {
       />
 
       <AccountContent>
-        <Form method="put" {...getFormProps(form)}>
-          <Stack>
-            <TextInput
-              label="Hvilken ydelse vil du tilbyde?"
-              disabled
-              value={selectedProduct.title}
-            />
-
-            <RadioGroupVariantsProduct
-              label="Hvad skal ydelsen koste?"
-              productId={defaultValue.productId}
-              field={fields.variantId}
-            />
-
-            <SwitchGroupLocations
-              label="Fra hvilken lokation(er) vil du tilbyde den ydelse?"
-              description="Mindst (1) skal være valgt."
-              field={fields.locations}
-              data={locations}
-            />
-
-            <Select
-              label="Hvilken vagtplan vil du tilknytte den ydelse på."
-              data={selectSchedules}
-              {...getSelectProps(fields.scheduleId)}
-              allowDeselect={false}
-              defaultValue={fields.scheduleId.initialValue}
-            />
-
-            <Flex align={'flex-end'} gap="xs">
+        <FormProvider context={form.context}>
+          <Form method="put" {...getFormProps(form)}>
+            <Stack>
               <TextInput
-                w="50%"
-                label="Behandlingstid:"
-                rightSection="min"
-                {...getInputProps(fields.duration, {type: 'number'})}
+                label="Hvilken ydelse vil du tilbyde?"
+                disabled
+                value={selectedProduct.title}
               />
-              <TextInput
-                w="50%"
-                label="Pause efter behandling:"
-                rightSection="min"
-                {...getInputProps(fields.breakTime, {type: 'number'})}
+
+              <RadioGroupVariantsProduct
+                label="Hvad skal ydelsen koste?"
+                productId={defaultValue.productId}
+                field={fields.variantId}
               />
-            </Flex>
 
-            <PeriodInput
-              field={fields.bookingPeriod}
-              label="Hvor langt ude i fremtiden vil du acceptere bookinger?"
-              data={[
-                {value: 'months', label: 'Måneder'},
-                {value: 'hours', label: 'Timer'},
-              ]}
-            />
+              <SwitchGroupLocations
+                label="Fra hvilken lokation(er) vil du tilbyde den ydelse?"
+                description="Mindst (1) skal være valgt."
+                field={fields.locations}
+                data={locations}
+              />
 
-            <PeriodInput
-              field={fields.noticePeriod}
-              label="Hvor hurtigt kan du være klar?"
-              data={[
-                {value: 'days', label: 'Dage'},
-                {value: 'hours', label: 'Timer'},
-              ]}
-            />
-            <SubmitButton>Opdatere</SubmitButton>
-          </Stack>
-        </Form>
+              <Select
+                label="Hvilken vagtplan vil du tilknytte den ydelse på."
+                data={selectSchedules}
+                {...getSelectProps(fields.scheduleId)}
+                allowDeselect={false}
+                defaultValue={fields.scheduleId.initialValue}
+              />
+
+              <Flex align={'flex-end'} gap="xs">
+                <TextInput
+                  w="50%"
+                  label="Behandlingstid:"
+                  rightSection="min"
+                  {...getInputProps(fields.duration, {type: 'number'})}
+                />
+                <TextInput
+                  w="50%"
+                  label="Pause efter behandling:"
+                  rightSection="min"
+                  {...getInputProps(fields.breakTime, {type: 'number'})}
+                />
+              </Flex>
+
+              <PeriodInput
+                field={fields.bookingPeriod}
+                label="Hvor langt ude i fremtiden vil du acceptere bookinger?"
+                data={[
+                  {value: 'months', label: 'Måneder'},
+                  {value: 'hours', label: 'Timer'},
+                ]}
+              />
+
+              <PeriodInput
+                field={fields.noticePeriod}
+                label="Hvor hurtigt kan du være klar?"
+                data={[
+                  {value: 'days', label: 'Dage'},
+                  {value: 'hours', label: 'Timer'},
+                ]}
+              />
+              <SubmitButton>Opdatere</SubmitButton>
+            </Stack>
+          </Form>
+        </FormProvider>
       </AccountContent>
     </>
   );

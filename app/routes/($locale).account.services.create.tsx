@@ -1,4 +1,5 @@
 import {
+  FormProvider,
   getFormProps,
   getInputProps,
   getSelectProps,
@@ -164,73 +165,75 @@ export default function AccountServicesCreate() {
     <>
       <AccountTitle linkBack="/account/services" heading="Opret en ydelse" />
       <AccountContent>
-        <Form method="post" {...getFormProps(form)}>
-          <Stack>
-            <SelectSearchable
-              label="Hvilken ydelse vil du tilbyde?"
-              placeholder="Vælg ydelse"
-              field={fields.productId}
-            />
-
-            {fields.productId.value && (
-              <RadioGroupVariantsProduct
-                label="Hvad skal ydelsen koste?"
-                productId={fields.productId.value}
-                field={fields.variantId}
+        <FormProvider context={form.context}>
+          <Form method="post" {...getFormProps(form)}>
+            <Stack>
+              <SelectSearchable
+                label="Hvilken ydelse vil du tilbyde?"
+                placeholder="Vælg ydelse"
+                field={fields.productId}
               />
-            )}
 
-            <SwitchGroupLocations
-              label="Fra hvilken lokation(er) vil du tilbyde den ydelse?"
-              description="Mindst (1) skal være valgt."
-              field={fields.locations}
-              data={locations}
-            />
+              {fields.productId.value && (
+                <RadioGroupVariantsProduct
+                  label="Hvad skal ydelsen koste?"
+                  productId={fields.productId.value}
+                  field={fields.variantId}
+                />
+              )}
 
-            <Select
-              label="Hvilken vagtplan vil du tilknytte den ydelse på."
-              data={selectSchedules}
-              {...getSelectProps(fields.scheduleId)}
-              allowDeselect={false}
-              defaultValue={fields.scheduleId.initialValue}
-            />
-
-            <Flex align={'flex-end'} gap="xs">
-              <TextInput
-                w="50%"
-                label="Behandlingstid:"
-                rightSection="min"
-                {...getInputProps(fields.duration, {type: 'number'})}
+              <SwitchGroupLocations
+                label="Fra hvilken lokation(er) vil du tilbyde den ydelse?"
+                description="Mindst (1) skal være valgt."
+                field={fields.locations}
+                data={locations}
               />
-              <TextInput
-                w="50%"
-                label="Pause efter behandling:"
-                rightSection="min"
-                {...getInputProps(fields.breakTime, {type: 'number'})}
+
+              <Select
+                label="Hvilken vagtplan vil du tilknytte den ydelse på."
+                data={selectSchedules}
+                {...getSelectProps(fields.scheduleId)}
+                allowDeselect={false}
+                defaultValue={fields.scheduleId.initialValue}
               />
-            </Flex>
 
-            <PeriodInput
-              field={fields.bookingPeriod}
-              label="Hvor langt ude i fremtiden vil du acceptere bookinger?"
-              data={[
-                {value: 'months', label: 'Måneder'},
-                {value: 'hours', label: 'Timer'},
-              ]}
-            />
+              <Flex align={'flex-end'} gap="xs">
+                <TextInput
+                  w="50%"
+                  label="Behandlingstid:"
+                  rightSection="min"
+                  {...getInputProps(fields.duration, {type: 'number'})}
+                />
+                <TextInput
+                  w="50%"
+                  label="Pause efter behandling:"
+                  rightSection="min"
+                  {...getInputProps(fields.breakTime, {type: 'number'})}
+                />
+              </Flex>
 
-            <PeriodInput
-              field={fields.noticePeriod}
-              label="Minimum tid før ankomst en kunde kan booke online?"
-              data={[
-                {value: 'days', label: 'Dage'},
-                {value: 'hours', label: 'Timer'},
-              ]}
-            />
+              <PeriodInput
+                field={fields.bookingPeriod}
+                label="Hvor langt ude i fremtiden vil du acceptere bookinger?"
+                data={[
+                  {value: 'months', label: 'Måneder'},
+                  {value: 'hours', label: 'Timer'},
+                ]}
+              />
 
-            <SubmitButton>Tilføj ny ydelse</SubmitButton>
-          </Stack>
-        </Form>
+              <PeriodInput
+                field={fields.noticePeriod}
+                label="Minimum tid før ankomst en kunde kan booke online?"
+                data={[
+                  {value: 'days', label: 'Dage'},
+                  {value: 'hours', label: 'Timer'},
+                ]}
+              />
+
+              <SubmitButton>Tilføj ny ydelse</SubmitButton>
+            </Stack>
+          </Form>
+        </FormProvider>
       </AccountContent>
     </>
   );

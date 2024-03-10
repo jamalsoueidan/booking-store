@@ -1,6 +1,6 @@
-import {type FieldMetadata} from '@conform-to/react';
+import {useField, type FieldMetadata} from '@conform-to/react';
 import {Stack, Switch} from '@mantine/core';
-import React, {useCallback, useState} from 'react';
+import React, {useCallback} from 'react';
 import type {
   CustomerLocation,
   CustomerProductLocationsItem,
@@ -19,50 +19,33 @@ export function SwitchGroupLocations({
   data,
   field,
 }: SwitchGroupLocations) {
-  const initialValue = field
-    .getFieldList()
-    .filter(
-      (item) =>
-        !!item.initialValue &&
-        !!item.initialValue.location &&
-        !!item.initialValue.locationType,
-    )
-    .map((item) => ({
-      ...(item.initialValue as CustomerProductLocationsItem),
-    }));
-
-  const [list, setList] =
-    useState<Array<CustomerProductLocationsItem>>(initialValue);
+  const [, form] = useField(field.name);
+  const list = field.getFieldList();
 
   const handleChange = useCallback(
     (value: string[]) => {
-      if (value.length === 0) {
-        return;
+      if (value.length > 0) {
+        form.update({
+          name: field.name,
+          value: value
+            .map((locationId) =>
+              data.find((location) => location._id === locationId),
+            )
+            .filter(Boolean) // This removes any undefined or null values that were not found in the data array
+            .map((newLocation) => ({
+              location: newLocation._id,
+              locationType: newLocation.locationType,
+            })),
+        });
       }
-
-      const locations: Array<CustomerProductLocationsItem> = [];
-      value.forEach((locationId) => {
-        const newLocation = data.find(
-          (location) => location._id === locationId,
-        );
-
-        if (newLocation) {
-          locations.push({
-            location: newLocation._id,
-            locationType: newLocation.locationType,
-          });
-        }
-      });
-
-      setList(locations);
     },
-    [data],
+    [data, field.name, form],
   );
 
   return (
     <Switch.Group
       description={description}
-      value={list.map((l) => l.location)}
+      value={list.map((l) => l.initialValue?.location!)}
       label={label}
       onChange={handleChange}
     >
@@ -73,16 +56,16 @@ export function SwitchGroupLocations({
       </Stack>
 
       {list.map((item, index) => (
-        <React.Fragment key={item.location}>
+        <React.Fragment key={item.id}>
           <input
             hidden
             name={`${field.name}[${index}].location`}
-            defaultValue={item.location}
+            defaultValue={item.initialValue?.location}
           />
           <input
             hidden
             name={`${field.name}[${index}].locationType`}
-            defaultValue={item.locationType}
+            defaultValue={item.initialValue?.locationType}
           />
         </React.Fragment>
       ))}
