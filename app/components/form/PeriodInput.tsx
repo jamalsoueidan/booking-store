@@ -1,6 +1,9 @@
-import {conform, useFieldset, type FieldConfig} from '@conform-to/react';
+import {
+  getInputProps,
+  getSelectProps,
+  type FieldMetadata,
+} from '@conform-to/react';
 import {Flex, Select, TextInput, type TextInputProps} from '@mantine/core';
-import {useRef} from 'react';
 import {
   type CustomerProductBookingPeriod,
   type CustomerProductNoticePeriod,
@@ -8,24 +11,28 @@ import {
 
 export type PeriodInputProps = {
   data: Array<{label: string; value: string}>;
-  field: FieldConfig<
+  field: FieldMetadata<
     CustomerProductBookingPeriod | CustomerProductNoticePeriod
   >;
 } & TextInputProps;
 
 export default function PeriodInput({data, field, ...props}: PeriodInputProps) {
-  const ref = useRef<HTMLFieldSetElement>(null);
-  const noticePeriod = useFieldset(ref, field);
+  const noticePeriod = field.getFieldset();
 
   return (
-    <fieldset ref={ref}>
+    <fieldset>
       <Flex align={'flex-end'} gap="xs">
-        <TextInput w="70%" {...props} {...conform.input(noticePeriod.value)} />
+        <TextInput
+          w="70%"
+          {...props}
+          {...getInputProps(noticePeriod.value, {type: 'number'})}
+        />
         <Select
           w="30%"
           data={data}
-          {...conform.select(noticePeriod.unit)}
-          defaultValue={field.defaultValue.unit}
+          allowDeselect={false}
+          {...getSelectProps(noticePeriod.unit)}
+          defaultValue={field.initialValue?.unit}
         />
       </Flex>
     </fieldset>

@@ -1,5 +1,11 @@
-import {conform, useForm} from '@conform-to/react';
-import {parse} from '@conform-to/zod';
+import {
+  FormProvider,
+  getFormProps,
+  getInputProps,
+  getSelectProps,
+  useForm,
+} from '@conform-to/react';
+import {parseWithZod} from '@conform-to/zod';
 import {Flex, Select, Stack, TextInput} from '@mantine/core';
 import {Form, useActionData, useLoaderData} from '@remix-run/react';
 import {
@@ -47,12 +53,12 @@ export const action = async ({
   }
 
   const formData = await request.formData();
-  const submission = parse(formData, {
+  const submission = parseWithZod(formData, {
     schema,
   });
 
-  if (submission.intent !== 'submit' || !submission.value) {
-    return json(submission);
+  if (submission.status !== 'success') {
+    return submission.reply();
   }
 
   try {
@@ -84,7 +90,7 @@ export const action = async ({
 
     return redirect(`/account/services/${response.payload.productId}`);
   } catch (error) {
-    return json(submission);
+    return submission.reply();
   }
 };
 
@@ -135,12 +141,12 @@ export default function EditAddress() {
   const {locations, schedules, selectedProduct, defaultValue} =
     useLoaderData<typeof loader>();
 
-  const lastSubmission = useActionData<typeof action>();
+  const lastResult = useActionData<typeof action>();
   const [form, fields] = useForm({
-    lastSubmission,
+    lastResult,
     defaultValue,
     onValidate({formData}) {
-      return parse(formData, {
+      return parseWithZod(formData, {
         schema,
       });
     },
@@ -161,69 +167,72 @@ export default function EditAddress() {
       />
 
       <AccountContent>
-        <Form method="put" {...form.props}>
-          <Stack>
-            <TextInput
-              label="Hvilken ydelse vil du tilbyde?"
-              disabled
-              value={selectedProduct.title}
-            />
-
-            <RadioGroupVariantsProduct
-              label="Hvad skal ydelsen koste?"
-              productId={defaultValue.productId}
-              field={fields.variantId}
-            />
-
-            <SwitchGroupLocations
-              label="Fra hvilken lokation(er) vil du tilbyde den ydelse?"
-              description="Mindst (1) skal være valgt."
-              field={fields.locations}
-              data={locations}
-            />
-
-            <Select
-              label="Hvilken vagtplan vil du tilknytte den ydelse på."
-              data={selectSchedules}
-              {...conform.select(fields.scheduleId)}
-              defaultValue={fields.scheduleId.defaultValue}
-            />
-
-            <Flex align={'flex-end'} gap="xs">
+        <FormProvider context={form.context}>
+          <Form method="put" {...getFormProps(form)}>
+            <Stack>
               <TextInput
-                w="50%"
-                label="Behandlingstid:"
-                rightSection="min"
-                {...conform.input(fields.duration)}
+                label="Hvilken ydelse vil du tilbyde?"
+                disabled
+                value={selectedProduct.title}
               />
-              <TextInput
-                w="50%"
-                label="Pause efter behandling:"
-                rightSection="min"
-                {...conform.input(fields.breakTime)}
+
+              <RadioGroupVariantsProduct
+                label="Hvad skal ydelsen koste?"
+                productId={defaultValue.productId}
+                field={fields.variantId}
               />
-            </Flex>
 
-            <PeriodInput
-              field={fields.bookingPeriod}
-              label="Hvor langt ude i fremtiden vil du acceptere bookinger?"
-              data={[
-                {value: 'months', label: 'Måneder'},
-                {value: 'hours', label: 'Timer'},
-              ]}
-            />
+              <SwitchGroupLocations
+                label="Fra hvilken lokation(er) vil du tilbyde den ydelse?"
+                description="Mindst (1) skal være valgt."
+                field={fields.locations}
+                data={locations}
+              />
 
-            <PeriodInput
-              field={fields.noticePeriod}
-              label="Hvor hurtigt kan du være klar?"
-              data={[
-                {value: 'days', label: 'Dage'},
-                {value: 'hours', label: 'Timer'},
-              ]}
-            />
-            <SubmitButton>Opdatere</SubmitButton>
-          </Stack>
-        </Form>
+              <Select
+                label="Hvilken vagtplan vil du tilknytte den ydelse på."
+                data={selectSchedules}
+                {...getSelectProps(fields.scheduleId)}
+                allowDeselect={false}
+                defaultValue={fields.scheduleId.initialValue}
+              />
+
+              <Flex align={'flex-end'} gap="xs">
+                <TextInput
+                  w="50%"
+                  label="Behandlingstid:"
+                  rightSection="min"
+                  {...getInputProps(fields.duration, {type: 'number'})}
+                />
+                <TextInput
+                  w="50%"
+                  label="Pause efter behandling:"
+                  rightSection="min"
+                  {...getInputProps(fields.breakTime, {type: 'number'})}
+                />
+              </Flex>
+
+              <PeriodInput
+                field={fields.bookingPeriod}
+                label="Hvor langt ude i fremtiden vil du acceptere bookinger?"
+                data={[
+                  {value: 'months', label: 'Måneder'},
+                  {value: 'hours', label: 'Timer'},
+                ]}
+              />
+
+              <PeriodInput
+                field={fields.noticePeriod}
+                label="Hvor hurtigt kan du være klar?"
+                data={[
+                  {value: 'days', label: 'Dage'},
+                  {value: 'hours', label: 'Timer'},
+                ]}
+              />
+              <SubmitButton>Opdatere</SubmitButton>
+            </Stack>
+          </Form>
+        </FormProvider>
       </AccountContent>
     </>
   );

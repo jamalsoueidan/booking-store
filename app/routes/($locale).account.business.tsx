@@ -1,5 +1,10 @@
-import {conform, useForm} from '@conform-to/react';
-import {parse} from '@conform-to/zod';
+import {
+  FormProvider,
+  getFormProps,
+  getInputProps,
+  getTextareaProps,
+  useForm,
+} from '@conform-to/react';
 import {
   Blockquote,
   Group,
@@ -19,6 +24,7 @@ import {
 } from '@shopify/remix-oxygen';
 import {SubmitButton} from '~/components/form/SubmitButton';
 
+import {parseWithZod} from '@conform-to/zod';
 import {IconCheck, IconExclamationCircle} from '@tabler/icons-react';
 import {type z} from 'zod';
 import {AccountContent} from '~/components/account/AccountContent';
@@ -49,10 +55,10 @@ export async function action({request, params, context}: ActionFunctionArgs) {
   }
 
   const formData = await request.formData();
-  const submission = parse(formData, {schema});
+  const submission = parseWithZod(formData, {schema});
 
-  if (submission.intent !== 'submit' || !submission.value) {
-    return json(submission);
+  if (submission.status !== 'success') {
+    return submission.reply();
   }
 
   try {
@@ -92,7 +98,7 @@ export async function action({request, params, context}: ActionFunctionArgs) {
       color: 'green',
     });
   } catch (error) {
-    return json(submission);
+    return submission.reply();
   }
 }
 
@@ -162,15 +168,15 @@ export async function loader({context, params}: LoaderFunctionArgs) {
 }
 
 export default function AccountBusiness() {
-  const lastSubmission = useActionData<typeof action>();
+  const lastResult = useActionData<typeof action>();
   const {professionOptions, defaultValue} = useLoaderData<typeof loader>();
 
   const [form, {username, shortDescription, gender, speaks, professions}] =
     useForm({
-      lastSubmission,
+      lastResult,
       defaultValue,
       onValidate({formData}) {
-        return parse(formData, {
+        return parseWithZod(formData, {
           schema,
         });
       },
@@ -202,70 +208,69 @@ export default function AccountBusiness() {
           fællesskab med din ekspertise og passion for skønhed. Velkommen til
           bySisters – sammen skaber vi skønhed!
         </Blockquote>
+        <FormProvider context={form.context}>
+          <Form method="post" {...getFormProps(form)}>
+            <Stack gap="md">
+              <TextInput
+                label="Vælge en profilnavn"
+                {...getInputProps(username, {type: 'text'})}
+                onChange={onChangeUsername}
+                rightSection={
+                  fetcher.data?.usernameTaken ? (
+                    <IconExclamationCircle
+                      style={{width: rem(20), height: rem(20)}}
+                      color="var(--mantine-color-error)"
+                    />
+                  ) : (
+                    <IconCheck
+                      style={{width: rem(20), height: rem(20)}}
+                      color="var(--mantine-color-green-filled)"
+                    />
+                  )
+                }
+              />
 
-        <Form method="post" {...form.props}>
-          <Stack gap="md">
-            <TextInput
-              label="Vælge en profilnavn"
-              {...conform.input(username)}
-              onChange={onChangeUsername}
-              rightSection={
-                fetcher.data?.usernameTaken ? (
-                  <IconExclamationCircle
-                    style={{width: rem(20), height: rem(20)}}
-                    color="var(--mantine-color-error)"
-                  />
-                ) : (
-                  <IconCheck
-                    style={{width: rem(20), height: rem(20)}}
-                    color="var(--mantine-color-green-filled)"
-                  />
-                )
-              }
-            />
+              <Radio.Group
+                label="Hvad er dit køn?"
+                withAsterisk
+                {...getInputProps(gender, {type: 'radio'})}
+              >
+                <Group mt="xs">
+                  <Radio value="woman" label="Kvinde" />
+                  <Radio value="man" label="Mand" />
+                </Group>
+              </Radio.Group>
 
-            <Radio.Group
-              label="Hvad er dit køn?"
-              withAsterisk
-              {...conform.input(gender)}
-            >
-              <Group mt="xs">
-                <Radio value="woman" label="Kvinde" />
-                <Radio value="man" label="Mand" />
-              </Group>
-            </Radio.Group>
+              <MultiTags
+                field={professions}
+                data={professionOptions}
+                label="Professioner"
+                placeholder="Vælg professioner"
+              />
 
-            <MultiTags
-              field={professions}
-              data={professionOptions}
-              name="professions"
-              label="Professioner"
-              placeholder="Vælg professioner"
-            />
+              <MultiTags
+                field={speaks}
+                data={[
+                  {label: 'Dansk', value: 'danish'},
+                  {label: 'Engelsk', value: 'english'},
+                ]}
+                label="Hvilken sprog taler du"
+                placeholder="Vælge sprog"
+              />
 
-            <MultiTags
-              field={speaks}
-              data={[
-                {label: 'Dansk', value: 'danish'},
-                {label: 'Engelsk', value: 'english'},
-              ]}
-              name="speaks"
-              label="Hvilken sprog taler du"
-              placeholder="Vælge sprog"
-            />
+              <Textarea
+                label="Skriv kort beskrivelse om dig selv"
+                {...getTextareaProps(shortDescription)}
+                error={shortDescription.errors && 'Udfyld venligst'}
+                minRows={10}
+              />
 
-            <Textarea
-              label="Skriv kort beskrivelse om dig selv"
-              {...conform.input(shortDescription)}
-              error={shortDescription.error && 'Udfyld venligst'}
-              minRows={10}
-            />
-
-            <div>
-              <SubmitButton>Opret en business konto</SubmitButton>
-            </div>
-          </Stack>
-        </Form>
+              <div>
+                <SubmitButton>Opret en business konto</SubmitButton>
+              </div>
+            </Stack>
+          </Form>
+        </FormProvider>
       </AccountContent>
     </>
   );

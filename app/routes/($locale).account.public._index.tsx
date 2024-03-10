@@ -7,9 +7,14 @@ import {
   type LoaderFunctionArgs,
 } from '@shopify/remix-oxygen';
 
-import {conform, useForm, useInputEvent} from '@conform-to/react';
-import {parse} from '@conform-to/zod';
-import {useRef} from 'react';
+import {
+  FormProvider,
+  getFormProps,
+  getInputProps,
+  useForm,
+  useInputControl,
+} from '@conform-to/react';
+import {parseWithZod} from '@conform-to/zod';
 import {MultiTags} from '~/components/form/MultiTags';
 import {SubmitButton} from '~/components/form/SubmitButton';
 import {TextEditor} from '~/components/richtext/TextEditor';
@@ -24,10 +29,10 @@ export const action = async ({request, context}: ActionFunctionArgs) => {
   const customer = await getCustomer({context});
 
   const formData = await request.formData();
-  const submission = parse(formData, {schema});
+  const submission = parseWithZod(formData, {schema});
 
-  if (submission.intent !== 'submit' || !submission.value) {
-    return json(submission);
+  if (submission.status !== 'success') {
+    return submission.reply();
   }
 
   try {
@@ -43,7 +48,7 @@ export const action = async ({request, context}: ActionFunctionArgs) => {
       color: 'green',
     });
   } catch (error) {
-    return json(submission);
+    return submission.reply();
   }
 };
 
@@ -64,12 +69,12 @@ export async function loader({context}: LoaderFunctionArgs) {
 }
 
 export default function AccountBusiness() {
-  const lastSubmission = useActionData<typeof action>();
+  const lastResult = useActionData<typeof action>();
   const {user, professionOptions, specialityOptions} =
     useLoaderData<typeof loader>();
 
   const [
-    ,
+    form,
     {
       speaks,
       yearsExperience,
@@ -80,19 +85,15 @@ export default function AccountBusiness() {
       specialties,
     },
   ] = useForm({
-    lastSubmission,
+    lastResult,
     defaultValue: user,
   });
 
-  const shadowInputRef = useRef<HTMLInputElement>(null);
-
-  const control = useInputEvent({
-    ref: shadowInputRef,
-  });
+  const control = useInputControl(aboutMe);
 
   return (
-    <>
-      <Form method="POST">
+    <FormProvider context={form.context}>
+      <Form method="POST" {...getFormProps(form)}>
         <Stack gap="md">
           <TextInput
             label="Vælge en profilnavn"
@@ -103,7 +104,7 @@ export default function AccountBusiness() {
           <Radio.Group
             label="Hvad er dit køn?"
             withAsterisk
-            {...conform.input(gender)}
+            {...getInputProps(gender, {type: 'radio'})}
           >
             <Group mt="xs">
               <Radio value="woman" label="Kvinde" />
@@ -115,7 +116,6 @@ export default function AccountBusiness() {
           <MultiTags
             field={professions}
             data={professionOptions}
-            name="professions"
             label="Hvad er dine professioner"
             placeholder="Vælg professioner"
           />
@@ -123,12 +123,14 @@ export default function AccountBusiness() {
           <MultiTags
             field={specialties}
             data={specialityOptions}
-            name="specialties"
             label="Hvad er dine specialer?"
             placeholder="Vælge special(er)?"
           />
 
-          <TextInput label="Års erfaring" {...conform.input(yearsExperience)} />
+          <TextInput
+            label="Års erfaring"
+            {...getInputProps(yearsExperience, {type: 'number'})}
+          />
 
           <MultiTags
             field={speaks}
@@ -136,19 +138,13 @@ export default function AccountBusiness() {
               {label: 'Dansk', value: 'danish'},
               {label: 'Engelsk', value: 'english'},
             ]}
-            name="speaks"
             label="Hvilken sprog taler du"
             placeholder="Vælge sprog"
           />
 
           <TextInput
             label="Skriv kort beskrivelse"
-            {...conform.input(shortDescription)}
-          />
-
-          <input
-            ref={shadowInputRef}
-            {...conform.input(aboutMe, {hidden: true})}
+            {...getInputProps(shortDescription, {type: 'text'})}
           />
 
           <div>
@@ -156,7 +152,7 @@ export default function AccountBusiness() {
               Fortæl om dig selv og din erfaring:
             </Text>
             <TextEditor
-              content={aboutMe.defaultValue}
+              content={aboutMe.initialValue}
               onUpdate={({editor}) => {
                 control.change(JSON.stringify(editor.getJSON()) as any);
               }}
@@ -168,6 +164,6 @@ export default function AccountBusiness() {
           </div>
         </Stack>
       </Form>
-    </>
+    </FormProvider>
   );
 }

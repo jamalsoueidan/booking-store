@@ -7,8 +7,8 @@ import {
   type LoaderFunctionArgs,
 } from '@shopify/remix-oxygen';
 
-import {conform, useFieldset, useForm} from '@conform-to/react';
-import {parse} from '@conform-to/zod';
+import {getFormProps, getInputProps, useForm} from '@conform-to/react';
+import {parseWithZod} from '@conform-to/zod';
 import {IconAt} from '@tabler/icons-react';
 import {SubmitButton} from '~/components/form/SubmitButton';
 import {getBookingShopifyApi} from '~/lib/api/bookingShopifyApi';
@@ -24,10 +24,10 @@ export const action = async ({request, context}: ActionFunctionArgs) => {
   const customer = await getCustomer({context});
 
   const formData = await request.formData();
-  const submission = parse(formData, {schema});
+  const submission = parseWithZod(formData, {schema});
 
-  if (submission.intent !== 'submit' || !submission.value) {
-    return json(submission);
+  if (submission.status !== 'success') {
+    return submission.reply();
   }
 
   try {
@@ -43,7 +43,7 @@ export const action = async ({request, context}: ActionFunctionArgs) => {
       color: 'green',
     });
   } catch (error) {
-    return json(submission);
+    return submission.reply();
   }
 };
 
@@ -58,26 +58,26 @@ export async function loader({context}: LoaderFunctionArgs) {
 }
 
 export default function AccountBusiness() {
-  const lastSubmission = useActionData<typeof action>();
+  const lastResult = useActionData<typeof action>();
   const {user} = useLoaderData<typeof loader>();
 
   const [form, {social}] = useForm({
-    lastSubmission,
+    lastResult,
     defaultValue: user,
   });
 
-  const {instagram, twitter, youtube} = useFieldset(form.ref, social);
+  const {instagram, youtube, facebook, x} = social.getFieldset();
 
   return (
     <>
-      <Form method="POST">
+      <Form method="POST" {...getFormProps(form)}>
         <Stack gap="md">
           <TextInput
             leftSectionPointerEvents="none"
             leftSection={<IconAt style={{width: rem(16), height: rem(16)}} />}
             label="Instagram"
             placeholder="Instagram profil"
-            {...conform.input(instagram)}
+            {...getInputProps(instagram, {type: 'text'})}
           />
 
           <TextInput
@@ -85,7 +85,7 @@ export default function AccountBusiness() {
             leftSection={<IconAt style={{width: rem(16), height: rem(16)}} />}
             label="Twitter (X)"
             placeholder="Twitter (X)"
-            {...conform.input(twitter)}
+            {...getInputProps(x, {type: 'text'})}
           />
 
           <TextInput
@@ -93,9 +93,16 @@ export default function AccountBusiness() {
             leftSection={<IconAt style={{width: rem(16), height: rem(16)}} />}
             label="Youtube"
             placeholder="Youtube profil"
-            {...conform.input(youtube)}
+            {...getInputProps(youtube, {type: 'text'})}
           />
 
+          <TextInput
+            leftSectionPointerEvents="none"
+            leftSection={<IconAt style={{width: rem(16), height: rem(16)}} />}
+            label="Facebook"
+            placeholder="Facebook profil"
+            {...getInputProps(facebook, {type: 'text'})}
+          />
           <div>
             <SubmitButton>Opdatere</SubmitButton>
           </div>

@@ -1,5 +1,4 @@
-import {conform, useForm} from '@conform-to/react';
-import {parse} from '@conform-to/zod';
+import {getFormProps, getInputProps, useForm} from '@conform-to/react';
 import {Form, useActionData, useLoaderData} from '@remix-run/react';
 
 import {
@@ -12,11 +11,13 @@ import {getBookingShopifyApi} from '~/lib/api/bookingShopifyApi';
 import {getCustomer} from '~/lib/get-customer';
 import {customerLocationUpdateBody} from '~/lib/zod/bookingShopifyApi';
 
-import {NumberInput, Stack, TextInput} from '@mantine/core';
+import {parseWithZod} from '@conform-to/zod';
+import {Stack, TextInput} from '@mantine/core';
 import {parseGid} from '@shopify/hydrogen';
-import {AddressAutocompleteInput} from '~/components/AddressAutocompleteInput';
 import {AccountContent} from '~/components/account/AccountContent';
 import {AccountTitle} from '~/components/account/AccountTitle';
+import {AddressAutocompleteInput} from '~/components/form/AddressAutocompleteInput';
+import {NumericInput} from '~/components/form/NumericInput';
 import {SubmitButton} from '~/components/form/SubmitButton';
 
 const schema = customerLocationUpdateBody;
@@ -29,10 +30,10 @@ export const action = async ({
   const customer = await getCustomer({context});
 
   const formData = await request.formData();
-  const submission = parse(formData, {schema});
+  const submission = parseWithZod(formData, {schema});
 
-  if (submission.intent !== 'submit' || !submission.value) {
-    return json(submission);
+  if (submission.status !== 'success') {
+    return submission.reply();
   }
 
   try {
@@ -44,7 +45,7 @@ export const action = async ({
 
     return redirect(`/account/locations/${response.payload._id}/edit`);
   } catch (error) {
-    return json(submission);
+    return submission.reply();
   }
 };
 
@@ -61,13 +62,13 @@ export async function loader({context, params}: LoaderFunctionArgs) {
 
 export default function AccountLocationsEdit() {
   const defaultValue = useLoaderData<typeof loader>();
-  const lastSubmission = useActionData<typeof action>();
+  const lastResult = useActionData<typeof action>();
 
   const [form, fields] = useForm({
-    lastSubmission,
+    lastResult,
     defaultValue,
     onValidate({formData}) {
-      return parse(formData, {
+      return parseWithZod(formData, {
         schema,
       });
     },
@@ -87,12 +88,12 @@ export default function AccountLocationsEdit() {
       />
 
       <AccountContent>
-        <Form method="PUT" {...form.props}>
+        <Form method="PUT" {...getFormProps(form)}>
           <Stack>
             <TextInput
               label="Navn"
               placeholder="BySisters"
-              {...conform.input(fields.name)}
+              {...getInputProps(fields.name, {type: 'text'})}
             />
             <AddressAutocompleteInput
               label={
@@ -101,75 +102,52 @@ export default function AccountLocationsEdit() {
                   : 'Hvor skal kunden køre til?'
               }
               placeholder="Sigridsvej 45, 8220 Brabrand"
-              {...conform.input(fields.fullAddress)}
+              {...getInputProps(fields.fullAddress, {type: 'text'})}
             />
-            <input type="hidden" {...conform.input(fields.originType)} />
-            {defaultValue.locationType === 'destination' ? (
-              <>
-                <NumberInput
-                  label="Udgifter for turen"
-                  {...conform.input(fields.startFee)}
-                  type={undefined}
-                  allowNegative={false}
-                  allowDecimal={false}
-                  suffix=" kr"
-                />
 
-                <NumberInput
-                  label="Timepris for kørsel"
-                  {...conform.input(fields.distanceHourlyRate)}
-                  type={undefined}
-                  allowNegative={false}
-                  allowDecimal={false}
-                  suffix=" kr"
-                />
+            <input {...getInputProps(fields.originType, {type: 'hidden'})} />
 
-                <NumberInput
-                  label="Pris pr. kilometer"
-                  {...conform.input(fields.fixedRatePerKm)}
-                  type={undefined}
-                  allowNegative={false}
-                  allowDecimal={false}
-                  suffix=" kr"
-                />
+            <NumericInput
+              field={fields.startFee}
+              label="Udgifter for turen"
+              suffix=" kr"
+              hidden={defaultValue.locationType !== 'destination'}
+            />
 
-                <NumberInput
-                  label="Afstanden der køres gratis, inden takstberegningen påbegyndes."
-                  {...conform.input(fields.distanceForFree)}
-                  type={undefined}
-                  allowNegative={false}
-                  allowDecimal={false}
-                  suffix=" km"
-                />
+            <NumericInput
+              field={fields.distanceHourlyRate}
+              label="Timepris for kørsel"
+              suffix=" kr"
+              hidden={defaultValue.locationType !== 'destination'}
+            />
 
-                <NumberInput
-                  label="Minimum der skal køres for at acceptere en kørselsopgave"
-                  {...conform.input(fields.minDriveDistance)}
-                  type={undefined}
-                  allowNegative={false}
-                  allowDecimal={false}
-                  suffix=" km"
-                />
+            <NumericInput
+              field={fields.fixedRatePerKm}
+              label="Pris pr. kilometer"
+              suffix=" kr"
+              hidden={defaultValue.locationType !== 'destination'}
+            />
 
-                <NumberInput
-                  label="Maximum der køres"
-                  {...conform.input(fields.maxDriveDistance)}
-                  type={undefined}
-                  allowNegative={false}
-                  allowDecimal={false}
-                  suffix=" km"
-                />
-              </>
-            ) : (
-              <>
-                <input type="hidden" name="distanceForFree" value="0" />
-                <input type="hidden" name="fixedRatePerKm" value="0" />
-                <input type="hidden" name="distanceHourlyRate" value="0" />
-                <input type="hidden" name="minDriveDistance" value="0" />
-                <input type="hidden" name="maxDriveDistance" value="500" />
-                <input type="hidden" name="startFee" value="0" />
-              </>
-            )}
+            <NumericInput
+              field={fields.distanceForFree}
+              label="Afstanden der køres gratis, inden takstberegningen påbegyndes."
+              suffix=" km"
+              hidden={defaultValue.locationType !== 'destination'}
+            />
+
+            <NumericInput
+              field={fields.minDriveDistance}
+              label="Minimum der skal køres for at acceptere en kørselsopgave"
+              suffix=" km"
+              hidden={defaultValue.locationType !== 'destination'}
+            />
+
+            <NumericInput
+              field={fields.maxDriveDistance}
+              label="Maximum der køres"
+              suffix=" km"
+              hidden={defaultValue.locationType !== 'destination'}
+            />
 
             <SubmitButton>Opdatere</SubmitButton>
           </Stack>

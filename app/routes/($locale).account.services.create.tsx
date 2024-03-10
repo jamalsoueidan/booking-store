@@ -1,5 +1,11 @@
-import {conform, useForm} from '@conform-to/react';
-import {parse} from '@conform-to/zod';
+import {
+  FormProvider,
+  getFormProps,
+  getInputProps,
+  getSelectProps,
+  useForm,
+} from '@conform-to/react';
+import {parseWithZod} from '@conform-to/zod';
 import {Flex, Select, Stack, TextInput} from '@mantine/core';
 import {Form, useActionData, useLoaderData} from '@remix-run/react';
 import {
@@ -20,7 +26,6 @@ import {PRODUCT_ITEM_FRAGMENT} from '~/data/fragments';
 import {VARIANTS_QUERY_ID} from '~/data/queries';
 import {getBookingShopifyApi} from '~/lib/api/bookingShopifyApi';
 
-import {useState} from 'react';
 import {AccountContent} from '~/components/account/AccountContent';
 import {AccountTitle} from '~/components/account/AccountTitle';
 import {isEqualGid} from '~/data/isEqualGid';
@@ -46,12 +51,12 @@ export const action = async ({request, context}: ActionFunctionArgs) => {
   const customer = await getCustomer({context});
 
   const formData = await request.formData();
-  const submission = parse(formData, {
+  const submission = parseWithZod(formData, {
     schema,
   });
 
-  if (submission.intent !== 'submit' || !submission.value) {
-    return json(submission);
+  if (submission.status !== 'success') {
+    return submission.reply();
   }
 
   try {
@@ -85,7 +90,7 @@ export const action = async ({request, context}: ActionFunctionArgs) => {
 
     return redirect(`/account/services/${response.payload.productId}`);
   } catch (error) {
-    return json(submission);
+    return submission.reply();
   }
 };
 
@@ -109,8 +114,6 @@ export async function loader({context}: LoaderFunctionArgs) {
     locations: locations.payload,
     schedules: schedule.payload,
     defaultValue: {
-      productId: '',
-      variantId: 0,
       scheduleId: schedule.payload[0]._id,
       duration: 60,
       breakTime: 15,
@@ -134,14 +137,13 @@ export async function loader({context}: LoaderFunctionArgs) {
 
 export default function AccountServicesCreate() {
   const {locations, defaultValue, schedules} = useLoaderData<typeof loader>();
-  const lastSubmission = useActionData<typeof action>();
-  const [productId, setProductId] = useState<string | undefined>();
+  const lastResult = useActionData<typeof action>();
 
   const [form, fields] = useForm({
-    lastSubmission,
+    lastResult,
     defaultValue,
     onValidate({formData}) {
-      return parse(formData, {
+      return parseWithZod(formData, {
         schema,
       });
     },
@@ -158,73 +160,75 @@ export default function AccountServicesCreate() {
     <>
       <AccountTitle linkBack="/account/services" heading="Opret en ydelse" />
       <AccountContent>
-        <Form method="post" {...form.props}>
-          <Stack>
-            <SelectSearchable
-              label="Hvilken ydelse vil du tilbyde?"
-              placeholder="Vælg ydelse"
-              field={fields.productId}
-              onChange={setProductId}
-            />
-
-            {productId && (
-              <RadioGroupVariantsProduct
-                label="Hvad skal ydelsen koste?"
-                productId={productId}
-                field={fields.variantId}
+        <FormProvider context={form.context}>
+          <Form method="post" {...getFormProps(form)}>
+            <Stack>
+              <SelectSearchable
+                label="Hvilken ydelse vil du tilbyde?"
+                placeholder="Vælg ydelse"
+                field={fields.productId}
               />
-            )}
 
-            <SwitchGroupLocations
-              label="Fra hvilken lokation(er) vil du tilbyde den ydelse?"
-              description="Mindst (1) skal være valgt."
-              field={fields.locations}
-              data={locations}
-            />
+              {fields.productId.value && (
+                <RadioGroupVariantsProduct
+                  label="Hvad skal ydelsen koste?"
+                  productId={fields.productId.value}
+                  field={fields.variantId}
+                />
+              )}
 
-            <Select
-              label="Hvilken vagtplan vil du tilknytte den ydelse på."
-              data={selectSchedules}
-              {...conform.select(fields.scheduleId)}
-              defaultValue={fields.scheduleId.defaultValue}
-            />
-
-            <Flex align={'flex-end'} gap="xs">
-              <TextInput
-                w="50%"
-                label="Behandlingstid:"
-                rightSection="min"
-                {...conform.input(fields.duration)}
+              <SwitchGroupLocations
+                label="Fra hvilken lokation(er) vil du tilbyde den ydelse?"
+                description="Mindst (1) skal være valgt."
+                field={fields.locations}
+                data={locations}
               />
-              <TextInput
-                w="50%"
-                label="Pause efter behandling:"
-                rightSection="min"
-                {...conform.input(fields.breakTime)}
+
+              <Select
+                label="Hvilken vagtplan vil du tilknytte den ydelse på."
+                data={selectSchedules}
+                {...getSelectProps(fields.scheduleId)}
+                allowDeselect={false}
+                defaultValue={fields.scheduleId.initialValue}
               />
-            </Flex>
 
-            <PeriodInput
-              field={fields.bookingPeriod}
-              label="Hvor langt ude i fremtiden vil du acceptere bookinger?"
-              data={[
-                {value: 'months', label: 'Måneder'},
-                {value: 'hours', label: 'Timer'},
-              ]}
-            />
+              <Flex align={'flex-end'} gap="xs">
+                <TextInput
+                  w="50%"
+                  label="Behandlingstid:"
+                  rightSection="min"
+                  {...getInputProps(fields.duration, {type: 'number'})}
+                />
+                <TextInput
+                  w="50%"
+                  label="Pause efter behandling:"
+                  rightSection="min"
+                  {...getInputProps(fields.breakTime, {type: 'number'})}
+                />
+              </Flex>
 
-            <PeriodInput
-              field={fields.noticePeriod}
-              label="Minimum tid før ankomst en kunde kan booke online?"
-              data={[
-                {value: 'days', label: 'Dage'},
-                {value: 'hours', label: 'Timer'},
-              ]}
-            />
+              <PeriodInput
+                field={fields.bookingPeriod}
+                label="Hvor langt ude i fremtiden vil du acceptere bookinger?"
+                data={[
+                  {value: 'months', label: 'Måneder'},
+                  {value: 'hours', label: 'Timer'},
+                ]}
+              />
 
-            <SubmitButton>Tilføj ny ydelse</SubmitButton>
-          </Stack>
-        </Form>
+              <PeriodInput
+                field={fields.noticePeriod}
+                label="Minimum tid før ankomst en kunde kan booke online?"
+                data={[
+                  {value: 'days', label: 'Dage'},
+                  {value: 'hours', label: 'Timer'},
+                ]}
+              />
+
+              <SubmitButton>Tilføj ny ydelse</SubmitButton>
+            </Stack>
+          </Form>
+        </FormProvider>
       </AccountContent>
     </>
   );

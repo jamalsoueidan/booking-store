@@ -1,47 +1,31 @@
-import {conform, useInputEvent, type FieldConfig} from '@conform-to/react';
+import {useInputControl, type FieldMetadata} from '@conform-to/react';
 import {Radio} from '@mantine/core';
-import {useEffect, useRef, useState} from 'react';
+import {useEffect} from 'react';
 
 export type RadioGroupProps = {
-  onChange?: (value: string) => void;
   label: string;
-  field: FieldConfig<string>;
+  field: FieldMetadata<string> | FieldMetadata<number>;
   data: Array<{label: string; value: string}>;
 };
 
-export function RadioGroup({onChange, label, data, field}: RadioGroupProps) {
-  const [value, setValue] = useState(field.defaultValue ?? '');
-
-  const shadowInputRef = useRef<HTMLInputElement>(null);
-
-  const control = useInputEvent({
-    ref: shadowInputRef,
-    onReset: () => setValue(field.defaultValue ?? ''),
-  });
+export function RadioGroup({label, data, field}: RadioGroupProps) {
+  const control = useInputControl(field);
 
   useEffect(() => {
-    const findInData = data.findIndex((d) => d.value === value);
-    if (field.defaultValue === '' && findInData === -1) {
-      setValue(data[0].value);
+    const findInData = data.findIndex((d) => d.value === field.initialValue);
+    if (field.initialValue === '' && findInData === -1) {
       control.change(data[0].value);
     }
-  }, [control, data, field.defaultValue, onChange, value]);
+  }, [control, data, field.initialValue]);
 
   return (
     <>
-      <input
-        ref={shadowInputRef}
-        {...conform.input(field, {hidden: true})}
-        onChange={(e) => setValue(e.target.value)}
-      />
       <Radio.Group
         label={label}
-        value={value}
+        defaultValue={field.initialValue}
+        value={field.value}
         onChange={(value: string) => {
           control.change(value);
-          if (onChange) {
-            onChange(value);
-          }
         }}
       >
         {data.map((d) => (
