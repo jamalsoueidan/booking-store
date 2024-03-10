@@ -1,16 +1,15 @@
-import {type FieldConfig} from '@conform-to/react';
+import {type FieldMetadata} from '@conform-to/react';
 import {Stack, Switch} from '@mantine/core';
-import {useCallback, useState} from 'react';
+import React, {useCallback, useState} from 'react';
 import type {
   CustomerLocation,
-  CustomerProductLocations,
   CustomerProductLocationsItem,
 } from '~/lib/api/model';
 
 export type SwitchGroupLocations = {
   label: string;
   description?: string;
-  field: FieldConfig<CustomerProductLocations>;
+  field: FieldMetadata<Array<CustomerProductLocationsItem>>;
   data: CustomerLocation[];
 };
 
@@ -20,9 +19,20 @@ export function SwitchGroupLocations({
   data,
   field,
 }: SwitchGroupLocations) {
-  const [list, setList] = useState<Array<CustomerProductLocationsItem>>(
-    field.defaultValue || [],
-  );
+  const initialValue = field
+    .getFieldList()
+    .filter(
+      (item) =>
+        !!item.initialValue &&
+        !!item.initialValue.location &&
+        !!item.initialValue.locationType,
+    )
+    .map((item) => ({
+      ...(item.initialValue as CustomerProductLocationsItem),
+    }));
+
+  const [list, setList] =
+    useState<Array<CustomerProductLocationsItem>>(initialValue);
 
   const handleChange = useCallback(
     (value: string[]) => {
@@ -62,16 +72,20 @@ export function SwitchGroupLocations({
         ))}
       </Stack>
 
-      {list.map((item, index) =>
-        Object.keys(item).map((key: any) => (
+      {list.map((item, index) => (
+        <React.Fragment key={item.location}>
           <input
             hidden
-            key={`${item.location}.${key}`}
-            name={`${field.name}[${index}].${key}`}
-            defaultValue={item[key as keyof CustomerProductLocationsItem]}
+            name={`${field.name}[${index}].location`}
+            defaultValue={item.location}
           />
-        )),
-      )}
+          <input
+            hidden
+            name={`${field.name}[${index}].locationType`}
+            defaultValue={item.locationType}
+          />
+        </React.Fragment>
+      ))}
     </Switch.Group>
   );
 }
