@@ -19,17 +19,19 @@ export function NumericInput({field, ...props}: NumericInputProps) {
         className="hidden-input"
       />
 
-      <NumberInput
-        ref={inputRef}
-        defaultValue={parseInt(field.initialValue || '0')}
-        onChange={(value: string | number) => {
-          control.change(value as any);
-        }}
-        onBlur={control.blur}
-        allowNegative={false}
-        allowDecimal={false}
-        {...props}
-      />
+      {!props.hidden ? (
+        <NumberInput
+          ref={inputRef}
+          defaultValue={parseInt(field.initialValue || '0')}
+          onChange={(value: string | number) => {
+            control.change(value as any);
+          }}
+          onBlur={control.blur}
+          allowNegative={false}
+          allowDecimal={false}
+          {...props}
+        />
+      ) : null}
     </>
   );
 }

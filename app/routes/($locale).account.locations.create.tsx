@@ -13,7 +13,6 @@ import {getFormProps, getInputProps, useForm} from '@conform-to/react';
 import {parseWithZod} from '@conform-to/zod';
 import {Stack, TextInput} from '@mantine/core';
 import {parseGid} from '@shopify/hydrogen';
-import {useState} from 'react';
 import {AddressAutocompleteInput} from '~/components/AddressAutocompleteInput';
 import {AccountContent} from '~/components/account/AccountContent';
 import {AccountTitle} from '~/components/account/AccountTitle';
@@ -87,10 +86,6 @@ export default function Component() {
     shouldRevalidate: 'onInput',
   });
 
-  const [locationType, setLocationType] = useState(
-    fields.locationType.initialValue,
-  );
-
   return (
     <>
       <AccountTitle linkBack="/account/locations" heading="Opret en lokation" />
@@ -100,7 +95,6 @@ export default function Component() {
           <Stack>
             <RadioGroup
               label={'Hvilken type location vil du oprette?'}
-              onChange={setLocationType}
               field={fields.locationType}
               data={[
                 {
@@ -123,7 +117,7 @@ export default function Component() {
 
             <AddressAutocompleteInput
               label={
-                locationType === 'destination'
+                fields.locationType.value === 'destination'
                   ? 'Hvor vil du kører fra?'
                   : 'Hvor skal kunden køre til?'
               }
@@ -141,42 +135,42 @@ export default function Component() {
               field={fields.startFee}
               label="Udgifter for turen"
               suffix=" kr"
-              hidden={locationType !== 'destination'}
+              hidden={fields.locationType.value !== 'destination'}
             />
 
             <NumericInput
               field={fields.distanceHourlyRate}
               label="Timepris for kørsel"
               suffix=" kr"
-              hidden={locationType !== 'destination'}
+              hidden={fields.locationType.value !== 'destination'}
             />
 
             <NumericInput
               field={fields.fixedRatePerKm}
               label="Pris pr. kilometer"
               suffix=" kr"
-              hidden={locationType !== 'destination'}
+              hidden={fields.locationType.value !== 'destination'}
             />
 
             <NumericInput
               field={fields.distanceForFree}
               label="Afstanden der køres gratis, inden takstberegningen påbegyndes."
               suffix=" km"
-              hidden={locationType !== 'destination'}
+              hidden={fields.locationType.value !== 'destination'}
             />
 
             <NumericInput
               field={fields.minDriveDistance}
               label="Minimum der skal køres for at acceptere en kørselsopgave"
               suffix=" km"
-              hidden={locationType !== 'destination'}
+              hidden={fields.locationType.value !== 'destination'}
             />
 
             <NumericInput
               field={fields.maxDriveDistance}
               label="Maximum der køres"
               suffix=" km"
-              hidden={locationType !== 'destination'}
+              hidden={fields.locationType.value !== 'destination'}
             />
 
             <SubmitButton>Tilføj</SubmitButton>
