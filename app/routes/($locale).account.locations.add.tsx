@@ -1,4 +1,4 @@
-import {conform, useForm} from '@conform-to/react';
+import {getFormProps, getSelectProps, useForm} from '@conform-to/react';
 import {Select, Stack} from '@mantine/core';
 import {Form, useActionData, useLoaderData} from '@remix-run/react';
 
@@ -12,7 +12,7 @@ import {getBookingShopifyApi} from '~/lib/api/bookingShopifyApi';
 import {getCustomer} from '~/lib/get-customer';
 import {customerLocationAddParams} from '~/lib/zod/bookingShopifyApi';
 
-import {parse} from '@conform-to/zod';
+import {parseWithZod} from '@conform-to/zod';
 import {AccountContent} from '~/components/account/AccountContent';
 import {AccountTitle} from '~/components/account/AccountTitle';
 import {SubmitButton} from '~/components/form/SubmitButton';
@@ -22,12 +22,12 @@ export const action = async ({request, context}: ActionFunctionArgs) => {
   const customer = await getCustomer({context});
 
   const formData = await request.formData();
-  const submission = parse(formData, {
+  const submission = parseWithZod(formData, {
     schema: customerLocationAddParams.pick({locationId: true}),
   });
 
-  if (submission.intent !== 'submit' || !submission.value) {
-    return json(submission);
+  if (submission.status !== 'success') {
+    return submission.reply();
   }
 
   try {
@@ -43,7 +43,7 @@ export const action = async ({request, context}: ActionFunctionArgs) => {
       color: 'green',
     });
   } catch (error) {
-    return json(submission);
+    return submission.reply();
   }
 };
 
@@ -59,10 +59,10 @@ export async function loader({context}: LoaderFunctionArgs) {
 
 export default function Component() {
   const locationOrigins = useLoaderData<typeof loader>();
-  const lastSubmission = useActionData<typeof action>();
+  const lastResult = useActionData<typeof action>();
 
   const [form, {locationId}] = useForm({
-    lastSubmission,
+    lastResult,
     defaultValue: {
       locationId: '',
     },
@@ -81,14 +81,14 @@ export default function Component() {
       />
 
       <AccountContent>
-        <Form method="POST" {...form.props}>
+        <Form method="POST" {...getFormProps(form)}>
           <Stack>
             <Select
               label="Vælg lokation"
               description="hvis lokationen allerede er oprettet, kan du tilføje dig selv til den,
         så kan du nemlig tilbyde service fra det sted."
               data={data}
-              {...conform.select(locationId)}
+              {...getSelectProps(locationId)}
               defaultValue=""
             />
             <SubmitButton>Tilføj</SubmitButton>
