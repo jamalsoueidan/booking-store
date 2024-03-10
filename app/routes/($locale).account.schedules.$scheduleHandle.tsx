@@ -9,15 +9,15 @@ import type {z} from 'zod';
 import {getBookingShopifyApi} from '~/lib/api/bookingShopifyApi';
 
 import {
-  conform,
-  list,
-  requestIntent,
-  useFieldList,
-  useFieldset,
+  FormProvider,
+  getFormProps,
+  getInputProps,
+  getSelectProps,
+  useField,
   useForm,
-  type FieldConfig,
+  type FieldMetadata,
 } from '@conform-to/react';
-import {parse} from '@conform-to/zod';
+import {parseWithZod} from '@conform-to/zod';
 import {
   ActionIcon,
   Checkbox,
@@ -36,7 +36,7 @@ import {
   IconPlus,
 } from '@tabler/icons-react';
 import {addMinutes, format, set} from 'date-fns';
-import {useRef, useState} from 'react';
+import {useRef} from 'react';
 import MobileModal from '~/components/MobileModal';
 import {SubmitButton} from '~/components/form/SubmitButton';
 import {CustomerScheduleSlotDay, type CustomerSchedule} from '~/lib/api/model';
@@ -61,12 +61,12 @@ export const action = async ({
   }
 
   const formData = await request.formData();
-  const submission = parse(formData, {
+  const submission = parseWithZod(formData, {
     schema,
   });
 
-  if (submission.intent !== 'submit' || !submission.value) {
-    return json(submission);
+  if (submission.status !== 'success') {
+    return submission.reply();
   }
 
   const slots = submission.value.slots.filter(
@@ -123,26 +123,25 @@ export async function loader({context, params}: LoaderFunctionArgs) {
 
 export default function AccountSchedules() {
   const defaultValue = useLoaderData<typeof loader>();
-  const lastSubmission = useActionData<typeof action>();
+  const lastResult = useActionData<typeof action>();
 
   const [form, fields] = useForm({
-    lastSubmission,
+    lastResult,
     defaultValue,
     onValidate({formData}) {
-      return parse(formData, {
+      return parseWithZod(formData, {
         schema,
       });
     },
-    fallbackNative: true,
     shouldValidate: 'onSubmit',
     shouldRevalidate: 'onInput',
   });
 
-  const slotsList = useFieldList(form.ref, fields.slots);
+  const slotsList = fields.slots.getFieldList();
 
   return (
-    <>
-      <Form method="PUT" {...form.props}>
+    <FormProvider context={form.context}>
+      <Form method="PUT" {...getFormProps(form)}>
         <Table mt="lg" withTableBorder>
           <Table.Thead>
             <Table.Tr>
@@ -157,54 +156,35 @@ export default function AccountSchedules() {
           </Table.Thead>
           <Table.Tbody>
             {slotsList.map((slot) => (
-              <SlotInput key={slot.key} config={slot} form={form} />
+              <SlotInput key={slot.key} field={slot} />
             ))}
           </Table.Tbody>
         </Table>
       </Form>
-    </>
+    </FormProvider>
   );
 }
 
 const slotSchema = schema.shape.slots.element;
 const intervalsSchema = slotSchema.shape.intervals;
+const defaultValue = {from: '07:00', to: '14:00'};
 
-function SlotInput({
-  config,
-  form,
-}: {
-  config: FieldConfig<z.infer<typeof slotSchema>>;
-  form: any;
-}) {
-  const [checked, setChecked] = useState(
-    config.defaultValue.intervals.length > 0,
-  );
-  const {day, intervals} = useFieldset<z.infer<typeof slotSchema>>(
-    form.ref,
-    config,
-  );
+type SlotInputProps = {
+  field: FieldMetadata<z.infer<typeof slotSchema>>;
+};
 
-  const intervalsList = useFieldList(form.ref, intervals);
+function SlotInput({field}: SlotInputProps) {
+  const [, form] = useField(field.name);
+  const {day, intervals} = field.getFieldset();
+  const intervalsList = intervals.getFieldList();
 
   const onChange: React.ChangeEventHandler<HTMLInputElement> = (event) => {
     const checked = event.currentTarget.checked;
-    setChecked(checked);
-
     if (checked) {
-      requestIntent(
-        form.ref.current,
-        list.insert(intervals.name, {
-          defaultValue: {from: '', to: ''},
-        }),
-      );
+      form.insert({name: intervals.name, defaultValue});
     } else {
       intervalsList.forEach((_, index) => {
-        requestIntent(
-          form.ref.current,
-          list.remove(intervals.name, {
-            index,
-          }),
-        );
+        form.remove({name: intervals.name, index});
       });
     }
   };
@@ -222,11 +202,11 @@ function SlotInput({
   return (
     <Table.Tr>
       <Table.Td valign="middle">
-        <input {...conform.input(day, {hidden: true})} />
+        <input {...getInputProps(day, {type: 'hidden'})} />
         <Checkbox
-          checked={checked}
+          checked={intervalsList.length > 0}
           onChange={onChange}
-          label={trans[day.defaultValue || '']}
+          label={trans[day.initialValue || '']}
           size="md"
         />
       </Table.Td>
@@ -235,18 +215,19 @@ function SlotInput({
           {intervalsList.length === 0 && <>Ingen tider</>}
           {intervalsList.map((interval: any, index: number) => (
             <Flex gap="sm" w="100%" key={interval.key}>
-              <IntervalInput config={interval} form={form} />
+              <IntervalInput field={interval} />
               {index > 0 ? (
                 <button
-                  {...list.remove(intervals.name, {index})}
+                  {...form.remove.getButtonProps({name: intervals.name, index})}
                   style={{display: 'flex', alignItems: 'center'}}
                 >
                   <IconMinus style={{width: rem(24), height: rem(24)}} />
                 </button>
               ) : (
                 <button
-                  {...list.insert(intervals.name, {
-                    defaultValue: {from: '05:00', to: '13:00'}, //default time
+                  {...form.insert.getButtonProps({
+                    name: intervals.name,
+                    defaultValue,
                   })}
                   style={{display: 'flex', alignItems: 'center'}}
                 >
@@ -261,18 +242,13 @@ function SlotInput({
   );
 }
 
-function IntervalInput({
-  config,
-  form,
-}: {
-  config: FieldConfig<z.infer<typeof intervalsSchema.element>>;
-  form: any;
-}) {
+type IntervalInputProps = {
+  field: FieldMetadata<z.infer<typeof intervalsSchema.element>>;
+};
+
+function IntervalInput({field}: IntervalInputProps) {
   const isMobile = useMediaQuery('(max-width: 62em)');
-  const {from, to} = useFieldset<z.infer<typeof intervalsSchema.element>>(
-    form.ref,
-    config,
-  );
+  const {from, to} = field.getFieldset();
 
   return (
     <Flex gap={isMobile ? 'xs' : 'md'}>
@@ -280,18 +256,18 @@ function IntervalInput({
         size={isMobile ? 'sm' : 'md'}
         placeholder="Fra"
         data={generateTimeSlots(4, 20, 30)}
-        {...conform.select(from)}
-        defaultValue={config.defaultValue.from}
-        error={from.error}
+        {...getSelectProps(from)}
+        defaultValue={field.initialValue?.from}
+        error={from.errors}
         withCheckIcon={false}
       />
       <Select
         size={isMobile ? 'sm' : 'md'}
         placeholder="Til"
-        {...conform.select(to)}
-        defaultValue={config.defaultValue.to}
+        {...getSelectProps(to)}
+        defaultValue={field.initialValue?.to}
         data={generateTimeSlots(4, 20, 30)}
-        error={to.error}
+        error={to.errors}
         withCheckIcon={false}
       />
     </Flex>
