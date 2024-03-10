@@ -1,4 +1,8 @@
-import {conform, useInputEvent, type FieldConfig} from '@conform-to/react';
+import {
+  getInputProps,
+  useInputControl,
+  type FieldMetadata,
+} from '@conform-to/react';
 import {
   Combobox,
   Highlight,
@@ -15,7 +19,7 @@ export type SelectSearchableProps = {
   onChange?: (value: string | undefined) => void;
   label: string;
   placeholder?: string;
-  field: FieldConfig<string>;
+  field: FieldMetadata<string>;
 };
 
 export function SelectSearchable({
@@ -27,15 +31,11 @@ export function SelectSearchable({
   const combobox = useCombobox({
     onDropdownClose: () => combobox.resetSelectedOption(),
   });
+
   const customInputRef = useRef<HTMLInputElement>(null);
-  const baseInputRef = useRef<HTMLInputElement>(null);
-  const control = useInputEvent({
-    ref: baseInputRef,
-    onReset: () => setValue(''),
-  });
+  const control = useInputControl(field);
 
   const fetcher = useFetcher<ProductSearchQueryQuery>();
-  const [value, setValue] = useState('');
   const [title, setTitle] = useState('');
 
   const fetchOptions = (query: string) => {
@@ -45,7 +45,7 @@ export function SelectSearchable({
   const options = fetcher.data?.products.nodes.map((item) => (
     <Combobox.Option value={parseGid(item.id).id} key={item.id}>
       <Highlight
-        highlight={parseGid(item.id).id === value ? item.title : ''}
+        highlight={parseGid(item.id).id === field.value ? item.title : ''}
         size="sm"
       >
         {item.title}
@@ -56,15 +56,14 @@ export function SelectSearchable({
   return (
     <>
       <input
-        ref={baseInputRef}
-        {...conform.input(field, {hidden: true})}
+        {...getInputProps(field, {type: 'text'})}
         onChange={(e) => {
-          setValue(e.target.value);
           if (onChange) {
             onChange(e.target.value);
           }
         }}
         onFocus={() => customInputRef.current?.focus()}
+        className="hidden-input"
       />
 
       <Combobox
@@ -75,7 +74,7 @@ export function SelectSearchable({
           if (node?.title) {
             setTitle(node?.title);
           }
-          control.change({target: {value: optionValue}});
+          control.change(optionValue);
           combobox.closeDropdown();
         }}
         withinPortal={false}
@@ -90,7 +89,7 @@ export function SelectSearchable({
             onChange={(event) => {
               setTitle(event.currentTarget.value);
               fetchOptions(event.currentTarget.value);
-              control.change({target: {value: ''}});
+              control.change('');
               combobox.resetSelectedOption();
               combobox.openDropdown();
             }}
