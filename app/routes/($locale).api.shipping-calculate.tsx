@@ -1,4 +1,4 @@
-import {parse} from '@conform-to/zod';
+import {parseWithZod} from '@conform-to/zod';
 import {json, type ActionFunctionArgs} from '@shopify/remix-oxygen';
 import {getBookingShopifyApi} from '~/lib/api/bookingShopifyApi';
 import {shippingCalculateBody} from '~/lib/zod/bookingShopifyApi';
@@ -7,12 +7,12 @@ const schema = shippingCalculateBody;
 
 export const action = async ({request}: ActionFunctionArgs) => {
   const formData = await request.formData();
-  const submission = parse(formData, {
+  const submission = parseWithZod(formData, {
     schema,
   });
 
-  if (submission.intent !== 'submit' || !submission.value) {
-    return json(submission);
+  if (submission.status !== 'success') {
+    return submission.reply();
   }
 
   try {
@@ -22,6 +22,6 @@ export const action = async ({request}: ActionFunctionArgs) => {
 
     return json(response.payload);
   } catch (error) {
-    return json(submission);
+    return submission.reply();
   }
 };
