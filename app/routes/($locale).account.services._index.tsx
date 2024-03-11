@@ -14,7 +14,7 @@ import {Form, Link, useLoaderData, useOutletContext} from '@remix-run/react';
 import {Money, Image as ShopifyImage, parseGid} from '@shopify/hydrogen';
 import {type ProductConnection} from '@shopify/hydrogen/storefront-api-types';
 import {json, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
-import {IconEye} from '@tabler/icons-react';
+import {IconEye, IconPlus} from '@tabler/icons-react';
 import {AccountButton} from '~/components/account/AccountButton';
 import {AccountContent} from '~/components/account/AccountContent';
 import {AccountTitle} from '~/components/account/AccountTitle';
@@ -56,7 +56,9 @@ export default function AccountServicesIndex() {
   return (
     <>
       <AccountTitle heading="Ydelser">
-        <AccountButton to={'create'}>Tilføj ydelse</AccountButton>
+        <AccountButton to={'create'} leftSection={<IconPlus size={14} />}>
+          Tilføj ydelse
+        </AccountButton>
       </AccountTitle>
 
       <AccountContent>
