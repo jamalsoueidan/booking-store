@@ -22,7 +22,6 @@ import {SelectSearchable} from '~/components/form/SelectSearchable';
 import {SubmitButton} from '~/components/form/SubmitButton';
 import {SwitchGroupLocations} from '~/components/form/SwitchGroupLocations';
 
-import {PRODUCT_ITEM_FRAGMENT} from '~/data/fragments';
 import {VARIANTS_QUERY_ID} from '~/data/queries';
 import {getBookingShopifyApi} from '~/lib/api/bookingShopifyApi';
 
@@ -233,19 +232,3 @@ export default function AccountServicesCreate() {
     </>
   );
 }
-
-const ALL_PRODUCTS_QUERY = `#graphql
-  ${PRODUCT_ITEM_FRAGMENT}
-  query AllAccountServicesProducts(
-    $country: CountryCode
-    $language: LanguageCode
-    $first: Int
-    $query: String
-  ) @inContext(country: $country, language: $language) {
-    products(first: $first, query: $query) {
-      nodes {
-        ...ProductItem
-      }
-    }
-  }
-` as const;

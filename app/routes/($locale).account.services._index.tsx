@@ -1,4 +1,13 @@
-import {Button, Card, Grid, SimpleGrid, Text, Title} from '@mantine/core';
+import {
+  Button,
+  Card,
+  Divider,
+  Flex,
+  Grid,
+  Group,
+  Text,
+  Title,
+} from '@mantine/core';
 import {Form, Link, useLoaderData} from '@remix-run/react';
 import {Money, parseGid} from '@shopify/hydrogen';
 import {type ProductConnection} from '@shopify/hydrogen/storefront-api-types';
@@ -6,9 +15,10 @@ import {json, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
 import {AccountButton} from '~/components/account/AccountButton';
 import {AccountContent} from '~/components/account/AccountContent';
 import {AccountTitle} from '~/components/account/AccountTitle';
-import {PRODUCT_ITEM_FRAGMENT} from '~/data/fragments';
 import {getBookingShopifyApi} from '~/lib/api/bookingShopifyApi';
+import {durationToTime} from '~/lib/duration';
 import {getCustomer} from '~/lib/get-customer';
+import {ALL_PRODUCTS_QUERY} from './($locale).artist.$username._index';
 
 export async function loader({context}: LoaderFunctionArgs) {
   const {storefront} = context;
@@ -57,17 +67,42 @@ export default function AccountServicesIndex() {
                 <Card padding="sm" radius="md" h="100%" withBorder>
                   <Title order={4}>{product.title}</Title>
 
-                  <Text>{customerProduct?.scheduleName}</Text>
+                  <Card.Section my="xs">
+                    <Divider />
+                  </Card.Section>
 
-                  {customerProduct?.price && (
-                    <Money
-                      withoutTrailingZeros
-                      data={customerProduct?.price as any}
-                      as="span"
-                    />
-                  )}
+                  <Flex gap="xl">
+                    <div style={{flex: 1}}>
+                      <Text size="sm">Navn</Text>
+                      <Text fw={600} size="sm">
+                        {customerProduct?.scheduleName}
+                      </Text>
+                    </div>
+                    <div style={{flex: 1}}>
+                      <Text size="sm">Tid</Text>
+                      <Text fw={600} size="sm">
+                        {durationToTime(customerProduct?.duration ?? 0)}
+                      </Text>
+                    </div>
+                    <div style={{flex: 1}}>
+                      <Text size="sm">Pris</Text>
+                      <Text fw={600} size="sm">
+                        {customerProduct?.price && (
+                          <Money
+                            withoutTrailingZeros
+                            data={customerProduct?.price as any}
+                            as="span"
+                          />
+                        )}
+                      </Text>
+                    </div>
+                  </Flex>
 
-                  <SimpleGrid cols={2} verticalSpacing="xs" mt="lg">
+                  <Card.Section mt="xs" mb="sm">
+                    <Divider />
+                  </Card.Section>
+
+                  <Group justify="flex-end">
                     <Button component={Link} to={`${parseGid(product.id).id}`}>
                       Rediger
                     </Button>
@@ -87,7 +122,7 @@ export default function AccountServicesIndex() {
                         Slet
                       </Button>
                     </Form>
-                  </SimpleGrid>
+                  </Group>
                 </Card>
               </Grid.Col>
             );
@@ -97,19 +132,3 @@ export default function AccountServicesIndex() {
     </>
   );
 }
-
-const ALL_PRODUCTS_QUERY = `#graphql
-  ${PRODUCT_ITEM_FRAGMENT}
-  query AccountServicesProducts(
-    $country: CountryCode
-    $language: LanguageCode
-    $first: Int
-    $query: String
-  ) @inContext(country: $country, language: $language) {
-    products(first: $first, query: $query) {
-      nodes {
-        ...ProductItem
-      }
-    }
-  }
-`;
