@@ -12,14 +12,14 @@ import {
 import {Link} from '@remix-run/react';
 import {Money, parseGid} from '@shopify/hydrogen';
 import {IconArrowRight} from '@tabler/icons-react';
-import {type AccountServicesProductsQuery} from 'storefrontapi.generated';
+import {type ArtistServicesProductsQuery} from 'storefrontapi.generated';
 import {type CustomerProductList} from '~/lib/api/model';
 import {durationToTime} from '~/lib/duration';
 import {BadgeCollection} from '../BadgeCollection';
 import classes from './ArtistProduct.module.css';
 
 export type ArtistProductProps = {
-  product: AccountServicesProductsQuery['products']['nodes'][number];
+  product: ArtistServicesProductsQuery['products']['nodes'][number];
   services: CustomerProductList[];
 };
 

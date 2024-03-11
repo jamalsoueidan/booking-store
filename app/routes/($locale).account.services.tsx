@@ -1,4 +1,4 @@
-import {Link, Outlet, useLoaderData} from '@remix-run/react';
+import {Link, Outlet, useLoaderData, useOutletContext} from '@remix-run/react';
 
 import {json, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
 import {getBookingShopifyApi} from '~/lib/api/bookingShopifyApi';
@@ -15,6 +15,8 @@ export async function loader({context}: LoaderFunctionArgs) {
 
 export default function AccountServices() {
   const {status} = useLoaderData<typeof loader>();
+  const context = useOutletContext();
+
   if (!status.locations) {
     return (
       <>
@@ -29,5 +31,5 @@ export default function AccountServices() {
       </>
     );
   }
-  return <Outlet />;
+  return <Outlet context={context} />;
 }

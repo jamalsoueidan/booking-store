@@ -1,17 +1,20 @@
 import {
+  ActionIcon,
   Button,
   Card,
   Divider,
   Flex,
   Grid,
   Group,
+  Image,
   Text,
   Title,
 } from '@mantine/core';
-import {Form, Link, useLoaderData} from '@remix-run/react';
-import {Money, parseGid} from '@shopify/hydrogen';
+import {Form, Link, useLoaderData, useOutletContext} from '@remix-run/react';
+import {Money, Image as ShopifyImage, parseGid} from '@shopify/hydrogen';
 import {type ProductConnection} from '@shopify/hydrogen/storefront-api-types';
 import {json, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
+import {IconEye} from '@tabler/icons-react';
 import {AccountButton} from '~/components/account/AccountButton';
 import {AccountContent} from '~/components/account/AccountContent';
 import {AccountTitle} from '~/components/account/AccountTitle';
@@ -48,6 +51,7 @@ export async function loader({context}: LoaderFunctionArgs) {
 
 export default function AccountServicesIndex() {
   const {storeProducts, customerProducts} = useLoaderData<typeof loader>();
+  const {user} = useOutletContext<any>();
 
   return (
     <>
@@ -65,7 +69,36 @@ export default function AccountServicesIndex() {
             return (
               <Grid.Col key={product.id} span={{base: 12, md: 6, lg: 4}}>
                 <Card padding="sm" radius="md" h="100%" withBorder>
-                  <Title order={4}>{product.title}</Title>
+                  <Flex justify="space-between">
+                    <Group gap="sm" align="flex-start">
+                      {product.featuredImage && (
+                        <Image
+                          component={ShopifyImage}
+                          data={product.featuredImage}
+                          h="auto"
+                          loading="lazy"
+                          style={{width: '32px'}}
+                          radius="md"
+                        />
+                      )}
+
+                      <Title order={3} fw="600">
+                        {product.title}
+                      </Title>
+                    </Group>
+                    <ActionIcon
+                      variant="default"
+                      aria-label="See live"
+                      component={Link}
+                      to={`/artist/${user.username}/treatment/${product.handle}`}
+                      target="_blank"
+                    >
+                      <IconEye
+                        style={{width: '70%', height: '70%'}}
+                        stroke={1.5}
+                      />
+                    </ActionIcon>
+                  </Flex>
 
                   <Card.Section my="xs">
                     <Divider />
