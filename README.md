@@ -54,15 +54,16 @@ useEffect(() => {
 
 ## What's included
 
-- Remix
-- Hydrogen
-- Oxygen
-- Shopify CLI
-- ESLint
-- Prettier
-- GraphQL generator
-- TypeScript and JavaScript flavors
-- Mantine UI (react components library)
-- Orval (restful client generator)
-- Tabler (Icons)
-- Conform-To (React Form Validator)
+- [Remix](https://www.npmjs.com/package/remix)
+- [Shopify Hydrogen](https://www.npmjs.com/package/@shopify/hydrogen)
+- [Shopify CLI](https://www.npmjs.com/package/@shopify/cli)
+- [ESLint](https://www.npmjs.com/package/eslint)
+- [Prettier](https://www.npmjs.com/package/prettier)
+- [GraphQL CLI](https://www.npmjs.com/package/@graphql-codegen/cli)
+- [TypeScript](https://www.npmjs.com/package/typescript)
+- [Mantine UI](https://www.npmjs.com/package/@mantine/core)
+- [Orval](https://www.npmjs.com/package/orval)
+- [Tabler Icons](https://www.npmjs.com/package/@tabler/icons)
+- [Conform-To](https://github.com/edmundhung/conform)
+- [Tiptap](https://github.com/ueberdosis/tiptap)
+- [embla-carousel-react](https://www.npmjs.com/package/embla-carousel-react)
