@@ -338,6 +338,38 @@ components:
       required:
         - success
         - payload
+    CustomerProductCreateVariantResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: true
+        payload:
+          $ref: '#/components/schemas/CustomerProductCreateVariant'
+      required:
+        - success
+        - payload
+    CustomerProductCreateVariantBody:
+      type: object
+      properties:
+        price:
+          type: string
+        compareAtPrice:
+          type: string
+      required:
+        - price
+        - compareAtPrice
+    CustomerProductCreateVariant:
+      type: object
+      properties:
+        id:
+          type: number
+        title:
+          type: string
+        selectedOptions:
+          type: array
+          items:
+            $ref: '#/components/schemas/CustomerProductSelectedOptions'
     CustomerScheduleDestroy:
       type: object
       properties:
@@ -3378,6 +3410,46 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/CustomerProductDestroyResponse'
+        '400':
+          $ref: '#/components/responses/BadResponse'
+        '401':
+          $ref: '#/components/responses/UnauthorizedResponse'
+        '403':
+          $ref: '#/components/responses/ForbiddenResponse'
+        '404':
+          $ref: '#/components/responses/NotFoundResponse'
+      security: []
+  '/customer/{customerId}/product/{productId}/create-variant':
+    post:
+      parameters:
+        - name: customerId
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: productId
+          in: path
+          required: true
+          schema:
+            type: string
+      tags:
+        - CustomerProduct
+      operationId: customerProductCreateVariant
+      summary: POST create product variant
+      description: This endpoint create product variant
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CustomerProductCreateVariantBody'
+      responses:
+        '200':
+          description: Response with product variant payload
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CustomerProductCreateVariantResponse'
         '400':
           $ref: '#/components/responses/BadResponse'
         '401':
