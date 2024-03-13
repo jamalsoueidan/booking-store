@@ -161,7 +161,7 @@ export default function AccountBookings() {
             }
           }}
           themeSystem="standard"
-          eventSources={['/account/api/bookings', '/account/api/booked']}
+          eventSources={['/api/account/bookings', '/api/account/booked']}
           initialView={isMobile ? 'timeGridDay' : 'dayGridMonth'}
           buttonText={{
             prev: '<',
