@@ -30,6 +30,8 @@ import type {
   CustomerLocationUpdateBody,
   CustomerLocationUpdateResponse,
   CustomerOrderGetResponse,
+  CustomerProductCreateVariantBody,
+  CustomerProductCreateVariantResponse,
   CustomerProductDestroyResponse,
   CustomerProductGetResponse,
   CustomerProductListIdsResponse,
@@ -439,6 +441,23 @@ export const getBookingShopifyApi = () => {
     return queryClient<CustomerProductDestroyResponse>({
       url: `/customer/${customerId}/product/${productId}`,
       method: 'DELETE',
+    });
+  };
+
+  /**
+   * This endpoint create product variant
+   * @summary POST create product variant
+   */
+  const customerProductCreateVariant = (
+    customerId: string,
+    productId: string,
+    customerProductCreateVariantBody: BodyType<CustomerProductCreateVariantBody>,
+  ) => {
+    return queryClient<CustomerProductCreateVariantResponse>({
+      url: `/customer/${customerId}/product/${productId}/create-variant`,
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      data: customerProductCreateVariantBody,
     });
   };
 
@@ -859,6 +878,7 @@ export const getBookingShopifyApi = () => {
     customerProductGet,
     customerProductUpsert,
     customerProductDestroy,
+    customerProductCreateVariant,
     customerBookingGetByGroup,
     customerBookingRange,
     customerOrderGet,
@@ -1031,6 +1051,13 @@ export type CustomerProductDestroyResult = NonNullable<
   Awaited<
     ReturnType<
       ReturnType<typeof getBookingShopifyApi>['customerProductDestroy']
+    >
+  >
+>;
+export type CustomerProductCreateVariantResult = NonNullable<
+  Awaited<
+    ReturnType<
+      ReturnType<typeof getBookingShopifyApi>['customerProductCreateVariant']
     >
   >
 >;

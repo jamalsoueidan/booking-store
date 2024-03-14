@@ -1392,6 +1392,40 @@ export const customerProductDestroyResponse = zod.object({
 });
 
 /**
+ * This endpoint create product variant
+ * @summary POST create product variant
+ */
+export const customerProductCreateVariantParams = zod.object({
+  customerId: zod.string(),
+  productId: zod.string(),
+});
+
+export const customerProductCreateVariantBody = zod.object({
+  price: zod.number(),
+  compareAtPrice: zod.number(),
+});
+
+export const customerProductCreateVariantResponse = zod.object({
+  success: zod.boolean(),
+  payload: zod.object({
+    product: zod.object({
+      id: zod.number(),
+      handle: zod.string(),
+    }),
+    id: zod.number(),
+    title: zod.string(),
+    selectedOptions: zod.array(
+      zod.object({
+        name: zod.string(),
+        value: zod.string(),
+      }),
+    ),
+    price: zod.string(),
+    compareAtPrice: zod.string(),
+  }),
+});
+
+/**
  * This endpoint gets order with lineItems array of objects specific for groupId
  * @summary GET Get order with lineItems array for specific groupId
  */

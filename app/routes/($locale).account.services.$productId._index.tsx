@@ -17,19 +17,20 @@ import {
 import {z} from 'zod';
 import {AccountContent} from '~/components/account/AccountContent';
 import {AccountTitle} from '~/components/account/AccountTitle';
+import {NumericInput} from '~/components/form/NumericInput';
 import PeriodInput from '~/components/form/PeriodInput';
-import {RadioGroupVariantsProduct} from '~/components/form/RadioGroupVariantProducts';
 import {SubmitButton} from '~/components/form/SubmitButton';
 import {SwitchGroupLocations} from '~/components/form/SwitchGroupLocations';
-import {isEqualGid} from '~/data/isEqualGid';
-import {PRODUCT_QUERY_ID, VARIANTS_QUERY_ID} from '~/data/queries';
+import {PRODUCT_QUERY_ID} from '~/data/queries';
 import {getBookingShopifyApi} from '~/lib/api/bookingShopifyApi';
 import {getCustomer} from '~/lib/get-customer';
 
 import {customerProductUpsertBody} from '~/lib/zod/bookingShopifyApi';
+import {type ActionReturnType} from './($locale).api.account.services.$productId.create-variant';
 
 const schema = customerProductUpsertBody
   .omit({
+    variantId: true,
     price: true,
     compareAtPrice: true,
     productHandle: true,
@@ -37,6 +38,8 @@ const schema = customerProductUpsertBody
   })
   .extend({
     scheduleId: z.string().min(1),
+    price: z.number(),
+    compareAtPrice: z.number(),
   });
 
 export const action = async ({
@@ -44,7 +47,6 @@ export const action = async ({
   params,
   context,
 }: ActionFunctionArgs) => {
-  const {storefront} = context;
   const customer = await getCustomer({context});
 
   const {productId} = params;
@@ -62,33 +64,26 @@ export const action = async ({
   }
 
   try {
-    const variants = await storefront.query(VARIANTS_QUERY_ID, {
-      variables: {handle: `gid://shopify/Product/${productId}`},
-    });
+    const values = submission.value;
 
-    const variant = variants.product?.variants.nodes.find((v) =>
-      isEqualGid(v.id, submission.value?.variantId || ''),
-    );
-
-    if (!variant) {
-      throw new Response('Variant not found', {status: 404});
-    }
-
-    const response = await getBookingShopifyApi().customerProductUpsert(
-      customer.id,
-      productId,
+    const actionResponse = await fetch(
+      new URL(`/api/account/services/${productId}/create-variant`, request.url),
       {
-        ...submission.value,
-        selectedOptions: variant.selectedOptions[0],
-        productHandle: variant.product.handle,
-        price: variant.price,
-        ...(variant.compareAtPrice
-          ? {compareAtPrice: variant.compareAtPrice}
-          : {}),
+        method: 'POST',
+        body: JSON.stringify(values),
       },
     );
 
-    return redirect(`/account/services/${response.payload.productId}`);
+    const response: ActionReturnType =
+      (await actionResponse.json()) as ActionReturnType;
+
+    await getBookingShopifyApi().customerProductUpsert(customer.id, productId, {
+      ...values,
+      ...response,
+      compareAtPrice: response.compareAtPrice,
+    });
+
+    return redirect(`/account/services/${productId}`);
   } catch (error) {
     return submission.reply();
   }
@@ -128,6 +123,10 @@ export async function loader({context, params}: LoaderFunctionArgs) {
   return json({
     defaultValue: {
       ...customerProduct,
+      price: parseInt(customerProduct.price.amount),
+      compareAtPrice: customerProduct.compareAtPrice?.amount
+        ? parseInt(customerProduct.compareAtPrice?.amount)
+        : 0,
       variantId: customerProduct.variantId.toString(),
       productId: customerProduct.productId.toString(),
     },
@@ -176,11 +175,21 @@ export default function EditAddress() {
                 value={selectedProduct.title}
               />
 
-              <RadioGroupVariantsProduct
-                label="Hvad skal ydelsen koste?"
-                productId={defaultValue.productId}
-                field={fields.variantId}
-              />
+              <Flex gap="md">
+                <NumericInput
+                  field={fields.price}
+                  label="Pris"
+                  required
+                  w={'25%'}
+                  hideControls={true}
+                />
+                <NumericInput
+                  field={fields.compareAtPrice}
+                  label="Før-pris"
+                  w={'25%'}
+                  hideControls={true}
+                />
+              </Flex>
 
               <SwitchGroupLocations
                 label="Fra hvilken lokation(er) vil du tilbyde den ydelse?"
@@ -197,7 +206,7 @@ export default function EditAddress() {
                 defaultValue={fields.scheduleId.initialValue}
               />
 
-              <Flex align={'flex-end'} gap="xs">
+              <Flex gap="md">
                 <TextInput
                   w="50%"
                   label="Behandlingstid:"

@@ -4,6 +4,10 @@ import {json, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
 import {getBookingShopifyApi} from '~/lib/api/bookingShopifyApi';
 import {getCustomer} from '~/lib/get-customer';
 
+export function shouldRevalidate() {
+  return false;
+}
+
 export async function loader({context}: LoaderFunctionArgs) {
   const customer = await getCustomer({context});
   const response = await getBookingShopifyApi().customerStatus(customer.id);

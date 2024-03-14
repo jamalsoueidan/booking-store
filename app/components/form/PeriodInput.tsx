@@ -21,7 +21,7 @@ export default function PeriodInput({data, field, ...props}: PeriodInputProps) {
 
   return (
     <fieldset>
-      <Flex align={'flex-end'} gap="xs">
+      <Flex align={'flex-end'} gap="md">
         <TextInput
           w="70%"
           {...props}

@@ -1,6 +1,6 @@
-import {useInputControl, type FieldMetadata} from '@conform-to/react';
+import {type FieldMetadata} from '@conform-to/react';
 import {Radio} from '@mantine/core';
-import {useEffect} from 'react';
+import {useMemo} from 'react';
 
 export type RadioGroupProps = {
   label: string;
@@ -9,24 +9,21 @@ export type RadioGroupProps = {
 };
 
 export function RadioGroup({label, data, field}: RadioGroupProps) {
-  const control = useInputControl(field);
-
-  useEffect(() => {
+  const initialValue = useMemo(() => {
     const findInData = data.findIndex((d) => d.value === field.initialValue);
-    if (field.initialValue === '' && findInData === -1) {
-      control.change(data[0].value);
+    if (findInData === -1) {
+      return data[0].value;
     }
-  }, [control, data, field.initialValue]);
+    return field.initialValue;
+  }, [data, field.initialValue]);
 
   return (
     <>
       <Radio.Group
         label={label}
-        defaultValue={field.initialValue}
+        defaultValue={initialValue}
         value={field.value}
-        onChange={(value: string) => {
-          control.change(value);
-        }}
+        name={field.name}
       >
         {data.map((d) => (
           <Radio
