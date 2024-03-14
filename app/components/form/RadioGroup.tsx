@@ -1,4 +1,4 @@
-import {type FieldMetadata} from '@conform-to/react';
+import {useInputControl, type FieldMetadata} from '@conform-to/react';
 import {Radio} from '@mantine/core';
 import {useMemo} from 'react';
 
@@ -17,13 +17,14 @@ export function RadioGroup({label, data, field}: RadioGroupProps) {
     return field.initialValue;
   }, [data, field.initialValue]);
 
+  const control = useInputControl(field);
+
   return (
     <>
       <Radio.Group
         label={label}
         defaultValue={initialValue}
-        value={field.value}
-        name={field.name}
+        onChange={control.change}
       >
         {data.map((d) => (
           <Radio

@@ -1,4 +1,4 @@
-import {Group, Radio, Stack, Text, TextInput, rem} from '@mantine/core';
+import {Stack, Text, TextInput, rem} from '@mantine/core';
 import {Form, useActionData, useLoaderData} from '@remix-run/react';
 import {parseGid} from '@shopify/hydrogen';
 import {
@@ -16,6 +16,7 @@ import {
 } from '@conform-to/react';
 import {parseWithZod} from '@conform-to/zod';
 import {MultiTags} from '~/components/form/MultiTags';
+import {RadioGroup} from '~/components/form/RadioGroup';
 import {SubmitButton} from '~/components/form/SubmitButton';
 import {TextEditor} from '~/components/richtext/TextEditor';
 import {getBookingShopifyApi} from '~/lib/api/bookingShopifyApi';
@@ -101,17 +102,14 @@ export default function AccountBusiness() {
             defaultValue={user.username}
           />
 
-          <Radio.Group
+          <RadioGroup
             label="Hvad er dit køn?"
-            withAsterisk
-            {...getInputProps(gender, {type: 'radio'})}
-          >
-            <Group mt="xs">
-              <Radio value="woman" label="Kvinde" />
-
-              <Radio value="man" label="Mand" />
-            </Group>
-          </Radio.Group>
+            field={gender}
+            data={[
+              {value: 'woman', label: 'Kvinde'},
+              {value: 'man', label: 'Mand'},
+            ]}
+          />
 
           <MultiTags
             field={professions}
