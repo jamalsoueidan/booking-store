@@ -26,9 +26,9 @@ import {getBookingShopifyApi} from '~/lib/api/bookingShopifyApi';
 import {AccountContent} from '~/components/account/AccountContent';
 import {AccountTitle} from '~/components/account/AccountTitle';
 import {NumericInput} from '~/components/form/NumericInput';
+import {createOrFindProductVariant} from '~/lib/create-or-find-variant';
 import {getCustomer} from '~/lib/get-customer';
 import {customerProductUpsertBody} from '~/lib/zod/bookingShopifyApi';
-import {type ActionReturnType} from './($locale).api.account.services.$productId.create-variant';
 
 const schema = customerProductUpsertBody
   .omit({
@@ -61,23 +61,17 @@ export const action = async ({request, context}: ActionFunctionArgs) => {
   try {
     const {productId, ...values} = submission.value;
 
-    const actionResponse = await fetch(
-      `${
-        new URL(request.url).origin
-      }/api/account/services/${productId}/create-variant`,
-      {
-        method: 'POST',
-        body: JSON.stringify(values),
-      },
-    );
-
-    const response: ActionReturnType =
-      (await actionResponse.json()) as ActionReturnType;
+    const variant = await createOrFindProductVariant({
+      productId,
+      price: values.price,
+      compareAtPrice: values.compareAtPrice,
+      storefront: context.storefront,
+    });
 
     await getBookingShopifyApi().customerProductUpsert(customer.id, productId, {
       ...values,
-      ...response,
-      compareAtPrice: response.compareAtPrice,
+      ...variant,
+      compareAtPrice: variant.compareAtPrice,
     });
 
     return redirect(`/account/services/${productId}`);
