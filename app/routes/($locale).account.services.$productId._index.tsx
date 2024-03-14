@@ -17,12 +17,11 @@ import {
 import {z} from 'zod';
 import {AccountContent} from '~/components/account/AccountContent';
 import {AccountTitle} from '~/components/account/AccountTitle';
+import {NumericInput} from '~/components/form/NumericInput';
 import PeriodInput from '~/components/form/PeriodInput';
-import {RadioGroupVariantsProduct} from '~/components/form/RadioGroupVariantProducts';
 import {SubmitButton} from '~/components/form/SubmitButton';
 import {SwitchGroupLocations} from '~/components/form/SwitchGroupLocations';
-import {isEqualGid} from '~/data/isEqualGid';
-import {PRODUCT_QUERY_ID, VARIANTS_QUERY_ID} from '~/data/queries';
+import {PRODUCT_QUERY_ID} from '~/data/queries';
 import {getBookingShopifyApi} from '~/lib/api/bookingShopifyApi';
 import {getCustomer} from '~/lib/get-customer';
 
@@ -30,6 +29,7 @@ import {customerProductUpsertBody} from '~/lib/zod/bookingShopifyApi';
 
 const schema = customerProductUpsertBody
   .omit({
+    variantId: true,
     price: true,
     compareAtPrice: true,
     productHandle: true,
@@ -37,6 +37,8 @@ const schema = customerProductUpsertBody
   })
   .extend({
     scheduleId: z.string().min(1),
+    price: z.number(),
+    compareAtPrice: z.number(),
   });
 
 export const action = async ({
@@ -62,33 +64,7 @@ export const action = async ({
   }
 
   try {
-    const variants = await storefront.query(VARIANTS_QUERY_ID, {
-      variables: {handle: `gid://shopify/Product/${productId}`},
-    });
-
-    const variant = variants.product?.variants.nodes.find((v) =>
-      isEqualGid(v.id, submission.value?.variantId || ''),
-    );
-
-    if (!variant) {
-      throw new Response('Variant not found', {status: 404});
-    }
-
-    const response = await getBookingShopifyApi().customerProductUpsert(
-      customer.id,
-      productId,
-      {
-        ...submission.value,
-        selectedOptions: variant.selectedOptions[0],
-        productHandle: variant.product.handle,
-        price: variant.price,
-        ...(variant.compareAtPrice
-          ? {compareAtPrice: variant.compareAtPrice}
-          : {}),
-      },
-    );
-
-    return redirect(`/account/services/${response.payload.productId}`);
+    return redirect(`/account/services/12`);
   } catch (error) {
     return submission.reply();
   }
@@ -128,6 +104,10 @@ export async function loader({context, params}: LoaderFunctionArgs) {
   return json({
     defaultValue: {
       ...customerProduct,
+      price: parseInt(customerProduct.price.amount),
+      compareAtPrice: customerProduct.compareAtPrice?.amount
+        ? parseInt(customerProduct.compareAtPrice?.amount)
+        : 0,
       variantId: customerProduct.variantId.toString(),
       productId: customerProduct.productId.toString(),
     },
@@ -176,11 +156,19 @@ export default function EditAddress() {
                 value={selectedProduct.title}
               />
 
-              <RadioGroupVariantsProduct
-                label="Hvad skal ydelsen koste?"
-                productId={defaultValue.productId}
-                field={fields.variantId}
-              />
+              <Flex gap="1">
+                <NumericInput
+                  field={fields.price}
+                  label="Pris"
+                  required
+                  style={{flex: 1}}
+                />
+                <NumericInput
+                  field={fields.compareAtPrice}
+                  label="Før-pris"
+                  style={{flex: 1}}
+                />
+              </Flex>
 
               <SwitchGroupLocations
                 label="Fra hvilken lokation(er) vil du tilbyde den ydelse?"
