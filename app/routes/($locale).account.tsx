@@ -14,10 +14,6 @@ export type AccountOutlet = {
   isBusiness: boolean;
 };
 
-export function shouldRevalidate() {
-  return true;
-}
-
 export async function loader({request, context}: LoaderFunctionArgs) {
   const {session, storefront} = context;
   const {pathname} = new URL(request.url);
