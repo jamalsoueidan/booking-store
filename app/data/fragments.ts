@@ -149,6 +149,7 @@ export const PRODUCT_VARIANTS_FRAGMENT = `#graphql
 
 export const PRODUCT_SELECTED_OPTIONS_FRAGMENT = `#graphql
   ${PRODUCT_COLLECTION_FRAGMENT}
+  ${PRODUCT_VARIANT_FRAGMENT}
 
   fragment Product on Product {
     id
@@ -179,5 +180,4 @@ export const PRODUCT_SELECTED_OPTIONS_FRAGMENT = `#graphql
       title
     }
   }
-  ${PRODUCT_VARIANT_FRAGMENT}
 ` as const;

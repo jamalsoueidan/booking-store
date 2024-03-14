@@ -6,6 +6,6 @@
  */
 
 export interface CustomerProductCreateVariantBody {
-  compareAtPrice: string;
-  price: string;
+  compareAtPrice: number;
+  price: number;
 }

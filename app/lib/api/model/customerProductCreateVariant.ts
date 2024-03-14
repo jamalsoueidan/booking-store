@@ -7,7 +7,7 @@
 import type {CustomerProductSelectedOptions} from './customerProductSelectedOptions';
 
 export interface CustomerProductCreateVariant {
-  id?: number;
-  selectedOptions?: CustomerProductSelectedOptions[];
-  title?: string;
+  id: number;
+  selectedOptions: CustomerProductSelectedOptions[];
+  title: string;
 }

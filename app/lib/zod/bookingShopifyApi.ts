@@ -1401,23 +1401,21 @@ export const customerProductCreateVariantParams = zod.object({
 });
 
 export const customerProductCreateVariantBody = zod.object({
-  price: zod.string(),
-  compareAtPrice: zod.string(),
+  price: zod.number(),
+  compareAtPrice: zod.number(),
 });
 
 export const customerProductCreateVariantResponse = zod.object({
   success: zod.boolean(),
   payload: zod.object({
-    id: zod.number().optional(),
-    title: zod.string().optional(),
-    selectedOptions: zod
-      .array(
-        zod.object({
-          name: zod.string(),
-          value: zod.string(),
-        }),
-      )
-      .optional(),
+    id: zod.number(),
+    title: zod.string(),
+    selectedOptions: zod.array(
+      zod.object({
+        name: zod.string(),
+        value: zod.string(),
+      }),
+    ),
   }),
 });
 
