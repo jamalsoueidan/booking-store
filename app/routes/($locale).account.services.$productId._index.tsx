@@ -67,7 +67,7 @@ export const action = async ({
     const values = submission.value;
 
     const actionResponse = await fetch(
-      new URL(`/api/account/services/${productId}/create-variant`, request.url),
+      `/api/account/services/${productId}/create-variant`,
       {
         method: 'POST',
         body: JSON.stringify(values),
