@@ -161,17 +161,19 @@ export default function AccountServicesCreate() {
                 field={fields.productId}
               />
 
-              <Flex gap="1">
+              <Flex gap="md">
                 <NumericInput
                   field={fields.price}
                   label="Pris"
                   required
-                  style={{flex: 1}}
+                  w={'25%'}
+                  hideControls={true}
                 />
                 <NumericInput
                   field={fields.compareAtPrice}
                   label="Før-pris"
-                  style={{flex: 1}}
+                  w={'25%'}
+                  hideControls={true}
                 />
               </Flex>
 
@@ -190,7 +192,7 @@ export default function AccountServicesCreate() {
                 defaultValue={fields.scheduleId.initialValue}
               />
 
-              <Flex align={'flex-end'} gap="xs">
+              <Flex gap="md">
                 <TextInput
                   w="50%"
                   label="Behandlingstid:"

@@ -26,6 +26,7 @@ import {getBookingShopifyApi} from '~/lib/api/bookingShopifyApi';
 import {getCustomer} from '~/lib/get-customer';
 
 import {customerProductUpsertBody} from '~/lib/zod/bookingShopifyApi';
+import {type ActionReturnType} from './($locale).api.account.services.$productId.create-variant';
 
 const schema = customerProductUpsertBody
   .omit({
@@ -46,7 +47,6 @@ export const action = async ({
   params,
   context,
 }: ActionFunctionArgs) => {
-  const {storefront} = context;
   const customer = await getCustomer({context});
 
   const {productId} = params;
@@ -64,7 +64,26 @@ export const action = async ({
   }
 
   try {
-    return redirect(`/account/services/12`);
+    const values = submission.value;
+
+    const actionResponse = await fetch(
+      new URL(`/api/account/services/${productId}/create-variant`, request.url),
+      {
+        method: 'POST',
+        body: JSON.stringify(values),
+      },
+    );
+
+    const response: ActionReturnType =
+      (await actionResponse.json()) as ActionReturnType;
+
+    await getBookingShopifyApi().customerProductUpsert(customer.id, productId, {
+      ...values,
+      ...response,
+      compareAtPrice: response.compareAtPrice,
+    });
+
+    return redirect(`/account/services/${productId}`);
   } catch (error) {
     return submission.reply();
   }
@@ -156,17 +175,19 @@ export default function EditAddress() {
                 value={selectedProduct.title}
               />
 
-              <Flex gap="1">
+              <Flex gap="md">
                 <NumericInput
                   field={fields.price}
                   label="Pris"
                   required
-                  style={{flex: 1}}
+                  w={'25%'}
+                  hideControls={true}
                 />
                 <NumericInput
                   field={fields.compareAtPrice}
                   label="Før-pris"
-                  style={{flex: 1}}
+                  w={'25%'}
+                  hideControls={true}
                 />
               </Flex>
 
@@ -185,7 +206,7 @@ export default function EditAddress() {
                 defaultValue={fields.scheduleId.initialValue}
               />
 
-              <Flex align={'flex-end'} gap="xs">
+              <Flex gap="md">
                 <TextInput
                   w="50%"
                   label="Behandlingstid:"
