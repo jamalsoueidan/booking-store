@@ -87,6 +87,7 @@ export * from './customerProductBookingPeriod';
 export * from './customerProductBookingUnit';
 export * from './customerProductCreateVariant';
 export * from './customerProductCreateVariantBody';
+export * from './customerProductCreateVariantProduct';
 export * from './customerProductCreateVariantResponse';
 export * from './customerProductDestroyResponse';
 export * from './customerProductDestroyResponsePayload';

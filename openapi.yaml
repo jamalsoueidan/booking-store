@@ -362,6 +362,16 @@ components:
     CustomerProductCreateVariant:
       type: object
       properties:
+        product:
+          type: object
+          properties:
+            id:
+              type: number
+            handle:
+              type: string
+          required:
+            - id
+            - handle
         id:
           type: number
         title:
@@ -370,10 +380,17 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/CustomerProductSelectedOptions'
+        price:
+          type: string
+        compareAtPrice:
+          type: string
       required:
+        - product
         - id
         - title
         - selectedOptions
+        - price
+        - compareAtPrice
     CustomerScheduleDestroy:
       type: object
       properties:

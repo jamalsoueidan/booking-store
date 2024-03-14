@@ -1408,6 +1408,10 @@ export const customerProductCreateVariantBody = zod.object({
 export const customerProductCreateVariantResponse = zod.object({
   success: zod.boolean(),
   payload: zod.object({
+    product: zod.object({
+      id: zod.number(),
+      handle: zod.string(),
+    }),
     id: zod.number(),
     title: zod.string(),
     selectedOptions: zod.array(
@@ -1416,6 +1420,8 @@ export const customerProductCreateVariantResponse = zod.object({
         value: zod.string(),
       }),
     ),
+    price: zod.string(),
+    compareAtPrice: zod.string(),
   }),
 });
 
