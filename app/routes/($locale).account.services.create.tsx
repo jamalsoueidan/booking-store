@@ -16,23 +16,23 @@ import {
 } from '@shopify/remix-oxygen';
 import {z} from 'zod';
 import PeriodInput from '~/components/form/PeriodInput';
-import {RadioGroupVariantsProduct} from '~/components/form/RadioGroupVariantProducts';
 import {SelectSearchable} from '~/components/form/SelectSearchable';
 
 import {SubmitButton} from '~/components/form/SubmitButton';
 import {SwitchGroupLocations} from '~/components/form/SwitchGroupLocations';
 
-import {VARIANTS_QUERY_ID} from '~/data/queries';
 import {getBookingShopifyApi} from '~/lib/api/bookingShopifyApi';
 
 import {AccountContent} from '~/components/account/AccountContent';
 import {AccountTitle} from '~/components/account/AccountTitle';
-import {isEqualGid} from '~/data/isEqualGid';
+import {NumericInput} from '~/components/form/NumericInput';
 import {getCustomer} from '~/lib/get-customer';
 import {customerProductUpsertBody} from '~/lib/zod/bookingShopifyApi';
+import {type ActionReturnType} from './($locale).api.account.services.$productId.create-variant';
 
 const schema = customerProductUpsertBody
   .omit({
+    variantId: true,
     selectedOptions: true,
     price: true,
     compareAtPrice: true,
@@ -41,14 +41,14 @@ const schema = customerProductUpsertBody
   .extend({
     productId: z.string().min(1),
     scheduleId: z.string().min(1),
+    price: z.number(),
+    compareAtPrice: z.number(),
   });
 
 type DefaultValues = z.infer<typeof schema>;
 
 export const action = async ({request, context}: ActionFunctionArgs) => {
-  const {storefront} = context;
   const customer = await getCustomer({context});
-
   const formData = await request.formData();
   const submission = parseWithZod(formData, {
     schema,
@@ -59,35 +59,26 @@ export const action = async ({request, context}: ActionFunctionArgs) => {
   }
 
   try {
-    const {productId, ...body} = submission.value;
+    const {productId, ...values} = submission.value;
 
-    const variants = await storefront.query(VARIANTS_QUERY_ID, {
-      variables: {handle: `gid://shopify/Product/${productId}`},
-    });
-
-    const variant = variants.product?.variants.nodes.find((v) =>
-      isEqualGid(v.id, body.variantId),
-    );
-
-    if (!variant) {
-      throw new Response('Variant not found', {status: 404});
-    }
-
-    const response = await getBookingShopifyApi().customerProductUpsert(
-      customer.id,
-      productId,
+    const actionResponse = await fetch(
+      new URL(`/api/account/services/${productId}/create-variant`, request.url),
       {
-        ...body,
-        selectedOptions: variant.selectedOptions[0],
-        productHandle: variant.product.handle,
-        price: variant.price,
-        ...(variant.compareAtPrice
-          ? {compareAtPrice: variant.compareAtPrice}
-          : {}),
+        method: 'POST',
+        body: JSON.stringify(values),
       },
     );
 
-    return redirect(`/account/services/${response.payload.productId}`);
+    const response: ActionReturnType =
+      (await actionResponse.json()) as ActionReturnType;
+
+    await getBookingShopifyApi().customerProductUpsert(customer.id, productId, {
+      ...values,
+      ...response,
+      compareAtPrice: response.compareAtPrice,
+    });
+
+    return redirect(`/account/services/${productId}`);
   } catch (error) {
     return submission.reply();
   }
@@ -116,6 +107,8 @@ export async function loader({context}: LoaderFunctionArgs) {
       scheduleId: schedule.payload[0]._id,
       duration: 60,
       breakTime: 15,
+      compareAtPrice: 0,
+      price: 0,
       bookingPeriod: {
         unit: 'months',
         value: 4,
@@ -168,13 +161,19 @@ export default function AccountServicesCreate() {
                 field={fields.productId}
               />
 
-              {fields.productId.value && (
-                <RadioGroupVariantsProduct
-                  label="Hvad skal ydelsen koste?"
-                  productId={fields.productId.value}
-                  field={fields.variantId}
+              <Flex gap="1">
+                <NumericInput
+                  field={fields.price}
+                  label="Pris"
+                  required
+                  style={{flex: 1}}
                 />
-              )}
+                <NumericInput
+                  field={fields.compareAtPrice}
+                  label="Før-pris"
+                  style={{flex: 1}}
+                />
+              </Flex>
 
               <SwitchGroupLocations
                 label="Fra hvilken lokation(er) vil du tilbyde den ydelse?"
