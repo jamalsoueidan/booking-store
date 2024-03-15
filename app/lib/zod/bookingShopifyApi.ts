@@ -3183,43 +3183,6 @@ export const metaspecialtiesResponse = zod.object({
 });
 
 /**
- * This endpoint get all origin locations
- * @summary GET Get all origin locations
- */
-export const customerLocationGetAllOriginsParams = zod.object({
-  customerId: zod.string(),
-});
-
-export const customerLocationGetAllOriginsResponse = zod.object({
-  success: zod.boolean(),
-  payload: zod.array(
-    zod
-      .object({
-        locationType: zod.enum(['origin', 'destination']),
-        customerId: zod.string(),
-        originType: zod.enum(['home', 'commercial']),
-        name: zod.string(),
-        fullAddress: zod.string(),
-      })
-      .and(
-        zod.object({
-          _id: zod.string(),
-          geoLocation: zod.object({
-            type: zod.enum(['Point']),
-            coordinates: zod.array(zod.number()),
-          }),
-          distanceForFree: zod.number(),
-          distanceHourlyRate: zod.number(),
-          fixedRatePerKm: zod.number(),
-          minDriveDistance: zod.number(),
-          maxDriveDistance: zod.number(),
-          startFee: zod.number(),
-        }),
-      ),
-  ),
-});
-
-/**
  * This endpoint set new default location for user
  * @summary POST Set new default location for user
  */
@@ -3312,48 +3275,6 @@ export const customerLocationRemoveParams = zod.object({
 });
 
 export const customerLocationRemoveResponse = zod.object({
-  success: zod.boolean(),
-  payload: zod.object({
-    customerId: zod.number(),
-    fullname: zod.string(),
-    email: zod.string().email(),
-    phone: zod.string(),
-    username: zod.string(),
-    yearsExperience: zod.string(),
-    professions: zod.array(zod.string()),
-    specialties: zod.array(zod.string()),
-    aboutMe: zod.string(),
-    shortDescription: zod.string(),
-    gender: zod.string(),
-    social: zod.object({
-      youtube: zod.string().optional(),
-      x: zod.string().optional(),
-      instagram: zod.string().optional(),
-      facebook: zod.string().optional(),
-    }),
-    speaks: zod.array(zod.string()),
-    images: zod.object({
-      profile: zod
-        .object({
-          url: zod.string().url().optional(),
-          width: zod.number().optional(),
-          height: zod.number().optional(),
-        })
-        .optional(),
-    }),
-  }),
-});
-
-/**
- * This endpoint add new location
- * @summary POST Add location to user
- */
-export const customerLocationAddParams = zod.object({
-  customerId: zod.string(),
-  locationId: zod.string(),
-});
-
-export const customerLocationAddResponse = zod.object({
   success: zod.boolean(),
   payload: zod.object({
     customerId: zod.number(),
@@ -3533,24 +3454,6 @@ export const locationGetCoordinatesQueryParams = zod.object({
 });
 
 export const locationGetCoordinatesResponse = zod.object({
-  success: zod.boolean(),
-  payload: zod.object({
-    longitude: zod.number(),
-    latitude: zod.number(),
-    fullAddress: zod.string(),
-  }),
-});
-
-/**
- * This endpoint validate address
- * @summary GET location validate address
- */
-export const locationValidateAddressQueryParams = zod.object({
-  name: zod.string().optional(),
-  fullAddress: zod.string().optional(),
-});
-
-export const locationValidateAddressResponse = zod.object({
   success: zod.boolean(),
   payload: zod.object({
     longitude: zod.number(),
