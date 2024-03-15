@@ -19,10 +19,8 @@ import type {
   CustomerCreateResponse,
   CustomerGetResponse,
   CustomerIsBusinessResponse,
-  CustomerLocationAddResponse,
   CustomerLocationCreateBody,
   CustomerLocationCreateResponse,
-  CustomerLocationGetAllOriginsRepsonse,
   CustomerLocationGetResponse,
   CustomerLocationListResponse,
   CustomerLocationRemoveResponse,
@@ -55,8 +53,6 @@ import type {
   LocationGetCoordinatesResponse,
   LocationGetTravelTimeParams,
   LocationGetTravelTimeResponse,
-  LocationValidateAddressParams,
-  LocationValidateAddressResponse,
   MetaProfessions200,
   Metaspecialties200,
   ProductsGetUsersByVariantParams,
@@ -608,17 +604,6 @@ export const getBookingShopifyApi = () => {
   };
 
   /**
-   * This endpoint get all origin locations
-   * @summary GET Get all origin locations
-   */
-  const customerLocationGetAllOrigins = (customerId: string) => {
-    return queryClient<CustomerLocationGetAllOriginsRepsonse>({
-      url: `/customer/${customerId}/locations/get-all-origins`,
-      method: 'GET',
-    });
-  };
-
-  /**
    * This endpoint set new default location for user
    * @summary POST Set new default location for user
    */
@@ -651,17 +636,6 @@ export const getBookingShopifyApi = () => {
     return queryClient<CustomerLocationRemoveResponse>({
       url: `/customer/${customerId}/location/${locationId}`,
       method: 'DELETE',
-    });
-  };
-
-  /**
-   * This endpoint add new location
-   * @summary POST Add location to user
-   */
-  const customerLocationAdd = (customerId: string, locationId: string) => {
-    return queryClient<CustomerLocationAddResponse>({
-      url: `/customer/${customerId}/location/${locationId}`,
-      method: 'POST',
     });
   };
 
@@ -716,18 +690,6 @@ export const getBookingShopifyApi = () => {
   const locationGetCoordinates = (params?: LocationGetCoordinatesParams) => {
     return queryClient<LocationGetCoordinatesResponse>({
       url: `/location/get-coordinates`,
-      method: 'GET',
-      params,
-    });
-  };
-
-  /**
-   * This endpoint validate address
-   * @summary GET location validate address
-   */
-  const locationValidateAddress = (params?: LocationValidateAddressParams) => {
-    return queryClient<LocationValidateAddressResponse>({
-      url: `/location/validate-address`,
       method: 'GET',
       params,
     });
@@ -890,16 +852,13 @@ export const getBookingShopifyApi = () => {
     customerScheduleSlotUpdate,
     metaProfessions,
     metaspecialties,
-    customerLocationGetAllOrigins,
     customerLocationSetDefault,
     customerLocationGet,
     customerLocationRemove,
-    customerLocationAdd,
     customerLocationUpdate,
     customerLocationCreate,
     customerLocationList,
     locationGetCoordinates,
-    locationValidateAddress,
     locationGetTravelTime,
     shippingCreate,
     shippingCalculate,
@@ -1126,13 +1085,6 @@ export type MetaspecialtiesResult = NonNullable<
     ReturnType<ReturnType<typeof getBookingShopifyApi>['metaspecialties']>
   >
 >;
-export type CustomerLocationGetAllOriginsResult = NonNullable<
-  Awaited<
-    ReturnType<
-      ReturnType<typeof getBookingShopifyApi>['customerLocationGetAllOrigins']
-    >
-  >
->;
 export type CustomerLocationSetDefaultResult = NonNullable<
   Awaited<
     ReturnType<
@@ -1150,11 +1102,6 @@ export type CustomerLocationRemoveResult = NonNullable<
     ReturnType<
       ReturnType<typeof getBookingShopifyApi>['customerLocationRemove']
     >
-  >
->;
-export type CustomerLocationAddResult = NonNullable<
-  Awaited<
-    ReturnType<ReturnType<typeof getBookingShopifyApi>['customerLocationAdd']>
   >
 >;
 export type CustomerLocationUpdateResult = NonNullable<
@@ -1180,13 +1127,6 @@ export type LocationGetCoordinatesResult = NonNullable<
   Awaited<
     ReturnType<
       ReturnType<typeof getBookingShopifyApi>['locationGetCoordinates']
-    >
-  >
->;
-export type LocationValidateAddressResult = NonNullable<
-  Awaited<
-    ReturnType<
-      ReturnType<typeof getBookingShopifyApi>['locationValidateAddress']
     >
   >
 >;

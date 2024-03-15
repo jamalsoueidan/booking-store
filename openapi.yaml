@@ -1621,19 +1621,6 @@ components:
               type: boolean
           required:
             - isDefault
-    CustomerLocationGetAllOriginsRepsonse:
-      type: object
-      properties:
-        success:
-          type: boolean
-          example: true
-        payload:
-          type: array
-          items:
-            $ref: '#/components/schemas/CustomerLocation'
-      required:
-        - success
-        - payload
     CustomerLocationCreateBody:
       type: object
       properties:
@@ -1751,17 +1738,6 @@ components:
           example: true
         payload:
           $ref: '#/components/schemas/CustomerLocation'
-      required:
-        - success
-        - payload
-    CustomerLocationAddResponse:
-      type: object
-      properties:
-        success:
-          type: boolean
-          example: true
-        payload:
-          $ref: '#/components/schemas/User'
       required:
         - success
         - payload
@@ -2266,17 +2242,6 @@ components:
           example: true
         payload:
           $ref: '#/components/schemas/LocationTravelTime'
-      required:
-        - success
-        - payload
-    LocationValidateAddressResponse:
-      type: object
-      properties:
-        success:
-          type: boolean
-          example: true
-        payload:
-          $ref: '#/components/schemas/LocationCoordinates'
       required:
         - success
         - payload
@@ -3858,35 +3823,6 @@ paths:
         '404':
           $ref: '#/components/responses/NotFoundResponse'
       security: []
-  '/customer/{customerId}/locations/get-all-origins':
-    get:
-      parameters:
-        - name: customerId
-          in: path
-          required: true
-          schema:
-            type: string
-      tags:
-        - CustomerLocation
-      operationId: customerLocationGetAllOrigins
-      summary: GET Get all origin locations
-      description: This endpoint get all origin locations
-      responses:
-        '200':
-          description: Response
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/CustomerLocationGetAllOriginsRepsonse'
-        '400':
-          $ref: '#/components/responses/BadResponse'
-        '401':
-          $ref: '#/components/responses/UnauthorizedResponse'
-        '403':
-          $ref: '#/components/responses/ForbiddenResponse'
-        '404':
-          $ref: '#/components/responses/NotFoundResponse'
-      security: []
   '/customer/{customerId}/location/{locationId}/setDefault':
     put:
       parameters:
@@ -3977,37 +3913,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/CustomerLocationRemoveResponse'
-        '400':
-          $ref: '#/components/responses/BadResponse'
-        '401':
-          $ref: '#/components/responses/UnauthorizedResponse'
-        '403':
-          $ref: '#/components/responses/ForbiddenResponse'
-      security: []
-    post:
-      parameters:
-        - name: customerId
-          in: path
-          required: true
-          schema:
-            type: string
-        - name: locationId
-          in: path
-          required: true
-          schema:
-            type: string
-      tags:
-        - CustomerLocation
-      operationId: customerLocationAdd
-      summary: POST Add location to user
-      description: This endpoint add new location
-      responses:
-        '200':
-          description: Response
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/CustomerLocationAddResponse'
         '400':
           $ref: '#/components/responses/BadResponse'
         '401':
@@ -4132,38 +4037,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/LocationGetCoordinatesResponse'
-        '400':
-          $ref: '#/components/responses/BadResponse'
-        '401':
-          $ref: '#/components/responses/UnauthorizedResponse'
-        '403':
-          $ref: '#/components/responses/ForbiddenResponse'
-        '404':
-          $ref: '#/components/responses/NotFoundResponse'
-      security: []
-  /location/validate-address:
-    get:
-      parameters:
-        - name: name
-          in: query
-          schema:
-            type: string
-        - name: fullAddress
-          in: query
-          schema:
-            type: string
-      tags:
-        - Location
-      operationId: locationValidateAddress
-      summary: GET location validate address
-      description: This endpoint validate address
-      responses:
-        '200':
-          description: Response with payload
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/LocationValidateAddressResponse'
         '400':
           $ref: '#/components/responses/BadResponse'
         '401':
