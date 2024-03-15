@@ -1,5 +1,14 @@
-import {Stack, UnstyledButton} from '@mantine/core';
-import {Form} from '@remix-run/react';
+import {
+  Button,
+  Flex,
+  Group,
+  SimpleGrid,
+  Stack,
+  Text,
+  Title,
+} from '@mantine/core';
+import {Form, Link} from '@remix-run/react';
+import {IconGps, IconHome} from '@tabler/icons-react';
 import {type CustomerLocationIsDefault} from '~/lib/api/model';
 
 export type AccountLocationProps = {
@@ -7,83 +16,105 @@ export type AccountLocationProps = {
 };
 
 export const AccountLocation = ({data}: AccountLocationProps) => {
-  const defaultMarkup = !data.isDefault ? (
-    <Form
-      method="post"
-      action={`${data._id}/set-default`}
-      className="!mt-0 inline-block"
-    >
-      Nej{' '}
-      <UnstyledButton
-        type="submit"
-        variant="subtle"
-        style={{textDocoration: 'underline'}}
+  const buttons = (
+    <Flex gap="sm">
+      <Button component={Link} to={`${data._id}/edit`}>
+        Rediger
+      </Button>
+
+      <Form
+        method="post"
+        action={`${data._id}/destroy`}
+        style={{display: 'inline-block'}}
       >
-        (Set standard)
-      </UnstyledButton>
-    </Form>
-  ) : (
-    <>Ja</>
+        <Button variant="light" color="blue" fullWidth size="xs" type="submit">
+          Slet
+        </Button>
+      </Form>
+    </Flex>
   );
 
   if (data.locationType === 'destination') {
     return (
-      <Stack>
-        <span>
-          <strong>Navn:</strong> {data.name}
-        </span>
-        <span>
-          <strong>Udgifter:</strong> {data.startFee} DKK
-        </span>
-        <span>
-          <strong>Timepris for kørsel:</strong> {data.distanceHourlyRate} DKK
-        </span>
-        <span>
-          <strong>Pris pr. kilometer:</strong> {data.fixedRatePerKm} DKK
-        </span>
-        <span>
-          <strong>Gratis. kilometer:</strong> {data.distanceForFree} km
-        </span>
-        <span>
-          <strong>Min. kilometer:</strong> {data.minDriveDistance} km
-        </span>
-        <span>
-          <strong>Max. kilometer:</strong> {data.maxDriveDistance} km
-        </span>
-        <span>
-          <strong>Standard: </strong> {defaultMarkup}
-        </span>
-      </Stack>
+      <Group align="flex-start">
+        <IconGps />
+        <Stack>
+          <div>
+            <Title order={3}>{data.name}</Title>
+            <Text c="dimmed">{data.fullAddress}</Text>
+          </div>
+          <SimpleGrid cols={2}>
+            <div>
+              <Text size="sm">Udgifter</Text>
+              <Text fw={600} size="sm">
+                {data.startFee} DKK
+              </Text>
+            </div>
+            <div>
+              <Text size="sm">Timepris for kørsel</Text>
+              <Text fw={600} size="sm">
+                {data.distanceHourlyRate} DKK
+              </Text>
+            </div>
+            <div>
+              <Text size="sm">Pris pr. kilometer:</Text>
+              <Text fw={600} size="sm">
+                {data.fixedRatePerKm} DKK
+              </Text>
+            </div>
+            <div>
+              <Text size="sm">Gratis. kilometer:</Text>
+              <Text fw={600} size="sm">
+                {data.distanceForFree} km
+              </Text>
+            </div>
+            <div>
+              <Text size="sm">Min. kilometer:</Text>
+              <Text fw={600} size="sm">
+                {data.minDriveDistance} km
+              </Text>
+            </div>
+            <div>
+              <Text size="sm">Max. kilometer:</Text>
+              <Text fw={600} size="sm">
+                {data.maxDriveDistance} km
+              </Text>
+            </div>
+          </SimpleGrid>
+
+          {buttons}
+        </Stack>
+      </Group>
     );
   }
   return (
-    <Stack style={{flex: 1}}>
-      <span>
-        <strong>Navn:</strong> {data.name}
-      </span>
-      <span>
-        <strong>Adresse:</strong> {data.fullAddress}
-      </span>
-      <span>
-        <strong>Vis kort:</strong>{' '}
-        <a
-          href={`https://www.google.com/maps/search/?api=1&query=${data.geoLocation.coordinates
-            .reverse()
-            .join(',')}`}
-          target="_blank"
-          className="!m-0"
-          rel="noreferrer"
-        >
-          Åben vindue
-        </a>
-      </span>
-      <span>
-        <strong>Type:</strong>{' '}
-        {data.originType === 'commercial' ? 'Butik' : 'Hjemmefra'}
-      </span>
-      <span>
-        <strong>Standard: </strong> {defaultMarkup}
-      </span>
-    </Stack>
+    <Group align="flex-start">
+      <IconHome />
+      <Stack gap="xs" style={{flex: 1}}>
+        <div>
+          <Title order={3}>{data.name}</Title>
+          <Text c="dimmed">{data.fullAddress}</Text>
+        </div>
+        <SimpleGrid cols={2}>
+          <div>
+            <Text size="sm">Vis kort</Text>
+            <Text fw={600} size="sm">
+              <a
+                href={`https://www.google.com/maps/search/?api=1&query=${data.geoLocation.coordinates
+                  .reverse()
+                  .join(',')}`}
+                target="_blank"
+                className="!m-0"
+                rel="noreferrer"
+              >
+                Åben vindue
+              </a>
+            </Text>
+          </div>
+        </SimpleGrid>
+
+        {buttons}
+      </Stack>
+    </Group>
   );
 };
