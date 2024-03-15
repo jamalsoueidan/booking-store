@@ -84,7 +84,7 @@ export default function AccountServicesIndex() {
                         />
                       )}
 
-                      <Title order={3} fw="600">
+                      <Title order={3} fw="600" lineClamp={1} style={{flex: 1}}>
                         {product.title}
                       </Title>
                     </Group>

@@ -1,4 +1,4 @@
-import type {EventClickArg, EventInput} from '@fullcalendar/core/index.js';
+import type {EventInput} from '@fullcalendar/core/index.js';
 import daLocale from '@fullcalendar/core/locales/da';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import interactionPlugin from '@fullcalendar/interaction';
@@ -28,15 +28,6 @@ export default function AccountBookings() {
   const navigate = useNavigate();
   const inOutlet = !!useOutlet();
 
-  const openModal = ({event}: EventClickArg) => {
-    const document = event.extendedProps as CustomerBlocked | CustomerBooking;
-    if (!isCustomerBlocked(document)) {
-      navigate(`${event.id}/group/${event.groupId}`, {
-        relative: 'path',
-      });
-    }
-  };
-
   const closeModal = () => {
     navigate(-1);
   };
@@ -46,7 +37,7 @@ export default function AccountBookings() {
       <AccountTitle heading="Bestillinger" />
       <AccountContent>
         <FullCalendar
-          customButtons={{
+          /*customButtons={{
             addVacation: {
               text: 'Tilføj ferie',
               click: () => {
@@ -55,13 +46,13 @@ export default function AccountBookings() {
                 });
               },
             },
-          }}
+          }}*/
           slotDuration={'00:15:00'}
           plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
           headerToolbar={{
             left: isMobile ? 'prev,next' : 'prev,next today',
             center: 'title',
-            right: isMobile ? '' : 'addVacation dayGridMonth,timeGridWeek',
+            right: isMobile ? '' : 'dayGridMonth,timeGridWeek',
           }}
           eventSourceSuccess={(
             eventsInput: EventInput[],
@@ -86,6 +77,7 @@ export default function AccountBookings() {
                       id: event.id.toString(),
                       groupId: lineItem.properties.groupId,
                       extendedProps: lineItem,
+                      url: `${event.id}/group/${lineItem.properties.groupId}`,
                     });
                   });
 
@@ -97,6 +89,7 @@ export default function AccountBookings() {
                       id: event.id.toString(),
                       groupId: event.line_items[0].properties.groupId,
                       extendedProps: event,
+                      url: `${event.id}/group/${event.line_items[0].properties.groupId}`,
                     });
                     newEvents.push({
                       title: 'Kørsel hjem',
@@ -107,6 +100,7 @@ export default function AccountBookings() {
                       id: event.id.toString(),
                       groupId: event.line_items[0].properties.groupId,
                       extendedProps: event,
+                      url: `${event.id}/group/${event.line_items[0].properties.groupId}`,
                     });
                   }
                 },
@@ -179,7 +173,6 @@ export default function AccountBookings() {
             meridiem: false,
           }}
           height="auto"
-          eventClick={openModal}
         />
       </AccountContent>
 
