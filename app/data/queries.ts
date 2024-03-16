@@ -93,7 +93,7 @@ ${PRODUCT_VALIDATE_HANDLER_FRAGMENT}
     $language: LanguageCode
   ) @inContext(country: $country, language: $language) {
     product(handle: $productHandle) {
-      ...Product
+      ...ProductValidateHandler
     }
   }
 ` as const;

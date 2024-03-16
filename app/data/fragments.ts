@@ -183,9 +183,12 @@ export const PRODUCT_SELECTED_OPTIONS_FRAGMENT = `#graphql
 ` as const;
 
 export const PRODUCT_VALIDATE_HANDLER_FRAGMENT = `#graphql
-  fragment Product on Product {
+  fragment ProductValidateHandler on Product {
     id
     title
     vendor
+    selectedVariant: variantBySelectedOptions(selectedOptions: [{name: "asd", value: "asd"}]) {
+      id
+    }
   }
 ` as const;
