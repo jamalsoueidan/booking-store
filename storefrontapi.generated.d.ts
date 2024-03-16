@@ -184,6 +184,15 @@ export type ProductFragment = Pick<
   seo: Pick<StorefrontAPI.Seo, 'description' | 'title'>;
 };
 
+export type ProductValidateHandlerFragment = Pick<
+  StorefrontAPI.Product,
+  'id' | 'title' | 'vendor'
+> & {
+  selectedVariant?: StorefrontAPI.Maybe<
+    Pick<StorefrontAPI.ProductVariant, 'id'>
+  >;
+};
+
 export type ProductItemByIdQueryVariables = StorefrontAPI.Exact<{
   country?: StorefrontAPI.InputMaybe<StorefrontAPI.CountryCode>;
   language?: StorefrontAPI.InputMaybe<StorefrontAPI.LanguageCode>;
@@ -498,6 +507,22 @@ export type ProductQuery = {
         >;
       };
       seo: Pick<StorefrontAPI.Seo, 'description' | 'title'>;
+    }
+  >;
+};
+
+export type ProductValidateHandlerQueryVariables = StorefrontAPI.Exact<{
+  country?: StorefrontAPI.InputMaybe<StorefrontAPI.CountryCode>;
+  productHandle: StorefrontAPI.Scalars['String']['input'];
+  language?: StorefrontAPI.InputMaybe<StorefrontAPI.LanguageCode>;
+}>;
+
+export type ProductValidateHandlerQuery = {
+  product?: StorefrontAPI.Maybe<
+    Pick<StorefrontAPI.Product, 'id' | 'title' | 'vendor'> & {
+      selectedVariant?: StorefrontAPI.Maybe<
+        Pick<StorefrontAPI.ProductVariant, 'id'>
+      >;
     }
   >;
 };
@@ -2540,6 +2565,10 @@ interface GeneratedQueryTypes {
   '#graphql\n#graphql\n  #graphql\n  fragment ProductCollection on Collection {\n    title\n    handle\n    icon:  metafield(namespace:"custom",  key: "icon") {\n      type\n      value\n    }\n  }\n\n  #graphql\n  fragment ProductVariant on ProductVariant {\n    availableForSale\n    compareAtPrice {\n      amount\n      currencyCode\n    }\n    id\n    image {\n      __typename\n      id\n      url\n      altText\n      width\n      height\n    }\n    price {\n      amount\n      currencyCode\n    }\n    product {\n      title\n      handle\n    }\n    selectedOptions {\n      name\n      value\n    }\n    sku\n    title\n    unitPrice {\n      amount\n      currencyCode\n    }\n  }\n\n\n  fragment Product on Product {\n    id\n    title\n    vendor\n    handle\n    descriptionHtml\n    description\n    options {\n      name\n      values\n    }\n    selectedVariant: variantBySelectedOptions(selectedOptions: $selectedOptions) {\n      ...ProductVariant\n    }\n    variants(first: 1) {\n      nodes {\n        ...ProductVariant\n      }\n    }\n    collections(first: 2) {\n      nodes {\n        ...ProductCollection\n      }\n    }\n    seo {\n      description\n      title\n    }\n  }\n\n  query Product(\n    $country: CountryCode\n    $productHandle: String!\n    $language: LanguageCode\n    $selectedOptions: [SelectedOptionInput!]!\n  ) @inContext(country: $country, language: $language) {\n    product(handle: $productHandle) {\n      ...Product\n    }\n  }\n': {
     return: ProductQuery;
     variables: ProductQueryVariables;
+  };
+  '#graphql\n#graphql\n  fragment ProductValidateHandler on Product {\n    id\n    title\n    vendor\n    selectedVariant: variantBySelectedOptions(selectedOptions: [{name: "asd", value: "asd"}]) {\n      id\n    }\n  }\n\n  query ProductValidateHandler(\n    $country: CountryCode\n    $productHandle: String!\n    $language: LanguageCode\n  ) @inContext(country: $country, language: $language) {\n    product(handle: $productHandle) {\n      ...ProductValidateHandler\n    }\n  }\n': {
+    return: ProductValidateHandlerQuery;
+    variables: ProductValidateHandlerQueryVariables;
   };
   '#graphql\n  #graphql\n  fragment ProductCreateVariant on ProductVariant {\n    id\n    title\n    compareAtPrice {\n      amount\n      currencyCode\n    }\n    price {\n      amount\n      currencyCode\n    }\n    product {\n      title\n      handle\n    }\n    selectedOptions {\n      name\n      value\n    }\n  }\n\n  query ProductCreateVariantId(\n    $country: CountryCode\n    $Id: ID!\n    $language: LanguageCode\n    $selectedOptions: [SelectedOptionInput!]!\n  ) @inContext(country: $country, language: $language) {\n    product(id: $Id) {\n      ...on Product {\n        selectedVariant: variantBySelectedOptions(selectedOptions: $selectedOptions) {\n          ...ProductCreateVariant\n        }\n      }\n    }\n  }\n': {
     return: ProductCreateVariantIdQuery;
