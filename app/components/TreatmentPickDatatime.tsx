@@ -34,7 +34,7 @@ type TreatmentPickDatetimeProps = {
 export default function TreatmentPickDatetime({
   availability,
 }: TreatmentPickDatetimeProps) {
-  const [embla] = useState<Embla | null>(null);
+  const [embla, setEmbla] = useState<Embla | null>(null);
 
   const scrollPrev = useCallback(() => {
     if (embla) embla.scrollPrev();
@@ -138,6 +138,7 @@ export default function TreatmentPickDatetime({
           slideGap="sm"
           withControls={false}
           align="start"
+          getEmblaApi={setEmbla}
         >
           {days}
         </Carousel>
