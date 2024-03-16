@@ -3,7 +3,6 @@ import {
   ActionIcon,
   Button,
   Flex,
-  Group,
   SimpleGrid,
   Stack,
   Text,
@@ -178,17 +177,14 @@ function AvailabilityDay({
         variant="outline"
         h="56"
       >
-        <Group gap="2" align="center" justify="center" p="0">
-          <Text size="xs" ta="center" fw={300} c="black">
-            {format(new Date(availability.date), 'EEEE', {locale: da})}
+        <Stack gap="2" justify="center">
+          <Text size="xs" ta="center" fw={isSelected ? 700 : 400} c="black">
+            {format(new Date(availability.date), 'E', {locale: da})}
           </Text>
           <Text size="sm" ta="center" fw={isSelected ? 700 : 400} c="black">
-            {format(new Date(availability.date), 'PP', {locale: da}).slice(
-              0,
-              -6,
-            )}
+            {format(new Date(availability.date), 'd. LLL', {locale: da})}
           </Text>
-        </Group>
+        </Stack>
       </Button>
     </Carousel.Slide>
   );
