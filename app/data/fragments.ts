@@ -181,3 +181,11 @@ export const PRODUCT_SELECTED_OPTIONS_FRAGMENT = `#graphql
     }
   }
 ` as const;
+
+export const PRODUCT_VALIDATE_HANDLER_FRAGMENT = `#graphql
+  fragment Product on Product {
+    id
+    title
+    vendor
+  }
+` as const;

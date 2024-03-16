@@ -1,6 +1,7 @@
 import {
   PRODUCT_ITEM_FRAGMENT,
   PRODUCT_SELECTED_OPTIONS_FRAGMENT,
+  PRODUCT_VALIDATE_HANDLER_FRAGMENT,
   PRODUCT_VARIANTS_FRAGMENT,
 } from './fragments';
 
@@ -77,6 +78,19 @@ ${PRODUCT_SELECTED_OPTIONS_FRAGMENT}
     $productHandle: String!
     $language: LanguageCode
     $selectedOptions: [SelectedOptionInput!]!
+  ) @inContext(country: $country, language: $language) {
+    product(handle: $productHandle) {
+      ...Product
+    }
+  }
+` as const;
+
+export const PRODUCT_VALIDATE_HANDLER_QUERY = `#graphql
+${PRODUCT_VALIDATE_HANDLER_FRAGMENT}
+  query ProductValidateHandler(
+    $country: CountryCode
+    $productHandle: String!
+    $language: LanguageCode
   ) @inContext(country: $country, language: $language) {
     product(handle: $productHandle) {
       ...Product
