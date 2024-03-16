@@ -52,6 +52,7 @@
     "@tiptap/starter-kit": "^2.2.4",
     "date-fns": "^2.30.0",
     "date-fns-tz": "^2.0.0",
+    "dayjs": "^1.11.10",
     "embla-carousel-react": "^7.1.0",
     "graphql": "^16.6.0",
     "graphql-tag": "^2.12.6",
