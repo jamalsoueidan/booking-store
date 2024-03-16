@@ -9,10 +9,16 @@ import {
   Text,
   Title,
 } from '@mantine/core';
+import {MonthPickerInput, type DateValue} from '@mantine/dates';
+import 'dayjs/locale/da';
 
 import {useSearchParams} from '@remix-run/react';
-import {IconArrowLeft, IconArrowRight} from '@tabler/icons-react';
-import {format} from 'date-fns';
+import {
+  IconArrowLeft,
+  IconArrowRight,
+  IconChevronDown,
+} from '@tabler/icons-react';
+import {addDays, format} from 'date-fns';
 import {da} from 'date-fns/locale';
 import {useCallback, useState} from 'react';
 import type {
@@ -28,7 +34,7 @@ type TreatmentPickDatetimeProps = {
 export default function TreatmentPickDatetime({
   availability,
 }: TreatmentPickDatetimeProps) {
-  const [embla, setEmbla] = useState<Embla | null>(null);
+  const [embla] = useState<Embla | null>(null);
 
   const scrollPrev = useCallback(() => {
     if (embla) embla.scrollPrev();
@@ -39,6 +45,23 @@ export default function TreatmentPickDatetime({
   }, [embla]);
 
   const [searchParams, setSearchParams] = useSearchParams();
+
+  const onPickDate = (date: DateValue) => {
+    if (date) {
+      const newSearchParams = new URLSearchParams(searchParams);
+      newSearchParams.set('calendar', addDays(date, 1).toJSON());
+      newSearchParams.delete('date');
+      newSearchParams.delete('fromDate');
+      newSearchParams.delete('toDate');
+      setSearchParams(newSearchParams, {
+        state: {
+          key: 'booking',
+        },
+      });
+    }
+  };
+
+  const selectedCalendar = searchParams.get('calendar') || availability[0].date;
 
   const onChangeDate = (availability: UserAvailability) => () => {
     const newSearchParams = new URLSearchParams(searchParams);
@@ -89,24 +112,32 @@ export default function TreatmentPickDatetime({
 
   return (
     <Stack gap="lg">
-      <Flex justify="flex-end">
-        <Group>
+      <SimpleGrid cols={2}>
+        <div>
+          <MonthPickerInput
+            locale="da"
+            minDate={new Date()}
+            value={new Date(selectedCalendar)}
+            onChange={onPickDate}
+            rightSection={<IconChevronDown />}
+            rightSectionPointerEvents="none"
+          />
+        </div>
+        <Flex justify="flex-end" gap="lg" w="100%">
           <ActionIcon variant="default" onClick={scrollPrev} size="lg">
             <IconArrowLeft />
           </ActionIcon>
           <ActionIcon variant="default" onClick={scrollNext} size="lg">
             <IconArrowRight />
           </ActionIcon>
-        </Group>
-      </Flex>
+        </Flex>
+      </SimpleGrid>
       {days ? (
         <Carousel
           slideSize={{base: '100px'}}
-          align="start"
           slideGap="sm"
-          getEmblaApi={setEmbla}
           withControls={false}
-          containScroll="trimSnaps"
+          align="start"
         >
           {days}
         </Carousel>

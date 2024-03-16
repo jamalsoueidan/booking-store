@@ -1,4 +1,4 @@
-import {Box, Group, Skeleton} from '@mantine/core';
+import {Box, Flex, SimpleGrid, Skeleton, Stack} from '@mantine/core';
 import {
   Await,
   useLoaderData,
@@ -8,7 +8,7 @@ import {parseGid} from '@shopify/hydrogen';
 import {defer, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
 import {Suspense} from 'react';
 import TreatmentPickDatetime from '~/components/TreatmentPickDatatime';
-import {PRODUCT_SELECTED_OPTIONS_QUERY} from '~/data/queries';
+import {PRODUCT_VALIDATE_HANDLER_QUERY} from '~/data/queries';
 import {getBookingShopifyApi} from '~/lib/api/bookingShopifyApi';
 
 export function shouldRevalidate({
@@ -38,6 +38,7 @@ export async function loader({params, request, context}: LoaderFunctionArgs) {
   const searchParams = url.searchParams;
 
   const productIds = searchParams.getAll('productIds');
+  const calendar = searchParams.get('calendar') || new Date().toJSON();
   const locationId = searchParams.get('locationId') as string | undefined;
   const shippingId = searchParams.get('shippingId') as string | undefined;
 
@@ -45,8 +46,8 @@ export async function loader({params, request, context}: LoaderFunctionArgs) {
     throw new Response('Expected artist handle to be defined', {status: 400});
   }
 
-  const {product} = await storefront.query(PRODUCT_SELECTED_OPTIONS_QUERY, {
-    variables: {productHandle, selectedOptions: []},
+  const {product} = await storefront.query(PRODUCT_VALIDATE_HANDLER_QUERY, {
+    variables: {productHandle},
   });
 
   if (!product?.id) {
@@ -58,7 +59,7 @@ export async function loader({params, request, context}: LoaderFunctionArgs) {
     locationId,
     {
       productIds: [parseGid(product.id).id, ...productIds],
-      fromDate: '2023-05-13',
+      fromDate: calendar.substring(0, 10),
       shippingId: shippingId ? shippingId : undefined, //stringify ignore undefined values but not NULL
     },
   );
@@ -73,11 +74,24 @@ export default function ArtistTreatmentPickDatetime() {
     <Box mt="lg">
       <Suspense
         fallback={
-          <Group gap="md">
-            <Skeleton height={20} />
-            <Skeleton height={20} />
-            <Skeleton height={20} />
-          </Group>
+          <Stack gap="lg">
+            <SimpleGrid cols={2}>
+              <Skeleton height={30} width="80%" />
+              <Flex gap="lg" justify="flex-end">
+                <Skeleton height={30} width={30} />
+                <Skeleton height={30} width={30} />
+              </Flex>
+            </SimpleGrid>
+            <Flex gap="lg">
+              <Skeleton height={30} style={{flex: 1}} />
+              <Skeleton height={30} style={{flex: 1}} />
+              <Skeleton height={30} style={{flex: 1}} />
+              <Skeleton height={30} style={{flex: 1}} />
+              <Skeleton height={30} style={{flex: 1}} />
+              <Skeleton height={30} style={{flex: 1}} />
+              <Skeleton height={30} style={{flex: 1}} />
+            </Flex>
+          </Stack>
         }
       >
         <Await resolve={availability}>
