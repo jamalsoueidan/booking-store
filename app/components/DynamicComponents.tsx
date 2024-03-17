@@ -1,3 +1,5 @@
+import {Container, Flex, Image, Stack, Text, Title, rem} from '@mantine/core';
+import {useMediaQuery} from '@mantine/hooks';
 import {Icon12Hours} from '@tabler/icons-react';
 import type {
   PageComponentFragment,
@@ -84,5 +86,48 @@ export function WrapperMaps({component}: {component: PageComponentFragment}) {
         ></iframe>
       </div>
     </Wrapper>
+  );
+}
+
+export function WrapperCardMedia({
+  component,
+}: {
+  component: PageComponentFragment;
+}) {
+  const isMobile = useMediaQuery('(max-width: 62em)');
+
+  const title = component.fields.find(({key}) => key === 'title')?.value;
+  const description = component.fields.find(
+    ({key}) => key === 'description',
+  )?.value;
+
+  const image = component.fields.find(({key}) => key === 'image')?.reference
+    ?.image;
+  const flip =
+    !isMobile &&
+    component.fields.find(({key}) => key === 'flip')?.value === 'true';
+
+  return (
+    <Container size="md" mb={rem(60)}>
+      <Flex
+        justify="space-between"
+        gap={{base: 'lg', sm: rem(120)}}
+        style={{flexDirection: isMobile ? 'column' : 'row'}}
+      >
+        <Stack style={{order: flip ? 2 : 1, flex: 1}} gap="lg">
+          <Title fw={500}>{title}</Title>
+          <Text c="dimmed" size="lg">
+            {description}
+          </Text>
+        </Stack>
+        <Image
+          src={image?.url}
+          height={200}
+          w="auto"
+          radius="xl"
+          style={{order: flip ? 1 : 2, flex: 1}}
+        />
+      </Flex>
+    </Container>
   );
 }
