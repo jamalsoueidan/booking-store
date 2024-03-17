@@ -141,6 +141,7 @@ export default function TreatmentPickDatetime({
           slideGap="sm"
           withControls={false}
           align="start"
+          containScroll="keepSnaps"
           dragFree={true}
           getEmblaApi={setEmbla}
         >
