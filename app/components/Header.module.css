@@ -30,6 +30,21 @@
   }
 }
 
+.button {
+  background-color: #8a60f6;
+  color: white;
+  border-radius: var(--mantine-radius-lg);
+
+  @mixin hover {
+    background-color: #8a60f6;
+  }
+
+  [data-mantine-color-scheme] &[data-active] {
+    background-color: #8a60f6;
+    color: white;
+  }
+}
+
 .linkLabel {
   margin-right: rem(5px);
 }

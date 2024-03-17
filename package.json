@@ -50,6 +50,7 @@
     "@tiptap/pm": "^2.2.4",
     "@tiptap/react": "^2.2.4",
     "@tiptap/starter-kit": "^2.2.4",
+    "clsx": "^2.1.0",
     "date-fns": "^2.30.0",
     "date-fns-tz": "^2.0.0",
     "dayjs": "^1.11.10",

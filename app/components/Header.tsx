@@ -20,6 +20,7 @@ import {
   IconShoppingCartPlus,
   IconUser,
 } from '@tabler/icons-react';
+import clsx from 'clsx';
 import React, {Suspense} from 'react';
 import type {HeaderQuery} from 'storefrontapi.generated';
 import {useRootLoaderData} from '~/root';
@@ -167,7 +168,10 @@ export function HeaderMenu({
           <Link
             key={link.id}
             to={url}
-            className={classes.link}
+            className={clsx(
+              classes.link,
+              link.title === 'Start din succes' && classes.button,
+            )}
             data-active={location.pathname.includes(url) || undefined}
           >
             {link.title}
