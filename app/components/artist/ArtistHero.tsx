@@ -66,16 +66,7 @@ export function ArtistHero({artist}: {artist: User}) {
             <Text fz={{base: 'md', md: 'lg'}}>
               {artist.shortDescription} <br />
             </Text>
-            <Text fz={{base: 'md', md: 'lg'}}>
-              {artist.yearsExperience} årserfaring
-            </Text>
-            <Stack gap="xs" visibleFrom="md">
-              <Tags />
-            </Stack>
           </Flex>
-        </Grid.Col>
-        <Grid.Col span={{base: 12}} hiddenFrom="md">
-          <Tags />
         </Grid.Col>
         {Object.keys(artist.social).length > 0 ? (
           <Grid.Col span={{base: 'content', md: 12}}>

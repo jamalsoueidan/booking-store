@@ -1,25 +1,21 @@
 import {Carousel, type Embla} from '@mantine/carousel';
 import {
-  Accordion,
   ActionIcon,
   Box,
   Button,
   Container,
   Flex,
   Group,
-  SimpleGrid,
   Skeleton,
   Stack,
   Text,
   Title,
-  rem,
 } from '@mantine/core';
 import {Await, Link, useLoaderData, type MetaFunction} from '@remix-run/react';
 import {parseGid} from '@shopify/hydrogen';
 import {defer, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
 import {Suspense, useCallback, useState} from 'react';
 import type {
-  FaqFragment,
   RecommendedProductsQuery,
   RecommendedTreatmentsQuery,
 } from 'storefrontapi.generated';
@@ -31,6 +27,7 @@ import {IconArrowLeft, IconArrowRight} from '@tabler/icons-react';
 import HeroCategories from '~/components/HeroCategories';
 import {Slider} from '~/components/Slider';
 import {Wrapper} from '~/components/Wrapper';
+import {FaqQuestions} from '~/components/index/FaqQuestions';
 import {PRODUCT_ITEM_FRAGMENT} from '~/data/fragments';
 import {getBookingShopifyApi} from '~/lib/api/bookingShopifyApi';
 import type {ProductsGetUsersImage, UsersListResponse} from '~/lib/api/model';
@@ -366,46 +363,6 @@ function RecommendedProducts({
   );
 }
 
-function FaqQuestions({faq}: {faq?: FaqFragment | null}) {
-  if (!faq) {
-    return null;
-  }
-
-  const title = faq.fields.find((p) => p.key === 'title')?.value || '';
-  const description =
-    faq.fields.find((p) => p.key === 'description')?.value || '';
-  const pages = faq.fields.find((p) => p.key === 'pages');
-
-  return (
-    <Wrapper bg="yellow.1" mb="0">
-      <SimpleGrid cols={{base: 1, md: 2}} spacing="xl">
-        <Stack>
-          <Title order={2} fw={500} fz={rem(38)} lts="1px">
-            {title}
-          </Title>
-          <Text size="lg" fw={400}>
-            {description}
-          </Text>
-        </Stack>
-        <Accordion variant="default">
-          {pages?.references?.nodes.map((page) => (
-            <Accordion.Item key={page.id} value={page.title}>
-              <Accordion.Control p={0}>
-                <Text fz="lg" fw={500}>
-                  {page.title}
-                </Text>
-              </Accordion.Control>
-              <Accordion.Panel>
-                <div dangerouslySetInnerHTML={{__html: page.body}} />
-              </Accordion.Panel>
-            </Accordion.Item>
-          ))}
-        </Accordion>
-      </SimpleGrid>
-    </Wrapper>
-  );
-}
-
 const RECOMMENDED_PRODUCTS_QUERY = `#graphql
   ${PRODUCT_ITEM_FRAGMENT}
   query RecommendedProducts ($country: CountryCode, $language: LanguageCode)
@@ -433,9 +390,11 @@ const RECOMMENDED_TREATMENT_QUERY = `#graphql
 export const FAQ_FRAGMENT = `#graphql
   fragment Faq on Metaobject {
     id
+    type
     fields {
       value
       key
+      type
       references(first: 10) {
         nodes {
           ... on Page {
