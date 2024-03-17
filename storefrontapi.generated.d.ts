@@ -821,9 +821,9 @@ export type RecommendedTreatmentsQuery = {
   };
 };
 
-export type FaqFragment = Pick<StorefrontAPI.Metaobject, 'id'> & {
+export type FaqFragment = Pick<StorefrontAPI.Metaobject, 'id' | 'type'> & {
   fields: Array<
-    Pick<StorefrontAPI.MetaobjectField, 'value' | 'key'> & {
+    Pick<StorefrontAPI.MetaobjectField, 'value' | 'key' | 'type'> & {
       references?: StorefrontAPI.Maybe<{
         nodes: Array<Pick<StorefrontAPI.Page, 'id' | 'title' | 'body'>>;
       }>;
@@ -838,9 +838,9 @@ export type FaqQuestionsQueryVariables = StorefrontAPI.Exact<{
 
 export type FaqQuestionsQuery = {
   metaobject?: StorefrontAPI.Maybe<
-    Pick<StorefrontAPI.Metaobject, 'id'> & {
+    Pick<StorefrontAPI.Metaobject, 'id' | 'type'> & {
       fields: Array<
-        Pick<StorefrontAPI.MetaobjectField, 'value' | 'key'> & {
+        Pick<StorefrontAPI.MetaobjectField, 'value' | 'key' | 'type'> & {
           references?: StorefrontAPI.Maybe<{
             nodes: Array<Pick<StorefrontAPI.Page, 'id' | 'title' | 'body'>>;
           }>;
@@ -2598,7 +2598,7 @@ interface GeneratedQueryTypes {
     return: RecommendedTreatmentsQuery;
     variables: RecommendedTreatmentsQueryVariables;
   };
-  '#graphql\n  #graphql\n  fragment Faq on Metaobject {\n    id\n    fields {\n      value\n      key\n      references(first: 10) {\n        nodes {\n          ... on Page {\n            id\n            title\n            body\n          }\n        }\n      }\n    }\n  }\n\n  query FaqQuestions ($country: CountryCode, $language: LanguageCode)\n    @inContext(country: $country, language: $language) {\n    metaobject(handle: {handle: "index-faq", type: "faq"}) {\n      ...Faq\n    }\n  }\n': {
+  '#graphql\n  #graphql\n  fragment Faq on Metaobject {\n    id\n    type\n    fields {\n      value\n      key\n      type\n      references(first: 10) {\n        nodes {\n          ... on Page {\n            id\n            title\n            body\n          }\n        }\n      }\n    }\n  }\n\n  query FaqQuestions ($country: CountryCode, $language: LanguageCode)\n    @inContext(country: $country, language: $language) {\n    metaobject(handle: {handle: "index-faq", type: "faq"}) {\n      ...Faq\n    }\n  }\n': {
     return: FaqQuestionsQuery;
     variables: FaqQuestionsQueryVariables;
   };
