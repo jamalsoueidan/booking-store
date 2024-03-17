@@ -27,7 +27,7 @@ import type {
 } from '~/lib/api/model';
 
 type TreatmentPickDatetimeProps = {
-  availability: UserAvailabilityMulti[];
+  availability?: UserAvailabilityMulti[];
 };
 
 export default function TreatmentPickDatetime({
@@ -60,7 +60,11 @@ export default function TreatmentPickDatetime({
     }
   };
 
-  const selectedCalendar = searchParams.get('calendar') || availability[0].date;
+  const selectedCalendar =
+    searchParams.get('calendar') ||
+    (availability && availability.length > 0
+      ? availability[0].date
+      : undefined);
 
   const onChangeDate = (availability: UserAvailability) => () => {
     const newSearchParams = new URLSearchParams(searchParams);
@@ -87,7 +91,7 @@ export default function TreatmentPickDatetime({
 
   const selectedDate = searchParams.get('date');
 
-  const days = availability.map((availability) => (
+  const days = availability?.map((availability) => (
     <AvailabilityDay
       key={availability.date}
       onClick={onChangeDate(availability)}
@@ -99,7 +103,7 @@ export default function TreatmentPickDatetime({
   const selectedSlotFrom = searchParams.get('fromDate');
 
   const slots = availability
-    .find(({date}) => date === selectedDate)
+    ?.find(({date}) => date === selectedDate)
     ?.slots?.map((slot) => (
       <AvailabilityTime
         key={slot.from}
@@ -116,7 +120,7 @@ export default function TreatmentPickDatetime({
           <MonthPickerInput
             locale="da"
             minDate={new Date()}
-            value={new Date(selectedCalendar)}
+            value={new Date(selectedCalendar!)}
             onChange={onPickDate}
             rightSection={<IconChevronDown />}
             rightSectionPointerEvents="none"
@@ -137,11 +141,14 @@ export default function TreatmentPickDatetime({
           slideGap="sm"
           withControls={false}
           align="start"
+          dragFree={true}
           getEmblaApi={setEmbla}
         >
           {days}
         </Carousel>
-      ) : null}
+      ) : (
+        <>Prøv en anden måned</>
+      )}
 
       {slots ? (
         <div>
