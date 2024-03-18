@@ -4,27 +4,13 @@ import {Icon12Hours} from '@tabler/icons-react';
 import type {
   PageComponentFragment,
   PageComponentMetaobjectFragment,
+  PageFragment,
 } from 'storefrontapi.generated';
 import classes from './DynamicComponents.module.css';
 import {Faq} from './Faq';
 import {Features, type FeatureProps} from './Features';
 import {HeroTitle} from './HeroTitle';
 import {Wrapper} from './Wrapper';
-
-export function WrapperHeroTitle({
-  component,
-}: {
-  component: PageComponentFragment;
-}) {
-  const title = component.fields.find((c) => c.key === 'title');
-  const subtitle = component.fields.find((c) => c.key === 'subtitle');
-
-  return (
-    <HeroTitle bg="grape.1" subtitle={subtitle?.value} overtitle="">
-      {title?.value}
-    </HeroTitle>
-  );
-}
 
 export function WrapperFeatures({
   component,
@@ -141,3 +127,48 @@ export function WrapperCardMedia({
     </Container>
   );
 }
+
+export const WrapperHeroTitle = ({title, body, options}: PageFragment) => {
+  const background_color = options?.reference?.fields.find(
+    (p) => p.key === 'background_color',
+  )?.value;
+  const overtitle = options?.reference?.fields.find(
+    (p) => p.key === 'overtitle',
+  )?.value;
+  const subtitle = options?.reference?.fields.find(
+    (p) => p.key === 'subtitle',
+  )?.value;
+  const image = options?.reference?.fields.find((p) => p.key === 'image')
+    ?.reference?.image;
+  const height = options?.reference?.fields.find(
+    (p) => p.key === 'height',
+  )?.value;
+
+  return (
+    <>
+      <HeroTitle
+        overtitle={overtitle}
+        subtitle={subtitle}
+        h={height ? `${parseInt(height)}px` : undefined}
+        bg={!background_color && !image ? 'gray.1' : undefined}
+        style={
+          image
+            ? {
+                backgroundPosition: '50% 30%',
+                backgroundRepeat: 'no-repeat',
+                backgroundImage: `url('${image.url}'), ${background_color}`,
+              }
+            : undefined
+        }
+      >
+        {title}
+      </HeroTitle>
+
+      {body && (
+        <Wrapper>
+          <main dangerouslySetInnerHTML={{__html: body}} />
+        </Wrapper>
+      )}
+    </>
+  );
+};

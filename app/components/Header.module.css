@@ -12,10 +12,12 @@
   padding: rem(8px) rem(12px);
   border-radius: var(--mantine-radius-sm);
   text-decoration: none;
-  color: light-dark(var(--mantine-color-gray-7), var(--mantine-color-dark-0));
   font-size: var(--mantine-font-size-md);
   font-weight: 500;
-  text-transform: uppercase;
+}
+
+.linkLight {
+  color: light-dark(var(--mantine-color-gray-7), var(--mantine-color-dark-0));
 
   @mixin hover {
     background-color: light-dark(
@@ -30,7 +32,16 @@
   }
 }
 
-.button {
+.linkDark {
+  color: white;
+
+  [data-mantine-color-scheme] &[data-active] {
+    color: white;
+  }
+}
+
+.startYourSuccess {
+  font-weight: 600;
   background-color: #8a60f6;
   color: white;
   border-radius: var(--mantine-radius-lg);

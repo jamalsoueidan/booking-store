@@ -150,7 +150,7 @@ export function HeaderMenu({
               <Menu.Target>
                 <Link
                   to={url}
-                  className={classes.link}
+                  className={clsx(classes.link, classes.linkLight)}
                   data-active={location.pathname.includes(url) || undefined}
                 >
                   <Center>
@@ -170,7 +170,8 @@ export function HeaderMenu({
             to={url}
             className={clsx(
               classes.link,
-              link.title === 'Start din succes' && classes.button,
+              classes.linkLight,
+              link.title === 'Start din succes' && classes.startYourSuccess,
             )}
             data-active={location.pathname.includes(url) || undefined}
           >
