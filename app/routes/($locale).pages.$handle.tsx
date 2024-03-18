@@ -7,8 +7,6 @@ import {
   WrapperHeroTitle,
   WrapperMaps,
 } from '~/components/DynamicComponents';
-import {HeroTitle} from '~/components/HeroTitle';
-import {Wrapper} from '~/components/Wrapper';
 
 export const meta: MetaFunction<typeof loader> = ({data}) => {
   return [{title: `BySisters | ${data?.page.title ?? ''}`}];
@@ -36,9 +34,7 @@ export default function Page() {
   const {page} = useLoaderData<typeof loader>();
 
   const markup = page.components?.references?.nodes.map((c) => {
-    if (c.type === 'hero') {
-      return <WrapperHeroTitle key={c.id} component={c} />;
-    } else if (c.type === 'features') {
+    if (c.type === 'features') {
       return <WrapperFeatures key={c.id} component={c} />;
     } else if (c.type === 'faq') {
       return <WrapperFaq key={c.id} component={c} />;
@@ -47,32 +43,27 @@ export default function Page() {
     } else if (c.type === 'card_media') {
       return <WrapperCardMedia key={c.id} component={c} />;
     } else {
-      return <>unknown {c.type}</>;
+      //return <>unknown {c.type}</>;
+      return null;
     }
   });
 
   return (
     <>
-      <HeroTitle bg="gray.1" subtitle="" overtitle="">
-        {page.title}
-      </HeroTitle>
-
-      {page.body && (
-        <Wrapper>
-          <main dangerouslySetInnerHTML={{__html: page.body}} />
-        </Wrapper>
-      )}
-
+      <WrapperHeroTitle {...page} />
       {markup}
     </>
   );
 }
 
 const PAGE_FRAGMENT = `#graphql
-  fragment PageComponentPage on Page {
+  fragment PageComponentMediaImage on MediaImage {
     id
-    title
-    body
+    image {
+      url
+      width
+      height
+    }
   }
 
   fragment PageComponentMetaobject on Metaobject {
@@ -88,15 +79,6 @@ const PAGE_FRAGMENT = `#graphql
     }
   }
 
-  fragment PageComponentMediaImage on MediaImage {
-    id
-    image {
-      url
-      width
-      height
-    }
-  }
-
   fragment PageComponent on Metaobject {
     id
     type
@@ -107,7 +89,6 @@ const PAGE_FRAGMENT = `#graphql
       references(first: 10) {
         nodes {
           ...PageComponentMetaobject
-          ...PageComponentPage
         }
       }
       reference {
@@ -129,6 +110,12 @@ const PAGE_FRAGMENT = `#graphql
         nodes {
           ...PageComponent
         }
+      }
+    }
+
+    options: metafield(namespace: "custom", key: "options") {
+      reference {
+        ...PageComponent
       }
     }
   }
