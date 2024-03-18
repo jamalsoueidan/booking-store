@@ -6,17 +6,16 @@ export function HeroTitle({
   children,
   subtitle,
   overtitle,
-  bg,
+  ...props
 }: TitleProps & {
   subtitle?: string | React.ReactNode;
   overtitle?: string | React.ReactNode;
 }) {
   return (
-    <HeroBackground bg={bg}>
-      <Stack pt={rem(30)} pb={rem(50)} gap="xs">
+    <HeroBackground {...props}>
+      <Stack pt={rem(30)} pb={rem(50)} gap="xs" justify="center" h="100%">
         <Title
           order={5}
-          c="dimmed"
           tt="uppercase"
           fw={300}
           ta="center"
@@ -27,13 +26,7 @@ export function HeroTitle({
         <Title order={1} fw={400} ta="center" className={classes.root}>
           {children}
         </Title>
-        <Title
-          order={3}
-          c="dimmed"
-          ta="center"
-          fw={300}
-          className={classes.subtitle}
-        >
+        <Title order={3} ta="center" fw={300} className={classes.subtitle}>
           {subtitle}
         </Title>
       </Stack>
