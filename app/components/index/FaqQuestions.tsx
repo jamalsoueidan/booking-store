@@ -11,7 +11,6 @@ export function FaqQuestions({faq}: {faq?: FaqFragment | null}) {
   const title = faq.fields.find((p) => p.key === 'title')?.value || '';
   const description =
     faq.fields.find((p) => p.key === 'description')?.value || '';
-  const pages = faq.fields.find((p) => p.key === 'pages');
   const questions = faq.fields.find((p) => p.key === 'questions')?.references
     ?.nodes;
 
