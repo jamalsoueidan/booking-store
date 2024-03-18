@@ -12,6 +12,8 @@ export function FaqQuestions({faq}: {faq?: FaqFragment | null}) {
   const description =
     faq.fields.find((p) => p.key === 'description')?.value || '';
   const pages = faq.fields.find((p) => p.key === 'pages');
+  const questions = faq.fields.find((p) => p.key === 'questions')?.references
+    ?.nodes;
 
   return (
     <Wrapper bg="yellow.1" mb="0">
@@ -25,15 +27,23 @@ export function FaqQuestions({faq}: {faq?: FaqFragment | null}) {
           </Text>
         </Stack>
         <Accordion variant="default" classNames={classes}>
-          {pages?.references?.nodes.map((page) => (
-            <Accordion.Item key={page.id} value={page.title}>
+          {questions?.map(({id, fields}) => (
+            <Accordion.Item
+              key={id}
+              value={fields.find(({key}) => key === 'question')?.value || ''}
+            >
               <Accordion.Control p={0}>
                 <Text fz="lg" fw={500}>
-                  {page.title}
+                  {fields.find(({key}) => key === 'question')?.value || ''}
                 </Text>
               </Accordion.Control>
               <Accordion.Panel>
-                <div dangerouslySetInnerHTML={{__html: page.body}} />
+                <div
+                  dangerouslySetInnerHTML={{
+                    __html:
+                      fields.find(({key}) => key === 'answer')?.value || '',
+                  }}
+                />
               </Accordion.Panel>
             </Accordion.Item>
           ))}

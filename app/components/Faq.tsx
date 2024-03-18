@@ -1,48 +1,53 @@
-import {Accordion, Text, Title} from '@mantine/core';
-import {type PageComponentPageFragment} from 'storefrontapi.generated';
+import {Accordion, Stack, Text, Title, rem} from '@mantine/core';
+import {type PageComponentMetaobjectFragment} from 'storefrontapi.generated';
 import classes from './Faq.module.css';
-import {Wrapper} from './Wrapper';
 
 export function Faq({
   title,
   description,
-  pages,
+  questions,
 }: {
   title?: string | null;
   description?: string | null;
-  pages: Array<PageComponentPageFragment>;
+  questions: Array<PageComponentMetaobjectFragment>;
 }) {
   return (
-    <Wrapper>
-      {title && (
-        <Title ta="center" className={classes.title}>
-          {title}
-        </Title>
-      )}
-      {description && (
-        <Text ta="center" className={classes.description}>
-          {description}
-        </Text>
-      )}
+    <>
+      <Stack>
+        {title && (
+          <Title ta="center" className={classes.title}>
+            {title}
+          </Title>
+        )}
+        {description && (
+          <Text ta="center" className={classes.description}>
+            {description}
+          </Text>
+        )}
+      </Stack>
 
-      <Accordion variant="separated">
-        {pages.map((page) => (
+      <Accordion variant="separated" mt={rem(50)}>
+        {questions.map(({id, fields}) => (
           <Accordion.Item
-            key={page.id}
-            value={page.title}
+            key={id}
+            value={fields.find(({key}) => key === 'question')?.value || ''}
             className={classes.item}
           >
             <Accordion.Control>
               <Text fz="lg" fw={500}>
-                {page.title}
+                {fields.find(({key}) => key === 'question')?.value || ''}
               </Text>
             </Accordion.Control>
             <Accordion.Panel>
-              <div dangerouslySetInnerHTML={{__html: page.body}} />
+              <div
+                dangerouslySetInnerHTML={{
+                  __html: fields.find(({key}) => key === 'answer')?.value || '',
+                }}
+              />
             </Accordion.Panel>
           </Accordion.Item>
         ))}
       </Accordion>
-    </Wrapper>
+    </>
   );
 }

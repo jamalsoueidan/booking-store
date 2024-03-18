@@ -4,7 +4,6 @@ import {Icon12Hours} from '@tabler/icons-react';
 import type {
   PageComponentFragment,
   PageComponentMetaobjectFragment,
-  PageComponentPageFragment,
 } from 'storefrontapi.generated';
 import classes from './DynamicComponents.module.css';
 import {Faq} from './Faq';
@@ -58,14 +57,25 @@ export function WrapperFeatures({
 }
 
 export function WrapperFaq({component}: {component: PageComponentFragment}) {
+  const bg = component.fields.find(
+    ({key}) => key === 'background_color',
+  )?.value;
   const title = component.fields.find(({key}) => key === 'title')?.value;
   const description = component.fields.find(
     ({key}) => key === 'description',
   )?.value;
-  const pages = component.fields.find(({key}) => key === 'pages')?.references
-    ?.nodes as unknown as Array<PageComponentPageFragment>;
+  const questions = component.fields.find(({key}) => key === 'questions')
+    ?.references?.nodes as any;
 
-  return <Faq title={title} description={description} pages={pages || []} />;
+  return (
+    <Wrapper bg={bg || undefined}>
+      <Faq
+        title={title}
+        description={description}
+        questions={questions || []}
+      />
+    </Wrapper>
+  );
 }
 
 export function WrapperMaps({component}: {component: PageComponentFragment}) {
@@ -108,7 +118,7 @@ export function WrapperCardMedia({
     component.fields.find(({key}) => key === 'flip')?.value === 'true';
 
   return (
-    <Container size="md" mb={rem(60)}>
+    <Container size="md" my={rem(80)}>
       <Flex
         justify="space-between"
         gap={{base: 'lg', sm: rem(120)}}

@@ -76,26 +76,20 @@ const PAGE_FRAGMENT = `#graphql
   }
 
   fragment PageComponentMetaobject on Metaobject {
+    id
     type
     fields {
       key
       value
       type
       reference {
-        ... on MediaImage {
-          id
-          image {
-            id
-            height
-            width
-            url(transform: {})
-          }
-        }
+        ...PageComponentMediaImage
       }
     }
   }
 
   fragment PageComponentMediaImage on MediaImage {
+    id
     image {
       url
       width

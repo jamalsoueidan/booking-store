@@ -397,10 +397,14 @@ export const FAQ_FRAGMENT = `#graphql
       type
       references(first: 10) {
         nodes {
-          ... on Page {
+          ... on Metaobject {
             id
-            title
-            body
+            type
+            handle
+            fields {
+              value
+              key
+            }
           }
         }
       }
