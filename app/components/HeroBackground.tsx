@@ -31,9 +31,9 @@ export function HeroBackground({
                 top: 0,
                 borderBottomRightRadius: '40% 15%',
                 borderBottomLeftRadius: '40% 15%',
-                backgroundPosition: '50% 45%',
+                backgroundPosition: '50% 40%',
                 backgroundRepeat: 'no-repeat',
-                backgroundSize: '70%',
+                backgroundSize: '1000px',
                 backgroundImage: `url('${image.url}')`,
               }
             : undefined
