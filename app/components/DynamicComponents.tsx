@@ -1,6 +1,16 @@
-import {Container, Flex, Image, Stack, Text, Title, rem} from '@mantine/core';
+import {
+  Container,
+  Flex,
+  Image,
+  SimpleGrid,
+  Stack,
+  Text,
+  ThemeIcon,
+  Title,
+  rem,
+} from '@mantine/core';
 import {useMediaQuery} from '@mantine/hooks';
-import {Icon12Hours} from '@tabler/icons-react';
+import {Icon12Hours, IconHeart} from '@tabler/icons-react';
 import type {
   PageComponentFragment,
   PageComponentMetaobjectFragment,
@@ -164,7 +174,7 @@ export const WrapperHeroTitle = ({title, body, options}: PageFragment) => {
         {title}
       </HeroTitle>
 
-      {body && (
+      {body.length > 1 && (
         <Wrapper>
           <main dangerouslySetInnerHTML={{__html: body}} />
         </Wrapper>
@@ -172,3 +182,79 @@ export const WrapperHeroTitle = ({title, body, options}: PageFragment) => {
     </>
   );
 };
+
+export function WrapperSideBySide({
+  component,
+}: {
+  component: PageComponentFragment;
+}) {
+  const isMobile = useMediaQuery('(max-width: 62em)');
+
+  const title = component.fields.find(({key}) => key === 'title')?.value;
+  const text = component.fields.find(({key}) => key === 'text')?.value;
+
+  return (
+    <Container size="md" my={rem(80)}>
+      <Flex
+        justify="space-between"
+        align="center"
+        style={{flexDirection: isMobile ? 'column' : 'row'}}
+        gap="xl"
+      >
+        <Title fw={500} textWrap="wrap" style={{flex: 1}}>
+          {title}
+        </Title>
+        <Text c="dimmed" size="lg" style={{flex: 1}}>
+          {text}
+        </Text>
+      </Flex>
+    </Container>
+  );
+}
+
+export function WrapperHelp({component}: {component: PageComponentFragment}) {
+  const isMobile = useMediaQuery('(max-width: 62em)');
+  const title = component.fields.find(({key}) => key === 'title')?.value;
+  const backgroundColor = component.fields.find(
+    ({key}) => key === 'background_color',
+  )?.value;
+  const items = component.fields.find(({key}) => key === 'items')?.references
+    ?.nodes;
+
+  return (
+    <Wrapper bg={backgroundColor || undefined}>
+      <Title ta="center" fw={500} size={rem(48)} mb={rem(60)}>
+        {title}
+      </Title>
+      <SimpleGrid cols={{base: 1, sm: 3}} spacing={{base: 'lg', sm: rem(50)}}>
+        {items?.map((item) => {
+          const title = item.fields.find(({key}) => key === 'title')?.value;
+          const description = item.fields.find(
+            ({key}) => key === 'description',
+          )?.value;
+          const color = item.fields.find(({key}) => key === 'color')?.value;
+
+          return (
+            <Stack key={item.id} align="center" justify="flex-start">
+              <ThemeIcon
+                variant="light"
+                color={color || 'green'}
+                size={rem(200)}
+                aria-label="Gradient action icon"
+                radius="100%"
+              >
+                <IconHeart style={{width: '70%', height: '70%'}} />
+              </ThemeIcon>
+              <Title ta="center" fw={400}>
+                {title}
+              </Title>
+              <Text ta="center" size="xl" c="dimmed">
+                {description}
+              </Text>
+            </Stack>
+          );
+        })}
+      </SimpleGrid>
+    </Wrapper>
+  );
+}

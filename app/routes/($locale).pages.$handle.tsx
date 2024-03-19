@@ -4,8 +4,10 @@ import {
   WrapperCardMedia,
   WrapperFaq,
   WrapperFeatures,
+  WrapperHelp,
   WrapperHeroTitle,
   WrapperMaps,
+  WrapperSideBySide,
 } from '~/components/DynamicComponents';
 
 export const meta: MetaFunction<typeof loader> = ({data}) => {
@@ -42,9 +44,12 @@ export default function Page() {
       return <WrapperMaps key={c.id} component={c} />;
     } else if (c.type === 'card_media') {
       return <WrapperCardMedia key={c.id} component={c} />;
+    } else if (c.type === 'side_by_side') {
+      return <WrapperSideBySide key={c.id} component={c} />;
+    } else if (c.type === 'help') {
+      return <WrapperHelp key={c.id} component={c} />;
     } else {
-      //return <>unknown {c.type}</>;
-      return null;
+      return <>unknown {c.type}</>;
     }
   });
 
