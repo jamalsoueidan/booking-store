@@ -19,13 +19,7 @@ export function HeroTitle({
 }) {
   return (
     <HeroBackground {...props}>
-      <Stack
-        pt={rem(30)}
-        pb={rem(50)}
-        gap="xl"
-        justify={justify || 'center'}
-        h="100%"
-      >
+      <Stack pt={rem(30)} pb={rem(50)} justify={justify || 'center'} h="100%">
         <div>
           <Title
             order={5}
@@ -41,6 +35,7 @@ export function HeroTitle({
             order={1}
             fw={500}
             ta="center"
+            textWrap="balance"
             className={classes.root}
             c={fontColor || 'black'}
           >
