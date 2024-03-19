@@ -1,9 +1,14 @@
 import {Box, Container, type BoxComponentProps} from '@mantine/core';
+import {type Image} from '@shopify/hydrogen/storefront-api-types';
 
 export function HeroBackground({
   children,
+  image,
   ...props
-}: BoxComponentProps & {children: React.ReactNode}) {
+}: BoxComponentProps & {
+  children: React.ReactNode;
+  image?: Pick<Image, 'url'> | null;
+}) {
   return (
     <Box
       bg={props.bg}
@@ -13,24 +18,28 @@ export function HeroBackground({
         paddingTop: '70px',
         borderBottomRightRadius: '40% 15%',
         borderBottomLeftRadius: '40% 15%',
-        ...props.style,
       }}
     >
-      {props.style ? (
-        <div
-          style={{
-            backgroundColor: 'white',
-            position: 'absolute',
-            borderBottomRightRadius: '40% 15%',
-            borderBottomLeftRadius: '40% 15%',
-            left: 0,
-            right: 0,
-            bottom: 0,
-            top: 0,
-            opacity: 0.5,
-          }}
-        ></div>
-      ) : null}
+      <div
+        style={
+          image
+            ? {
+                position: 'absolute',
+                left: 0,
+                right: 0,
+                bottom: 0,
+                top: 0,
+                borderBottomRightRadius: '40% 15%',
+                borderBottomLeftRadius: '40% 15%',
+                backgroundPosition: '50% 45%',
+                backgroundRepeat: 'no-repeat',
+                backgroundSize: '70%',
+                backgroundImage: `url('${image.url}')`,
+              }
+            : undefined
+        }
+      ></div>
+
       <Container
         size="lg"
         py={0}

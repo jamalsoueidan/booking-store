@@ -129,8 +129,14 @@ export function WrapperCardMedia({
 }
 
 export const WrapperHeroTitle = ({title, body, options}: PageFragment) => {
-  const background_color = options?.reference?.fields.find(
+  const backgroundColor = options?.reference?.fields.find(
     (p) => p.key === 'background_color',
+  )?.value;
+  const fontColor = options?.reference?.fields.find(
+    (p) => p.key === 'font_color',
+  )?.value;
+  const justify = options?.reference?.fields.find(
+    (p) => p.key === 'justify',
   )?.value;
   const overtitle = options?.reference?.fields.find(
     (p) => p.key === 'overtitle',
@@ -149,17 +155,11 @@ export const WrapperHeroTitle = ({title, body, options}: PageFragment) => {
       <HeroTitle
         overtitle={overtitle}
         subtitle={subtitle}
+        fontColor={fontColor}
+        justify={justify}
         h={height ? `${parseInt(height)}px` : undefined}
-        bg={!background_color && !image ? 'gray.1' : undefined}
-        style={
-          image
-            ? {
-                backgroundPosition: '50% 30%',
-                backgroundRepeat: 'no-repeat',
-                backgroundImage: `url('${image.url}'), ${background_color}`,
-              }
-            : undefined
-        }
+        bg={backgroundColor || 'gray.1'}
+        image={image}
       >
         {title}
       </HeroTitle>
