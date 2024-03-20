@@ -1,6 +1,7 @@
 import {useLoaderData, type MetaFunction} from '@remix-run/react';
 import {json, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
 import {
+  WrapperCallToAction,
   WrapperCardMedia,
   WrapperFaq,
   WrapperFeatures,
@@ -48,6 +49,8 @@ export default function Page() {
       return <WrapperSideBySide key={c.id} component={c} />;
     } else if (c.type === 'help') {
       return <WrapperHelp key={c.id} component={c} />;
+    } else if (c.type === 'call_to_action') {
+      return <WrapperCallToAction key={c.id} component={c} />;
     } else {
       return <>unknown {c.type}</>;
     }
@@ -98,6 +101,7 @@ const PAGE_FRAGMENT = `#graphql
       }
       reference {
         ...PageComponentMediaImage
+        ...PageComponentMetaobject
       }
     }
   }

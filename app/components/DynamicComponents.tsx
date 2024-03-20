@@ -1,4 +1,5 @@
 import {
+  BackgroundImage,
   Container,
   Flex,
   Image,
@@ -13,6 +14,7 @@ import {useMediaQuery} from '@mantine/hooks';
 import {Icon12Hours, IconHeart} from '@tabler/icons-react';
 import type {
   PageComponentFragment,
+  PageComponentMediaImageFragment,
   PageComponentMetaobjectFragment,
   PageFragment,
 } from 'storefrontapi.generated';
@@ -21,6 +23,9 @@ import {Faq} from './Faq';
 import {Features, type FeatureProps} from './Features';
 import {HeroTitle} from './HeroTitle';
 import {Wrapper} from './Wrapper';
+import {ButtonMetaobject} from './metaobjects/button';
+import {OverlayMetaobject} from './metaobjects/overlay';
+import {useField} from './metaobjects/utils';
 
 export function WrapperFeatures({
   component,
@@ -155,7 +160,7 @@ export const WrapperHeroTitle = ({title, body, options}: PageFragment) => {
     (p) => p.key === 'subtitle',
   )?.value;
   const image = options?.reference?.fields.find((p) => p.key === 'image')
-    ?.reference?.image;
+    ?.reference as unknown as PageComponentMediaImageFragment;
   const height = options?.reference?.fields.find(
     (p) => p.key === 'height',
   )?.value;
@@ -169,7 +174,7 @@ export const WrapperHeroTitle = ({title, body, options}: PageFragment) => {
         justify={justify}
         h={height ? `${parseInt(height)}px` : undefined}
         bg={backgroundColor || 'gray.1'}
-        image={image}
+        image={image.image}
       >
         {title}
       </HeroTitle>
@@ -256,5 +261,43 @@ export function WrapperHelp({component}: {component: PageComponentFragment}) {
         })}
       </SimpleGrid>
     </Wrapper>
+  );
+}
+
+export function WrapperCallToAction({
+  component,
+}: {
+  component: PageComponentFragment;
+}) {
+  const field = useField(component);
+  const title = field.getFieldValue('title');
+  const color = field.getFieldValue('color');
+  const button = field.getMetaObject('button');
+  const overlay = field.getMetaObject('overlay');
+
+  return (
+    <BackgroundImage
+      src="https://cdn.shopify.com/s/files/1/0682/4060/5458/files/Wallpaper-for-Hair-Salons_944x944_2x_479bc4ce-b41e-46e5-9d39-35992e88af61.webp?v=1710898092"
+      style={{position: 'relative'}}
+    >
+      <OverlayMetaobject metaobject={overlay} />
+      <Container
+        size="md"
+        py={rem(80)}
+        style={{position: 'relative', zIndex: 201}}
+      >
+        <Stack justify="center" align="center" gap="xl">
+          <Title
+            ta="center"
+            c={color || 'black'}
+            textWrap="pretty"
+            style={{whiteSpace: 'pre-line'}}
+          >
+            {title}
+          </Title>
+          <ButtonMetaobject metaobject={button} />
+        </Stack>
+      </Container>
+    </BackgroundImage>
   );
 }
