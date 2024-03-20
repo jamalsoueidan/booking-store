@@ -245,10 +245,10 @@ export function WrapperHelp({component}: {component: PageComponentFragment}) {
               >
                 <IconHeart style={{width: '70%', height: '70%'}} />
               </ThemeIcon>
-              <Title ta="center" fw={400}>
+              <Title size={rem(28)} ta="center" fw={400}>
                 {title}
               </Title>
-              <Text ta="center" size="xl" c="dimmed">
+              <Text ta="center" size="lg" c="dimmed">
                 {description}
               </Text>
             </Stack>

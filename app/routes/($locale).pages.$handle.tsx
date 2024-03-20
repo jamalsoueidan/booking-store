@@ -111,7 +111,7 @@ const PAGE_FRAGMENT = `#graphql
       title
     }
     components: metafield(namespace: "custom", key: "components") {
-      references(first: 5) {
+      references(first: 10) {
         nodes {
           ...PageComponent
         }
