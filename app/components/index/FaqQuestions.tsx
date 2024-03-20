@@ -1,18 +1,18 @@
 import {Accordion, SimpleGrid, Stack, Text, Title} from '@mantine/core';
-import type {FaqFragment} from 'storefrontapi.generated';
+import type {PageComponentFragment} from 'storefrontapi.generated';
 import {Wrapper} from '~/components/Wrapper';
+import {useField} from '../metaobjects/utils';
 import classes from './FaqQuestions.module.css';
 
-export function FaqQuestions({faq}: {faq?: FaqFragment | null}) {
+export function FaqQuestions({faq}: {faq?: PageComponentFragment | null}) {
+  const field = useField(faq);
   if (!faq) {
     return null;
   }
 
-  const title = faq.fields.find((p) => p.key === 'title')?.value || '';
-  const description =
-    faq.fields.find((p) => p.key === 'description')?.value || '';
-  const questions = faq.fields.find((p) => p.key === 'questions')?.references
-    ?.nodes;
+  const title = field.getFieldValue('title');
+  const description = field.getFieldValue('description');
+  const questions = field.getItems('items');
 
   return (
     <Wrapper bg="yellow.1" mb="0">

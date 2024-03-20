@@ -5,7 +5,6 @@ import type {
   PageComponentMetaobjectFragment,
   PageFragment,
 } from 'storefrontapi.generated';
-import {Faq} from './Faq';
 import {Features, type FeatureProps} from './Features';
 import {HeroTitle} from './HeroTitle';
 import {Wrapper} from './Wrapper';
@@ -38,28 +37,6 @@ export function WrapperFeatures({
     }) || [];
 
   return <Features title={title} subtitle={subtitle} items={items} />;
-}
-
-export function WrapperFaq({component}: {component: PageComponentFragment}) {
-  const bg = component.fields.find(
-    ({key}) => key === 'background_color',
-  )?.value;
-  const title = component.fields.find(({key}) => key === 'title')?.value;
-  const description = component.fields.find(
-    ({key}) => key === 'description',
-  )?.value;
-  const questions = component.fields.find(({key}) => key === 'questions')
-    ?.references?.nodes as any;
-
-  return (
-    <Wrapper bg={bg || undefined}>
-      <Faq
-        title={title}
-        description={description}
-        questions={questions || []}
-      />
-    </Wrapper>
-  );
 }
 
 export const WrapperHeroTitle = ({title, body, options}: PageFragment) => {

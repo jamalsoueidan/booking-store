@@ -4,7 +4,7 @@ import {
   type PageComponentMetaobjectFragment,
 } from 'storefrontapi.generated';
 
-export function useField(component: PageComponentFragment | null) {
+export function useField(component: PageComponentFragment | null | undefined) {
   const getField = (key: string) => {
     return component?.fields.find((f) => f.key === key);
   };
@@ -26,7 +26,7 @@ export function useField(component: PageComponentFragment | null) {
   };
 
   const getItems = (key: string) => {
-    return getField(key)?.references?.nodes;
+    return getField(key)?.references?.nodes || [];
   };
 
   const getImage = (key?: string) => {

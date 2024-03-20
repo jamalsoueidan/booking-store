@@ -193,6 +193,401 @@ export type ProductValidateHandlerFragment = Pick<
   >;
 };
 
+export type PageComponentMediaImageFragment = Pick<
+  StorefrontAPI.MediaImage,
+  'id'
+> & {
+  image?: StorefrontAPI.Maybe<
+    Pick<StorefrontAPI.Image, 'url' | 'width' | 'height'>
+  >;
+};
+
+export type PageComponentMetaobjectFragment = Pick<
+  StorefrontAPI.Metaobject,
+  'id' | 'type'
+> & {
+  fields: Array<
+    Pick<StorefrontAPI.MetaobjectField, 'key' | 'value' | 'type'> & {
+      reference?: StorefrontAPI.Maybe<
+        Pick<StorefrontAPI.MediaImage, 'id'> & {
+          image?: StorefrontAPI.Maybe<
+            Pick<StorefrontAPI.Image, 'url' | 'width' | 'height'>
+          >;
+        }
+      >;
+    }
+  >;
+};
+
+export type PageComponentFragment = Pick<
+  StorefrontAPI.Metaobject,
+  'id' | 'type'
+> & {
+  fields: Array<
+    Pick<StorefrontAPI.MetaobjectField, 'value' | 'type' | 'key'> & {
+      references?: StorefrontAPI.Maybe<{
+        nodes: Array<
+          Pick<StorefrontAPI.Metaobject, 'id' | 'type'> & {
+            fields: Array<
+              Pick<StorefrontAPI.MetaobjectField, 'key' | 'value' | 'type'> & {
+                reference?: StorefrontAPI.Maybe<
+                  Pick<StorefrontAPI.MediaImage, 'id'> & {
+                    image?: StorefrontAPI.Maybe<
+                      Pick<StorefrontAPI.Image, 'url' | 'width' | 'height'>
+                    >;
+                  }
+                >;
+              }
+            >;
+          }
+        >;
+      }>;
+      reference?: StorefrontAPI.Maybe<
+        | (Pick<StorefrontAPI.MediaImage, 'id'> & {
+            image?: StorefrontAPI.Maybe<
+              Pick<StorefrontAPI.Image, 'url' | 'width' | 'height'>
+            >;
+          })
+        | (Pick<StorefrontAPI.Metaobject, 'id' | 'type'> & {
+            fields: Array<
+              Pick<StorefrontAPI.MetaobjectField, 'key' | 'value' | 'type'> & {
+                reference?: StorefrontAPI.Maybe<
+                  Pick<StorefrontAPI.MediaImage, 'id'> & {
+                    image?: StorefrontAPI.Maybe<
+                      Pick<StorefrontAPI.Image, 'url' | 'width' | 'height'>
+                    >;
+                  }
+                >;
+              }
+            >;
+          })
+      >;
+    }
+  >;
+};
+
+export type PageFragment = Pick<StorefrontAPI.Page, 'id' | 'title' | 'body'> & {
+  seo?: StorefrontAPI.Maybe<Pick<StorefrontAPI.Seo, 'description' | 'title'>>;
+  components?: StorefrontAPI.Maybe<{
+    references?: StorefrontAPI.Maybe<{
+      nodes: Array<
+        Pick<StorefrontAPI.Metaobject, 'id' | 'type'> & {
+          fields: Array<
+            Pick<StorefrontAPI.MetaobjectField, 'value' | 'type' | 'key'> & {
+              references?: StorefrontAPI.Maybe<{
+                nodes: Array<
+                  Pick<StorefrontAPI.Metaobject, 'id' | 'type'> & {
+                    fields: Array<
+                      Pick<
+                        StorefrontAPI.MetaobjectField,
+                        'key' | 'value' | 'type'
+                      > & {
+                        reference?: StorefrontAPI.Maybe<
+                          Pick<StorefrontAPI.MediaImage, 'id'> & {
+                            image?: StorefrontAPI.Maybe<
+                              Pick<
+                                StorefrontAPI.Image,
+                                'url' | 'width' | 'height'
+                              >
+                            >;
+                          }
+                        >;
+                      }
+                    >;
+                  }
+                >;
+              }>;
+              reference?: StorefrontAPI.Maybe<
+                | (Pick<StorefrontAPI.MediaImage, 'id'> & {
+                    image?: StorefrontAPI.Maybe<
+                      Pick<StorefrontAPI.Image, 'url' | 'width' | 'height'>
+                    >;
+                  })
+                | (Pick<StorefrontAPI.Metaobject, 'id' | 'type'> & {
+                    fields: Array<
+                      Pick<
+                        StorefrontAPI.MetaobjectField,
+                        'key' | 'value' | 'type'
+                      > & {
+                        reference?: StorefrontAPI.Maybe<
+                          Pick<StorefrontAPI.MediaImage, 'id'> & {
+                            image?: StorefrontAPI.Maybe<
+                              Pick<
+                                StorefrontAPI.Image,
+                                'url' | 'width' | 'height'
+                              >
+                            >;
+                          }
+                        >;
+                      }
+                    >;
+                  })
+              >;
+            }
+          >;
+        }
+      >;
+    }>;
+  }>;
+  options?: StorefrontAPI.Maybe<{
+    reference?: StorefrontAPI.Maybe<
+      Pick<StorefrontAPI.Metaobject, 'id' | 'type'> & {
+        fields: Array<
+          Pick<StorefrontAPI.MetaobjectField, 'value' | 'type' | 'key'> & {
+            references?: StorefrontAPI.Maybe<{
+              nodes: Array<
+                Pick<StorefrontAPI.Metaobject, 'id' | 'type'> & {
+                  fields: Array<
+                    Pick<
+                      StorefrontAPI.MetaobjectField,
+                      'key' | 'value' | 'type'
+                    > & {
+                      reference?: StorefrontAPI.Maybe<
+                        Pick<StorefrontAPI.MediaImage, 'id'> & {
+                          image?: StorefrontAPI.Maybe<
+                            Pick<
+                              StorefrontAPI.Image,
+                              'url' | 'width' | 'height'
+                            >
+                          >;
+                        }
+                      >;
+                    }
+                  >;
+                }
+              >;
+            }>;
+            reference?: StorefrontAPI.Maybe<
+              | (Pick<StorefrontAPI.MediaImage, 'id'> & {
+                  image?: StorefrontAPI.Maybe<
+                    Pick<StorefrontAPI.Image, 'url' | 'width' | 'height'>
+                  >;
+                })
+              | (Pick<StorefrontAPI.Metaobject, 'id' | 'type'> & {
+                  fields: Array<
+                    Pick<
+                      StorefrontAPI.MetaobjectField,
+                      'key' | 'value' | 'type'
+                    > & {
+                      reference?: StorefrontAPI.Maybe<
+                        Pick<StorefrontAPI.MediaImage, 'id'> & {
+                          image?: StorefrontAPI.Maybe<
+                            Pick<
+                              StorefrontAPI.Image,
+                              'url' | 'width' | 'height'
+                            >
+                          >;
+                        }
+                      >;
+                    }
+                  >;
+                })
+            >;
+          }
+        >;
+      }
+    >;
+  }>;
+};
+
+export type PageQueryVariables = StorefrontAPI.Exact<{
+  language?: StorefrontAPI.InputMaybe<StorefrontAPI.LanguageCode>;
+  country?: StorefrontAPI.InputMaybe<StorefrontAPI.CountryCode>;
+  handle: StorefrontAPI.Scalars['String']['input'];
+}>;
+
+export type PageQuery = {
+  page?: StorefrontAPI.Maybe<
+    Pick<StorefrontAPI.Page, 'id' | 'title' | 'body'> & {
+      seo?: StorefrontAPI.Maybe<
+        Pick<StorefrontAPI.Seo, 'description' | 'title'>
+      >;
+      components?: StorefrontAPI.Maybe<{
+        references?: StorefrontAPI.Maybe<{
+          nodes: Array<
+            Pick<StorefrontAPI.Metaobject, 'id' | 'type'> & {
+              fields: Array<
+                Pick<
+                  StorefrontAPI.MetaobjectField,
+                  'value' | 'type' | 'key'
+                > & {
+                  references?: StorefrontAPI.Maybe<{
+                    nodes: Array<
+                      Pick<StorefrontAPI.Metaobject, 'id' | 'type'> & {
+                        fields: Array<
+                          Pick<
+                            StorefrontAPI.MetaobjectField,
+                            'key' | 'value' | 'type'
+                          > & {
+                            reference?: StorefrontAPI.Maybe<
+                              Pick<StorefrontAPI.MediaImage, 'id'> & {
+                                image?: StorefrontAPI.Maybe<
+                                  Pick<
+                                    StorefrontAPI.Image,
+                                    'url' | 'width' | 'height'
+                                  >
+                                >;
+                              }
+                            >;
+                          }
+                        >;
+                      }
+                    >;
+                  }>;
+                  reference?: StorefrontAPI.Maybe<
+                    | (Pick<StorefrontAPI.MediaImage, 'id'> & {
+                        image?: StorefrontAPI.Maybe<
+                          Pick<StorefrontAPI.Image, 'url' | 'width' | 'height'>
+                        >;
+                      })
+                    | (Pick<StorefrontAPI.Metaobject, 'id' | 'type'> & {
+                        fields: Array<
+                          Pick<
+                            StorefrontAPI.MetaobjectField,
+                            'key' | 'value' | 'type'
+                          > & {
+                            reference?: StorefrontAPI.Maybe<
+                              Pick<StorefrontAPI.MediaImage, 'id'> & {
+                                image?: StorefrontAPI.Maybe<
+                                  Pick<
+                                    StorefrontAPI.Image,
+                                    'url' | 'width' | 'height'
+                                  >
+                                >;
+                              }
+                            >;
+                          }
+                        >;
+                      })
+                  >;
+                }
+              >;
+            }
+          >;
+        }>;
+      }>;
+      options?: StorefrontAPI.Maybe<{
+        reference?: StorefrontAPI.Maybe<
+          Pick<StorefrontAPI.Metaobject, 'id' | 'type'> & {
+            fields: Array<
+              Pick<StorefrontAPI.MetaobjectField, 'value' | 'type' | 'key'> & {
+                references?: StorefrontAPI.Maybe<{
+                  nodes: Array<
+                    Pick<StorefrontAPI.Metaobject, 'id' | 'type'> & {
+                      fields: Array<
+                        Pick<
+                          StorefrontAPI.MetaobjectField,
+                          'key' | 'value' | 'type'
+                        > & {
+                          reference?: StorefrontAPI.Maybe<
+                            Pick<StorefrontAPI.MediaImage, 'id'> & {
+                              image?: StorefrontAPI.Maybe<
+                                Pick<
+                                  StorefrontAPI.Image,
+                                  'url' | 'width' | 'height'
+                                >
+                              >;
+                            }
+                          >;
+                        }
+                      >;
+                    }
+                  >;
+                }>;
+                reference?: StorefrontAPI.Maybe<
+                  | (Pick<StorefrontAPI.MediaImage, 'id'> & {
+                      image?: StorefrontAPI.Maybe<
+                        Pick<StorefrontAPI.Image, 'url' | 'width' | 'height'>
+                      >;
+                    })
+                  | (Pick<StorefrontAPI.Metaobject, 'id' | 'type'> & {
+                      fields: Array<
+                        Pick<
+                          StorefrontAPI.MetaobjectField,
+                          'key' | 'value' | 'type'
+                        > & {
+                          reference?: StorefrontAPI.Maybe<
+                            Pick<StorefrontAPI.MediaImage, 'id'> & {
+                              image?: StorefrontAPI.Maybe<
+                                Pick<
+                                  StorefrontAPI.Image,
+                                  'url' | 'width' | 'height'
+                                >
+                              >;
+                            }
+                          >;
+                        }
+                      >;
+                    })
+                >;
+              }
+            >;
+          }
+        >;
+      }>;
+    }
+  >;
+};
+
+export type FaqQuestionsQueryVariables = StorefrontAPI.Exact<{
+  country?: StorefrontAPI.InputMaybe<StorefrontAPI.CountryCode>;
+  language?: StorefrontAPI.InputMaybe<StorefrontAPI.LanguageCode>;
+}>;
+
+export type FaqQuestionsQuery = {
+  metaobject?: StorefrontAPI.Maybe<
+    Pick<StorefrontAPI.Metaobject, 'id' | 'type'> & {
+      fields: Array<
+        Pick<StorefrontAPI.MetaobjectField, 'value' | 'type' | 'key'> & {
+          references?: StorefrontAPI.Maybe<{
+            nodes: Array<
+              Pick<StorefrontAPI.Metaobject, 'id' | 'type'> & {
+                fields: Array<
+                  Pick<
+                    StorefrontAPI.MetaobjectField,
+                    'key' | 'value' | 'type'
+                  > & {
+                    reference?: StorefrontAPI.Maybe<
+                      Pick<StorefrontAPI.MediaImage, 'id'> & {
+                        image?: StorefrontAPI.Maybe<
+                          Pick<StorefrontAPI.Image, 'url' | 'width' | 'height'>
+                        >;
+                      }
+                    >;
+                  }
+                >;
+              }
+            >;
+          }>;
+          reference?: StorefrontAPI.Maybe<
+            | (Pick<StorefrontAPI.MediaImage, 'id'> & {
+                image?: StorefrontAPI.Maybe<
+                  Pick<StorefrontAPI.Image, 'url' | 'width' | 'height'>
+                >;
+              })
+            | (Pick<StorefrontAPI.Metaobject, 'id' | 'type'> & {
+                fields: Array<
+                  Pick<
+                    StorefrontAPI.MetaobjectField,
+                    'key' | 'value' | 'type'
+                  > & {
+                    reference?: StorefrontAPI.Maybe<
+                      Pick<StorefrontAPI.MediaImage, 'id'> & {
+                        image?: StorefrontAPI.Maybe<
+                          Pick<StorefrontAPI.Image, 'url' | 'width' | 'height'>
+                        >;
+                      }
+                    >;
+                  }
+                >;
+              })
+          >;
+        }
+      >;
+    }
+  >;
+};
+
 export type ProductItemByIdQueryVariables = StorefrontAPI.Exact<{
   country?: StorefrontAPI.InputMaybe<StorefrontAPI.CountryCode>;
   language?: StorefrontAPI.InputMaybe<StorefrontAPI.LanguageCode>;
@@ -819,45 +1214,6 @@ export type RecommendedTreatmentsQuery = {
       }
     >;
   };
-};
-
-export type FaqFragment = Pick<StorefrontAPI.Metaobject, 'id' | 'type'> & {
-  fields: Array<
-    Pick<StorefrontAPI.MetaobjectField, 'value' | 'key' | 'type'> & {
-      references?: StorefrontAPI.Maybe<{
-        nodes: Array<
-          Pick<StorefrontAPI.Metaobject, 'id' | 'type' | 'handle'> & {
-            fields: Array<Pick<StorefrontAPI.MetaobjectField, 'value' | 'key'>>;
-          }
-        >;
-      }>;
-    }
-  >;
-};
-
-export type FaqQuestionsQueryVariables = StorefrontAPI.Exact<{
-  country?: StorefrontAPI.InputMaybe<StorefrontAPI.CountryCode>;
-  language?: StorefrontAPI.InputMaybe<StorefrontAPI.LanguageCode>;
-}>;
-
-export type FaqQuestionsQuery = {
-  metaobject?: StorefrontAPI.Maybe<
-    Pick<StorefrontAPI.Metaobject, 'id' | 'type'> & {
-      fields: Array<
-        Pick<StorefrontAPI.MetaobjectField, 'value' | 'key' | 'type'> & {
-          references?: StorefrontAPI.Maybe<{
-            nodes: Array<
-              Pick<StorefrontAPI.Metaobject, 'id' | 'type' | 'handle'> & {
-                fields: Array<
-                  Pick<StorefrontAPI.MetaobjectField, 'value' | 'key'>
-                >;
-              }
-            >;
-          }>;
-        }
-      >;
-    }
-  >;
 };
 
 export type CustomerAddressUpdateMutationVariables = StorefrontAPI.Exact<{
@@ -2084,342 +2440,6 @@ export type StoreCollectionsQuery = {
   };
 };
 
-export type PageComponentMediaImageFragment = Pick<
-  StorefrontAPI.MediaImage,
-  'id'
-> & {
-  image?: StorefrontAPI.Maybe<
-    Pick<StorefrontAPI.Image, 'url' | 'width' | 'height'>
-  >;
-};
-
-export type PageComponentMetaobjectFragment = Pick<
-  StorefrontAPI.Metaobject,
-  'id' | 'type'
-> & {
-  fields: Array<
-    Pick<StorefrontAPI.MetaobjectField, 'key' | 'value' | 'type'> & {
-      reference?: StorefrontAPI.Maybe<
-        Pick<StorefrontAPI.MediaImage, 'id'> & {
-          image?: StorefrontAPI.Maybe<
-            Pick<StorefrontAPI.Image, 'url' | 'width' | 'height'>
-          >;
-        }
-      >;
-    }
-  >;
-};
-
-export type PageComponentFragment = Pick<
-  StorefrontAPI.Metaobject,
-  'id' | 'type'
-> & {
-  fields: Array<
-    Pick<StorefrontAPI.MetaobjectField, 'value' | 'type' | 'key'> & {
-      references?: StorefrontAPI.Maybe<{
-        nodes: Array<
-          Pick<StorefrontAPI.Metaobject, 'id' | 'type'> & {
-            fields: Array<
-              Pick<StorefrontAPI.MetaobjectField, 'key' | 'value' | 'type'> & {
-                reference?: StorefrontAPI.Maybe<
-                  Pick<StorefrontAPI.MediaImage, 'id'> & {
-                    image?: StorefrontAPI.Maybe<
-                      Pick<StorefrontAPI.Image, 'url' | 'width' | 'height'>
-                    >;
-                  }
-                >;
-              }
-            >;
-          }
-        >;
-      }>;
-      reference?: StorefrontAPI.Maybe<
-        | (Pick<StorefrontAPI.MediaImage, 'id'> & {
-            image?: StorefrontAPI.Maybe<
-              Pick<StorefrontAPI.Image, 'url' | 'width' | 'height'>
-            >;
-          })
-        | (Pick<StorefrontAPI.Metaobject, 'id' | 'type'> & {
-            fields: Array<
-              Pick<StorefrontAPI.MetaobjectField, 'key' | 'value' | 'type'> & {
-                reference?: StorefrontAPI.Maybe<
-                  Pick<StorefrontAPI.MediaImage, 'id'> & {
-                    image?: StorefrontAPI.Maybe<
-                      Pick<StorefrontAPI.Image, 'url' | 'width' | 'height'>
-                    >;
-                  }
-                >;
-              }
-            >;
-          })
-      >;
-    }
-  >;
-};
-
-export type PageFragment = Pick<StorefrontAPI.Page, 'id' | 'title' | 'body'> & {
-  seo?: StorefrontAPI.Maybe<Pick<StorefrontAPI.Seo, 'description' | 'title'>>;
-  components?: StorefrontAPI.Maybe<{
-    references?: StorefrontAPI.Maybe<{
-      nodes: Array<
-        Pick<StorefrontAPI.Metaobject, 'id' | 'type'> & {
-          fields: Array<
-            Pick<StorefrontAPI.MetaobjectField, 'value' | 'type' | 'key'> & {
-              references?: StorefrontAPI.Maybe<{
-                nodes: Array<
-                  Pick<StorefrontAPI.Metaobject, 'id' | 'type'> & {
-                    fields: Array<
-                      Pick<
-                        StorefrontAPI.MetaobjectField,
-                        'key' | 'value' | 'type'
-                      > & {
-                        reference?: StorefrontAPI.Maybe<
-                          Pick<StorefrontAPI.MediaImage, 'id'> & {
-                            image?: StorefrontAPI.Maybe<
-                              Pick<
-                                StorefrontAPI.Image,
-                                'url' | 'width' | 'height'
-                              >
-                            >;
-                          }
-                        >;
-                      }
-                    >;
-                  }
-                >;
-              }>;
-              reference?: StorefrontAPI.Maybe<
-                | (Pick<StorefrontAPI.MediaImage, 'id'> & {
-                    image?: StorefrontAPI.Maybe<
-                      Pick<StorefrontAPI.Image, 'url' | 'width' | 'height'>
-                    >;
-                  })
-                | (Pick<StorefrontAPI.Metaobject, 'id' | 'type'> & {
-                    fields: Array<
-                      Pick<
-                        StorefrontAPI.MetaobjectField,
-                        'key' | 'value' | 'type'
-                      > & {
-                        reference?: StorefrontAPI.Maybe<
-                          Pick<StorefrontAPI.MediaImage, 'id'> & {
-                            image?: StorefrontAPI.Maybe<
-                              Pick<
-                                StorefrontAPI.Image,
-                                'url' | 'width' | 'height'
-                              >
-                            >;
-                          }
-                        >;
-                      }
-                    >;
-                  })
-              >;
-            }
-          >;
-        }
-      >;
-    }>;
-  }>;
-  options?: StorefrontAPI.Maybe<{
-    reference?: StorefrontAPI.Maybe<
-      Pick<StorefrontAPI.Metaobject, 'id' | 'type'> & {
-        fields: Array<
-          Pick<StorefrontAPI.MetaobjectField, 'value' | 'type' | 'key'> & {
-            references?: StorefrontAPI.Maybe<{
-              nodes: Array<
-                Pick<StorefrontAPI.Metaobject, 'id' | 'type'> & {
-                  fields: Array<
-                    Pick<
-                      StorefrontAPI.MetaobjectField,
-                      'key' | 'value' | 'type'
-                    > & {
-                      reference?: StorefrontAPI.Maybe<
-                        Pick<StorefrontAPI.MediaImage, 'id'> & {
-                          image?: StorefrontAPI.Maybe<
-                            Pick<
-                              StorefrontAPI.Image,
-                              'url' | 'width' | 'height'
-                            >
-                          >;
-                        }
-                      >;
-                    }
-                  >;
-                }
-              >;
-            }>;
-            reference?: StorefrontAPI.Maybe<
-              | (Pick<StorefrontAPI.MediaImage, 'id'> & {
-                  image?: StorefrontAPI.Maybe<
-                    Pick<StorefrontAPI.Image, 'url' | 'width' | 'height'>
-                  >;
-                })
-              | (Pick<StorefrontAPI.Metaobject, 'id' | 'type'> & {
-                  fields: Array<
-                    Pick<
-                      StorefrontAPI.MetaobjectField,
-                      'key' | 'value' | 'type'
-                    > & {
-                      reference?: StorefrontAPI.Maybe<
-                        Pick<StorefrontAPI.MediaImage, 'id'> & {
-                          image?: StorefrontAPI.Maybe<
-                            Pick<
-                              StorefrontAPI.Image,
-                              'url' | 'width' | 'height'
-                            >
-                          >;
-                        }
-                      >;
-                    }
-                  >;
-                })
-            >;
-          }
-        >;
-      }
-    >;
-  }>;
-};
-
-export type PageQueryVariables = StorefrontAPI.Exact<{
-  language?: StorefrontAPI.InputMaybe<StorefrontAPI.LanguageCode>;
-  country?: StorefrontAPI.InputMaybe<StorefrontAPI.CountryCode>;
-  handle: StorefrontAPI.Scalars['String']['input'];
-}>;
-
-export type PageQuery = {
-  page?: StorefrontAPI.Maybe<
-    Pick<StorefrontAPI.Page, 'id' | 'title' | 'body'> & {
-      seo?: StorefrontAPI.Maybe<
-        Pick<StorefrontAPI.Seo, 'description' | 'title'>
-      >;
-      components?: StorefrontAPI.Maybe<{
-        references?: StorefrontAPI.Maybe<{
-          nodes: Array<
-            Pick<StorefrontAPI.Metaobject, 'id' | 'type'> & {
-              fields: Array<
-                Pick<
-                  StorefrontAPI.MetaobjectField,
-                  'value' | 'type' | 'key'
-                > & {
-                  references?: StorefrontAPI.Maybe<{
-                    nodes: Array<
-                      Pick<StorefrontAPI.Metaobject, 'id' | 'type'> & {
-                        fields: Array<
-                          Pick<
-                            StorefrontAPI.MetaobjectField,
-                            'key' | 'value' | 'type'
-                          > & {
-                            reference?: StorefrontAPI.Maybe<
-                              Pick<StorefrontAPI.MediaImage, 'id'> & {
-                                image?: StorefrontAPI.Maybe<
-                                  Pick<
-                                    StorefrontAPI.Image,
-                                    'url' | 'width' | 'height'
-                                  >
-                                >;
-                              }
-                            >;
-                          }
-                        >;
-                      }
-                    >;
-                  }>;
-                  reference?: StorefrontAPI.Maybe<
-                    | (Pick<StorefrontAPI.MediaImage, 'id'> & {
-                        image?: StorefrontAPI.Maybe<
-                          Pick<StorefrontAPI.Image, 'url' | 'width' | 'height'>
-                        >;
-                      })
-                    | (Pick<StorefrontAPI.Metaobject, 'id' | 'type'> & {
-                        fields: Array<
-                          Pick<
-                            StorefrontAPI.MetaobjectField,
-                            'key' | 'value' | 'type'
-                          > & {
-                            reference?: StorefrontAPI.Maybe<
-                              Pick<StorefrontAPI.MediaImage, 'id'> & {
-                                image?: StorefrontAPI.Maybe<
-                                  Pick<
-                                    StorefrontAPI.Image,
-                                    'url' | 'width' | 'height'
-                                  >
-                                >;
-                              }
-                            >;
-                          }
-                        >;
-                      })
-                  >;
-                }
-              >;
-            }
-          >;
-        }>;
-      }>;
-      options?: StorefrontAPI.Maybe<{
-        reference?: StorefrontAPI.Maybe<
-          Pick<StorefrontAPI.Metaobject, 'id' | 'type'> & {
-            fields: Array<
-              Pick<StorefrontAPI.MetaobjectField, 'value' | 'type' | 'key'> & {
-                references?: StorefrontAPI.Maybe<{
-                  nodes: Array<
-                    Pick<StorefrontAPI.Metaobject, 'id' | 'type'> & {
-                      fields: Array<
-                        Pick<
-                          StorefrontAPI.MetaobjectField,
-                          'key' | 'value' | 'type'
-                        > & {
-                          reference?: StorefrontAPI.Maybe<
-                            Pick<StorefrontAPI.MediaImage, 'id'> & {
-                              image?: StorefrontAPI.Maybe<
-                                Pick<
-                                  StorefrontAPI.Image,
-                                  'url' | 'width' | 'height'
-                                >
-                              >;
-                            }
-                          >;
-                        }
-                      >;
-                    }
-                  >;
-                }>;
-                reference?: StorefrontAPI.Maybe<
-                  | (Pick<StorefrontAPI.MediaImage, 'id'> & {
-                      image?: StorefrontAPI.Maybe<
-                        Pick<StorefrontAPI.Image, 'url' | 'width' | 'height'>
-                      >;
-                    })
-                  | (Pick<StorefrontAPI.Metaobject, 'id' | 'type'> & {
-                      fields: Array<
-                        Pick<
-                          StorefrontAPI.MetaobjectField,
-                          'key' | 'value' | 'type'
-                        > & {
-                          reference?: StorefrontAPI.Maybe<
-                            Pick<StorefrontAPI.MediaImage, 'id'> & {
-                              image?: StorefrontAPI.Maybe<
-                                Pick<
-                                  StorefrontAPI.Image,
-                                  'url' | 'width' | 'height'
-                                >
-                              >;
-                            }
-                          >;
-                        }
-                      >;
-                    })
-                >;
-              }
-            >;
-          }
-        >;
-      }>;
-    }
-  >;
-};
-
 export type PolicyFragment = Pick<
   StorefrontAPI.ShopPolicy,
   'body' | 'handle' | 'id' | 'title' | 'url'
@@ -2695,6 +2715,14 @@ export type CartApiQueryFragment = Pick<
 };
 
 interface GeneratedQueryTypes {
+  '#graphql\n  #graphql\n  fragment PageComponentMediaImage on MediaImage {\n    id\n    image {\n      url\n      width\n      height\n    }\n  }\n\n  fragment PageComponentMetaobject on Metaobject {\n    id\n    type\n    fields {\n      key\n      value\n      type\n      reference {\n        ...PageComponentMediaImage\n      }\n    }\n  }\n\n  fragment PageComponent on Metaobject {\n    id\n    type\n    fields {\n      value\n      type\n      key\n      references(first: 10) {\n        nodes {\n          ...PageComponentMetaobject\n        }\n      }\n      reference {\n        ...PageComponentMediaImage\n        ...PageComponentMetaobject\n      }\n    }\n  }\n\n  fragment Page on Page {\n    id\n    title\n    body\n    seo {\n      description\n      title\n    }\n    components: metafield(namespace: "custom", key: "components") {\n      references(first: 10) {\n        nodes {\n          ...PageComponent\n        }\n      }\n    }\n\n    options: metafield(namespace: "custom", key: "options") {\n      reference {\n        ...PageComponent\n      }\n    }\n  }\n\n  query Page(\n    $language: LanguageCode,\n    $country: CountryCode,\n    $handle: String!\n  )\n  @inContext(language: $language, country: $country) {\n    page(handle: $handle) {\n      ...Page\n    }\n  }\n': {
+    return: PageQuery;
+    variables: PageQueryVariables;
+  };
+  '#graphql\n  #graphql\n  fragment PageComponentMediaImage on MediaImage {\n    id\n    image {\n      url\n      width\n      height\n    }\n  }\n\n  fragment PageComponentMetaobject on Metaobject {\n    id\n    type\n    fields {\n      key\n      value\n      type\n      reference {\n        ...PageComponentMediaImage\n      }\n    }\n  }\n\n  fragment PageComponent on Metaobject {\n    id\n    type\n    fields {\n      value\n      type\n      key\n      references(first: 10) {\n        nodes {\n          ...PageComponentMetaobject\n        }\n      }\n      reference {\n        ...PageComponentMediaImage\n        ...PageComponentMetaobject\n      }\n    }\n  }\n\n  fragment Page on Page {\n    id\n    title\n    body\n    seo {\n      description\n      title\n    }\n    components: metafield(namespace: "custom", key: "components") {\n      references(first: 10) {\n        nodes {\n          ...PageComponent\n        }\n      }\n    }\n\n    options: metafield(namespace: "custom", key: "options") {\n      reference {\n        ...PageComponent\n      }\n    }\n  }\n\n  query FaqQuestions ($country: CountryCode, $language: LanguageCode)\n    @inContext(country: $country, language: $language) {\n    metaobject(handle: {handle: "index-faq", type: "faq"}) {\n      ...PageComponent\n    }\n  }\n': {
+    return: FaqQuestionsQuery;
+    variables: FaqQuestionsQueryVariables;
+  };
   '#graphql\n  #graphql\n  #graphql\n  fragment ProductCollection on Collection {\n    title\n    handle\n    icon:  metafield(namespace:"custom",  key: "icon") {\n      type\n      value\n    }\n  }\n\n  fragment MoneyProductItem on MoneyV2 {\n    amount\n    currencyCode\n  }\n\n  fragment ProductItem on Product {\n    id\n    title\n    description\n    handle\n    publishedAt\n    featuredImage {\n      id\n      altText\n      url\n      width\n      height\n    }\n    priceRange {\n      minVariantPrice {\n        ...MoneyProductItem\n      }\n      maxVariantPrice {\n        ...MoneyProductItem\n      }\n    }\n    variants(first: 1) {\n      nodes {\n        id\n        selectedOptions {\n          name\n          value\n        }\n        price {\n          amount\n          currencyCode\n        }\n      }\n    }\n    collections(first:2) {\n      nodes {\n        ...ProductCollection\n      }\n    }\n  }\n\n  query ProductItemById(\n    $country: CountryCode\n    $language: LanguageCode\n    $Id: ID!\n  ) @inContext(country: $country, language: $language) {\n    product(id: $Id) {\n      ...ProductItem\n    }\n  }\n': {
     return: ProductItemByIdQuery;
     variables: ProductItemByIdQueryVariables;
@@ -2751,10 +2779,6 @@ interface GeneratedQueryTypes {
     return: RecommendedTreatmentsQuery;
     variables: RecommendedTreatmentsQueryVariables;
   };
-  '#graphql\n  #graphql\n  fragment Faq on Metaobject {\n    id\n    type\n    fields {\n      value\n      key\n      type\n      references(first: 10) {\n        nodes {\n          ... on Metaobject {\n            id\n            type\n            handle\n            fields {\n              value\n              key\n            }\n          }\n        }\n      }\n    }\n  }\n\n  query FaqQuestions ($country: CountryCode, $language: LanguageCode)\n    @inContext(country: $country, language: $language) {\n    metaobject(handle: {handle: "index-faq", type: "faq"}) {\n      ...Faq\n    }\n  }\n': {
-    return: FaqQuestionsQuery;
-    variables: FaqQuestionsQueryVariables;
-  };
   '#graphql\n  query ProductVariantIds(\n    $country: CountryCode\n    $language: LanguageCode\n    $variantId: [ID!]!\n  ) @inContext(country: $country, language: $language) {\n    nodes(ids: $variantId){\n      ...on ProductVariant{\n        ...ProductVariant\n      }\n    }\n  }\n  #graphql\n  fragment ProductVariant on ProductVariant {\n    availableForSale\n    compareAtPrice {\n      amount\n      currencyCode\n    }\n    id\n    image {\n      __typename\n      id\n      url\n      altText\n      width\n      height\n    }\n    price {\n      amount\n      currencyCode\n    }\n    product {\n      title\n      handle\n    }\n    selectedOptions {\n      name\n      value\n    }\n    sku\n    title\n    unitPrice {\n      amount\n      currencyCode\n    }\n  }\n\n': {
     return: ProductVariantIdsQuery;
     variables: ProductVariantIdsQueryVariables;
@@ -2806,10 +2830,6 @@ interface GeneratedQueryTypes {
   '#graphql\n  #graphql\n  fragment Collection on Collection {\n    id\n    title\n    handle\n    description\n    image {\n      id\n      url\n      altText\n      width\n      height\n    }\n    icon:  metafield(namespace:"custom",  key: "icon") {\n      type\n      value\n    }\n    color:  metafield(namespace:"custom",  key: "color") {\n      type\n      value\n    }\n  }\n\n  query StoreCollections(\n    $country: CountryCode\n    $endCursor: String\n    $first: Int\n    $language: LanguageCode\n    $last: Int\n    $startCursor: String\n  ) @inContext(country: $country, language: $language) {\n    collections(\n      first: $first,\n      last: $last,\n      before: $startCursor,\n      after: $endCursor,\n      query: "title:products:*",\n      sortKey: TITLE\n    ) {\n      nodes {\n        ...Collection\n      }\n      pageInfo {\n        hasNextPage\n        hasPreviousPage\n        startCursor\n        endCursor\n      }\n    }\n  }\n': {
     return: StoreCollectionsQuery;
     variables: StoreCollectionsQueryVariables;
-  };
-  '#graphql\n  #graphql\n  fragment PageComponentMediaImage on MediaImage {\n    id\n    image {\n      url\n      width\n      height\n    }\n  }\n\n  fragment PageComponentMetaobject on Metaobject {\n    id\n    type\n    fields {\n      key\n      value\n      type\n      reference {\n        ...PageComponentMediaImage\n      }\n    }\n  }\n\n  fragment PageComponent on Metaobject {\n    id\n    type\n    fields {\n      value\n      type\n      key\n      references(first: 10) {\n        nodes {\n          ...PageComponentMetaobject\n        }\n      }\n      reference {\n        ...PageComponentMediaImage\n        ...PageComponentMetaobject\n      }\n    }\n  }\n\n  fragment Page on Page {\n    id\n    title\n    body\n    seo {\n      description\n      title\n    }\n    components: metafield(namespace: "custom", key: "components") {\n      references(first: 10) {\n        nodes {\n          ...PageComponent\n        }\n      }\n    }\n\n    options: metafield(namespace: "custom", key: "options") {\n      reference {\n        ...PageComponent\n      }\n    }\n  }\n\n  query Page(\n    $language: LanguageCode,\n    $country: CountryCode,\n    $handle: String!\n  )\n  @inContext(language: $language, country: $country) {\n    page(handle: $handle) {\n      ...Page\n    }\n  }\n': {
-    return: PageQuery;
-    variables: PageQueryVariables;
   };
   '#graphql\n  fragment Policy on ShopPolicy {\n    body\n    handle\n    id\n    title\n    url\n  }\n  query Policy(\n    $country: CountryCode\n    $language: LanguageCode\n    $privacyPolicy: Boolean!\n    $refundPolicy: Boolean!\n    $shippingPolicy: Boolean!\n    $termsOfService: Boolean!\n  ) @inContext(language: $language, country: $country) {\n    shop {\n      privacyPolicy @include(if: $privacyPolicy) {\n        ...Policy\n      }\n      shippingPolicy @include(if: $shippingPolicy) {\n        ...Policy\n      }\n      termsOfService @include(if: $termsOfService) {\n        ...Policy\n      }\n      refundPolicy @include(if: $refundPolicy) {\n        ...Policy\n      }\n    }\n  }\n': {
     return: PolicyQuery;

@@ -28,7 +28,7 @@ import HeroCategories from '~/components/HeroCategories';
 import {Slider} from '~/components/Slider';
 import {Wrapper} from '~/components/Wrapper';
 import {FaqQuestions} from '~/components/index/FaqQuestions';
-import {PRODUCT_ITEM_FRAGMENT} from '~/data/fragments';
+import {FAQ_QUERY, PRODUCT_ITEM_FRAGMENT} from '~/data/fragments';
 import {getBookingShopifyApi} from '~/lib/api/bookingShopifyApi';
 import type {ProductsGetUsersImage, UsersListResponse} from '~/lib/api/model';
 import {ArtistCard} from './($locale).artists';
@@ -383,41 +383,6 @@ const RECOMMENDED_TREATMENT_QUERY = `#graphql
       nodes {
         ...ProductItem
       }
-    }
-  }
-` as const;
-
-export const FAQ_FRAGMENT = `#graphql
-  fragment Faq on Metaobject {
-    id
-    type
-    fields {
-      value
-      key
-      type
-      references(first: 10) {
-        nodes {
-          ... on Metaobject {
-            id
-            type
-            handle
-            fields {
-              value
-              key
-            }
-          }
-        }
-      }
-    }
-  }
-` as const;
-
-const FAQ_QUERY = `#graphql
-  ${FAQ_FRAGMENT}
-  query FaqQuestions ($country: CountryCode, $language: LanguageCode)
-    @inContext(country: $country, language: $language) {
-    metaobject(handle: {handle: "index-faq", type: "faq"}) {
-      ...Faq
     }
   }
 ` as const;

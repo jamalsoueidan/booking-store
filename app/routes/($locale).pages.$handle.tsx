@@ -1,15 +1,16 @@
 import {useLoaderData, type MetaFunction} from '@remix-run/react';
 import {json, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
 import {
-  WrapperFaq,
   WrapperFeatures,
   WrapperHeroTitle,
 } from '~/components/DynamicComponents';
 import {CallToAction} from '~/components/metaobjects/CallToAction';
 import {CardMedia} from '~/components/metaobjects/CardMedia';
+import {Faq} from '~/components/metaobjects/Faq';
 import {GoogleMap} from '~/components/metaobjects/GoogleMap';
 import {Help} from '~/components/metaobjects/Help';
 import {SideBySide} from '~/components/metaobjects/SideBySide';
+import {PAGE_QUERY} from '~/data/fragments';
 
 export const meta: MetaFunction<typeof loader> = ({data}) => {
   return [{title: `BySisters | ${data?.page.title ?? ''}`}];
@@ -40,7 +41,7 @@ export default function Page() {
     if (c.type === 'features') {
       return <WrapperFeatures key={c.id} component={c} />;
     } else if (c.type === 'faq') {
-      return <WrapperFaq key={c.id} component={c} />;
+      return <Faq key={c.id} component={c} />;
     } else if (c.type === 'maps') {
       return <GoogleMap key={c.id} component={c} />;
     } else if (c.type === 'card_media') {
@@ -63,83 +64,3 @@ export default function Page() {
     </>
   );
 }
-
-const PAGE_FRAGMENT = `#graphql
-  fragment PageComponentMediaImage on MediaImage {
-    id
-    image {
-      url
-      width
-      height
-    }
-  }
-
-  fragment PageComponentMetaobject on Metaobject {
-    id
-    type
-    fields {
-      key
-      value
-      type
-      reference {
-        ...PageComponentMediaImage
-      }
-    }
-  }
-
-  fragment PageComponent on Metaobject {
-    id
-    type
-    fields {
-      value
-      type
-      key
-      references(first: 10) {
-        nodes {
-          ...PageComponentMetaobject
-        }
-      }
-      reference {
-        ...PageComponentMediaImage
-        ...PageComponentMetaobject
-      }
-    }
-  }
-
-  fragment Page on Page {
-    id
-    title
-    body
-    seo {
-      description
-      title
-    }
-    components: metafield(namespace: "custom", key: "components") {
-      references(first: 10) {
-        nodes {
-          ...PageComponent
-        }
-      }
-    }
-
-    options: metafield(namespace: "custom", key: "options") {
-      reference {
-        ...PageComponent
-      }
-    }
-  }
-` as const;
-
-const PAGE_QUERY = `#graphql
-  ${PAGE_FRAGMENT}
-  query Page(
-    $language: LanguageCode,
-    $country: CountryCode,
-    $handle: String!
-  )
-  @inContext(language: $language, country: $country) {
-    page(handle: $handle) {
-      ...Page
-    }
-  }
-` as const;
