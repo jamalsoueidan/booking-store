@@ -13,6 +13,10 @@ export function useField(component: PageComponentFragment | null) {
     return component?.fields.find((f) => f.key === key)?.value || undefined;
   };
 
+  const getBooleanValue = (key: string) => {
+    return component?.fields.find((f) => f.key === key)?.value === 'true';
+  };
+
   const getMetaObject = (key: string) => {
     const reference = getField(key)?.reference;
     if (isMetaobject(reference)) {
@@ -21,15 +25,26 @@ export function useField(component: PageComponentFragment | null) {
     return null;
   };
 
+  const getItems = (key: string) => {
+    return getField(key)?.references?.nodes;
+  };
+
   const getImage = (key?: string) => {
     const reference = getField(key || 'image')?.reference;
     if (isMediaImage(reference)) {
-      return reference;
+      return reference.image;
     }
     return null;
   };
 
-  return {getField, getFieldValue, getMetaObject, getImage};
+  return {
+    getField,
+    getFieldValue,
+    getBooleanValue,
+    getMetaObject,
+    getImage,
+    getItems,
+  };
 }
 
 export const isMetaobject = (
@@ -50,7 +65,7 @@ export const isMediaImage = (
     | PageComponentMetaobjectFragment
     | PageComponentMediaImageFragment
     | null,
-): metaobject is PageComponentMetaobjectFragment => {
+): metaobject is PageComponentMediaImageFragment => {
   if (!metaobject) {
     return false;
   }

@@ -1,15 +1,15 @@
 import {useLoaderData, type MetaFunction} from '@remix-run/react';
 import {json, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
 import {
-  WrapperCallToAction,
-  WrapperCardMedia,
   WrapperFaq,
   WrapperFeatures,
-  WrapperHelp,
   WrapperHeroTitle,
-  WrapperMaps,
-  WrapperSideBySide,
 } from '~/components/DynamicComponents';
+import {CallToAction} from '~/components/metaobjects/CallToAction';
+import {CardMedia} from '~/components/metaobjects/CardMedia';
+import {GoogleMap} from '~/components/metaobjects/GoogleMap';
+import {Help} from '~/components/metaobjects/Help';
+import {SideBySide} from '~/components/metaobjects/SideBySide';
 
 export const meta: MetaFunction<typeof loader> = ({data}) => {
   return [{title: `BySisters | ${data?.page.title ?? ''}`}];
@@ -42,15 +42,15 @@ export default function Page() {
     } else if (c.type === 'faq') {
       return <WrapperFaq key={c.id} component={c} />;
     } else if (c.type === 'maps') {
-      return <WrapperMaps key={c.id} component={c} />;
+      return <GoogleMap key={c.id} component={c} />;
     } else if (c.type === 'card_media') {
-      return <WrapperCardMedia key={c.id} component={c} />;
+      return <CardMedia key={c.id} component={c} />;
     } else if (c.type === 'side_by_side') {
-      return <WrapperSideBySide key={c.id} component={c} />;
+      return <SideBySide key={c.id} component={c} />;
     } else if (c.type === 'help') {
-      return <WrapperHelp key={c.id} component={c} />;
+      return <Help key={c.id} component={c} />;
     } else if (c.type === 'call_to_action') {
-      return <WrapperCallToAction key={c.id} component={c} />;
+      return <CallToAction key={c.id} component={c} />;
     } else {
       return <>unknown {c.type}</>;
     }

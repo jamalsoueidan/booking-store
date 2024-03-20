@@ -1,31 +1,14 @@
-import {
-  BackgroundImage,
-  Container,
-  Flex,
-  Image,
-  SimpleGrid,
-  Stack,
-  Text,
-  ThemeIcon,
-  Title,
-  rem,
-} from '@mantine/core';
-import {useMediaQuery} from '@mantine/hooks';
-import {Icon12Hours, IconHeart} from '@tabler/icons-react';
+import {Icon12Hours} from '@tabler/icons-react';
 import type {
   PageComponentFragment,
   PageComponentMediaImageFragment,
   PageComponentMetaobjectFragment,
   PageFragment,
 } from 'storefrontapi.generated';
-import classes from './DynamicComponents.module.css';
 import {Faq} from './Faq';
 import {Features, type FeatureProps} from './Features';
 import {HeroTitle} from './HeroTitle';
 import {Wrapper} from './Wrapper';
-import {ButtonMetaobject} from './metaobjects/button';
-import {OverlayMetaobject} from './metaobjects/overlay';
-import {useField} from './metaobjects/utils';
 
 export function WrapperFeatures({
   component,
@@ -79,70 +62,6 @@ export function WrapperFaq({component}: {component: PageComponentFragment}) {
   );
 }
 
-export function WrapperMaps({component}: {component: PageComponentFragment}) {
-  const url = component.fields.find(({key}) => key === 'url')?.value;
-
-  return (
-    <Wrapper>
-      <div className={classes.googleMap}>
-        <iframe
-          title="Google Maps"
-          src={url + '&key=AIzaSyCRthKA4QW7B1UPbpWuiMJiZ8pPBh4l8uc' || ''}
-          width="600"
-          height="450"
-          allowFullScreen={false}
-          className={classes.googleMapIframe}
-          loading="lazy"
-          referrerPolicy="no-referrer-when-downgrade"
-        ></iframe>
-      </div>
-    </Wrapper>
-  );
-}
-
-export function WrapperCardMedia({
-  component,
-}: {
-  component: PageComponentFragment;
-}) {
-  const isMobile = useMediaQuery('(max-width: 62em)');
-
-  const title = component.fields.find(({key}) => key === 'title')?.value;
-  const description = component.fields.find(
-    ({key}) => key === 'description',
-  )?.value;
-
-  const image = component.fields.find(({key}) => key === 'image')?.reference
-    ?.image;
-  const flip =
-    !isMobile &&
-    component.fields.find(({key}) => key === 'flip')?.value === 'true';
-
-  return (
-    <Container size="md" my={rem(80)}>
-      <Flex
-        justify="space-between"
-        gap={{base: 'lg', sm: rem(120)}}
-        style={{flexDirection: isMobile ? 'column' : 'row'}}
-      >
-        <Stack style={{order: flip ? 2 : 1, flex: 1}} gap="lg">
-          <Title fw={500}>{title}</Title>
-          <Text c="dimmed" size="lg">
-            {description}
-          </Text>
-        </Stack>
-        <Image
-          src={image?.url}
-          height={200}
-          w="auto"
-          radius="xl"
-          style={{order: flip ? 1 : 2, flex: 1}}
-        />
-      </Flex>
-    </Container>
-  );
-}
-
 export const WrapperHeroTitle = ({title, body, options}: PageFragment) => {
   const backgroundColor = options?.reference?.fields.find(
     (p) => p.key === 'background_color',
@@ -187,117 +106,3 @@ export const WrapperHeroTitle = ({title, body, options}: PageFragment) => {
     </>
   );
 };
-
-export function WrapperSideBySide({
-  component,
-}: {
-  component: PageComponentFragment;
-}) {
-  const isMobile = useMediaQuery('(max-width: 62em)');
-
-  const title = component.fields.find(({key}) => key === 'title')?.value;
-  const text = component.fields.find(({key}) => key === 'text')?.value;
-
-  return (
-    <Container size="md" my={rem(80)}>
-      <Flex
-        justify="space-between"
-        align="center"
-        style={{flexDirection: isMobile ? 'column' : 'row'}}
-        gap="xl"
-      >
-        <Title fw={500} textWrap="wrap" style={{flex: 1}}>
-          {title}
-        </Title>
-        <Text c="dimmed" size="lg" style={{flex: 1}}>
-          {text}
-        </Text>
-      </Flex>
-    </Container>
-  );
-}
-
-export function WrapperHelp({component}: {component: PageComponentFragment}) {
-  const isMobile = useMediaQuery('(max-width: 62em)');
-  const title = component.fields.find(({key}) => key === 'title')?.value;
-  const backgroundColor = component.fields.find(
-    ({key}) => key === 'background_color',
-  )?.value;
-  const items = component.fields.find(({key}) => key === 'items')?.references
-    ?.nodes;
-
-  return (
-    <Wrapper bg={backgroundColor || undefined}>
-      <Title ta="center" fw={500} size={rem(48)} mb={rem(60)}>
-        {title}
-      </Title>
-      <SimpleGrid cols={{base: 1, sm: 3}} spacing={{base: 'lg', sm: rem(50)}}>
-        {items?.map((item) => {
-          const title = item.fields.find(({key}) => key === 'title')?.value;
-          const description = item.fields.find(
-            ({key}) => key === 'description',
-          )?.value;
-          const color = item.fields.find(({key}) => key === 'color')?.value;
-
-          return (
-            <Stack key={item.id} align="center" justify="flex-start">
-              <ThemeIcon
-                variant="light"
-                color={color || 'green'}
-                size={rem(200)}
-                aria-label="Gradient action icon"
-                radius="100%"
-              >
-                <IconHeart style={{width: '70%', height: '70%'}} />
-              </ThemeIcon>
-              <Title size={rem(28)} ta="center" fw={400}>
-                {title}
-              </Title>
-              <Text ta="center" size="lg" c="dimmed">
-                {description}
-              </Text>
-            </Stack>
-          );
-        })}
-      </SimpleGrid>
-    </Wrapper>
-  );
-}
-
-export function WrapperCallToAction({
-  component,
-}: {
-  component: PageComponentFragment;
-}) {
-  const field = useField(component);
-  const title = field.getFieldValue('title');
-  const color = field.getFieldValue('color');
-  const button = field.getMetaObject('button');
-  const overlay = field.getMetaObject('overlay');
-
-  return (
-    <BackgroundImage
-      src="https://cdn.shopify.com/s/files/1/0682/4060/5458/files/Wallpaper-for-Hair-Salons_944x944_2x_479bc4ce-b41e-46e5-9d39-35992e88af61.webp?v=1710898092"
-      style={{position: 'relative'}}
-    >
-      <OverlayMetaobject metaobject={overlay} />
-      <Container
-        size="md"
-        py={rem(80)}
-        style={{position: 'relative', zIndex: 201}}
-      >
-        <Stack justify="center" align="center" gap="xl">
-          <Title
-            ta="center"
-            c={color || 'black'}
-            textWrap="pretty"
-            style={{whiteSpace: 'pre-line'}}
-          >
-            {title}
-          </Title>
-          <ButtonMetaobject metaobject={button} />
-        </Stack>
-      </Container>
-    </BackgroundImage>
-  );
-}
