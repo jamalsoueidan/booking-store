@@ -193,7 +193,7 @@ export const PRODUCT_VALIDATE_HANDLER_FRAGMENT = `#graphql
   }
 ` as const;
 
-const PAGE_FRAGMENT = `#graphql
+const PAGECOMPONENT_FRAGMENT = `#graphql
   fragment PageComponentMediaImage on MediaImage {
     id
     image {
@@ -234,7 +234,9 @@ const PAGE_FRAGMENT = `#graphql
       }
     }
   }
+` as const;
 
+const PAGE_FRAGMENT = `#graphql
   fragment Page on Page {
     id
     title
@@ -260,6 +262,7 @@ const PAGE_FRAGMENT = `#graphql
 ` as const;
 
 export const PAGE_QUERY = `#graphql
+  ${PAGECOMPONENT_FRAGMENT}
   ${PAGE_FRAGMENT}
   query Page(
     $language: LanguageCode,
@@ -274,7 +277,7 @@ export const PAGE_QUERY = `#graphql
 ` as const;
 
 export const FAQ_QUERY = `#graphql
-  ${PAGE_FRAGMENT}
+  ${PAGECOMPONENT_FRAGMENT}
   query FaqQuestions ($country: CountryCode, $language: LanguageCode)
     @inContext(country: $country, language: $language) {
     metaobject(handle: {handle: "index-faq", type: "faq"}) {
