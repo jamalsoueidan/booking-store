@@ -4,9 +4,9 @@ import {Pagination, getPaginationVariables} from '@shopify/hydrogen';
 import {json, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
 import {type CollectionFragment} from 'storefrontapi.generated';
 import {CollectionCard} from '~/components/CollectionCard';
-import {HeroTitle} from '~/components/HeroTitle';
 import {Wrapper} from '~/components/Wrapper';
-import {COLLECTION_ITEM_FRAGMENT} from '~/data/fragments';
+import {VisualTeaser} from '~/components/metaobjects/VisualTeaser';
+import {COLLECTION_ITEM_FRAGMENT, METAFIELD_QUERY} from '~/data/fragments';
 
 export async function loader({context, request}: LoaderFunctionArgs) {
   const paginationVariables = getPaginationVariables(request, {
@@ -17,21 +17,25 @@ export async function loader({context, request}: LoaderFunctionArgs) {
     variables: paginationVariables,
   });
 
-  return json({collections});
+  const {metaobject: visualTeaser} = await context.storefront.query(
+    METAFIELD_QUERY,
+    {
+      variables: {
+        handle: 'collections',
+        type: 'visual_teaser',
+      },
+    },
+  );
+
+  return json({collections, visualTeaser});
 }
 
 export default function Collections() {
-  const {collections} = useLoaderData<typeof loader>();
+  const {collections, visualTeaser} = useLoaderData<typeof loader>();
 
   return (
     <>
-      <HeroTitle
-        bg="orange.1"
-        overtitle="Kollektioner"
-        subtitle="Køb produkter hos os som vi bruger."
-      >
-        Køb produkter hos os som vi bruger.
-      </HeroTitle>
+      <VisualTeaser component={visualTeaser} />
 
       <Wrapper>
         <Pagination connection={collections}>

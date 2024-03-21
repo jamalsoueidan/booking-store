@@ -3,8 +3,8 @@ import {useLoaderData, type MetaFunction} from '@remix-run/react';
 import {Pagination, getPaginationVariables, parseGid} from '@shopify/hydrogen';
 import {json, redirect, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
 import type {ProductItemFragment} from 'storefrontapi.generated';
-import {HeroTitle} from '~/components/HeroTitle';
 import {Wrapper} from '~/components/Wrapper';
+import {VisualTeaserComponent} from '~/components/metaobjects/VisualTeaser';
 import {TreatmentCard} from '~/components/treatment/TreatmentCard';
 import {PRODUCT_ITEM_FRAGMENT} from '~/data/fragments';
 import {getBookingShopifyApi} from '~/lib/api/bookingShopifyApi';
@@ -55,13 +55,12 @@ export default function Collection() {
 
   return (
     <>
-      <HeroTitle
-        bg="grape.1"
-        overtitle={<>Kategori / {parseTE(collection.title)}</>}
+      <VisualTeaserComponent
+        backgroundColor="grape.1"
+        overtitle={`Kategori / ${parseTE(collection.title)}`}
         subtitle={collection.description}
-      >
-        {parseTE(collection.title)}
-      </HeroTitle>
+        title={parseTE(collection.title)}
+      />
 
       <Wrapper>
         <Pagination connection={collection.products}>

@@ -1,15 +1,14 @@
 import {useLoaderData, type MetaFunction} from '@remix-run/react';
 import {json, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
-import {
-  WrapperFeatures,
-  WrapperHeroTitle,
-} from '~/components/DynamicComponents';
+import {Wrapper} from '~/components/Wrapper';
 import {CallToAction} from '~/components/metaobjects/CallToAction';
 import {CardMedia} from '~/components/metaobjects/CardMedia';
 import {Faq} from '~/components/metaobjects/Faq';
+import {WrapperFeatures} from '~/components/metaobjects/Features';
 import {GoogleMap} from '~/components/metaobjects/GoogleMap';
 import {Help} from '~/components/metaobjects/Help';
 import {SideBySide} from '~/components/metaobjects/SideBySide';
+import {VisualTeaser} from '~/components/metaobjects/VisualTeaser';
 import {PAGE_QUERY} from '~/data/fragments';
 
 export const meta: MetaFunction<typeof loader> = ({data}) => {
@@ -57,9 +56,22 @@ export default function Page() {
     }
   });
 
+  const header = page.options?.references?.nodes.map((c) => {
+    if (c.type === 'visual_teaser') {
+      return <VisualTeaser key={c.id} component={c} />;
+    } else {
+      return <>unknown {c.type}</>;
+    }
+  });
+
   return (
     <>
-      <WrapperHeroTitle {...page} />
+      {header}
+      {page.body.length > 1 && (
+        <Wrapper>
+          <main dangerouslySetInnerHTML={{__html: page.body}} />
+        </Wrapper>
+      )}
       {markup}
     </>
   );

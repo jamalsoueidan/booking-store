@@ -7,14 +7,49 @@ import {
   rem,
 } from '@mantine/core';
 import {
+  Icon12Hours,
   IconCookie,
   IconGauge,
   IconLock,
   IconMessage2,
   IconUser,
 } from '@tabler/icons-react';
+import type {
+  PageComponentFragment,
+  PageComponentMetaobjectFragment,
+} from 'storefrontapi.generated';
+import {Wrapper} from '../Wrapper';
 import classes from './Features.module.css';
-import {Wrapper} from './Wrapper';
+
+export function WrapperFeatures({
+  component,
+}: {
+  component: PageComponentFragment;
+}) {
+  const title = component.fields.find((k) => k.key === 'title')?.value || '';
+  const subtitle =
+    component.fields.find((k) => k.key === 'subtitle')?.value || '';
+
+  const references = component.fields.find((c) => c.key === 'items')?.references
+    ?.nodes;
+
+  const items: Array<FeatureProps> =
+    references?.map((item) => {
+      const assertedItem = item as unknown as PageComponentMetaobjectFragment;
+      const title =
+        assertedItem.fields.find((k) => k.key === 'title')?.value || '';
+      const description =
+        assertedItem.fields.find((k) => k.key === 'description')?.value || '';
+
+      return {
+        icon: Icon12Hours,
+        title,
+        description,
+      };
+    }) || [];
+
+  return <Features title={title} subtitle={subtitle} items={items} />;
+}
 
 export const MOCKDATA = [
   {

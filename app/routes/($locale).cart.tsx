@@ -1,11 +1,16 @@
-import {Await, type MetaFunction} from '@remix-run/react';
+import {Await, useLoaderData, type MetaFunction} from '@remix-run/react';
 import type {CartQueryData} from '@shopify/hydrogen';
 import {CartForm} from '@shopify/hydrogen';
-import {json, type ActionFunctionArgs} from '@shopify/remix-oxygen';
+import {
+  LoaderFunctionArgs,
+  json,
+  type ActionFunctionArgs,
+} from '@shopify/remix-oxygen';
 import {Suspense} from 'react';
 import {CartMain} from '~/components/Cart';
-import {HeroTitle} from '~/components/HeroTitle';
 import {Wrapper} from '~/components/Wrapper';
+import {VisualTeaser} from '~/components/metaobjects/VisualTeaser';
+import {METAFIELD_QUERY} from '~/data/fragments';
 import {useRootLoaderData} from '~/root';
 
 export const meta: MetaFunction = () => {
@@ -86,13 +91,28 @@ export async function action({request, context}: ActionFunctionArgs) {
   );
 }
 
+export async function loader({context, request}: LoaderFunctionArgs) {
+  const {metaobject: visualTeaser} = await context.storefront.query(
+    METAFIELD_QUERY,
+    {
+      variables: {
+        handle: 'cart',
+        type: 'visual_teaser',
+      },
+    },
+  );
+
+  return json({visualTeaser});
+}
+
 export default function Cart() {
   const rootData = useRootLoaderData();
+  const {visualTeaser} = useLoaderData<typeof loader>();
   const cartPromise = rootData.cart;
 
   return (
     <>
-      <HeroTitle bg="gray.1">Indkøbskurv</HeroTitle>
+      <VisualTeaser component={visualTeaser} />
 
       <Wrapper>
         <Suspense fallback={<p>Henter indkøbskurv ...</p>}>

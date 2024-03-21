@@ -22,11 +22,11 @@
 
 .title {
   font-size: rem(24);
-  font-weight: 600;
+  font-weight: 400;
   line-height: 40px;
   @media (min-width: $mantine-breakpoint-md) {
-    font-size: rem(52);
-    line-height: 60px;
+    font-size: rem(42);
+    line-height: 50px;
   }
 }
 

@@ -11,8 +11,9 @@ import {Link, useLoaderData} from '@remix-run/react';
 import {json, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
 import {useState} from 'react';
 import InfiniteScroll from 'react-infinite-scroll-component';
-import {HeroTitle} from '~/components/HeroTitle';
 import {Wrapper} from '~/components/Wrapper';
+import {VisualTeaser} from '~/components/metaobjects/VisualTeaser';
+import {METAFIELD_QUERY} from '~/data/fragments';
 import {getBookingShopifyApi} from '~/lib/api/bookingShopifyApi';
 import type {User} from '~/lib/api/model';
 
@@ -20,23 +21,32 @@ const LIMIT = '25';
 
 export const loader = async ({request, context}: LoaderFunctionArgs) => {
   const {payload} = await getBookingShopifyApi().usersList({limit: LIMIT});
-  return json(payload);
+
+  const {metaobject: visualTeaser} = await context.storefront.query(
+    METAFIELD_QUERY,
+    {
+      variables: {
+        handle: 'artists',
+        type: 'visual_teaser',
+      },
+    },
+  );
+
+  return json({users: payload, visualTeaser});
 };
 
 export default function Collections() {
-  const data = useLoaderData<typeof loader>();
+  const {users, visualTeaser} = useLoaderData<typeof loader>();
+
   return (
     <>
-      <HeroTitle
-        bg="red.1"
-        overtitle="Skønhedseksperter"
-        subtitle="Find den perfekte skønhedsekspert til dine behov!"
-      >
-        Book tid hos en skønhedsekspert
-      </HeroTitle>
+      <VisualTeaser component={visualTeaser} />
 
       <Wrapper>
-        <UserList initialData={data.results} initialCursor={data.nextCursor} />
+        <UserList
+          initialData={users.results}
+          initialCursor={users.nextCursor}
+        />
       </Wrapper>
     </>
   );

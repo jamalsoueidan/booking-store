@@ -37,6 +37,15 @@ export function useField(component: PageComponentFragment | null | undefined) {
     return null;
   };
 
+  const getJSON = (key: string): any => {
+    const json =
+      component?.fields.find((f) => f.key === key)?.value || undefined;
+    if (json) {
+      return JSON.parse(json);
+    }
+    return {};
+  };
+
   return {
     getField,
     getFieldValue,
@@ -44,6 +53,7 @@ export function useField(component: PageComponentFragment | null | undefined) {
     getMetaObject,
     getImage,
     getItems,
+    getJSON,
   };
 }
 

@@ -3,10 +3,10 @@ import {useLoaderData} from '@remix-run/react';
 import {Pagination, getPaginationVariables} from '@shopify/hydrogen';
 import {json, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
 import type {CollectionFragment} from 'storefrontapi.generated';
-import {HeroTitle} from '~/components/HeroTitle';
 import {Wrapper} from '~/components/Wrapper';
+import {VisualTeaser} from '~/components/metaobjects/VisualTeaser';
 import {CategoryCard} from '~/components/treatment/CategoryCard';
-import {COLLECTION_ITEM_FRAGMENT} from '~/data/fragments';
+import {COLLECTION_ITEM_FRAGMENT, METAFIELD_QUERY} from '~/data/fragments';
 
 export async function loader({context, request}: LoaderFunctionArgs) {
   const paginationVariables = getPaginationVariables(request, {
@@ -17,21 +17,25 @@ export async function loader({context, request}: LoaderFunctionArgs) {
     variables: paginationVariables,
   });
 
-  return json({collections});
+  const {metaobject: visualTeaser} = await context.storefront.query(
+    METAFIELD_QUERY,
+    {
+      variables: {
+        handle: 'categories',
+        type: 'visual_teaser',
+      },
+    },
+  );
+
+  return json({collections, visualTeaser});
 }
 
 export default function Collections() {
-  const {collections} = useLoaderData<typeof loader>();
+  const {collections, visualTeaser} = useLoaderData<typeof loader>();
 
   return (
     <>
-      <HeroTitle
-        bg="indigo.1"
-        overtitle="Kategorier"
-        subtitle="Vælg din næste skønhedsoplevelse."
-      >
-        Udforsk behandlinger, og book din tid – alt sammen på ét sted.
-      </HeroTitle>
+      <VisualTeaser component={visualTeaser} />
 
       <Wrapper>
         <Pagination connection={collections}>

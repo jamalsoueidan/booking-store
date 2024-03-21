@@ -28,7 +28,7 @@ import HeroCategories from '~/components/HeroCategories';
 import {Slider} from '~/components/Slider';
 import {Wrapper} from '~/components/Wrapper';
 import {FaqQuestions} from '~/components/index/FaqQuestions';
-import {FAQ_QUERY, PRODUCT_ITEM_FRAGMENT} from '~/data/fragments';
+import {METAFIELD_QUERY, PRODUCT_ITEM_FRAGMENT} from '~/data/fragments';
 import {getBookingShopifyApi} from '~/lib/api/bookingShopifyApi';
 import type {ProductsGetUsersImage, UsersListResponse} from '~/lib/api/model';
 import {ArtistCard} from './($locale).artists';
@@ -65,7 +65,12 @@ export async function loader({context}: LoaderFunctionArgs) {
     variables: {first: 10},
   });
 
-  const {metaobject: faq} = await context.storefront.query(FAQ_QUERY);
+  const {metaobject: faq} = await context.storefront.query(METAFIELD_QUERY, {
+    variables: {
+      handle: 'index-faq',
+      type: 'faq',
+    },
+  });
 
   return defer({
     recommendedProducts,
