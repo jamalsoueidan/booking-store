@@ -101,7 +101,7 @@ export default function Homepage() {
         </Container>
       </div>
 
-      <Container size="lg" style={{marginTop: '-80px'}}>
+      <Container size="lg" style={{marginTop: '-75px'}}>
         <HeroCategories collections={data.collections.nodes} />
       </Container>
 

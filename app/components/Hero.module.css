@@ -15,7 +15,7 @@
   gap: var(--mantine-spacing-lg);
   @media (min-width: $mantine-breakpoint-md) {
     gap: var(--mantine-spacing-lg);
-    height: 90%;
+    height: 80%;
     width: 50%;
   }
 }

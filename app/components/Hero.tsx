@@ -1,11 +1,8 @@
 import {Button, Flex, Title} from '@mantine/core';
-import {useMediaQuery} from '@mantine/hooks';
 import {Link} from '@remix-run/react';
 import classes from './Hero.module.css';
 
 export function Hero() {
-  const isMobile = useMediaQuery('(max-width: 62em)');
-
   return (
     <div className={classes.root}>
       <Flex justify="center" direction="column" className={classes.flex}>
