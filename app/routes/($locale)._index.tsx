@@ -27,7 +27,7 @@ import {IconArrowLeft, IconArrowRight} from '@tabler/icons-react';
 import HeroCategories from '~/components/HeroCategories';
 import {Slider} from '~/components/Slider';
 import {Wrapper} from '~/components/Wrapper';
-import {FaqQuestions} from '~/components/index/FaqQuestions';
+import {Faq} from '~/components/metaobjects/Faq';
 import {METAFIELD_QUERY, PRODUCT_ITEM_FRAGMENT} from '~/data/fragments';
 import {getBookingShopifyApi} from '~/lib/api/bookingShopifyApi';
 import type {ProductsGetUsersImage, UsersListResponse} from '~/lib/api/model';
@@ -112,7 +112,7 @@ export default function Homepage() {
           productsUsers={data.recommendedTreatmentsProductsUsers}
         />
         <RecommendedProducts products={data.recommendedProducts} />
-        <FaqQuestions faq={data.faq} />
+        <Faq component={data.faq} />
       </Box>
     </>
   );

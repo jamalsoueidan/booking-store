@@ -6,7 +6,7 @@ import {
   Title,
   rem,
 } from '@mantine/core';
-import {Image, Maybe} from '@shopify/hydrogen/storefront-api-types';
+import type {Image, Maybe} from '@shopify/hydrogen/storefront-api-types';
 import type {PageComponentFragment} from 'storefrontapi.generated';
 import classes from './VisualTeaser.module.css';
 import {useField} from './utils';
