@@ -254,8 +254,10 @@ const PAGE_FRAGMENT = `#graphql
     }
 
     options: metafield(namespace: "custom", key: "options") {
-      reference {
-        ...PageComponent
+      references(first: 10) {
+        nodes {
+          ...PageComponent
+        }
       }
     }
   }
@@ -276,11 +278,11 @@ export const PAGE_QUERY = `#graphql
   }
 ` as const;
 
-export const FAQ_QUERY = `#graphql
+export const METAFIELD_QUERY = `#graphql
   ${PAGECOMPONENT_FRAGMENT}
-  query FaqQuestions ($country: CountryCode, $language: LanguageCode)
+  query FaqQuestions ($country: CountryCode, $language: LanguageCode, $handle: String!, $type: String!)
     @inContext(country: $country, language: $language) {
-    metaobject(handle: {handle: "index-faq", type: "faq"}) {
+    metaobject(handle: {handle: $handle, type: $type}) {
       ...PageComponent
     }
   }
