@@ -8,7 +8,7 @@ export function Wrapper({
   const className = props.bg ? classes.padding : classes.margin;
   return (
     <Box className={className} {...props}>
-      <Container size="md">{children}</Container>
+      <Container size="xl">{children}</Container>
     </Box>
   );
 }
