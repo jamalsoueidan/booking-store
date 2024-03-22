@@ -1,19 +1,10 @@
-import {
-  Avatar,
-  Box,
-  Button,
-  Card,
-  Flex,
-  SimpleGrid,
-  Stack,
-  Text,
-  Title,
-  rem,
-} from '@mantine/core';
-import {Link, useLoaderData} from '@remix-run/react';
+import {Box, Flex, SimpleGrid, Stack, Title, rem} from '@mantine/core';
+import {useLoaderData} from '@remix-run/react';
 import {json, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
 import {useState} from 'react';
 import InfiniteScroll from 'react-infinite-scroll-component';
+import {ArtistCard} from '~/components/ArtistCard';
+import {ProfessionButton} from '~/components/ProfessionButton';
 import {METAFIELD_QUERY} from '~/data/fragments';
 import {getBookingShopifyApi} from '~/lib/api/bookingShopifyApi';
 import type {User} from '~/lib/api/model';
@@ -56,7 +47,7 @@ export default function Collections() {
         }}
       ></Box>
 
-      <Box mx={{base: 'md', sm: 'xl'}} my="lg">
+      <Box mx={{base: 'md', sm: 'xl'}} my="xl">
         <Stack gap={rem(64)}>
           <Stack gap="xl">
             <Title order={2} fw="normal">
@@ -66,27 +57,18 @@ export default function Collections() {
               </span>
             </Title>
             <Flex gap="md">
-              <Stack justify="center" align="center">
-                <Avatar
-                  src={`/professions/all.webp`}
-                  alt="Alle skønhedseksperter"
-                  size="xl"
-                />
-                <Title order={6} fw="normal" textWrap="pretty">
-                  Alle eksperter
-                </Title>
-              </Stack>
+              <ProfessionButton
+                profession={{
+                  count: 0,
+                  key: 'all',
+                  translation: 'Alle eksperter',
+                }}
+              />
               {professions.map((profession) => (
-                <Stack key={profession.key} justify="center" align="center">
-                  <Avatar
-                    src={`/professions/${profession.key}.webp`}
-                    alt={profession.translation}
-                    size="xl"
-                  />
-                  <Title order={6} fw="normal" textWrap="pretty">
-                    {profession.translation}
-                  </Title>
-                </Stack>
+                <ProfessionButton
+                  key={profession.key}
+                  profession={profession}
+                />
               ))}
             </Flex>
           </Stack>
@@ -141,7 +123,7 @@ export const UserList = ({initialData, initialCursor}: UserListProps) => {
       hasMore={hasMore}
       loader={<h4>Loading...</h4>}
     >
-      <SimpleGrid cols={{base: 2, sm: 3, md: 4, lg: 5}}>
+      <SimpleGrid spacing="lg" cols={{base: 2, sm: 3, md: 4, lg: 7}}>
         {data?.map((user) => (
           <ArtistCard artist={user} key={user.customerId} />
         ))}
@@ -149,39 +131,3 @@ export const UserList = ({initialData, initialCursor}: UserListProps) => {
     </InfiniteScroll>
   );
 };
-
-export const ArtistCard = ({artist}: {artist: User}) => (
-  <Card
-    radius="md"
-    withBorder
-    p="lg"
-    bg="var(--mantine-color-body)"
-    component={Link}
-    to={`/artist/${artist.username}`}
-  >
-    <Stack gap="md" justify="center">
-      <Flex justify="center">
-        <Avatar
-          src={artist.images?.profile?.url}
-          radius="100%"
-          w="220px"
-          h="220px"
-        />
-      </Flex>
-      <div>
-        <Text ta="center" fz="lg" fw={500} c="black">
-          {artist.fullname}
-        </Text>
-        <Text ta="center" c="dimmed" fz="sm">
-          {artist.shortDescription}
-        </Text>
-      </div>
-
-      <Flex justify="center">
-        <Button variant="default" size="xs" radius="lg">
-          Vis profile
-        </Button>
-      </Flex>
-    </Stack>
-  </Card>
-);

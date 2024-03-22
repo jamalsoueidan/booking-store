@@ -31,7 +31,8 @@ import {Faq} from '~/components/metaobjects/Faq';
 import {METAFIELD_QUERY, PRODUCT_ITEM_FRAGMENT} from '~/data/fragments';
 import {getBookingShopifyApi} from '~/lib/api/bookingShopifyApi';
 import type {ProductsGetUsersImage, UsersListResponse} from '~/lib/api/model';
-import {ArtistCard} from './($locale).artists';
+
+import {ArtistCard} from '~/components/ArtistCard';
 import {COLLECTIONS_QUERY} from './($locale).categories._index';
 
 export function shouldRevalidate() {
