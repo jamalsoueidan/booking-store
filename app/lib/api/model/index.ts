@@ -210,3 +210,6 @@ export * from './usersListResponse';
 export * from './usersListResponsePayload';
 export * from './usersProfessionsResponse';
 export * from './usersProfessionsResponsePayload';
+export * from './usersSpecialtiesParams';
+export * from './usersSpecialtiesResponse';
+export * from './usersSpecialtiesResponsePayload';

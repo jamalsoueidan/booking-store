@@ -707,6 +707,19 @@ export const usersProfessionsResponse = zod.object({
 });
 
 /**
+ * This endpoint get all users
+ * @summary GET Get all users specialties with total count
+ */
+export const usersSpecialtiesQueryParams = zod.object({
+  profession: zod.string().optional(),
+});
+
+export const usersSpecialtiesResponse = zod.object({
+  success: zod.boolean(),
+  payload: zod.record(zod.string(), zod.number()),
+});
+
+/**
  * This endpoint generate availabilty for user
  * @summary POST generate availabilty for user
  */

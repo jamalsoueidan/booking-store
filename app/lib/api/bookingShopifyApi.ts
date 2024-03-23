@@ -84,6 +84,8 @@ import type {
   UsersListParams,
   UsersListResponse,
   UsersProfessionsResponse,
+  UsersSpecialtiesParams,
+  UsersSpecialtiesResponse,
 } from './model';
 import {queryClient} from './mutator/query-client';
 import type {BodyType} from './mutator/query-client';
@@ -257,6 +259,18 @@ export const getBookingShopifyApi = () => {
     return queryClient<UsersProfessionsResponse>({
       url: `/users/professions`,
       method: 'GET',
+    });
+  };
+
+  /**
+   * This endpoint get all users
+   * @summary GET Get all users specialties with total count
+   */
+  const usersSpecialties = (params?: UsersSpecialtiesParams) => {
+    return queryClient<UsersSpecialtiesResponse>({
+      url: `/users/specialties`,
+      method: 'GET',
+      params,
     });
   };
 
@@ -826,6 +840,7 @@ export const getBookingShopifyApi = () => {
     userLocationGet,
     userScheduleGetByLocation,
     usersProfessions,
+    usersSpecialties,
     userAvailabilityGenerate,
     userAvailabilityGet,
     usersList,
@@ -943,6 +958,11 @@ export type UserScheduleGetByLocationResult = NonNullable<
 export type UsersProfessionsResult = NonNullable<
   Awaited<
     ReturnType<ReturnType<typeof getBookingShopifyApi>['usersProfessions']>
+  >
+>;
+export type UsersSpecialtiesResult = NonNullable<
+  Awaited<
+    ReturnType<ReturnType<typeof getBookingShopifyApi>['usersSpecialties']>
   >
 >;
 export type UserAvailabilityGenerateResult = NonNullable<
