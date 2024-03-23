@@ -13,6 +13,8 @@ export const ProfessionTranslations: Record<string, string> = {
   hair_stylist: 'Frisør',
   makeup_artist: 'Makeupartist',
   massage_therapist: 'Massageterapeut',
+  lash_technician: 'Vippetekniker',
+  brow_technician: 'Bryntekniker',
 };
 
 export const ProfessionSentenceTranslations: Record<string, string> = {
@@ -22,6 +24,8 @@ export const ProfessionSentenceTranslations: Record<string, string> = {
   makeup_artist:
     'Perfektionér dit look for enhver lejlighed med en professionel makeupartist.',
   massage_therapist: 'Slap af og genoplad med en erfaren massageterapeut.',
+  lash_technician: 'Få smukke og fyldige vipper med en erfaren vippetekniker.',
+  brow_technician: 'Opnå de perfekte bryn med en professionel bryntekniker.',
 };
 
 export async function loader({request, context}: LoaderFunctionArgs) {

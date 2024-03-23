@@ -16,11 +16,36 @@ export async function loader({request, context}: LoaderFunctionArgs) {
   });
 
   const translations: Record<string, string> = {
-    massage_therapist: 'Massageterapeut',
+    acrylic_nails: 'Akrylnegle',
+    airbrush_makeup: 'Airbrush makeup',
+    balayage_specialist: 'Balayage specialist',
+    body_treatments: 'Kropsbehandlinger',
+    bridal_makeup: 'Brudemakeup',
     celebrity_makeup: 'Celebrity makeup',
-    editorial_makeup: 'Editorial makeup',
+    cosmetic_teeth_whitening: 'Kosmetisk tandblegning',
     custom: 'Tilpasset',
+    editorial_makeup: 'Editorial makeup',
+    ethereal_makeup: 'Eterisk makeup',
+    eyebrow_shaping: 'Brynformning',
+    eyelash_extensions: 'Vippeextensions',
+    facial_treatments: 'Ansigtsbehandlinger',
+    gel_nails: 'Gelnegle',
+    hair_coloring: 'Hårfarvning',
+    hair_extensions: 'Hårextensions',
+    keratin_treatments: 'Keratinbehandlinger',
+    manicure_pedicure: 'Manicure og pedicure',
+    massage: 'Massage',
+    massage_therapist: 'Massageterapeut',
+    microblading: 'Microblading',
+    nail_art: 'Neglekunst',
+    permanent_makeup: 'Permanent makeup',
+    scar_treatment: 'Arbehandling',
     sfx_makeup: 'SFX makeup',
+    skin_care: 'Hudpleje',
+    stage_makeup: 'Scenemakeup',
+    tattoo_removal: 'Tatoveringsfjernelse',
+    vintage_styles: 'Vintage stilarter',
+    waxing_hair_removal: 'Voksning',
   };
 
   const translatedSpecialties = Object.keys(specialties)
