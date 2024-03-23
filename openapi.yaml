@@ -2022,8 +2022,11 @@ components:
               type: array
               items:
                 $ref: '#/components/schemas/User'
+            total:
+              type: number
           required:
             - results
+            - total
       required:
         - success
         - payload
@@ -2037,6 +2040,80 @@ components:
           type: object
           additionalProperties:
             type: number
+      required:
+        - success
+        - payload
+    UsersSpecialtiesResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: true
+        payload:
+          type: object
+          additionalProperties:
+            type: number
+      required:
+        - success
+        - payload
+    UserTop:
+      type: object
+      properties:
+        customerId:
+          type: number
+        username:
+          type: string
+        fullname:
+          type: string
+        aboutMe:
+          type: string
+        shortDescription:
+          type: string
+        professions:
+          type: string
+        images:
+          type: object
+          properties:
+            profile:
+              type: object
+              properties:
+                url:
+                  type: string
+                  format: uri
+                width:
+                  type: integer
+                height:
+                  type: integer
+      required:
+        - customerId
+        - username
+        - fullname
+        - shortDescription
+        - professions
+        - images
+    UsersTopResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: true
+        payload:
+          type: array
+          items:
+            type: object
+            properties:
+              totalUsers:
+                type: string
+              profession:
+                type: string
+              users:
+                type: array
+                items:
+                  $ref: '#/components/schemas/UserTop'
+            required:
+              - totalUsers
+              - profession
+              - users
       required:
         - success
         - payload
@@ -2942,13 +3019,47 @@ paths:
         '404':
           $ref: '#/components/responses/NotFoundResponse'
       security: []
+  /users/top:
+    parameters:
+      - name: limit
+        in: query
+        description: limit items (default 5)
+        schema:
+          type: string
+      - name: page
+        in: query
+        description: page
+        schema:
+          type: string
+    get:
+      tags:
+        - User
+      operationId: usersTop
+      summary: GET Get all users grouped by professions
+      description: This endpoint get all users group by professions
+      responses:
+        '200':
+          description: Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UsersTopResponse'
+        '400':
+          $ref: '#/components/responses/BadResponse'
+        '401':
+          $ref: '#/components/responses/UnauthorizedResponse'
+        '403':
+          $ref: '#/components/responses/ForbiddenResponse'
+        '404':
+          $ref: '#/components/responses/NotFoundResponse'
+      security: []
   /users/professions:
     get:
       tags:
         - User
       operationId: usersProfessions
       summary: GET Get all users professions with total count
-      description: This endpoint get all users
+      description: This endpoint get all users professions
       responses:
         '200':
           description: Response
@@ -2956,6 +3067,35 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/UsersProfessionsResponse'
+        '400':
+          $ref: '#/components/responses/BadResponse'
+        '401':
+          $ref: '#/components/responses/UnauthorizedResponse'
+        '403':
+          $ref: '#/components/responses/ForbiddenResponse'
+        '404':
+          $ref: '#/components/responses/NotFoundResponse'
+      security: []
+  /users/specialties:
+    get:
+      parameters:
+        - name: profession
+          in: query
+          description: profession
+          schema:
+            type: string
+      tags:
+        - User
+      operationId: usersSpecialties
+      summary: GET Get all users specialties with total count
+      description: This endpoint get all users specialties
+      responses:
+        '200':
+          description: Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UsersSpecialtiesResponse'
         '400':
           $ref: '#/components/responses/BadResponse'
         '401':
@@ -3059,9 +3199,16 @@ paths:
           type: string
       - name: profession
         in: query
-        description: profession like makeup_artist
+        description: profession
         schema:
           type: string
+      - name: specialties
+        in: query
+        description: specialties
+        schema:
+          type: array
+          items:
+            type: string
       - name: sortOrder
         in: query
         description: asc or desc

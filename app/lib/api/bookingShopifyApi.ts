@@ -84,6 +84,10 @@ import type {
   UsersListParams,
   UsersListResponse,
   UsersProfessionsResponse,
+  UsersSpecialtiesParams,
+  UsersSpecialtiesResponse,
+  UsersTopParams,
+  UsersTopResponse,
 } from './model';
 import {queryClient} from './mutator/query-client';
 import type {BodyType} from './mutator/query-client';
@@ -250,13 +254,37 @@ export const getBookingShopifyApi = () => {
   };
 
   /**
-   * This endpoint get all users
+   * This endpoint get all users group by professions
+   * @summary GET Get all users grouped by professions
+   */
+  const usersTop = (params?: UsersTopParams) => {
+    return queryClient<UsersTopResponse>({
+      url: `/users/top`,
+      method: 'GET',
+      params,
+    });
+  };
+
+  /**
+   * This endpoint get all users professions
    * @summary GET Get all users professions with total count
    */
   const usersProfessions = () => {
     return queryClient<UsersProfessionsResponse>({
       url: `/users/professions`,
       method: 'GET',
+    });
+  };
+
+  /**
+   * This endpoint get all users specialties
+   * @summary GET Get all users specialties with total count
+   */
+  const usersSpecialties = (params?: UsersSpecialtiesParams) => {
+    return queryClient<UsersSpecialtiesResponse>({
+      url: `/users/specialties`,
+      method: 'GET',
+      params,
     });
   };
 
@@ -825,7 +853,9 @@ export const getBookingShopifyApi = () => {
     userSchedulesListLocations,
     userLocationGet,
     userScheduleGetByLocation,
+    usersTop,
     usersProfessions,
+    usersSpecialties,
     userAvailabilityGenerate,
     userAvailabilityGet,
     usersList,
@@ -940,9 +970,17 @@ export type UserScheduleGetByLocationResult = NonNullable<
     >
   >
 >;
+export type UsersTopResult = NonNullable<
+  Awaited<ReturnType<ReturnType<typeof getBookingShopifyApi>['usersTop']>>
+>;
 export type UsersProfessionsResult = NonNullable<
   Awaited<
     ReturnType<ReturnType<typeof getBookingShopifyApi>['usersProfessions']>
+  >
+>;
+export type UsersSpecialtiesResult = NonNullable<
+  Awaited<
+    ReturnType<ReturnType<typeof getBookingShopifyApi>['usersSpecialties']>
   >
 >;
 export type UserAvailabilityGenerateResult = NonNullable<

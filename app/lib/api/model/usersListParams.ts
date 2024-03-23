@@ -15,9 +15,13 @@ export type UsersListParams = {
    */
   limit?: string;
   /**
-   * profession like makeup_artist
+   * profession
    */
   profession?: string;
+  /**
+   * specialties
+   */
+  specialties?: string[];
   /**
    * asc or desc
    */

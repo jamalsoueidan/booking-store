@@ -1,12 +1,10 @@
 import {
   ActionIcon,
   Avatar,
-  Badge,
   Button,
   Flex,
   Grid,
   Group,
-  Stack,
   Text,
   Title,
   rem,
@@ -24,25 +22,6 @@ import {type User} from '~/lib/api/model';
 
 export function ArtistHero({artist}: {artist: User}) {
   const isMobile = useMediaQuery('(max-width: 62em)');
-
-  const Tags = () => (
-    <Stack gap="xs">
-      <Group gap="xs">
-        {artist.professions.map((p) => (
-          <Badge key={p} variant="outline" color="white">
-            {p}
-          </Badge>
-        ))}
-      </Group>
-      <Group gap="xs">
-        {artist.specialties.map((p) => (
-          <Badge key={p} variant="outline" color="white">
-            {p}
-          </Badge>
-        ))}
-      </Group>
-    </Stack>
-  );
 
   if (!artist) return null;
   return (

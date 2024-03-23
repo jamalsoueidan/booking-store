@@ -1,10 +1,16 @@
-import {SimpleGrid, Stack, Text, ThemeIcon, Title, rem} from '@mantine/core';
-import {IconHeart} from '@tabler/icons-react';
+import {SimpleGrid, Stack, Text, Title, rem} from '@mantine/core';
+import {
+  IconBasket,
+  IconBeach,
+  IconHeart,
+  IconSearch,
+} from '@tabler/icons-react';
 import type {
   PageComponentFragment,
   PageComponentMetaobjectFragment,
 } from 'storefrontapi.generated';
 import {Wrapper} from '../Wrapper';
+import {ThemeIconMetaobject} from './ThemeIconMetaobject';
 import {useField} from './utils';
 
 export function Help({component}: {component: PageComponentFragment}) {
@@ -15,9 +21,11 @@ export function Help({component}: {component: PageComponentFragment}) {
 
   return (
     <Wrapper bg={backgroundColor || undefined}>
-      <Title ta="center" fw={500} size={rem(48)} mb={rem(60)}>
-        {title}
-      </Title>
+      {title ? (
+        <Title ta="center" fw={500} size={rem(48)}>
+          {title}
+        </Title>
+      ) : null}
       <SimpleGrid cols={{base: 1, sm: 3}} spacing={{base: 'lg', sm: rem(50)}}>
         {items?.map((item) => (
           <HelpItem key={item.id} item={item} />
@@ -27,23 +35,29 @@ export function Help({component}: {component: PageComponentFragment}) {
   );
 }
 
+const icons: Record<string, any> = {
+  beach: IconBeach,
+  search: IconSearch,
+  basket: IconBasket,
+  '': IconHeart,
+};
+
 const HelpItem = ({item}: {item: PageComponentMetaobjectFragment}) => {
   const field = useField(item);
   const title = field.getFieldValue('title');
   const description = field.getFieldValue('description');
-  const color = field.getFieldValue('color');
+  const backgroundColor = field.getFieldValue('background_color');
+  const themeIcon = field.getMetaObject('theme_icon');
 
   return (
-    <Stack key={item.id} align="center" justify="flex-start">
-      <ThemeIcon
-        variant="light"
-        color={color || 'green'}
-        size={rem(200)}
-        aria-label="Gradient action icon"
-        radius="100%"
-      >
-        <IconHeart style={{width: '70%', height: '70%'}} />
-      </ThemeIcon>
+    <Stack
+      key={item.id}
+      align="center"
+      justify="flex-start"
+      bg={backgroundColor}
+      p="xl"
+    >
+      {themeIcon ? <ThemeIconMetaobject metaobject={themeIcon} /> : null}
       <Title size={rem(28)} ta="center" fw={400}>
         {title}
       </Title>
