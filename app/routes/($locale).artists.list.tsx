@@ -7,6 +7,10 @@ import {ArtistCard} from '~/components/ArtistCard';
 import {METAFIELD_QUERY} from '~/data/fragments';
 import {getBookingShopifyApi} from '~/lib/api/bookingShopifyApi';
 import type {User} from '~/lib/api/model';
+import {
+  ProfessionSentenceTranslations,
+  ProfessionTranslations,
+} from './($locale).api.users.professions';
 
 const LIMIT = '20';
 
@@ -39,13 +43,17 @@ export const loader = async (args: LoaderFunctionArgs) => {
 
 export default function ArtistsIndex() {
   const {users} = useLoaderData<typeof loader>();
+  const url = new URL(location.href);
+  const profession = url.searchParams.get('profession') || undefined;
 
   return (
     <Stack gap="xl">
       <Title order={2}>
-        <span style={{fontWeight: 500}}>Top Eksperter.</span>{' '}
+        <span style={{fontWeight: 500}}>
+          {ProfessionTranslations[profession || '']}.
+        </span>{' '}
         <span style={{color: '#666', fontWeight: 400}}>
-          Adgang til de bedste eksperter har aldrig været nemmere.
+          {ProfessionSentenceTranslations[profession || '']}
         </span>
       </Title>
 
