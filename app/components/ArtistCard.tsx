@@ -1,10 +1,10 @@
 import {Button, Image, Stack, Text, UnstyledButton} from '@mantine/core';
 import {Link} from '@remix-run/react';
 import {Image as ShopifyImage} from '@shopify/hydrogen';
-import type {User} from '~/lib/api/model';
+import type {User, UserTop} from '~/lib/api/model';
 import classes from './ArtistCard.module.css';
 
-export const ArtistCard = ({artist}: {artist: User}) => (
+export const ArtistCard = ({artist}: {artist: User | UserTop}) => (
   <UnstyledButton
     className={classes.button}
     component={Link}

@@ -7,26 +7,33 @@ export type Profession = {
   count: number;
 };
 
+export const ProfessionTranslations: Record<string, string> = {
+  nail_technician: 'Negletekniker',
+  esthetician: 'Kosmetolog',
+  hair_stylist: 'Frisør',
+  makeup_artist: 'Makeupartist',
+  massage_therapist: 'Massageterapeut',
+};
+
+export const ProfessionSentenceTranslations: Record<string, string> = {
+  nail_technician: 'Få det perfekte neglelook med en top negletekniker.',
+  esthetician: 'Fremhæv din naturlige skønhed med en ekspert i hudpleje.',
+  hair_stylist: 'Transformér dit look med en førende frisør.',
+  makeup_artist:
+    'Perfektionér dit look for enhver lejlighed med en professionel makeupartist.',
+  massage_therapist: 'Slap af og genoplad med en erfaren massageterapeut.',
+};
+
 export async function loader({request, context}: LoaderFunctionArgs) {
   const {payload: professions} =
     await getBookingShopifyApi().usersProfessions();
 
-  // Translation map for professions to Danish
-  const translations: Record<string, string> = {
-    nail_technician: 'Negletekniker',
-    esthetician: 'Kosmetolog',
-    hair_stylist: 'Frisør',
-    makeup_artist: 'Makeupartist',
-    massage_therapist: 'Massageterapeut',
-  };
-
-  // Transform professions into an array of objects with key, translation, and count
   const translatedProfessions = Object.keys(professions)
     .map(
       (key) =>
         ({
           key,
-          translation: translations[key] || key,
+          translation: ProfessionTranslations[key] || key,
           count: professions[key],
         } as Profession),
     )

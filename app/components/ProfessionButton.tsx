@@ -17,7 +17,7 @@ export const ProfessionButton = ({
     <UnstyledButton
       className={classes.button}
       component={Link}
-      to={reset ? '/artists' : `/artists?profession=${profession.key}`}
+      to={reset ? '/artists' : `/artists/list?profession=${profession.key}`}
       data-checked={
         professionParams === profession.key || (reset && !professionParams)
       }
