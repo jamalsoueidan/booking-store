@@ -1,16 +1,24 @@
 import {Avatar, Space, Title, UnstyledButton} from '@mantine/core';
-import {Link} from '@remix-run/react';
-import {type Profession} from '~/routes/($locale).api.professions';
+import {Link, useSearchParams} from '@remix-run/react';
+import {type Profession} from '~/routes/($locale).api.users.professions';
 import classes from './ProfessionButton.module.css';
 
-export const ProfessionButton = ({profession}: {profession: Profession}) => {
-  console.log('test');
+export const ProfessionButton = ({
+  profession,
+  reset,
+}: {
+  profession: Profession;
+  reset?: boolean;
+}) => {
+  const [params] = useSearchParams();
+  const professionParams = params.get('profession');
+
   return (
     <UnstyledButton
       className={classes.button}
       component={Link}
-      to={`/artist/`}
-      data-checked="true"
+      to={reset ? '/artists' : `/artists?profession=${profession.key}`}
+      data-checked={professionParams === profession.key}
     >
       <Avatar
         src={`/professions/${profession.key}.webp`}

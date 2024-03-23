@@ -22,12 +22,15 @@ export async function loader({request, context}: LoaderFunctionArgs) {
 
   // Transform professions into an array of objects with key, translation, and count
   const translatedProfessions = Object.keys(professions)
-    .map((key) => ({
-      key,
-      translation: translations[key],
-      count: professions[key],
-    }))
-    .sort((a, b) => a.translation.localeCompare(b.translation));
+    .map(
+      (key) =>
+        ({
+          key,
+          translation: translations[key] || key,
+          count: professions[key],
+        } as Profession),
+    )
+    .sort((a, b) => a?.translation?.localeCompare(b.translation));
 
   return json(translatedProfessions);
 }

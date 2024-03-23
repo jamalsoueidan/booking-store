@@ -5,18 +5,27 @@ import {useState} from 'react';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import {ArtistCard} from '~/components/ArtistCard';
 import {ProfessionButton} from '~/components/ProfessionButton';
+import {SpecialityButton} from '~/components/SpecialityButton';
 import {METAFIELD_QUERY} from '~/data/fragments';
 import {getBookingShopifyApi} from '~/lib/api/bookingShopifyApi';
 import type {User} from '~/lib/api/model';
-import {loader as loaderProfessions} from './($locale).api.professions';
+import {loader as loaderProfessions} from './($locale).api.users.professions';
+import {loader as loaderSpecialties} from './($locale).api.users.specialties';
+
 const LIMIT = '25';
 
 export const loader = async (args: LoaderFunctionArgs) => {
-  const {context} = args;
-  const response = await loaderProfessions(args);
+  const {context, request} = args;
+
+  let response = await loaderSpecialties(args);
+  const specialties = await response.json();
+
+  response = await loaderProfessions(args);
   const professions = await response.json();
 
-  const {payload} = await getBookingShopifyApi().usersList({limit: LIMIT});
+  const {payload: users} = await getBookingShopifyApi().usersList({
+    limit: LIMIT,
+  });
 
   const {metaobject: visualTeaser} = await context.storefront.query(
     METAFIELD_QUERY,
@@ -28,11 +37,12 @@ export const loader = async (args: LoaderFunctionArgs) => {
     },
   );
 
-  return json({users: payload, visualTeaser, professions});
+  return json({users, visualTeaser, professions, specialties});
 };
 
 export default function Collections() {
-  const {users, visualTeaser, professions} = useLoaderData<typeof loader>();
+  const {users, visualTeaser, professions, specialties} =
+    useLoaderData<typeof loader>();
 
   return (
     <>
@@ -48,7 +58,7 @@ export default function Collections() {
       ></Box>
 
       <Box mx={{base: 'md', sm: 'xl'}} my="xl">
-        <Stack gap={rem(64)}>
+        <Stack gap={rem(48)}>
           <Stack gap="xl">
             <Title order={2} fw="normal">
               <span style={{fontWeight: 500}}>Vælg en ekspert.</span>{' '}
@@ -63,11 +73,20 @@ export default function Collections() {
                   key: 'all',
                   translation: 'Alle eksperter',
                 }}
+                reset
               />
               {professions.map((profession) => (
                 <ProfessionButton
                   key={profession.key}
                   profession={profession}
+                />
+              ))}
+            </Flex>
+            <Flex gap="md">
+              {specialties.map((speciality) => (
+                <SpecialityButton
+                  key={speciality.key}
+                  speciality={speciality}
                 />
               ))}
             </Flex>
