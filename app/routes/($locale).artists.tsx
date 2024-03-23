@@ -66,7 +66,7 @@ export default function Collections() {
                 Book en session. Nyd og slap af med professionel service.
               </span>
             </Title>
-            <Flex gap="md">
+            <Flex gap="lg">
               <ProfessionButton
                 profession={{
                   count: 0,
@@ -82,7 +82,7 @@ export default function Collections() {
                 />
               ))}
             </Flex>
-            <Flex gap="md">
+            <Flex gap="sm">
               {specialties.map((speciality) => (
                 <SpecialityButton
                   key={speciality.key}

@@ -1,5 +1,6 @@
 import {Button, Title} from '@mantine/core';
 import {useSearchParams} from '@remix-run/react';
+import {IconCircleLetterX} from '@tabler/icons-react';
 import {type Speciality} from '~/routes/($locale).api.users.specialties';
 import classes from './ProfessionButton.module.css';
 
@@ -12,10 +13,11 @@ export const SpecialityButton = ({
 }) => {
   const [searchParams, setSearchParams] = useSearchParams();
 
+  const specialities = searchParams.getAll('speciality');
+  const exists = specialities.includes(speciality.key);
+
   const onClick = () => {
     const params = new URLSearchParams(searchParams.toString());
-    const specialities = params.getAll('speciality');
-    const exists = specialities.includes(speciality.key);
 
     if (exists) {
       params.delete('speciality');
@@ -36,6 +38,7 @@ export const SpecialityButton = ({
       size="sm"
       className={classes.button}
       onClick={onClick}
+      rightSection={exists ? <IconCircleLetterX /> : <></>}
     >
       <Title order={6} fw="normal" textWrap="pretty" ta="center">
         {speciality.translation}
