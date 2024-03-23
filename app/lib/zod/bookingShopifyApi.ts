@@ -698,7 +698,40 @@ export const userScheduleGetByLocationResponse = zod.object({
 });
 
 /**
- * This endpoint get all users
+ * This endpoint get all users group by professions
+ * @summary GET Get all users grouped by professions
+ */
+export const usersTopResponse = zod.object({
+  success: zod.boolean(),
+  payload: zod.array(
+    zod.object({
+      totalUsers: zod.string(),
+      profession: zod.string(),
+      users: zod.array(
+        zod.object({
+          customerId: zod.number(),
+          username: zod.string(),
+          fullname: zod.string(),
+          aboutMe: zod.string().optional(),
+          shortDescription: zod.string(),
+          professions: zod.string(),
+          images: zod.object({
+            profile: zod
+              .object({
+                url: zod.string().url().optional(),
+                width: zod.number().optional(),
+                height: zod.number().optional(),
+              })
+              .optional(),
+          }),
+        }),
+      ),
+    }),
+  ),
+});
+
+/**
+ * This endpoint get all users professions
  * @summary GET Get all users professions with total count
  */
 export const usersProfessionsResponse = zod.object({
@@ -707,7 +740,7 @@ export const usersProfessionsResponse = zod.object({
 });
 
 /**
- * This endpoint get all users
+ * This endpoint get all users specialties
  * @summary GET Get all users specialties with total count
  */
 export const usersSpecialtiesQueryParams = zod.object({
@@ -957,6 +990,7 @@ export const usersListResponse = zod.object({
         }),
       }),
     ),
+    total: zod.number(),
   }),
 });
 
