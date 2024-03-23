@@ -1,7 +1,7 @@
 import {Box, Flex, SimpleGrid, Stack, Title, rem} from '@mantine/core';
 import {useLoaderData} from '@remix-run/react';
 import {json, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
-import {useState} from 'react';
+import {useEffect, useState} from 'react';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import {ArtistCard} from '~/components/ArtistCard';
 import {ProfessionButton} from '~/components/ProfessionButton';
@@ -12,10 +12,15 @@ import type {User} from '~/lib/api/model';
 import {loader as loaderProfessions} from './($locale).api.users.professions';
 import {loader as loaderSpecialties} from './($locale).api.users.specialties';
 
-const LIMIT = '25';
+const LIMIT = '20';
 
 export const loader = async (args: LoaderFunctionArgs) => {
   const {context, request} = args;
+
+  const url = new URL(request.url);
+  const searchParams = url.searchParams;
+  const profession = searchParams.get('profession') || undefined;
+  const speciality = searchParams.getAll('speciality');
 
   let response = await loaderSpecialties(args);
   const specialties = await response.json();
@@ -25,6 +30,8 @@ export const loader = async (args: LoaderFunctionArgs) => {
 
   const {payload: users} = await getBookingShopifyApi().usersList({
     limit: LIMIT,
+    profession,
+    specialties: speciality.length > 0 ? speciality : undefined,
   });
 
   const {metaobject: visualTeaser} = await context.storefront.query(
@@ -41,8 +48,7 @@ export const loader = async (args: LoaderFunctionArgs) => {
 };
 
 export default function Collections() {
-  const {users, visualTeaser, professions, specialties} =
-    useLoaderData<typeof loader>();
+  const {users, professions, specialties} = useLoaderData<typeof loader>();
 
   return (
     <>
@@ -111,10 +117,17 @@ export default function Collections() {
 }
 
 const fetchData = async (nextCursor?: string) => {
+  const url = new URL(location.href);
+  const profession = url.searchParams.get('profession') || undefined;
+  const speciality = url.searchParams.getAll('speciality');
+
   const response = await getBookingShopifyApi().usersList({
     nextCursor,
     limit: LIMIT,
+    profession,
+    specialties: speciality.length > 0 ? speciality : undefined,
   });
+
   return response.payload;
 };
 
@@ -135,12 +148,18 @@ export const UserList = ({initialData, initialCursor}: UserListProps) => {
     setHasMore(nextCursor !== undefined);
   };
 
+  useEffect(() => {
+    setData(initialData);
+    setCursor(initialCursor);
+    setHasMore(initialCursor !== undefined);
+  }, [initialData, initialCursor]);
+
   return (
     <InfiniteScroll
       dataLength={data.length}
       next={fetchMoreData}
       hasMore={hasMore}
-      loader={<h4>Loading...</h4>}
+      loader={<h4>Henter flere...</h4>}
     >
       <SimpleGrid spacing="lg" cols={{base: 2, sm: 3, md: 4, lg: 7}}>
         {data?.map((user) => (

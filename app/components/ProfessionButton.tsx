@@ -18,7 +18,9 @@ export const ProfessionButton = ({
       className={classes.button}
       component={Link}
       to={reset ? '/artists' : `/artists?profession=${profession.key}`}
-      data-checked={professionParams === profession.key}
+      data-checked={
+        professionParams === profession.key || (reset && !professionParams)
+      }
     >
       <Avatar
         src={`/professions/${profession.key}.webp`}
