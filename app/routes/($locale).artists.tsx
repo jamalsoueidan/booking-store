@@ -1,4 +1,4 @@
-import {Box, Flex, SimpleGrid, Stack, Title, rem} from '@mantine/core';
+import {Box, Divider, Flex, SimpleGrid, Stack, Title, rem} from '@mantine/core';
 import {useLoaderData} from '@remix-run/react';
 import {json, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
 import {useEffect, useState} from 'react';
@@ -9,6 +9,7 @@ import {SpecialityButton} from '~/components/SpecialityButton';
 import {METAFIELD_QUERY} from '~/data/fragments';
 import {getBookingShopifyApi} from '~/lib/api/bookingShopifyApi';
 import type {User} from '~/lib/api/model';
+import {useComponents} from '~/lib/use-components';
 import {loader as loaderProfessions} from './($locale).api.users.professions';
 import {loader as loaderSpecialties} from './($locale).api.users.specialties';
 
@@ -34,21 +35,26 @@ export const loader = async (args: LoaderFunctionArgs) => {
     specialties: speciality.length > 0 ? speciality : undefined,
   });
 
-  const {metaobject: visualTeaser} = await context.storefront.query(
+  const {metaobject: components} = await context.storefront.query(
     METAFIELD_QUERY,
     {
       variables: {
         handle: 'artists',
-        type: 'visual_teaser',
+        type: 'components',
       },
     },
   );
 
-  return json({users, visualTeaser, professions, specialties});
+  return json({users, components, professions, specialties});
 };
 
 export default function Collections() {
-  const {users, professions, specialties} = useLoaderData<typeof loader>();
+  const {users, professions, specialties, components} =
+    useLoaderData<typeof loader>();
+
+  const markup = useComponents(
+    components?.fields.find(({key}) => key === 'components'),
+  );
 
   return (
     <>
@@ -112,6 +118,8 @@ export default function Collections() {
           </Stack>
         </Stack>
       </Box>
+      <Divider />
+      {markup}
     </>
   );
 }

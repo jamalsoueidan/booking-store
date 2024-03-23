@@ -212,6 +212,15 @@ const PAGECOMPONENT_FRAGMENT = `#graphql
       type
       reference {
         ...PageComponentMediaImage
+        ... on Metaobject {
+          id
+          type
+          fields {
+            key
+            value
+            type
+          }
+        }
       }
       references(first: 10){
         nodes {
@@ -222,6 +231,17 @@ const PAGECOMPONENT_FRAGMENT = `#graphql
               key
               value
               type
+              reference {
+                ... on Metaobject {
+                  id
+                  type
+                  fields {
+                    key
+                    value
+                    type
+                  }
+                }
+              }
             }
           }
         }
