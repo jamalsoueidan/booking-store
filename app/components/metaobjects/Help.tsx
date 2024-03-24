@@ -17,7 +17,7 @@ export function Help({component}: {component: PageComponentFragment}) {
   const field = useField(component);
   const title = field.getFieldValue('title');
   const backgroundColor = field.getFieldValue('background_color');
-  const items = field.getItems('items');
+  const items = field.getItems<PageComponentMetaobjectFragment>('items');
 
   return (
     <Wrapper bg={backgroundColor || undefined}>

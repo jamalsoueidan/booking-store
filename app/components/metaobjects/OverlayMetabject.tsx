@@ -1,6 +1,7 @@
 import {Overlay} from '@mantine/core';
 import {parseMetafield, type ParsedMetafields} from '@shopify/hydrogen';
-import {type PageComponentMetaobjectFragment} from 'storefrontapi.generated';
+import {type MetaobjectField} from '@shopify/hydrogen/storefront-api-types';
+import type {PageComponentMetaobjectFragment} from 'storefrontapi.generated';
 import {useField} from './utils';
 
 export function OverlayMetaobject({
@@ -12,7 +13,7 @@ export function OverlayMetaobject({
   if (!metaobject) return null;
 
   const color = field.getFieldValue('color');
-  const opacity = field.getField('opacity');
+  const opacity = field.getField<MetaobjectField>('opacity');
   const value =
     opacity && opacity.value
       ? parseMetafield<ParsedMetafields['number_decimal']>(opacity as any)
