@@ -60,7 +60,7 @@ export default function Artists() {
               Book en session. Nyd og slap af med professionel service.
             </span>
           </Title>
-          <ScrollArea h={200}>
+          <ScrollArea h={specialties.length > 0 ? 210 : 170}>
             <Flex gap="lg">
               <ProfessionButton
                 profession={{
