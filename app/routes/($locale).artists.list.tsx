@@ -51,7 +51,7 @@ export default function ArtistsIndex() {
   const profession = url.searchParams.get('profession') || undefined;
 
   return (
-    <Stack gap="xl" mt="42">
+    <Stack gap="xl">
       <Title order={2}>
         <span style={{fontWeight: 500}}>
           {ProfessionTranslations[profession || '']}.

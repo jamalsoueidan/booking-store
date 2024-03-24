@@ -1,4 +1,4 @@
-import {Box, Divider, Flex, Stack, Title} from '@mantine/core';
+import {Box, Divider, Flex, ScrollArea, Stack, Title} from '@mantine/core';
 import {Outlet, useLoaderData} from '@remix-run/react';
 import {json, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
 import {ProfessionButton} from '~/components/ProfessionButton';
@@ -60,24 +60,34 @@ export default function Artists() {
               Book en session. Nyd og slap af med professionel service.
             </span>
           </Title>
-          <Flex gap="lg">
-            <ProfessionButton
-              profession={{
-                count: 0,
-                key: 'all',
-                translation: 'Alle eksperter',
-              }}
-              reset
-            />
-            {professions.map((profession) => (
-              <ProfessionButton key={profession.key} profession={profession} />
-            ))}
-          </Flex>
-          <Flex gap="sm">
-            {specialties.map((speciality) => (
-              <SpecialityButton key={speciality.key} speciality={speciality} />
-            ))}
-          </Flex>
+          <ScrollArea h={200}>
+            <Flex gap="lg">
+              <ProfessionButton
+                profession={{
+                  count: 0,
+                  key: 'all',
+                  translation: 'Alle eksperter',
+                }}
+                reset
+              />
+              {professions.map((profession) => (
+                <ProfessionButton
+                  key={profession.key}
+                  profession={profession}
+                />
+              ))}
+            </Flex>
+            {specialties.length > 0 ? (
+              <Flex gap="sm" mt="lg">
+                {specialties.map((speciality) => (
+                  <SpecialityButton
+                    key={speciality.key}
+                    speciality={speciality}
+                  />
+                ))}
+              </Flex>
+            ) : null}
+          </ScrollArea>
         </Stack>
         <Outlet />
       </Box>

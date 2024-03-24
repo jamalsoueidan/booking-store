@@ -68,9 +68,5 @@ export default function ArtistsIndex() {
     </Stack>
   ));
 
-  return (
-    <Stack gap={rem(64)} mt="xl">
-      {professions}
-    </Stack>
-  );
+  return <Stack gap={rem(64)}>{professions}</Stack>;
 }
