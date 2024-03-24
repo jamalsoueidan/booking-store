@@ -16,6 +16,8 @@ import {parseGid} from '@shopify/hydrogen';
 import {defer, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
 import {Suspense, useCallback, useState} from 'react';
 import type {
+  PageComponentMetaobjectFragment,
+  PageFragment,
   RecommendedProductsQuery,
   RecommendedTreatmentsQuery,
 } from 'storefrontapi.generated';
@@ -27,12 +29,13 @@ import {IconArrowLeft, IconArrowRight} from '@tabler/icons-react';
 import HeroCategories from '~/components/HeroCategories';
 import {Slider} from '~/components/Slider';
 import {Wrapper} from '~/components/Wrapper';
-import {Faq} from '~/components/metaobjects/Faq';
 import {METAFIELD_QUERY, PRODUCT_ITEM_FRAGMENT} from '~/data/fragments';
 import {getBookingShopifyApi} from '~/lib/api/bookingShopifyApi';
 import type {ProductsGetUsersImage, UsersListResponse} from '~/lib/api/model';
 
 import {ArtistCard} from '~/components/ArtistCard';
+import {useField} from '~/components/metaobjects/utils';
+import {useComponents} from '~/lib/use-components';
 import {COLLECTIONS_QUERY} from './($locale).categories._index';
 
 export function shouldRevalidate() {
@@ -66,10 +69,10 @@ export async function loader({context}: LoaderFunctionArgs) {
     variables: {first: 10},
   });
 
-  const faq = context.storefront.query(METAFIELD_QUERY, {
+  const components = context.storefront.query(METAFIELD_QUERY, {
     variables: {
-      handle: 'index-faq',
-      type: 'faq',
+      handle: 'index',
+      type: 'components',
     },
   });
 
@@ -79,7 +82,7 @@ export async function loader({context}: LoaderFunctionArgs) {
     recommendedTreatments,
     collections,
     artists,
-    faq,
+    components,
   });
 }
 
@@ -126,14 +129,27 @@ export default function Homepage() {
         </Suspense>
         <RecommendedProducts products={data.recommendedProducts} />
 
-        <Suspense fallback={<div>Henter spørgsmål og svar</div>}>
-          <Await resolve={data.faq}>
-            {({metaobject}) => <Faq component={metaobject} />}
+        <Suspense fallback={<div>Henter dynamisk komponenter</div>}>
+          <Await resolve={data.components}>
+            {(metaobject) => (
+              <DynamicComponents components={metaobject.metaobject} />
+            )}
           </Await>
         </Suspense>
       </Box>
     </>
   );
+}
+
+function DynamicComponents({
+  components,
+}: {
+  components?: PageComponentMetaobjectFragment | null;
+}) {
+  const field = useField(components);
+  const com = field.getField<PageFragment['components']>('components');
+  const markup = useComponents(com);
+  return <>{markup}</>;
 }
 
 function FeaturedArtists({artists}: {artists: Promise<UsersListResponse>}) {
