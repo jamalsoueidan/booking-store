@@ -1,5 +1,13 @@
-import {Image, SimpleGrid, Stack, Title, rem} from '@mantine/core';
-import {Image as ShopifyImage} from '@shopify/hydrogen';
+import {
+  Anchor,
+  AspectRatio,
+  Image,
+  SimpleGrid,
+  Stack,
+  Title,
+  rem,
+} from '@mantine/core';
+import {Link} from '@remix-run/react';
 import type {
   PageComponentCollectionFragment,
   PageComponentFragment,
@@ -26,18 +34,30 @@ export function ImageGridWithHeader({
             {title}
           </Title>
         ) : null}
-        <SimpleGrid cols={{base: 2, sm: 5}} spacing={{base: 'lg', sm: rem(50)}}>
+        <SimpleGrid
+          cols={{base: 2, sm: 3, md: 5}}
+          spacing={{base: 'lg', sm: rem(50)}}
+        >
           {items?.map((item) => (
-            <Stack key={item.id}>
-              <Image
-                src={item.image?.url || ''}
-                component={ShopifyImage}
-                aspectRatio="1"
-                radius="xl"
-                fallbackSrc="https://placehold.co/400x600?text=Behandling"
-              />
-              <Title order={3}>{parseTE(item.title)}</Title>
-            </Stack>
+            <Anchor
+              key={item.id}
+              component={Link}
+              to={`categories/${item.handle}`}
+              underline="hover"
+            >
+              <Stack>
+                <AspectRatio>
+                  <Image
+                    src={item.image?.url || ''}
+                    radius="xl"
+                    fallbackSrc="https://placehold.co/400x600?text=Behandling"
+                  />
+                </AspectRatio>
+                <Title order={3} c="black" style={{textDecoration: 'none'}}>
+                  {parseTE(item.title)}
+                </Title>
+              </Stack>
+            </Anchor>
           ))}
         </SimpleGrid>
       </Stack>

@@ -206,6 +206,7 @@ const PAGECOMPONENT_FRAGMENT = `#graphql
   fragment PageComponentCollection on Collection {
     id
     title
+    handle
     image {
       height
       width
