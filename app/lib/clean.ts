@@ -3,5 +3,8 @@ export function parseCT(value: string) {
 }
 
 export function parseTE(value: string) {
-  return value.substring(12);
+  if (value.includes('treatments')) {
+    return value.substring(12);
+  }
+  return value;
 }
