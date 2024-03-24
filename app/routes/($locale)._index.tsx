@@ -48,7 +48,7 @@ export const meta: MetaFunction = () => {
 
 export async function loader({context}: LoaderFunctionArgs) {
   const {storefront} = context;
-  const recommendedProducts = storefront.query(RECOMMENDED_PRODUCTS_QUERY);
+
   const recommendedTreatments = await storefront.query(
     RECOMMENDED_TREATMENT_QUERY,
   );
@@ -77,7 +77,6 @@ export async function loader({context}: LoaderFunctionArgs) {
   });
 
   return defer({
-    recommendedProducts,
     recommendedTreatmentsProductsUsers,
     recommendedTreatments,
     collections,
@@ -127,7 +126,6 @@ export default function Homepage() {
             )}
           </Await>
         </Suspense>
-        <RecommendedProducts products={data.recommendedProducts} />
 
         <Suspense fallback={<div>Henter dynamisk komponenter</div>}>
           <Await resolve={data.components}>
