@@ -1,4 +1,4 @@
-import type {EventInput} from '@fullcalendar/core/index.js';
+import type {EventClickArg, EventInput} from '@fullcalendar/core/index.js';
 import daLocale from '@fullcalendar/core/locales/da';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import interactionPlugin from '@fullcalendar/interaction';
@@ -32,21 +32,21 @@ export default function AccountBookings() {
     navigate(-1);
   };
 
+  // do not use the url proerty in the event for calendar, it wouldn't trigger navigate remix.
+  const openModal = ({event}: EventClickArg) => {
+    const document = event.extendedProps as CustomerBlocked | CustomerBooking;
+    if (!isCustomerBlocked(document)) {
+      navigate(`${event.id}/group/${event.groupId}`, {
+        relative: 'path',
+      });
+    }
+  };
+
   return (
     <>
       <AccountTitle heading="Bestillinger" />
       <AccountContent>
         <FullCalendar
-          /*customButtons={{
-            addVacation: {
-              text: 'Tilføj ferie',
-              click: () => {
-                navigate(`/account/booked/create`, {
-                  relative: 'path',
-                });
-              },
-            },
-          }}*/
           slotDuration={'00:15:00'}
           plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
           headerToolbar={{
@@ -77,7 +77,6 @@ export default function AccountBookings() {
                       id: event.id.toString(),
                       groupId: lineItem.properties.groupId,
                       extendedProps: lineItem,
-                      url: `${event.id}/group/${lineItem.properties.groupId}`,
                     });
                   });
 
@@ -89,7 +88,6 @@ export default function AccountBookings() {
                       id: event.id.toString(),
                       groupId: event.line_items[0].properties.groupId,
                       extendedProps: event,
-                      url: `${event.id}/group/${event.line_items[0].properties.groupId}`,
                     });
                     newEvents.push({
                       title: 'Kørsel hjem',
@@ -100,7 +98,6 @@ export default function AccountBookings() {
                       id: event.id.toString(),
                       groupId: event.line_items[0].properties.groupId,
                       extendedProps: event,
-                      url: `${event.id}/group/${event.line_items[0].properties.groupId}`,
                     });
                   }
                 },
@@ -154,6 +151,7 @@ export default function AccountBookings() {
               root.unmount();
             }
           }}
+          eventClick={openModal}
           themeSystem="standard"
           eventSources={['/api/account/bookings', '/api/account/booked']}
           initialView={isMobile ? 'timeGridDay' : 'dayGridMonth'}
