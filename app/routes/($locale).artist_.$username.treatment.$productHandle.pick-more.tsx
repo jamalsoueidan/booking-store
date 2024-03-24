@@ -1,4 +1,4 @@
-import {Box, SimpleGrid, Skeleton, Text} from '@mantine/core';
+import {Box, SimpleGrid, Skeleton, Text, Title} from '@mantine/core';
 import {Await, useLoaderData} from '@remix-run/react';
 import {defer, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
 import {Suspense} from 'react';
@@ -73,8 +73,7 @@ export default function ArtistTreatments() {
             } else {
               return (
                 <Text c="dimmed">
-                  Der kan ikke kombinseres andre behandlinger med dette
-                  behandling. <br />
+                  Ingen yderligere behandlinger tilgængelige. <br />
                   <strong>Tryk næste!</strong>
                 </Text>
               );
@@ -101,8 +100,13 @@ function RenderArtistProducts({products, services}: RenderArtistProductsProps) {
   ));
 
   return (
-    <SimpleGrid cols={1} spacing="lg">
-      {restProductsMarkup}
-    </SimpleGrid>
+    <>
+      <Title order={4} mb="sm" fw={600} size="md">
+        Vælg gerne flere behandlinger:
+      </Title>
+      <SimpleGrid cols={1} spacing="lg">
+        {restProductsMarkup}
+      </SimpleGrid>
+    </>
   );
 }
