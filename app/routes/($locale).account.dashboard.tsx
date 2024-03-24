@@ -7,7 +7,7 @@ import {
 } from '@remix-run/react';
 import {parseGid} from '@shopify/hydrogen';
 import {json, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
-import {IconCheck, IconX} from '@tabler/icons-react';
+import {IconArrowRight, IconCheck, IconX} from '@tabler/icons-react';
 import {AccountContent} from '~/components/account/AccountContent';
 import {AccountTitle} from '~/components/account/AccountTitle';
 import {getBookingShopifyApi} from '~/lib/api/bookingShopifyApi';
@@ -90,9 +90,17 @@ function BusinessAccount({status}: {status: CustomerStatus}) {
           }
         >
           <Text c="dimmed" size="sm">
-            Udfyld alle felter under profil side,{' '}
-            <Link to="../public">Opdatere profil</Link>.
+            Udfyld alle felter under profil side.
           </Text>
+          <Button
+            size="compact-xs"
+            radius="lg"
+            component={Link}
+            to="../public"
+            rightSection={<IconArrowRight size="14" />}
+          >
+            Opdatere profil
+          </Button>
         </Timeline.Item>
         <Timeline.Item
           title="Lokationer"
@@ -114,8 +122,16 @@ function BusinessAccount({status}: {status: CustomerStatus}) {
           <Text c="dimmed" size="sm">
             Tilføj de steder, hvor du vil tilbyde dine ydelser, så dine følgere
             har mulighed for at vælge den mest passende lokation,{' '}
-            <Link to="../locations/create">Opret lokation</Link>.
           </Text>
+          <Button
+            size="compact-xs"
+            radius="lg"
+            component={Link}
+            to="../locations/create"
+            rightSection={<IconArrowRight size="14" />}
+          >
+            Opret lokation
+          </Button>
         </Timeline.Item>
         <Timeline.Item
           title="Vagtplan"
@@ -136,8 +152,17 @@ function BusinessAccount({status}: {status: CustomerStatus}) {
         >
           <Text c="dimmed" size="sm">
             Opret din vagtplan, så dine følgere ved, hvornår de kan booke din
-            tid, <Link to="../schedules/create">Opret vagtplan</Link>.
+            tid.
           </Text>
+          <Button
+            size="compact-xs"
+            radius="lg"
+            component={Link}
+            to="../schedules/create"
+            rightSection={<IconArrowRight size="14" />}
+          >
+            Opret vagtplan
+          </Button>
         </Timeline.Item>
         <Timeline.Item
           title="Ydelser"
@@ -158,9 +183,17 @@ function BusinessAccount({status}: {status: CustomerStatus}) {
         >
           <Text c="dimmed" size="sm">
             Tilføj dine ydelser, så dine følgere kan se, hvad du tilbyder, og
-            vælge det, de har brug for,{' '}
-            <Link to="../services/create">Tilføj ydelser</Link>
+            vælge det, de har brug for.
           </Text>
+          <Button
+            size="compact-xs"
+            radius="lg"
+            component={Link}
+            to="../services/create"
+            rightSection={<IconArrowRight size="14" />}
+          >
+            Tilføj ydelser
+          </Button>
         </Timeline.Item>
         <Timeline.Item
           title="Billed"
@@ -182,8 +215,16 @@ function BusinessAccount({status}: {status: CustomerStatus}) {
           <Text c="dimmed" size="sm">
             Tilføj et billede af dig selv, så dine følgere kan sætte ansigt på
             personen bag ydelserne,
-            <Link to="../upload">Upload et billed</Link>
           </Text>
+          <Button
+            size="compact-xs"
+            radius="lg"
+            component={Link}
+            to="../upload"
+            rightSection={<IconArrowRight size="14" />}
+          >
+            Upload et billed
+          </Button>
         </Timeline.Item>
       </Timeline>
     </>

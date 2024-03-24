@@ -67,7 +67,7 @@ const topMenu = [
 
 const bottomMenu = [
   {
-    link: '/account',
+    link: '/account/dashboard',
     label: 'Forside',
     icon: IconHome,
   },
