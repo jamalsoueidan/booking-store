@@ -155,7 +155,11 @@ export default function AccountUpload() {
                 leftSectionPointerEvents="none"
               />
 
-              <Button type="submit" loading={formState === 'submitting'}>
+              <Button
+                type="submit"
+                loading={formState === 'submitting'}
+                disabled={!file?.name}
+              >
                 {formState === 'submitting' ? 'Uploader...' : 'Skift billed'}
               </Button>
             </Stack>

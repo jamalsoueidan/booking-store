@@ -120,8 +120,8 @@ function BusinessAccount({status}: {status: CustomerStatus}) {
           }
         >
           <Text c="dimmed" size="sm">
-            Tilføj de steder, hvor du vil tilbyde dine ydelser, så dine følgere
-            har mulighed for at vælge den mest passende lokation,{' '}
+            Opret de steder, hvor du vil tilbyde dine ydelser fra, så dine
+            følgere har mulighed for at vælge den mest passende lokation,{' '}
           </Text>
           <Button
             size="compact-xs"
@@ -213,7 +213,7 @@ function BusinessAccount({status}: {status: CustomerStatus}) {
           }
         >
           <Text c="dimmed" size="sm">
-            Tilføj et billede af dig selv, så dine følgere kan sætte ansigt på
+            Upload et billede af dig selv, så dine følgere kan sætte ansigt på
             personen bag ydelserne,
           </Text>
           <Button

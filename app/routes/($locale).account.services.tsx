@@ -30,10 +30,11 @@ export default function AccountServices() {
         <AccountTitle heading="Ydelser"></AccountTitle>
         <AccountContent>
           <Stack>
-            Du mangler tilføje{' '}
+            Du mangler oprette en{' '}
             <Anchor display="contents" component={Link} to="/account/locations">
-              lokationer
-            </Anchor>
+              lokation
+            </Anchor>{' '}
+            inden du kan tilføje ydelser
             <div>
               <Button component={Link} to="/account/locations">
                 Gå til lokationer
@@ -50,11 +51,11 @@ export default function AccountServices() {
         <AccountTitle heading="Ydelser"></AccountTitle>
         <AccountContent>
           <Stack>
-            Tilføj{' '}
+            Du mangler oprette en{' '}
             <Anchor display="contents" component={Link} to="/account/schedules">
               vagtplan
             </Anchor>{' '}
-            inden du tilføjer ydelser
+            inden du tilføje ydelser
             <div>
               <Button component={Link} to="/account/schedules">
                 Gå til vagtplaner

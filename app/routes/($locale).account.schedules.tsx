@@ -1,7 +1,8 @@
-import {Button, Flex} from '@mantine/core';
+import {Button, Flex, rem, ThemeIcon, Title} from '@mantine/core';
 import {useDisclosure} from '@mantine/hooks';
 import {Link, Outlet, useLoaderData, useLocation} from '@remix-run/react';
 import {redirect, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
+import {IconMoodSad} from '@tabler/icons-react';
 import MobileModal from '~/components/MobileModal';
 import {AccountButton} from '~/components/account/AccountButton';
 import {AccountContent} from '~/components/account/AccountContent';
@@ -48,6 +49,17 @@ export default function AccountSchedulesIndex() {
             </Button>
           ))}
         </Flex>
+
+        {loaderData.length === 0 ? (
+          <Flex gap="lg" direction="column" justify="center" align="center">
+            <ThemeIcon variant="white" size={rem(100)}>
+              <IconMoodSad stroke={1} style={{width: '100%', height: '100%'}} />
+            </ThemeIcon>
+            <Title ta="center">Du har ingen vagtplaner</Title>
+            <Button onClick={open}>Tilføj vagtplan</Button>
+          </Flex>
+        ) : null}
+
         <Outlet key={location.pathname} />
 
         <MobileModal opened={opened} onClose={close} title="Opret vagtplan">
