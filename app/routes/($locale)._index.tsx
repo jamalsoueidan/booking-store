@@ -50,8 +50,8 @@ export async function loader({context}: LoaderFunctionArgs) {
     RECOMMENDED_TREATMENT_QUERY,
   );
 
-  const {payload: recommendedTreatmentsProductsUsers} =
-    await getBookingShopifyApi().productsGetUsersImage({
+  const recommendedTreatmentsProductsUsers =
+    getBookingShopifyApi().productsGetUsersImage({
       productIds:
         recommendedTreatments?.products.nodes.map((p) => parseGid(p.id).id) ||
         [],
@@ -62,11 +62,11 @@ export async function loader({context}: LoaderFunctionArgs) {
     sortOrder: 'desc',
   });
 
-  const {collections} = await context.storefront.query(COLLECTIONS_QUERY, {
+  const collections = context.storefront.query(COLLECTIONS_QUERY, {
     variables: {first: 10},
   });
 
-  const {metaobject: faq} = await context.storefront.query(METAFIELD_QUERY, {
+  const faq = context.storefront.query(METAFIELD_QUERY, {
     variables: {
       handle: 'index-faq',
       type: 'faq',
@@ -102,18 +102,35 @@ export default function Homepage() {
         </Container>
       </div>
 
-      <Container size="lg" style={{marginTop: '-75px'}}>
-        <HeroCategories collections={data.collections.nodes} />
-      </Container>
+      <Suspense fallback={<div>Henter kategorier</div>}>
+        <Await resolve={data.collections}>
+          {({collections}) => (
+            <Container size="lg" style={{marginTop: '-75px'}}>
+              <HeroCategories collections={collections.nodes} />
+            </Container>
+          )}
+        </Await>
+      </Suspense>
 
       <Box>
         <FeaturedArtists artists={data.artists} />
-        <RecommendedTreatments
-          products={data.recommendedTreatments}
-          productsUsers={data.recommendedTreatmentsProductsUsers}
-        />
+        <Suspense fallback={<div>Henter behandlinger</div>}>
+          <Await resolve={data.recommendedTreatmentsProductsUsers}>
+            {({payload}) => (
+              <RecommendedTreatments
+                products={data.recommendedTreatments}
+                productsUsers={payload}
+              />
+            )}
+          </Await>
+        </Suspense>
         <RecommendedProducts products={data.recommendedProducts} />
-        <Faq component={data.faq} />
+
+        <Suspense fallback={<div>Henter spørgsmål og svar</div>}>
+          <Await resolve={data.faq}>
+            {({metaobject}) => <Faq component={metaobject} />}
+          </Await>
+        </Suspense>
       </Box>
     </>
   );
