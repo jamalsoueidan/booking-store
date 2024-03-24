@@ -35,7 +35,7 @@ export const SpecialityButton = ({
     <Button
       variant="default"
       radius="xl"
-      size="sm"
+      size="xs"
       className={classes.button}
       onClick={onClick}
       rightSection={exists ? <IconCircleLetterX /> : <></>}

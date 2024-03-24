@@ -38,7 +38,7 @@ export function Header({header, isLoggedIn, cart}: HeaderProps) {
     useDisclosure(false);
 
   return (
-    <Box mx={{base: 'md', sm: 'xl'}} style={{zIndex: 2}}>
+    <Box mx={{base: 'md', sm: '42'}} style={{zIndex: 2}}>
       <header className={classes.header}>
         <Flex h="100%" align="center" justify="space-between">
           <NavLink prefetch="intent" to="/" end>
@@ -129,7 +129,7 @@ export function HeaderMenu({
             item.url.includes('myshopify.com') ||
             item.url.includes(publicStoreDomain) ||
             item.url.includes(primaryDomainUrl)
-              ? new URL(item.url).pathname
+              ? new URL(item.url).pathname + new URL(item.url).search
               : link.url;
 
           return (

@@ -1,6 +1,6 @@
 import {SimpleGrid, Stack, Title} from '@mantine/core';
 import {useLoaderData} from '@remix-run/react';
-import {json, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
+import {json, redirect, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
 import {useEffect, useState} from 'react';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import {ArtistCard} from '~/components/ArtistCard';
@@ -20,6 +20,10 @@ export const loader = async (args: LoaderFunctionArgs) => {
   const url = new URL(request.url);
   const searchParams = url.searchParams;
   const profession = searchParams.get('profession') || undefined;
+
+  if (!profession) {
+    return redirect('../');
+  }
   const speciality = searchParams.getAll('speciality');
 
   const {payload: users} = await getBookingShopifyApi().usersList({
@@ -47,7 +51,7 @@ export default function ArtistsIndex() {
   const profession = url.searchParams.get('profession') || undefined;
 
   return (
-    <Stack gap="xl">
+    <Stack gap="xl" mt="42">
       <Title order={2}>
         <span style={{fontWeight: 500}}>
           {ProfessionTranslations[profession || '']}.

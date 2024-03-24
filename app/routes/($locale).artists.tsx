@@ -1,4 +1,4 @@
-import {Box, Divider, Flex, Stack, Title, rem} from '@mantine/core';
+import {Box, Divider, Flex, Stack, Title} from '@mantine/core';
 import {Outlet, useLoaderData} from '@remix-run/react';
 import {json, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
 import {ProfessionButton} from '~/components/ProfessionButton';
@@ -11,12 +11,7 @@ import {loader as loaderSpecialties} from './($locale).api.users.specialties';
 const LIMIT = '20';
 
 export const loader = async (args: LoaderFunctionArgs) => {
-  const {context, request} = args;
-
-  const url = new URL(request.url);
-  const searchParams = url.searchParams;
-  const profession = searchParams.get('profession') || undefined;
-  const speciality = searchParams.getAll('speciality');
+  const {context} = args;
 
   let response = await loaderSpecialties(args);
   const specialties = await response.json();
@@ -57,42 +52,34 @@ export default function Artists() {
         }}
       ></Box>
 
-      <Box mx={{base: 'md', sm: 'xl'}} my="xl">
-        <Stack gap={rem(32)}>
-          <Stack gap="xl">
-            <Title order={2} fw="normal">
-              <span style={{fontWeight: 500}}>Vælg en ekspert.</span>{' '}
-              <span style={{color: '#666', fontWeight: 400}}>
-                Book en session. Nyd og slap af med professionel service.
-              </span>
-            </Title>
-            <Flex gap="lg">
-              <ProfessionButton
-                profession={{
-                  count: 0,
-                  key: 'all',
-                  translation: 'Alle eksperter',
-                }}
-                reset
-              />
-              {professions.map((profession) => (
-                <ProfessionButton
-                  key={profession.key}
-                  profession={profession}
-                />
-              ))}
-            </Flex>
-            <Flex gap="sm">
-              {specialties.map((speciality) => (
-                <SpecialityButton
-                  key={speciality.key}
-                  speciality={speciality}
-                />
-              ))}
-            </Flex>
-          </Stack>
-          <Outlet />
+      <Box mx={{base: 'md', sm: '42'}} my="xl">
+        <Stack gap="xl">
+          <Title order={2} fw="normal">
+            <span style={{fontWeight: 500}}>Vælg en ekspert.</span>{' '}
+            <span style={{color: '#666', fontWeight: 400}}>
+              Book en session. Nyd og slap af med professionel service.
+            </span>
+          </Title>
+          <Flex gap="lg">
+            <ProfessionButton
+              profession={{
+                count: 0,
+                key: 'all',
+                translation: 'Alle eksperter',
+              }}
+              reset
+            />
+            {professions.map((profession) => (
+              <ProfessionButton key={profession.key} profession={profession} />
+            ))}
+          </Flex>
+          <Flex gap="sm">
+            {specialties.map((speciality) => (
+              <SpecialityButton key={speciality.key} speciality={speciality} />
+            ))}
+          </Flex>
         </Stack>
+        <Outlet />
       </Box>
       <Divider />
       {markup}
