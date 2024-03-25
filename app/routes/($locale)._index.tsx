@@ -6,9 +6,9 @@ import {
   Container,
   Flex,
   Group,
+  rem,
   Skeleton,
   Stack,
-  Text,
   Title,
 } from '@mantine/core';
 import {Await, Link, useLoaderData, type MetaFunction} from '@remix-run/react';
@@ -260,33 +260,17 @@ function RecommendedTreatments({
       }}
     >
       <Wrapper bg="pink.1">
-        <Stack gap="lg">
-          <Title order={2} fw={500} lts="1px" c="black">
-            Vælg din næste skønhedsoplevelse.
+        <Stack gap="xl">
+          <Title
+            order={2}
+            ta="center"
+            lts="1px"
+            fw={500}
+            size={rem(48)}
+            c="black"
+          >
+            Book unikke oplevelser og skønhedsoplevelse
           </Title>
-
-          <Text>
-            Udforsk behandlinger, og book din tid – alt sammen på ét sted.
-          </Text>
-
-          <span>
-            <Button
-              variant="filled"
-              color="black"
-              size="md"
-              aria-label="Settings"
-              component={Link}
-              to="/categories"
-              rightSection={
-                <IconArrowRight
-                  style={{width: '70%', height: '70%'}}
-                  stroke={1.5}
-                />
-              }
-            >
-              Vis Kategorier
-            </Button>
-          </span>
 
           <Suspense
             fallback={
@@ -320,28 +304,46 @@ function RecommendedTreatments({
               )}
             </Await>
           </Suspense>
-          <Group>
-            <ActionIcon
+          <Flex justify="space-between">
+            <Button
               variant="filled"
               color="black"
-              radius={'lg'}
-              size={'lg'}
-              aria-label="Tilbage"
-              onClick={scrollPrev}
+              size="md"
+              aria-label="Settings"
+              component={Link}
+              to="/categories"
+              rightSection={
+                <IconArrowRight
+                  style={{width: '70%', height: '70%'}}
+                  stroke={1.5}
+                />
+              }
             >
-              <IconArrowLeft stroke={1.5} />
-            </ActionIcon>
-            <ActionIcon
-              variant="filled"
-              color="black"
-              radius={'lg'}
-              size={'lg'}
-              aria-label="Right"
-              onClick={scrollNext}
-            >
-              <IconArrowRight stroke={1.5} />
-            </ActionIcon>
-          </Group>
+              Vis Kategorier
+            </Button>
+            <Group>
+              <ActionIcon
+                variant="filled"
+                color="black"
+                radius={'lg'}
+                size={'lg'}
+                aria-label="Tilbage"
+                onClick={scrollPrev}
+              >
+                <IconArrowLeft stroke={1.5} />
+              </ActionIcon>
+              <ActionIcon
+                variant="filled"
+                color="black"
+                radius={'lg'}
+                size={'lg'}
+                aria-label="Right"
+                onClick={scrollNext}
+              >
+                <IconArrowRight stroke={1.5} />
+              </ActionIcon>
+            </Group>
+          </Flex>
         </Stack>
       </Wrapper>
     </div>

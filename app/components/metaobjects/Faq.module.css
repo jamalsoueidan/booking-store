@@ -4,7 +4,3 @@
     font-size: rem(28);
   }
 }
-
-.description {
-  margin-bottom: calc(var(--mantine-spacing-xl) * 1.5);
-}

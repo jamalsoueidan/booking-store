@@ -30,7 +30,7 @@ export function ImageGridWithHeader({
     <Wrapper bg={backgroundColor || undefined}>
       <Stack gap="60">
         {title ? (
-          <Title ta="center" fw={500} size={rem(48)}>
+          <Title ta="center" fw={500} size={rem(48)} lts="1px">
             {title}
           </Title>
         ) : null}

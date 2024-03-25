@@ -1,4 +1,5 @@
 import {Flex, Stack, Text, Title} from '@mantine/core';
+import {useMediaQuery} from '@mantine/hooks';
 import type {
   PageComponentFragment,
   PageComponentMetaobjectFragment,
@@ -13,6 +14,7 @@ export function Faq({
 }: {
   component?: PageComponentFragment | PageComponentMetaobjectFragment | null;
 }) {
+  const isMobile = useMediaQuery('(max-width: 62em)');
   const field = useField(component);
   if (!component) return null;
 
@@ -24,8 +26,8 @@ export function Faq({
 
   return (
     <Wrapper bg={backgroundColor || 'gray.1'}>
-      <Flex direction={direction || 'row'} gap="xl">
-        <Stack flex="1" justify="center">
+      <Flex direction={isMobile ? 'column' : direction || 'row'} gap="xl">
+        <Stack flex="1" justify="center" mb={!isMobile ? '20px' : 0}>
           {title && (
             <Title ta="center" className={classes.title}>
               {title}
