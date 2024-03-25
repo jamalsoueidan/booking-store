@@ -66,7 +66,7 @@ export const PRODUCT_ITEM_FRAGMENT = `#graphql
     featuredImage {
       id
       altText
-      url
+      url(transform: { maxHeight: 250, maxWidth: 250, crop: CENTER })
       width
       height
     }
@@ -210,7 +210,7 @@ const PAGECOMPONENT_FRAGMENT = `#graphql
     image {
       height
       width
-      url
+      url(transform: { maxHeight: 250, maxWidth: 250, crop: CENTER })
     }
   }
 
