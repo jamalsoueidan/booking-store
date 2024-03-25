@@ -53,7 +53,12 @@ export function ImageGridWithHeader({
                     fallbackSrc="https://placehold.co/400x600?text=Behandling"
                   />
                 </AspectRatio>
-                <Title order={3} c="black" style={{textDecoration: 'none'}}>
+                <Title
+                  order={3}
+                  c="black"
+                  fw="500"
+                  style={{textDecoration: 'none'}}
+                >
                   {parseTE(item.title)}
                 </Title>
               </Stack>

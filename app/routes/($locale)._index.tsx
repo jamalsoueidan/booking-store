@@ -14,7 +14,8 @@ import {
 import {Await, Link, useLoaderData, type MetaFunction} from '@remix-run/react';
 import {parseGid} from '@shopify/hydrogen';
 import {defer, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
-import {Suspense, useCallback, useState} from 'react';
+import Autoplay from 'embla-carousel-autoplay';
+import {Suspense, useCallback, useRef, useState} from 'react';
 import type {
   PageComponentMetaobjectFragment,
   PageFragment,
@@ -241,24 +242,12 @@ function RecommendedTreatments({
   products: RecommendedTreatmentsQuery;
   productsUsers: ProductsGetUsersImage[];
 }) {
-  const [embla, setEmbla] = useState<Embla | null>(null);
-
-  const scrollPrev = useCallback(() => {
-    if (embla) embla.scrollPrev();
-  }, [embla]);
-
-  const scrollNext = useCallback(() => {
-    if (embla) embla.scrollNext();
-  }, [embla]);
+  const autoplay = useRef(Autoplay({delay: 2000}));
 
   return (
-    <div
-      style={{
-        overflow: 'hidden',
-      }}
-    >
-      <Wrapper bg="pink.1">
-        <Stack gap="xl">
+    <Box bg="pink.1" py="60" px="xl">
+      <Stack gap="xl">
+        <Container size="xl">
           <Title
             order={2}
             ta="center"
@@ -269,47 +258,52 @@ function RecommendedTreatments({
           >
             Book unikke oplevelser og skønhedsoplevelse
           </Title>
+        </Container>
+        <Suspense
+          fallback={
+            <Flex gap="lg">
+              <Skeleton height={50} />
+              <Skeleton height={50} />
+              <Skeleton height={50} />
+              <Skeleton height={50} />
+            </Flex>
+          }
+        >
+          <Await resolve={products}>
+            {({products}) => (
+              <Slider
+                plugins={[autoplay.current]}
+                slideSize={{base: '50%', md: '20%'}}
+              >
+                {products.nodes.map((product) => {
+                  const productUsers = productsUsers.find(
+                    (p) => p.productId.toString() === parseGid(product.id).id,
+                  );
 
-          <Suspense
-            fallback={
-              <Flex gap="lg">
-                <Skeleton height={50} />
-                <Skeleton height={50} />
-                <Skeleton height={50} />
-                <Skeleton height={50} />
-              </Flex>
-            }
-          >
-            <Await resolve={products}>
-              {({products}) => (
-                <Slider getEmblaApi={setEmbla}>
-                  {products.nodes.map((product) => {
-                    const productUsers = productsUsers.find(
-                      (p) => p.productId.toString() === parseGid(product.id).id,
-                    );
-
-                    return (
-                      <Carousel.Slide key={product.id}>
-                        <TreatmentCard
-                          product={product}
-                          productUsers={productUsers}
-                          loading={'eager'}
-                        />
-                      </Carousel.Slide>
-                    );
-                  })}
-                </Slider>
-              )}
-            </Await>
-          </Suspense>
+                  return (
+                    <Carousel.Slide key={product.id}>
+                      <TreatmentCard
+                        product={product}
+                        productUsers={productUsers}
+                        loading={'eager'}
+                      />
+                    </Carousel.Slide>
+                  );
+                })}
+              </Slider>
+            )}
+          </Await>
+        </Suspense>
+        <Container size="xl">
           <Flex justify="space-between">
             <Button
               variant="filled"
               color="black"
-              size="md"
+              size="xl"
               aria-label="Settings"
               component={Link}
               to="/categories"
+              radius="lg"
               rightSection={
                 <IconArrowRight
                   style={{width: '70%', height: '70%'}}
@@ -319,32 +313,10 @@ function RecommendedTreatments({
             >
               Vis Kategorier
             </Button>
-            <Group>
-              <ActionIcon
-                variant="filled"
-                color="black"
-                radius={'lg'}
-                size={'lg'}
-                aria-label="Tilbage"
-                onClick={scrollPrev}
-              >
-                <IconArrowLeft stroke={1.5} />
-              </ActionIcon>
-              <ActionIcon
-                variant="filled"
-                color="black"
-                radius={'lg'}
-                size={'lg'}
-                aria-label="Right"
-                onClick={scrollNext}
-              >
-                <IconArrowRight stroke={1.5} />
-              </ActionIcon>
-            </Group>
           </Flex>
-        </Stack>
-      </Wrapper>
-    </div>
+        </Container>
+      </Stack>
+    </Box>
   );
 }
 
@@ -352,7 +324,7 @@ const RECOMMENDED_TREATMENT_QUERY = `#graphql
   ${PRODUCT_ITEM_FRAGMENT}
   query RecommendedTreatments ($country: CountryCode, $language: LanguageCode)
     @inContext(country: $country, language: $language) {
-    products(first: 8, sortKey: RELEVANCE, reverse: true, query: "tag:treatments") {
+    products(first: 12, sortKey: RELEVANCE, reverse: true, query: "tag:treatments") {
       nodes {
         ...ProductItem
       }
