@@ -18,11 +18,9 @@ import {Suspense, useCallback, useState} from 'react';
 import type {
   PageComponentMetaobjectFragment,
   PageFragment,
-  RecommendedProductsQuery,
   RecommendedTreatmentsQuery,
 } from 'storefrontapi.generated';
 import {Hero} from '~/components/Hero';
-import {ProductCard} from '~/components/ProductCard';
 import {TreatmentCard} from '~/components/treatment/TreatmentCard';
 
 import {IconArrowLeft, IconArrowRight} from '@tabler/icons-react';
@@ -349,70 +347,6 @@ function RecommendedTreatments({
     </div>
   );
 }
-
-function RecommendedProducts({
-  products,
-}: {
-  products: Promise<RecommendedProductsQuery>;
-}) {
-  return (
-    <div
-      style={{
-        overflow: 'hidden',
-      }}
-    >
-      <Wrapper>
-        <Stack gap="lg">
-          <Group gap="2">
-            <Title order={2} fw={500} lts="1px" c="orange">
-              Anbefalt produkter
-            </Title>
-            <ActionIcon
-              variant="transparent"
-              color="orange"
-              size="lg"
-              aria-label="Settings"
-              component={Link}
-              to="/collections"
-            >
-              <IconArrowRight
-                style={{width: '70%', height: '70%'}}
-                stroke={1.5}
-              />
-            </ActionIcon>
-          </Group>
-          <Suspense fallback={<div>Loading...</div>}>
-            <Await resolve={products}>
-              {({products}) => {
-                return (
-                  <Slider>
-                    {products.nodes.map((product) => (
-                      <Carousel.Slide key={product.id}>
-                        <ProductCard product={product} loading="eager" />
-                      </Carousel.Slide>
-                    ))}
-                  </Slider>
-                );
-              }}
-            </Await>
-          </Suspense>
-        </Stack>
-      </Wrapper>
-    </div>
-  );
-}
-
-const RECOMMENDED_PRODUCTS_QUERY = `#graphql
-  ${PRODUCT_ITEM_FRAGMENT}
-  query RecommendedProducts ($country: CountryCode, $language: LanguageCode)
-    @inContext(country: $country, language: $language) {
-    products(first: 8, sortKey: UPDATED_AT, reverse: true, query: "tag:products") {
-      nodes {
-        ...ProductItem
-      }
-    }
-  }
-` as const;
 
 const RECOMMENDED_TREATMENT_QUERY = `#graphql
   ${PRODUCT_ITEM_FRAGMENT}
