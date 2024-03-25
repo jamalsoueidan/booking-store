@@ -30,7 +30,7 @@ export function TreatmentCardContent({
       {product.featuredImage && (
         <AspectRatio ratio={1 / 0.7}>
           <Image
-            src={product.featuredImage.url || ''}
+            src={product.featuredImage.url}
             loading={loading}
             fit="cover"
           />
