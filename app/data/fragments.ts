@@ -203,6 +203,17 @@ const PAGECOMPONENT_FRAGMENT = `#graphql
     }
   }
 
+  fragment PageComponentCollection on Collection {
+    id
+    title
+    handle
+    image {
+      height
+      width
+      url
+    }
+  }
+
   fragment PageComponentMetaobject on Metaobject {
     id
     type
@@ -219,11 +230,25 @@ const PAGECOMPONENT_FRAGMENT = `#graphql
             key
             value
             type
+            references(first: 10) {
+              nodes {
+                ... on Metaobject {
+                  id
+                  type
+                  fields {
+                    key
+                    value
+                    type
+                  }
+                }
+              }
+            }
           }
         }
       }
       references(first: 10){
         nodes {
+          ...PageComponentCollection
           ...on Metaobject {
             id
             type
@@ -313,7 +338,7 @@ export const PAGE_QUERY = `#graphql
 
 export const METAFIELD_QUERY = `#graphql
   ${PAGECOMPONENT_FRAGMENT}
-  query FaqQuestions ($country: CountryCode, $language: LanguageCode, $handle: String!, $type: String!)
+  query MetaobjectQuery ($country: CountryCode, $language: LanguageCode, $handle: String!, $type: String!)
     @inContext(country: $country, language: $language) {
     metaobject(handle: {handle: $handle, type: $type}) {
       ...PageComponent

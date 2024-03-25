@@ -136,25 +136,30 @@ export default function TreatmentPickDatetime({
         </Flex>
       </SimpleGrid>
       {days ? (
-        <Carousel
-          slideSize={{base: '100px'}}
-          slideGap="sm"
-          withControls={false}
-          align="start"
-          containScroll="keepSnaps"
-          dragFree={true}
-          getEmblaApi={setEmbla}
-        >
-          {days}
-        </Carousel>
+        <div>
+          <Title order={4} mb="sm" fw={600} size="md">
+            Hvornår skal vi mødes?
+          </Title>
+          <Carousel
+            slideSize={{base: '100px'}}
+            slideGap="sm"
+            withControls={false}
+            align="start"
+            containScroll="keepSnaps"
+            dragFree={true}
+            getEmblaApi={setEmbla}
+          >
+            {days}
+          </Carousel>
+        </div>
       ) : (
         <>Prøv en anden måned</>
       )}
 
       {slots ? (
         <div>
-          <Title order={4} mb="sm" fw={400} size="md">
-            Vælge tid:
+          <Title order={4} mb="sm" fw={600} size="md">
+            Vælg tidspunkt på dagen:
           </Title>
           <SimpleGrid cols={3} spacing="sm">
             {slots}
@@ -187,7 +192,7 @@ function AvailabilityDay({
       >
         <Stack gap="2" justify="center">
           <Text size="xs" ta="center" fw={isSelected ? 700 : 400} c="black">
-            {format(new Date(availability.date), 'E', {locale: da})}
+            {format(new Date(availability.date), 'EEEE', {locale: da})}
           </Text>
           <Text size="sm" ta="center" fw={isSelected ? 700 : 400} c="black">
             {format(new Date(availability.date), 'd. LLL', {locale: da})}

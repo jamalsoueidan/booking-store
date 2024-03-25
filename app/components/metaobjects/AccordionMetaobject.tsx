@@ -10,7 +10,7 @@ export function AccordionMetaobject({
   const field = useField(metaobject);
   if (!metaobject) return null;
   const variant = field.getFieldValue('variant');
-  const items = field.getItems('items');
+  const items = field.getItems<PageComponentMetaobjectFragment>('items');
 
   return <AccordionComponent variant={variant || 'separated'} items={items} />;
 }

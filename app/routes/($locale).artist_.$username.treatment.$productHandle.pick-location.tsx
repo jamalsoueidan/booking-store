@@ -1,4 +1,4 @@
-import {Box, Flex, Skeleton} from '@mantine/core';
+import {Box, Flex, Skeleton, Title} from '@mantine/core';
 import {useDisclosure} from '@mantine/hooks';
 import {Await, useLoaderData, useSearchParams} from '@remix-run/react';
 import {defer, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
@@ -137,6 +137,10 @@ function TreatmentHandlePickLocation({
 
   return (
     <>
+      <Title order={4} mb="sm" fw={600} size="md">
+        Vælg behandlingslokation:
+      </Title>
+
       <Flex gap="lg" direction="column">
         {markup}
       </Flex>

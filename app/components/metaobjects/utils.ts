@@ -1,12 +1,20 @@
-import {
-  type PageComponentFragment,
-  type PageComponentMediaImageFragment,
-  type PageComponentMetaobjectFragment,
+import {type MetaobjectField} from '@shopify/hydrogen/storefront-api-types';
+import type {
+  PageComponentCollectionFragment,
+  PageComponentFragment,
+  PageComponentMediaImageFragment,
+  PageComponentMetaobjectFragment,
 } from 'storefrontapi.generated';
 
-export function useField(component: PageComponentFragment | null | undefined) {
-  const getField = (key: string) => {
-    return component?.fields.find((f) => f.key === key);
+export function useField(
+  component:
+    | PageComponentFragment
+    | PageComponentMetaobjectFragment
+    | null
+    | undefined,
+) {
+  const getField = <T>(key: string): T => {
+    return component?.fields.find((f) => f.key === key) as T;
   };
 
   const getFieldValue = (key: string) => {
@@ -18,19 +26,20 @@ export function useField(component: PageComponentFragment | null | undefined) {
   };
 
   const getMetaObject = (key: string) => {
-    const reference = getField(key)?.reference;
+    const reference = getField<MetaobjectField>(key)?.reference;
     if (isMetaobject(reference)) {
       return reference;
     }
     return null;
   };
 
-  const getItems = (key: string) => {
-    return getField(key)?.references?.nodes || [];
+  const getItems = <T>(key: string): T[] => {
+    const data = getField<MetaobjectField>(key)?.references?.nodes || [];
+    return data as T[];
   };
 
   const getImage = (key?: string) => {
-    const reference = getField(key || 'image')?.reference;
+    const reference = getField<MetaobjectField>(key || 'image')?.reference;
     if (isMediaImage(reference)) {
       return reference.image;
     }
@@ -61,6 +70,7 @@ export const isMetaobject = (
   metaobject?:
     | PageComponentMetaobjectFragment
     | PageComponentMediaImageFragment
+    | PageComponentCollectionFragment
     | null,
 ): metaobject is PageComponentMetaobjectFragment => {
   if (!metaobject) {
@@ -74,6 +84,7 @@ export const isMediaImage = (
   metaobject?:
     | PageComponentMetaobjectFragment
     | PageComponentMediaImageFragment
+    | PageComponentCollectionFragment
     | null,
 ): metaobject is PageComponentMediaImageFragment => {
   if (!metaobject) {
