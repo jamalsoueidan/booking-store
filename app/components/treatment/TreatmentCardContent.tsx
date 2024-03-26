@@ -4,10 +4,11 @@ import {
   Divider,
   Flex,
   Group,
-  Text,
+  Image,
   rem,
+  Text,
 } from '@mantine/core';
-import {Image} from '@shopify/hydrogen';
+
 import {type ProductItemFragment} from 'storefrontapi.generated';
 import classes from './TreatmentCardContent.module.css';
 
@@ -27,12 +28,11 @@ export function TreatmentCardContent({
   return (
     <>
       {product.featuredImage && (
-        <AspectRatio ratio={1080 / 1080}>
+        <AspectRatio ratio={1 / 0.7}>
           <Image
-            data={product.featuredImage}
-            aspectRatio="1/1"
+            src={product.featuredImage.url}
             loading={loading}
-            sizes="(min-width: 45em) 20vw, 50vw"
+            fit="cover"
           />
         </AspectRatio>
       )}

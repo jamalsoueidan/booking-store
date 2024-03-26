@@ -67,3 +67,4 @@ useEffect(() => {
 - [Conform-To](https://github.com/edmundhung/conform)
 - [Tiptap](https://github.com/ueberdosis/tiptap)
 - [embla-carousel-react](https://www.npmjs.com/package/embla-carousel-react)
+- [framer-motion](https://www.framer.com/motion/animation/)

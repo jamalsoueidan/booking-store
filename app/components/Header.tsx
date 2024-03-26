@@ -171,7 +171,8 @@ export function HeaderMenu({
             className={clsx(
               classes.link,
               classes.linkLight,
-              link.title === 'Start din succes' && classes.startYourSuccess,
+              link.title.toLowerCase() === 'start din skønhedskarriere' &&
+                classes.startYourSuccess,
             )}
             data-active={location.pathname.includes(url) || undefined}
           >
