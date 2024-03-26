@@ -15,15 +15,14 @@ import {useState} from 'react';
 
 export function Hero() {
   return (
-    <Container size="lg" py="xl" h="100%">
+    <Container size="lg" pt="70" pb="50" h="100%">
       <SimpleGrid cols={2} spacing="xl">
         <Stack align="flex-start">
           <Title order={1} lts=".5px" size={rem(36)}>
             Start din rejse med BySisters
           </Title>
           <Text c="dimmed" size="xl" fw="500">
-            Opdag og book skønhedseksperter nemt med vores skræddersyede
-            løsninger.
+            Opdag og book skønhedseksperter nemt med vores beauty platform.
           </Text>
 
           <Flex justify="center">
@@ -42,12 +41,12 @@ export function Hero() {
               variant="subtle"
               color="orange"
               component={Link}
-              to="/artists"
+              to="/pages/start-din-skoenhedskarriere"
               size="lg"
               radius="xl"
               rightSection={<IconArrowRightBar />}
             >
-              Start din skønhedskarrier
+              Start din skønhedskarriere
             </Button>
           </Flex>
         </Stack>
