@@ -30,10 +30,10 @@ export function Hero({
   professions?: Promise<Array<Profession>>;
 }) {
   return (
-    <Container size="lg" pt={{base: 30, sm: 50}} pb="40" h="100%">
+    <Container size="xl" pt={{base: 30, sm: 50}} pb="40" h="100%">
       <SimpleGrid cols={{base: 1, sm: 2}} spacing="xl">
         <Stack justify="center" gap="xl">
-          <Title order={1} lts=".5px" lh={rem(88)} fw="500" size={rem(82)}>
+          <Title order={1} lts=".5px" lh={rem(88)} fw="500" size={rem(72)}>
             Find din skønhedsekspert
           </Title>
           <Text c="dimmed" size={rem(24)} lh={rem(34)} fw="400">
@@ -41,13 +41,13 @@ export function Hero({
             alle aspekter af skønhed.
           </Text>
 
-          <Flex justify="center">
+          <Flex justify="flex-start">
             <Button
               variant="filled"
               color="orange"
               component={Link}
               to="/artists"
-              size="xl"
+              size="lg"
               radius="md"
             >
               Find en skønhedsekspert
@@ -58,7 +58,7 @@ export function Hero({
               color="orange"
               component={Link}
               to="/pages/start-din-skoenhedskarriere"
-              size="xl"
+              size="lg"
               radius="md"
               rightSection={<IconArrowRightBar />}
             >
@@ -108,8 +108,8 @@ const CardStack = ({artists: starter}: {artists: User[]}) => {
       <div
         style={{
           position: 'relative',
-          width: '300px',
-          height: '300px',
+          width: '380px',
+          height: '380px',
         }}
       >
         {artists.map((artist, index) => {
@@ -120,8 +120,8 @@ const CardStack = ({artists: starter}: {artists: User[]}) => {
               key={artist.customerId}
               style={{
                 position: 'absolute',
-                width: '300px',
-                height: '300px',
+                width: '380px',
+                height: '380px',
                 transformOrigin: 'center left',
                 cursor: canDrag ? 'grab' : 'auto',
               }}
@@ -140,8 +140,8 @@ const CardStack = ({artists: starter}: {artists: User[]}) => {
               <Image
                 draggable={false}
                 component={ShopifyImage}
-                h="300px"
-                w="300px"
+                h="380px"
+                w="380px"
                 radius="xl"
                 src={artist.images?.profile?.url}
                 fallbackSrc="https://placehold.co/400x600?text=Ekspert"
