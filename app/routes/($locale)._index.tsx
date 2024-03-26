@@ -99,7 +99,7 @@ export default function Homepage() {
   return (
     <>
       <Box bg="blue.1" mt="-70px" pt="70" pb={{base: 'md', sm: '42'}}>
-        <Hero />
+        <Hero artists={data.artists} professions={data.professions} />
       </Box>
 
       <FeaturedArtists artists={data.artists} professions={data.professions} />

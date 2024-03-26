@@ -1,24 +1,39 @@
 import {
+  Box,
   Button,
   Container,
+  createPolymorphicComponent,
   Flex,
+  Image,
   rem,
   SimpleGrid,
+  Skeleton,
   Stack,
   Text,
   Title,
+  UnstyledButton,
+  type UnstyledButtonProps,
 } from '@mantine/core';
-import {Link} from '@remix-run/react';
+import {Await, Link} from '@remix-run/react';
+import {Image as ShopifyImage} from '@shopify/hydrogen';
 import {IconArrowRightBar} from '@tabler/icons-react';
 import {motion} from 'framer-motion';
-import {useState} from 'react';
+import {Suspense, useState} from 'react';
+import type {User, UsersListResponse} from '~/lib/api/model';
+import {type Profession} from '~/routes/($locale).api.users.professions';
 
-export function Hero() {
+export function Hero({
+  artists,
+  professions,
+}: {
+  artists: Promise<UsersListResponse>;
+  professions?: Promise<Array<Profession>>;
+}) {
   return (
-    <Container size="lg" pt="70" pb="50" h="100%">
-      <SimpleGrid cols={2} spacing="xl">
-        <Stack align="flex-start">
-          <Title order={1} lts=".5px" size={rem(36)}>
+    <Container size="lg" pt={{base: 30, sm: 50}} pb="40" h="100%">
+      <SimpleGrid cols={{base: 1, sm: 2}} spacing="xl">
+        <Stack justify="center">
+          <Title order={1} lts=".5px" fw="600" size={rem(42)}>
             Start din rejse med BySisters
           </Title>
           <Text c="dimmed" size="xl" fw="500">
@@ -50,23 +65,29 @@ export function Hero() {
             </Button>
           </Flex>
         </Stack>
-        <div>
-          <CardStack />
-        </div>
+        <Suspense fallback={<Skeleton height={50} />}>
+          <Await resolve={artists}>
+            {({payload}) => <CardStack artists={payload.results} />}
+          </Await>
+        </Suspense>
       </SimpleGrid>
     </Container>
   );
 }
 
-const CARD_COLORS = ['#266678', '#cb7c7a', ' #36a18b', '#cda35f', '#747474'];
+const MotionUnstyledButton = createPolymorphicComponent<
+  'a',
+  UnstyledButtonProps
+>(UnstyledButton);
+
 const CARD_OFFSET = 30;
 const SCALE_FACTOR = 0.06;
 
-const CardStack = () => {
-  const [cards, setCards] = useState(CARD_COLORS);
+const CardStack = ({artists: starter}: {artists: User[]}) => {
+  const [artists, setArtists] = useState(starter);
 
   const moveToEnd = () => {
-    setCards((currentCards) => {
+    setArtists((currentCards) => {
       if (currentCards.length > 1) {
         const [firstCard, ...restCards] = currentCards;
         return [...restCards, firstCard];
@@ -78,39 +99,35 @@ const CardStack = () => {
   return (
     <div
       style={{
-        position: 'relative',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
       }}
     >
-      <ul
+      <div
         style={{
           position: 'relative',
-          width: '350px',
-          height: '220px',
+          width: '300px',
+          height: '300px',
         }}
       >
-        {cards.map((color, index) => {
+        {artists.map((artist, index) => {
           const canDrag = index === 0;
 
           return (
-            <motion.li
-              key={color}
+            <motion.div
+              key={artist.customerId}
               style={{
                 position: 'absolute',
-                width: '350px',
-                height: '220px',
-                borderRadius: '8px',
-                listStyle: 'none',
+                width: '300px',
+                height: '300px',
                 transformOrigin: 'center left',
-                backgroundColor: color,
                 cursor: canDrag ? 'grab' : 'auto',
               }}
               animate={{
                 right: index * -CARD_OFFSET,
                 scale: 1 - index * SCALE_FACTOR,
-                zIndex: CARD_COLORS.length - index,
+                zIndex: artists.length - index,
               }}
               drag={canDrag ? 'x' : false}
               dragConstraints={{
@@ -118,10 +135,35 @@ const CardStack = () => {
                 right: 0,
               }}
               onDragEnd={() => moveToEnd()}
-            />
+            >
+              <Image
+                draggable={false}
+                component={ShopifyImage}
+                h="300px"
+                w="300px"
+                radius="xl"
+                src={artist.images?.profile?.url}
+                fallbackSrc="https://placehold.co/400x600?text=Ekspert"
+              />
+              <Box
+                bg="white"
+                p="md"
+                style={{
+                  borderBottomLeftRadius: '32px',
+                  borderBottomRightRadius: '32px',
+                  position: 'absolute',
+                  bottom: 0,
+                  right: 0,
+                  left: 0,
+                  opacity: 0.8,
+                }}
+              >
+                <strong>{artist.fullname}</strong> {artist.shortDescription}
+              </Box>
+            </motion.div>
           );
         })}
-      </ul>
+      </div>
     </div>
   );
 };
