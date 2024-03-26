@@ -56,6 +56,7 @@
     "dayjs": "^1.11.10",
     "embla-carousel-autoplay": "^7.1.0",
     "embla-carousel-react": "^7.1.0",
+    "framer-motion": "^11.0.20",
     "graphql": "^16.6.0",
     "graphql-tag": "^2.12.6",
     "isbot": "^3.6.6",
