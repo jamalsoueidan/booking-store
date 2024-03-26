@@ -32,12 +32,13 @@ export function Hero({
   return (
     <Container size="lg" pt={{base: 30, sm: 50}} pb="40" h="100%">
       <SimpleGrid cols={{base: 1, sm: 2}} spacing="xl">
-        <Stack justify="center">
-          <Title order={1} lts=".5px" fw="600" size={rem(42)}>
-            Start din rejse med BySisters
+        <Stack justify="center" gap="xl">
+          <Title order={1} lts=".5px" lh={rem(88)} fw="500" size={rem(82)}>
+            Find din skønhedsekspert
           </Title>
-          <Text c="dimmed" size="xl" fw="500">
-            Opdag og book skønhedseksperter nemt med vores beauty platform.
+          <Text c="dimmed" size={rem(24)} lh={rem(34)} fw="400">
+            Vores platform forbinder dig med talentfulde eksperter inden for
+            alle aspekter af skønhed.
           </Text>
 
           <Flex justify="center">
@@ -46,8 +47,8 @@ export function Hero({
               color="orange"
               component={Link}
               to="/artists"
-              size="lg"
-              radius="xl"
+              size="xl"
+              radius="md"
             >
               Find en skønhedsekspert
             </Button>
@@ -57,8 +58,8 @@ export function Hero({
               color="orange"
               component={Link}
               to="/pages/start-din-skoenhedskarriere"
-              size="lg"
-              radius="xl"
+              size="xl"
+              radius="md"
               rightSection={<IconArrowRightBar />}
             >
               Start din skønhedskarriere
