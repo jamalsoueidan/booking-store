@@ -11,6 +11,7 @@ import {
   IconAddressBook,
   IconCalendarEvent,
   IconClock,
+  IconCurrencyDollar,
   IconFingerprint,
   IconHeartHandshake,
   IconHome,
@@ -61,6 +62,12 @@ const topMenu = [
     link: '/account/booked',
     label: 'Ferie',
     icon: IconPlaneDeparture,
+    isBusiness: true,
+  },
+  {
+    link: '/account/payouts',
+    label: 'Udbetalinger',
+    icon: IconCurrencyDollar,
     isBusiness: true,
   },
 ];
