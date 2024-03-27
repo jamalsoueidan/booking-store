@@ -159,9 +159,10 @@ function FeaturedArtists({
               fallback={
                 <>
                   <Skeleton height={10} radius="lg" />
-                  <Skeleton height={20} />
-                  <Skeleton height={10} />
-                  <Skeleton height={10} />
+                  <Skeleton height={10} radius="lg" />
+                  <Skeleton height={10} radius="lg" />
+                  <Skeleton height={10} radius="lg" />
+                  <Skeleton height={10} radius="lg" />
                 </>
               }
             >
@@ -182,6 +183,7 @@ function FeaturedArtists({
             <Suspense
               fallback={
                 <>
+                  <Skeleton height={50} />
                   <Skeleton height={50} />
                   <Skeleton height={50} />
                   <Skeleton height={50} />
@@ -214,7 +216,7 @@ function RecommendedTreatments({
   const AUTOPLAY_DELAY = useRef(Autoplay({delay: 2000}));
 
   return (
-    <Box bg="pink.1" py="60" px="xl">
+    <Box bg="pink.1" py="60" px="xl" style={{overflow: 'hidden'}}>
       <Stack gap="xl">
         <Container size="xl">
           <Title
