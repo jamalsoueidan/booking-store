@@ -38,7 +38,7 @@ export function Footer({
             </Button>
           </Stack>
 
-          <FooterMenu menu={menu} primaryDomainUrl={shop.primaryDomain.url} />
+          <FooterMenu menu={menu} />
 
           <Stack gap="xs" w={{base: '100%', sm: '20%'}}>
             <Text className={classes.title}>Socialmedia</Text>
@@ -80,13 +80,7 @@ export function Footer({
   );
 }
 
-function FooterMenu({
-  menu,
-  primaryDomainUrl,
-}: {
-  menu: FooterQuery['menu'];
-  primaryDomainUrl: HeaderQuery['shop']['primaryDomain']['url'];
-}) {
+function FooterMenu({menu}: {menu: FooterQuery['menu']}) {
   const {publicStoreDomain} = useRootLoaderData();
 
   return (
@@ -95,12 +89,9 @@ function FooterMenu({
       {menu?.items.map((item) => {
         if (!item.url) return null;
         // if the url is internal, we strip the domain
-        const url =
-          item.url.includes('myshopify.com') ||
-          item.url.includes(publicStoreDomain) ||
-          item.url.includes(primaryDomainUrl)
-            ? new URL(item.url).pathname
-            : item.url;
+        const url = item.url.includes(publicStoreDomain)
+          ? new URL(item.url).pathname
+          : item.url;
         return (
           <Anchor component={Link} to={url} c="dimmed" size="sm" key={item.id}>
             {item.title}
