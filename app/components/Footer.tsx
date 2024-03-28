@@ -10,7 +10,11 @@ import {
   Text,
 } from '@mantine/core';
 import {Link, NavLink} from '@remix-run/react';
-import {IconBrandFacebook, IconBrandInstagram} from '@tabler/icons-react';
+import {
+  IconArrowRightBar,
+  IconBrandFacebook,
+  IconBrandInstagram,
+} from '@tabler/icons-react';
 import type {FooterQuery, HeaderQuery} from 'storefrontapi.generated';
 import {useRootLoaderData} from '~/root';
 import logo from '../../public/logo.avif';
@@ -24,18 +28,37 @@ export function Footer({
     <footer className={classes.footer}>
       <Container size="xl">
         <Flex direction={{base: 'column', sm: 'row'}} gap="xl">
-          <Stack align="flex-start" style={{flex: 1}}>
-            <NavLink prefetch="intent" to="/">
-              <img src={logo} alt={shop.name} className={classes.logo} />
-            </NavLink>
-            <Text size="md" c="dimmed" className={classes.description}>
-              Vores platform forbinder dig med talentfulde eksperter inden for
-              alle aspekter af skønhed.
-            </Text>
-
-            <Button size="md" variant="default">
-              Start din skønhedskarriere
-            </Button>
+          <Stack align="flex-start" style={{flex: 1}} gap="xl">
+            <div>
+              <NavLink prefetch="intent" to="/">
+                <img src={logo} alt={shop.name} className={classes.logo} />
+              </NavLink>
+              <Text size="md" c="dimmed" className={classes.description}>
+                Vores platform forbinder dig med talentfulde eksperter inden for
+                alle aspekter af skønhed.
+              </Text>
+            </div>
+            <Flex align="center">
+              <Button
+                component={Link}
+                to="/artists"
+                size="sm"
+                variant="default"
+                mr="lg"
+              >
+                Find en skønhedskarriere
+              </Button>
+              <Button
+                component={Link}
+                to="/pages/start-din-skoenhedskarriere"
+                size="sm"
+                variant="transparent"
+                c="black"
+                rightSection={<IconArrowRightBar />}
+              >
+                Start din skønhedskarriere
+              </Button>
+            </Flex>
           </Stack>
 
           <FooterMenu menu={menu} />
