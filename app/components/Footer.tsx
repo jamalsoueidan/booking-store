@@ -86,18 +86,24 @@ function FooterMenu({menu}: {menu: FooterQuery['menu']}) {
   return (
     <Stack align="flex-start" gap="xs" w={{base: '100%', sm: '20%'}}>
       <Text className={classes.title}>Virksomhed</Text>
-      {menu?.items.map((item) => {
-        if (!item.url) return null;
-        // if the url is internal, we strip the domain
-        const url = item.url.includes(publicStoreDomain)
-          ? new URL(item.url).pathname
-          : item.url;
-        return (
-          <Anchor component={Link} to={url} c="dimmed" size="sm" key={item.id}>
-            {item.title}
-          </Anchor>
-        );
-      })}
+      {menu?.items
+        .filter(({url}) => url !== null && url !== undefined)
+        .map((item) => {
+          const url = item.url?.includes(publicStoreDomain)
+            ? new URL(item.url).pathname
+            : item.url;
+          return (
+            <Anchor
+              component={Link}
+              to={url || ''}
+              c="dimmed"
+              size="sm"
+              key={item.id}
+            >
+              {item.title}
+            </Anchor>
+          );
+        })}
     </Stack>
   );
 }
