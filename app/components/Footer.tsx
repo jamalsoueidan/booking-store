@@ -50,9 +50,10 @@ export function Footer({
                 component={Link}
                 to="https://www.facebook.com/makeuphair.sisters/"
                 target="_blank"
+                rel="noopener noreferrer"
               >
                 <IconBrandFacebook
-                  style={{width: rem(18), height: rem(18)}}
+                  style={{width: rem(24), height: rem(24)}}
                   stroke={1.5}
                 />
               </ActionIcon>
@@ -63,9 +64,10 @@ export function Footer({
                 component={Link}
                 to="https://www.instagram.com/__bysisters/"
                 target="_blank"
+                rel="noopener noreferrer"
               >
                 <IconBrandInstagram
-                  style={{width: rem(18), height: rem(18)}}
+                  style={{width: rem(24), height: rem(24)}}
                   stroke={1.5}
                 />
               </ActionIcon>
