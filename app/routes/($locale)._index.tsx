@@ -181,15 +181,10 @@ function FeaturedArtists({
 
           <SimpleGrid cols={{base: 2, sm: 3, md: 5}} spacing="xl">
             <Suspense
-              fallback={
-                <>
-                  <Skeleton height={50} />
-                  <Skeleton height={50} />
-                  <Skeleton height={50} />
-                  <Skeleton height={50} />
-                  <Skeleton height={50} />
-                </>
-              }
+              fallback={[...Array(5)].map((_, index) => (
+                // eslint-disable-next-line react/no-array-index-key
+                <Skeleton key={index} height={50} />
+              ))}
             >
               <Await resolve={artists}>
                 {({payload}) =>
@@ -224,7 +219,7 @@ function RecommendedTreatments({
             ta="center"
             lts="1px"
             fw={500}
-            size={rem(48)}
+            fz={{base: rem(28), md: rem(48)}}
             c="black"
           >
             Book unikke oplevelser og skønhedsoplevelse
@@ -233,10 +228,10 @@ function RecommendedTreatments({
         <Suspense
           fallback={
             <Flex gap="lg">
-              <Skeleton height={50} />
-              <Skeleton height={50} />
-              <Skeleton height={50} />
-              <Skeleton height={50} />
+              {[...Array(4)].map((_, index) => (
+                // eslint-disable-next-line react/no-array-index-key
+                <Skeleton key={index} height={50} />
+              ))}
             </Flex>
           }
         >
@@ -245,10 +240,10 @@ function RecommendedTreatments({
               <Suspense
                 fallback={
                   <Flex gap="lg">
-                    <Skeleton height={50} />
-                    <Skeleton height={50} />
-                    <Skeleton height={50} />
-                    <Skeleton height={50} />
+                    {[...Array(4)].map((_, index) => (
+                      // eslint-disable-next-line react/no-array-index-key
+                      <Skeleton key={index} height={50} />
+                    ))}
                   </Flex>
                 }
               >
@@ -256,7 +251,7 @@ function RecommendedTreatments({
                   {({products}) => (
                     <Slider
                       plugins={[AUTOPLAY_DELAY.current]}
-                      slideSize={{base: '50%', md: '20%'}}
+                      slideSize={{base: '100%', md: '20%'}}
                     >
                       {products.nodes.map((product) => {
                         const productUsers = productsUsers.find(

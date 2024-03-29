@@ -1,6 +1,20 @@
-import {ActionIcon, Anchor, Group, rem} from '@mantine/core';
+import {
+  ActionIcon,
+  Anchor,
+  Button,
+  Container,
+  Flex,
+  Group,
+  rem,
+  Stack,
+  Text,
+} from '@mantine/core';
 import {Link, NavLink} from '@remix-run/react';
-import {IconBrandFacebook, IconBrandInstagram} from '@tabler/icons-react';
+import {
+  IconArrowRightBar,
+  IconBrandFacebook,
+  IconBrandInstagram,
+} from '@tabler/icons-react';
 import type {FooterQuery, HeaderQuery} from 'storefrontapi.generated';
 import {useRootLoaderData} from '~/root';
 import logo from '../../public/logo.avif';
@@ -12,149 +26,109 @@ export function Footer({
 }: FooterQuery & {shop: HeaderQuery['shop']}) {
   return (
     <footer className={classes.footer}>
-      <div className={classes.inner}>
-        <NavLink prefetch="intent" to="/" style={activeLinkStyle} end>
-          <img src={logo} alt={shop.name} width="120" />
-        </NavLink>
+      <Container size="xl">
+        <Flex direction={{base: 'column', sm: 'row'}} gap="xl">
+          <Stack align="flex-start" style={{flex: 1}} gap="xl">
+            <div>
+              <NavLink prefetch="intent" to="/">
+                <img src={logo} alt={shop.name} className={classes.logo} />
+              </NavLink>
+              <Text size="md" c="dimmed" className={classes.description}>
+                Vores platform forbinder dig med talentfulde eksperter inden for
+                alle aspekter af skønhed.
+              </Text>
+            </div>
+            <Flex align="center">
+              <Button
+                component={Link}
+                to="/artists"
+                size="sm"
+                variant="default"
+                mr="lg"
+              >
+                Find en skønhedskarriere
+              </Button>
+              <Button
+                component={Link}
+                to="/pages/start-din-skoenhedskarriere"
+                size="sm"
+                variant="transparent"
+                c="black"
+                rightSection={<IconArrowRightBar />}
+              >
+                Start din skønhedskarriere
+              </Button>
+            </Flex>
+          </Stack>
 
-        <FooterMenu menu={menu} primaryDomainUrl={shop.primaryDomain.url} />
+          <FooterMenu menu={menu} />
 
-        <Group gap="xs" justify="flex-end" wrap="nowrap">
-          <ActionIcon
-            size="lg"
-            variant="default"
-            radius="xl"
-            component={Link}
-            to="https://www.facebook.com/makeuphair.sisters/"
-            target="_blank"
-          >
-            <IconBrandFacebook
-              style={{width: rem(18), height: rem(18)}}
-              stroke={1.5}
-            />
-          </ActionIcon>
-          <ActionIcon
-            size="lg"
-            variant="default"
-            radius="xl"
-            component={Link}
-            to="https://www.instagram.com/__bysisters/"
-            target="_blank"
-          >
-            <IconBrandInstagram
-              style={{width: rem(18), height: rem(18)}}
-              stroke={1.5}
-            />
-          </ActionIcon>
-        </Group>
-      </div>
+          <Stack gap="xs" w={{base: '100%', sm: '20%'}}>
+            <Text className={classes.title}>Socialmedia</Text>
+            <Group gap="lg" justify="flex-start">
+              <ActionIcon
+                size="lg"
+                variant="default"
+                radius="xl"
+                component={Link}
+                to="https://www.facebook.com/makeuphair.sisters/"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <IconBrandFacebook
+                  style={{width: rem(24), height: rem(24)}}
+                  stroke={1.5}
+                />
+              </ActionIcon>
+              <ActionIcon
+                size="lg"
+                variant="default"
+                radius="xl"
+                component={Link}
+                to="https://www.instagram.com/__bysisters/"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <IconBrandInstagram
+                  style={{width: rem(24), height: rem(24)}}
+                  stroke={1.5}
+                />
+              </ActionIcon>
+            </Group>
+          </Stack>
+        </Flex>
+        <Text c="dimmed" size="sm" mt="xl">
+          © 2024 BySisters. All rights reserved.
+        </Text>
+      </Container>
     </footer>
   );
 }
 
-function FooterMenu({
-  menu,
-  primaryDomainUrl,
-}: {
-  menu: FooterQuery['menu'];
-  primaryDomainUrl: HeaderQuery['shop']['primaryDomain']['url'];
-}) {
+function FooterMenu({menu}: {menu: FooterQuery['menu']}) {
   const {publicStoreDomain} = useRootLoaderData();
 
   return (
-    <nav className="footer-menu" role="navigation">
-      <Group className={classes.links}>
-        {(menu || FALLBACK_FOOTER_MENU).items.map((item) => {
-          if (!item.url) return null;
-          // if the url is internal, we strip the domain
-          const url =
-            item.url.includes('myshopify.com') ||
-            item.url.includes(publicStoreDomain) ||
-            item.url.includes(primaryDomainUrl)
-              ? new URL(item.url).pathname
-              : item.url;
-          const isExternal = !url.startsWith('/');
-          return isExternal ? (
-            <a
-              href={url}
-              key={item.id}
-              rel="noopener noreferrer"
-              target="_blank"
-            >
-              {item.title}
-            </a>
-          ) : (
+    <Stack align="flex-start" gap="xs" w={{base: '100%', sm: '20%'}}>
+      <Text className={classes.title}>Virksomhed</Text>
+      {menu?.items
+        .filter(({url}) => url !== null && url !== undefined)
+        .map((item) => {
+          const url = item.url?.includes(publicStoreDomain)
+            ? new URL(item.url).pathname
+            : item.url;
+          return (
             <Anchor
-              component={NavLink}
+              component={Link}
+              to={url || ''}
               c="dimmed"
-              lh={1}
               size="sm"
-              end
               key={item.id}
-              prefetch="intent"
-              style={activeLinkStyle}
-              to={url}
             >
               {item.title}
             </Anchor>
           );
         })}
-      </Group>
-    </nav>
+    </Stack>
   );
-}
-
-const FALLBACK_FOOTER_MENU = {
-  id: 'gid://shopify/Menu/199655620664',
-  items: [
-    {
-      id: 'gid://shopify/MenuItem/461633060920',
-      resourceId: 'gid://shopify/ShopPolicy/23358046264',
-      tags: [],
-      title: 'Privacy Policy',
-      type: 'SHOP_POLICY',
-      url: '/policies/privacy-policy',
-      items: [],
-    },
-    {
-      id: 'gid://shopify/MenuItem/461633093688',
-      resourceId: 'gid://shopify/ShopPolicy/23358013496',
-      tags: [],
-      title: 'Refund Policy',
-      type: 'SHOP_POLICY',
-      url: '/policies/refund-policy',
-      items: [],
-    },
-    {
-      id: 'gid://shopify/MenuItem/461633126456',
-      resourceId: 'gid://shopify/ShopPolicy/23358111800',
-      tags: [],
-      title: 'Shipping Policy',
-      type: 'SHOP_POLICY',
-      url: '/policies/shipping-policy',
-      items: [],
-    },
-    {
-      id: 'gid://shopify/MenuItem/461633159224',
-      resourceId: 'gid://shopify/ShopPolicy/23358079032',
-      tags: [],
-      title: 'Terms of Service',
-      type: 'SHOP_POLICY',
-      url: '/policies/terms-of-service',
-      items: [],
-    },
-  ],
-};
-
-function activeLinkStyle({
-  isActive,
-  isPending,
-}: {
-  isActive: boolean;
-  isPending: boolean;
-}) {
-  return {
-    fontWeight: isActive ? 'bold' : undefined,
-    color: isPending ? 'grey' : 'black',
-  };
 }

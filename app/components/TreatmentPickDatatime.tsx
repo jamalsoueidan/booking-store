@@ -17,7 +17,7 @@ import {
   IconArrowRight,
   IconChevronDown,
 } from '@tabler/icons-react';
-import {addDays, format} from 'date-fns';
+import {addDays, format, isValid} from 'date-fns';
 import {da} from 'date-fns/locale';
 import {useCallback, useState} from 'react';
 import type {
@@ -60,11 +60,12 @@ export default function TreatmentPickDatetime({
     }
   };
 
-  const selectedCalendar =
-    searchParams.get('calendar') ||
-    (availability && availability.length > 0
-      ? availability[0].date
-      : undefined);
+  const urlDate = new Date(String(searchParams.get('date')));
+  const selectedCalendar = isValid(urlDate)
+    ? String(searchParams.get('date'))
+    : availability && availability.length > 0
+    ? availability[0].date
+    : new Date().toJSON();
 
   const onChangeDate = (availability: UserAvailability) => () => {
     const newSearchParams = new URLSearchParams(searchParams);
@@ -120,7 +121,7 @@ export default function TreatmentPickDatetime({
           <MonthPickerInput
             locale="da"
             minDate={new Date()}
-            value={new Date(selectedCalendar!)}
+            defaultValue={new Date(selectedCalendar)}
             onChange={onPickDate}
             rightSection={<IconChevronDown />}
             rightSectionPointerEvents="none"
@@ -135,7 +136,7 @@ export default function TreatmentPickDatetime({
           </ActionIcon>
         </Flex>
       </SimpleGrid>
-      {days ? (
+      {days && days.length > 0 ? (
         <div>
           <Title order={4} mb="sm" fw={600} size="md">
             Hvornår skal vi mødes?
