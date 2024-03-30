@@ -18,7 +18,7 @@ export default function AccountPayouts() {
       <AccountTitle heading="Udbetalinger">
         <Group>
           <AccountButton to={'.'}>Udbetalinger</AccountButton>
-          <AccountButton to={'settings'}>Indstillinger</AccountButton>
+          <AccountButton to={'create'}>Tilføj</AccountButton>
         </Group>
       </AccountTitle>
 
