@@ -65,7 +65,7 @@ export async function loader(args: LoaderFunctionArgs) {
         [],
     });
 
-  const response = await loaderProfessions(args);
+  const professions = loaderProfessions(args).then((r) => r.json());
 
   const artists = getBookingShopifyApi().usersList({
     limit: '8',
@@ -89,7 +89,7 @@ export async function loader(args: LoaderFunctionArgs) {
     collections,
     artists,
     components,
-    professions: response.json(),
+    professions,
   });
 }
 
@@ -159,9 +159,10 @@ function FeaturedArtists({
               fallback={
                 <>
                   <Skeleton height={10} radius="lg" />
-                  <Skeleton height={20} />
-                  <Skeleton height={10} />
-                  <Skeleton height={10} />
+                  <Skeleton height={10} radius="lg" />
+                  <Skeleton height={10} radius="lg" />
+                  <Skeleton height={10} radius="lg" />
+                  <Skeleton height={10} radius="lg" />
                 </>
               }
             >

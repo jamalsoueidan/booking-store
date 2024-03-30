@@ -28,6 +28,10 @@ import type {
   CustomerLocationUpdateBody,
   CustomerLocationUpdateResponse,
   CustomerOrderGetResponse,
+  CustomerPayoutAccountCreate200,
+  CustomerPayoutAccountCreateBody,
+  CustomerPayoutAccountDestroy200,
+  CustomerPayoutAccountGet200,
   CustomerProductCreateVariantBody,
   CustomerProductCreateVariantResponse,
   CustomerProductDestroyResponse,
@@ -94,254 +98,15 @@ import type {BodyType} from './mutator/query-client';
 
 export const getBookingShopifyApi = () => {
   /**
-   * This endpoint respond with users images
-   * @summary POST get users belongs to productIds array
+   * This endpoint creates new user
+   * @summary PUT Create user
    */
-  const productsGetUsersImage = (
-    productsGetUsersImageBody: BodyType<ProductsGetUsersImageBody>,
-  ) => {
-    return queryClient<ProductsGetUsersImageResponse>({
-      url: `/products/get-users-image`,
+  const customerCreate = (customerCreateBody: BodyType<CustomerCreateBody>) => {
+    return queryClient<CustomerCreateResponse>({
+      url: `/customer`,
       method: 'POST',
       headers: {'Content-Type': 'application/json'},
-      data: productsGetUsersImageBody,
-    });
-  };
-
-  /**
-   * This endpoint get all users for specific productId and variantId
-   * @summary GET Get all users for specific productId and variantId
-   */
-  const productsGetUsersByVariant = (
-    params: ProductsGetUsersByVariantParams,
-  ) => {
-    return queryClient<ProductsGetUsersByVariantResponse>({
-      url: `/products/get-users-by-variant`,
-      method: 'GET',
-      params,
-    });
-  };
-
-  /**
-   * This endpoint return false or true
-   * @summary GET check if username is taken
-   */
-  const userUsernameTaken = (username: string) => {
-    return queryClient<UserUsernameTakenResponse>({
-      url: `/user/${username}/username-taken`,
-      method: 'GET',
-    });
-  };
-
-  /**
-   * This endpoint gets user object
-   * @summary GET Get user
-   */
-  const userGet = (username: string) => {
-    return queryClient<UserGetResponse>({
-      url: `/user/${username}`,
-      method: 'GET',
-    });
-  };
-
-  /**
-   * This endpoint get product for customer
-   * @summary GET Get product that exist in one of the schedules for customer
-   */
-  const userProductGet = (username: string, productHandle: string) => {
-    return queryClient<UserProductsGetResponse>({
-      url: `/user/${username}/products/${productHandle}`,
-      method: 'GET',
-    });
-  };
-
-  /**
-   * This endpoint get products for user (across all schedules or one scheduleId)
-   * @summary GET Get products for user
-   */
-  const userProductsListBySchedule = (
-    username: string,
-    params?: UserProductsListByScheduleParams,
-  ) => {
-    return queryClient<UserProductsListByScheduleResponse>({
-      url: `/user/${username}/products`,
-      method: 'GET',
-      params,
-    });
-  };
-
-  /**
-   * This endpoint is intended to be used when we need to fetch related products from the same schedule and same location.
-   * @summary GET Get products for user
-   */
-  const userProductsListByLocation = (
-    username: string,
-    productHandle: string,
-    locationId: string,
-  ) => {
-    return queryClient<UserProductsListByLocationResponse>({
-      url: `/user/${username}/product/${productHandle}/location/${locationId}`,
-      method: 'GET',
-    });
-  };
-
-  /**
-   * This endpoint get products from one schedule by location
-   * @summary GET Get products for user
-   */
-  const userProductsGetProducts = (
-    username: string,
-    locationId: string,
-    userProductsGetProductsBody: BodyType<UserProductsGetProductsBody>,
-  ) => {
-    return queryClient<UserProductsGetProductsResponse>({
-      url: `/user/${username}/products/location/${locationId}`,
-      method: 'POST',
-      headers: {'Content-Type': 'application/json'},
-      data: userProductsGetProductsBody,
-    });
-  };
-
-  /**
-   * This endpoint should retrieve a schedule and locations belonging to a specific productHandle, along with the product.
-   * @summary GET Get user schedule
-   */
-  const userScheduleGetByProduct = (
-    username: string,
-    productHandle: string,
-  ) => {
-    return queryClient<UserScheduleGetByProductIdResponse>({
-      url: `/user/${username}/schedule/get-by-product-id/${productHandle}`,
-      method: 'GET',
-    });
-  };
-
-  /**
-   * This endpoint should return all locations present in all schedules for specific user
-   * @summary GET Get schedules for user
-   */
-  const userSchedulesListLocations = (username: string) => {
-    return queryClient<UserSchedulesListLocations200>({
-      url: `/user/${username}/schedules/locations`,
-      method: 'GET',
-    });
-  };
-
-  /**
-   * This endpoint get one location for user
-   * @summary GET Get one location from user
-   */
-  const userLocationGet = (username: string, locationId: string) => {
-    return queryClient<UserLocationGetResponse>({
-      url: `/user/${username}/location/${locationId}`,
-      method: 'GET',
-    });
-  };
-
-  /**
-   * This endpoint should retrieve a schedule with products that only belong to a specific locationId.
-   * @summary GET Get user schedule
-   */
-  const userScheduleGetByLocation = (
-    username: string,
-    scheduleId: string,
-    locationId: string,
-  ) => {
-    return queryClient<UserScheduleGetByLocationResponse>({
-      url: `/user/${username}/schedule/${scheduleId}/location/${locationId}`,
-      method: 'GET',
-    });
-  };
-
-  /**
-   * This endpoint get all users group by professions
-   * @summary GET Get all users grouped by professions
-   */
-  const usersTop = (params?: UsersTopParams) => {
-    return queryClient<UsersTopResponse>({
-      url: `/users/top`,
-      method: 'GET',
-      params,
-    });
-  };
-
-  /**
-   * This endpoint get all users professions
-   * @summary GET Get all users professions with total count
-   */
-  const usersProfessions = () => {
-    return queryClient<UsersProfessionsResponse>({
-      url: `/users/professions`,
-      method: 'GET',
-    });
-  };
-
-  /**
-   * This endpoint get all users specialties
-   * @summary GET Get all users specialties with total count
-   */
-  const usersSpecialties = (params?: UsersSpecialtiesParams) => {
-    return queryClient<UsersSpecialtiesResponse>({
-      url: `/users/specialties`,
-      method: 'GET',
-      params,
-    });
-  };
-
-  /**
-   * This endpoint generate availabilty for user
-   * @summary POST generate availabilty for user
-   */
-  const userAvailabilityGenerate = (
-    username: string,
-    locationId: string,
-    userAvailabilityGenerateBody: BodyType<UserAvailabilityGenerateBody>,
-  ) => {
-    return queryClient<UserAvailabilityGenerateResponse>({
-      url: `/user/${username}/availability/${locationId}/generate`,
-      method: 'POST',
-      headers: {'Content-Type': 'application/json'},
-      data: userAvailabilityGenerateBody,
-    });
-  };
-
-  /**
-   * This endpoint get's one single availabilty for user
-   * @summary POST get single availabilty for user
-   */
-  const userAvailabilityGet = (
-    username: string,
-    locationId: string,
-    userAvailabilityGetBody: BodyType<UserAvailabilityGetBody>,
-  ) => {
-    return queryClient<UserAvailabilityGeResponse>({
-      url: `/user/${username}/availability/${locationId}/get`,
-      method: 'POST',
-      headers: {'Content-Type': 'application/json'},
-      data: userAvailabilityGetBody,
-    });
-  };
-
-  /**
-   * This endpoint get all users
-   * @summary GET Get all users
-   */
-  const usersList = (params?: UsersListParams) => {
-    return queryClient<UsersListResponse>({
-      url: `/users`,
-      method: 'GET',
-      params,
-    });
-  };
-
-  /**
-   * This endpoint gets customer upload resource url, so customer can upload image
-   * @summary GET Get customer upload resource url
-   */
-  const customerUploadResourceURL = (customerId: string) => {
-    return queryClient<CustomerUploadResourceURLResponse>({
-      url: `/customer/${customerId}/upload/resource-url`,
-      method: 'GET',
+      data: customerCreateBody,
     });
   };
 
@@ -373,37 +138,218 @@ export const getBookingShopifyApi = () => {
   };
 
   /**
-   * This endpoint gets customer status
-   * @summary GET Get customer status
+   * This endpoint create new blocked
+   * @summary POST Create blocked
    */
-  const customerStatus = (customerId: string) => {
-    return queryClient<CustomerStatusResponse>({
-      url: `/customer/${customerId}/status`,
-      method: 'GET',
-    });
-  };
-
-  /**
-   * This endpoint creates new user
-   * @summary PUT Create user
-   */
-  const customerCreate = (customerCreateBody: BodyType<CustomerCreateBody>) => {
-    return queryClient<CustomerCreateResponse>({
-      url: `/customer`,
+  const customerBlockedCreate = (
+    customerId: string,
+    customerBlockedCreateBody: BodyType<CustomerBlockedCreateBody>,
+  ) => {
+    return queryClient<CustomerBlockedCreateResponse>({
+      url: `/customer/${customerId}/blocked`,
       method: 'POST',
       headers: {'Content-Type': 'application/json'},
-      data: customerCreateBody,
+      data: customerBlockedCreateBody,
     });
   };
 
   /**
-   * This endpoint return if customer is business or not
-   * @summary GET Get customer is business
+   * This endpoint destroy blocked for customer
+   * @summary DEL destroy blocked
    */
-  const customerIsBusiness = (customerId: string) => {
-    return queryClient<CustomerIsBusinessResponse>({
-      url: `/customer/${customerId}/isBusiness`,
+  const customerBlockedDestroy = (customerId: string, blockedId: string) => {
+    return queryClient<CustomerBlockedDestroyResponse>({
+      url: `/customer/${customerId}/blocked/${blockedId}`,
+      method: 'DELETE',
+    });
+  };
+
+  /**
+   * This endpoint get all blocked documents for customer
+   * @summary GET Get all blocked documents for customer
+   */
+  const customerBlockedList = (
+    customerId: string,
+    params?: CustomerBlockedListParams,
+  ) => {
+    return queryClient<CustomerBlockedListResponse>({
+      url: `/customer/${customerId}/blocked/list`,
       method: 'GET',
+      params,
+    });
+  };
+
+  /**
+   * This endpoint get all blocked documents
+   * @summary GET Get all blocked documents for customer
+   */
+  const customerBlockedRange = (
+    customerId: string,
+    params: CustomerBlockedRangeParams,
+  ) => {
+    return queryClient<CustomerBlockedRangeResponse>({
+      url: `/customer/${customerId}/blocked/range`,
+      method: 'GET',
+      params,
+    });
+  };
+
+  /**
+   * This endpoint gets order with lineItems array of objects specific for groupId
+   * @summary GET Get order with lineItems array for specific groupId
+   */
+  const customerBookingGetByGroup = (
+    customerId: string,
+    orderId: string,
+    groupId: string,
+  ) => {
+    return queryClient<CustomerBookingGetByGroupIdResponse>({
+      url: `/customer/${customerId}/bookings/${orderId}/group/${groupId}`,
+      method: 'GET',
+    });
+  };
+
+  /**
+   * This endpoint get all bookings from orders
+   * @summary GET Get all bookings for customer from orders
+   */
+  const customerBookingRange = (
+    customerId: string,
+    params: CustomerBookingRangeParams,
+  ) => {
+    return queryClient<CustomerBookingRangeResponse>({
+      url: `/customer/${customerId}/bookings/range`,
+      method: 'GET',
+      params,
+    });
+  };
+
+  /**
+   * This endpoint get one location for user
+   * @summary GET Get one location from user
+   */
+  const customerLocationGet = (customerId: string, locationId: string) => {
+    return queryClient<CustomerLocationGetResponse>({
+      url: `/customer/${customerId}/location/${locationId}`,
+      method: 'GET',
+    });
+  };
+
+  /**
+   * This endpoint remove location but does not delete location from db
+   * @summary POST Remove location from user
+   */
+  const customerLocationRemove = (customerId: string, locationId: string) => {
+    return queryClient<CustomerLocationRemoveResponse>({
+      url: `/customer/${customerId}/location/${locationId}`,
+      method: 'DELETE',
+    });
+  };
+
+  /**
+   * This endpoint update existing location
+   * @summary PUT Update location
+   */
+  const customerLocationUpdate = (
+    customerId: string,
+    locationId: string,
+    customerLocationUpdateBody: BodyType<CustomerLocationUpdateBody>,
+  ) => {
+    return queryClient<CustomerLocationUpdateResponse>({
+      url: `/customer/${customerId}/location/${locationId}`,
+      method: 'PUT',
+      headers: {'Content-Type': 'application/json'},
+      data: customerLocationUpdateBody,
+    });
+  };
+
+  /**
+   * This endpoint set new default location for user
+   * @summary POST Set new default location for user
+   */
+  const customerLocationSetDefault = (
+    customerId: string,
+    locationId: string,
+  ) => {
+    return queryClient<CustomerLocationSetDefaultResponse>({
+      url: `/customer/${customerId}/location/${locationId}/setDefault`,
+      method: 'PUT',
+    });
+  };
+
+  /**
+   * This endpoint creates new location
+   * @summary POST Create location origin or destination
+   */
+  const customerLocationCreate = (
+    customerId: string,
+    customerLocationCreateBody: BodyType<CustomerLocationCreateBody>,
+  ) => {
+    return queryClient<CustomerLocationCreateResponse>({
+      url: `/customer/${customerId}/locations`,
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      data: customerLocationCreateBody,
+    });
+  };
+
+  /**
+   * This endpoint get all locations for user
+   * @summary GET Get all locations for user
+   */
+  const customerLocationList = (customerId: string) => {
+    return queryClient<CustomerLocationListResponse>({
+      url: `/customer/${customerId}/locations`,
+      method: 'GET',
+    });
+  };
+
+  /**
+   * This endpoint gets order with lineItems array of objects
+   * @summary GET Get order with lineItems array
+   */
+  const customerOrderGet = (customerId: string, orderId: string) => {
+    return queryClient<CustomerOrderGetResponse>({
+      url: `/customer/${customerId}/orders/${orderId}`,
+      method: 'GET',
+    });
+  };
+
+  /**
+   * This endpoint create new payout account
+   * @summary POST Create payout account
+   */
+  const customerPayoutAccountCreate = (
+    customerId: string,
+    customerPayoutAccountCreateBody: BodyType<CustomerPayoutAccountCreateBody>,
+  ) => {
+    return queryClient<CustomerPayoutAccountCreate200>({
+      url: `/customer/${customerId}/payout-account`,
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      data: customerPayoutAccountCreateBody,
+    });
+  };
+
+  /**
+   * This endpoint get payout account
+   * @summary GET get payout account
+   */
+  const customerPayoutAccountGet = (customerId: string) => {
+    return queryClient<CustomerPayoutAccountGet200>({
+      url: `/customer/${customerId}/payout-account`,
+      method: 'GET',
+    });
+  };
+
+  /**
+   * This endpoint destroy payout account for customer
+   * @summary DEL destroy payout account
+   */
+  const customerPayoutAccountDestroy = (customerId: string) => {
+    return queryClient<CustomerPayoutAccountDestroy200>({
+      url: `/customer/${customerId}/payout-account`,
+      method: 'DELETE',
     });
   };
 
@@ -486,42 +432,12 @@ export const getBookingShopifyApi = () => {
   };
 
   /**
-   * This endpoint gets order with lineItems array of objects specific for groupId
-   * @summary GET Get order with lineItems array for specific groupId
+   * This endpoint gets customer upload resource url, so customer can upload image
+   * @summary GET Get customer upload resource url
    */
-  const customerBookingGetByGroup = (
-    customerId: string,
-    orderId: string,
-    groupId: string,
-  ) => {
-    return queryClient<CustomerBookingGetByGroupIdResponse>({
-      url: `/customer/${customerId}/bookings/${orderId}/group/${groupId}`,
-      method: 'GET',
-    });
-  };
-
-  /**
-   * This endpoint get all bookings from orders
-   * @summary GET Get all bookings for customer from orders
-   */
-  const customerBookingRange = (
-    customerId: string,
-    params: CustomerBookingRangeParams,
-  ) => {
-    return queryClient<CustomerBookingRangeResponse>({
-      url: `/customer/${customerId}/bookings/range`,
-      method: 'GET',
-      params,
-    });
-  };
-
-  /**
-   * This endpoint gets order with lineItems array of objects
-   * @summary GET Get order with lineItems array
-   */
-  const customerOrderGet = (customerId: string, orderId: string) => {
-    return queryClient<CustomerOrderGetResponse>({
-      url: `/customer/${customerId}/orders/${orderId}`,
+  const customerUploadResourceURL = (customerId: string) => {
+    return queryClient<CustomerUploadResourceURLResponse>({
+      url: `/customer/${customerId}/upload/resource-url`,
       method: 'GET',
     });
   };
@@ -610,103 +526,23 @@ export const getBookingShopifyApi = () => {
   };
 
   /**
-   * This endpoint get all professions
-   * @summary GET Get all professions
+   * This endpoint gets customer status
+   * @summary GET Get customer status
    */
-  const metaProfessions = () => {
-    return queryClient<MetaProfessions200>({
-      url: `/meta/professions`,
+  const customerStatus = (customerId: string) => {
+    return queryClient<CustomerStatusResponse>({
+      url: `/customer/${customerId}/status`,
       method: 'GET',
     });
   };
 
   /**
-   * This endpoint get all specialties
-   * @summary GET Get all specialties
+   * This endpoint return if customer is business or not
+   * @summary GET Get customer is business
    */
-  const metaspecialties = () => {
-    return queryClient<Metaspecialties200>({
-      url: `/meta/specialties`,
-      method: 'GET',
-    });
-  };
-
-  /**
-   * This endpoint set new default location for user
-   * @summary POST Set new default location for user
-   */
-  const customerLocationSetDefault = (
-    customerId: string,
-    locationId: string,
-  ) => {
-    return queryClient<CustomerLocationSetDefaultResponse>({
-      url: `/customer/${customerId}/location/${locationId}/setDefault`,
-      method: 'PUT',
-    });
-  };
-
-  /**
-   * This endpoint get one location for user
-   * @summary GET Get one location from user
-   */
-  const customerLocationGet = (customerId: string, locationId: string) => {
-    return queryClient<CustomerLocationGetResponse>({
-      url: `/customer/${customerId}/location/${locationId}`,
-      method: 'GET',
-    });
-  };
-
-  /**
-   * This endpoint remove location but does not delete location from db
-   * @summary POST Remove location from user
-   */
-  const customerLocationRemove = (customerId: string, locationId: string) => {
-    return queryClient<CustomerLocationRemoveResponse>({
-      url: `/customer/${customerId}/location/${locationId}`,
-      method: 'DELETE',
-    });
-  };
-
-  /**
-   * This endpoint update existing location
-   * @summary PUT Update location
-   */
-  const customerLocationUpdate = (
-    customerId: string,
-    locationId: string,
-    customerLocationUpdateBody: BodyType<CustomerLocationUpdateBody>,
-  ) => {
-    return queryClient<CustomerLocationUpdateResponse>({
-      url: `/customer/${customerId}/location/${locationId}`,
-      method: 'PUT',
-      headers: {'Content-Type': 'application/json'},
-      data: customerLocationUpdateBody,
-    });
-  };
-
-  /**
-   * This endpoint creates new location
-   * @summary POST Create location origin or destination
-   */
-  const customerLocationCreate = (
-    customerId: string,
-    customerLocationCreateBody: BodyType<CustomerLocationCreateBody>,
-  ) => {
-    return queryClient<CustomerLocationCreateResponse>({
-      url: `/customer/${customerId}/locations`,
-      method: 'POST',
-      headers: {'Content-Type': 'application/json'},
-      data: customerLocationCreateBody,
-    });
-  };
-
-  /**
-   * This endpoint get all locations for user
-   * @summary GET Get all locations for user
-   */
-  const customerLocationList = (customerId: string) => {
-    return queryClient<CustomerLocationListResponse>({
-      url: `/customer/${customerId}/locations`,
+  const customerIsBusiness = (customerId: string) => {
+    return queryClient<CustomerIsBusinessResponse>({
+      url: `/customer/${customerId}/isBusiness`,
       method: 'GET',
     });
   };
@@ -730,6 +566,70 @@ export const getBookingShopifyApi = () => {
   const locationGetTravelTime = (params?: LocationGetTravelTimeParams) => {
     return queryClient<LocationGetTravelTimeResponse>({
       url: `/location/get-travel-time`,
+      method: 'GET',
+      params,
+    });
+  };
+
+  /**
+   * This endpoint get all professions
+   * @summary GET Get all professions
+   */
+  const metaProfessions = () => {
+    return queryClient<MetaProfessions200>({
+      url: `/meta/professions`,
+      method: 'GET',
+    });
+  };
+
+  /**
+   * This endpoint get all specialties
+   * @summary GET Get all specialties
+   */
+  const metaspecialties = () => {
+    return queryClient<Metaspecialties200>({
+      url: `/meta/specialties`,
+      method: 'GET',
+    });
+  };
+
+  /**
+   * This endpoint is used to upload new image for customer
+   * @summary POST Upload new customer image
+   */
+  const upload = (uploadBody: BodyType<UploadBody>) => {
+    return queryClient<UploadResponse>({
+      url: `/orchestrators/upload`,
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      data: uploadBody,
+    });
+  };
+
+  /**
+   * This endpoint respond with users images
+   * @summary POST get users belongs to productIds array
+   */
+  const productsGetUsersImage = (
+    productsGetUsersImageBody: BodyType<ProductsGetUsersImageBody>,
+  ) => {
+    return queryClient<ProductsGetUsersImageResponse>({
+      url: `/products/get-users-image`,
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      data: productsGetUsersImageBody,
+    });
+  };
+
+  /**
+   * This endpoint get all users for specific productId and variantId
+   * @summary GET Get all users for specific productId and variantId
+   */
+  const productsGetUsersByVariant = (
+    params: ProductsGetUsersByVariantParams,
+  ) => {
+    return queryClient<ProductsGetUsersByVariantResponse>({
+      url: `/products/get-users-by-variant`,
       method: 'GET',
       params,
     });
@@ -771,239 +671,282 @@ export const getBookingShopifyApi = () => {
   };
 
   /**
-   * This endpoint is used to upload new image for customer
-   * @summary POST Upload new customer image
+   * This endpoint generate availabilty for user
+   * @summary POST generate availabilty for user
    */
-  const upload = (uploadBody: BodyType<UploadBody>) => {
-    return queryClient<UploadResponse>({
-      url: `/orchestrators/upload`,
+  const userAvailabilityGenerate = (
+    username: string,
+    locationId: string,
+    userAvailabilityGenerateBody: BodyType<UserAvailabilityGenerateBody>,
+  ) => {
+    return queryClient<UserAvailabilityGenerateResponse>({
+      url: `/user/${username}/availability/${locationId}/generate`,
       method: 'POST',
       headers: {'Content-Type': 'application/json'},
-      data: uploadBody,
+      data: userAvailabilityGenerateBody,
     });
   };
 
   /**
-   * This endpoint create new blocked
-   * @summary POST Create blocked
+   * This endpoint get's one single availabilty for user
+   * @summary POST get single availabilty for user
    */
-  const customerBlockedCreate = (
-    customerId: string,
-    customerBlockedCreateBody: BodyType<CustomerBlockedCreateBody>,
+  const userAvailabilityGet = (
+    username: string,
+    locationId: string,
+    userAvailabilityGetBody: BodyType<UserAvailabilityGetBody>,
   ) => {
-    return queryClient<CustomerBlockedCreateResponse>({
-      url: `/customer/${customerId}/blocked`,
+    return queryClient<UserAvailabilityGeResponse>({
+      url: `/user/${username}/availability/${locationId}/get`,
       method: 'POST',
       headers: {'Content-Type': 'application/json'},
-      data: customerBlockedCreateBody,
+      data: userAvailabilityGetBody,
     });
   };
 
   /**
-   * This endpoint destroy blocked for customer
-   * @summary DEL destroy blocked
+   * This endpoint get one location for user
+   * @summary GET Get one location from user
    */
-  const customerBlockedDestroy = (customerId: string, blockedId: string) => {
-    return queryClient<CustomerBlockedDestroyResponse>({
-      url: `/customer/${customerId}/blocked/${blockedId}`,
-      method: 'DELETE',
+  const userLocationGet = (username: string, locationId: string) => {
+    return queryClient<UserLocationGetResponse>({
+      url: `/user/${username}/location/${locationId}`,
+      method: 'GET',
     });
   };
 
   /**
-   * This endpoint get all blocked documents for customer
-   * @summary GET Get all blocked documents for customer
+   * This endpoint gets user object
+   * @summary GET Get user
    */
-  const customerBlockedList = (
-    customerId: string,
-    params?: CustomerBlockedListParams,
+  const userGet = (username: string) => {
+    return queryClient<UserGetResponse>({
+      url: `/user/${username}`,
+      method: 'GET',
+    });
+  };
+
+  /**
+   * This endpoint return false or true
+   * @summary GET check if username is taken
+   */
+  const userUsernameTaken = (username: string) => {
+    return queryClient<UserUsernameTakenResponse>({
+      url: `/user/${username}/username-taken`,
+      method: 'GET',
+    });
+  };
+
+  /**
+   * This endpoint get products for user (across all schedules or one scheduleId)
+   * @summary GET Get products for user
+   */
+  const userProductsListBySchedule = (
+    username: string,
+    params?: UserProductsListByScheduleParams,
   ) => {
-    return queryClient<CustomerBlockedListResponse>({
-      url: `/customer/${customerId}/blocked/list`,
+    return queryClient<UserProductsListByScheduleResponse>({
+      url: `/user/${username}/products`,
       method: 'GET',
       params,
     });
   };
 
   /**
-   * This endpoint get all blocked documents
-   * @summary GET Get all blocked documents for customer
+   * This endpoint get product for customer
+   * @summary GET Get product that exist in one of the schedules for customer
    */
-  const customerBlockedRange = (
-    customerId: string,
-    params: CustomerBlockedRangeParams,
+  const userProductGet = (username: string, productHandle: string) => {
+    return queryClient<UserProductsGetResponse>({
+      url: `/user/${username}/products/${productHandle}`,
+      method: 'GET',
+    });
+  };
+
+  /**
+   * This endpoint get products from one schedule by location
+   * @summary GET Get products for user
+   */
+  const userProductsGetProducts = (
+    username: string,
+    locationId: string,
+    userProductsGetProductsBody: BodyType<UserProductsGetProductsBody>,
   ) => {
-    return queryClient<CustomerBlockedRangeResponse>({
-      url: `/customer/${customerId}/blocked/range`,
+    return queryClient<UserProductsGetProductsResponse>({
+      url: `/user/${username}/products/location/${locationId}`,
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      data: userProductsGetProductsBody,
+    });
+  };
+
+  /**
+   * This endpoint is intended to be used when we need to fetch related products from the same schedule and same location.
+   * @summary GET Get products for user
+   */
+  const userProductsListByLocation = (
+    username: string,
+    productHandle: string,
+    locationId: string,
+  ) => {
+    return queryClient<UserProductsListByLocationResponse>({
+      url: `/user/${username}/product/${productHandle}/location/${locationId}`,
+      method: 'GET',
+    });
+  };
+
+  /**
+   * This endpoint should retrieve a schedule and locations belonging to a specific productHandle, along with the product.
+   * @summary GET Get user schedule
+   */
+  const userScheduleGetByProduct = (
+    username: string,
+    productHandle: string,
+  ) => {
+    return queryClient<UserScheduleGetByProductIdResponse>({
+      url: `/user/${username}/schedule/get-by-product-id/${productHandle}`,
+      method: 'GET',
+    });
+  };
+
+  /**
+   * This endpoint should retrieve a schedule with products that only belong to a specific locationId.
+   * @summary GET Get user schedule
+   */
+  const userScheduleGetByLocation = (
+    username: string,
+    scheduleId: string,
+    locationId: string,
+  ) => {
+    return queryClient<UserScheduleGetByLocationResponse>({
+      url: `/user/${username}/schedule/${scheduleId}/location/${locationId}`,
+      method: 'GET',
+    });
+  };
+
+  /**
+   * This endpoint should return all locations present in all schedules for specific user
+   * @summary GET Get schedules for user
+   */
+  const userSchedulesListLocations = (username: string) => {
+    return queryClient<UserSchedulesListLocations200>({
+      url: `/user/${username}/schedules/locations`,
+      method: 'GET',
+    });
+  };
+
+  /**
+   * This endpoint get all users
+   * @summary GET Get all users
+   */
+  const usersList = (params?: UsersListParams) => {
+    return queryClient<UsersListResponse>({
+      url: `/users`,
+      method: 'GET',
+      params,
+    });
+  };
+
+  /**
+   * This endpoint get all users professions
+   * @summary GET Get all users professions with total count
+   */
+  const usersProfessions = () => {
+    return queryClient<UsersProfessionsResponse>({
+      url: `/users/professions`,
+      method: 'GET',
+    });
+  };
+
+  /**
+   * This endpoint get all users specialties
+   * @summary GET Get all users specialties with total count
+   */
+  const usersSpecialties = (params?: UsersSpecialtiesParams) => {
+    return queryClient<UsersSpecialtiesResponse>({
+      url: `/users/specialties`,
+      method: 'GET',
+      params,
+    });
+  };
+
+  /**
+   * This endpoint get all users group by professions
+   * @summary GET Get all users grouped by professions
+   */
+  const usersTop = (params?: UsersTopParams) => {
+    return queryClient<UsersTopResponse>({
+      url: `/users/top`,
       method: 'GET',
       params,
     });
   };
 
   return {
-    productsGetUsersImage,
-    productsGetUsersByVariant,
-    userUsernameTaken,
-    userGet,
-    userProductGet,
-    userProductsListBySchedule,
-    userProductsListByLocation,
-    userProductsGetProducts,
-    userScheduleGetByProduct,
-    userSchedulesListLocations,
-    userLocationGet,
-    userScheduleGetByLocation,
-    usersTop,
-    usersProfessions,
-    usersSpecialties,
-    userAvailabilityGenerate,
-    userAvailabilityGet,
-    usersList,
-    customerUploadResourceURL,
+    customerCreate,
     customerUpdate,
     customerGet,
-    customerStatus,
-    customerCreate,
-    customerIsBusiness,
+    customerBlockedCreate,
+    customerBlockedDestroy,
+    customerBlockedList,
+    customerBlockedRange,
+    customerBookingGetByGroup,
+    customerBookingRange,
+    customerLocationGet,
+    customerLocationRemove,
+    customerLocationUpdate,
+    customerLocationSetDefault,
+    customerLocationCreate,
+    customerLocationList,
+    customerOrderGet,
+    customerPayoutAccountCreate,
+    customerPayoutAccountGet,
+    customerPayoutAccountDestroy,
     customerProductsList,
     customerProductsListIds,
     customerProductGet,
     customerProductUpsert,
     customerProductDestroy,
     customerProductCreateVariant,
-    customerBookingGetByGroup,
-    customerBookingRange,
-    customerOrderGet,
+    customerUploadResourceURL,
     customerScheduleCreate,
     customerScheduleList,
     customerScheduleGet,
     customerScheduleUpdate,
     customerScheduleDestroy,
     customerScheduleSlotUpdate,
-    metaProfessions,
-    metaspecialties,
-    customerLocationSetDefault,
-    customerLocationGet,
-    customerLocationRemove,
-    customerLocationUpdate,
-    customerLocationCreate,
-    customerLocationList,
+    customerStatus,
+    customerIsBusiness,
     locationGetCoordinates,
     locationGetTravelTime,
+    metaProfessions,
+    metaspecialties,
+    upload,
+    productsGetUsersImage,
+    productsGetUsersByVariant,
     shippingCreate,
     shippingCalculate,
     shippingGet,
-    upload,
-    customerBlockedCreate,
-    customerBlockedDestroy,
-    customerBlockedList,
-    customerBlockedRange,
+    userAvailabilityGenerate,
+    userAvailabilityGet,
+    userLocationGet,
+    userGet,
+    userUsernameTaken,
+    userProductsListBySchedule,
+    userProductGet,
+    userProductsGetProducts,
+    userProductsListByLocation,
+    userScheduleGetByProduct,
+    userScheduleGetByLocation,
+    userSchedulesListLocations,
+    usersList,
+    usersProfessions,
+    usersSpecialties,
+    usersTop,
   };
 };
-export type ProductsGetUsersImageResult = NonNullable<
-  Awaited<
-    ReturnType<ReturnType<typeof getBookingShopifyApi>['productsGetUsersImage']>
-  >
->;
-export type ProductsGetUsersByVariantResult = NonNullable<
-  Awaited<
-    ReturnType<
-      ReturnType<typeof getBookingShopifyApi>['productsGetUsersByVariant']
-    >
-  >
->;
-export type UserUsernameTakenResult = NonNullable<
-  Awaited<
-    ReturnType<ReturnType<typeof getBookingShopifyApi>['userUsernameTaken']>
-  >
->;
-export type UserGetResult = NonNullable<
-  Awaited<ReturnType<ReturnType<typeof getBookingShopifyApi>['userGet']>>
->;
-export type UserProductGetResult = NonNullable<
-  Awaited<ReturnType<ReturnType<typeof getBookingShopifyApi>['userProductGet']>>
->;
-export type UserProductsListByScheduleResult = NonNullable<
-  Awaited<
-    ReturnType<
-      ReturnType<typeof getBookingShopifyApi>['userProductsListBySchedule']
-    >
-  >
->;
-export type UserProductsListByLocationResult = NonNullable<
-  Awaited<
-    ReturnType<
-      ReturnType<typeof getBookingShopifyApi>['userProductsListByLocation']
-    >
-  >
->;
-export type UserProductsGetProductsResult = NonNullable<
-  Awaited<
-    ReturnType<
-      ReturnType<typeof getBookingShopifyApi>['userProductsGetProducts']
-    >
-  >
->;
-export type UserScheduleGetByProductResult = NonNullable<
-  Awaited<
-    ReturnType<
-      ReturnType<typeof getBookingShopifyApi>['userScheduleGetByProduct']
-    >
-  >
->;
-export type UserSchedulesListLocationsResult = NonNullable<
-  Awaited<
-    ReturnType<
-      ReturnType<typeof getBookingShopifyApi>['userSchedulesListLocations']
-    >
-  >
->;
-export type UserLocationGetResult = NonNullable<
-  Awaited<
-    ReturnType<ReturnType<typeof getBookingShopifyApi>['userLocationGet']>
-  >
->;
-export type UserScheduleGetByLocationResult = NonNullable<
-  Awaited<
-    ReturnType<
-      ReturnType<typeof getBookingShopifyApi>['userScheduleGetByLocation']
-    >
-  >
->;
-export type UsersTopResult = NonNullable<
-  Awaited<ReturnType<ReturnType<typeof getBookingShopifyApi>['usersTop']>>
->;
-export type UsersProfessionsResult = NonNullable<
-  Awaited<
-    ReturnType<ReturnType<typeof getBookingShopifyApi>['usersProfessions']>
-  >
->;
-export type UsersSpecialtiesResult = NonNullable<
-  Awaited<
-    ReturnType<ReturnType<typeof getBookingShopifyApi>['usersSpecialties']>
-  >
->;
-export type UserAvailabilityGenerateResult = NonNullable<
-  Awaited<
-    ReturnType<
-      ReturnType<typeof getBookingShopifyApi>['userAvailabilityGenerate']
-    >
-  >
->;
-export type UserAvailabilityGetResult = NonNullable<
-  Awaited<
-    ReturnType<ReturnType<typeof getBookingShopifyApi>['userAvailabilityGet']>
-  >
->;
-export type UsersListResult = NonNullable<
-  Awaited<ReturnType<ReturnType<typeof getBookingShopifyApi>['usersList']>>
->;
-export type CustomerUploadResourceURLResult = NonNullable<
-  Awaited<
-    ReturnType<
-      ReturnType<typeof getBookingShopifyApi>['customerUploadResourceURL']
-    >
-  >
+export type CustomerCreateResult = NonNullable<
+  Awaited<ReturnType<ReturnType<typeof getBookingShopifyApi>['customerCreate']>>
 >;
 export type CustomerUpdateResult = NonNullable<
   Awaited<ReturnType<ReturnType<typeof getBookingShopifyApi>['customerUpdate']>>
@@ -1011,15 +954,102 @@ export type CustomerUpdateResult = NonNullable<
 export type CustomerGetResult = NonNullable<
   Awaited<ReturnType<ReturnType<typeof getBookingShopifyApi>['customerGet']>>
 >;
-export type CustomerStatusResult = NonNullable<
-  Awaited<ReturnType<ReturnType<typeof getBookingShopifyApi>['customerStatus']>>
->;
-export type CustomerCreateResult = NonNullable<
-  Awaited<ReturnType<ReturnType<typeof getBookingShopifyApi>['customerCreate']>>
->;
-export type CustomerIsBusinessResult = NonNullable<
+export type CustomerBlockedCreateResult = NonNullable<
   Awaited<
-    ReturnType<ReturnType<typeof getBookingShopifyApi>['customerIsBusiness']>
+    ReturnType<ReturnType<typeof getBookingShopifyApi>['customerBlockedCreate']>
+  >
+>;
+export type CustomerBlockedDestroyResult = NonNullable<
+  Awaited<
+    ReturnType<
+      ReturnType<typeof getBookingShopifyApi>['customerBlockedDestroy']
+    >
+  >
+>;
+export type CustomerBlockedListResult = NonNullable<
+  Awaited<
+    ReturnType<ReturnType<typeof getBookingShopifyApi>['customerBlockedList']>
+  >
+>;
+export type CustomerBlockedRangeResult = NonNullable<
+  Awaited<
+    ReturnType<ReturnType<typeof getBookingShopifyApi>['customerBlockedRange']>
+  >
+>;
+export type CustomerBookingGetByGroupResult = NonNullable<
+  Awaited<
+    ReturnType<
+      ReturnType<typeof getBookingShopifyApi>['customerBookingGetByGroup']
+    >
+  >
+>;
+export type CustomerBookingRangeResult = NonNullable<
+  Awaited<
+    ReturnType<ReturnType<typeof getBookingShopifyApi>['customerBookingRange']>
+  >
+>;
+export type CustomerLocationGetResult = NonNullable<
+  Awaited<
+    ReturnType<ReturnType<typeof getBookingShopifyApi>['customerLocationGet']>
+  >
+>;
+export type CustomerLocationRemoveResult = NonNullable<
+  Awaited<
+    ReturnType<
+      ReturnType<typeof getBookingShopifyApi>['customerLocationRemove']
+    >
+  >
+>;
+export type CustomerLocationUpdateResult = NonNullable<
+  Awaited<
+    ReturnType<
+      ReturnType<typeof getBookingShopifyApi>['customerLocationUpdate']
+    >
+  >
+>;
+export type CustomerLocationSetDefaultResult = NonNullable<
+  Awaited<
+    ReturnType<
+      ReturnType<typeof getBookingShopifyApi>['customerLocationSetDefault']
+    >
+  >
+>;
+export type CustomerLocationCreateResult = NonNullable<
+  Awaited<
+    ReturnType<
+      ReturnType<typeof getBookingShopifyApi>['customerLocationCreate']
+    >
+  >
+>;
+export type CustomerLocationListResult = NonNullable<
+  Awaited<
+    ReturnType<ReturnType<typeof getBookingShopifyApi>['customerLocationList']>
+  >
+>;
+export type CustomerOrderGetResult = NonNullable<
+  Awaited<
+    ReturnType<ReturnType<typeof getBookingShopifyApi>['customerOrderGet']>
+  >
+>;
+export type CustomerPayoutAccountCreateResult = NonNullable<
+  Awaited<
+    ReturnType<
+      ReturnType<typeof getBookingShopifyApi>['customerPayoutAccountCreate']
+    >
+  >
+>;
+export type CustomerPayoutAccountGetResult = NonNullable<
+  Awaited<
+    ReturnType<
+      ReturnType<typeof getBookingShopifyApi>['customerPayoutAccountGet']
+    >
+  >
+>;
+export type CustomerPayoutAccountDestroyResult = NonNullable<
+  Awaited<
+    ReturnType<
+      ReturnType<typeof getBookingShopifyApi>['customerPayoutAccountDestroy']
+    >
   >
 >;
 export type CustomerProductsListResult = NonNullable<
@@ -1058,21 +1088,11 @@ export type CustomerProductCreateVariantResult = NonNullable<
     >
   >
 >;
-export type CustomerBookingGetByGroupResult = NonNullable<
+export type CustomerUploadResourceURLResult = NonNullable<
   Awaited<
     ReturnType<
-      ReturnType<typeof getBookingShopifyApi>['customerBookingGetByGroup']
+      ReturnType<typeof getBookingShopifyApi>['customerUploadResourceURL']
     >
-  >
->;
-export type CustomerBookingRangeResult = NonNullable<
-  Awaited<
-    ReturnType<ReturnType<typeof getBookingShopifyApi>['customerBookingRange']>
-  >
->;
-export type CustomerOrderGetResult = NonNullable<
-  Awaited<
-    ReturnType<ReturnType<typeof getBookingShopifyApi>['customerOrderGet']>
   >
 >;
 export type CustomerScheduleCreateResult = NonNullable<
@@ -1113,52 +1133,12 @@ export type CustomerScheduleSlotUpdateResult = NonNullable<
     >
   >
 >;
-export type MetaProfessionsResult = NonNullable<
-  Awaited<
-    ReturnType<ReturnType<typeof getBookingShopifyApi>['metaProfessions']>
-  >
+export type CustomerStatusResult = NonNullable<
+  Awaited<ReturnType<ReturnType<typeof getBookingShopifyApi>['customerStatus']>>
 >;
-export type MetaspecialtiesResult = NonNullable<
+export type CustomerIsBusinessResult = NonNullable<
   Awaited<
-    ReturnType<ReturnType<typeof getBookingShopifyApi>['metaspecialties']>
-  >
->;
-export type CustomerLocationSetDefaultResult = NonNullable<
-  Awaited<
-    ReturnType<
-      ReturnType<typeof getBookingShopifyApi>['customerLocationSetDefault']
-    >
-  >
->;
-export type CustomerLocationGetResult = NonNullable<
-  Awaited<
-    ReturnType<ReturnType<typeof getBookingShopifyApi>['customerLocationGet']>
-  >
->;
-export type CustomerLocationRemoveResult = NonNullable<
-  Awaited<
-    ReturnType<
-      ReturnType<typeof getBookingShopifyApi>['customerLocationRemove']
-    >
-  >
->;
-export type CustomerLocationUpdateResult = NonNullable<
-  Awaited<
-    ReturnType<
-      ReturnType<typeof getBookingShopifyApi>['customerLocationUpdate']
-    >
-  >
->;
-export type CustomerLocationCreateResult = NonNullable<
-  Awaited<
-    ReturnType<
-      ReturnType<typeof getBookingShopifyApi>['customerLocationCreate']
-    >
-  >
->;
-export type CustomerLocationListResult = NonNullable<
-  Awaited<
-    ReturnType<ReturnType<typeof getBookingShopifyApi>['customerLocationList']>
+    ReturnType<ReturnType<typeof getBookingShopifyApi>['customerIsBusiness']>
   >
 >;
 export type LocationGetCoordinatesResult = NonNullable<
@@ -1173,6 +1153,31 @@ export type LocationGetTravelTimeResult = NonNullable<
     ReturnType<ReturnType<typeof getBookingShopifyApi>['locationGetTravelTime']>
   >
 >;
+export type MetaProfessionsResult = NonNullable<
+  Awaited<
+    ReturnType<ReturnType<typeof getBookingShopifyApi>['metaProfessions']>
+  >
+>;
+export type MetaspecialtiesResult = NonNullable<
+  Awaited<
+    ReturnType<ReturnType<typeof getBookingShopifyApi>['metaspecialties']>
+  >
+>;
+export type UploadResult = NonNullable<
+  Awaited<ReturnType<ReturnType<typeof getBookingShopifyApi>['upload']>>
+>;
+export type ProductsGetUsersImageResult = NonNullable<
+  Awaited<
+    ReturnType<ReturnType<typeof getBookingShopifyApi>['productsGetUsersImage']>
+  >
+>;
+export type ProductsGetUsersByVariantResult = NonNullable<
+  Awaited<
+    ReturnType<
+      ReturnType<typeof getBookingShopifyApi>['productsGetUsersByVariant']
+    >
+  >
+>;
 export type ShippingCreateResult = NonNullable<
   Awaited<ReturnType<ReturnType<typeof getBookingShopifyApi>['shippingCreate']>>
 >;
@@ -1184,28 +1189,89 @@ export type ShippingCalculateResult = NonNullable<
 export type ShippingGetResult = NonNullable<
   Awaited<ReturnType<ReturnType<typeof getBookingShopifyApi>['shippingGet']>>
 >;
-export type UploadResult = NonNullable<
-  Awaited<ReturnType<ReturnType<typeof getBookingShopifyApi>['upload']>>
->;
-export type CustomerBlockedCreateResult = NonNullable<
-  Awaited<
-    ReturnType<ReturnType<typeof getBookingShopifyApi>['customerBlockedCreate']>
-  >
->;
-export type CustomerBlockedDestroyResult = NonNullable<
+export type UserAvailabilityGenerateResult = NonNullable<
   Awaited<
     ReturnType<
-      ReturnType<typeof getBookingShopifyApi>['customerBlockedDestroy']
+      ReturnType<typeof getBookingShopifyApi>['userAvailabilityGenerate']
     >
   >
 >;
-export type CustomerBlockedListResult = NonNullable<
+export type UserAvailabilityGetResult = NonNullable<
   Awaited<
-    ReturnType<ReturnType<typeof getBookingShopifyApi>['customerBlockedList']>
+    ReturnType<ReturnType<typeof getBookingShopifyApi>['userAvailabilityGet']>
   >
 >;
-export type CustomerBlockedRangeResult = NonNullable<
+export type UserLocationGetResult = NonNullable<
   Awaited<
-    ReturnType<ReturnType<typeof getBookingShopifyApi>['customerBlockedRange']>
+    ReturnType<ReturnType<typeof getBookingShopifyApi>['userLocationGet']>
   >
+>;
+export type UserGetResult = NonNullable<
+  Awaited<ReturnType<ReturnType<typeof getBookingShopifyApi>['userGet']>>
+>;
+export type UserUsernameTakenResult = NonNullable<
+  Awaited<
+    ReturnType<ReturnType<typeof getBookingShopifyApi>['userUsernameTaken']>
+  >
+>;
+export type UserProductsListByScheduleResult = NonNullable<
+  Awaited<
+    ReturnType<
+      ReturnType<typeof getBookingShopifyApi>['userProductsListBySchedule']
+    >
+  >
+>;
+export type UserProductGetResult = NonNullable<
+  Awaited<ReturnType<ReturnType<typeof getBookingShopifyApi>['userProductGet']>>
+>;
+export type UserProductsGetProductsResult = NonNullable<
+  Awaited<
+    ReturnType<
+      ReturnType<typeof getBookingShopifyApi>['userProductsGetProducts']
+    >
+  >
+>;
+export type UserProductsListByLocationResult = NonNullable<
+  Awaited<
+    ReturnType<
+      ReturnType<typeof getBookingShopifyApi>['userProductsListByLocation']
+    >
+  >
+>;
+export type UserScheduleGetByProductResult = NonNullable<
+  Awaited<
+    ReturnType<
+      ReturnType<typeof getBookingShopifyApi>['userScheduleGetByProduct']
+    >
+  >
+>;
+export type UserScheduleGetByLocationResult = NonNullable<
+  Awaited<
+    ReturnType<
+      ReturnType<typeof getBookingShopifyApi>['userScheduleGetByLocation']
+    >
+  >
+>;
+export type UserSchedulesListLocationsResult = NonNullable<
+  Awaited<
+    ReturnType<
+      ReturnType<typeof getBookingShopifyApi>['userSchedulesListLocations']
+    >
+  >
+>;
+export type UsersListResult = NonNullable<
+  Awaited<ReturnType<ReturnType<typeof getBookingShopifyApi>['usersList']>>
+>;
+export type UsersProfessionsResult = NonNullable<
+  Awaited<
+    ReturnType<ReturnType<typeof getBookingShopifyApi>['usersProfessions']>
+  >
+>;
+export type UsersSpecialtiesResult = NonNullable<
+  Awaited<
+    ReturnType<ReturnType<typeof getBookingShopifyApi>['usersSpecialties']>
+  >
+>;
+export type UsersTopResult = NonNullable<
+  Awaited<ReturnType<ReturnType<typeof getBookingShopifyApi>['usersTop']>>
 >;

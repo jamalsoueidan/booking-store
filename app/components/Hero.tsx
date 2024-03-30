@@ -143,6 +143,7 @@ const CardStack = ({artists: starter}: {artists: User[]}) => {
                 h="380px"
                 w="380px"
                 radius="xl"
+                sizes="(min-width: 45em) 50vw, 100vw"
                 src={artist.images?.profile?.url}
                 fallbackSrc="https://placehold.co/400x600?text=Ekspert"
               />
