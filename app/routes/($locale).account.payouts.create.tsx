@@ -12,8 +12,6 @@ import {redirect, type ActionFunctionArgs} from '@shopify/remix-oxygen';
 import {IMaskInput} from 'react-imask';
 import {getCustomer} from '~/lib/get-customer';
 
-import {getBookingShopifyApi} from '~/lib/api/bookingShopifyApi';
-
 import {
   getCollectionProps,
   getFormProps,
@@ -24,8 +22,10 @@ import {
 import {Form, useActionData} from '@remix-run/react';
 
 import {SubmitButton} from '~/components/form/SubmitButton';
+import {getBookingShopifyApi} from '~/lib/api/bookingShopifyApi';
 import {CustomerPayoutAccountType} from '~/lib/api/model';
 import {customerPayoutAccountCreateBody} from '~/lib/zod/bookingShopifyApi';
+import {isMobilePay} from './($locale).account.payouts';
 
 const schema = customerPayoutAccountCreateBody;
 
@@ -42,10 +42,30 @@ export const action = async ({request, context}: ActionFunctionArgs) => {
 
   try {
     const values = submission.value;
-
     await getBookingShopifyApi().customerPayoutAccountCreate(
       customer.id,
-      values,
+      isMobilePay(values.payoutDetails)
+        ? {
+            ...values,
+            payoutDetails: {
+              phoneNumber: parseInt(
+                values.payoutDetails.phoneNumber
+                  .toString()
+                  .replace(/\D/g, '')
+                  .slice(2),
+                10,
+              ),
+            },
+          }
+        : {
+            ...values,
+            payoutDetails: {
+              ...values.payoutDetails,
+              accountNum: parseInt(
+                values.payoutDetails.accountNum.toString().replace(/-/g, ''),
+              ),
+            },
+          },
     );
 
     return redirect(`/account/payouts`);
@@ -114,8 +134,8 @@ export default function AccountPayoutsSettings() {
               <InputBase
                 label="Regnr"
                 component={IMaskInput}
-                mask="0000"
                 w="80"
+                mask="0000"
                 {...getInputProps(fields.payoutDetails.getFieldset().regNum, {
                   type: 'text',
                 })}
@@ -134,7 +154,7 @@ export default function AccountPayoutsSettings() {
           <InputBase
             label="Mobilnummer"
             component={IMaskInput}
-            mask="00-00-00-00"
+            mask="+45 00 00 00 00"
             {...getInputProps(fields.payoutDetails.getFieldset().phoneNumber, {
               type: 'text',
             })}

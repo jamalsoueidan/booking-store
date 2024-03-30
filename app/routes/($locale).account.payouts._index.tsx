@@ -1,12 +1,28 @@
-import {Badge, Stack, Table, Text, Title} from '@mantine/core';
+import {
+  Badge,
+  Button,
+  Card,
+  SimpleGrid,
+  Stack,
+  Table,
+  Text,
+  Title,
+} from '@mantine/core';
+import {Form, Link, useLoaderData} from '@remix-run/react';
 import {json, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
 import {format} from 'date-fns';
 import {da} from 'date-fns/locale';
+import {getBookingShopifyApi} from '~/lib/api/bookingShopifyApi';
 import {getCustomer} from '~/lib/get-customer';
+import {isMobilePay} from './($locale).account.payouts';
 
 export async function loader({context}: LoaderFunctionArgs) {
   const customer = await getCustomer({context});
-  return json({});
+  const {payload} = await getBookingShopifyApi().customerPayoutAccountGet(
+    customer.id,
+  );
+
+  return json({payoutAccount: payload});
 }
 
 const elements = [
@@ -18,6 +34,7 @@ const elements = [
 ];
 
 export default function AccountPayoutsIndex() {
+  const data = useLoaderData<typeof loader>();
   const rows = elements.map((element) => (
     <Table.Tr key={element.name}>
       <Table.Td>{format(new Date(), 'yyyy-MM-dd', {locale: da})}</Table.Td>
@@ -34,6 +51,52 @@ export default function AccountPayoutsIndex() {
         <Title order={3}>Historik</Title>
         <Text c="dimmed">Listen af alle udbetalinger der er foretagt</Text>
       </div>
+
+      <SimpleGrid cols={{base: 1, sm: 2, md: 3}}>
+        <Card withBorder>
+          <Stack gap="xs">
+            {data.payoutAccount ? (
+              <>
+                {isMobilePay(data.payoutAccount.payoutDetails) ? (
+                  <>
+                    <Title order={5}>MobilePay overførsel</Title>
+                    <Text>{data.payoutAccount.payoutDetails.phoneNumber}</Text>
+                  </>
+                ) : (
+                  <>
+                    <Title order={5}>Bank overførsel</Title>
+                    <Text>{data.payoutAccount.payoutDetails.bankName}</Text>
+                    <Text>
+                      {data.payoutAccount.payoutDetails.regNum} /{' '}
+                      {data.payoutAccount.payoutDetails.accountNum}
+                    </Text>
+                  </>
+                )}
+                <Form method="post" action="destroy">
+                  <Button type="submit" variant="light" color="red">
+                    Slet
+                  </Button>
+                </Form>
+              </>
+            ) : (
+              <>
+                <Text>
+                  For at kunne modtag betaling, skal du vælge overførselsmetode
+                  du ønsker
+                </Text>
+                <Button
+                  component={Link}
+                  to="create"
+                  variant="light"
+                  color="red"
+                >
+                  Opret en betalingskonto
+                </Button>
+              </>
+            )}
+          </Stack>
+        </Card>
+      </SimpleGrid>
 
       <Table.ScrollContainer minWidth={500} type="native">
         <Table>
