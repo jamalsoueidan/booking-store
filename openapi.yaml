@@ -116,6 +116,50 @@ components:
       required:
         - success
         - payload
+    CustomerPayoutAccount:
+      type: object
+      properties:
+        customerId:
+          oneOf:
+            - type: string
+            - type: integer
+        payoutType:
+          $ref: '#/components/schemas/CustomerPayoutAccountType'
+        payoutDetails:
+          oneOf:
+            - $ref: '#/components/schemas/CustomerPayoutMobilePay'
+            - $ref: '#/components/schemas/CustomerPayoutBankAccount'
+      required:
+        - customerId
+        - payoutType
+        - payoutDetails
+    CustomerPayoutAccountType:
+      type: string
+      enum:
+        - MOBILE_PAY
+        - BANK_ACCOUNT
+    CustomerPayoutMobilePay:
+      type: object
+      properties:
+        phoneNumber:
+          oneOf:
+            - type: string
+            - type: integer
+      required:
+        - phoneNumber
+    CustomerPayoutBankAccount:
+      type: object
+      properties:
+        bankName:
+          type: string
+        regNum:
+          type: integer
+        accountNum:
+          type: integer
+      required:
+        - bankName
+        - regNum
+        - accountNum
     CustomerProductBase:
       type: object
       properties:
@@ -4484,4 +4528,141 @@ paths:
           $ref: '#/components/responses/ForbiddenResponse'
         '404':
           $ref: '#/components/responses/NotFoundResponse'
+      security: []
+  '/customer/{customerId}/payout-account':
+    post:
+      parameters:
+        - name: customerId
+          in: path
+          description: The ID of the customerId
+          required: true
+          schema:
+            type: string
+      tags:
+        - CustomerPayoutAccount
+      operationId: customerPayoutAccountCreate
+      summary: POST Create payout account
+      description: This endpoint create new payout account
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                payoutType:
+                  $ref: '#/components/schemas/CustomerPayoutAccountType'
+                payoutDetails:
+                  oneOf:
+                    - $ref: '#/components/schemas/CustomerPayoutMobilePay'
+                    - $ref: '#/components/schemas/CustomerPayoutBankAccount'
+              required:
+                - payoutType
+                - payoutDetails
+      responses:
+        '200':
+          description: Response with payout account payload
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  payload:
+                    $ref: '#/components/schemas/CustomerPayoutAccount'
+                required:
+                  - success
+                  - payload
+        '400':
+          $ref: '#/components/responses/BadResponse'
+        '401':
+          $ref: '#/components/responses/UnauthorizedResponse'
+        '403':
+          $ref: '#/components/responses/ForbiddenResponse'
+        '404':
+          $ref: '#/components/responses/NotFoundResponse'
+      security: []
+    get:
+      parameters:
+        - name: customerId
+          in: path
+          description: The ID of the customerId
+          required: true
+          schema:
+            type: string
+      tags:
+        - CustomerPayoutAccount
+      operationId: customerPayoutAccountGet
+      summary: GET get payout account
+      description: This endpoint get payout account
+      responses:
+        '200':
+          description: Response with payout account payload
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  payload:
+                    $ref: '#/components/schemas/CustomerPayoutAccount'
+                required:
+                  - success
+                  - payload
+        '400':
+          $ref: '#/components/responses/BadResponse'
+        '401':
+          $ref: '#/components/responses/UnauthorizedResponse'
+        '403':
+          $ref: '#/components/responses/ForbiddenResponse'
+        '404':
+          $ref: '#/components/responses/NotFoundResponse'
+      security: []
+    delete:
+      parameters:
+        - name: customerId
+          in: path
+          description: The ID of the customerId
+          required: true
+          schema:
+            type: string
+      tags:
+        - CustomerPayoutAccount
+      operationId: customerPayoutAccountDestroy
+      summary: DEL destroy payout account
+      description: This endpoint destroy payout account for customer
+      responses:
+        '200':
+          description: Response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  payload:
+                    type: object
+                    properties:
+                      deletedCount:
+                        type: number
+                      acknowledged:
+                        type: boolean
+                    required:
+                      - deletedCount
+                      - acknowledged
+                required:
+                  - success
+                  - payload
+        '400':
+          $ref: '#/components/responses/BadResponse'
+        '401':
+          $ref: '#/components/responses/UnauthorizedResponse'
+        '403':
+          $ref: '#/components/responses/ForbiddenResponse'
       security: []

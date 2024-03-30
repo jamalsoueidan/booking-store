@@ -3849,3 +3849,88 @@ export const customerBlockedRangeResponse = zod.object({
     }),
   ),
 });
+
+/**
+ * This endpoint create new payout account
+ * @summary POST Create payout account
+ */
+export const customerPayoutAccountCreateParams = zod.object({
+  customerId: zod.string(),
+});
+
+export const customerPayoutAccountCreateBody = zod.object({
+  payoutType: zod.enum(['MOBILE_PAY', 'BANK_ACCOUNT']),
+  payoutDetails: zod
+    .object({
+      phoneNumber: zod.string().or(zod.number()),
+    })
+    .or(
+      zod.object({
+        bankName: zod.string(),
+        regNum: zod.number(),
+        accountNum: zod.number(),
+      }),
+    ),
+});
+
+export const customerPayoutAccountCreateResponse = zod.object({
+  success: zod.boolean(),
+  payload: zod.object({
+    customerId: zod.string().or(zod.number()),
+    payoutType: zod.enum(['MOBILE_PAY', 'BANK_ACCOUNT']),
+    payoutDetails: zod
+      .object({
+        phoneNumber: zod.string().or(zod.number()),
+      })
+      .or(
+        zod.object({
+          bankName: zod.string(),
+          regNum: zod.number(),
+          accountNum: zod.number(),
+        }),
+      ),
+  }),
+});
+
+/**
+ * This endpoint get payout account
+ * @summary GET get payout account
+ */
+export const customerPayoutAccountGetParams = zod.object({
+  customerId: zod.string(),
+});
+
+export const customerPayoutAccountGetResponse = zod.object({
+  success: zod.boolean(),
+  payload: zod.object({
+    customerId: zod.string().or(zod.number()),
+    payoutType: zod.enum(['MOBILE_PAY', 'BANK_ACCOUNT']),
+    payoutDetails: zod
+      .object({
+        phoneNumber: zod.string().or(zod.number()),
+      })
+      .or(
+        zod.object({
+          bankName: zod.string(),
+          regNum: zod.number(),
+          accountNum: zod.number(),
+        }),
+      ),
+  }),
+});
+
+/**
+ * This endpoint destroy payout account for customer
+ * @summary DEL destroy payout account
+ */
+export const customerPayoutAccountDestroyParams = zod.object({
+  customerId: zod.string(),
+});
+
+export const customerPayoutAccountDestroyResponse = zod.object({
+  success: zod.boolean(),
+  payload: zod.object({
+    deletedCount: zod.number(),
+    acknowledged: zod.boolean(),
+  }),
+});

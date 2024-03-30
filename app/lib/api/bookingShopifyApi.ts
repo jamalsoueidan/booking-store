@@ -28,6 +28,10 @@ import type {
   CustomerLocationUpdateBody,
   CustomerLocationUpdateResponse,
   CustomerOrderGetResponse,
+  CustomerPayoutAccountCreate200,
+  CustomerPayoutAccountCreateBody,
+  CustomerPayoutAccountDestroy200,
+  CustomerPayoutAccountGet200,
   CustomerProductCreateVariantBody,
   CustomerProductCreateVariantResponse,
   CustomerProductDestroyResponse,
@@ -840,6 +844,44 @@ export const getBookingShopifyApi = () => {
     });
   };
 
+  /**
+   * This endpoint create new payout account
+   * @summary POST Create payout account
+   */
+  const customerPayoutAccountCreate = (
+    customerId: string,
+    customerPayoutAccountCreateBody: BodyType<CustomerPayoutAccountCreateBody>,
+  ) => {
+    return queryClient<CustomerPayoutAccountCreate200>({
+      url: `/customer/${customerId}/payout-account`,
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      data: customerPayoutAccountCreateBody,
+    });
+  };
+
+  /**
+   * This endpoint get payout account
+   * @summary GET get payout account
+   */
+  const customerPayoutAccountGet = (customerId: string) => {
+    return queryClient<CustomerPayoutAccountGet200>({
+      url: `/customer/${customerId}/payout-account`,
+      method: 'GET',
+    });
+  };
+
+  /**
+   * This endpoint destroy payout account for customer
+   * @summary DEL destroy payout account
+   */
+  const customerPayoutAccountDestroy = (customerId: string) => {
+    return queryClient<CustomerPayoutAccountDestroy200>({
+      url: `/customer/${customerId}/payout-account`,
+      method: 'DELETE',
+    });
+  };
+
   return {
     productsGetUsersImage,
     productsGetUsersByVariant,
@@ -898,6 +940,9 @@ export const getBookingShopifyApi = () => {
     customerBlockedDestroy,
     customerBlockedList,
     customerBlockedRange,
+    customerPayoutAccountCreate,
+    customerPayoutAccountGet,
+    customerPayoutAccountDestroy,
   };
 };
 export type ProductsGetUsersImageResult = NonNullable<
@@ -1207,5 +1252,26 @@ export type CustomerBlockedListResult = NonNullable<
 export type CustomerBlockedRangeResult = NonNullable<
   Awaited<
     ReturnType<ReturnType<typeof getBookingShopifyApi>['customerBlockedRange']>
+  >
+>;
+export type CustomerPayoutAccountCreateResult = NonNullable<
+  Awaited<
+    ReturnType<
+      ReturnType<typeof getBookingShopifyApi>['customerPayoutAccountCreate']
+    >
+  >
+>;
+export type CustomerPayoutAccountGetResult = NonNullable<
+  Awaited<
+    ReturnType<
+      ReturnType<typeof getBookingShopifyApi>['customerPayoutAccountGet']
+    >
+  >
+>;
+export type CustomerPayoutAccountDestroyResult = NonNullable<
+  Awaited<
+    ReturnType<
+      ReturnType<typeof getBookingShopifyApi>['customerPayoutAccountDestroy']
+    >
   >
 >;
