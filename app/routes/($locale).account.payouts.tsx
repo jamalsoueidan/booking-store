@@ -1,8 +1,6 @@
-import {Group} from '@mantine/core';
 import {Outlet} from '@remix-run/react';
 
 import {json, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
-import {AccountButton} from '~/components/account/AccountButton';
 import {AccountContent} from '~/components/account/AccountContent';
 import {AccountTitle} from '~/components/account/AccountTitle';
 import type {
@@ -32,11 +30,7 @@ export async function loader({context}: LoaderFunctionArgs) {
 export default function AccountPayouts() {
   return (
     <>
-      <AccountTitle heading="Udbetalinger">
-        <Group>
-          <AccountButton to={'.'}>Udbetalinger</AccountButton>
-        </Group>
-      </AccountTitle>
+      <AccountTitle heading="Udbetalinger" />
 
       <AccountContent>
         <Outlet />

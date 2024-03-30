@@ -47,11 +47,6 @@ export default function AccountPayoutsIndex() {
 
   return (
     <Stack>
-      <div>
-        <Title order={3}>Historik</Title>
-        <Text c="dimmed">Listen af alle udbetalinger der er foretagt</Text>
-      </div>
-
       <SimpleGrid cols={{base: 1, sm: 2, md: 3}}>
         <Card withBorder>
           <Stack gap="xs">
@@ -97,6 +92,11 @@ export default function AccountPayoutsIndex() {
           </Stack>
         </Card>
       </SimpleGrid>
+
+      <div>
+        <Title order={3}>Historik</Title>
+        <Text c="dimmed">Listen af alle udbetalinger der er foretagt</Text>
+      </div>
 
       <Table.ScrollContainer minWidth={500} type="native">
         <Table>
