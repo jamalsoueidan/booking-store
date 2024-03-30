@@ -4,9 +4,9 @@
  * Booking Shopify Api
  * OpenAPI spec version: 1.0.0
  */
-import type {CustomerPayoutAccount} from './customerPayoutAccount';
+import type {CustomerPayoutAccountGet200Payload} from './customerPayoutAccountGet200Payload';
 
 export type CustomerPayoutAccountGet200 = {
-  payload: CustomerPayoutAccount;
+  payload: CustomerPayoutAccountGet200Payload;
   success: boolean;
 };

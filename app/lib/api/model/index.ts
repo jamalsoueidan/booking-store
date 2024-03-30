@@ -84,6 +84,7 @@ export * from './customerPayoutAccountCustomerId';
 export * from './customerPayoutAccountDestroy200';
 export * from './customerPayoutAccountDestroy200Payload';
 export * from './customerPayoutAccountGet200';
+export * from './customerPayoutAccountGet200Payload';
 export * from './customerPayoutAccountPayoutDetails';
 export * from './customerPayoutAccountType';
 export * from './customerPayoutBankAccount';
