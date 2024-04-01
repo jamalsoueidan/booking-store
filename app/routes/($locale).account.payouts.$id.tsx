@@ -4,6 +4,8 @@ import {getCustomer} from '~/lib/get-customer';
 
 import {Await, useLoaderData} from '@remix-run/react';
 
+import {format} from 'date-fns';
+import {da} from 'date-fns/locale';
 import {Suspense} from 'react';
 import {getBookingShopifyApi} from '~/lib/api/bookingShopifyApi';
 import type {
@@ -76,9 +78,14 @@ const PayoutLogs = ({data}: {data: Promise<CustomerPayoutLogResponse>}) => {
                           <>
                             <Table.Td>Forsendelse</Table.Td>
                             <Table.Td>
+                              {payout.referenceDocument.origin.name} -{' '}
                               {payout.referenceDocument.destination.name}
                             </Table.Td>
-                            <Table.Td>{payout.createdAt}</Table.Td>
+                            <Table.Td>
+                              {format(new Date(payout.orderCreatedAt), 'PPPP', {
+                                locale: da,
+                              })}
+                            </Table.Td>
                             <Table.Td>
                               {payout.referenceDocument.cost.value} DKK
                             </Table.Td>
@@ -89,7 +96,11 @@ const PayoutLogs = ({data}: {data: Promise<CustomerPayoutLogResponse>}) => {
                             <Table.Td>
                               {payout.referenceDocument.title}
                             </Table.Td>
-                            <Table.Td>{payout.createdAt}</Table.Td>
+                            <Table.Td>
+                              {format(new Date(payout.orderCreatedAt), 'PPPP', {
+                                locale: da,
+                              })}
+                            </Table.Td>
                             <Table.Td>
                               {payout.referenceDocument.price} DKK
                             </Table.Td>

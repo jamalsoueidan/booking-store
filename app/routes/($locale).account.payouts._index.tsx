@@ -53,7 +53,7 @@ export default function AccountPayoutsIndex() {
         <Text c="dimmed">Listen af alle udbetalinger der er foretagt</Text>
       </div>
 
-      <Suspense fallback={<>asd</>}>
+      <Suspense fallback={<>Henter udbetalingshistorik...</>}>
         <Await resolve={data.payouts}>
           {({payload}) => {
             return (
