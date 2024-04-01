@@ -38,19 +38,11 @@ export async function loader({context}: LoaderFunctionArgs) {
   return defer({payoutAccount, payoutBalance, payouts});
 }
 
-const elements = [
-  {position: 6, mass: 12.011, symbol: 'C', name: 'Carbon'},
-  {position: 7, mass: 14.007, symbol: 'N', name: 'Nitrogen'},
-  {position: 39, mass: 88.906, symbol: 'Y', name: 'Yttrium'},
-  {position: 56, mass: 137.33, symbol: 'Ba', name: 'Barium'},
-  {position: 58, mass: 140.12, symbol: 'Ce', name: 'Cerium'},
-];
-
 export default function AccountPayoutsIndex() {
   const data = useLoaderData<typeof loader>();
 
   return (
-    <Stack>
+    <Stack gap="xl">
       <SimpleGrid cols={{base: 1, sm: 2, md: 3}}>
         <PayoutAccount payoutAccount={data.payoutAccount} />
         <PayoutBalance payoutBalance={data.payoutBalance} />
@@ -65,13 +57,14 @@ export default function AccountPayoutsIndex() {
         <Await resolve={data.payouts}>
           {({payload}) => {
             return (
-              <Table.ScrollContainer minWidth={500} type="native">
+              <Table.ScrollContainer minWidth={500}>
                 <Table>
                   <Table.Thead>
                     <Table.Tr>
                       <Table.Th>Dato</Table.Th>
                       <Table.Th>Status</Table.Th>
                       <Table.Th>Beløb</Table.Th>
+                      <Table.Th>-</Table.Th>
                     </Table.Tr>
                   </Table.Thead>
 
@@ -86,6 +79,16 @@ export default function AccountPayoutsIndex() {
                             <Badge color="green">{payout.status}</Badge>
                           </Table.Td>
                           <Table.Td>{payout.amount} DKK</Table.Td>
+                          <Table.Td>
+                            <Button
+                              variant="default"
+                              size="sm"
+                              component={Link}
+                              to={`${payout._id}`}
+                            >
+                              Vis detailjer
+                            </Button>
+                          </Table.Td>
                         </Table.Tr>
                       ))}
                     </Table.Tbody>
@@ -121,7 +124,9 @@ const PayoutBalance = ({
             <Card withBorder>
               <Stack gap="xs">
                 <Title order={3}>Balance</Title>
-                <Text>DKK {payload.totalAmount}</Text>
+                <Text>Total: {payload.totalAmount} DKK</Text>
+                <Text>Kørsel: {payload.totalShippingAmount} DKK</Text>
+                <Text>Behandlinger: {payload.totalLineItems}</Text>
               </Stack>
             </Card>
           );
