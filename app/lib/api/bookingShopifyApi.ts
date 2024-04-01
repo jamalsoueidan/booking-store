@@ -33,6 +33,7 @@ import type {
   CustomerPayoutAccountDestroyResponse,
   CustomerPayoutAccountGetResponse,
   CustomerPayoutBalanceResponse,
+  CustomerPayoutCreateResponse,
   CustomerPayoutGetResponse,
   CustomerPayoutLogPaginateParams,
   CustomerPayoutLogResponse,
@@ -355,6 +356,17 @@ export const getBookingShopifyApi = () => {
     return queryClient<CustomerPayoutGetResponse>({
       url: `/customer/${customerId}/payout/${payoutId}`,
       method: 'GET',
+    });
+  };
+
+  /**
+   * This endpoint create payout
+   * @summary POST Create payout
+   */
+  const customerPayoutCreate = (customerId: string) => {
+    return queryClient<CustomerPayoutCreateResponse>({
+      url: `/customer/${customerId}/payout/create`,
+      method: 'POST',
     });
   };
 
@@ -961,6 +973,7 @@ export const getBookingShopifyApi = () => {
     customerPayoutPaginate,
     customerPayoutBalance,
     customerPayoutGet,
+    customerPayoutCreate,
     customerPayoutLogPaginate,
     customerPayoutAccountCreate,
     customerPayoutAccountGet,
@@ -1109,6 +1122,11 @@ export type CustomerPayoutBalanceResult = NonNullable<
 export type CustomerPayoutGetResult = NonNullable<
   Awaited<
     ReturnType<ReturnType<typeof getBookingShopifyApi>['customerPayoutGet']>
+  >
+>;
+export type CustomerPayoutCreateResult = NonNullable<
+  Awaited<
+    ReturnType<ReturnType<typeof getBookingShopifyApi>['customerPayoutCreate']>
   >
 >;
 export type CustomerPayoutLogPaginateResult = NonNullable<

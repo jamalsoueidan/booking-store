@@ -9,10 +9,10 @@ import type {CustomerPayoutAccountType} from './customerPayoutAccountType';
 import type {CustomerPayoutStatus} from './customerPayoutStatus';
 
 export interface CustomerPayout {
+  _id?: string;
   amount: number;
   currencyCode: string;
-  customerId: number;
-  date: Date;
+  date: string;
   payoutDetails?: CustomerPayoutPayoutDetails;
   payoutType?: CustomerPayoutAccountType;
   status: CustomerPayoutStatus;

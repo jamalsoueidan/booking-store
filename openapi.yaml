@@ -1344,11 +1344,10 @@ components:
     CustomerPayout:
       type: object
       properties:
-        customerId:
-          type: number
+        _id:
+          type: string
         date:
           type: string
-          format: date-time
         amount:
           type: number
           format: double
@@ -1440,15 +1439,57 @@ components:
       required:
         - success
         - payload
+    CustomerPayoutCreateResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: true
+        payload:
+          $ref: '#/components/schemas/CustomerPayout'
+      required:
+        - success
+        - payload
+    CustomerPayoutLogType:
+      type: string
+      enum:
+        - Shipping
+        - LineItem
+    CustomerPayoutLog:
+      type: object
+      properties:
+        _id:
+          type: string
+        customerId:
+          type: number
+        referenceType:
+          $ref: '#/components/schemas/CustomerPayoutLogType'
+        referenceId:
+          type: string
+        payout:
+          type: string
+          format: objectId
+        createdAt:
+          type: string
+        referenceDocument:
+          oneOf:
+            - $ref: '#/components/schemas/CustomeBaserOrderLineItem'
+            - $ref: '#/components/schemas/Shipping'
+      required:
+        - _id
+        - customerId
+        - referenceType
+        - referenceId
+        - referenceDocument
+        - payout
+        - createdAt
     CustomerPayoutLogPayload:
       type: object
       properties:
         results:
           type: array
           items:
-            oneOf:
-              - $ref: '#/components/schemas/CustomeBaserOrderLineItem'
-              - $ref: '#/components/schemas/Shipping'
+            $ref: '#/components/schemas/CustomerPayoutLog'
         currentPage:
           type: number
         totalPages:
@@ -3481,6 +3522,36 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/CustomerPayoutGetResponse'
+        '400':
+          $ref: '#/components/responses/BadResponse'
+        '401':
+          $ref: '#/components/responses/UnauthorizedResponse'
+        '403':
+          $ref: '#/components/responses/ForbiddenResponse'
+        '404':
+          $ref: '#/components/responses/NotFoundResponse'
+      security: []
+  '/customer/{customerId}/payout/create':
+    post:
+      parameters:
+        - name: customerId
+          in: path
+          description: The ID of the customerId
+          required: true
+          schema:
+            type: string
+      tags:
+        - CustomerPayout
+      operationId: customerPayoutCreate
+      summary: POST Create payout
+      description: This endpoint create payout
+      responses:
+        '200':
+          description: Response with payout payload
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CustomerPayoutCreateResponse'
         '400':
           $ref: '#/components/responses/BadResponse'
         '401':

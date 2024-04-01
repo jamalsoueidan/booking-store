@@ -7,6 +7,6 @@
 import type {CustomeBaserOrderLineItem} from './customeBaserOrderLineItem';
 import type {Shipping} from './shipping';
 
-export type CustomerPayoutLogPayloadResultsItem =
+export type CustomerPayoutLogReferenceDocument =
   | CustomeBaserOrderLineItem
   | Shipping;

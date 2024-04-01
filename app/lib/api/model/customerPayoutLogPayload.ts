@@ -4,12 +4,12 @@
  * Booking Shopify Api
  * OpenAPI spec version: 1.0.0
  */
-import type {CustomerPayoutLogPayloadResultsItem} from './customerPayoutLogPayloadResultsItem';
+import type {CustomerPayoutLog} from './customerPayoutLog';
 
 export interface CustomerPayoutLogPayload {
   currentPage: number;
   hasNextPage: boolean;
-  results: CustomerPayoutLogPayloadResultsItem[];
+  results: CustomerPayoutLog[];
   totalCount: number;
   totalPages: number;
 }

@@ -1858,8 +1858,8 @@ export const customerPayoutPaginateResponse = zod.object({
   payload: zod.object({
     results: zod.array(
       zod.object({
-        customerId: zod.number(),
-        date: zod.string().datetime(),
+        _id: zod.string().optional(),
+        date: zod.string(),
         amount: zod.number(),
         currencyCode: zod.string(),
         status: zod.enum(['Pending', 'Processed', 'Failed']),
@@ -1914,8 +1914,40 @@ export const customerPayoutGetParams = zod.object({
 export const customerPayoutGetResponse = zod.object({
   success: zod.boolean(),
   payload: zod.object({
-    customerId: zod.number(),
-    date: zod.string().datetime(),
+    _id: zod.string().optional(),
+    date: zod.string(),
+    amount: zod.number(),
+    currencyCode: zod.string(),
+    status: zod.enum(['Pending', 'Processed', 'Failed']),
+    payoutType: zod.enum(['MOBILE_PAY', 'BANK_ACCOUNT']).optional(),
+    payoutDetails: zod
+      .object({
+        phoneNumber: zod.string().or(zod.number()),
+      })
+      .or(
+        zod.object({
+          bankName: zod.string(),
+          regNum: zod.number(),
+          accountNum: zod.number(),
+        }),
+      )
+      .optional(),
+  }),
+});
+
+/**
+ * This endpoint create payout
+ * @summary POST Create payout
+ */
+export const customerPayoutCreateParams = zod.object({
+  customerId: zod.string(),
+});
+
+export const customerPayoutCreateResponse = zod.object({
+  success: zod.boolean(),
+  payload: zod.object({
+    _id: zod.string().optional(),
+    date: zod.string(),
     amount: zod.number(),
     currencyCode: zod.string(),
     status: zod.enum(['Pending', 'Processed', 'Failed']),
@@ -1954,112 +1986,120 @@ export const customerPayoutLogPaginateResponse = zod.object({
   success: zod.boolean(),
   payload: zod.object({
     results: zod.array(
-      zod
-        .object({
-          id: zod.number(),
-          admin_graphql_api_id: zod.string(),
-          fulfillable_quantity: zod.number(),
-          fulfillment_service: zod.string(),
-          fulfillment_status: zod.string().optional(),
-          gift_card: zod.boolean(),
-          grams: zod.number(),
-          name: zod.string(),
-          price: zod.string(),
-          price_set: zod.object({
-            shop_money: zod.object({
-              amount: zod.string(),
-              currency_code: zod.string(),
-            }),
-            presentment_money: zod.object({
-              amount: zod.string(),
-              currency_code: zod.string(),
-            }),
-          }),
-          product_exists: zod.boolean(),
-          product_id: zod.number(),
-          properties: zod.object({
-            customer_id: zod.number(),
-            from: zod.string(),
-            to: zod.string(),
-            locationId: zod.string(),
-            groupId: zod.string(),
-            shippingId: zod.string().optional(),
-          }),
-          quantity: zod.number(),
-          requires_shipping: zod.boolean(),
-          sku: zod.string().optional(),
-          taxable: zod.boolean(),
-          title: zod.string(),
-          total_discount: zod.string(),
-          total_discount_set: zod.object({
-            shop_money: zod.object({
-              amount: zod.string(),
-              currency_code: zod.string(),
-            }),
-            presentment_money: zod.object({
-              amount: zod.string(),
-              currency_code: zod.string(),
-            }),
-          }),
-          variant_id: zod.number(),
-          variant_inventory_management: zod.string().optional(),
-          variant_title: zod.string().optional(),
-          vendor: zod.string().optional(),
-        })
-        .or(
-          zod
-            .object({
-              duration: zod.object({
-                text: zod.string(),
-                value: zod.number(),
+      zod.object({
+        _id: zod.string(),
+        customerId: zod.number(),
+        referenceType: zod.enum(['Shipping', 'LineItem']),
+        referenceId: zod.string(),
+        payout: zod.string(),
+        createdAt: zod.string(),
+        referenceDocument: zod
+          .object({
+            id: zod.number(),
+            admin_graphql_api_id: zod.string(),
+            fulfillable_quantity: zod.number(),
+            fulfillment_service: zod.string(),
+            fulfillment_status: zod.string().optional(),
+            gift_card: zod.boolean(),
+            grams: zod.number(),
+            name: zod.string(),
+            price: zod.string(),
+            price_set: zod.object({
+              shop_money: zod.object({
+                amount: zod.string(),
+                currency_code: zod.string(),
               }),
-              distance: zod.object({
-                text: zod.string(),
-                value: zod.number(),
+              presentment_money: zod.object({
+                amount: zod.string(),
+                currency_code: zod.string(),
               }),
-            })
-            .and(
-              zod.object({
-                destination: zod.object({
-                  name: zod.string(),
-                  fullAddress: zod.string(),
-                }),
-                cost: zod.object({
-                  currency: zod.string(),
+            }),
+            product_exists: zod.boolean(),
+            product_id: zod.number(),
+            properties: zod.object({
+              customer_id: zod.number(),
+              from: zod.string(),
+              to: zod.string(),
+              locationId: zod.string(),
+              groupId: zod.string(),
+              shippingId: zod.string().optional(),
+            }),
+            quantity: zod.number(),
+            requires_shipping: zod.boolean(),
+            sku: zod.string().optional(),
+            taxable: zod.boolean(),
+            title: zod.string(),
+            total_discount: zod.string(),
+            total_discount_set: zod.object({
+              shop_money: zod.object({
+                amount: zod.string(),
+                currency_code: zod.string(),
+              }),
+              presentment_money: zod.object({
+                amount: zod.string(),
+                currency_code: zod.string(),
+              }),
+            }),
+            variant_id: zod.number(),
+            variant_inventory_management: zod.string().optional(),
+            variant_title: zod.string().optional(),
+            vendor: zod.string().optional(),
+          })
+          .or(
+            zod
+              .object({
+                duration: zod.object({
+                  text: zod.string(),
                   value: zod.number(),
                 }),
-              }),
-            )
-            .and(
-              zod.object({
-                _id: zod.string(),
-                location: zod.string(),
-                origin: zod
-                  .object({
-                    locationType: zod.enum(['origin', 'destination']),
-                    customerId: zod.string(),
-                    originType: zod.enum(['home', 'commercial']),
+                distance: zod.object({
+                  text: zod.string(),
+                  value: zod.number(),
+                }),
+              })
+              .and(
+                zod.object({
+                  destination: zod.object({
                     name: zod.string(),
                     fullAddress: zod.string(),
-                  })
-                  .and(
-                    zod.object({
-                      _id: zod.string(),
-                      geoLocation: zod.object({
-                        type: zod.enum(['Point']),
-                        coordinates: zod.array(zod.number()),
+                  }),
+                  cost: zod.object({
+                    currency: zod.string(),
+                    value: zod.number(),
+                  }),
+                }),
+              )
+              .and(
+                zod.object({
+                  _id: zod.string(),
+                  location: zod.string(),
+                  origin: zod
+                    .object({
+                      locationType: zod.enum(['origin', 'destination']),
+                      customerId: zod.string(),
+                      originType: zod.enum(['home', 'commercial']),
+                      name: zod.string(),
+                      fullAddress: zod.string(),
+                    })
+                    .and(
+                      zod.object({
+                        _id: zod.string(),
+                        geoLocation: zod.object({
+                          type: zod.enum(['Point']),
+                          coordinates: zod.array(zod.number()),
+                        }),
+                        distanceForFree: zod.number(),
+                        distanceHourlyRate: zod.number(),
+                        fixedRatePerKm: zod.number(),
+                        minDriveDistance: zod.number(),
+                        maxDriveDistance: zod.number(),
+                        startFee: zod.number(),
                       }),
-                      distanceForFree: zod.number(),
-                      distanceHourlyRate: zod.number(),
-                      fixedRatePerKm: zod.number(),
-                      minDriveDistance: zod.number(),
-                      maxDriveDistance: zod.number(),
-                      startFee: zod.number(),
-                    }),
-                  ),
-              }),
-            ),
-        ),
+                    ),
+                }),
+              ),
+          ),
+      }),
     ),
     currentPage: zod.number(),
     totalPages: zod.number(),
