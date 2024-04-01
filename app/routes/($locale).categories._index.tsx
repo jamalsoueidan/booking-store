@@ -4,7 +4,7 @@ import {Pagination, getPaginationVariables} from '@shopify/hydrogen';
 import {json, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
 import type {CollectionFragment} from 'storefrontapi.generated';
 import {Wrapper} from '~/components/Wrapper';
-import {VisualTeaser} from '~/components/metaobjects/VisualTeaser';
+import {VisualTeaser} from '~/components/blocks/VisualTeaser';
 import {CategoryCard} from '~/components/treatment/CategoryCard';
 import {COLLECTION_ITEM_FRAGMENT, METAFIELD_QUERY} from '~/data/fragments';
 

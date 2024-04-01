@@ -5,7 +5,7 @@ import {json, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
 import {type CollectionFragment} from 'storefrontapi.generated';
 import {CollectionCard} from '~/components/CollectionCard';
 import {Wrapper} from '~/components/Wrapper';
-import {VisualTeaser} from '~/components/metaobjects/VisualTeaser';
+import {VisualTeaser} from '~/components/blocks/VisualTeaser';
 import {COLLECTION_ITEM_FRAGMENT, METAFIELD_QUERY} from '~/data/fragments';
 
 export async function loader({context, request}: LoaderFunctionArgs) {

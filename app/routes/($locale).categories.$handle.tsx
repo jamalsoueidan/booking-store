@@ -4,7 +4,7 @@ import {Pagination, getPaginationVariables, parseGid} from '@shopify/hydrogen';
 import {json, redirect, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
 import type {ProductItemFragment} from 'storefrontapi.generated';
 import {Wrapper} from '~/components/Wrapper';
-import {VisualTeaserComponent} from '~/components/metaobjects/VisualTeaser';
+import {VisualTeaserComponent} from '~/components/blocks/VisualTeaser';
 import {TreatmentCard} from '~/components/treatment/TreatmentCard';
 import {PRODUCT_ITEM_FRAGMENT} from '~/data/fragments';
 import {getBookingShopifyApi} from '~/lib/api/bookingShopifyApi';
