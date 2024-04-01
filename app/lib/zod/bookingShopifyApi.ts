@@ -619,6 +619,8 @@ export const customerBookingGetByGroupResponse = zod.object({
                     startFee: zod.number(),
                   }),
                 ),
+              created_at: zod.string(),
+              updated_at: zod.string(),
             }),
           )
           .optional(),
@@ -1058,6 +1060,8 @@ export const customerBookingRangeResponse = zod.object({
                       startFee: zod.number(),
                     }),
                   ),
+                created_at: zod.string(),
+                updated_at: zod.string(),
               }),
             )
             .optional(),
@@ -1829,6 +1833,8 @@ export const customerOrderGetResponse = zod.object({
                             startFee: zod.number(),
                           }),
                         ),
+                      created_at: zod.string(),
+                      updated_at: zod.string(),
                     }),
                   )
                   .optional(),
@@ -1989,6 +1995,8 @@ export const customerPayoutLogPaginateResponse = zod.object({
       zod.object({
         _id: zod.string(),
         customerId: zod.number(),
+        orderId: zod.number(),
+        orderCreatedAt: zod.string(),
         referenceType: zod.enum(['Shipping', 'LineItem']),
         referenceId: zod.string(),
         payout: zod.string(),
@@ -2096,6 +2104,8 @@ export const customerPayoutLogPaginateResponse = zod.object({
                         startFee: zod.number(),
                       }),
                     ),
+                  created_at: zod.string(),
+                  updated_at: zod.string(),
                 }),
               ),
           ),
@@ -3143,6 +3153,8 @@ export const shippingCreateResponse = zod.object({
               startFee: zod.number(),
             }),
           ),
+        created_at: zod.string(),
+        updated_at: zod.string(),
       }),
     ),
 });
@@ -3211,6 +3223,8 @@ export const shippingCalculateResponse = zod.object({
               startFee: zod.number(),
             }),
           ),
+        created_at: zod.string(),
+        updated_at: zod.string(),
       }),
     ),
 });
@@ -3275,6 +3289,8 @@ export const shippingGetResponse = zod.object({
               startFee: zod.number(),
             }),
           ),
+        created_at: zod.string(),
+        updated_at: zod.string(),
       }),
     ),
 });
@@ -3349,6 +3365,8 @@ export const userAvailabilityGenerateResponse = zod.object({
                     startFee: zod.number(),
                   }),
                 ),
+              created_at: zod.string(),
+              updated_at: zod.string(),
             }),
           )
           .optional(),
@@ -3450,6 +3468,8 @@ export const userAvailabilityGetResponse = zod.object({
                   startFee: zod.number(),
                 }),
               ),
+            created_at: zod.string(),
+            updated_at: zod.string(),
           }),
         )
         .optional(),

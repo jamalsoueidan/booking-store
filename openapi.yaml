@@ -1462,6 +1462,10 @@ components:
           type: string
         customerId:
           type: number
+        orderId:
+          type: number
+        orderCreatedAt:
+          type: string
         referenceType:
           $ref: '#/components/schemas/CustomerPayoutLogType'
         referenceId:
@@ -1478,6 +1482,8 @@ components:
       required:
         - _id
         - customerId
+        - orderId
+        - orderCreatedAt
         - referenceType
         - referenceId
         - referenceDocument
@@ -2610,10 +2616,16 @@ components:
               type: string
             origin:
               $ref: '#/components/schemas/CustomerLocation'
+            created_at:
+              type: string
+            updated_at:
+              type: string
           required:
             - _id
             - location
             - origin
+            - created_at
+            - updated_at
     ShippingCostDestination:
       type: object
       properties:

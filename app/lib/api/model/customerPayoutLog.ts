@@ -11,6 +11,8 @@ export interface CustomerPayoutLog {
   _id: string;
   createdAt: string;
   customerId: number;
+  orderCreatedAt: string;
+  orderId: number;
   payout: string;
   referenceDocument: CustomerPayoutLogReferenceDocument;
   referenceId: string;
