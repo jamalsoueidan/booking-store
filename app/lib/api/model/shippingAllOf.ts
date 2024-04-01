@@ -8,6 +8,8 @@ import type {CustomerLocation} from './customerLocation';
 
 export type ShippingAllOf = {
   _id: string;
+  created_at: string;
   location: string;
   origin: CustomerLocation;
+  updated_at: string;
 };

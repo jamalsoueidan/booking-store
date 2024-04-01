@@ -619,6 +619,8 @@ export const customerBookingGetByGroupResponse = zod.object({
                     startFee: zod.number(),
                   }),
                 ),
+              created_at: zod.string(),
+              updated_at: zod.string(),
             }),
           )
           .optional(),
@@ -1058,6 +1060,8 @@ export const customerBookingRangeResponse = zod.object({
                       startFee: zod.number(),
                     }),
                   ),
+                created_at: zod.string(),
+                updated_at: zod.string(),
               }),
             )
             .optional(),
@@ -1829,6 +1833,8 @@ export const customerOrderGetResponse = zod.object({
                             startFee: zod.number(),
                           }),
                         ),
+                      created_at: zod.string(),
+                      updated_at: zod.string(),
                     }),
                   )
                   .optional(),
@@ -1837,6 +1843,279 @@ export const customerOrderGetResponse = zod.object({
         ),
       }),
     ),
+});
+
+/**
+ * This endpoint get all payouts
+ * @summary GET get all payouts using paginate
+ */
+export const customerPayoutPaginateParams = zod.object({
+  customerId: zod.string(),
+});
+
+export const customerPayoutPaginateQueryParams = zod.object({
+  page: zod.string(),
+  sortOrder: zod.string().optional(),
+  limit: zod.string().optional(),
+});
+
+export const customerPayoutPaginateResponse = zod.object({
+  success: zod.boolean(),
+  payload: zod.object({
+    results: zod.array(
+      zod.object({
+        _id: zod.string().optional(),
+        date: zod.string(),
+        amount: zod.number(),
+        currencyCode: zod.string(),
+        status: zod.enum(['Pending', 'Processed', 'Failed']),
+        payoutType: zod.enum(['MOBILE_PAY', 'BANK_ACCOUNT']).optional(),
+        payoutDetails: zod
+          .object({
+            phoneNumber: zod.string().or(zod.number()),
+          })
+          .or(
+            zod.object({
+              bankName: zod.string(),
+              regNum: zod.number(),
+              accountNum: zod.number(),
+            }),
+          )
+          .optional(),
+      }),
+    ),
+    currentPage: zod.number(),
+    totalPages: zod.number(),
+    hasNextPage: zod.boolean(),
+    totalCount: zod.number(),
+  }),
+});
+
+/**
+ * This endpoint get payout balance
+ * @summary GET get payout balance
+ */
+export const customerPayoutBalanceParams = zod.object({
+  customerId: zod.string(),
+});
+
+export const customerPayoutBalanceResponse = zod.object({
+  success: zod.boolean(),
+  payload: zod.object({
+    totalAmount: zod.number(),
+    totalLineItems: zod.number(),
+    totalShippingAmount: zod.number(),
+  }),
+});
+
+/**
+ * This endpoint get payout
+ * @summary GET get payout
+ */
+export const customerPayoutGetParams = zod.object({
+  customerId: zod.string(),
+  payoutId: zod.string(),
+});
+
+export const customerPayoutGetResponse = zod.object({
+  success: zod.boolean(),
+  payload: zod.object({
+    _id: zod.string().optional(),
+    date: zod.string(),
+    amount: zod.number(),
+    currencyCode: zod.string(),
+    status: zod.enum(['Pending', 'Processed', 'Failed']),
+    payoutType: zod.enum(['MOBILE_PAY', 'BANK_ACCOUNT']).optional(),
+    payoutDetails: zod
+      .object({
+        phoneNumber: zod.string().or(zod.number()),
+      })
+      .or(
+        zod.object({
+          bankName: zod.string(),
+          regNum: zod.number(),
+          accountNum: zod.number(),
+        }),
+      )
+      .optional(),
+  }),
+});
+
+/**
+ * This endpoint create payout
+ * @summary POST Create payout
+ */
+export const customerPayoutCreateParams = zod.object({
+  customerId: zod.string(),
+});
+
+export const customerPayoutCreateResponse = zod.object({
+  success: zod.boolean(),
+  payload: zod.object({
+    _id: zod.string().optional(),
+    date: zod.string(),
+    amount: zod.number(),
+    currencyCode: zod.string(),
+    status: zod.enum(['Pending', 'Processed', 'Failed']),
+    payoutType: zod.enum(['MOBILE_PAY', 'BANK_ACCOUNT']).optional(),
+    payoutDetails: zod
+      .object({
+        phoneNumber: zod.string().or(zod.number()),
+      })
+      .or(
+        zod.object({
+          bankName: zod.string(),
+          regNum: zod.number(),
+          accountNum: zod.number(),
+        }),
+      )
+      .optional(),
+  }),
+});
+
+/**
+ * This endpoint get all payout logs for specific payout
+ * @summary GET get all payout logs for specific payout using paginate
+ */
+export const customerPayoutLogPaginateParams = zod.object({
+  customerId: zod.string(),
+  payoutId: zod.string(),
+});
+
+export const customerPayoutLogPaginateQueryParams = zod.object({
+  page: zod.string(),
+  sortOrder: zod.string().optional(),
+  limit: zod.string().optional(),
+});
+
+export const customerPayoutLogPaginateResponse = zod.object({
+  success: zod.boolean(),
+  payload: zod.object({
+    results: zod.array(
+      zod.object({
+        _id: zod.string(),
+        customerId: zod.number(),
+        orderId: zod.number(),
+        orderCreatedAt: zod.string(),
+        referenceType: zod.enum(['Shipping', 'LineItem']),
+        referenceId: zod.string(),
+        payout: zod.string(),
+        createdAt: zod.string(),
+        referenceDocument: zod
+          .object({
+            id: zod.number(),
+            admin_graphql_api_id: zod.string(),
+            fulfillable_quantity: zod.number(),
+            fulfillment_service: zod.string(),
+            fulfillment_status: zod.string().optional(),
+            gift_card: zod.boolean(),
+            grams: zod.number(),
+            name: zod.string(),
+            price: zod.string(),
+            price_set: zod.object({
+              shop_money: zod.object({
+                amount: zod.string(),
+                currency_code: zod.string(),
+              }),
+              presentment_money: zod.object({
+                amount: zod.string(),
+                currency_code: zod.string(),
+              }),
+            }),
+            product_exists: zod.boolean(),
+            product_id: zod.number(),
+            properties: zod.object({
+              customer_id: zod.number(),
+              from: zod.string(),
+              to: zod.string(),
+              locationId: zod.string(),
+              groupId: zod.string(),
+              shippingId: zod.string().optional(),
+            }),
+            quantity: zod.number(),
+            requires_shipping: zod.boolean(),
+            sku: zod.string().optional(),
+            taxable: zod.boolean(),
+            title: zod.string(),
+            total_discount: zod.string(),
+            total_discount_set: zod.object({
+              shop_money: zod.object({
+                amount: zod.string(),
+                currency_code: zod.string(),
+              }),
+              presentment_money: zod.object({
+                amount: zod.string(),
+                currency_code: zod.string(),
+              }),
+            }),
+            variant_id: zod.number(),
+            variant_inventory_management: zod.string().optional(),
+            variant_title: zod.string().optional(),
+            vendor: zod.string().optional(),
+          })
+          .or(
+            zod
+              .object({
+                duration: zod.object({
+                  text: zod.string(),
+                  value: zod.number(),
+                }),
+                distance: zod.object({
+                  text: zod.string(),
+                  value: zod.number(),
+                }),
+              })
+              .and(
+                zod.object({
+                  destination: zod.object({
+                    name: zod.string(),
+                    fullAddress: zod.string(),
+                  }),
+                  cost: zod.object({
+                    currency: zod.string(),
+                    value: zod.number(),
+                  }),
+                }),
+              )
+              .and(
+                zod.object({
+                  _id: zod.string(),
+                  location: zod.string(),
+                  origin: zod
+                    .object({
+                      locationType: zod.enum(['origin', 'destination']),
+                      customerId: zod.string(),
+                      originType: zod.enum(['home', 'commercial']),
+                      name: zod.string(),
+                      fullAddress: zod.string(),
+                    })
+                    .and(
+                      zod.object({
+                        _id: zod.string(),
+                        geoLocation: zod.object({
+                          type: zod.enum(['Point']),
+                          coordinates: zod.array(zod.number()),
+                        }),
+                        distanceForFree: zod.number(),
+                        distanceHourlyRate: zod.number(),
+                        fixedRatePerKm: zod.number(),
+                        minDriveDistance: zod.number(),
+                        maxDriveDistance: zod.number(),
+                        startFee: zod.number(),
+                      }),
+                    ),
+                  created_at: zod.string(),
+                  updated_at: zod.string(),
+                }),
+              ),
+          ),
+      }),
+    ),
+    currentPage: zod.number(),
+    totalPages: zod.number(),
+    hasNextPage: zod.boolean(),
+    totalCount: zod.number(),
+  }),
 });
 
 /**
@@ -1891,23 +2170,21 @@ export const customerPayoutAccountGetParams = zod.object({
 
 export const customerPayoutAccountGetResponse = zod.object({
   success: zod.boolean(),
-  payload: zod
-    .object({
-      customerId: zod.string().or(zod.number()),
-      payoutType: zod.enum(['MOBILE_PAY', 'BANK_ACCOUNT']),
-      payoutDetails: zod
-        .object({
-          phoneNumber: zod.string().or(zod.number()),
-        })
-        .or(
-          zod.object({
-            bankName: zod.string(),
-            regNum: zod.number(),
-            accountNum: zod.number(),
-          }),
-        ),
-    })
-    .nullable(),
+  payload: zod.object({
+    customerId: zod.string().or(zod.number()),
+    payoutType: zod.enum(['MOBILE_PAY', 'BANK_ACCOUNT']),
+    payoutDetails: zod
+      .object({
+        phoneNumber: zod.string().or(zod.number()),
+      })
+      .or(
+        zod.object({
+          bankName: zod.string(),
+          regNum: zod.number(),
+          accountNum: zod.number(),
+        }),
+      ),
+  }),
 });
 
 /**
@@ -2876,6 +3153,8 @@ export const shippingCreateResponse = zod.object({
               startFee: zod.number(),
             }),
           ),
+        created_at: zod.string(),
+        updated_at: zod.string(),
       }),
     ),
 });
@@ -2944,6 +3223,8 @@ export const shippingCalculateResponse = zod.object({
               startFee: zod.number(),
             }),
           ),
+        created_at: zod.string(),
+        updated_at: zod.string(),
       }),
     ),
 });
@@ -3008,6 +3289,8 @@ export const shippingGetResponse = zod.object({
               startFee: zod.number(),
             }),
           ),
+        created_at: zod.string(),
+        updated_at: zod.string(),
       }),
     ),
 });
@@ -3082,6 +3365,8 @@ export const userAvailabilityGenerateResponse = zod.object({
                     startFee: zod.number(),
                   }),
                 ),
+              created_at: zod.string(),
+              updated_at: zod.string(),
             }),
           )
           .optional(),
@@ -3183,6 +3468,8 @@ export const userAvailabilityGetResponse = zod.object({
                   startFee: zod.number(),
                 }),
               ),
+            created_at: zod.string(),
+            updated_at: zod.string(),
           }),
         )
         .optional(),
@@ -3878,7 +4165,7 @@ export const usersListResponse = zod.object({
         }),
       }),
     ),
-    total: zod.number(),
+    totalCount: zod.number().optional(),
   }),
 });
 

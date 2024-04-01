@@ -138,6 +138,63 @@ components:
       enum:
         - MOBILE_PAY
         - BANK_ACCOUNT
+    CustomerPayoutAccountCreateBody:
+      type: object
+      properties:
+        payoutType:
+          $ref: '#/components/schemas/CustomerPayoutAccountType'
+        payoutDetails:
+          oneOf:
+            - $ref: '#/components/schemas/CustomerPayoutMobilePay'
+            - $ref: '#/components/schemas/CustomerPayoutBankAccount'
+      required:
+        - payoutType
+        - payoutDetails
+    CustomerPayoutAccountCreateResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: true
+        payload:
+          $ref: '#/components/schemas/CustomerPayoutAccount'
+      required:
+        - success
+        - payload
+    CustomerPayoutAccountDestroy:
+      type: object
+      properties:
+        deletedCount:
+          type: number
+        acknowledged:
+          type: boolean
+      required:
+        - deletedCount
+        - acknowledged
+    CustomerPayoutAccountDestroyResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: true
+        payload:
+          $ref: '#/components/schemas/CustomerPayoutAccountDestroy'
+      required:
+        - success
+        - payload
+    CustomerPayoutAccountGetResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: true
+        payload:
+          allOf:
+            - $ref: '#/components/schemas/CustomerPayoutAccount'
+              nullable: true
+      required:
+        - success
+        - payload
     CustomerPayoutMobilePay:
       type: object
       properties:
@@ -1284,6 +1341,186 @@ components:
       required:
         - success
         - payload
+    CustomerPayout:
+      type: object
+      properties:
+        _id:
+          type: string
+        date:
+          type: string
+        amount:
+          type: number
+          format: double
+        currencyCode:
+          type: string
+          example: DKK
+        status:
+          type: string
+          enum:
+            - Pending
+            - Processed
+            - Failed
+        payoutType:
+          $ref: '#/components/schemas/CustomerPayoutAccountType'
+        payoutDetails:
+          oneOf:
+            - $ref: '#/components/schemas/CustomerPayoutMobilePay'
+            - $ref: '#/components/schemas/CustomerPayoutBankAccount'
+      required:
+        - customerId
+        - date
+        - amount
+        - currencyCode
+        - status
+    CustomerPayoutBalancePayload:
+      type: object
+      properties:
+        totalAmount:
+          type: number
+        totalLineItems:
+          type: number
+        totalShippingAmount:
+          type: number
+      required:
+        - totalAmount
+        - totalLineItems
+        - totalShippingAmount
+    CustomerPayoutBalanceResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: true
+        payload:
+          $ref: '#/components/schemas/CustomerPayoutBalancePayload'
+      required:
+        - success
+        - payload
+    CustomerPayoutGetResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: true
+        payload:
+          $ref: '#/components/schemas/CustomerPayout'
+      required:
+        - success
+        - payload
+    CustomerPayoutPaginatePayload:
+      type: object
+      properties:
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/CustomerPayout'
+        currentPage:
+          type: number
+        totalPages:
+          type: number
+        hasNextPage:
+          type: boolean
+        totalCount:
+          type: number
+      required:
+        - results
+        - currentPage
+        - totalPages
+        - hasNextPage
+        - totalCount
+    CustomerPayoutPaginateResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: true
+        payload:
+          $ref: '#/components/schemas/CustomerPayoutPaginatePayload'
+      required:
+        - success
+        - payload
+    CustomerPayoutCreateResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: true
+        payload:
+          $ref: '#/components/schemas/CustomerPayout'
+      required:
+        - success
+        - payload
+    CustomerPayoutLogType:
+      type: string
+      enum:
+        - Shipping
+        - LineItem
+    CustomerPayoutLog:
+      type: object
+      properties:
+        _id:
+          type: string
+        customerId:
+          type: number
+        orderId:
+          type: number
+        orderCreatedAt:
+          type: string
+        referenceType:
+          $ref: '#/components/schemas/CustomerPayoutLogType'
+        referenceId:
+          type: string
+        payout:
+          type: string
+          format: objectId
+        createdAt:
+          type: string
+        referenceDocument:
+          oneOf:
+            - $ref: '#/components/schemas/CustomeBaserOrderLineItem'
+            - $ref: '#/components/schemas/Shipping'
+      required:
+        - _id
+        - customerId
+        - orderId
+        - orderCreatedAt
+        - referenceType
+        - referenceId
+        - referenceDocument
+        - payout
+        - createdAt
+    CustomerPayoutLogPayload:
+      type: object
+      properties:
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/CustomerPayoutLog'
+        currentPage:
+          type: number
+        totalPages:
+          type: number
+        hasNextPage:
+          type: boolean
+        totalCount:
+          type: number
+      required:
+        - results
+        - currentPage
+        - totalPages
+        - hasNextPage
+        - totalCount
+    CustomerPayoutLogResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: true
+        payload:
+          $ref: '#/components/schemas/CustomerPayoutLogPayload'
+      required:
+        - success
+        - payload
     CustomerBooking:
       allOf:
         - $ref: '#/components/schemas/CustomerBaseOrder'
@@ -2066,7 +2303,7 @@ components:
               type: array
               items:
                 $ref: '#/components/schemas/User'
-            total:
+            totalCount:
               type: number
           required:
             - results
@@ -2379,10 +2616,16 @@ components:
               type: string
             origin:
               $ref: '#/components/schemas/CustomerLocation'
+            created_at:
+              type: string
+            updated_at:
+              type: string
           required:
             - _id
             - location
             - origin
+            - created_at
+            - updated_at
     ShippingCostDestination:
       type: object
       properties:
@@ -3188,6 +3431,200 @@ paths:
         '404':
           $ref: '#/components/responses/NotFoundResponse'
       security: []
+  '/customer/{customerId}/payouts/paginate':
+    get:
+      parameters:
+        - name: customerId
+          in: path
+          description: The ID of the customerId
+          required: true
+          schema:
+            type: string
+        - name: page
+          in: query
+          description: The page number
+          required: true
+          schema:
+            type: string
+        - name: sortOrder
+          in: query
+          description: The sort order either asc eller desc = default desc
+          schema:
+            type: string
+        - name: limit
+          in: query
+          description: The limit = default to 10
+          schema:
+            type: string
+      tags:
+        - CustomerPayout
+      operationId: customerPayoutPaginate
+      summary: GET get all payouts using paginate
+      description: This endpoint get all payouts
+      responses:
+        '200':
+          description: Response with payouts payload
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CustomerPayoutPaginateResponse'
+        '400':
+          $ref: '#/components/responses/BadResponse'
+        '401':
+          $ref: '#/components/responses/UnauthorizedResponse'
+        '403':
+          $ref: '#/components/responses/ForbiddenResponse'
+        '404':
+          $ref: '#/components/responses/NotFoundResponse'
+      security: []
+  '/customer/{customerId}/payouts/balance':
+    get:
+      parameters:
+        - name: customerId
+          in: path
+          description: The ID of the customerId
+          required: true
+          schema:
+            type: string
+      tags:
+        - CustomerPayout
+      operationId: customerPayoutBalance
+      summary: GET get payout balance
+      description: This endpoint get payout balance
+      responses:
+        '200':
+          description: Response with payout balance payload
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CustomerPayoutBalanceResponse'
+        '400':
+          $ref: '#/components/responses/BadResponse'
+        '401':
+          $ref: '#/components/responses/UnauthorizedResponse'
+        '403':
+          $ref: '#/components/responses/ForbiddenResponse'
+        '404':
+          $ref: '#/components/responses/NotFoundResponse'
+      security: []
+  '/customer/{customerId}/payout/{payoutId}':
+    get:
+      parameters:
+        - name: customerId
+          in: path
+          description: The ID of the customerId
+          required: true
+          schema:
+            type: string
+        - name: payoutId
+          in: path
+          description: The ID of the payoudId
+          required: true
+          schema:
+            type: string
+      tags:
+        - CustomerPayout
+      operationId: customerPayoutGet
+      summary: GET get payout
+      description: This endpoint get payout
+      responses:
+        '200':
+          description: Response with payout payload
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CustomerPayoutGetResponse'
+        '400':
+          $ref: '#/components/responses/BadResponse'
+        '401':
+          $ref: '#/components/responses/UnauthorizedResponse'
+        '403':
+          $ref: '#/components/responses/ForbiddenResponse'
+        '404':
+          $ref: '#/components/responses/NotFoundResponse'
+      security: []
+  '/customer/{customerId}/payout/create':
+    post:
+      parameters:
+        - name: customerId
+          in: path
+          description: The ID of the customerId
+          required: true
+          schema:
+            type: string
+      tags:
+        - CustomerPayout
+      operationId: customerPayoutCreate
+      summary: POST Create payout
+      description: This endpoint create payout
+      responses:
+        '200':
+          description: Response with payout payload
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CustomerPayoutCreateResponse'
+        '400':
+          $ref: '#/components/responses/BadResponse'
+        '401':
+          $ref: '#/components/responses/UnauthorizedResponse'
+        '403':
+          $ref: '#/components/responses/ForbiddenResponse'
+        '404':
+          $ref: '#/components/responses/NotFoundResponse'
+      security: []
+  '/customer/{customerId}/payout-logs/{payoutId}/paginate':
+    get:
+      parameters:
+        - name: customerId
+          in: path
+          description: The ID of the customerId
+          required: true
+          schema:
+            type: string
+        - name: payoutId
+          in: path
+          description: The ID of the payoutId
+          required: true
+          schema:
+            type: string
+        - name: page
+          in: query
+          description: The page number
+          required: true
+          schema:
+            type: string
+        - name: sortOrder
+          in: query
+          description: The sort order either asc eller desc = default desc
+          schema:
+            type: string
+        - name: limit
+          in: query
+          description: The limit = default to 10
+          schema:
+            type: string
+      tags:
+        - CustomerPayoutLog
+      operationId: customerPayoutLogPaginate
+      summary: GET get all payout logs for specific payout using paginate
+      description: This endpoint get all payout logs for specific payout
+      responses:
+        '200':
+          description: Response with payouts payload
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CustomerPayoutLogResponse'
+        '400':
+          $ref: '#/components/responses/BadResponse'
+        '401':
+          $ref: '#/components/responses/UnauthorizedResponse'
+        '403':
+          $ref: '#/components/responses/ForbiddenResponse'
+        '404':
+          $ref: '#/components/responses/NotFoundResponse'
+      security: []
   '/customer/{customerId}/payout-account':
     post:
       parameters:
@@ -3207,33 +3644,14 @@ paths:
         content:
           application/json:
             schema:
-              type: object
-              properties:
-                payoutType:
-                  $ref: '#/components/schemas/CustomerPayoutAccountType'
-                payoutDetails:
-                  oneOf:
-                    - $ref: '#/components/schemas/CustomerPayoutMobilePay'
-                    - $ref: '#/components/schemas/CustomerPayoutBankAccount'
-              required:
-                - payoutType
-                - payoutDetails
+              $ref: '#/components/schemas/CustomerPayoutAccountCreateBody'
       responses:
         '200':
           description: Response with payout account payload
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  success:
-                    type: boolean
-                    example: true
-                  payload:
-                    $ref: '#/components/schemas/CustomerPayoutAccount'
-                required:
-                  - success
-                  - payload
+                $ref: '#/components/schemas/CustomerPayoutAccountCreateResponse'
         '400':
           $ref: '#/components/responses/BadResponse'
         '401':
@@ -3262,18 +3680,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  success:
-                    type: boolean
-                    example: true
-                  payload:
-                    allOf:
-                      - $ref: '#/components/schemas/CustomerPayoutAccount'
-                    nullable: true
-                required:
-                  - success
-                  - payload
+                $ref: '#/components/schemas/CustomerPayoutAccountGetResponse'
         '400':
           $ref: '#/components/responses/BadResponse'
         '401':
@@ -3302,24 +3709,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  success:
-                    type: boolean
-                    example: true
-                  payload:
-                    type: object
-                    properties:
-                      deletedCount:
-                        type: number
-                      acknowledged:
-                        type: boolean
-                    required:
-                      - deletedCount
-                      - acknowledged
-                required:
-                  - success
-                  - payload
+                $ref: '#/components/schemas/CustomerPayoutAccountDestroyResponse'
         '400':
           $ref: '#/components/responses/BadResponse'
         '401':

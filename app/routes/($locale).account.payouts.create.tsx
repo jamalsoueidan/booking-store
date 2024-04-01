@@ -21,6 +21,8 @@ import {
 } from '@conform-to/react';
 import {Form, useActionData} from '@remix-run/react';
 
+import {AccountContent} from '~/components/account/AccountContent';
+import {AccountTitle} from '~/components/account/AccountTitle';
 import {SubmitButton} from '~/components/form/SubmitButton';
 import {getBookingShopifyApi} from '~/lib/api/bookingShopifyApi';
 import {CustomerPayoutAccountType} from '~/lib/api/model';
@@ -94,75 +96,97 @@ export default function AccountPayoutsSettings() {
   const payoutType = useInputControl(fields.payoutType);
 
   return (
-    <Form method="POST" {...getFormProps(form)}>
-      <Stack align="flex-start">
-        <div>
-          <Title order={3}>Bank konto</Title>
-          <Text c="dimmed">
-            Vi skal bruge din regnr og kontonummer for at sende dig din
-            udbetalinger.
-          </Text>
-        </div>
+    <>
+      <AccountTitle linkBack="../" heading="Opret overførsel metode" />
 
-        <Radio.Group
-          label="Hvilken type"
-          value={payoutType.value}
-          onFocus={payoutType.focus}
-          onChange={payoutType.change}
-          onBlur={payoutType.blur}
-        >
-          {getCollectionProps(fields.payoutType, {
-            type: 'radio',
-            options: [
-              CustomerPayoutAccountType.BANK_ACCOUNT,
-              CustomerPayoutAccountType.MOBILE_PAY,
-            ],
-          }).map((props) => (
-            <Radio key={props.key} value={props.value} label={props.value} />
-          ))}
-        </Radio.Group>
+      <AccountContent>
+        <Form method="POST" {...getFormProps(form)}>
+          <Stack align="flex-start">
+            <div>
+              <Title order={3}>Bank konto</Title>
+              <Text c="dimmed">
+                Vi skal bruge din regnr og kontonummer for at sende dig din
+                udbetalinger.
+              </Text>
+            </div>
 
-        {payoutType.value === CustomerPayoutAccountType.BANK_ACCOUNT ? (
-          <>
-            <TextInput
-              label="Fuldnavn"
-              {...getInputProps(fields.payoutDetails.getFieldset().bankName, {
-                type: 'text',
-              })}
-            />
-            <Flex gap="lg">
+            <Radio.Group
+              label="Hvilken type"
+              value={payoutType.value}
+              onFocus={payoutType.focus}
+              onChange={payoutType.change}
+              onBlur={payoutType.blur}
+            >
+              {getCollectionProps(fields.payoutType, {
+                type: 'radio',
+                options: [
+                  CustomerPayoutAccountType.BANK_ACCOUNT,
+                  CustomerPayoutAccountType.MOBILE_PAY,
+                ],
+              }).map((props) => (
+                <Radio
+                  key={props.key}
+                  value={props.value}
+                  label={props.value}
+                />
+              ))}
+            </Radio.Group>
+
+            {payoutType.value === CustomerPayoutAccountType.BANK_ACCOUNT ? (
+              <>
+                <TextInput
+                  label="Fuldnavn"
+                  {...getInputProps(
+                    fields.payoutDetails.getFieldset().bankName,
+                    {
+                      type: 'text',
+                    },
+                  )}
+                />
+                <Flex gap="lg">
+                  <InputBase
+                    label="Regnr"
+                    component={IMaskInput}
+                    w="80"
+                    mask="0000"
+                    {...getInputProps(
+                      fields.payoutDetails.getFieldset().regNum,
+                      {
+                        type: 'text',
+                      },
+                    )}
+                  />
+                  <InputBase
+                    label="Kontonummer"
+                    component={IMaskInput}
+                    mask="0000-0000-0000-0000"
+                    {...getInputProps(
+                      fields.payoutDetails.getFieldset().bankName,
+                      {
+                        type: 'text',
+                      },
+                    )}
+                  />
+                </Flex>
+              </>
+            ) : (
               <InputBase
-                label="Regnr"
+                label="Mobilnummer"
                 component={IMaskInput}
-                w="80"
-                mask="0000"
-                {...getInputProps(fields.payoutDetails.getFieldset().regNum, {
-                  type: 'text',
-                })}
+                mask="+45 00 00 00 00"
+                {...getInputProps(
+                  fields.payoutDetails.getFieldset().phoneNumber,
+                  {
+                    type: 'text',
+                  },
+                )}
               />
-              <InputBase
-                label="Kontonummer"
-                component={IMaskInput}
-                mask="0000-0000-0000-0000"
-                {...getInputProps(fields.payoutDetails.getFieldset().bankName, {
-                  type: 'text',
-                })}
-              />
-            </Flex>
-          </>
-        ) : (
-          <InputBase
-            label="Mobilnummer"
-            component={IMaskInput}
-            mask="+45 00 00 00 00"
-            {...getInputProps(fields.payoutDetails.getFieldset().phoneNumber, {
-              type: 'text',
-            })}
-          />
-        )}
+            )}
 
-        <SubmitButton>Gem</SubmitButton>
-      </Stack>
-    </Form>
+            <SubmitButton>Gem</SubmitButton>
+          </Stack>
+        </Form>
+      </AccountContent>
+    </>
   );
 }

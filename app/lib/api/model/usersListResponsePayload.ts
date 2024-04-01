@@ -9,5 +9,5 @@ import type {User} from './user';
 export type UsersListResponsePayload = {
   nextCursor?: string;
   results: User[];
-  total: number;
+  totalCount?: number;
 };

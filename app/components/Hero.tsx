@@ -66,7 +66,7 @@ export function Hero({
             </Button>
           </Flex>
         </Stack>
-        <Suspense fallback={<Skeleton height={50} />}>
+        <Suspense fallback={<Skeleton height={500} />}>
           <Await resolve={artists}>
             {({payload}) => <CardStack artists={payload.results} />}
           </Await>

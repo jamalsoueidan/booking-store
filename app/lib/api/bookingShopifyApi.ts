@@ -28,10 +28,17 @@ import type {
   CustomerLocationUpdateBody,
   CustomerLocationUpdateResponse,
   CustomerOrderGetResponse,
-  CustomerPayoutAccountCreate200,
   CustomerPayoutAccountCreateBody,
-  CustomerPayoutAccountDestroy200,
-  CustomerPayoutAccountGet200,
+  CustomerPayoutAccountCreateResponse,
+  CustomerPayoutAccountDestroyResponse,
+  CustomerPayoutAccountGetResponse,
+  CustomerPayoutBalanceResponse,
+  CustomerPayoutCreateResponse,
+  CustomerPayoutGetResponse,
+  CustomerPayoutLogPaginateParams,
+  CustomerPayoutLogResponse,
+  CustomerPayoutPaginateParams,
+  CustomerPayoutPaginateResponse,
   CustomerProductCreateVariantBody,
   CustomerProductCreateVariantResponse,
   CustomerProductDestroyResponse,
@@ -316,6 +323,70 @@ export const getBookingShopifyApi = () => {
   };
 
   /**
+   * This endpoint get all payouts
+   * @summary GET get all payouts using paginate
+   */
+  const customerPayoutPaginate = (
+    customerId: string,
+    params: CustomerPayoutPaginateParams,
+  ) => {
+    return queryClient<CustomerPayoutPaginateResponse>({
+      url: `/customer/${customerId}/payouts/paginate`,
+      method: 'GET',
+      params,
+    });
+  };
+
+  /**
+   * This endpoint get payout balance
+   * @summary GET get payout balance
+   */
+  const customerPayoutBalance = (customerId: string) => {
+    return queryClient<CustomerPayoutBalanceResponse>({
+      url: `/customer/${customerId}/payouts/balance`,
+      method: 'GET',
+    });
+  };
+
+  /**
+   * This endpoint get payout
+   * @summary GET get payout
+   */
+  const customerPayoutGet = (customerId: string, payoutId: string) => {
+    return queryClient<CustomerPayoutGetResponse>({
+      url: `/customer/${customerId}/payout/${payoutId}`,
+      method: 'GET',
+    });
+  };
+
+  /**
+   * This endpoint create payout
+   * @summary POST Create payout
+   */
+  const customerPayoutCreate = (customerId: string) => {
+    return queryClient<CustomerPayoutCreateResponse>({
+      url: `/customer/${customerId}/payout/create`,
+      method: 'POST',
+    });
+  };
+
+  /**
+   * This endpoint get all payout logs for specific payout
+   * @summary GET get all payout logs for specific payout using paginate
+   */
+  const customerPayoutLogPaginate = (
+    customerId: string,
+    payoutId: string,
+    params: CustomerPayoutLogPaginateParams,
+  ) => {
+    return queryClient<CustomerPayoutLogResponse>({
+      url: `/customer/${customerId}/payout-logs/${payoutId}/paginate`,
+      method: 'GET',
+      params,
+    });
+  };
+
+  /**
    * This endpoint create new payout account
    * @summary POST Create payout account
    */
@@ -323,7 +394,7 @@ export const getBookingShopifyApi = () => {
     customerId: string,
     customerPayoutAccountCreateBody: BodyType<CustomerPayoutAccountCreateBody>,
   ) => {
-    return queryClient<CustomerPayoutAccountCreate200>({
+    return queryClient<CustomerPayoutAccountCreateResponse>({
       url: `/customer/${customerId}/payout-account`,
       method: 'POST',
       headers: {'Content-Type': 'application/json'},
@@ -336,7 +407,7 @@ export const getBookingShopifyApi = () => {
    * @summary GET get payout account
    */
   const customerPayoutAccountGet = (customerId: string) => {
-    return queryClient<CustomerPayoutAccountGet200>({
+    return queryClient<CustomerPayoutAccountGetResponse>({
       url: `/customer/${customerId}/payout-account`,
       method: 'GET',
     });
@@ -347,7 +418,7 @@ export const getBookingShopifyApi = () => {
    * @summary DEL destroy payout account
    */
   const customerPayoutAccountDestroy = (customerId: string) => {
-    return queryClient<CustomerPayoutAccountDestroy200>({
+    return queryClient<CustomerPayoutAccountDestroyResponse>({
       url: `/customer/${customerId}/payout-account`,
       method: 'DELETE',
     });
@@ -899,6 +970,11 @@ export const getBookingShopifyApi = () => {
     customerLocationCreate,
     customerLocationList,
     customerOrderGet,
+    customerPayoutPaginate,
+    customerPayoutBalance,
+    customerPayoutGet,
+    customerPayoutCreate,
+    customerPayoutLogPaginate,
     customerPayoutAccountCreate,
     customerPayoutAccountGet,
     customerPayoutAccountDestroy,
@@ -1029,6 +1105,35 @@ export type CustomerLocationListResult = NonNullable<
 export type CustomerOrderGetResult = NonNullable<
   Awaited<
     ReturnType<ReturnType<typeof getBookingShopifyApi>['customerOrderGet']>
+  >
+>;
+export type CustomerPayoutPaginateResult = NonNullable<
+  Awaited<
+    ReturnType<
+      ReturnType<typeof getBookingShopifyApi>['customerPayoutPaginate']
+    >
+  >
+>;
+export type CustomerPayoutBalanceResult = NonNullable<
+  Awaited<
+    ReturnType<ReturnType<typeof getBookingShopifyApi>['customerPayoutBalance']>
+  >
+>;
+export type CustomerPayoutGetResult = NonNullable<
+  Awaited<
+    ReturnType<ReturnType<typeof getBookingShopifyApi>['customerPayoutGet']>
+  >
+>;
+export type CustomerPayoutCreateResult = NonNullable<
+  Awaited<
+    ReturnType<ReturnType<typeof getBookingShopifyApi>['customerPayoutCreate']>
+  >
+>;
+export type CustomerPayoutLogPaginateResult = NonNullable<
+  Awaited<
+    ReturnType<
+      ReturnType<typeof getBookingShopifyApi>['customerPayoutLogPaginate']
+    >
   >
 >;
 export type CustomerPayoutAccountCreateResult = NonNullable<
