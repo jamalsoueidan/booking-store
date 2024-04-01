@@ -9,12 +9,9 @@ import {
   Stack,
   Text,
 } from '@mantine/core';
+import {useMediaQuery} from '@mantine/hooks';
 import {Link, NavLink} from '@remix-run/react';
-import {
-  IconArrowRightBar,
-  IconBrandFacebook,
-  IconBrandInstagram,
-} from '@tabler/icons-react';
+import {IconBrandFacebook, IconBrandInstagram} from '@tabler/icons-react';
 import type {FooterQuery, HeaderQuery} from 'storefrontapi.generated';
 import {useRootLoaderData} from '~/root';
 import logo from '../../public/logo.avif';
@@ -24,12 +21,14 @@ export function Footer({
   menu,
   shop,
 }: FooterQuery & {shop: HeaderQuery['shop']}) {
+  const isMobile = useMediaQuery('(max-width: 62em)');
+
   return (
     <footer className={classes.footer}>
       <Container size="xl">
         <Flex direction={{base: 'column', sm: 'row'}} gap="xl">
-          <Stack align="flex-start" style={{flex: 1}} gap="xl">
-            <div>
+          <Stack style={{flex: 1}} gap="xl">
+            <Flex direction="column" align={isMobile ? 'center' : undefined}>
               <NavLink prefetch="intent" to="/">
                 <img src={logo} alt={shop.name} className={classes.logo} />
               </NavLink>
@@ -37,14 +36,18 @@ export function Footer({
                 Vores platform forbinder dig med talentfulde eksperter inden for
                 alle aspekter af skønhed.
               </Text>
-            </div>
-            <Flex align="center">
+            </Flex>
+            <Flex
+              align="center"
+              direction={isMobile ? 'column' : 'row'}
+              gap="lg"
+            >
               <Button
                 component={Link}
                 to="/artists"
                 size="sm"
-                variant="default"
-                mr="lg"
+                variant="outline"
+                color="black"
               >
                 Find en skønhedskarriere
               </Button>
@@ -52,9 +55,8 @@ export function Footer({
                 component={Link}
                 to="/pages/start-din-skoenhedskarriere"
                 size="sm"
-                variant="transparent"
-                c="black"
-                rightSection={<IconArrowRightBar />}
+                variant="outline"
+                color="black"
               >
                 Start din skønhedskarriere
               </Button>

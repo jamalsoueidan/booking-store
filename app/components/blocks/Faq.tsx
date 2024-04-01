@@ -25,7 +25,7 @@ export function Faq({
   const accordion = field.getMetaObject('accordion');
 
   return (
-    <Wrapper bg={backgroundColor || 'gray.1'}>
+    <Wrapper bg={backgroundColor || undefined}>
       <Flex direction={isMobile ? 'column' : direction || 'row'} gap="xl">
         <Stack flex="1" justify="center" mb={!isMobile ? '20px' : 0}>
           {title && (

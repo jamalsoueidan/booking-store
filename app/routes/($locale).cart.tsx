@@ -2,14 +2,14 @@ import {Await, useLoaderData, type MetaFunction} from '@remix-run/react';
 import type {CartQueryData} from '@shopify/hydrogen';
 import {CartForm} from '@shopify/hydrogen';
 import {
-  LoaderFunctionArgs,
   json,
   type ActionFunctionArgs,
+  type LoaderFunctionArgs,
 } from '@shopify/remix-oxygen';
 import {Suspense} from 'react';
 import {CartMain} from '~/components/Cart';
 import {Wrapper} from '~/components/Wrapper';
-import {VisualTeaser} from '~/components/metaobjects/VisualTeaser';
+import {VisualTeaser} from '~/components/blocks/VisualTeaser';
 import {METAFIELD_QUERY} from '~/data/fragments';
 import {useRootLoaderData} from '~/root';
 

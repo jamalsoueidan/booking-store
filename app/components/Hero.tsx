@@ -2,7 +2,6 @@ import {
   Box,
   Button,
   Container,
-  createPolymorphicComponent,
   Flex,
   Image,
   rem,
@@ -11,8 +10,6 @@ import {
   Stack,
   Text,
   Title,
-  UnstyledButton,
-  type UnstyledButtonProps,
 } from '@mantine/core';
 import {Await, Link} from '@remix-run/react';
 import {Image as ShopifyImage} from '@shopify/hydrogen';
@@ -75,11 +72,6 @@ export function Hero({
     </Container>
   );
 }
-
-const MotionUnstyledButton = createPolymorphicComponent<
-  'a',
-  UnstyledButtonProps
->(UnstyledButton);
 
 const CARD_OFFSET = 30;
 const SCALE_FACTOR = 0.06;

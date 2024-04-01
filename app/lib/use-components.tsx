@@ -1,13 +1,13 @@
 import {type PageFragment} from 'storefrontapi.generated';
-import {CallToAction} from '~/components/metaobjects/CallToAction';
-import {CardMedia} from '~/components/metaobjects/CardMedia';
-import {Faq} from '~/components/metaobjects/Faq';
-import {WrapperFeatures} from '~/components/metaobjects/Features';
-import {GoogleMap} from '~/components/metaobjects/GoogleMap';
-import {Help} from '~/components/metaobjects/Help';
-import {ImageGridWithHeader} from '~/components/metaobjects/ImageGridWithHeader';
-import {SideBySide} from '~/components/metaobjects/SideBySide';
-import {VisualTeaser} from '~/components/metaobjects/VisualTeaser';
+import {CallToAction} from '~/components/blocks/CallToAction';
+import {CardMedia} from '~/components/blocks/CardMedia';
+import {Faq} from '~/components/blocks/Faq';
+import {WrapperFeatures} from '~/components/blocks/Features';
+import {GoogleMap} from '~/components/blocks/GoogleMap';
+import {Help} from '~/components/blocks/Help';
+import {ImageGridWithHeader} from '~/components/blocks/ImageGridWithHeader';
+import {SideBySide} from '~/components/blocks/SideBySide';
+import {VisualTeaser} from '~/components/blocks/VisualTeaser';
 
 export const useComponents = (
   components?: PageFragment['components'] | null,

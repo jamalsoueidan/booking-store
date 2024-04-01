@@ -4,11 +4,14 @@ import {
   Button,
   Container,
   Flex,
+  getGradient,
   rem,
   SimpleGrid,
   Skeleton,
   Stack,
+  Text,
   Title,
+  useMantineTheme,
 } from '@mantine/core';
 import {Await, Link, useLoaderData, type MetaFunction} from '@remix-run/react';
 import {parseGid} from '@shopify/hydrogen';
@@ -20,10 +23,9 @@ import type {
   PageFragment,
   RecommendedTreatmentsQuery,
 } from 'storefrontapi.generated';
-import {Hero} from '~/components/Hero';
 import {TreatmentCard} from '~/components/treatment/TreatmentCard';
 
-import {IconArrowRight} from '@tabler/icons-react';
+import {IconArrowRight, IconArrowRightBar} from '@tabler/icons-react';
 import {Slider} from '~/components/Slider';
 import {METAFIELD_QUERY, PRODUCT_ITEM_FRAGMENT} from '~/data/fragments';
 import {getBookingShopifyApi} from '~/lib/api/bookingShopifyApi';
@@ -33,7 +35,7 @@ import type {
 } from '~/lib/api/model';
 
 import {ArtistCard} from '~/components/ArtistCard';
-import {useField} from '~/components/metaobjects/utils';
+import {useField} from '~/components/blocks/utils';
 import {ProfessionButton} from '~/components/ProfessionButton';
 import {useComponents} from '~/lib/use-components';
 import {
@@ -98,8 +100,72 @@ export default function Homepage() {
 
   return (
     <>
-      <Box bg="blue.1" mt="-70px" pt="70" pb={{base: 'md', sm: '42'}}>
-        <Hero artists={data.artists} professions={data.professions} />
+      <Box py={{base: rem(40), sm: rem(60)}}>
+        <Container size="xl">
+          <Stack gap="xl">
+            <Title
+              order={1}
+              ta="center"
+              lts="1px"
+              fw="bold"
+              fz={{base: rem(40), sm: rem(65)}}
+              lh={{base: rem(45), sm: rem(70)}}
+            >
+              Find professionelle{' '}
+              <Text
+                span
+                inherit
+                variant="gradient"
+                gradient={{from: 'orange', to: 'orange.3', deg: 180}}
+              >
+                skønhedseksperter
+              </Text>{' '}
+              og book deres{' '}
+              <Text
+                span
+                inherit
+                variant="gradient"
+                gradient={{from: 'orange', to: 'orange.3', deg: 180}}
+              >
+                behandlinger
+              </Text>{' '}
+              direkte på vores platform
+            </Title>
+            <Title order={2} c="dimmed" fw="normal" ta="center" lineClamp={2}>
+              Vores platform forbinder dig med talentfulde eksperter inden for
+              alle aspekter af skønhed.
+            </Title>
+
+            <Flex
+              direction={{base: 'column', sm: 'row'}}
+              justify="center"
+              gap={{base: 'sm', sm: 'xl'}}
+            >
+              <Button
+                variant="outline"
+                color="orange"
+                component={Link}
+                to="/artists"
+                size="lg"
+                radius="md"
+              >
+                Find en skønhedsekspert
+              </Button>
+
+              <Button
+                variant="outline"
+                color="#8a60f6"
+                component={Link}
+                to="/pages/start-din-skoenhedskarriere"
+                size="lg"
+                radius="md"
+                rightSection={<IconArrowRightBar />}
+              >
+                Start din skønhedskarriere
+              </Button>
+            </Flex>
+          </Stack>
+        </Container>
       </Box>
 
       <FeaturedArtists artists={data.artists} professions={data.professions} />
@@ -137,19 +203,23 @@ function FeaturedArtists({
   artists: Promise<UsersListResponse>;
   professions?: Promise<Array<Profession>>;
 }) {
+  const theme = useMantineTheme();
   if (!artists) return null;
 
   return (
-    <Box bg="yellow.1" p={{base: 'md', sm: '42'}}>
+    <Box
+      bg={getGradient({deg: 180, from: 'white', to: 'yellow.1'}, theme)}
+      py={{base: rem(40), sm: rem(60)}}
+    >
       <Container size="xl">
         <Stack gap="xl">
           <Title
             order={2}
             ta="center"
             lts="1px"
-            fw={500}
-            size={rem(48)}
-            c="pink"
+            fw="bold"
+            fz={{base: rem(35), sm: rem(45)}}
+            lh={{base: rem(45), sm: rem(55)}}
           >
             Mød vores talentfulde eksperter
           </Title>
@@ -195,6 +265,25 @@ function FeaturedArtists({
               </Await>
             </Suspense>
           </SimpleGrid>
+          <Flex justify="center">
+            <Button
+              variant="outline"
+              color="black"
+              size="lg"
+              aria-label="Settings"
+              component={Link}
+              to="/artists"
+              radius="lg"
+              rightSection={
+                <IconArrowRight
+                  style={{width: '70%', height: '70%'}}
+                  stroke={1.5}
+                />
+              }
+            >
+              Vis skønhedseksperter
+            </Button>
+          </Flex>
         </Stack>
       </Container>
     </Box>
@@ -208,19 +297,25 @@ function RecommendedTreatments({
   products: RecommendedTreatmentsQuery;
   productsUsers: Promise<ProductsGetUsersImageResponse>;
 }) {
+  const theme = useMantineTheme();
   const AUTOPLAY_DELAY = useRef(Autoplay({delay: 2000}));
 
   return (
-    <Box bg="pink.1" py="60" px="xl" style={{overflow: 'hidden'}}>
+    <Box
+      bg={getGradient({deg: 180, from: 'yellow.1', to: 'pink.1'}, theme)}
+      py={{base: rem(40), sm: rem(60)}}
+      px="xl"
+      style={{overflow: 'hidden'}}
+    >
       <Stack gap="xl">
         <Container size="xl">
           <Title
             order={2}
             ta="center"
             lts="1px"
-            fw={500}
-            fz={{base: rem(28), md: rem(48)}}
-            c="black"
+            fw="bold"
+            fz={{base: rem(35), sm: rem(45)}}
+            lh={{base: rem(45), sm: rem(55)}}
           >
             Book unikke oplevelser og skønhedsoplevelse
           </Title>
@@ -277,11 +372,11 @@ function RecommendedTreatments({
           </Await>
         </Suspense>
         <Container size="xl">
-          <Flex justify="space-between">
+          <Flex justify="center">
             <Button
-              variant="filled"
+              variant="outline"
               color="black"
-              size="xl"
+              size="lg"
               aria-label="Settings"
               component={Link}
               to="/categories"

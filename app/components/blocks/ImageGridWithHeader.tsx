@@ -5,7 +5,9 @@ import {
   SimpleGrid,
   Stack,
   Title,
+  getGradient,
   rem,
+  useMantineTheme,
 } from '@mantine/core';
 import {Link} from '@remix-run/react';
 import type {
@@ -21,16 +23,28 @@ export function ImageGridWithHeader({
 }: {
   component: PageComponentFragment;
 }) {
+  const theme = useMantineTheme();
   const field = useField(component);
   const title = field.getFieldValue('title');
   const backgroundColor = field.getFieldValue('background_color');
   const items = field.getItems<PageComponentCollectionFragment>('collections');
 
   return (
-    <Wrapper bg={backgroundColor || undefined}>
+    <Wrapper
+      bg={getGradient(
+        {deg: 180, from: 'pink.1', to: backgroundColor || 'white'},
+        theme,
+      )}
+    >
       <Stack gap="xl">
         {title ? (
-          <Title ta="center" fw={500} size={rem(48)} lts="1px">
+          <Title
+            ta="center"
+            lts="1px"
+            fw="bold"
+            fz={{base: rem(35), sm: rem(45)}}
+            lh={{base: rem(45), sm: rem(55)}}
+          >
             {title}
           </Title>
         ) : null}
