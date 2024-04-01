@@ -3,6 +3,7 @@ import {
   Button,
   Card,
   SimpleGrid,
+  Skeleton,
   Stack,
   Table,
   Text,
@@ -13,6 +14,8 @@ import {defer, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
 import {format} from 'date-fns';
 import {da} from 'date-fns/locale';
 import {Suspense} from 'react';
+import {AccountContent} from '~/components/account/AccountContent';
+import {AccountTitle} from '~/components/account/AccountTitle';
 import {getBookingShopifyApi} from '~/lib/api/bookingShopifyApi';
 import type {
   CustomerPayoutAccountGetResponse,
@@ -42,72 +45,78 @@ export default function AccountPayoutsIndex() {
   const data = useLoaderData<typeof loader>();
 
   return (
-    <Stack gap="xl">
-      <SimpleGrid cols={{base: 1, sm: 2, md: 3}}>
-        <PayoutAccount payoutAccount={data.payoutAccount} />
-        <PayoutBalance payoutBalance={data.payoutBalance} />
-      </SimpleGrid>
+    <>
+      <AccountTitle heading="Udbetalinger" />
 
-      <div>
-        <Title order={3}>Historik</Title>
-        <Text c="dimmed">Listen af alle udbetalinger der er foretagt</Text>
-      </div>
+      <AccountContent>
+        <Stack gap="xl">
+          <SimpleGrid cols={{base: 1, sm: 2}}>
+            <PayoutAccount payoutAccount={data.payoutAccount} />
+            <PayoutBalance payoutBalance={data.payoutBalance} />
+          </SimpleGrid>
 
-      <Suspense fallback={<>Henter udbetalingshistorik...</>}>
-        <Await resolve={data.payouts}>
-          {({payload}) => {
-            return (
-              <Table.ScrollContainer minWidth={500}>
-                <Table>
-                  <Table.Thead>
-                    <Table.Tr>
-                      <Table.Th>Dato</Table.Th>
-                      <Table.Th>Status</Table.Th>
-                      <Table.Th>Beløb</Table.Th>
-                      <Table.Th>-</Table.Th>
-                    </Table.Tr>
-                  </Table.Thead>
+          <div>
+            <Title order={3}>Historik</Title>
+            <Text c="dimmed">Listen af alle udbetalinger der er foretagt</Text>
+          </div>
 
-                  {payload.totalCount > 0 ? (
-                    <Table.Tbody>
-                      {payload.results.map((payout) => (
-                        <Table.Tr key={payout.date}>
-                          <Table.Td>
-                            {format(new Date(), 'yyyy-MM-dd', {locale: da})}
-                          </Table.Td>
-                          <Table.Td>
-                            <Badge color="green">{payout.status}</Badge>
-                          </Table.Td>
-                          <Table.Td>{payout.amount} DKK</Table.Td>
-                          <Table.Td>
-                            <Button
-                              variant="default"
-                              size="sm"
-                              component={Link}
-                              to={`${payout._id}`}
-                            >
-                              Vis detailjer
-                            </Button>
-                          </Table.Td>
+          <Suspense fallback={<>Henter udbetalingshistorik...</>}>
+            <Await resolve={data.payouts}>
+              {({payload}) => {
+                return (
+                  <Table.ScrollContainer minWidth={500}>
+                    <Table>
+                      <Table.Thead>
+                        <Table.Tr>
+                          <Table.Th>Dato</Table.Th>
+                          <Table.Th>Status</Table.Th>
+                          <Table.Th>Beløb</Table.Th>
+                          <Table.Th align="right"></Table.Th>
                         </Table.Tr>
-                      ))}
-                    </Table.Tbody>
-                  ) : (
-                    <Table.Tbody>
-                      <Table.Tr>
-                        <Table.Td colSpan={4}>
-                          Der er ikke oprettet udbetalinger endnu!
-                        </Table.Td>
-                      </Table.Tr>
-                    </Table.Tbody>
-                  )}
-                </Table>
-              </Table.ScrollContainer>
-            );
-          }}
-        </Await>
-      </Suspense>
-    </Stack>
+                      </Table.Thead>
+
+                      {payload.totalCount > 0 ? (
+                        <Table.Tbody>
+                          {payload.results.map((payout) => (
+                            <Table.Tr key={payout.date}>
+                              <Table.Td>
+                                {format(new Date(), 'yyyy-MM-dd', {locale: da})}
+                              </Table.Td>
+                              <Table.Td>
+                                <Badge color="green">{payout.status}</Badge>
+                              </Table.Td>
+                              <Table.Td>{payout.amount} DKK</Table.Td>
+                              <Table.Td align="right">
+                                <Button
+                                  variant="default"
+                                  size="sm"
+                                  component={Link}
+                                  to={`${payout._id}`}
+                                >
+                                  Vis detailjer
+                                </Button>
+                              </Table.Td>
+                            </Table.Tr>
+                          ))}
+                        </Table.Tbody>
+                      ) : (
+                        <Table.Tbody>
+                          <Table.Tr>
+                            <Table.Td colSpan={4}>
+                              Der er ikke oprettet udbetalinger endnu!
+                            </Table.Td>
+                          </Table.Tr>
+                        </Table.Tbody>
+                      )}
+                    </Table>
+                  </Table.ScrollContainer>
+                );
+              }}
+            </Await>
+          </Suspense>
+        </Stack>
+      </AccountContent>
+    </>
   );
 }
 
@@ -117,17 +126,22 @@ const PayoutBalance = ({
   payoutBalance: Promise<CustomerPayoutBalanceResponse>;
 }) => {
   return (
-    <Suspense fallback={<>asd</>}>
+    <Suspense fallback={<Skeleton height="100%" width="100%" />}>
       <Await resolve={payoutBalance}>
         {({payload}) => {
           return (
-            <Card withBorder>
-              <Stack gap="xs">
-                <Title order={3}>Balance</Title>
-                <Text>Total: {payload.totalAmount} DKK</Text>
-                <Text>Kørsel: {payload.totalShippingAmount} DKK</Text>
-                <Text>Behandlinger: {payload.totalLineItems}</Text>
-              </Stack>
+            <Card withBorder component={Stack} gap="xs" align="flex-start">
+              <Title order={3}>Balance</Title>
+              <Text>Total: {payload.totalAmount} DKK</Text>
+              <Text>Kørsel: {payload.totalShippingAmount} DKK</Text>
+              <Text>Behandlinger: {payload.totalLineItems}</Text>
+              {payload.totalAmount > 0 ? (
+                <Form method="post" action="request">
+                  <Button type="submit" variant="light">
+                    Send anmodning
+                  </Button>
+                </Form>
+              ) : null}
             </Card>
           );
         }}
@@ -142,7 +156,7 @@ const PayoutAccount = ({
   payoutAccount: Promise<CustomerPayoutAccountGetResponse>;
 }) => {
   return (
-    <Suspense fallback={<>asd</>}>
+    <Suspense fallback={<Skeleton height="100%" width="100%" />}>
       <Await resolve={payoutAccount}>
         {({payload}) => {
           return (

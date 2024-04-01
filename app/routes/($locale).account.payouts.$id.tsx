@@ -7,6 +7,8 @@ import {Await, useLoaderData} from '@remix-run/react';
 import {format} from 'date-fns';
 import {da} from 'date-fns/locale';
 import {Suspense} from 'react';
+import {AccountContent} from '~/components/account/AccountContent';
+import {AccountTitle} from '~/components/account/AccountTitle';
 import {getBookingShopifyApi} from '~/lib/api/bookingShopifyApi';
 import type {
   CustomerPayoutGetResponse,
@@ -46,10 +48,16 @@ export default function AccountPayoutsId() {
   const data = useLoaderData<typeof loader>();
 
   return (
-    <Stack align="flex-start">
-      <Payout data={data.payout} />
-      <PayoutLogs data={data.payoutLogs} />
-    </Stack>
+    <>
+      <AccountTitle linkBack="../" heading="Visning af udbetaling" />
+
+      <AccountContent>
+        <Stack align="flex-start">
+          <Payout data={data.payout} />
+          <PayoutLogs data={data.payoutLogs} />
+        </Stack>
+      </AccountContent>
+    </>
   );
 }
 
@@ -62,10 +70,11 @@ const PayoutLogs = ({data}: {data: Promise<CustomerPayoutLogResponse>}) => {
             <Table>
               <Table.Thead>
                 <Table.Tr>
+                  <Table.Th>#</Table.Th>
                   <Table.Th>Type</Table.Th>
                   <Table.Th>Title</Table.Th>
-                  <Table.Th>Dato</Table.Th>
                   <Table.Th>Beløb</Table.Th>
+                  <Table.Th>Dato</Table.Th>
                 </Table.Tr>
               </Table.Thead>
 
@@ -74,17 +83,13 @@ const PayoutLogs = ({data}: {data: Promise<CustomerPayoutLogResponse>}) => {
                   {payload.results.map((payout, index) => {
                     return (
                       <Table.Tr key={payout._id}>
+                        <Table.Td>Vis order</Table.Td>
                         {isShipping(payout.referenceDocument) ? (
                           <>
                             <Table.Td>Forsendelse</Table.Td>
                             <Table.Td>
                               {payout.referenceDocument.origin.name} -{' '}
                               {payout.referenceDocument.destination.name}
-                            </Table.Td>
-                            <Table.Td>
-                              {format(new Date(payout.orderCreatedAt), 'PPPP', {
-                                locale: da,
-                              })}
                             </Table.Td>
                             <Table.Td>
                               {payout.referenceDocument.cost.value} DKK
@@ -97,15 +102,15 @@ const PayoutLogs = ({data}: {data: Promise<CustomerPayoutLogResponse>}) => {
                               {payout.referenceDocument.title}
                             </Table.Td>
                             <Table.Td>
-                              {format(new Date(payout.orderCreatedAt), 'PPPP', {
-                                locale: da,
-                              })}
-                            </Table.Td>
-                            <Table.Td>
                               {payout.referenceDocument.price} DKK
                             </Table.Td>
                           </>
                         )}
+                        <Table.Td>
+                          {format(new Date(payout.orderCreatedAt), 'PPPP', {
+                            locale: da,
+                          })}
+                        </Table.Td>
                       </Table.Tr>
                     );
                   })}
