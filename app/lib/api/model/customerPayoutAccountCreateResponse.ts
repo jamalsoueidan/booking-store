@@ -6,4 +6,7 @@
  */
 import type {CustomerPayoutAccount} from './customerPayoutAccount';
 
-export type CustomerPayoutAccountGet200Payload = CustomerPayoutAccount | null;
+export interface CustomerPayoutAccountCreateResponse {
+  payload: CustomerPayoutAccount;
+  success: boolean;
+}

@@ -7,7 +7,7 @@
 import type {CustomerPayoutAccountCreateBodyPayoutDetails} from './customerPayoutAccountCreateBodyPayoutDetails';
 import type {CustomerPayoutAccountType} from './customerPayoutAccountType';
 
-export type CustomerPayoutAccountCreateBody = {
+export interface CustomerPayoutAccountCreateBody {
   payoutDetails: CustomerPayoutAccountCreateBodyPayoutDetails;
   payoutType: CustomerPayoutAccountType;
-};
+}
