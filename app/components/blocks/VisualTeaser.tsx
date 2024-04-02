@@ -3,7 +3,6 @@ import {
   Box,
   Container,
   Stack,
-  Text,
   Title,
   getGradient,
   rem,
@@ -11,6 +10,7 @@ import {
 } from '@mantine/core';
 import type {Image, Maybe} from '@shopify/hydrogen/storefront-api-types';
 import type {PageComponentFragment} from 'storefrontapi.generated';
+import {TransformText} from './TransformText';
 import classes from './VisualTeaser.module.css';
 import {useField} from './utils';
 
@@ -103,7 +103,9 @@ export const VisualTeaserComponent = ({
 
       <Container size="lg" py={0} h={height} className={classes.container}>
         <Stack pt={rem(30)} pb={rem(50)} justify={justify || 'center'} h="100%">
-          {title ? <TransformText input={title} fontColor={fontColor} /> : null}
+          {title ? (
+            <TransformText input={title} c={fontColor || 'black'} />
+          ) : null}
           {subtitle ? (
             <Title
               order={2}
@@ -120,44 +122,3 @@ export const VisualTeaserComponent = ({
     </Box>
   );
 };
-
-function TransformText({
-  input,
-  fontColor,
-}: {
-  input: string;
-  fontColor?: string;
-}) {
-  const segments = input.split(/[\[\]]/).filter(Boolean);
-
-  return (
-    <Title
-      order={1}
-      ta="center"
-      textWrap="balance"
-      lts="1px"
-      fw="bold"
-      fz={{base: rem(40), sm: rem(65)}}
-      lh={{base: rem(45), sm: rem(70)}}
-      c={fontColor || 'black'}
-    >
-      {segments.map((segment: string, index: number) => {
-        if (input.indexOf(`[${segment}]`) > -1) {
-          return (
-            <Text
-              // eslint-disable-next-line react/no-array-index-key
-              key={index}
-              component="span"
-              inherit
-              variant="gradient"
-              gradient={{from: 'orange', to: 'orange.3', deg: 180}}
-            >
-              {segment}
-            </Text>
-          );
-        }
-        return segment;
-      })}
-    </Title>
-  );
-}

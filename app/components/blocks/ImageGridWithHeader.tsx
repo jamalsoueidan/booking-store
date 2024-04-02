@@ -16,6 +16,7 @@ import type {
 } from 'storefrontapi.generated';
 import {parseTE} from '~/lib/clean';
 import {Wrapper} from '../Wrapper';
+import {TransformText} from './TransformText';
 import {useField} from './utils';
 
 export function ImageGridWithHeader({
@@ -38,15 +39,7 @@ export function ImageGridWithHeader({
     >
       <Stack gap="xl">
         {title ? (
-          <Title
-            ta="center"
-            lts="1px"
-            fw="bold"
-            fz={{base: rem(35), sm: rem(45)}}
-            lh={{base: rem(45), sm: rem(55)}}
-          >
-            {title}
-          </Title>
+          <TransformText input={title} fz={{base: rem(35), sm: rem(45)}} />
         ) : null}
         <SimpleGrid
           cols={{base: 2, sm: 3, md: 5}}
