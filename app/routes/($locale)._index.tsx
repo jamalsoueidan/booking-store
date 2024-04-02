@@ -34,6 +34,7 @@ import type {
   UsersListResponse,
 } from '~/lib/api/model';
 
+import {useMediaQuery} from '@mantine/hooks';
 import {ArtistCard} from '~/components/ArtistCard';
 import {useField} from '~/components/blocks/utils';
 import {ProfessionButton} from '~/components/ProfessionButton';
@@ -205,6 +206,7 @@ function FeaturedArtists({
   professions?: Promise<Array<Profession>>;
 }) {
   const theme = useMantineTheme();
+  const isMobile = useMediaQuery('(max-width: 62em)');
   if (!artists) return null;
 
   return (
@@ -235,25 +237,30 @@ function FeaturedArtists({
 
           <Flex gap="lg" justify="center">
             <Suspense
-              fallback={
-                <>
-                  <Skeleton height={10} radius="lg" />
-                  <Skeleton height={10} radius="lg" />
-                  <Skeleton height={10} radius="lg" />
-                  <Skeleton height={10} radius="lg" />
-                  <Skeleton height={10} radius="lg" />
-                </>
-              }
+              fallback={[...Array(5)].map((_, index) => (
+                // eslint-disable-next-line react/no-array-index-key
+                <Skeleton key={index} height={10} radius="lg" />
+              ))}
             >
               <Await resolve={professions}>
-                {(profession) =>
-                  profession?.map((profession) => (
-                    <ProfessionButton
-                      key={profession.key}
-                      profession={profession}
-                    />
-                  ))
-                }
+                {(profession) => {
+                  return (
+                    <Carousel
+                      withIndicators
+                      slideSize={{base: '25%', sm: '20%'}}
+                      withControls={false}
+                      align="start"
+                      containScroll="keepSnaps"
+                      w={isMobile ? '100%' : '600px'}
+                    >
+                      {profession?.map((profession) => (
+                        <Carousel.Slide key={profession.key}>
+                          <ProfessionButton profession={profession} />
+                        </Carousel.Slide>
+                      ))}
+                    </Carousel>
+                  );
+                }}
               </Await>
             </Suspense>
           </Flex>
