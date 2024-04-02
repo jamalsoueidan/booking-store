@@ -1,17 +1,10 @@
-import {Button, Container, Flex, NativeSelect} from '@mantine/core';
-import {
-  Link,
-  NavLink,
-  Outlet,
-  useLoaderData,
-  useNavigate,
-  useParams,
-} from '@remix-run/react';
+import {Container, Flex, NativeSelect} from '@mantine/core';
+import {Outlet, useLoaderData, useNavigate, useParams} from '@remix-run/react';
 import {json, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
 import {useState} from 'react';
 import {VisualTeaser} from '~/components/blocks/VisualTeaser';
 import {COLLECTION_ITEM_FRAGMENT, METAFIELD_QUERY} from '~/data/fragments';
-import {parseTE} from '~/lib/clean';
+import {parseCT} from '~/lib/clean';
 
 export async function loader({context, request}: LoaderFunctionArgs) {
   const {collections} = await context.storefront.query(COLLECTIONS_QUERY, {
@@ -22,7 +15,7 @@ export async function loader({context, request}: LoaderFunctionArgs) {
     METAFIELD_QUERY,
     {
       variables: {
-        handle: 'categories',
+        handle: 'collections',
         type: 'visual_teaser',
       },
     },
@@ -40,79 +33,51 @@ export default function Collections() {
 
   const [value, setValue] = useState(
     selectedCollection
-      ? parseTE(selectedCollection.title)
+      ? parseCT(selectedCollection.title)
       : 'Alle behandlinger',
   );
 
   const navigate = useNavigate();
   const gotoCategoryPage = (value: string) => {
     const selectedCollection = collections.nodes.find(
-      (c) => parseTE(c.title) === value,
+      (c) => parseCT(c.title) === value,
     );
 
     if (selectedCollection) {
       navigate(selectedCollection.handle);
-      setValue(parseTE(selectedCollection.title));
+      setValue(parseCT(selectedCollection.title));
     } else {
-      navigate('alle-behandlinger');
-      setValue('Alle behandlinger');
+      navigate('alle-produkter');
+      setValue('Alle produkter');
     }
   };
 
   return (
     <>
       <VisualTeaser component={visualTeaser} />
+
       <Container size="xl">
-        <Flex hiddenFrom="sm">
+        <Flex
+          justify="space-between"
+          gap="lg"
+          direction={{base: 'column', sm: 'row'}}
+        >
           <NativeSelect
             size="xl"
             value={value}
             onChange={(event) => gotoCategoryPage(event.currentTarget.value)}
-            data={['Alle behandlinger'].concat(
-              collections.nodes.map((collection) => parseTE(collection.title)),
+            data={['Alle produkter'].concat(
+              collections.nodes.map((collection) => parseCT(collection.title)),
             )}
-            w="100%"
           />
-        </Flex>
-        <Flex justify="center" gap="lg" visibleFrom="sm">
-          <Button
-            variant="filled"
-            color={
-              params.handle === 'alle-behandlinger' || !params.handle
-                ? 'orange'
-                : 'gray.2'
-            }
-            c={
-              params.handle === 'alle-behandlinger' || !params.handle
-                ? 'white'
-                : 'gray.7'
-            }
-            radius="xl"
-            size="lg"
-            component={Link}
-            to="/categories"
-          >
-            Alle behandlinger
-          </Button>
-
-          {collections.nodes.map((collection) => (
-            <NavLink
-              key={collection.id}
-              to={`/categories/${collection.handle}`}
-            >
-              {({isActive}) => (
-                <Button
-                  variant="filled"
-                  color={isActive ? 'orange' : 'gray.2'}
-                  c={isActive ? 'white' : 'gray.7'}
-                  radius="xl"
-                  size="lg"
-                >
-                  {parseTE(collection.title)}
-                </Button>
-              )}
-            </NavLink>
-          ))}
+          <NativeSelect
+            size="xl"
+            data={[
+              'Sortere efter: Nyeste',
+              'Sortere efter: Billigst',
+              'Sortere efter: Dyrest',
+            ]}
+          />
         </Flex>
       </Container>
 
@@ -121,9 +86,9 @@ export default function Collections() {
   );
 }
 
-export const COLLECTIONS_QUERY = `#graphql
+const COLLECTIONS_QUERY = `#graphql
   ${COLLECTION_ITEM_FRAGMENT}
-  query StoreTreatment(
+  query StoreCollections(
     $country: CountryCode
     $endCursor: String
     $first: Int
@@ -135,9 +100,9 @@ export const COLLECTIONS_QUERY = `#graphql
       first: $first,
       last: $last,
       before: $startCursor,
-      sortKey: TITLE,
       after: $endCursor,
-      query: "title:treatments:*"
+      query: "title:products:*",
+      sortKey: TITLE
     ) {
       nodes {
         ...Collection

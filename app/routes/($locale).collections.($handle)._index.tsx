@@ -1,19 +1,10 @@
-import {
-  Button,
-  Container,
-  Flex,
-  SimpleGrid,
-  Stack,
-  Title,
-  rem,
-} from '@mantine/core';
+import {Button, Container, Flex, SimpleGrid, Stack} from '@mantine/core';
 import {useLoaderData, type MetaFunction} from '@remix-run/react';
 import {Pagination, getPaginationVariables} from '@shopify/hydrogen';
-import {json, redirect, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
+import {json, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
 import type {ProductItemFragment} from 'storefrontapi.generated';
 import {ProductCard} from '~/components/ProductCard';
 import {PRODUCT_ITEM_FRAGMENT} from '~/data/fragments';
-import {parseCT} from '~/lib/clean';
 
 export const meta: MetaFunction<typeof loader> = ({data}) => {
   return [{title: `BySisters | ${data?.collection.title ?? ''} Collection`}];
@@ -23,15 +14,11 @@ export async function loader({request, params, context}: LoaderFunctionArgs) {
   const {handle} = params;
   const {storefront} = context;
   const paginationVariables = getPaginationVariables(request, {
-    pageBy: 8,
+    pageBy: 10,
   });
 
-  if (!handle) {
-    return redirect('/collections');
-  }
-
   const {collection} = await storefront.query(COLLECTION_QUERY, {
-    variables: {handle, ...paginationVariables},
+    variables: {handle: handle || 'alle-produkter', ...paginationVariables},
   });
 
   if (!collection) {
@@ -46,35 +33,32 @@ export default function Collection() {
   const {collection} = useLoaderData<typeof loader>();
 
   return (
-    <Container fluid pt="xl">
-      <Stack pt={rem(30)} pb={rem(60)} gap="xs">
-        <Title order={5} c="dimmed" tt="uppercase" fw={300} ta="center">
-          Kollektion / {parseCT(collection.title)}
-        </Title>
-        <Title order={1} size={rem(54)} fw={400} ta="center">
-          {parseCT(collection.title)}
-        </Title>
-        <Title order={3} c="dimmed" ta="center" fw={300}>
-          {collection.description}
-        </Title>
-      </Stack>
-
+    <Container size="xl">
       <Pagination connection={collection.products}>
         {({nodes, isLoading, PreviousLink, NextLink}) => (
-          <>
+          <Stack gap="xl">
             <Flex justify="center">
-              <Button component={PreviousLink} loading={isLoading}>
+              <Button
+                variant="default"
+                component={PreviousLink}
+                loading={isLoading}
+                size="xl"
+              >
                 ↑ Hent tidligere
               </Button>
             </Flex>
             <ProductsGrid products={nodes} />
-            <br />
             <Flex justify="center">
-              <Button component={NextLink} loading={isLoading}>
+              <Button
+                variant="default"
+                component={NextLink}
+                loading={isLoading}
+                size="xl"
+              >
                 Hent flere ↓
               </Button>
             </Flex>
-          </>
+          </Stack>
         )}
       </Pagination>
     </Container>
@@ -83,19 +67,17 @@ export default function Collection() {
 
 function ProductsGrid({products}: {products: ProductItemFragment[]}) {
   return (
-    <Container size="xl">
-      <SimpleGrid cols={{base: 1, md: 3, lg: 4}}>
-        {products.map((product, index) => {
-          return (
-            <ProductCard
-              key={product.id}
-              product={product}
-              loading={index < 8 ? 'eager' : undefined}
-            />
-          );
-        })}
-      </SimpleGrid>
-    </Container>
+    <SimpleGrid cols={{base: 2, xs: 3, sm: 4, md: 5}}>
+      {products.map((product, index) => {
+        return (
+          <ProductCard
+            key={product.id}
+            product={product}
+            loading={index < 8 ? 'eager' : undefined}
+          />
+        );
+      })}
+    </SimpleGrid>
   );
 }
 
