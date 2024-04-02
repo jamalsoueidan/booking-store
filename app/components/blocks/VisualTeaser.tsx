@@ -4,10 +4,13 @@ import {
   Container,
   Stack,
   Title,
+  getGradient,
   rem,
+  useMantineTheme,
 } from '@mantine/core';
 import type {Image, Maybe} from '@shopify/hydrogen/storefront-api-types';
 import type {PageComponentFragment} from 'storefrontapi.generated';
+import {TransformText} from './TransformText';
 import classes from './VisualTeaser.module.css';
 import {useField} from './utils';
 
@@ -18,7 +21,6 @@ export function VisualTeaser({
 }) {
   const field = useField(component);
   const title = field.getFieldValue('title');
-  const overtitle = field.getFieldValue('overtitle');
   const subtitle = field.getFieldValue('subtitle');
   const backgroundColor = field.getFieldValue('background_color');
   const fontColor = field.getFieldValue('font_color');
@@ -37,7 +39,6 @@ export function VisualTeaser({
     <VisualTeaserComponent
       backgroundColor={backgroundColor}
       title={title}
-      overtitle={overtitle}
       subtitle={subtitle}
       image={image}
       opacity={opacity}
@@ -65,7 +66,6 @@ export type VisualTeaserComponentProps = {
 export const VisualTeaserComponent = ({
   backgroundColor,
   title,
-  overtitle,
   subtitle,
   image,
   opacity,
@@ -74,8 +74,16 @@ export const VisualTeaserComponent = ({
   fontColor,
   justify,
 }: VisualTeaserComponentProps) => {
+  const theme = useMantineTheme();
+
   return (
-    <Box bg={backgroundColor || 'gray.1'} className={classes.box}>
+    <Box
+      bg={getGradient(
+        {deg: 180, from: backgroundColor || 'white', to: 'white'},
+        theme,
+      )}
+      className={classes.box}
+    >
       {image ? (
         <BackgroundImage
           src={image?.url || ''}
@@ -95,41 +103,16 @@ export const VisualTeaserComponent = ({
 
       <Container size="lg" py={0} h={height} className={classes.container}>
         <Stack pt={rem(30)} pb={rem(50)} justify={justify || 'center'} h="100%">
-          {title || overtitle ? (
-            <div>
-              {overtitle ? (
-                <Title
-                  order={5}
-                  tt="uppercase"
-                  fw={300}
-                  ta="center"
-                  c={fontColor || 'black'}
-                  className={classes.overtitle}
-                >
-                  {overtitle}
-                </Title>
-              ) : null}
-              {title ? (
-                <Title
-                  order={1}
-                  fw={500}
-                  ta="center"
-                  textWrap="balance"
-                  className={classes.root}
-                  c={fontColor || 'black'}
-                >
-                  {title}
-                </Title>
-              ) : null}
-            </div>
+          {title ? (
+            <TransformText input={title} c={fontColor || 'black'} />
           ) : null}
           {subtitle ? (
             <Title
-              order={3}
+              order={2}
               ta="center"
-              fw={300}
-              className={classes.subtitle}
-              c={fontColor || 'black'}
+              fw="normal"
+              lineClamp={2}
+              c={fontColor || 'dimmed'}
             >
               {subtitle}
             </Title>

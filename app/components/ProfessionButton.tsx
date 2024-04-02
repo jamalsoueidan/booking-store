@@ -29,7 +29,13 @@ export const ProfessionButton = ({
         size="xl"
       />
       <Space h="xs" />
-      <Title order={6} fw="normal" textWrap="pretty" ta="center">
+      <Title
+        order={6}
+        fw="normal"
+        textWrap="pretty"
+        ta="center"
+        fz={{base: 'xs', sm: 'md'}}
+      >
         {profession.translation}
       </Title>
     </UnstyledButton>

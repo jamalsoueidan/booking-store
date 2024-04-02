@@ -25,7 +25,7 @@ import type {
 } from 'storefrontapi.generated';
 import {TreatmentCard} from '~/components/treatment/TreatmentCard';
 
-import {IconArrowRight, IconArrowRightBar} from '@tabler/icons-react';
+import {IconArrowRight, IconMoodWink, IconSearch} from '@tabler/icons-react';
 import {Slider} from '~/components/Slider';
 import {METAFIELD_QUERY, PRODUCT_ITEM_FRAGMENT} from '~/data/fragments';
 import {getBookingShopifyApi} from '~/lib/api/bookingShopifyApi';
@@ -34,6 +34,7 @@ import type {
   UsersListResponse,
 } from '~/lib/api/model';
 
+import {useMediaQuery} from '@mantine/hooks';
 import {ArtistCard} from '~/components/ArtistCard';
 import {useField} from '~/components/blocks/utils';
 import {ProfessionButton} from '~/components/ProfessionButton';
@@ -42,7 +43,7 @@ import {
   loader as loaderProfessions,
   type Profession,
 } from './($locale).api.users.professions';
-import {COLLECTIONS_QUERY} from './($locale).categories._index';
+import {COLLECTIONS_QUERY} from './($locale).categories';
 
 export function shouldRevalidate() {
   return false;
@@ -108,7 +109,7 @@ export default function Homepage() {
               ta="center"
               lts="1px"
               fw="bold"
-              fz={{base: rem(40), sm: rem(65)}}
+              fz={{base: rem(38), sm: rem(65)}}
               lh={{base: rem(45), sm: rem(70)}}
             >
               Find professionelle{' '}
@@ -148,6 +149,7 @@ export default function Homepage() {
                 to="/artists"
                 size="lg"
                 radius="md"
+                rightSection={<IconSearch />}
               >
                 Find en skønhedsekspert
               </Button>
@@ -159,7 +161,7 @@ export default function Homepage() {
                 to="/pages/start-din-skoenhedskarriere"
                 size="lg"
                 radius="md"
-                rightSection={<IconArrowRightBar />}
+                rightSection={<IconMoodWink />}
               >
                 Start din skønhedskarriere
               </Button>
@@ -204,6 +206,7 @@ function FeaturedArtists({
   professions?: Promise<Array<Profession>>;
 }) {
   const theme = useMantineTheme();
+  const isMobile = useMediaQuery('(max-width: 62em)');
   if (!artists) return null;
 
   return (
@@ -221,30 +224,44 @@ function FeaturedArtists({
             fz={{base: rem(35), sm: rem(45)}}
             lh={{base: rem(45), sm: rem(55)}}
           >
-            Mød vores talentfulde eksperter
+            Mød vores{' '}
+            <Text
+              span
+              inherit
+              variant="gradient"
+              gradient={{from: '#9030ed', to: '#e71b7c', deg: 90}}
+            >
+              talentfulde eksperter
+            </Text>
           </Title>
 
           <Flex gap="lg" justify="center">
             <Suspense
-              fallback={
-                <>
-                  <Skeleton height={10} radius="lg" />
-                  <Skeleton height={10} radius="lg" />
-                  <Skeleton height={10} radius="lg" />
-                  <Skeleton height={10} radius="lg" />
-                  <Skeleton height={10} radius="lg" />
-                </>
-              }
+              fallback={[...Array(5)].map((_, index) => (
+                // eslint-disable-next-line react/no-array-index-key
+                <Skeleton key={index} height={10} radius="lg" />
+              ))}
             >
               <Await resolve={professions}>
-                {(profession) =>
-                  profession?.map((profession) => (
-                    <ProfessionButton
-                      key={profession.key}
-                      profession={profession}
-                    />
-                  ))
-                }
+                {(profession) => {
+                  return (
+                    <Carousel
+                      withIndicators
+                      slideSize={{base: '25%', sm: '20%'}}
+                      slideGap={{base: 'sm'}}
+                      withControls={false}
+                      align="start"
+                      containScroll="keepSnaps"
+                      w={isMobile ? '100%' : '620px'}
+                    >
+                      {profession?.map((profession) => (
+                        <Carousel.Slide key={profession.key}>
+                          <ProfessionButton profession={profession} />
+                        </Carousel.Slide>
+                      ))}
+                    </Carousel>
+                  );
+                }}
               </Await>
             </Suspense>
           </Flex>
@@ -304,8 +321,6 @@ function RecommendedTreatments({
     <Box
       bg={getGradient({deg: 180, from: 'yellow.1', to: 'pink.1'}, theme)}
       py={{base: rem(40), sm: rem(60)}}
-      px="xl"
-      style={{overflow: 'hidden'}}
     >
       <Stack gap="xl">
         <Container size="xl">
@@ -317,60 +332,71 @@ function RecommendedTreatments({
             fz={{base: rem(35), sm: rem(45)}}
             lh={{base: rem(45), sm: rem(55)}}
           >
-            Book unikke oplevelser og skønhedsoplevelse
+            Book unikke{' '}
+            <Text
+              span
+              inherit
+              variant="gradient"
+              gradient={{from: 'orange', to: 'yellow', deg: 90}}
+            >
+              oplevelser og skønhedsoplevelse
+            </Text>
           </Title>
         </Container>
-        <Suspense
-          fallback={
-            <Flex gap="lg">
-              {[...Array(4)].map((_, index) => (
-                // eslint-disable-next-line react/no-array-index-key
-                <Skeleton key={index} height={50} />
-              ))}
-            </Flex>
-          }
-        >
-          <Await resolve={productsUsers}>
-            {({payload: productsUsers}) => (
-              <Suspense
-                fallback={
-                  <Flex gap="lg">
-                    {[...Array(4)].map((_, index) => (
-                      // eslint-disable-next-line react/no-array-index-key
-                      <Skeleton key={index} height={50} />
-                    ))}
-                  </Flex>
-                }
-              >
-                <Await resolve={products}>
-                  {({products}) => (
-                    <Slider
-                      plugins={[AUTOPLAY_DELAY.current]}
-                      slideSize={{base: '100%', md: '20%'}}
-                    >
-                      {products.nodes.map((product) => {
-                        const productUsers = productsUsers.find(
-                          (p) =>
-                            p.productId.toString() === parseGid(product.id).id,
-                        );
+        <Box px="xl" style={{overflow: 'hidden'}}>
+          <Suspense
+            fallback={
+              <Flex gap="lg">
+                {[...Array(4)].map((_, index) => (
+                  // eslint-disable-next-line react/no-array-index-key
+                  <Skeleton key={index} height={50} />
+                ))}
+              </Flex>
+            }
+          >
+            <Await resolve={productsUsers}>
+              {({payload: productsUsers}) => (
+                <Suspense
+                  fallback={
+                    <Flex gap="lg">
+                      {[...Array(4)].map((_, index) => (
+                        // eslint-disable-next-line react/no-array-index-key
+                        <Skeleton key={index} height={50} />
+                      ))}
+                    </Flex>
+                  }
+                >
+                  <Await resolve={products}>
+                    {({products}) => (
+                      <Slider
+                        plugins={[AUTOPLAY_DELAY.current]}
+                        slideSize={{base: '100%', md: '20%'}}
+                      >
+                        {products.nodes.map((product) => {
+                          const productUsers = productsUsers.find(
+                            (p) =>
+                              p.productId.toString() ===
+                              parseGid(product.id).id,
+                          );
 
-                        return (
-                          <Carousel.Slide key={product.id}>
-                            <TreatmentCard
-                              product={product}
-                              productUsers={productUsers}
-                              loading={'eager'}
-                            />
-                          </Carousel.Slide>
-                        );
-                      })}
-                    </Slider>
-                  )}
-                </Await>
-              </Suspense>
-            )}
-          </Await>
-        </Suspense>
+                          return (
+                            <Carousel.Slide key={product.id}>
+                              <TreatmentCard
+                                product={product}
+                                productUsers={productUsers}
+                                loading={'eager'}
+                              />
+                            </Carousel.Slide>
+                          );
+                        })}
+                      </Slider>
+                    )}
+                  </Await>
+                </Suspense>
+              )}
+            </Await>
+          </Suspense>
+        </Box>
         <Container size="xl">
           <Flex justify="center">
             <Button
