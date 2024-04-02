@@ -109,7 +109,7 @@ export default function Homepage() {
               ta="center"
               lts="1px"
               fw="bold"
-              fz={{base: rem(40), sm: rem(65)}}
+              fz={{base: rem(38), sm: rem(65)}}
               lh={{base: rem(45), sm: rem(70)}}
             >
               Find professionelle{' '}
@@ -248,10 +248,11 @@ function FeaturedArtists({
                     <Carousel
                       withIndicators
                       slideSize={{base: '25%', sm: '20%'}}
+                      slideGap={{base: 'sm'}}
                       withControls={false}
                       align="start"
                       containScroll="keepSnaps"
-                      w={isMobile ? '100%' : '600px'}
+                      w={isMobile ? '100%' : '620px'}
                     >
                       {profession?.map((profession) => (
                         <Carousel.Slide key={profession.key}>
@@ -320,8 +321,6 @@ function RecommendedTreatments({
     <Box
       bg={getGradient({deg: 180, from: 'yellow.1', to: 'pink.1'}, theme)}
       py={{base: rem(40), sm: rem(60)}}
-      px="xl"
-      style={{overflow: 'hidden'}}
     >
       <Stack gap="xl">
         <Container size="xl">
@@ -344,57 +343,60 @@ function RecommendedTreatments({
             </Text>
           </Title>
         </Container>
-        <Suspense
-          fallback={
-            <Flex gap="lg">
-              {[...Array(4)].map((_, index) => (
-                // eslint-disable-next-line react/no-array-index-key
-                <Skeleton key={index} height={50} />
-              ))}
-            </Flex>
-          }
-        >
-          <Await resolve={productsUsers}>
-            {({payload: productsUsers}) => (
-              <Suspense
-                fallback={
-                  <Flex gap="lg">
-                    {[...Array(4)].map((_, index) => (
-                      // eslint-disable-next-line react/no-array-index-key
-                      <Skeleton key={index} height={50} />
-                    ))}
-                  </Flex>
-                }
-              >
-                <Await resolve={products}>
-                  {({products}) => (
-                    <Slider
-                      plugins={[AUTOPLAY_DELAY.current]}
-                      slideSize={{base: '100%', md: '20%'}}
-                    >
-                      {products.nodes.map((product) => {
-                        const productUsers = productsUsers.find(
-                          (p) =>
-                            p.productId.toString() === parseGid(product.id).id,
-                        );
+        <Box px="xl" style={{overflow: 'hidden'}}>
+          <Suspense
+            fallback={
+              <Flex gap="lg">
+                {[...Array(4)].map((_, index) => (
+                  // eslint-disable-next-line react/no-array-index-key
+                  <Skeleton key={index} height={50} />
+                ))}
+              </Flex>
+            }
+          >
+            <Await resolve={productsUsers}>
+              {({payload: productsUsers}) => (
+                <Suspense
+                  fallback={
+                    <Flex gap="lg">
+                      {[...Array(4)].map((_, index) => (
+                        // eslint-disable-next-line react/no-array-index-key
+                        <Skeleton key={index} height={50} />
+                      ))}
+                    </Flex>
+                  }
+                >
+                  <Await resolve={products}>
+                    {({products}) => (
+                      <Slider
+                        plugins={[AUTOPLAY_DELAY.current]}
+                        slideSize={{base: '100%', md: '20%'}}
+                      >
+                        {products.nodes.map((product) => {
+                          const productUsers = productsUsers.find(
+                            (p) =>
+                              p.productId.toString() ===
+                              parseGid(product.id).id,
+                          );
 
-                        return (
-                          <Carousel.Slide key={product.id}>
-                            <TreatmentCard
-                              product={product}
-                              productUsers={productUsers}
-                              loading={'eager'}
-                            />
-                          </Carousel.Slide>
-                        );
-                      })}
-                    </Slider>
-                  )}
-                </Await>
-              </Suspense>
-            )}
-          </Await>
-        </Suspense>
+                          return (
+                            <Carousel.Slide key={product.id}>
+                              <TreatmentCard
+                                product={product}
+                                productUsers={productUsers}
+                                loading={'eager'}
+                              />
+                            </Carousel.Slide>
+                          );
+                        })}
+                      </Slider>
+                    )}
+                  </Await>
+                </Suspense>
+              )}
+            </Await>
+          </Suspense>
+        </Box>
         <Container size="xl">
           <Flex justify="center">
             <Button

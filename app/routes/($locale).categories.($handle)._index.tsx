@@ -29,7 +29,7 @@ export async function loader({request, params, context}: LoaderFunctionArgs) {
 
   const {collection} = await storefront.query(COLLECTION_QUERY, {
     variables: {
-      handle: handle ? handle : 'alle-behandlinger',
+      handle: handle || 'alle-behandlingen',
       ...paginationVariables,
     },
   });
