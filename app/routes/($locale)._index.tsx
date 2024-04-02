@@ -25,7 +25,7 @@ import type {
 } from 'storefrontapi.generated';
 import {TreatmentCard} from '~/components/treatment/TreatmentCard';
 
-import {IconArrowRight, IconArrowRightBar} from '@tabler/icons-react';
+import {IconArrowRight, IconMoodWink, IconSearch} from '@tabler/icons-react';
 import {Slider} from '~/components/Slider';
 import {METAFIELD_QUERY, PRODUCT_ITEM_FRAGMENT} from '~/data/fragments';
 import {getBookingShopifyApi} from '~/lib/api/bookingShopifyApi';
@@ -42,7 +42,7 @@ import {
   loader as loaderProfessions,
   type Profession,
 } from './($locale).api.users.professions';
-import {COLLECTIONS_QUERY} from './($locale).categories._index';
+import {COLLECTIONS_QUERY} from './($locale).categories';
 
 export function shouldRevalidate() {
   return false;
@@ -148,6 +148,7 @@ export default function Homepage() {
                 to="/artists"
                 size="lg"
                 radius="md"
+                rightSection={<IconSearch />}
               >
                 Find en skønhedsekspert
               </Button>
@@ -159,7 +160,7 @@ export default function Homepage() {
                 to="/pages/start-din-skoenhedskarriere"
                 size="lg"
                 radius="md"
-                rightSection={<IconArrowRightBar />}
+                rightSection={<IconMoodWink />}
               >
                 Start din skønhedskarriere
               </Button>
@@ -221,7 +222,15 @@ function FeaturedArtists({
             fz={{base: rem(35), sm: rem(45)}}
             lh={{base: rem(45), sm: rem(55)}}
           >
-            Mød vores talentfulde eksperter
+            Mød vores{' '}
+            <Text
+              span
+              inherit
+              variant="gradient"
+              gradient={{from: '#9030ed', to: '#e71b7c', deg: 90}}
+            >
+              talentfulde eksperter
+            </Text>
           </Title>
 
           <Flex gap="lg" justify="center">
@@ -317,7 +326,15 @@ function RecommendedTreatments({
             fz={{base: rem(35), sm: rem(45)}}
             lh={{base: rem(45), sm: rem(55)}}
           >
-            Book unikke oplevelser og skønhedsoplevelse
+            Book unikke{' '}
+            <Text
+              span
+              inherit
+              variant="gradient"
+              gradient={{from: 'orange', to: 'yellow', deg: 90}}
+            >
+              oplevelser og skønhedsoplevelse
+            </Text>
           </Title>
         </Container>
         <Suspense

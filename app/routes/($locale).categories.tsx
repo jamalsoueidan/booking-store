@@ -1,20 +1,13 @@
-import {Button, Flex, SimpleGrid} from '@mantine/core';
-import {useLoaderData} from '@remix-run/react';
-import {Pagination, getPaginationVariables} from '@shopify/hydrogen';
+import {Button, Container, Flex} from '@mantine/core';
+import {NavLink, Outlet, useLoaderData} from '@remix-run/react';
 import {json, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
-import type {CollectionFragment} from 'storefrontapi.generated';
-import {Wrapper} from '~/components/Wrapper';
 import {VisualTeaser} from '~/components/blocks/VisualTeaser';
-import {CategoryCard} from '~/components/treatment/CategoryCard';
 import {COLLECTION_ITEM_FRAGMENT, METAFIELD_QUERY} from '~/data/fragments';
+import {parseTE} from '~/lib/clean';
 
 export async function loader({context, request}: LoaderFunctionArgs) {
-  const paginationVariables = getPaginationVariables(request, {
-    pageBy: 6,
-  });
-
   const {collections} = await context.storefront.query(COLLECTIONS_QUERY, {
-    variables: paginationVariables,
+    variables: {first: 20, endCursor: null},
   });
 
   const {metaobject: visualTeaser} = await context.storefront.query(
@@ -32,42 +25,45 @@ export async function loader({context, request}: LoaderFunctionArgs) {
 
 export default function Collections() {
   const {collections, visualTeaser} = useLoaderData<typeof loader>();
-
   return (
     <>
       <VisualTeaser component={visualTeaser} />
+      <Container size="xl">
+        <Flex justify="center" gap="md">
+          <NavLink to="/categories/">
+            {({isActive}) => (
+              <Button
+                variant="filled"
+                color={isActive ? 'orange' : 'gray.2'}
+                c={isActive ? 'white' : 'gray.7'}
+                radius="xl"
+              >
+                Alle behandlinger
+              </Button>
+            )}
+          </NavLink>
+          {collections.nodes.map((collection) => (
+            <NavLink
+              key={collection.id}
+              to={`/categories/${collection.handle}`}
+            >
+              {({isActive}) => (
+                <Button
+                  variant="filled"
+                  color={isActive ? 'orange' : 'gray.2'}
+                  c={isActive ? 'white' : 'gray.7'}
+                  radius="xl"
+                >
+                  {parseTE(collection.title)}
+                </Button>
+              )}
+            </NavLink>
+          ))}
+        </Flex>
+      </Container>
 
-      <Wrapper>
-        <Pagination connection={collections}>
-          {({nodes, isLoading, PreviousLink, NextLink}) => (
-            <>
-              <Flex justify="center">
-                <Button component={PreviousLink} loading={isLoading}>
-                  ↑ Hent tidligere
-                </Button>
-              </Flex>
-              <CollectionsGrid collections={nodes} />
-              <br />
-              <Flex justify="center">
-                <Button component={NextLink} loading={isLoading}>
-                  Hent flere ↓
-                </Button>
-              </Flex>
-            </>
-          )}
-        </Pagination>
-      </Wrapper>
+      <Outlet />
     </>
-  );
-}
-
-function CollectionsGrid({collections}: {collections: CollectionFragment[]}) {
-  return (
-    <SimpleGrid cols={{base: 1, md: 2}} spacing={'xl'}>
-      {collections.map((collection) => (
-        <CategoryCard key={collection.id} collection={collection} />
-      ))}
-    </SimpleGrid>
   );
 }
 
