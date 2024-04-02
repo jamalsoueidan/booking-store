@@ -6,6 +6,7 @@ import {
   Flex,
   getGradient,
   rem,
+  ScrollArea,
   SimpleGrid,
   Skeleton,
   Stack,
@@ -34,7 +35,6 @@ import type {
   UsersListResponse,
 } from '~/lib/api/model';
 
-import {useMediaQuery} from '@mantine/hooks';
 import {ArtistCard} from '~/components/ArtistCard';
 import {useField} from '~/components/blocks/utils';
 import {ProfessionButton} from '~/components/ProfessionButton';
@@ -206,7 +206,6 @@ function FeaturedArtists({
   professions?: Promise<Array<Profession>>;
 }) {
   const theme = useMantineTheme();
-  const isMobile = useMediaQuery('(max-width: 62em)');
   if (!artists) return null;
 
   return (
@@ -235,36 +234,27 @@ function FeaturedArtists({
             </Text>
           </Title>
 
-          <Flex gap="lg" justify="center">
-            <Suspense
-              fallback={[...Array(5)].map((_, index) => (
-                // eslint-disable-next-line react/no-array-index-key
-                <Skeleton key={index} height={10} radius="lg" />
-              ))}
-            >
-              <Await resolve={professions}>
-                {(profession) => {
-                  return (
-                    <Carousel
-                      withIndicators
-                      slideSize={{base: '25%', sm: '20%'}}
-                      slideGap={{base: 'sm'}}
-                      withControls={false}
-                      align="start"
-                      containScroll="keepSnaps"
-                      w={isMobile ? '100%' : '620px'}
-                    >
-                      {profession?.map((profession) => (
-                        <Carousel.Slide key={profession.key}>
-                          <ProfessionButton profession={profession} />
-                        </Carousel.Slide>
-                      ))}
-                    </Carousel>
-                  );
-                }}
-              </Await>
-            </Suspense>
-          </Flex>
+          <ScrollArea h="auto" w="100%" type="never">
+            <Flex justify="center" gap="lg">
+              <Suspense
+                fallback={[...Array(5)].map((_, index) => (
+                  // eslint-disable-next-line react/no-array-index-key
+                  <Skeleton key={index} height={10} radius="lg" />
+                ))}
+              >
+                <Await resolve={professions}>
+                  {(profession) =>
+                    profession?.map((profession) => (
+                      <ProfessionButton
+                        key={profession.translation}
+                        profession={profession}
+                      />
+                    ))
+                  }
+                </Await>
+              </Suspense>
+            </Flex>
+          </ScrollArea>
 
           <SimpleGrid cols={{base: 2, sm: 3, md: 5}} spacing="xl">
             <Suspense
