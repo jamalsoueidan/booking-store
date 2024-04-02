@@ -39,7 +39,7 @@ export function ProductCard({
 
       <Stack mt="md" gap="xs">
         <Text fw={500}>{product.title}</Text>
-        <Badge variant="outline">
+        <Badge variant="outline" c="green">
           <Money data={product.priceRange.minVariantPrice} />
         </Badge>
       </Stack>
