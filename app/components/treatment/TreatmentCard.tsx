@@ -44,6 +44,7 @@ export function TreatmentCard({
       withBorder
       radius="xl"
       component={Link}
+      bg="transparent"
       p="0"
       to={`/treatments/${product.handle}`}
     >
