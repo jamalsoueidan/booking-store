@@ -7,6 +7,7 @@ import {
   Drawer,
   Flex,
   Group,
+  NavLink as MantineNavLink,
   Menu,
   ScrollArea,
   rem,
@@ -234,21 +235,20 @@ function HeaderMenuMobile({
       onClose={closeDrawer}
       size="100%"
       padding="md"
-      title="Navigation"
+      title="BySisters.dk"
       hiddenFrom="md"
       zIndex={1000000}
     >
       <ScrollArea h={`calc(100vh - ${rem(80)})`} mx="-md">
         <Divider mb="sm" />
 
-        <Link
+        <MantineNavLink
+          component={Link}
           to="/"
+          label={'Hjem'}
           onClick={closeDrawer}
-          className={classes.link}
           data-active={location.pathname === '/' || undefined}
-        >
-          Hjem
-        </Link>
+        />
 
         {(menu || FALLBACK_HEADER_MENU).items.map((link) => {
           if (!link.url) return null;
@@ -262,15 +262,14 @@ function HeaderMenuMobile({
               : link.url;
 
           return (
-            <Link
+            <MantineNavLink
               key={link.id}
+              component={Link}
               to={url}
+              label={link.title}
               onClick={closeDrawer}
-              className={classes.link}
               data-active={location?.pathname.includes(url) || undefined}
-            >
-              {link.title}
-            </Link>
+            />
           );
         })}
 
@@ -282,10 +281,6 @@ function HeaderMenuMobile({
       </ScrollArea>
     </Drawer>
   );
-}
-
-function SearchToggle() {
-  return <a href="#search-aside">Search</a>;
 }
 
 function CartBadge({count}: {count: number}) {
