@@ -10,7 +10,7 @@ import {
 } from '@mantine/core';
 import type {Image, Maybe} from '@shopify/hydrogen/storefront-api-types';
 import type {PageComponentFragment} from 'storefrontapi.generated';
-import {TransformText} from './TransformText';
+import {H1} from '../titles/H1';
 import classes from './VisualTeaser.module.css';
 import {useField} from './utils';
 
@@ -104,7 +104,12 @@ export const VisualTeaserComponent = ({
       <Container size="lg" py={0} h={height} className={classes.container}>
         <Stack pt={rem(30)} pb={rem(50)} justify={justify || 'center'} h="100%">
           {title ? (
-            <TransformText input={title} c={fontColor || 'black'} />
+            <H1
+              c={fontColor || 'black'}
+              gradients={{from: 'orange', to: 'orange.3'}}
+            >
+              {title}
+            </H1>
           ) : null}
           {subtitle ? (
             <Title

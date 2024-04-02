@@ -15,8 +15,8 @@ import type {
   PageComponentFragment,
 } from 'storefrontapi.generated';
 import {parseTE} from '~/lib/clean';
+import {H2} from '../titles/H2';
 import {Wrapper} from '../Wrapper';
-import {TransformText} from './TransformText';
 import {useField} from './utils';
 
 export function ImageGridWithHeader({
@@ -39,7 +39,7 @@ export function ImageGridWithHeader({
     >
       <Stack gap="xl">
         {title ? (
-          <TransformText input={title} fz={{base: rem(35), sm: rem(45)}} />
+          <H2 gradients={{from: '#9030ed', to: '#e71b7c'}}>{title}</H2>
         ) : null}
         <SimpleGrid
           cols={{base: 2, sm: 3, md: 5}}

@@ -10,7 +10,6 @@ import {
   SimpleGrid,
   Skeleton,
   Stack,
-  Text,
   Title,
   useMantineTheme,
 } from '@mantine/core';
@@ -38,6 +37,8 @@ import type {
 import {ArtistCard} from '~/components/ArtistCard';
 import {useField} from '~/components/blocks/utils';
 import {ProfessionButton} from '~/components/ProfessionButton';
+import {H1} from '~/components/titles/H1';
+import {H2} from '~/components/titles/H2';
 import {useComponents} from '~/lib/use-components';
 import {
   loader as loaderProfessions,
@@ -104,34 +105,10 @@ export default function Homepage() {
       <Box py={{base: rem(40), sm: rem(60)}}>
         <Container size="xl">
           <Stack gap="xl">
-            <Title
-              order={1}
-              ta="center"
-              lts="1px"
-              fw="bold"
-              fz={{base: rem(38), sm: rem(65)}}
-              lh={{base: rem(45), sm: rem(70)}}
-            >
-              Find professionelle{' '}
-              <Text
-                span
-                inherit
-                variant="gradient"
-                gradient={{from: 'orange', to: 'orange.3', deg: 180}}
-              >
-                skønhedseksperter
-              </Text>{' '}
-              og book deres{' '}
-              <Text
-                span
-                inherit
-                variant="gradient"
-                gradient={{from: 'orange', to: 'orange.3', deg: 180}}
-              >
-                behandlinger
-              </Text>{' '}
-              direkte på vores platform
-            </Title>
+            <H1 gradients={{from: 'orange', to: 'orange.3'}}>
+              Find professionelle [skønhedseksperter] og book deres
+              [behandlinger] direkte på vores platform
+            </H1>
             <Title order={2} c="dimmed" fw="normal" ta="center" lineClamp={2}>
               Vores platform forbinder dig med talentfulde eksperter inden for
               alle aspekter af skønhed.
@@ -215,24 +192,9 @@ function FeaturedArtists({
     >
       <Container size="xl">
         <Stack gap="xl">
-          <Title
-            order={2}
-            ta="center"
-            lts="1px"
-            fw="bold"
-            fz={{base: rem(35), sm: rem(45)}}
-            lh={{base: rem(45), sm: rem(55)}}
-          >
-            Mød vores{' '}
-            <Text
-              span
-              inherit
-              variant="gradient"
-              gradient={{from: '#9030ed', to: '#e71b7c', deg: 90}}
-            >
-              talentfulde eksperter
-            </Text>
-          </Title>
+          <H2 gradients={{from: '#9030ed', to: '#e71b7c'}}>
+            Mød vores [talentfulde eksperter]
+          </H2>
 
           <ScrollArea h="auto" w="100%" type="never">
             <Flex justify="center" gap="lg">
@@ -314,24 +276,9 @@ function RecommendedTreatments({
     >
       <Stack gap="xl">
         <Container size="xl">
-          <Title
-            order={2}
-            ta="center"
-            lts="1px"
-            fw="bold"
-            fz={{base: rem(35), sm: rem(45)}}
-            lh={{base: rem(45), sm: rem(55)}}
-          >
-            Book unikke{' '}
-            <Text
-              span
-              inherit
-              variant="gradient"
-              gradient={{from: 'orange', to: 'yellow', deg: 90}}
-            >
-              oplevelser og skønhedsoplevelse
-            </Text>
-          </Title>
+          <H2 gradients={{from: '#9030ed', to: '#e71b7c'}}>
+            Book unikke [oplevelser og skønhedsoplevelse]
+          </H2>
         </Container>
         <Box px="xl" style={{overflow: 'hidden'}}>
           <Suspense

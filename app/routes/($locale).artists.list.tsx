@@ -1,16 +1,14 @@
-import {SimpleGrid, Stack, Title} from '@mantine/core';
+import {Box, Container, rem, SimpleGrid, Stack} from '@mantine/core';
 import {useLoaderData} from '@remix-run/react';
 import {json, redirect, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
 import {useEffect, useState} from 'react';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import {ArtistCard} from '~/components/ArtistCard';
+import {H2} from '~/components/titles/H2';
 import {METAFIELD_QUERY} from '~/data/fragments';
 import {getBookingShopifyApi} from '~/lib/api/bookingShopifyApi';
 import type {User} from '~/lib/api/model';
-import {
-  ProfessionSentenceTranslations,
-  ProfessionTranslations,
-} from './($locale).api.users.professions';
+import {ProfessionSentenceTranslations} from './($locale).api.users.professions';
 
 const LIMIT = '20';
 
@@ -51,18 +49,20 @@ export default function ArtistsIndex() {
   const profession = url.searchParams.get('profession') || undefined;
 
   return (
-    <Stack gap="lg">
-      <Title order={2}>
-        <span style={{fontWeight: 500}}>
-          {ProfessionTranslations[profession || '']}.
-        </span>{' '}
-        <span style={{color: '#666', fontWeight: 400}}>
-          {ProfessionSentenceTranslations[profession || '']}
-        </span>
-      </Title>
+    <Box py={{base: rem(40), sm: rem(60)}}>
+      <Container size="xl">
+        <Stack gap="xl">
+          <H2 gradients={{from: '#9030ed', to: '#e71b7c'}}>
+            {ProfessionSentenceTranslations[profession || '']}
+          </H2>
 
-      <UserList initialData={users.results} initialCursor={users.nextCursor} />
-    </Stack>
+          <UserList
+            initialData={users.results}
+            initialCursor={users.nextCursor}
+          />
+        </Stack>
+      </Container>
+    </Box>
   );
 }
 
@@ -111,7 +111,7 @@ export const UserList = ({initialData, initialCursor}: UserListProps) => {
       hasMore={hasMore}
       loader={<h4>Henter flere...</h4>}
     >
-      <SimpleGrid spacing="lg" cols={{base: 2, sm: 3, md: 4, lg: 7}}>
+      <SimpleGrid spacing="lg" cols={{base: 2, sm: 3, md: 4, lg: 5}}>
         {data?.map((user) => (
           <ArtistCard artist={user} key={user.customerId} />
         ))}
