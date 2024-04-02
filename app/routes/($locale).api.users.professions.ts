@@ -18,14 +18,13 @@ export const ProfessionTranslations: Record<string, string> = {
 };
 
 export const ProfessionSentenceTranslations: Record<string, string> = {
-  nail_technician: 'Få det perfekte neglelook med en top [negletekniker].',
-  esthetician: 'Fremhæv din naturlige skønhed med en ekspert i [hudpleje].',
-  hair_stylist: 'Transformér dit look med en førende [frisør].',
-  makeup_artist: 'Perfektionér dit look med en [makeupartist].',
-  massage_therapist: 'Slap af og genoplad med en [massageterapeut].',
-  lash_technician:
-    'Få smukke og fyldige vipper med en erfaren [vippetekniker].',
-  brow_technician: 'Opnå de perfekte bryn med en [bryntekniker].',
+  nail_technician: 'Få det perfekte neglelook med en top [negletekniker]',
+  esthetician: 'Fremhæv din naturlige skønhed med en ekspert [kosmetolog]',
+  hair_stylist: 'Transformér dit look med en førende [frisør]',
+  makeup_artist: 'Perfektionér dit look med en [makeupartist]',
+  massage_therapist: 'Slap af og genoplad med en [massageterapeut]',
+  lash_technician: 'Få smukke og fyldige vipper med en erfaren [vippetekniker]',
+  brow_technician: 'Opnå de perfekte bryn med en [bryntekniker]',
 };
 
 export async function loader({request, context}: LoaderFunctionArgs) {

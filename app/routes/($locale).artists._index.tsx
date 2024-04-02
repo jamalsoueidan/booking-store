@@ -7,7 +7,6 @@ import {
   rem,
   SimpleGrid,
   Stack,
-  Title,
   useMantineTheme,
 } from '@mantine/core';
 import {Link, useLoaderData} from '@remix-run/react';
@@ -57,14 +56,9 @@ export default function ArtistsIndex() {
     >
       <Container size="xl">
         <Stack gap="xl">
-          <div>
-            <H2 gradients={{from: '#9030ed', to: '#e71b7c'}}>
-              {ProfessionSentenceTranslations[user.profession || '']}
-            </H2>
-            <Title order={3} c="dimmed" ta="center">
-              {ProfessionTranslations[user.profession || '']}.
-            </Title>
-          </div>
+          <H2 gradients={{from: '#9030ed', to: '#e71b7c'}}>
+            {ProfessionSentenceTranslations[user.profession || '']}
+          </H2>
           <SimpleGrid spacing="lg" cols={{base: 2, sm: 3, md: 4, lg: 5}}>
             {user.users?.map((user) => (
               <ArtistCard artist={user} key={user.customerId} />
@@ -86,7 +80,11 @@ export default function ArtistsIndex() {
                 />
               }
             >
-              Vis alle
+              Vis alle{' '}
+              {ProfessionTranslations[
+                user.profession || ''
+              ].toLocaleLowerCase()}{' '}
+              artister
             </Button>
           </Flex>
         </Stack>
