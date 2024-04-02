@@ -30,7 +30,7 @@ export default function Collections() {
       <VisualTeaser component={visualTeaser} />
       <Container size="xl">
         <Flex justify="center" gap="md">
-          <NavLink to="/categories/">
+          <NavLink to="/categories">
             {({isActive}) => (
               <Button
                 variant="filled"
