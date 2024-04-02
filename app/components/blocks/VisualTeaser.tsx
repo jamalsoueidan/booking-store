@@ -145,6 +145,7 @@ function TransformText({
         if (input.indexOf(`[${segment}]`) > -1) {
           return (
             <Text
+              // eslint-disable-next-line react/no-array-index-key
               key={index}
               component="span"
               inherit

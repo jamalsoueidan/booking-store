@@ -1,5 +1,11 @@
 import {Button, Container, Flex} from '@mantine/core';
-import {NavLink, Outlet, useLoaderData} from '@remix-run/react';
+import {
+  Link,
+  NavLink,
+  Outlet,
+  useLoaderData,
+  useParams,
+} from '@remix-run/react';
 import {json, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
 import {VisualTeaser} from '~/components/blocks/VisualTeaser';
 import {COLLECTION_ITEM_FRAGMENT, METAFIELD_QUERY} from '~/data/fragments';
@@ -24,24 +30,32 @@ export async function loader({context, request}: LoaderFunctionArgs) {
 }
 
 export default function Collections() {
+  const params = useParams();
   const {collections, visualTeaser} = useLoaderData<typeof loader>();
   return (
     <>
       <VisualTeaser component={visualTeaser} />
       <Container size="xl">
         <Flex justify="center" gap="md">
-          <NavLink to="/categories">
-            {({isActive}) => (
-              <Button
-                variant="filled"
-                color={isActive ? 'orange' : 'gray.2'}
-                c={isActive ? 'white' : 'gray.7'}
-                radius="xl"
-              >
-                Alle behandlinger
-              </Button>
-            )}
-          </NavLink>
+          <Button
+            variant="filled"
+            color={
+              params.handle === 'alle-behandlinger' || !params.handle
+                ? 'orange'
+                : 'gray.2'
+            }
+            c={
+              params.handle === 'alle-behandlinger' || !params.handle
+                ? 'white'
+                : 'gray.7'
+            }
+            radius="xl"
+            component={Link}
+            to="/categories"
+          >
+            Alle behandlinger
+          </Button>
+
           {collections.nodes.map((collection) => (
             <NavLink
               key={collection.id}

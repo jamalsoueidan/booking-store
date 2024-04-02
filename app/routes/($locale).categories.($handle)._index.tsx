@@ -69,6 +69,7 @@ export default function Collection() {
                   variant="default"
                   component={NextLink}
                   loading={isLoading}
+                  size="xl"
                 >
                   Hent flere ↓
                 </Button>
