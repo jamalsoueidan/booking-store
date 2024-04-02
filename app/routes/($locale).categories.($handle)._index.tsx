@@ -1,4 +1,4 @@
-import {Button, Flex, SimpleGrid} from '@mantine/core';
+import {Button, Flex, SimpleGrid, Stack} from '@mantine/core';
 import {useLoaderData, type MetaFunction} from '@remix-run/react';
 import {Pagination, getPaginationVariables, parseGid} from '@shopify/hydrogen';
 import {json, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
@@ -29,7 +29,7 @@ export async function loader({request, params, context}: LoaderFunctionArgs) {
 
   const {collection} = await storefront.query(COLLECTION_QUERY, {
     variables: {
-      handle: handle || 'alle-behandlingen',
+      handle: handle || 'alle-behandlinger',
       ...paginationVariables,
     },
   });
@@ -56,14 +56,18 @@ export default function Collection() {
       <Wrapper>
         <Pagination connection={collection.products}>
           {({nodes, isLoading, PreviousLink, NextLink}) => (
-            <>
+            <Stack gap="xl">
               <Flex justify="center">
-                <Button component={PreviousLink} loading={isLoading}>
+                <Button
+                  variant="default"
+                  component={PreviousLink}
+                  loading={isLoading}
+                  size="xl"
+                >
                   ↑ Hent tidligere
                 </Button>
               </Flex>
               <ProductsGrid products={nodes} productsUsers={productsUsers} />
-              <br />
               <Flex justify="center">
                 <Button
                   variant="default"
@@ -74,7 +78,7 @@ export default function Collection() {
                   Hent flere ↓
                 </Button>
               </Flex>
-            </>
+            </Stack>
           )}
         </Pagination>
       </Wrapper>
@@ -90,7 +94,7 @@ function ProductsGrid({
   productsUsers: ProductsGetUsersImage[];
 }) {
   return (
-    <SimpleGrid cols={{base: 1, md: 4}} spacing="lg">
+    <SimpleGrid cols={{base: 1, xs: 2, sm: 3, md: 4}} spacing="lg">
       {products.map((product, index) => {
         const productUsers = productsUsers.find(
           (p) => p.productId.toString() === parseGid(product.id).id,
