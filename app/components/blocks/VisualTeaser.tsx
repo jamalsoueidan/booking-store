@@ -3,8 +3,11 @@ import {
   Box,
   Container,
   Stack,
+  Text,
   Title,
+  getGradient,
   rem,
+  useMantineTheme,
 } from '@mantine/core';
 import type {Image, Maybe} from '@shopify/hydrogen/storefront-api-types';
 import type {PageComponentFragment} from 'storefrontapi.generated';
@@ -18,7 +21,6 @@ export function VisualTeaser({
 }) {
   const field = useField(component);
   const title = field.getFieldValue('title');
-  const overtitle = field.getFieldValue('overtitle');
   const subtitle = field.getFieldValue('subtitle');
   const backgroundColor = field.getFieldValue('background_color');
   const fontColor = field.getFieldValue('font_color');
@@ -37,7 +39,6 @@ export function VisualTeaser({
     <VisualTeaserComponent
       backgroundColor={backgroundColor}
       title={title}
-      overtitle={overtitle}
       subtitle={subtitle}
       image={image}
       opacity={opacity}
@@ -65,7 +66,6 @@ export type VisualTeaserComponentProps = {
 export const VisualTeaserComponent = ({
   backgroundColor,
   title,
-  overtitle,
   subtitle,
   image,
   opacity,
@@ -74,8 +74,16 @@ export const VisualTeaserComponent = ({
   fontColor,
   justify,
 }: VisualTeaserComponentProps) => {
+  const theme = useMantineTheme();
+
   return (
-    <Box bg={backgroundColor || 'gray.1'} className={classes.box}>
+    <Box
+      bg={getGradient(
+        {deg: 180, from: backgroundColor || 'white', to: 'white'},
+        theme,
+      )}
+      className={classes.box}
+    >
       {image ? (
         <BackgroundImage
           src={image?.url || ''}
@@ -95,41 +103,14 @@ export const VisualTeaserComponent = ({
 
       <Container size="lg" py={0} h={height} className={classes.container}>
         <Stack pt={rem(30)} pb={rem(50)} justify={justify || 'center'} h="100%">
-          {title || overtitle ? (
-            <div>
-              {overtitle ? (
-                <Title
-                  order={5}
-                  tt="uppercase"
-                  fw={300}
-                  ta="center"
-                  c={fontColor || 'black'}
-                  className={classes.overtitle}
-                >
-                  {overtitle}
-                </Title>
-              ) : null}
-              {title ? (
-                <Title
-                  order={1}
-                  fw={500}
-                  ta="center"
-                  textWrap="balance"
-                  className={classes.root}
-                  c={fontColor || 'black'}
-                >
-                  {title}
-                </Title>
-              ) : null}
-            </div>
-          ) : null}
+          {title ? <TransformText input={title} fontColor={fontColor} /> : null}
           {subtitle ? (
             <Title
-              order={3}
+              order={2}
               ta="center"
-              fw={300}
-              className={classes.subtitle}
-              c={fontColor || 'black'}
+              fw="normal"
+              lineClamp={2}
+              c={fontColor || 'dimmed'}
             >
               {subtitle}
             </Title>
@@ -139,3 +120,43 @@ export const VisualTeaserComponent = ({
     </Box>
   );
 };
+
+function TransformText({
+  input,
+  fontColor,
+}: {
+  input: string;
+  fontColor?: string;
+}) {
+  const segments = input.split(/[\[\]]/).filter(Boolean);
+
+  return (
+    <Title
+      order={1}
+      ta="center"
+      textWrap="balance"
+      lts="1px"
+      fw="bold"
+      fz={{base: rem(40), sm: rem(65)}}
+      lh={{base: rem(45), sm: rem(70)}}
+      c={fontColor || 'black'}
+    >
+      {segments.map((segment: string, index: number) => {
+        if (input.indexOf(`[${segment}]`) > -1) {
+          return (
+            <Text
+              key={index}
+              component="span"
+              inherit
+              variant="gradient"
+              gradient={{from: 'orange', to: 'orange.3', deg: 180}}
+            >
+              {segment}
+            </Text>
+          );
+        }
+        return segment;
+      })}
+    </Title>
+  );
+}
