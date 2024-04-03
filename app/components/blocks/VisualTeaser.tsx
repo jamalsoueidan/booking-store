@@ -112,13 +112,7 @@ export const VisualTeaserComponent = ({
             </H1>
           ) : null}
           {subtitle ? (
-            <Title
-              order={2}
-              ta="center"
-              fw="normal"
-              lineClamp={2}
-              c={fontColor || 'dimmed'}
-            >
+            <Title order={2} ta="center" fw="normal" c={fontColor || 'dimmed'}>
               {subtitle}
             </Title>
           ) : null}

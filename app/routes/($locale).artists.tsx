@@ -1,4 +1,4 @@
-import {Divider, Flex, ScrollArea} from '@mantine/core';
+import {Container, Divider, Flex, ScrollArea} from '@mantine/core';
 import {Outlet, useLoaderData} from '@remix-run/react';
 import {json, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
 import {VisualTeaser} from '~/components/blocks/VisualTeaser';
@@ -53,29 +53,35 @@ export default function Artists() {
     <>
       <VisualTeaser component={visualTeaser} />
 
-      <ScrollArea h="auto" type="never" mb="lg" px="lg">
-        <Flex gap="lg" justify="center">
-          <ProfessionButton
-            profession={{
-              count: 0,
-              key: 'all',
-              translation: 'Alle eksperter',
-            }}
-            reset
-          />
-          {professions.map((profession) => (
-            <ProfessionButton key={profession.key} profession={profession} />
-          ))}
-        </Flex>
-        {specialties.length > 0 ? (
-          <Flex gap="sm" justify="center" mt="lg">
-            {specialties.map((speciality) => (
-              <SpecialityButton key={speciality.key} speciality={speciality} />
+      <Container size="xl">
+        <ScrollArea h="auto" type="never">
+          <Flex gap="lg" justify="center">
+            <ProfessionButton
+              profession={{
+                count: 0,
+                key: 'all',
+                translation: 'Alle eksperter',
+              }}
+              reset
+            />
+            {professions.map((profession) => (
+              <ProfessionButton key={profession.key} profession={profession} />
             ))}
           </Flex>
-        ) : null}
-      </ScrollArea>
-
+        </ScrollArea>
+        <ScrollArea h="auto" type="never" mb="lg">
+          {specialties.length > 0 ? (
+            <Flex gap="sm" mt="lg">
+              {specialties.map((speciality) => (
+                <SpecialityButton
+                  key={speciality.key}
+                  speciality={speciality}
+                />
+              ))}
+            </Flex>
+          ) : null}
+        </ScrollArea>
+      </Container>
       <Outlet />
 
       <Divider />

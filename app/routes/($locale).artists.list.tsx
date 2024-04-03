@@ -1,5 +1,5 @@
 import {Box, Container, rem, SimpleGrid, Stack} from '@mantine/core';
-import {useLoaderData} from '@remix-run/react';
+import {useLoaderData, useSearchParams} from '@remix-run/react';
 import {json, redirect, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
 import {useEffect, useState} from 'react';
 import InfiniteScroll from 'react-infinite-scroll-component';
@@ -45,8 +45,8 @@ export const loader = async (args: LoaderFunctionArgs) => {
 
 export default function ArtistsIndex() {
   const {users} = useLoaderData<typeof loader>();
-  const url = new URL(location.href);
-  const profession = url.searchParams.get('profession') || undefined;
+  const [searchParams] = useSearchParams();
+  const profession = searchParams.get('profession') || undefined;
 
   return (
     <Box py={{base: rem(40), sm: rem(60)}}>
@@ -66,10 +66,12 @@ export default function ArtistsIndex() {
   );
 }
 
-const fetchData = async (nextCursor?: string) => {
-  const url = new URL(location.href);
-  const profession = url.searchParams.get('profession') || undefined;
-  const speciality = url.searchParams.getAll('speciality');
+const fetchData = async (
+  searchParams: URLSearchParams,
+  nextCursor?: string,
+) => {
+  const profession = searchParams.get('profession') || undefined;
+  const speciality = searchParams.getAll('speciality');
 
   const response = await getBookingShopifyApi().usersList({
     nextCursor,
@@ -90,9 +92,10 @@ export const UserList = ({initialData, initialCursor}: UserListProps) => {
   const [data, setData] = useState(initialData);
   const [cursor, setCursor] = useState(initialCursor);
   const [hasMore, setHasMore] = useState(initialCursor !== undefined);
+  const [searchParams] = useSearchParams();
 
   const fetchMoreData = async () => {
-    const {results, nextCursor} = await fetchData(cursor);
+    const {results, nextCursor} = await fetchData(searchParams, cursor);
     setData((prevData) => [...prevData, ...results]);
     setCursor(nextCursor);
     setHasMore(nextCursor !== undefined);
