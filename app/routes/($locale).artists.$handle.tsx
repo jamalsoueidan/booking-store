@@ -1,5 +1,5 @@
 import {Box, Container, rem, SimpleGrid, Stack} from '@mantine/core';
-import {useLoaderData, useSearchParams} from '@remix-run/react';
+import {useLoaderData, useParams, useSearchParams} from '@remix-run/react';
 import {json, redirect, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
 import {useEffect, useState} from 'react';
 import InfiniteScroll from 'react-infinite-scroll-component';
@@ -13,20 +13,19 @@ import {ProfessionSentenceTranslations} from './($locale).api.users.professions'
 const LIMIT = '20';
 
 export const loader = async (args: LoaderFunctionArgs) => {
-  const {context, request} = args;
+  const {context, request, params} = args;
+  const {handle} = params;
 
-  const url = new URL(request.url);
-  const searchParams = url.searchParams;
-  const profession = searchParams.get('profession') || undefined;
-
-  if (!profession) {
+  if (!handle) {
     return redirect('../');
   }
+  const url = new URL(request.url);
+  const searchParams = url.searchParams;
   const speciality = searchParams.getAll('speciality');
 
   const {payload: users} = await getBookingShopifyApi().usersList({
     limit: LIMIT,
-    profession,
+    profession: handle,
     specialties: speciality.length > 0 ? speciality : undefined,
   });
 
@@ -45,14 +44,18 @@ export const loader = async (args: LoaderFunctionArgs) => {
 
 export default function ArtistsIndex() {
   const {users} = useLoaderData<typeof loader>();
-  const [searchParams] = useSearchParams();
-  const profession = searchParams.get('profession') || undefined;
+  const params = useParams();
+  const {handle: profession} = params;
 
   return (
     <Box py={{base: rem(40), sm: rem(60)}}>
       <Container size="xl">
         <Stack gap="xl">
-          <H2 gradients={{from: '#9030ed', to: '#e71b7c'}}>
+          <H2
+            gradients={{from: '#9030ed', to: '#e71b7c'}}
+            fz={{base: rem(30), sm: rem(40)}}
+            lh={{base: rem(40), sm: rem(50)}}
+          >
             {ProfessionSentenceTranslations[profession || '']}
           </H2>
 
@@ -66,15 +69,17 @@ export default function ArtistsIndex() {
   );
 }
 
-const fetchData = async (
-  searchParams: URLSearchParams,
-  nextCursor?: string,
-) => {
-  const profession = searchParams.get('profession') || undefined;
-  const speciality = searchParams.getAll('speciality');
-
+const fetchData = async ({
+  profession,
+  speciality,
+  cursor,
+}: {
+  profession: string;
+  speciality: string[];
+  cursor?: string;
+}) => {
   const response = await getBookingShopifyApi().usersList({
-    nextCursor,
+    nextCursor: cursor,
     limit: LIMIT,
     profession,
     specialties: speciality.length > 0 ? speciality : undefined,
@@ -93,9 +98,14 @@ export const UserList = ({initialData, initialCursor}: UserListProps) => {
   const [cursor, setCursor] = useState(initialCursor);
   const [hasMore, setHasMore] = useState(initialCursor !== undefined);
   const [searchParams] = useSearchParams();
+  const params = useParams();
 
   const fetchMoreData = async () => {
-    const {results, nextCursor} = await fetchData(searchParams, cursor);
+    const {results, nextCursor} = await fetchData({
+      profession: params.profession || '',
+      speciality: searchParams.getAll('speciality'),
+      cursor,
+    });
     setData((prevData) => [...prevData, ...results]);
     setCursor(nextCursor);
     setHasMore(nextCursor !== undefined);

@@ -24,7 +24,7 @@ import {
 const LIMIT = '20';
 
 export const loader = async (args: LoaderFunctionArgs) => {
-  const {context, request} = args;
+  const {context} = args;
 
   const {payload: users} = await getBookingShopifyApi().usersTop({
     limit: LIMIT,
@@ -56,7 +56,11 @@ export default function ArtistsIndex() {
     >
       <Container size="xl">
         <Stack gap="xl">
-          <H2 gradients={{from: '#9030ed', to: '#e71b7c'}}>
+          <H2
+            gradients={{from: '#9030ed', to: '#e71b7c'}}
+            fz={{base: rem(30), sm: rem(40)}}
+            lh={{base: rem(40), sm: rem(50)}}
+          >
             {ProfessionSentenceTranslations[user.profession || '']}
           </H2>
           <SimpleGrid spacing="lg" cols={{base: 2, sm: 3, md: 4, lg: 5}}>

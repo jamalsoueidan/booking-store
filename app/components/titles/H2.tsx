@@ -14,7 +14,7 @@ export const H2 = ({
   children: string;
   gradients: MantineGradient | MantineGradient[];
 }) => {
-  const segments = children.split(/[\[\]]/).filter(Boolean);
+  const segments = children?.split(/[\[\]]/).filter(Boolean);
 
   return (
     <Title
@@ -26,7 +26,7 @@ export const H2 = ({
       lh={{base: rem(45), sm: rem(55)}}
       {...props}
     >
-      {segments.map((segment, index) => {
+      {segments?.map((segment, index) => {
         if (children.indexOf(`[${segment}]`) > -1) {
           const gradient = Array.isArray(gradients)
             ? gradients[index]
@@ -35,6 +35,7 @@ export const H2 = ({
 
           return (
             <Text
+              // eslint-disable-next-line react/no-array-index-key
               key={index}
               component="span"
               inherit
