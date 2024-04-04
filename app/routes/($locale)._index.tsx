@@ -222,7 +222,7 @@ function FeaturedArtists({
             <Suspense
               fallback={[...Array(5)].map((_, index) => (
                 // eslint-disable-next-line react/no-array-index-key
-                <Skeleton key={index} height={50} />
+                <Skeleton key={index} height={400} />
               ))}
             >
               <Await resolve={artists}>
