@@ -4,8 +4,8 @@
  * Booking Shopify Api
  * OpenAPI spec version: 1.0.0
  */
-import type {PriceSet} from './priceSet';
-import type {CustomerBaseOrderShippingLinesPriceSet} from './customerBaseOrderShippingLinesPriceSet';
+import type { PriceSet } from './priceSet';
+import type { CustomerBaseOrderShippingLinesPriceSet } from './customerBaseOrderShippingLinesPriceSet';
 
 export interface CustomerBaseOrderShippingLines {
   carrier_identifier?: string;

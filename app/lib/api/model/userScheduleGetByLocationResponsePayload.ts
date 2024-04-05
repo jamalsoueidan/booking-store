@@ -4,8 +4,7 @@
  * Booking Shopify Api
  * OpenAPI spec version: 1.0.0
  */
-import type {UserScheduleWithLocations} from './userScheduleWithLocations';
-import type {UserScheduleGetByLocationResponsePayloadAllOf} from './userScheduleGetByLocationResponsePayloadAllOf';
+import type { UserScheduleWithLocations } from './userScheduleWithLocations';
+import type { UserScheduleGetByLocationResponsePayloadAllOf } from './userScheduleGetByLocationResponsePayloadAllOf';
 
-export type UserScheduleGetByLocationResponsePayload =
-  UserScheduleWithLocations & UserScheduleGetByLocationResponsePayloadAllOf;
+export type UserScheduleGetByLocationResponsePayload = UserScheduleWithLocations & UserScheduleGetByLocationResponsePayloadAllOf;

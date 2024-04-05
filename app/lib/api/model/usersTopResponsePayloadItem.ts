@@ -4,7 +4,7 @@
  * Booking Shopify Api
  * OpenAPI spec version: 1.0.0
  */
-import type {UserTop} from './userTop';
+import type { UserTop } from './userTop';
 
 export type UsersTopResponsePayloadItem = {
   profession: string;

@@ -2288,7 +2288,127 @@ components:
       required:
         - success
         - payload
-    UsersListResponse:
+    UsersProfessionsPayload:
+      type: object
+      properties:
+        profession:
+          type: string
+        count:
+          type: number
+      required:
+        - profession
+        - count
+    UsersProfessionsResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: true
+        payload:
+          type: array
+          items:
+            $ref: '#/components/schemas/UsersProfessionsPayload'
+      required:
+        - success
+        - payload
+    UsersFiltersPayload:
+      type: object
+      properties:
+        locations:
+          type: array
+          items:
+            type: object
+            properties:
+              city:
+                type: string
+              locationType:
+                type: string
+                enum:
+                  - ORIGIN
+                  - DESTINATION
+              count:
+                type: integer
+            required:
+              - city
+              - locationType
+              - count
+        availableDays:
+          type: array
+          items:
+            type: object
+            properties:
+              day:
+                type: string
+              count:
+                type: integer
+            required:
+              - day
+              - count
+        productDetails:
+          type: array
+          items:
+            type: object
+            properties:
+              productHandle:
+                type: string
+              productId:
+                type: string
+              count:
+                type: integer
+            required:
+              - productHandle
+              - productId
+              - count
+        specialties:
+          type: array
+          items:
+            type: object
+            properties:
+              speciality:
+                type: string
+              count:
+                type: integer
+            required:
+              - speciality
+              - count
+      required:
+        - locations
+        - availableDays
+        - productDetails
+        - specialties
+    UsersFiltersResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: true
+        payload:
+          $ref: '#/components/schemas/UsersFiltersPayload'
+      required:
+        - success
+        - payload
+    UsersSearchBody:
+      type: object
+      properties:
+        profession:
+          type: string
+        specialties:
+          type: string
+        location:
+          type: object
+          properties:
+            city:
+              type: string
+            locationType:
+              type: string
+          required:
+            - city
+            - locationType
+        days:
+          type: array
+          items:
+            type: string
+    UsersSearchResponse:
       type: object
       properties:
         success:
@@ -2307,33 +2427,7 @@ components:
               type: number
           required:
             - results
-            - total
-      required:
-        - success
-        - payload
-    UsersProfessionsResponse:
-      type: object
-      properties:
-        success:
-          type: boolean
-          example: true
-        payload:
-          type: object
-          additionalProperties:
-            type: number
-      required:
-        - success
-        - payload
-    UsersSpecialtiesResponse:
-      type: object
-      properties:
-        success:
-          type: boolean
-          example: true
-        payload:
-          type: object
-          additionalProperties:
-            type: number
+            - totalCount
       required:
         - success
         - payload
@@ -4921,61 +5015,10 @@ paths:
         '403':
           $ref: '#/components/responses/ForbiddenResponse'
       security: []
-  /users:
-    parameters:
-      - name: nextCursor
-        in: query
-        description: nextCursor
-        schema:
-          type: string
-      - name: limit
-        in: query
-        description: limit items (default 10)
-        schema:
-          type: string
-      - name: profession
-        in: query
-        description: profession
-        schema:
-          type: string
-      - name: specialties
-        in: query
-        description: specialties
-        schema:
-          type: array
-          items:
-            type: string
-      - name: sortOrder
-        in: query
-        description: asc or desc
-        schema:
-          type: string
-    get:
-      tags:
-        - User
-      operationId: usersList
-      summary: GET Get all users
-      description: This endpoint get all users
-      responses:
-        '200':
-          description: Response
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/UsersListResponse'
-        '400':
-          $ref: '#/components/responses/BadResponse'
-        '401':
-          $ref: '#/components/responses/UnauthorizedResponse'
-        '403':
-          $ref: '#/components/responses/ForbiddenResponse'
-        '404':
-          $ref: '#/components/responses/NotFoundResponse'
-      security: []
   /users/professions:
     get:
       tags:
-        - User
+        - Users
       operationId: usersProfessions
       summary: GET Get all users professions with total count
       description: This endpoint get all users professions
@@ -4995,7 +5038,7 @@ paths:
         '404':
           $ref: '#/components/responses/NotFoundResponse'
       security: []
-  /users/specialties:
+  /users/filters:
     get:
       parameters:
         - name: profession
@@ -5004,17 +5047,65 @@ paths:
           schema:
             type: string
       tags:
-        - User
-      operationId: usersSpecialties
-      summary: GET Get all users specialties with total count
-      description: This endpoint get all users specialties
+        - Users
+      operationId: usersFilters
+      summary: GET Get all users-filters
+      description: This endpoint get all users-filters
       responses:
         '200':
           description: Response
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/UsersSpecialtiesResponse'
+                $ref: '#/components/schemas/UsersFiltersResponse'
+        '400':
+          $ref: '#/components/responses/BadResponse'
+        '401':
+          $ref: '#/components/responses/UnauthorizedResponse'
+        '403':
+          $ref: '#/components/responses/ForbiddenResponse'
+        '404':
+          $ref: '#/components/responses/NotFoundResponse'
+      security: []
+  /users/search:
+    post:
+      parameters:
+        - name: nextCursor
+          in: query
+          description: nextCursor
+          schema:
+            type: string
+        - name: limit
+          in: query
+          description: limit items (default 10)
+          schema:
+            type: string
+            default: 10
+        - name: sortOrder
+          in: query
+          description: asc or desc
+          schema:
+            type: string
+            enum:
+              - asc
+              - desc
+      tags:
+        - Users
+      operationId: usersSearch
+      summary: POST Post search for users
+      description: This endpoint search for users
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UsersSearchBody'
+      responses:
+        '200':
+          description: Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UsersSearchResponse'
         '400':
           $ref: '#/components/responses/BadResponse'
         '401':
@@ -5038,7 +5129,7 @@ paths:
           type: string
     get:
       tags:
-        - User
+        - Users
       operationId: usersTop
       summary: GET Get all users grouped by professions
       description: This endpoint get all users group by professions

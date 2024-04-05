@@ -6,16 +6,16 @@
  */
 
 export type CustomerPayoutPaginateParams = {
-  /**
-   * The page number
-   */
-  page: string;
-  /**
-   * The sort order either asc eller desc = default desc
-   */
-  sortOrder?: string;
-  /**
-   * The limit = default to 10
-   */
-  limit?: string;
+/**
+ * The page number
+ */
+page: string;
+/**
+ * The sort order either asc eller desc = default desc
+ */
+sortOrder?: string;
+/**
+ * The limit = default to 10
+ */
+limit?: string;
 };

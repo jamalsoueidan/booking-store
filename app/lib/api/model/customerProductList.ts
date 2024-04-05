@@ -4,7 +4,7 @@
  * Booking Shopify Api
  * OpenAPI spec version: 1.0.0
  */
-import type {CustomerProduct} from './customerProduct';
-import type {CustomerProductListAllOf} from './customerProductListAllOf';
+import type { CustomerProduct } from './customerProduct';
+import type { CustomerProductListAllOf } from './customerProductListAllOf';
 
 export type CustomerProductList = CustomerProduct & CustomerProductListAllOf;

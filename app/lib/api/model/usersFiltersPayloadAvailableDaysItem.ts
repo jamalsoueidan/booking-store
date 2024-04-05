@@ -5,4 +5,7 @@
  * OpenAPI spec version: 1.0.0
  */
 
-export type UsersSpecialtiesResponsePayload = {[key: string]: number};
+export type UsersFiltersPayloadAvailableDaysItem = {
+  count: number;
+  day: string;
+};

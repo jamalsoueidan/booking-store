@@ -4,7 +4,7 @@
  * Booking Shopify Api
  * OpenAPI spec version: 1.0.0
  */
-import type {CustomerProductBase} from './customerProductBase';
+import type { CustomerProductBase } from './customerProductBase';
 
 export interface UserProductsListByLocationResponse {
   payload: CustomerProductBase[];

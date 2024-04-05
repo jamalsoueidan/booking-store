@@ -5,8 +5,8 @@
  * OpenAPI spec version: 1.0.0
  */
 
-export type CustomerPayoutLogType =
-  (typeof CustomerPayoutLogType)[keyof typeof CustomerPayoutLogType];
+export type CustomerPayoutLogType = typeof CustomerPayoutLogType[keyof typeof CustomerPayoutLogType];
+
 
 // eslint-disable-next-line @typescript-eslint/no-redeclare
 export const CustomerPayoutLogType = {

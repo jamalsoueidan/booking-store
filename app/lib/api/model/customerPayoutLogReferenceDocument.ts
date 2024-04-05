@@ -4,9 +4,7 @@
  * Booking Shopify Api
  * OpenAPI spec version: 1.0.0
  */
-import type {CustomeBaserOrderLineItem} from './customeBaserOrderLineItem';
-import type {Shipping} from './shipping';
+import type { CustomeBaserOrderLineItem } from './customeBaserOrderLineItem';
+import type { Shipping } from './shipping';
 
-export type CustomerPayoutLogReferenceDocument =
-  | CustomeBaserOrderLineItem
-  | Shipping;
+export type CustomerPayoutLogReferenceDocument = CustomeBaserOrderLineItem | Shipping;

@@ -4,7 +4,7 @@
  * Booking Shopify Api
  * OpenAPI spec version: 1.0.0
  */
-import type {CustomerStatus} from './customerStatus';
+import type { CustomerStatus } from './customerStatus';
 
 export interface CustomerStatusResponse {
   payload: CustomerStatus;

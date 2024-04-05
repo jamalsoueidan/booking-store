@@ -4,8 +4,8 @@
  * Booking Shopify Api
  * OpenAPI spec version: 1.0.0
  */
-import type {CustomerBaseOrderMoneyPresentmentMoney} from './customerBaseOrderMoneyPresentmentMoney';
-import type {CustomerBaseOrderMoneyShopMoney} from './customerBaseOrderMoneyShopMoney';
+import type { CustomerBaseOrderMoneyPresentmentMoney } from './customerBaseOrderMoneyPresentmentMoney';
+import type { CustomerBaseOrderMoneyShopMoney } from './customerBaseOrderMoneyShopMoney';
 
 export interface CustomerBaseOrderMoney {
   presentment_money: CustomerBaseOrderMoneyPresentmentMoney;

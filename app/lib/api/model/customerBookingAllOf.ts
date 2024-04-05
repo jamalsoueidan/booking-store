@@ -4,10 +4,10 @@
  * Booking Shopify Api
  * OpenAPI spec version: 1.0.0
  */
-import type {CustomeBaserOrderLineItem} from './customeBaserOrderLineItem';
-import type {CustomerLocationBase} from './customerLocationBase';
-import type {Shipping} from './shipping';
-import type {CustomerBookingAllOfUser} from './customerBookingAllOfUser';
+import type { CustomeBaserOrderLineItem } from './customeBaserOrderLineItem';
+import type { CustomerLocationBase } from './customerLocationBase';
+import type { Shipping } from './shipping';
+import type { CustomerBookingAllOfUser } from './customerBookingAllOfUser';
 
 export type CustomerBookingAllOf = {
   end: string;

@@ -6,20 +6,20 @@
  */
 
 export type ProductsGetUsersByVariantParams = {
-  /**
-   * product Id
-   */
-  productId: string;
-  /**
-   * variant Id
-   */
-  variantId?: string;
-  /**
-   * nextCursor
-   */
-  nextCursor?: string;
-  /**
-   * limit items (default 5)
-   */
-  limit?: string;
+/**
+ * product Id
+ */
+productId: string;
+/**
+ * variant Id
+ */
+variantId?: string;
+/**
+ * nextCursor
+ */
+nextCursor?: string;
+/**
+ * limit items (default 5)
+ */
+limit?: string;
 };

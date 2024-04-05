@@ -4,7 +4,7 @@
  * Booking Shopify Api
  * OpenAPI spec version: 1.0.0
  */
-import type {CustomerProductBookingUnit} from './customerProductBookingUnit';
+import type { CustomerProductBookingUnit } from './customerProductBookingUnit';
 
 export interface CustomerProductBookingPeriod {
   unit: CustomerProductBookingUnit;
