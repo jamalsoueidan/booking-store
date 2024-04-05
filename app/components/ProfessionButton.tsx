@@ -16,9 +16,13 @@ export const ProfessionButton = ({
   const professionSearchParams = searchParams.get('profession') || '';
 
   const navigateTo = () => {
-    const newSearchParams = new URLSearchParams(searchParams);
-    newSearchParams.set('profession', profession.profession);
-    navigate(`search?${newSearchParams.toString()}`, {replace: true});
+    if (reset) {
+      navigate(`/artists`);
+    } else {
+      const newSearchParams = new URLSearchParams(searchParams);
+      newSearchParams.set('profession', profession.profession);
+      navigate(`search?${newSearchParams.toString()}`);
+    }
   };
 
   return (

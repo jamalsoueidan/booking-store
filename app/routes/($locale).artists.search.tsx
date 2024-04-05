@@ -19,11 +19,13 @@ export const loader = async (args: LoaderFunctionArgs) => {
   const searchParams = url.searchParams;
   const speciality = searchParams.getAll('speciality');
   const profession = searchParams.get('profession') || undefined;
+  const keyword = searchParams.get('keyword') || undefined;
 
   const {payload: users} = await getBookingShopifyApi().usersSearch(
     {
       profession,
       specialties: speciality.length > 0 ? speciality.join(',') : undefined,
+      keyword,
     },
     {
       limit: LIMIT,

@@ -9,13 +9,17 @@ import {
   TextInput,
 } from '@mantine/core';
 import {
+  Form,
   Outlet,
   type ShouldRevalidateFunction,
   useLoaderData,
+  useNavigate,
   useParams,
+  useSearchParams,
 } from '@remix-run/react';
 import {json, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
 import {IconArrowRight, IconFilter, IconSearch} from '@tabler/icons-react';
+import {FormEvent, useState} from 'react';
 import {VisualTeaser} from '~/components/blocks/VisualTeaser';
 import {ProfessionButton} from '~/components/ProfessionButton';
 import {METAFIELD_QUERY} from '~/data/fragments';
@@ -98,47 +102,7 @@ export default function Artists() {
             </Flex>
           </ScrollArea>
 
-          <Flex justify="center" gap="lg" align="center">
-            <TextInput
-              radius="xl"
-              size="md"
-              placeholder="Søg på eksperter"
-              rightSectionWidth={78}
-              leftSection={
-                <IconSearch
-                  style={{width: rem(18), height: rem(18)}}
-                  stroke={1.5}
-                />
-              }
-              rightSection={
-                <Flex gap="5px">
-                  <ActionIcon
-                    size={32}
-                    radius="xl"
-                    color="orange"
-                    variant="filled"
-                  >
-                    <IconArrowRight
-                      style={{width: rem(18), height: rem(18)}}
-                      stroke={1.5}
-                    />
-                  </ActionIcon>
-                  <ActionIcon
-                    size={32}
-                    radius="xl"
-                    color="orange"
-                    variant="filled"
-                    disabled={!params.handle}
-                  >
-                    <IconFilter
-                      style={{width: rem(18), height: rem(18)}}
-                      stroke={1.5}
-                    />
-                  </ActionIcon>
-                </Flex>
-              }
-            />
-          </Flex>
+          <SearchInput />
         </Stack>
       </Container>
       <Outlet />
@@ -148,3 +112,62 @@ export default function Artists() {
     </>
   );
 }
+
+export const SearchInput = () => {
+  const [searchParams, setSearchParams] = useSearchParams();
+  const [searchQuery, setSearchQuery] = useState(
+    searchParams.get('search') || '',
+  );
+
+  const navigate = useNavigate();
+
+  const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    const newSearchParams = new URLSearchParams(searchParams.toString());
+    newSearchParams.set('keyword', searchQuery);
+    navigate(`/artists/search?${newSearchParams.toString()}`);
+  };
+
+  return (
+    <Form onSubmit={handleSubmit} style={{maxWidth: 'unset'}}>
+      <Flex justify="center" gap="lg" align="center">
+        <TextInput
+          radius="xl"
+          size="md"
+          placeholder="Søg på eksperter"
+          rightSectionWidth={78}
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+          leftSection={
+            <IconSearch
+              style={{width: rem(18), height: rem(18)}}
+              stroke={1.5}
+            />
+          }
+          rightSection={
+            <Flex gap="5px">
+              <ActionIcon
+                size={32}
+                radius="xl"
+                color="orange"
+                variant="filled"
+                type="submit"
+              >
+                <IconArrowRight
+                  style={{width: rem(18), height: rem(18)}}
+                  stroke={1.5}
+                />
+              </ActionIcon>
+              <ActionIcon size={32} radius="xl" color="orange" variant="filled">
+                <IconFilter
+                  style={{width: rem(18), height: rem(18)}}
+                  stroke={1.5}
+                />
+              </ActionIcon>
+            </Flex>
+          }
+        />
+      </Flex>
+    </Form>
+  );
+};
