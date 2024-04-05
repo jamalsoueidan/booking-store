@@ -21,9 +21,6 @@ module.exports = {
     input: {
       target: './openapi.yaml',
     },
-    hooks: {
-      afterAllFilesWrite: 'prettier --write',
-    },
   },
   zod: {
     output: {
@@ -33,9 +30,6 @@ module.exports = {
     },
     input: {
       target: './openapi.yaml',
-    },
-    hooks: {
-      afterAllFilesWrite: 'prettier --write',
     },
   },
 };
