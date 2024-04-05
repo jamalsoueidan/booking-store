@@ -1,4 +1,4 @@
-import {type Storefront} from '@shopify/hydrogen';
+import {parseGid, type Storefront} from '@shopify/hydrogen';
 
 import {getBookingShopifyApi} from '~/lib/api/bookingShopifyApi';
 import {type CustomerProductUpsertBody} from '~/lib/api/model';
@@ -42,7 +42,7 @@ export async function createOrFindProductVariant({
   if (product.selectedVariant) {
     const response: ActionReturnType = {
       productHandle: product.selectedVariant.product.handle,
-      variantId: parseInt(product.selectedVariant.id),
+      variantId: parseInt(parseGid(product.selectedVariant.id).id),
       price: product.selectedVariant.price,
       selectedOptions: product.selectedVariant.selectedOptions[0],
       compareAtPrice: product.selectedVariant.compareAtPrice

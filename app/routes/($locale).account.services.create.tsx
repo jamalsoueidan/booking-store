@@ -91,10 +91,7 @@ export async function loader({context}: LoaderFunctionArgs) {
     customer.id,
   );
 
-  const findDefaultLocation = locations.payload.find((l) => l.isDefault) || {
-    _id: '',
-    locationType: 'origin',
-  };
+  const findDefaultLocation = locations.payload[0];
 
   return json({
     locations: locations.payload,
