@@ -1,22 +1,45 @@
-import {Container, Divider, Flex, ScrollArea} from '@mantine/core';
-import {Outlet, useLoaderData} from '@remix-run/react';
+import {
+  ActionIcon,
+  Container,
+  Divider,
+  Flex,
+  rem,
+  ScrollArea,
+  Stack,
+  TextInput,
+} from '@mantine/core';
+import {
+  Outlet,
+  type ShouldRevalidateFunction,
+  useLoaderData,
+  useParams,
+} from '@remix-run/react';
 import {json, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
+import {IconArrowRight, IconFilter, IconSearch} from '@tabler/icons-react';
 import {VisualTeaser} from '~/components/blocks/VisualTeaser';
 import {ProfessionButton} from '~/components/ProfessionButton';
-import {SpecialityButton} from '~/components/SpecialityButton';
 import {METAFIELD_QUERY} from '~/data/fragments';
 import {useComponents} from '~/lib/use-components';
+import {loader as loaderFilter} from './($locale).api.users.filters';
 import {loader as loaderProfessions} from './($locale).api.users.professions';
-import {loader as loaderSpecialties} from './($locale).api.users.specialties';
+
+export const shouldRevalidate: ShouldRevalidateFunction = ({
+  currentParams,
+  nextParams,
+}) => {
+  const {handle: previousHandle} = currentParams;
+  const {handle: nextHandle} = nextParams;
+  return nextHandle !== previousHandle;
+};
 
 export const loader = async (args: LoaderFunctionArgs) => {
   const {context} = args;
 
-  let response = await loaderSpecialties(args);
-  const specialties = await response.json();
+  const filterResponse = await loaderFilter(args);
+  const {specialties} = await filterResponse.json();
 
-  response = await loaderProfessions(args);
-  const professions = await response.json();
+  const professionsResponse = await loaderProfessions(args);
+  const professions = await professionsResponse.json();
 
   const {metaobject: visualTeaser} = await context.storefront.query(
     METAFIELD_QUERY,
@@ -45,6 +68,7 @@ export default function Artists() {
   const {professions, specialties, components, visualTeaser} =
     useLoaderData<typeof loader>();
 
+  const params = useParams();
   const markup = useComponents(
     components?.fields.find(({key}) => key === 'components'),
   );
@@ -54,33 +78,68 @@ export default function Artists() {
       <VisualTeaser component={visualTeaser} />
 
       <Container size="xl">
-        <ScrollArea h="auto" type="never">
-          <Flex gap="lg" justify="center">
-            <ProfessionButton
-              profession={{
-                count: 0,
-                key: 'all',
-                translation: 'Alle eksperter',
-              }}
-              reset
-            />
-            {professions.map((profession) => (
-              <ProfessionButton key={profession.key} profession={profession} />
-            ))}
-          </Flex>
-        </ScrollArea>
-        <ScrollArea h="auto" type="never" mb="lg">
-          {specialties.length > 0 ? (
-            <Flex gap="sm" mt="lg">
-              {specialties.map((speciality) => (
-                <SpecialityButton
-                  key={speciality.key}
-                  speciality={speciality}
+        <Stack gap="xl">
+          <ScrollArea h="auto" type="never">
+            <Flex gap="lg" justify="center">
+              <ProfessionButton
+                profession={{
+                  count: 0,
+                  profession: 'all',
+                  translation: 'Alle eksperter',
+                }}
+                reset
+              />
+              {professions.map((profession) => (
+                <ProfessionButton
+                  key={profession.profession}
+                  profession={profession}
                 />
               ))}
             </Flex>
-          ) : null}
-        </ScrollArea>
+          </ScrollArea>
+
+          <Flex justify="center" gap="lg" align="center">
+            <TextInput
+              radius="xl"
+              size="md"
+              placeholder="Søg på eksperter"
+              rightSectionWidth={78}
+              leftSection={
+                <IconSearch
+                  style={{width: rem(18), height: rem(18)}}
+                  stroke={1.5}
+                />
+              }
+              rightSection={
+                <Flex gap="5px">
+                  <ActionIcon
+                    size={32}
+                    radius="xl"
+                    color="orange"
+                    variant="filled"
+                  >
+                    <IconArrowRight
+                      style={{width: rem(18), height: rem(18)}}
+                      stroke={1.5}
+                    />
+                  </ActionIcon>
+                  <ActionIcon
+                    size={32}
+                    radius="xl"
+                    color="orange"
+                    variant="filled"
+                    disabled={!params.handle}
+                  >
+                    <IconFilter
+                      style={{width: rem(18), height: rem(18)}}
+                      stroke={1.5}
+                    />
+                  </ActionIcon>
+                </Flex>
+              }
+            />
+          </Flex>
+        </Stack>
       </Container>
       <Outlet />
 

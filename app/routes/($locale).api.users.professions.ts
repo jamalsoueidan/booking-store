@@ -2,7 +2,7 @@ import {json, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
 import {getBookingShopifyApi} from '~/lib/api/bookingShopifyApi';
 
 export type Profession = {
-  key: string;
+  profession: string;
   translation: string;
   count: number;
 };
@@ -31,13 +31,13 @@ export async function loader({request, context}: LoaderFunctionArgs) {
   const {payload: professions} =
     await getBookingShopifyApi().usersProfessions();
 
-  const translatedProfessions = Object.keys(professions)
+  const translatedProfessions = professions
     .map(
-      (key) =>
+      ({profession, count}) =>
         ({
-          key,
-          translation: ProfessionTranslations[key] || key,
-          count: professions[key],
+          profession,
+          translation: ProfessionTranslations[profession || ''],
+          count,
         } as Profession),
     )
     .sort((a, b) => a?.translation?.localeCompare(b.translation));
