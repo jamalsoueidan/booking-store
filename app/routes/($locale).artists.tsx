@@ -1,5 +1,4 @@
 import {
-  ActionIcon,
   Button,
   Container,
   Divider,
@@ -23,7 +22,6 @@ import {
 import {json, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
 import {
   IconAdjustmentsHorizontal,
-  IconArrowRight,
   IconCar,
   IconCheck,
   IconHome,
@@ -129,19 +127,63 @@ export default function Artists() {
 
 export const SearchInput = () => {
   const {filters} = useLoaderData<typeof loader>();
-  const [opened, {open, close}] = useDisclosure(false);
-  const [searchParams, setSearchParams] = useSearchParams();
-  const [searchQuery, setSearchQuery] = useState(
-    searchParams.get('search') || '',
-  );
   const isMobile = useMediaQuery('(max-width: 62em)');
+
+  //modal
+  const [opened, {open, close}] = useDisclosure(false);
+
+  //query
+  const [searchParams, setSearchParams] = useSearchParams();
+
+  //form
+  const [search, setSearch] = useState(searchParams.get('search') || '');
+  const [selectedDays, setSelectedDays] = useState(
+    searchParams.getAll('days') || [],
+  );
+  const [selectedLocations, setSelectedLocations] = useState({
+    location: searchParams.get('location'),
+    locationType: searchParams.get('locationType'),
+  });
 
   const navigate = useNavigate();
 
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const newSearchParams = new URLSearchParams(searchParams.toString());
-    newSearchParams.set('keyword', searchQuery);
+    newSearchParams.delete('keyword');
+    if (search.length > 2) {
+      newSearchParams.set('keyword', search);
+    }
+
+    newSearchParams.delete('location');
+    newSearchParams.delete('locationType');
+    if (selectedLocations.location && selectedLocations.locationType) {
+      newSearchParams.set('location', selectedLocations.location);
+      newSearchParams.set('locationType', selectedLocations.locationType);
+    }
+
+    newSearchParams.delete('days');
+    if (selectedDays.length > 0) {
+      selectedDays.forEach((d) => newSearchParams.append('days', d));
+    }
+
+    close();
+    navigate(`/artists/search?${newSearchParams.toString()}`);
+  };
+
+  const reset = () => {
+    setSearch('');
+    setSelectedDays([]);
+    setSelectedLocations({
+      location: null,
+      locationType: null,
+    });
+    const newSearchParams = new URLSearchParams(searchParams.toString());
+    newSearchParams.delete('keyword');
+    newSearchParams.delete('days');
+    newSearchParams.delete('location');
+    newSearchParams.delete('locationType');
+    close();
     navigate(`/artists/search?${newSearchParams.toString()}`);
   };
 
@@ -173,130 +215,105 @@ export const SearchInput = () => {
       >
         <Modal.Overlay />
         <Modal.Content>
+          <Modal.Header>
+            <Modal.CloseButton />
+          </Modal.Header>
           <Modal.Body>
-            <Stack gap="xl">
-              <Form onSubmit={handleSubmit} style={{maxWidth: 'unset'}}>
+            <Form onSubmit={handleSubmit} style={{maxWidth: 'unset'}}>
+              <Stack gap="xl">
                 <Stack gap="xs">
                   <Text fw="bold">Filtre på navn/fuldnavn?</Text>
                   <TextInput
+                    data-autofocus
                     radius="xl"
                     size="md"
                     w="100%"
                     rightSectionWidth={42}
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
+                    value={search}
+                    onChange={(e) => setSearch(e.target.value)}
                     leftSection={
                       <IconSearch
                         style={{width: rem(18), height: rem(18)}}
                         stroke={1.5}
                       />
                     }
-                    rightSection={
-                      <ActionIcon
-                        size={32}
-                        radius="xl"
-                        color="orange"
-                        variant="outline"
-                        type="submit"
-                      >
-                        <IconArrowRight
-                          style={{width: rem(18), height: rem(18)}}
-                          stroke={1.5}
-                        />
-                      </ActionIcon>
-                    }
                   />
                 </Stack>
-              </Form>
-              <Stack gap="xs">
-                <Text fw="bold">Filtre på by?</Text>
-                <Flex direction="row" gap="xs" wrap="wrap">
-                  {filters.locations.map(({city, count, locationType}) => {
-                    const checked =
-                      searchParams.get('location') === city &&
-                      searchParams.get('locationType') === locationType;
 
-                    return (
-                      <Button
-                        variant={checked ? 'outline' : 'default'}
-                        radius="xl"
-                        color={checked ? 'green' : undefined}
-                        key={city + locationType}
-                        onClick={() => {
-                          const newSearchParams = new URLSearchParams(
-                            searchParams.toString(),
-                          );
-                          newSearchParams.set('location', city);
-                          newSearchParams.set('locationType', locationType);
-                          setSearchParams(newSearchParams);
-                        }}
-                        rightSection={
-                          locationType === 'DESTINATION' ? (
-                            <IconCar />
-                          ) : (
-                            <IconHome />
-                          )
-                        }
-                        leftSection={checked ? <IconCheck /> : null}
-                      >
-                        {city}
-                      </Button>
-                    );
-                  })}
-                </Flex>
-              </Stack>
-              <Stack gap="xs">
-                <Text fw="bold">Filtre arbejdsdage?</Text>
-                <Flex direction="row" gap="xs" wrap="wrap">
-                  {filters.availableDays.map((day) => {
-                    const checked = searchParams
-                      .getAll('days')
-                      .includes(day.day);
+                <Stack gap="xs">
+                  <Text fw="bold">Filtre på by?</Text>
+                  <Flex direction="row" gap="xs" wrap="wrap">
+                    {filters.locations.map(({city, locationType}) => {
+                      const checked =
+                        selectedLocations.location === city &&
+                        selectedLocations.locationType === locationType;
 
-                    return (
-                      <Button
-                        variant={checked ? 'outline' : 'default'}
-                        radius="xl"
-                        color={checked ? 'green' : undefined}
-                        key={day.day}
-                        onClick={() => {
-                          const currentDays = searchParams.getAll('days');
-                          const newSearchParams = new URLSearchParams(
-                            searchParams.toString(),
-                          );
-
-                          if (currentDays.includes(day.day)) {
-                            const filteredDays = currentDays.filter(
-                              (d) => d !== day.day,
-                            );
-                            newSearchParams.delete('days');
-                            filteredDays.forEach((d) =>
-                              newSearchParams.append('days', d),
-                            );
-                          } else {
-                            newSearchParams.append('days', day.day);
+                      return (
+                        <Button
+                          variant={checked ? 'outline' : 'default'}
+                          radius="xl"
+                          color={checked ? 'green' : undefined}
+                          key={city + locationType}
+                          onClick={() => {
+                            setSelectedLocations({
+                              location: city,
+                              locationType,
+                            });
+                          }}
+                          rightSection={
+                            locationType === 'DESTINATION' ? (
+                              <IconCar />
+                            ) : (
+                              <IconHome />
+                            )
                           }
-                          setSearchParams(newSearchParams);
-                        }}
-                        /*rightSection={
-                          <Badge variant="filled" color="gray.4">
-                            {day.count}
-                          </Badge>
-                        }*/
-                        leftSection={
-                          checked ? <IconCheck color="green" /> : null
-                        }
-                      >
-                        {day.translation}
-                      </Button>
-                    );
-                  })}
+                          leftSection={checked ? <IconCheck /> : null}
+                        >
+                          {city}
+                        </Button>
+                      );
+                    })}
+                  </Flex>
+                </Stack>
+                <Stack gap="xs">
+                  <Text fw="bold">Filtre arbejdsdage?</Text>
+                  <Flex direction="row" gap="xs" wrap="wrap">
+                    {filters.availableDays.map(({day, translation}) => {
+                      const checked = selectedDays.includes(day);
+
+                      return (
+                        <Button
+                          variant={checked ? 'outline' : 'default'}
+                          radius="xl"
+                          color={checked ? 'green' : undefined}
+                          key={day}
+                          onClick={() => {
+                            if (selectedDays.includes(day)) {
+                              setSelectedDays(
+                                selectedDays.filter((d) => d !== day),
+                              );
+                            } else {
+                              setSelectedDays(selectedDays.concat(day));
+                            }
+                          }}
+                          leftSection={
+                            checked ? <IconCheck color="green" /> : null
+                          }
+                        >
+                          {translation}
+                        </Button>
+                      );
+                    })}
+                  </Flex>
+                </Stack>
+                <Flex justify="center" gap="lg">
+                  <Button type="submit">Søg på filter</Button>
+                  <Button onClick={reset} variant="default">
+                    Nulstille
+                  </Button>
                 </Flex>
               </Stack>
-              <Flex justify="center">
-                <Button onClick={close}>Anvend filtre</Button>
-              </Flex>
-            </Stack>
+            </Form>
           </Modal.Body>
         </Modal.Content>
       </Modal.Root>
