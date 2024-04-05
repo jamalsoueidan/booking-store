@@ -44,9 +44,9 @@ export function Header({header, isLoggedIn, cart}: HeaderProps) {
     <Box mx={{base: 'md', sm: '42'}} style={{zIndex: 2}}>
       <header className={classes.header}>
         <Flex h="100%" align="center" justify="space-between">
-          <Title order={1} component={Flex}>
+          <Title order={1} component={Flex} lh="xs" fw="500">
             ByS
-            <Image src={logo} alt="it's me" h="auto" w="10px" />
+            <Image src={logo} alt="it's me" h="auto" w="10px" mx="2px" />
             sters
           </Title>
 
