@@ -147,60 +147,67 @@ export const SearchInput = () => {
 
   return (
     <>
-      <Form onSubmit={handleSubmit} style={{maxWidth: 'unset'}}>
-        <Flex justify="center" gap="lg" align="center">
-          <TextInput
-            radius="xl"
-            size="md"
-            placeholder="Søg på eksperter"
-            rightSectionWidth={42}
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            leftSection={
-              <IconSearch
-                style={{width: rem(18), height: rem(18)}}
-                stroke={1.5}
-              />
-            }
-            rightSection={
-              <ActionIcon
-                size={32}
-                radius="xl"
-                color="orange"
-                variant="outline"
-                type="submit"
-              >
-                <IconArrowRight
-                  style={{width: rem(18), height: rem(18)}}
-                  stroke={1.5}
-                />
-              </ActionIcon>
-            }
-          />
-          <Flex gap="5px">
-            <Button
-              radius="xl"
-              color="orange"
-              variant="outline"
-              onClick={open}
-              rightSection={
-                <IconAdjustmentsHorizontal
-                  style={{width: rem(18), height: rem(18)}}
-                  stroke={1.5}
-                />
-              }
-            >
-              Filtre resultat
-            </Button>
-          </Flex>
-        </Flex>
-      </Form>
+      <Flex justify="center">
+        <Button
+          radius="xl"
+          size="lg"
+          color="orange"
+          variant="outline"
+          onClick={open}
+          rightSection={
+            <IconAdjustmentsHorizontal
+              style={{width: rem(24), height: rem(24)}}
+              stroke={1.5}
+            />
+          }
+        >
+          Filtre resultat
+        </Button>
+      </Flex>
 
-      <Modal.Root opened={opened} onClose={close} fullScreen={isMobile}>
+      <Modal.Root
+        opened={opened}
+        onClose={close}
+        fullScreen={isMobile}
+        scrollAreaComponent={ScrollArea.Autosize}
+      >
         <Modal.Overlay />
         <Modal.Content>
           <Modal.Body>
             <Stack gap="xl">
+              <Form onSubmit={handleSubmit} style={{maxWidth: 'unset'}}>
+                <Stack gap="xs">
+                  <Text fw="bold">Filtre på navn/fuldnavn?</Text>
+                  <TextInput
+                    radius="xl"
+                    size="md"
+                    w="100%"
+                    rightSectionWidth={42}
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    leftSection={
+                      <IconSearch
+                        style={{width: rem(18), height: rem(18)}}
+                        stroke={1.5}
+                      />
+                    }
+                    rightSection={
+                      <ActionIcon
+                        size={32}
+                        radius="xl"
+                        color="orange"
+                        variant="outline"
+                        type="submit"
+                      >
+                        <IconArrowRight
+                          style={{width: rem(18), height: rem(18)}}
+                          stroke={1.5}
+                        />
+                      </ActionIcon>
+                    }
+                  />
+                </Stack>
+              </Form>
               <Stack gap="xs">
                 <Text fw="bold">Filtre på by?</Text>
                 <Flex direction="row" gap="xs" wrap="wrap">
@@ -287,7 +294,7 @@ export const SearchInput = () => {
                 </Flex>
               </Stack>
               <Flex justify="center">
-                <Button onClick={close}>Luk vindue</Button>
+                <Button onClick={close}>Anvend filtre</Button>
               </Flex>
             </Stack>
           </Modal.Body>
