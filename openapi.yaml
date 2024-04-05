@@ -2390,6 +2390,8 @@ components:
     UsersSearchBody:
       type: object
       properties:
+        keyword:
+          type: string
         profession:
           type: string
         specialties:
