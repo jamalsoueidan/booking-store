@@ -19,7 +19,7 @@ import {
 } from '@remix-run/react';
 import {json, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
 import {IconArrowRight, IconFilter, IconSearch} from '@tabler/icons-react';
-import {FormEvent, useState} from 'react';
+import {type FormEvent, useState} from 'react';
 import {VisualTeaser} from '~/components/blocks/VisualTeaser';
 import {ProfessionButton} from '~/components/ProfessionButton';
 import {METAFIELD_QUERY} from '~/data/fragments';
