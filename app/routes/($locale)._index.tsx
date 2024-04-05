@@ -31,7 +31,7 @@ import {METAFIELD_QUERY, PRODUCT_ITEM_FRAGMENT} from '~/data/fragments';
 import {getBookingShopifyApi} from '~/lib/api/bookingShopifyApi';
 import type {
   ProductsGetUsersImageResponse,
-  UsersListResponse,
+  UsersSearchResponse,
 } from '~/lib/api/model';
 
 import {ArtistCard} from '~/components/ArtistCard';
@@ -71,10 +71,13 @@ export async function loader(args: LoaderFunctionArgs) {
 
   const professions = loaderProfessions(args).then((r) => r.json());
 
-  const artists = getBookingShopifyApi().usersList({
-    limit: '8',
-    sortOrder: 'desc',
-  });
+  const artists = getBookingShopifyApi().usersSearch(
+    {},
+    {
+      limit: '5',
+      sortOrder: 'desc',
+    },
+  );
 
   const collections = context.storefront.query(COLLECTIONS_QUERY, {
     variables: {first: 10},
@@ -179,7 +182,7 @@ function FeaturedArtists({
   artists,
   professions,
 }: {
-  artists: Promise<UsersListResponse>;
+  artists: Promise<UsersSearchResponse>;
   professions?: Promise<Array<Profession>>;
 }) {
   const theme = useMantineTheme();
@@ -222,7 +225,7 @@ function FeaturedArtists({
             <Suspense
               fallback={[...Array(5)].map((_, index) => (
                 // eslint-disable-next-line react/no-array-index-key
-                <Skeleton key={index} height={400} />
+                <Skeleton key={index} height={300} />
               ))}
             >
               <Await resolve={artists}>
@@ -284,9 +287,9 @@ function RecommendedTreatments({
           <Suspense
             fallback={
               <Flex gap="lg">
-                {[...Array(4)].map((_, index) => (
+                {[...Array(6)].map((_, index) => (
                   // eslint-disable-next-line react/no-array-index-key
-                  <Skeleton key={index} height={50} />
+                  <Skeleton key={index} height={300} />
                 ))}
               </Flex>
             }
@@ -295,12 +298,17 @@ function RecommendedTreatments({
               {({payload: productsUsers}) => (
                 <Suspense
                   fallback={
-                    <Flex gap="lg">
+                    <Slider
+                      plugins={[AUTOPLAY_DELAY.current]}
+                      slideSize={{base: '100%', md: '20%'}}
+                    >
                       {[...Array(4)].map((_, index) => (
                         // eslint-disable-next-line react/no-array-index-key
-                        <Skeleton key={index} height={50} />
+                        <Carousel.Slide key={index}>
+                          <Skeleton height={50} />
+                        </Carousel.Slide>
                       ))}
-                    </Flex>
+                    </Slider>
                   }
                 >
                   <Await resolve={products}>

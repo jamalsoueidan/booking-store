@@ -4,8 +4,8 @@
  * Booking Shopify Api
  * OpenAPI spec version: 1.0.0
  */
-import type {CustomerLocationCreateBodyLocationType} from './customerLocationCreateBodyLocationType';
-import type {CustomerLocationCreateBodyOriginType} from './customerLocationCreateBodyOriginType';
+import type { CustomerLocationCreateBodyLocationType } from './customerLocationCreateBodyLocationType';
+import type { CustomerLocationCreateBodyOriginType } from './customerLocationCreateBodyOriginType';
 
 export interface CustomerLocationCreateBody {
   distanceForFree: number;

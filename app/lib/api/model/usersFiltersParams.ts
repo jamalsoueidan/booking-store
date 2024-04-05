@@ -5,9 +5,9 @@
  * OpenAPI spec version: 1.0.0
  */
 
-export type UsersSpecialtiesParams = {
-  /**
-   * profession
-   */
-  profession?: string;
+export type UsersFiltersParams = {
+/**
+ * profession
+ */
+profession?: string;
 };

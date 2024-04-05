@@ -4,8 +4,7 @@
  * Booking Shopify Api
  * OpenAPI spec version: 1.0.0
  */
-import type {UserAvailability} from './userAvailability';
-import type {UserAvailabilityMultiAllOf} from './userAvailabilityMultiAllOf';
+import type { UserAvailability } from './userAvailability';
+import type { UserAvailabilityMultiAllOf } from './userAvailabilityMultiAllOf';
 
-export type UserAvailabilityMulti = UserAvailability &
-  UserAvailabilityMultiAllOf;
+export type UserAvailabilityMulti = UserAvailability & UserAvailabilityMultiAllOf;

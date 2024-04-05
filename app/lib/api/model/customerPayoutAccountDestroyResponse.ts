@@ -4,7 +4,7 @@
  * Booking Shopify Api
  * OpenAPI spec version: 1.0.0
  */
-import type {CustomerPayoutAccountDestroy} from './customerPayoutAccountDestroy';
+import type { CustomerPayoutAccountDestroy } from './customerPayoutAccountDestroy';
 
 export interface CustomerPayoutAccountDestroyResponse {
   payload: CustomerPayoutAccountDestroy;

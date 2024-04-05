@@ -4,7 +4,7 @@
  * Booking Shopify Api
  * OpenAPI spec version: 1.0.0
  */
-import type {ShippingBodyDestination} from './shippingBodyDestination';
+import type { ShippingBodyDestination } from './shippingBodyDestination';
 
 export interface ShippingBody {
   customerId?: number;

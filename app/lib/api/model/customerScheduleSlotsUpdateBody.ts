@@ -4,7 +4,7 @@
  * Booking Shopify Api
  * OpenAPI spec version: 1.0.0
  */
-import type {CustomerScheduleSlot} from './customerScheduleSlot';
+import type { CustomerScheduleSlot } from './customerScheduleSlot';
 
 export interface CustomerScheduleSlotsUpdateBody {
   slots: CustomerScheduleSlot[];

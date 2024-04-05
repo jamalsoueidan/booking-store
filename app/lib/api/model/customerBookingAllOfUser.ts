@@ -4,7 +4,7 @@
  * Booking Shopify Api
  * OpenAPI spec version: 1.0.0
  */
-import type {CustomerBookingAllOfUserImages} from './customerBookingAllOfUserImages';
+import type { CustomerBookingAllOfUserImages } from './customerBookingAllOfUserImages';
 
 export type CustomerBookingAllOfUser = {
   customerId: number;

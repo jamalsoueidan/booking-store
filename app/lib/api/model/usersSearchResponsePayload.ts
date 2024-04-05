@@ -4,10 +4,10 @@
  * Booking Shopify Api
  * OpenAPI spec version: 1.0.0
  */
-import type {User} from './user';
+import type { User } from './user';
 
-export type UsersListResponsePayload = {
+export type UsersSearchResponsePayload = {
   nextCursor?: string;
   results: User[];
-  totalCount?: number;
+  totalCount: number;
 };

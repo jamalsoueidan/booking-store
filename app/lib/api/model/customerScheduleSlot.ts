@@ -4,8 +4,8 @@
  * Booking Shopify Api
  * OpenAPI spec version: 1.0.0
  */
-import type {CustomerScheduleSlotDay} from './customerScheduleSlotDay';
-import type {CustomerScheduleSlotInterval} from './customerScheduleSlotInterval';
+import type { CustomerScheduleSlotDay } from './customerScheduleSlotDay';
+import type { CustomerScheduleSlotInterval } from './customerScheduleSlotInterval';
 
 export interface CustomerScheduleSlot {
   day: CustomerScheduleSlotDay;

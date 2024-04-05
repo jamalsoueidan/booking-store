@@ -4,8 +4,8 @@
  * Booking Shopify Api
  * OpenAPI spec version: 1.0.0
  */
-import type {ShippingCostDestinationCost} from './shippingCostDestinationCost';
-import type {ShippingCostDestinationDestination} from './shippingCostDestinationDestination';
+import type { ShippingCostDestinationCost } from './shippingCostDestinationCost';
+import type { ShippingCostDestinationDestination } from './shippingCostDestinationDestination';
 
 export interface ShippingCostDestination {
   cost: ShippingCostDestinationCost;

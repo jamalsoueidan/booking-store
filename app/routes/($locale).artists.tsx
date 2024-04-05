@@ -1,22 +1,57 @@
-import {Container, Divider, Flex, ScrollArea} from '@mantine/core';
-import {Outlet, useLoaderData} from '@remix-run/react';
+import {
+  Button,
+  Container,
+  Divider,
+  Flex,
+  Modal,
+  rem,
+  ScrollArea,
+  Stack,
+  Text,
+  TextInput,
+} from '@mantine/core';
+import {useDisclosure, useMediaQuery} from '@mantine/hooks';
+import {
+  Form,
+  Outlet,
+  type ShouldRevalidateFunction,
+  useLoaderData,
+  useNavigate,
+  useSearchParams,
+} from '@remix-run/react';
 import {json, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
+import {
+  IconAdjustmentsHorizontal,
+  IconCar,
+  IconCheck,
+  IconHome,
+  IconSearch,
+} from '@tabler/icons-react';
+import {type FormEvent, useState} from 'react';
 import {VisualTeaser} from '~/components/blocks/VisualTeaser';
 import {ProfessionButton} from '~/components/ProfessionButton';
-import {SpecialityButton} from '~/components/SpecialityButton';
 import {METAFIELD_QUERY} from '~/data/fragments';
 import {useComponents} from '~/lib/use-components';
+import {loader as loaderFilter} from './($locale).api.users.filters';
 import {loader as loaderProfessions} from './($locale).api.users.professions';
-import {loader as loaderSpecialties} from './($locale).api.users.specialties';
+
+export const shouldRevalidate: ShouldRevalidateFunction = ({
+  currentParams,
+  nextParams,
+}) => {
+  const {handle: previousHandle} = currentParams;
+  const {handle: nextHandle} = nextParams;
+  return nextHandle !== previousHandle;
+};
 
 export const loader = async (args: LoaderFunctionArgs) => {
   const {context} = args;
 
-  let response = await loaderSpecialties(args);
-  const specialties = await response.json();
+  const filterResponse = await loaderFilter(args);
+  const filters = await filterResponse.json();
 
-  response = await loaderProfessions(args);
-  const professions = await response.json();
+  const professionsResponse = await loaderProfessions(args);
+  const professions = await professionsResponse.json();
 
   const {metaobject: visualTeaser} = await context.storefront.query(
     METAFIELD_QUERY,
@@ -38,11 +73,16 @@ export const loader = async (args: LoaderFunctionArgs) => {
     },
   );
 
-  return json({components, visualTeaser, professions, specialties});
+  return json({
+    components,
+    visualTeaser,
+    professions,
+    filters,
+  });
 };
 
 export default function Artists() {
-  const {professions, specialties, components, visualTeaser} =
+  const {professions, components, visualTeaser} =
     useLoaderData<typeof loader>();
 
   const markup = useComponents(
@@ -54,33 +94,28 @@ export default function Artists() {
       <VisualTeaser component={visualTeaser} />
 
       <Container size="xl">
-        <ScrollArea h="auto" type="never">
-          <Flex gap="lg" justify="center">
-            <ProfessionButton
-              profession={{
-                count: 0,
-                key: 'all',
-                translation: 'Alle eksperter',
-              }}
-              reset
-            />
-            {professions.map((profession) => (
-              <ProfessionButton key={profession.key} profession={profession} />
-            ))}
-          </Flex>
-        </ScrollArea>
-        <ScrollArea h="auto" type="never" mb="lg">
-          {specialties.length > 0 ? (
-            <Flex gap="sm" mt="lg">
-              {specialties.map((speciality) => (
-                <SpecialityButton
-                  key={speciality.key}
-                  speciality={speciality}
+        <Stack gap="xl">
+          <ScrollArea h="auto" type="never">
+            <Flex gap="lg" justify="center">
+              <ProfessionButton
+                profession={{
+                  count: 0,
+                  profession: 'all',
+                  translation: 'Alle eksperter',
+                }}
+                reset
+              />
+              {professions.map((profession) => (
+                <ProfessionButton
+                  key={profession.profession}
+                  profession={profession}
                 />
               ))}
             </Flex>
-          ) : null}
-        </ScrollArea>
+          </ScrollArea>
+
+          <SearchInput />
+        </Stack>
       </Container>
       <Outlet />
 
@@ -89,3 +124,199 @@ export default function Artists() {
     </>
   );
 }
+
+export const SearchInput = () => {
+  const {filters} = useLoaderData<typeof loader>();
+  const isMobile = useMediaQuery('(max-width: 62em)');
+
+  //modal
+  const [opened, {open, close}] = useDisclosure(false);
+
+  //query
+  const [searchParams, setSearchParams] = useSearchParams();
+
+  //form
+  const [search, setSearch] = useState(searchParams.get('search') || '');
+  const [selectedDays, setSelectedDays] = useState(
+    searchParams.getAll('days') || [],
+  );
+  const [selectedLocations, setSelectedLocations] = useState({
+    location: searchParams.get('location'),
+    locationType: searchParams.get('locationType'),
+  });
+
+  const navigate = useNavigate();
+
+  const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    const newSearchParams = new URLSearchParams(searchParams.toString());
+    newSearchParams.delete('keyword');
+    if (search.length > 2) {
+      newSearchParams.set('keyword', search);
+    }
+
+    newSearchParams.delete('location');
+    newSearchParams.delete('locationType');
+    if (selectedLocations.location && selectedLocations.locationType) {
+      newSearchParams.set('location', selectedLocations.location);
+      newSearchParams.set('locationType', selectedLocations.locationType);
+    }
+
+    newSearchParams.delete('days');
+    if (selectedDays.length > 0) {
+      selectedDays.forEach((d) => newSearchParams.append('days', d));
+    }
+
+    close();
+    navigate(`/artists/search?${newSearchParams.toString()}`);
+  };
+
+  const reset = () => {
+    setSearch('');
+    setSelectedDays([]);
+    setSelectedLocations({
+      location: null,
+      locationType: null,
+    });
+    const newSearchParams = new URLSearchParams(searchParams.toString());
+    newSearchParams.delete('keyword');
+    newSearchParams.delete('days');
+    newSearchParams.delete('location');
+    newSearchParams.delete('locationType');
+    close();
+    navigate(`/artists/search?${newSearchParams.toString()}`);
+  };
+
+  return (
+    <>
+      <Flex justify="center">
+        <Button
+          radius="xl"
+          size="lg"
+          color="orange"
+          variant="outline"
+          onClick={open}
+          rightSection={
+            <IconAdjustmentsHorizontal
+              style={{width: rem(24), height: rem(24)}}
+              stroke={1.5}
+            />
+          }
+        >
+          Filtre resultat
+        </Button>
+      </Flex>
+
+      <Modal.Root
+        opened={opened}
+        onClose={close}
+        fullScreen={isMobile}
+        scrollAreaComponent={ScrollArea.Autosize}
+      >
+        <Modal.Overlay />
+        <Modal.Content>
+          <Modal.Header>
+            <Modal.CloseButton />
+          </Modal.Header>
+          <Modal.Body>
+            <Form onSubmit={handleSubmit} style={{maxWidth: 'unset'}}>
+              <Stack gap="xl">
+                <Stack gap="xs">
+                  <Text fw="bold">Filtre på navn/fuldnavn?</Text>
+                  <TextInput
+                    data-autofocus
+                    radius="xl"
+                    size="md"
+                    w="100%"
+                    rightSectionWidth={42}
+                    value={search}
+                    onChange={(e) => setSearch(e.target.value)}
+                    leftSection={
+                      <IconSearch
+                        style={{width: rem(18), height: rem(18)}}
+                        stroke={1.5}
+                      />
+                    }
+                  />
+                </Stack>
+
+                <Stack gap="xs">
+                  <Text fw="bold">Filtre på by?</Text>
+                  <Flex direction="row" gap="xs" wrap="wrap">
+                    {filters.locations.map(({city, locationType}) => {
+                      const checked =
+                        selectedLocations.location === city &&
+                        selectedLocations.locationType === locationType;
+
+                      return (
+                        <Button
+                          variant={checked ? 'outline' : 'default'}
+                          radius="xl"
+                          color={checked ? 'green' : undefined}
+                          key={city + locationType}
+                          onClick={() => {
+                            setSelectedLocations({
+                              location: city,
+                              locationType,
+                            });
+                          }}
+                          rightSection={
+                            locationType === 'DESTINATION' ? (
+                              <IconCar />
+                            ) : (
+                              <IconHome />
+                            )
+                          }
+                          leftSection={checked ? <IconCheck /> : null}
+                        >
+                          {city}
+                        </Button>
+                      );
+                    })}
+                  </Flex>
+                </Stack>
+                <Stack gap="xs">
+                  <Text fw="bold">Filtre arbejdsdage?</Text>
+                  <Flex direction="row" gap="xs" wrap="wrap">
+                    {filters.availableDays.map(({day, translation}) => {
+                      const checked = selectedDays.includes(day);
+
+                      return (
+                        <Button
+                          variant={checked ? 'outline' : 'default'}
+                          radius="xl"
+                          color={checked ? 'green' : undefined}
+                          key={day}
+                          onClick={() => {
+                            if (selectedDays.includes(day)) {
+                              setSelectedDays(
+                                selectedDays.filter((d) => d !== day),
+                              );
+                            } else {
+                              setSelectedDays(selectedDays.concat(day));
+                            }
+                          }}
+                          leftSection={
+                            checked ? <IconCheck color="green" /> : null
+                          }
+                        >
+                          {translation}
+                        </Button>
+                      );
+                    })}
+                  </Flex>
+                </Stack>
+                <Flex justify="center" gap="lg">
+                  <Button type="submit">Søg på filter</Button>
+                  <Button onClick={reset} variant="default">
+                    Nulstille
+                  </Button>
+                </Flex>
+              </Stack>
+            </Form>
+          </Modal.Body>
+        </Modal.Content>
+      </Modal.Root>
+    </>
+  );
+};

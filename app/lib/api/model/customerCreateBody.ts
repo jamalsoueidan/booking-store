@@ -4,7 +4,7 @@
  * Booking Shopify Api
  * OpenAPI spec version: 1.0.0
  */
-import type {CustomerCreateBodySocial} from './customerCreateBodySocial';
+import type { CustomerCreateBodySocial } from './customerCreateBodySocial';
 
 export interface CustomerCreateBody {
   aboutMe: string;

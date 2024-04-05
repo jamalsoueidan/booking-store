@@ -4,11 +4,11 @@
  * Booking Shopify Api
  * OpenAPI spec version: 1.0.0
  */
-import type {CustomerProductBookingPeriod} from './customerProductBookingPeriod';
-import type {CustomerProductBaseCompareAtPrice} from './customerProductBaseCompareAtPrice';
-import type {CustomerProductNoticePeriod} from './customerProductNoticePeriod';
-import type {CustomerProductBasePrice} from './customerProductBasePrice';
-import type {CustomerProductSelectedOptions} from './customerProductSelectedOptions';
+import type { CustomerProductBookingPeriod } from './customerProductBookingPeriod';
+import type { CustomerProductBaseCompareAtPrice } from './customerProductBaseCompareAtPrice';
+import type { CustomerProductNoticePeriod } from './customerProductNoticePeriod';
+import type { CustomerProductBasePrice } from './customerProductBasePrice';
+import type { CustomerProductSelectedOptions } from './customerProductSelectedOptions';
 
 export interface CustomerProductBase {
   bookingPeriod: CustomerProductBookingPeriod;

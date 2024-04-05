@@ -6,6 +6,6 @@
  */
 
 export type LocationGetTravelTimeParams = {
-  origin?: string;
-  destination?: string;
+origin?: string;
+destination?: string;
 };

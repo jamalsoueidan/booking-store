@@ -4,8 +4,8 @@
  * Booking Shopify Api
  * OpenAPI spec version: 1.0.0
  */
-import type {CustomerBaseOrderAddress} from './customerBaseOrderAddress';
-import type {CustomerBaseOrderCustomerSmsMarketingConsent} from './customerBaseOrderCustomerSmsMarketingConsent';
+import type { CustomerBaseOrderAddress } from './customerBaseOrderAddress';
+import type { CustomerBaseOrderCustomerSmsMarketingConsent } from './customerBaseOrderCustomerSmsMarketingConsent';
 
 export interface CustomerBaseOrderCustomer {
   accepts_marketing: boolean;

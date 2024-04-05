@@ -7,9 +7,11 @@ import {
   Drawer,
   Flex,
   Group,
+  Image,
   NavLink as MantineNavLink,
   Menu,
   ScrollArea,
+  Title,
   rem,
 } from '@mantine/core';
 import {useDisclosure} from '@mantine/hooks';
@@ -25,7 +27,7 @@ import clsx from 'clsx';
 import React, {Suspense} from 'react';
 import type {HeaderQuery} from 'storefrontapi.generated';
 import {useRootLoaderData} from '~/root';
-import logo from '../../public/logo.avif';
+import logo from '../../public/Artboard4.svg';
 import classes from './Header.module.css';
 import type {LayoutProps} from './Layout';
 
@@ -42,14 +44,12 @@ export function Header({header, isLoggedIn, cart}: HeaderProps) {
     <Box mx={{base: 'md', sm: '42'}} style={{zIndex: 2}}>
       <header className={classes.header}>
         <Flex h="100%" align="center" justify="space-between">
-          <NavLink prefetch="intent" to="/" end>
-            <img
-              src={logo}
-              alt={shop.name}
-              width="150"
-              style={{paddingTop: '6px'}}
-            />
-          </NavLink>
+          <Title order={1} component={Flex} lh="xs" fw="500">
+            ByS
+            <Image src={logo} alt="it's me" h="auto" w="10px" mx="2px" />
+            sters
+          </Title>
+
           <Group h="100%" w="100%" gap={0} visibleFrom="md" justify="center">
             <HeaderMenu
               menu={menu}

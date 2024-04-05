@@ -4,7 +4,7 @@
  * Booking Shopify Api
  * OpenAPI spec version: 1.0.0
  */
-import type {CustomerLocationIsDefault} from './customerLocationIsDefault';
+import type { CustomerLocationIsDefault } from './customerLocationIsDefault';
 
 export interface CustomerLocationListResponse {
   payload: CustomerLocationIsDefault[];

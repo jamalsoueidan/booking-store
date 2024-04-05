@@ -4,7 +4,7 @@
  * Booking Shopify Api
  * OpenAPI spec version: 1.0.0
  */
-import type {ProductsGetUsersByVariant} from './productsGetUsersByVariant';
+import type { ProductsGetUsersByVariant } from './productsGetUsersByVariant';
 
 export type ProductsGetUsersByVariantResponsePayload = {
   nextCursor?: string;

@@ -5,6 +5,4 @@
  * OpenAPI spec version: 1.0.0
  */
 
-export type CustomerBaseOrderRefundRefundLineItemsItemSubtotal =
-  | string
-  | number;
+export type CustomerBaseOrderRefundRefundLineItemsItemSubtotal = string | number;

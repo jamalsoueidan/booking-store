@@ -4,7 +4,7 @@
  * Booking Shopify Api
  * OpenAPI spec version: 1.0.0
  */
-import type {UserAvailabilityMulti} from './userAvailabilityMulti';
+import type { UserAvailabilityMulti } from './userAvailabilityMulti';
 
 export interface UserAvailabilityGenerateResponse {
   payload: UserAvailabilityMulti[];

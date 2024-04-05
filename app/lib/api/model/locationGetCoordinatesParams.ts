@@ -6,5 +6,5 @@
  */
 
 export type LocationGetCoordinatesParams = {
-  fullAddress?: string;
+fullAddress?: string;
 };

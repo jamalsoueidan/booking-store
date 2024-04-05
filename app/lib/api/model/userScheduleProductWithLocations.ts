@@ -4,8 +4,7 @@
  * Booking Shopify Api
  * OpenAPI spec version: 1.0.0
  */
-import type {CustomerProductBase} from './customerProductBase';
-import type {UserScheduleProductWithLocationsAllOf} from './userScheduleProductWithLocationsAllOf';
+import type { CustomerProductBase } from './customerProductBase';
+import type { UserScheduleProductWithLocationsAllOf } from './userScheduleProductWithLocationsAllOf';
 
-export type UserScheduleProductWithLocations = CustomerProductBase &
-  UserScheduleProductWithLocationsAllOf;
+export type UserScheduleProductWithLocations = CustomerProductBase & UserScheduleProductWithLocationsAllOf;

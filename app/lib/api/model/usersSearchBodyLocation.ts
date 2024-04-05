@@ -5,4 +5,7 @@
  * OpenAPI spec version: 1.0.0
  */
 
-export type UsersProfessionsResponsePayload = {[key: string]: number};
+export type UsersSearchBodyLocation = {
+  city: string;
+  locationType: string;
+};

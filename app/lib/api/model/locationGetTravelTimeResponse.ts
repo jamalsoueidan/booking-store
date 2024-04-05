@@ -4,7 +4,7 @@
  * Booking Shopify Api
  * OpenAPI spec version: 1.0.0
  */
-import type {LocationTravelTime} from './locationTravelTime';
+import type { LocationTravelTime } from './locationTravelTime';
 
 export interface LocationGetTravelTimeResponse {
   payload: LocationTravelTime;

@@ -4,7 +4,7 @@
  * Booking Shopify Api
  * OpenAPI spec version: 1.0.0
  */
-import type {CustomerLocation} from './customerLocation';
+import type { CustomerLocation } from './customerLocation';
 
 export type UserScheduleProductWithLocationsAllOf = {
   locations: CustomerLocation[];

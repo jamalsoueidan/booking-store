@@ -4,7 +4,7 @@
  * Booking Shopify Api
  * OpenAPI spec version: 1.0.0
  */
-import type {CustomerScheduleDestroy} from './customerScheduleDestroy';
+import type { CustomerScheduleDestroy } from './customerScheduleDestroy';
 
 export interface CustomerScheduleDestroyResponse {
   payload: CustomerScheduleDestroy;

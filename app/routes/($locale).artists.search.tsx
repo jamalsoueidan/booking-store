@@ -1,6 +1,6 @@
 import {Box, Container, rem, SimpleGrid, Stack} from '@mantine/core';
 import {useLoaderData, useParams, useSearchParams} from '@remix-run/react';
-import {json, redirect, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
+import {json, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
 import {useEffect, useState} from 'react';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import {ArtistCard} from '~/components/ArtistCard';
@@ -14,20 +14,25 @@ const LIMIT = '20';
 
 export const loader = async (args: LoaderFunctionArgs) => {
   const {context, request, params} = args;
-  const {handle} = params;
 
-  if (!handle) {
-    return redirect('../');
-  }
   const url = new URL(request.url);
   const searchParams = url.searchParams;
   const speciality = searchParams.getAll('speciality');
+  const profession = searchParams.get('profession') || undefined;
+  const keyword = searchParams.get('keyword') || undefined;
+  const days = searchParams.getAll('days') || undefined;
 
-  const {payload: users} = await getBookingShopifyApi().usersList({
-    limit: LIMIT,
-    profession: handle,
-    specialties: speciality.length > 0 ? speciality : undefined,
-  });
+  const {payload: users} = await getBookingShopifyApi().usersSearch(
+    {
+      profession,
+      specialties: speciality.length > 0 ? speciality.join(',') : undefined,
+      keyword,
+      days,
+    },
+    {
+      limit: LIMIT,
+    },
+  );
 
   const {metaobject: components} = await context.storefront.query(
     METAFIELD_QUERY,
@@ -78,12 +83,16 @@ const fetchData = async ({
   speciality: string[];
   cursor?: string;
 }) => {
-  const response = await getBookingShopifyApi().usersList({
-    nextCursor: cursor,
-    limit: LIMIT,
-    profession,
-    specialties: speciality.length > 0 ? speciality : undefined,
-  });
+  const response = await getBookingShopifyApi().usersSearch(
+    {
+      profession,
+      specialties: speciality.length > 0 ? speciality.join(',') : undefined,
+    },
+    {
+      nextCursor: cursor,
+      limit: LIMIT,
+    },
+  );
 
   return response.payload;
 };
@@ -125,9 +134,9 @@ export const UserList = ({initialData, initialCursor}: UserListProps) => {
       loader={<h4>Henter flere...</h4>}
     >
       <SimpleGrid spacing="lg" cols={{base: 2, sm: 3, md: 4, lg: 5}}>
-        {data?.map((user) => (
-          <ArtistCard artist={user} key={user.customerId} />
-        ))}
+        {data?.map((user) => {
+          return <ArtistCard artist={user} key={user.username} />;
+        })}
       </SimpleGrid>
     </InfiniteScroll>
   );

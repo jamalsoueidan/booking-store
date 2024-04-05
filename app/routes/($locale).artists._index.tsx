@@ -75,7 +75,7 @@ export default function ArtistsIndex() {
               size="lg"
               aria-label="Settings"
               component={Link}
-              to={`/artists/list?profession=${user.profession}`}
+              to={`/artists/search?profession=${user.profession}`}
               radius="lg"
               rightSection={
                 <IconArrowRight
