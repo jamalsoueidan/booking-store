@@ -287,9 +287,9 @@ function RecommendedTreatments({
           <Suspense
             fallback={
               <Flex gap="lg">
-                {[...Array(4)].map((_, index) => (
+                {[...Array(6)].map((_, index) => (
                   // eslint-disable-next-line react/no-array-index-key
-                  <Skeleton key={index} height={50} />
+                  <Skeleton key={index} height={300} />
                 ))}
               </Flex>
             }
@@ -298,12 +298,17 @@ function RecommendedTreatments({
               {({payload: productsUsers}) => (
                 <Suspense
                   fallback={
-                    <Flex gap="lg">
+                    <Slider
+                      plugins={[AUTOPLAY_DELAY.current]}
+                      slideSize={{base: '100%', md: '20%'}}
+                    >
                       {[...Array(4)].map((_, index) => (
                         // eslint-disable-next-line react/no-array-index-key
-                        <Skeleton key={index} height={50} />
+                        <Carousel.Slide key={index}>
+                          <Skeleton height={50} />
+                        </Carousel.Slide>
                       ))}
-                    </Flex>
+                    </Slider>
                   }
                 >
                   <Await resolve={products}>

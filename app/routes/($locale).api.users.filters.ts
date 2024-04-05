@@ -7,7 +7,7 @@ export type Speciality = {
   count: number;
 };
 
-const translations: Record<string, string> = {
+const translationsSpecialties: Record<string, string> = {
   acrylic_nails: 'Akrylnegle',
   airbrush_makeup: 'Airbrush makeup',
   balayage_specialist: 'Balayage specialist',
@@ -40,6 +40,22 @@ const translations: Record<string, string> = {
   waxing_hair_removal: 'Voksning',
 };
 
+const translationsDays: Record<string, string> = {
+  monday: 'Mandag',
+  tuesday: 'Tirsdag',
+  wednesday: 'Onsdag',
+  thursday: 'Torsdag',
+  friday: 'Fredag',
+  saturday: 'Lørdag',
+  sunday: 'Søndag',
+};
+
+export type AvailableDays = {
+  day: string;
+  translation: string;
+  count: number;
+};
+
 export async function loader({params}: LoaderFunctionArgs) {
   const {handle} = params;
 
@@ -53,10 +69,38 @@ export async function loader({params}: LoaderFunctionArgs) {
         ({
           speciality,
           count,
-          translation: translations[speciality || ''],
+          translation: translationsSpecialties[speciality || ''],
         } as Speciality),
     )
     .sort((a, b) => a?.translation?.localeCompare(b?.translation));
 
-  return json({specialties});
+  const daysOrder = Object.keys(translationsDays);
+  const availableDays = payload.availableDays
+    ?.map(
+      ({day, count}) =>
+        ({
+          day,
+          translation: translationsDays[day || ''],
+          count,
+        } as AvailableDays),
+    )
+    .sort((a, b) => {
+      return (
+        daysOrder.indexOf(a.day.toLowerCase()) -
+        daysOrder.indexOf(b.day.toLowerCase())
+      );
+    });
+
+  const locations = payload.locations
+    .map((location) => {
+      const {city, locationType, count} = location;
+      return {
+        city,
+        locationType,
+        count,
+      };
+    })
+    .sort((a, b) => a?.city?.localeCompare(b?.city));
+
+  return json({specialties, availableDays, locations});
 }
