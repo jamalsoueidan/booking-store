@@ -3637,6 +3637,7 @@ export const usersSearchQueryParams = zod.object({
 })
 
 export const usersSearchBody = zod.object({
+  "keyword": zod.string().optional(),
   "profession": zod.string().optional(),
   "specialties": zod.string().optional(),
   "location":  zod.object({

@@ -8,6 +8,7 @@ import type { UsersSearchBodyLocation } from './usersSearchBodyLocation';
 
 export interface UsersSearchBody {
   days?: string[];
+  keyword?: string;
   location?: UsersSearchBodyLocation;
   profession?: string;
   specialties?: string;
