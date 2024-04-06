@@ -12,7 +12,7 @@ import {getCustomer} from '~/lib/get-customer';
 import {customerLocationUpdateBody} from '~/lib/zod/bookingShopifyApi';
 
 import {parseWithZod} from '@conform-to/zod';
-import {Stack, TextInput} from '@mantine/core';
+import {Select, Stack, TextInput} from '@mantine/core';
 import {parseGid} from '@shopify/hydrogen';
 import {AccountContent} from '~/components/account/AccountContent';
 import {AccountTitle} from '~/components/account/AccountTitle';
@@ -105,7 +105,23 @@ export default function AccountLocationsEdit() {
               {...getInputProps(fields.fullAddress, {type: 'text'})}
             />
 
-            <input {...getInputProps(fields.originType, {type: 'hidden'})} />
+            {defaultValue.locationType === 'destination' ? (
+              <input
+                {...getInputProps(fields.originType, {
+                  type: 'hidden',
+                })}
+              />
+            ) : (
+              <Select
+                label="Arbejdsstedstype"
+                defaultValue={fields.originType.initialValue}
+                data={[
+                  {value: 'home', label: 'Hus/lejlighed'},
+                  {value: 'commercial', label: 'Butik'},
+                ]}
+                {...getInputProps(fields.originType, {type: 'text'})}
+              />
+            )}
 
             <NumericInput
               field={fields.startFee}

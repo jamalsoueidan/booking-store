@@ -11,7 +11,7 @@ import {customerLocationCreateBody} from '~/lib/zod/bookingShopifyApi';
 
 import {getFormProps, getInputProps, useForm} from '@conform-to/react';
 import {parseWithZod} from '@conform-to/zod';
-import {Stack, TextInput} from '@mantine/core';
+import {Select, Stack, TextInput} from '@mantine/core';
 import {parseGid} from '@shopify/hydrogen';
 import {AccountContent} from '~/components/account/AccountContent';
 import {AccountTitle} from '~/components/account/AccountTitle';
@@ -33,7 +33,7 @@ export async function loader({context}: LoaderFunctionArgs) {
     name: '',
     locationType: 'origin',
     fullAddress: '',
-    originType: 'home',
+    originType: 'commercial',
     distanceHourlyRate: 500,
     fixedRatePerKm: 20,
     distanceForFree: 4,
@@ -119,17 +119,29 @@ export default function Component() {
               label={
                 fields.locationType.value === 'destination'
                   ? 'Hvor vil du kører fra?'
-                  : 'Hvor skal kunden køre til?'
+                  : 'Hvor skal kunden køre hen til?'
               }
               placeholder="Sigridsvej 45, 8220 Brabrand"
               {...getInputProps(fields.fullAddress, {type: 'text'})}
             />
 
-            <input
-              {...getInputProps(fields.originType, {
-                type: 'hidden',
-              })}
-            />
+            {fields.locationType.value === 'destination' ? (
+              <input
+                {...getInputProps(fields.originType, {
+                  type: 'hidden',
+                })}
+              />
+            ) : (
+              <Select
+                label="Arbejdsstedstype"
+                defaultValue={fields.originType.initialValue}
+                data={[
+                  {value: 'home', label: 'Hus/lejlighed'},
+                  {value: 'commercial', label: 'Butik'},
+                ]}
+                {...getInputProps(fields.originType, {type: 'text'})}
+              />
+            )}
 
             <NumericInput
               field={fields.startFee}
