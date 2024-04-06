@@ -16,7 +16,7 @@ export default function ArtistPage({
       <div
         className={classes.innerFlex}
         style={{
-          backgroundColor: '#a88bf8',
+          backgroundColor: `var(--mantine-color-${artist.theme.color}-6)`,
         }}
       >
         <div className={classes.sticky}>{children}</div>

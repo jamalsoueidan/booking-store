@@ -1,24 +1,9 @@
-import {
-  Await,
-  Link,
-  Outlet,
-  useLoaderData,
-  type MetaFunction,
-} from '@remix-run/react';
-import {defer, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
+import {Link, Outlet, useLoaderData, type MetaFunction} from '@remix-run/react';
+import {json, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
 
-import {
-  AspectRatio,
-  Avatar,
-  Button,
-  Flex,
-  Skeleton,
-  Stack,
-  Title,
-} from '@mantine/core';
+import {AspectRatio, Avatar, Button, Flex, Stack, Title} from '@mantine/core';
 import {Image, type Storefront} from '@shopify/hydrogen';
 import {IconArrowLeft} from '@tabler/icons-react';
-import {Suspense} from 'react';
 import {type ProductVariantFragment} from 'storefrontapi.generated';
 import {ArtistShell} from '~/components/ArtistShell';
 import {PRODUCT_SELECTED_OPTIONS_QUERY} from '~/data/queries';
@@ -62,7 +47,7 @@ export async function loader({params, request, context}: LoaderFunctionArgs) {
     throw new Response('Expected product handle to be defined', {status: 404});
   }
 
-  const artist = getBookingShopifyApi().userGet(username);
+  const {payload: artist} = await getBookingShopifyApi().userGet(username);
 
   const {product} = await getProduct({storefront, username, productHandle});
 
@@ -72,42 +57,34 @@ export async function loader({params, request, context}: LoaderFunctionArgs) {
     });
   }
 
-  return defer({product, artist});
+  return json({product, artist});
 }
 
 export default function Product() {
   const {product, artist} = useLoaderData<typeof loader>();
 
   return (
-    <ArtistShell color="pink">
-      <ArtistShell.Header color="pink">
+    <ArtistShell color={artist.theme.color}>
+      <ArtistShell.Header color={artist.theme.color}>
         <Stack gap="xs" w="100%" align="flex-start">
-          <Suspense
-            fallback={<Skeleton height={50} width="100%" circle mb="xl" />}
+          <Button
+            p="0"
+            variant="transparent"
+            component={Link}
+            to={`/artist/${artist.username}`}
+            c="black"
+            leftSection={
+              <IconArrowLeft
+                style={{width: '24px', height: '24px'}}
+                stroke={1.5}
+              />
+            }
+            rightSection={
+              <Avatar src={artist.images?.profile?.url} size="md" />
+            }
           >
-            <Await resolve={artist}>
-              {({payload: artist}) => (
-                <Button
-                  p="0"
-                  variant="transparent"
-                  component={Link}
-                  to={`/artist/${artist.username}`}
-                  c="black"
-                  leftSection={
-                    <IconArrowLeft
-                      style={{width: '24px', height: '24px'}}
-                      stroke={1.5}
-                    />
-                  }
-                  rightSection={
-                    <Avatar src={artist.images?.profile?.url} size="md" />
-                  }
-                >
-                  {artist.fullname}
-                </Button>
-              )}
-            </Await>
-          </Suspense>
+            {artist.fullname}
+          </Button>
 
           <Flex justify="space-between" align="center" w="100%">
             <Title order={1} fw="500" fz={{base: 24, sm: 40}}>
