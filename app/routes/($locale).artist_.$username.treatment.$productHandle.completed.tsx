@@ -1,7 +1,6 @@
 import {
   Anchor,
   Box,
-  Card,
   Divider,
   Flex,
   Group,
@@ -127,9 +126,9 @@ export default function ArtistTreatmentsBooking() {
   return (
     <Box mt="lg" mb="100">
       <TreatmentArtistCardComplete artist={data.user} />
-      <Card.Section pt="md" pb="md">
-        <Divider />
-      </Card.Section>
+
+      <Divider py="md" />
+
       <Group mb="xs" gap="xs">
         <IconGps />
         <Text size="lg" fw="bold">
@@ -158,9 +157,8 @@ export default function ArtistTreatmentsBooking() {
           <Anchor href="googlemap">Se google map</Anchor>
         </>
       )}
-      <Card.Section pt="md" pb="md">
-        <Divider />
-      </Card.Section>
+
+      <Divider py="md" />
 
       <Group mb="xs" gap="xs">
         <IconClockHour3 />
@@ -180,9 +178,7 @@ export default function ArtistTreatmentsBooking() {
         </Text>
       )}
 
-      <Card.Section pt="md" pb="md">
-        <Divider />
-      </Card.Section>
+      <Divider py="md" />
 
       <Group mb="xs" gap="xs">
         <IconHotelService />

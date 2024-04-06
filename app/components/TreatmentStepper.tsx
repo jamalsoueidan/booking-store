@@ -5,16 +5,7 @@ import {
   useSearchParams,
 } from '@remix-run/react';
 
-import {
-  ActionIcon,
-  Box,
-  Button,
-  Group,
-  Text,
-  Tooltip,
-  rem,
-} from '@mantine/core';
-import {useMediaQuery} from '@mantine/hooks';
+import {ActionIcon, Button, Group, Text, Tooltip} from '@mantine/core';
 import {IconArrowLeft, IconArrowRight} from '@tabler/icons-react';
 import {type ReactNode} from 'react';
 import {determineStepFromURL} from '~/lib/determineStepFromURL';
@@ -31,7 +22,6 @@ type StepperProps = {
 };
 
 export function TreatmentStepper({paths}: StepperProps) {
-  const isMobile = useMediaQuery('(max-width: 62em)');
   const navigate = useNavigate();
   const location = useLocation();
   const [searchParams] = useSearchParams();
@@ -73,77 +63,67 @@ export function TreatmentStepper({paths}: StepperProps) {
   const disabled = (missingParams && missingParams.length > 0) || false;
 
   return (
-    <Box
-      hidden={currentPath.path === 'completed'}
-      id="stepper"
-      pos="sticky"
-      bottom="0px"
-      bg="white"
-      p={isMobile ? 'sm' : 'lg'}
-      style={{boxShadow: '0 -4px 4px rgba(0,0,0,.1)'}}
-    >
-      <Group justify="space-between">
-        <Group gap="xs">
+    <Group justify="space-between">
+      <Group gap="xs">
+        {currenctActive > 0 ? (
+          <>
+            <Text c="dimmed" fz={{base: 16, sm: 20}}>
+              {currenctActive}/{Object.keys(paths).length - 1}
+            </Text>
+            <Text fw={500} tt="uppercase" fz={{base: 16, sm: 20}}>
+              {currentPath.title}
+            </Text>
+          </>
+        ) : null}
+      </Group>
+      {currentPath.path !== 'completed' && (
+        <Group gap="md">
           {currenctActive > 0 ? (
             <>
-              <Text c="dimmed" size={rem(isMobile ? 16 : 20)}>
-                {currenctActive}/{Object.keys(paths).length - 1}
-              </Text>
-              <Text fw={500} tt="uppercase" size={rem(isMobile ? 16 : 20)}>
-                {currentPath.title}
-              </Text>
-            </>
-          ) : null}
-        </Group>
-        {currentPath.path !== 'completed' && (
-          <Group gap="xs">
-            {currenctActive > 0 ? (
-              <>
+              <ActionIcon
+                variant="filled"
+                color="black"
+                radius="lg"
+                size="lg"
+                aria-label="Tilbage"
+                onClick={prevStep}
+                loading={navigation.state === 'loading'}
+              >
+                <IconArrowLeft stroke={1.5} />
+              </ActionIcon>
+
+              <ConditionalTooltip
+                disabled={disabled}
+                tooltipText={currentPath.text}
+              >
                 <ActionIcon
                   variant="filled"
                   color="black"
-                  radius={isMobile ? 'lg' : 'xl'}
-                  size={isMobile ? 'lg' : 'xl'}
-                  aria-label="Tilbage"
-                  onClick={prevStep}
+                  radius="lg"
+                  size="lg"
+                  aria-label="Næste"
+                  onClick={nextStep}
+                  disabled={disabled}
                   loading={navigation.state === 'loading'}
                 >
-                  <IconArrowLeft stroke={1.5} />
+                  <IconArrowRight stroke={1.5} />
                 </ActionIcon>
-
-                <ConditionalTooltip
-                  disabled={disabled}
-                  tooltipText={currentPath.text}
-                >
-                  <ActionIcon
-                    variant="filled"
-                    color="black"
-                    radius={isMobile ? 'lg' : 'xl'}
-                    size={isMobile ? 'lg' : 'xl'}
-                    aria-label="Næste"
-                    onClick={nextStep}
-                    disabled={disabled}
-                    loading={navigation.state === 'loading'}
-                  >
-                    <IconArrowRight stroke={1.5} />
-                  </ActionIcon>
-                </ConditionalTooltip>
-              </>
-            ) : (
-              <Button
-                variant="filled"
-                color="black"
-                size="md"
-                rightSection={<IconArrowRight />}
-                onClick={nextStep}
-              >
-                Bestil tid
-              </Button>
-            )}
-          </Group>
-        )}
-      </Group>
-    </Box>
+              </ConditionalTooltip>
+            </>
+          ) : (
+            <Button
+              variant="filled"
+              color="black"
+              size="md"
+              rightSection={<IconArrowRight />}
+              onClick={nextStep}
+            >
+              Bestil tid
+            </Button>
+          )}
+        </Group>
+      )}
+    </Group>
   );
 }
 
