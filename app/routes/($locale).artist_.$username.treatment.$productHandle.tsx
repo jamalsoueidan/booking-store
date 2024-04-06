@@ -1,9 +1,24 @@
-import {Link, Outlet, useLoaderData, type MetaFunction} from '@remix-run/react';
-import {json, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
+import {
+  Await,
+  Link,
+  Outlet,
+  useLoaderData,
+  type MetaFunction,
+} from '@remix-run/react';
+import {defer, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
 
-import {AspectRatio, Avatar, Button, Flex, Stack, Title} from '@mantine/core';
-import {Image} from '@shopify/hydrogen';
+import {
+  AspectRatio,
+  Avatar,
+  Button,
+  Flex,
+  Skeleton,
+  Stack,
+  Title,
+} from '@mantine/core';
+import {Image, type Storefront} from '@shopify/hydrogen';
 import {IconArrowLeft} from '@tabler/icons-react';
+import {Suspense} from 'react';
 import {type ProductVariantFragment} from 'storefrontapi.generated';
 import {ArtistShell} from '~/components/ArtistShell';
 import {PRODUCT_SELECTED_OPTIONS_QUERY} from '~/data/queries';
@@ -17,6 +32,28 @@ export function shouldRevalidate() {
   return false;
 }
 
+async function getProduct({
+  storefront,
+  username,
+  productHandle,
+}: {
+  storefront: Storefront<I18nLocale>;
+  username: string;
+  productHandle: string;
+}) {
+  const {payload: userProduct} = await getBookingShopifyApi().userProductGet(
+    username,
+    productHandle,
+  );
+
+  return storefront.query(PRODUCT_SELECTED_OPTIONS_QUERY, {
+    variables: {
+      productHandle,
+      selectedOptions: userProduct.selectedOptions,
+    },
+  });
+}
+
 export async function loader({params, request, context}: LoaderFunctionArgs) {
   const {username, productHandle} = params;
   const {storefront} = context;
@@ -25,31 +62,17 @@ export async function loader({params, request, context}: LoaderFunctionArgs) {
     throw new Response('Expected product handle to be defined', {status: 404});
   }
 
-  try {
-    const {payload: userProduct} = await getBookingShopifyApi().userProductGet(
-      username,
-      productHandle,
-    );
+  const artist = getBookingShopifyApi().userGet(username);
 
-    const {payload: artist} = await getBookingShopifyApi().userGet(username);
+  const {product} = await getProduct({storefront, username, productHandle});
 
-    const {product} = await storefront.query(PRODUCT_SELECTED_OPTIONS_QUERY, {
-      variables: {
-        productHandle,
-        selectedOptions: userProduct.selectedOptions,
-      },
+  if (!product) {
+    throw new Response('Product handle is wrong', {
+      status: 404,
     });
-
-    if (!product) {
-      throw new Response('Product handle is wrong', {
-        status: 404,
-      });
-    }
-
-    return json({product, artist});
-  } catch (err) {
-    throw new Response('Username or product handle is wrong', {status: 404});
   }
+
+  return defer({product, artist});
 }
 
 export default function Product() {
@@ -59,28 +82,36 @@ export default function Product() {
     <ArtistShell color="pink">
       <ArtistShell.Header color="pink">
         <Stack gap="xs" w="100%" align="flex-start">
-          <Button
-            p="0"
-            variant="transparent"
-            component={Link}
-            to={`/artist/${artist.username}`}
-            c="black"
-            leftSection={
-              <IconArrowLeft
-                style={{width: '24px', height: '24px'}}
-                stroke={1.5}
-              />
-            }
-            rightSection={
-              <Avatar src={artist.images?.profile?.url} size="md" />
-            }
+          <Suspense
+            fallback={<Skeleton height={50} width="100%" circle mb="xl" />}
           >
-            {artist.fullname}
-          </Button>
+            <Await resolve={artist}>
+              {({payload: artist}) => (
+                <Button
+                  p="0"
+                  variant="transparent"
+                  component={Link}
+                  to={`/artist/${artist.username}`}
+                  c="black"
+                  leftSection={
+                    <IconArrowLeft
+                      style={{width: '24px', height: '24px'}}
+                      stroke={1.5}
+                    />
+                  }
+                  rightSection={
+                    <Avatar src={artist.images?.profile?.url} size="md" />
+                  }
+                >
+                  {artist.fullname}
+                </Button>
+              )}
+            </Await>
+          </Suspense>
 
           <Flex justify="space-between" align="center" w="100%">
             <Title order={1} fw="500" fz={{base: 24, sm: 40}}>
-              {product?.title}
+              {product.title}
             </Title>
           </Flex>
         </Stack>
