@@ -1,9 +1,11 @@
-import {Box, Flex, Skeleton, Title} from '@mantine/core';
+import {Flex, Skeleton, Title} from '@mantine/core';
 import {useDisclosure} from '@mantine/hooks';
 import {Await, useLoaderData, useSearchParams} from '@remix-run/react';
 import {defer, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
 import {Suspense, useEffect} from 'react';
+import {ArtistShell} from '~/components/ArtistShell';
 import {LocationModal} from '~/components/LocationModal';
+import {TreatmentStepper} from '~/components/TreatmentStepper';
 import {AristLocationRadioCard} from '~/components/artist/ArtistLocationRadioCard';
 import {getBookingShopifyApi} from '~/lib/api/bookingShopifyApi';
 import {
@@ -42,21 +44,26 @@ export default function ArtistTreatmentPickLocation() {
   const {schedule} = useLoaderData<typeof loader>();
 
   return (
-    <Box mt="lg">
-      <Suspense
-        fallback={
-          <div>
-            <Skeleton height={50} mb="xl" />
-            <Skeleton height={50} mb="xl" />
-            <Skeleton height={50} mb="xl" />
-          </div>
-        }
-      >
-        <Await resolve={schedule}>
-          {({payload}) => <TreatmentHandlePickLocation schedule={payload} />}
-        </Await>
-      </Suspense>
-    </Box>
+    <>
+      <ArtistShell.Main>
+        <Suspense
+          fallback={
+            <div>
+              <Skeleton height={50} mb="xl" />
+              <Skeleton height={50} mb="xl" />
+              <Skeleton height={50} mb="xl" />
+            </div>
+          }
+        >
+          <Await resolve={schedule}>
+            {({payload}) => <TreatmentHandlePickLocation schedule={payload} />}
+          </Await>
+        </Suspense>
+      </ArtistShell.Main>
+      <ArtistShell.Footer>
+        <TreatmentStepper />
+      </ArtistShell.Footer>
+    </>
   );
 }
 

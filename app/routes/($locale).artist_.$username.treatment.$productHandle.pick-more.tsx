@@ -1,4 +1,4 @@
-import {Box, SimpleGrid, Skeleton, Text, Title} from '@mantine/core';
+import {SimpleGrid, Skeleton, Text, Title} from '@mantine/core';
 import {Await, useLoaderData} from '@remix-run/react';
 import {defer, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
 import {Suspense} from 'react';
@@ -8,6 +8,8 @@ import {type CustomerProductBase} from '~/lib/api/model';
 import {ALL_PRODUCTS_QUERY} from './($locale).artist.$username._index';
 
 import {ArtistServiceProduct} from '~/components/artist/ArtistServiceProduct';
+import {ArtistShell} from '~/components/ArtistShell';
+import {TreatmentStepper} from '~/components/TreatmentStepper';
 
 export function shouldRevalidate() {
   return false;
@@ -52,36 +54,41 @@ export default function ArtistTreatments() {
   const {products, services} = useLoaderData<typeof loader>();
 
   return (
-    <Box my="lg">
-      <Suspense
-        fallback={
-          <SimpleGrid cols={{base: 1}} spacing="xl">
-            <Skeleton height={50} width="100%" circle mb="xl" />
-            <Skeleton height={50} width="100%" radius="xl" />
-          </SimpleGrid>
-        }
-      >
-        <Await resolve={products}>
-          {({products}) => {
-            if (products.nodes.length > 0) {
-              return (
-                <RenderArtistProducts
-                  products={products.nodes}
-                  services={services}
-                />
-              );
-            } else {
-              return (
-                <Text c="dimmed">
-                  Ingen yderligere behandlinger tilgængelige. <br />
-                  <strong>Tryk næste!</strong>
-                </Text>
-              );
-            }
-          }}
-        </Await>
-      </Suspense>
-    </Box>
+    <>
+      <ArtistShell.Main>
+        <Suspense
+          fallback={
+            <SimpleGrid cols={{base: 1}} spacing="xl">
+              <Skeleton height={50} width="100%" circle mb="xl" />
+              <Skeleton height={50} width="100%" radius="xl" />
+            </SimpleGrid>
+          }
+        >
+          <Await resolve={products}>
+            {({products}) => {
+              if (products.nodes.length > 0) {
+                return (
+                  <RenderArtistProducts
+                    products={products.nodes}
+                    services={services}
+                  />
+                );
+              } else {
+                return (
+                  <Text c="dimmed">
+                    Ingen yderligere behandlinger tilgængelige. <br />
+                    <strong>Tryk næste!</strong>
+                  </Text>
+                );
+              }
+            }}
+          </Await>
+        </Suspense>
+      </ArtistShell.Main>
+      <ArtistShell.Footer>
+        <TreatmentStepper />
+      </ArtistShell.Footer>
+    </>
   );
 }
 

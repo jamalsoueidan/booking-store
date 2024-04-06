@@ -1,8 +1,9 @@
-import {AppShell, Flex, Group, type MantineColor} from '@mantine/core';
+import {AppShell, Card, Flex, Group, type MantineColor} from '@mantine/core';
 import {useDisclosure, useMediaQuery} from '@mantine/hooks';
 import React from 'react';
 
-const headerHeight = 140;
+const desktopHeaderHeight = 140;
+const mobileHeaderHeight = 100;
 
 const ArtistShell = ({
   color,
@@ -16,10 +17,11 @@ const ArtistShell = ({
 
   return (
     <AppShell
+      offsetScrollbars={false}
       padding="0"
       withBorder={false}
       layout="alt"
-      header={{height: isMobile ? 60 : headerHeight + 60}}
+      header={{height: {base: 100, sm: 200}}}
       footer={{height: 65}}
       navbar={{
         width: {base: 100, md: 250, lg: 300, xl: 450},
@@ -59,9 +61,9 @@ const Header = ({
     <AppShell.Header>
       <Group h="100%" w="inherit" align="flex-end" bg={`${color}.6`}>
         <Flex
-          h={`${headerHeight}px`}
+          h={`${isMobile ? mobileHeaderHeight : desktopHeaderHeight}px`}
           w="100%"
-          p="xl"
+          px={isMobile ? 'md' : 'xl'}
           bg={`${color}.1`}
           align="center"
           style={
@@ -78,7 +80,11 @@ const Header = ({
 };
 
 const Main = ({children}: {children: React.ReactNode}) => {
-  return <AppShell.Main>{children}</AppShell.Main>;
+  return (
+    <AppShell.Main>
+      <Card pb="xl">{children}</Card>
+    </AppShell.Main>
+  );
 };
 
 ArtistShell.Header = Header;

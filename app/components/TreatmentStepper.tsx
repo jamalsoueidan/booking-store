@@ -10,18 +10,34 @@ import {IconArrowLeft, IconArrowRight} from '@tabler/icons-react';
 import {type ReactNode} from 'react';
 import {determineStepFromURL} from '~/lib/determineStepFromURL';
 
-type PathFragment = {
-  title: string;
-  path: string;
-  required?: Array<string>;
-  text?: string;
-};
+const paths = [
+  {
+    title: '',
+    path: '',
+  },
+  {
+    title: 'Lokation',
+    path: 'pick-location',
+    required: ['locationId'],
+    text: 'Vælge en lokation før du kan forsætte...',
+  },
+  {
+    title: 'Flere behandlinger',
+    path: 'pick-more',
+  },
+  {
+    title: 'Dato & Tid',
+    path: 'pick-datetime',
+    required: ['fromDate', 'toDate'],
+    text: 'Vælge en tid før du kan forsætte...',
+  },
+  {
+    title: 'Køb',
+    path: 'completed',
+  },
+];
 
-type StepperProps = {
-  paths: PathFragment[];
-};
-
-export function TreatmentStepper({paths}: StepperProps) {
+export function TreatmentStepper() {
   const navigate = useNavigate();
   const location = useLocation();
   const [searchParams] = useSearchParams();
@@ -29,7 +45,7 @@ export function TreatmentStepper({paths}: StepperProps) {
 
   const nextStep = () => {
     const path = paths[determineStepFromURL(paths, location.pathname) + 1];
-    navigate(path.path + location.search, {
+    navigate(`../${path.path}${location.search}`, {
       state: {
         key: 'booking',
       },
@@ -39,13 +55,13 @@ export function TreatmentStepper({paths}: StepperProps) {
   const prevStep = () => {
     const path = paths[determineStepFromURL(paths, location.pathname) - 1];
     if (path.path === '') {
-      return navigate('./', {
+      return navigate('../', {
         state: {
           key: 'booking',
         },
       });
     }
-    navigate(path.path + location.search, {
+    navigate(`../${path.path}${location.search}`, {
       state: {
         key: 'booking',
       },
@@ -77,7 +93,7 @@ export function TreatmentStepper({paths}: StepperProps) {
         ) : null}
       </Group>
       {currentPath.path !== 'completed' && (
-        <Group gap="md">
+        <Group gap="md" align="center">
           {currenctActive > 0 ? (
             <>
               <ActionIcon
@@ -114,7 +130,7 @@ export function TreatmentStepper({paths}: StepperProps) {
             <Button
               variant="filled"
               color="black"
-              size="md"
+              size="compact-md"
               rightSection={<IconArrowRight />}
               onClick={nextStep}
             >
