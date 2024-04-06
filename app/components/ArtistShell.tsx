@@ -12,8 +12,7 @@ const ArtistShell = ({
   color: MantineColor;
   children: React.ReactNode;
 }) => {
-  const [opened, {toggle}] = useDisclosure();
-  const isMobile = useMediaQuery('(max-width: 48em)');
+  const [opened] = useDisclosure();
 
   return (
     <AppShell
