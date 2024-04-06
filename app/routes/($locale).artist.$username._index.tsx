@@ -3,9 +3,12 @@ import {defer, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
 import {
   Button,
   Flex,
+  Group,
+  HoverCard,
   SimpleGrid,
   Skeleton,
   Stack,
+  Text,
   Title,
   rem,
 } from '@mantine/core';
@@ -17,6 +20,7 @@ import {
   useLocation,
   useOutletContext,
 } from '@remix-run/react';
+import {IconBuildingSkyscraper, IconCar, IconHome} from '@tabler/icons-react';
 import {Suspense} from 'react';
 import {ArtistProduct} from '~/components/artist/ArtistProduct';
 import {TextViewer} from '~/components/richtext/TextViewer';
@@ -27,6 +31,8 @@ import type {
   UserProductsListByScheduleParams,
   UserScheduleWithLocations,
 } from '~/lib/api/model';
+import {renderTime} from '~/lib/time';
+import {translationsDays} from './($locale).api.users.filters';
 
 export type SearchParams = {
   [key: string]: string | undefined;
@@ -58,12 +64,12 @@ export async function loader({request, params, context}: LoaderFunctionArgs) {
     },
   });
 
-  const schedules = getBookingShopifyApi().userSchedulesListLocations(username);
+  const locations = getBookingShopifyApi().userSchedulesListLocations(username);
 
   return defer({
     products,
     services,
-    schedules,
+    locations,
   });
 }
 
@@ -73,40 +79,39 @@ export default function ArtistIndex() {
 
   return (
     <Stack gap="lg">
-      <Suspense
-        fallback={
-          <div>
-            <Skeleton height={8} radius="xl" />
-          </div>
-        }
-      >
-        <Await resolve={data.schedules}>
-          {({payload}) => <ArtistSchedulesMenu data={payload} />}
+      <Suspense fallback={<Skeleton height={8} radius="xl" />}>
+        <Await resolve={data.locations}>
+          {({payload}) => {
+            return (
+              <>
+                <ArtistSchedulesMenu data={payload} />
+                <SimpleGrid cols={{base: 1, md: 2}} spacing="lg">
+                  <Suspense
+                    fallback={
+                      <div>
+                        <Skeleton height={50} circle mb="xl" />
+                        <Skeleton height={8} radius="xl" />
+                      </div>
+                    }
+                  >
+                    <Await resolve={data.products}>
+                      {({products}) =>
+                        products.nodes.map((product) => (
+                          <ArtistProduct
+                            key={product.id}
+                            product={product}
+                            services={data.services}
+                          />
+                        ))
+                      }
+                    </Await>
+                  </Suspense>
+                </SimpleGrid>
+              </>
+            );
+          }}
         </Await>
       </Suspense>
-
-      <SimpleGrid cols={{base: 1, md: 2}} spacing="lg">
-        <Suspense
-          fallback={
-            <div>
-              <Skeleton height={50} circle mb="xl" />
-              <Skeleton height={8} radius="xl" />
-            </div>
-          }
-        >
-          <Await resolve={data.products}>
-            {({products}) =>
-              products.nodes.map((product) => (
-                <ArtistProduct
-                  key={product.id}
-                  product={product}
-                  services={data.services}
-                />
-              ))
-            }
-          </Await>
-        </Suspense>
-      </SimpleGrid>
 
       {artist.aboutMe ? (
         <Stack gap="xs" mt="xl">
@@ -120,8 +125,6 @@ export default function ArtistIndex() {
 
 function ArtistSchedulesMenu({data}: {data: UserScheduleWithLocations[]}) {
   const location = useLocation();
-
-  if (data.length <= 1) return null;
   return (
     <Form method="get">
       <Flex gap="lg">
@@ -135,18 +138,66 @@ function ArtistSchedulesMenu({data}: {data: UserScheduleWithLocations[]}) {
           Alle
         </Button>
         {data.map((schedule) => (
-          <Button
-            size="lg"
+          <HoverCard
             key={schedule._id}
-            variant={
-              location.search.includes(schedule._id) ? 'filled' : 'light'
-            }
-            color={location.search.includes(schedule._id) ? 'black' : 'gray'}
-            component={Link}
-            to={`?scheduleId=${schedule._id}`}
+            width={200}
+            shadow="md"
+            withArrow
+            openDelay={200}
+            closeDelay={400}
           >
-            {schedule.name}
-          </Button>
+            <HoverCard.Target>
+              <Button
+                size="lg"
+                variant={
+                  location.search.includes(schedule._id) ? 'filled' : 'light'
+                }
+                color={
+                  location.search.includes(schedule._id) ? 'black' : 'gray'
+                }
+                component={Link}
+                to={`?scheduleId=${schedule._id}`}
+              >
+                {schedule.name}
+              </Button>
+            </HoverCard.Target>
+            <HoverCard.Dropdown>
+              <Text size="md" fw="bold">
+                Arbejdstimer
+              </Text>
+
+              <Group mt="xs" mb="md" gap="xs">
+                {schedule.slots.map((slot) => (
+                  <Text component="div" key={slot.day} size="sm">
+                    {translationsDays[slot.day]}{' '}
+                    {slot.intervals.map(
+                      ({from, to}) =>
+                        `${renderTime(from)}${' '}-${' '}${renderTime(to)}`,
+                    )}
+                  </Text>
+                ))}
+              </Group>
+
+              <Text size="md" fw="bold">
+                Lokationer
+              </Text>
+
+              <Group mt="xs" mb="md" gap="xs">
+                {schedule.locations.map((location) => (
+                  <Flex key={location._id} gap="4px" align="center">
+                    <Text size="sm">{location.name} </Text>
+                    {location.locationType === 'destination' ? (
+                      <IconCar />
+                    ) : location.originType === 'home' ? (
+                      <IconHome />
+                    ) : (
+                      <IconBuildingSkyscraper />
+                    )}
+                  </Flex>
+                ))}
+              </Group>
+            </HoverCard.Dropdown>
+          </HoverCard>
         ))}
       </Flex>
     </Form>

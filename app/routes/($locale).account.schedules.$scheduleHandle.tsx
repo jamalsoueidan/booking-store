@@ -42,6 +42,7 @@ import {SubmitButton} from '~/components/form/SubmitButton';
 import {CustomerScheduleSlotDay, type CustomerSchedule} from '~/lib/api/model';
 import {getCustomer} from '~/lib/get-customer';
 import {redirectWithNotification} from '~/lib/show-notification';
+import {renderTime} from '~/lib/time';
 import {customerScheduleSlotUpdateBody} from '~/lib/zod/bookingShopifyApi';
 import AccountSchedulesEdit from './($locale).account.schedules.$scheduleHandle.edit';
 
@@ -279,12 +280,6 @@ const generateTimeSlots = (
   endHour: number,
   interval: number,
 ) => {
-  const renderTime = (utcTime: string) => {
-    const fixedDate = format(new Date(), 'yyyy-MM-dd');
-    const utcDateTime = `${fixedDate}T${utcTime}:00.000Z`;
-    return format(new Date(utcDateTime), 'HH:mm');
-  };
-
   const timeSlots = [];
   let currentTime = set(new Date(), {
     hours: startHour,

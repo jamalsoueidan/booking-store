@@ -40,7 +40,7 @@ const translationsSpecialties: Record<string, string> = {
   waxing_hair_removal: 'Voksning',
 };
 
-const translationsDays: Record<string, string> = {
+export const translationsDays: Record<string, string> = {
   monday: 'Mandag',
   tuesday: 'Tirsdag',
   wednesday: 'Onsdag',
