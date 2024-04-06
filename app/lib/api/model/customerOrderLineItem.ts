@@ -4,7 +4,7 @@
  * Booking Shopify Api
  * OpenAPI spec version: 1.0.0
  */
-import type { CustomeBaserOrderLineItem } from './customeBaserOrderLineItem';
+import type { CustomerBaseOrderLineItem } from './customerBaseOrderLineItem';
 import type { CustomerOrderLineItemAllOf } from './customerOrderLineItemAllOf';
 
-export type CustomerOrderLineItem = CustomeBaserOrderLineItem & CustomerOrderLineItemAllOf;
+export type CustomerOrderLineItem = CustomerBaseOrderLineItem & CustomerOrderLineItemAllOf;

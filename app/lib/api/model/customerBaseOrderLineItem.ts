@@ -7,7 +7,7 @@
 import type { CustomerBaseOrderMoney } from './customerBaseOrderMoney';
 import type { CustomerBaseOrderLineItemProperties } from './customerBaseOrderLineItemProperties';
 
-export interface CustomeBaserOrderLineItem {
+export interface CustomerBaseOrderLineItem {
   admin_graphql_api_id: string;
   fulfillable_quantity: number;
   fulfillment_service: string;

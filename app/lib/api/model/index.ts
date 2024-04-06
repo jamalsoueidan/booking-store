@@ -6,13 +6,13 @@
  */
 
 export * from './badResponseResponse';
-export * from './customeBaserOrderLineItem';
 export * from './customerBaseOrder';
 export * from './customerBaseOrderAddress';
 export * from './customerBaseOrderClient';
 export * from './customerBaseOrderCustomer';
 export * from './customerBaseOrderCustomerSmsMarketingConsent';
 export * from './customerBaseOrderFulfillment';
+export * from './customerBaseOrderLineItem';
 export * from './customerBaseOrderLineItemProperties';
 export * from './customerBaseOrderMoney';
 export * from './customerBaseOrderMoneyPresentmentMoney';
@@ -152,6 +152,7 @@ export * from './customerStatus';
 export * from './customerStatusResponse';
 export * from './customerUpdateBody';
 export * from './customerUpdateBodySocial';
+export * from './customerUpdateBodyTheme';
 export * from './customerUpdateResponse';
 export * from './customerUploadResourceURLResponse';
 export * from './customerUploadResourceURLResponsePayload';
@@ -232,6 +233,7 @@ export * from './userScheduleProductWithLocationsAllOf';
 export * from './userScheduleWithLocations';
 export * from './userSchedulesListLocations200';
 export * from './userSocial';
+export * from './userTheme';
 export * from './userTop';
 export * from './userTopImages';
 export * from './userTopImagesProfile';

@@ -5,6 +5,7 @@
  * OpenAPI spec version: 1.0.0
  */
 import type { CustomerUpdateBodySocial } from './customerUpdateBodySocial';
+import type { CustomerUpdateBodyTheme } from './customerUpdateBodyTheme';
 
 export interface CustomerUpdateBody {
   aboutMe?: string;
@@ -17,5 +18,6 @@ export interface CustomerUpdateBody {
   social?: CustomerUpdateBodySocial;
   speaks?: string[];
   specialties?: string[];
+  theme?: CustomerUpdateBodyTheme;
   yearsExperience?: string;
 }
