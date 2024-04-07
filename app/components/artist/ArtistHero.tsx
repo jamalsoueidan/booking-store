@@ -18,18 +18,18 @@ import {
   IconBrandYoutube,
   IconLogout,
 } from '@tabler/icons-react';
-import {type User} from '~/lib/api/model';
+import {useUser} from '~/hooks/use-user';
 
-export function ArtistHero({artist}: {artist: User}) {
+export const ArtistHero = () => {
+  const user = useUser();
   const isMobile = useMediaQuery('(max-width: 62em)');
 
-  if (!artist) return null;
   return (
     <>
       <Grid columns={12} gutter={{base: 'sm', md: 'xl'}} grow>
         <Grid.Col span={{base: 'auto', md: 12}}>
           <Avatar
-            src={artist.images?.profile?.url}
+            src={user.images?.profile?.url}
             size={isMobile ? 90 : 250}
             radius="100%"
           />
@@ -41,16 +41,16 @@ export function ArtistHero({artist}: {artist: User}) {
             justify="center"
             h={isMobile ? '100%' : 'auto'}
           >
-            <Title order={isMobile ? 2 : 1}>{artist.fullname}</Title>
+            <Title order={isMobile ? 2 : 1}>{user.fullname}</Title>
             <Text fz={{base: 'md', md: 'lg'}}>
-              {artist.shortDescription} <br />
+              {user.shortDescription} <br />
             </Text>
           </Flex>
         </Grid.Col>
-        {Object.keys(artist.social).length > 0 ? (
+        {Object.keys(user.social).length > 0 ? (
           <Grid.Col span={{base: 'content', md: 12}}>
             <Group>
-              {artist.social?.instagram && (
+              {user.social?.instagram && (
                 <ActionIcon
                   variant="filled"
                   aria-label="Instgram"
@@ -58,7 +58,7 @@ export function ArtistHero({artist}: {artist: User}) {
                   size={rem(isMobile ? 50 : 80)}
                   radius="md"
                   component={Link}
-                  to={`https://www.instagram.com/${artist.social.instagram}`}
+                  to={`https://www.instagram.com/${user.social.instagram}`}
                   target="_blank"
                 >
                   <IconBrandInstagram
@@ -67,7 +67,7 @@ export function ArtistHero({artist}: {artist: User}) {
                   />
                 </ActionIcon>
               )}
-              {artist.social?.facebook && (
+              {user.social?.facebook && (
                 <ActionIcon
                   variant="filled"
                   aria-label="Instgram"
@@ -75,7 +75,7 @@ export function ArtistHero({artist}: {artist: User}) {
                   size={rem(isMobile ? 50 : 80)}
                   radius="md"
                   component={Link}
-                  to={`https://www.facebook.com/${artist.social.instagram}`}
+                  to={`https://www.facebook.com/${user.social.instagram}`}
                   target="_blank"
                 >
                   <IconBrandFacebook
@@ -84,7 +84,7 @@ export function ArtistHero({artist}: {artist: User}) {
                   />
                 </ActionIcon>
               )}
-              {artist.social?.x && (
+              {user.social?.x && (
                 <ActionIcon
                   variant="filled"
                   aria-label="X"
@@ -92,7 +92,7 @@ export function ArtistHero({artist}: {artist: User}) {
                   size={rem(isMobile ? 50 : 80)}
                   radius="md"
                   component={Link}
-                  to={`https://x.com/${artist.social.x}`}
+                  to={`https://x.com/${user.social.x}`}
                   target="_blank"
                 >
                   <IconBrandX
@@ -101,7 +101,7 @@ export function ArtistHero({artist}: {artist: User}) {
                   />
                 </ActionIcon>
               )}
-              {artist.social?.youtube && (
+              {user.social?.youtube && (
                 <ActionIcon
                   variant="filled"
                   aria-label="Yotuube"
@@ -109,7 +109,7 @@ export function ArtistHero({artist}: {artist: User}) {
                   size={rem(isMobile ? 50 : 80)}
                   radius="md"
                   component={Link}
-                  to={`https://youtube.com/${artist.social.youtube}`}
+                  to={`https://youtube.com/${user.social.youtube}`}
                   target="_blank"
                 >
                   <IconBrandYoutube
@@ -156,4 +156,4 @@ export function ArtistHero({artist}: {artist: User}) {
       </ActionIcon>
     </>
   );
-}
+};

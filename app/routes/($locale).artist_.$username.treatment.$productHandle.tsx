@@ -31,6 +31,10 @@ async function getProduct({
     productHandle,
   );
 
+  if (!productHandle || !userProduct.selectedOptions) {
+    throw new Error('productHandle and selectedOptions must be provided');
+  }
+
   return storefront.query(PRODUCT_SELECTED_OPTIONS_QUERY, {
     variables: {
       productHandle,

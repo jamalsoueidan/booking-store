@@ -2,6 +2,7 @@ import {Badge, Image, UnstyledButton, rem} from '@mantine/core';
 import {Link} from '@remix-run/react';
 
 import {type ProductCollectionFragment} from 'storefrontapi.generated';
+import {useUser} from '~/hooks/use-user';
 import {parseTE} from '~/lib/clean';
 
 export function BadgeCollection({
@@ -11,6 +12,7 @@ export function BadgeCollection({
   collection?: ProductCollectionFragment;
   linkBack?: boolean;
 }) {
+  const user = useUser();
   if (!collection) {
     return null;
   }
@@ -31,7 +33,7 @@ export function BadgeCollection({
       size="lg"
       radius="md"
       variant="light"
-      color="gray"
+      color={user.theme.color}
     >
       {parseTE(collection.title)}
     </Badge>

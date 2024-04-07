@@ -12,22 +12,15 @@ import {
   Title,
   rem,
 } from '@mantine/core';
-import {
-  Await,
-  Form,
-  Link,
-  useLoaderData,
-  useLocation,
-  useOutletContext,
-} from '@remix-run/react';
+import {Await, Form, Link, useLoaderData, useLocation} from '@remix-run/react';
 import {IconBuildingSkyscraper, IconCar, IconHome} from '@tabler/icons-react';
 import {Suspense} from 'react';
 import {ArtistProduct} from '~/components/artist/ArtistProduct';
 import {TextViewer} from '~/components/richtext/TextViewer';
 import {PRODUCT_ITEM_FRAGMENT} from '~/data/fragments';
+import {useUser} from '~/hooks/use-user';
 import {getBookingShopifyApi} from '~/lib/api/bookingShopifyApi';
 import type {
-  User,
   UserProductsListByScheduleParams,
   UserScheduleWithLocations,
 } from '~/lib/api/model';
@@ -75,7 +68,7 @@ export async function loader({request, params, context}: LoaderFunctionArgs) {
 
 export default function ArtistIndex() {
   const data = useLoaderData<typeof loader>();
-  const {artist} = useOutletContext<{artist: User}>();
+  const user = useUser();
 
   return (
     <Stack gap="lg">
@@ -84,7 +77,7 @@ export default function ArtistIndex() {
           {({payload}) => {
             return (
               <>
-                <ArtistSchedulesMenu data={payload} />
+                <ArtistSchedulesMenu schedules={payload} />
                 <SimpleGrid cols={{base: 1, md: 2}} spacing="lg">
                   <Suspense
                     fallback={
@@ -113,17 +106,22 @@ export default function ArtistIndex() {
         </Await>
       </Suspense>
 
-      {artist.aboutMe ? (
+      {user.aboutMe ? (
         <Stack gap="xs" mt="xl">
           <Title size={rem(28)}>Om mig</Title>
-          <TextViewer content={artist.aboutMe} />
+          <TextViewer content={user.aboutMe} />
         </Stack>
       ) : null}
     </Stack>
   );
 }
 
-function ArtistSchedulesMenu({data}: {data: UserScheduleWithLocations[]}) {
+function ArtistSchedulesMenu({
+  schedules,
+}: {
+  schedules: UserScheduleWithLocations[];
+}) {
+  const user = useUser();
   const location = useLocation();
   return (
     <Form method="get">
@@ -131,13 +129,13 @@ function ArtistSchedulesMenu({data}: {data: UserScheduleWithLocations[]}) {
         <Button
           size="lg"
           variant={location.search === '' ? 'filled' : 'light'}
-          color={location.search === '' ? 'black' : 'gray'}
+          color={location.search === '' ? 'black' : user.theme.color}
           component={Link}
           to="?"
         >
           Alle
         </Button>
-        {data.map((schedule) => (
+        {schedules.map((schedule) => (
           <HoverCard
             key={schedule._id}
             width={200}
@@ -153,7 +151,9 @@ function ArtistSchedulesMenu({data}: {data: UserScheduleWithLocations[]}) {
                   location.search.includes(schedule._id) ? 'filled' : 'light'
                 }
                 color={
-                  location.search.includes(schedule._id) ? 'black' : 'gray'
+                  location.search.includes(schedule._id)
+                    ? 'black'
+                    : user.theme.color
                 }
                 component={Link}
                 to={`?scheduleId=${schedule._id}`}
