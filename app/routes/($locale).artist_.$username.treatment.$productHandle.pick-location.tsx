@@ -56,7 +56,7 @@ export default function ArtistTreatmentPickLocation() {
           }
         >
           <Await resolve={schedule}>
-            {({payload}) => <TreatmentHandlePickLocation schedule={payload} />}
+            {({payload}) => <ArtistLocationPicker schedule={payload} />}
           </Await>
         </Suspense>
       </ArtistShell.Main>
@@ -67,7 +67,7 @@ export default function ArtistTreatmentPickLocation() {
   );
 }
 
-function TreatmentHandlePickLocation({
+function ArtistLocationPicker({
   schedule,
 }: {
   schedule: UserScheduleGetByProductIdResponsePayload;
