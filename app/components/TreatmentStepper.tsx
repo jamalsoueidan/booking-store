@@ -1,32 +1,5 @@
 import {Group, Text} from '@mantine/core';
 
-const paths = [
-  {
-    title: '',
-    path: '',
-  },
-  {
-    title: 'Lokation',
-    path: 'pick-location',
-    required: ['locationId'],
-    text: 'Vælge en lokation før du kan forsætte...',
-  },
-  {
-    title: 'Flere behandlinger',
-    path: 'pick-more',
-  },
-  {
-    title: 'Dato & Tid',
-    path: 'pick-datetime',
-    required: ['fromDate', 'toDate'],
-    text: 'Vælge en tid før du kan forsætte...',
-  },
-  {
-    title: 'Køb',
-    path: 'completed',
-  },
-];
-
 export const TreatmentStepper = ({
   currentStep,
   totalSteps,
