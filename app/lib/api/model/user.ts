@@ -6,6 +6,7 @@
  */
 import type { UserImages } from './userImages';
 import type { UserSocial } from './userSocial';
+import type { UserTheme } from './userTheme';
 
 export interface User {
   aboutMe: string;
@@ -20,6 +21,7 @@ export interface User {
   social: UserSocial;
   speaks: string[];
   specialties: string[];
+  theme: UserTheme;
   username: string;
   yearsExperience: string;
 }

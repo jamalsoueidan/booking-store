@@ -1,30 +1,13 @@
 import {Link, Outlet, useLoaderData, type MetaFunction} from '@remix-run/react';
 import {json, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
-import type {ProductVariantFragment} from 'storefrontapi.generated';
 
-import {
-  Anchor,
-  AspectRatio,
-  Avatar,
-  Badge,
-  Box,
-  Card,
-  Container,
-  Divider,
-  Flex,
-  Group,
-  Stack,
-  Text,
-  Title,
-  rem,
-} from '@mantine/core';
-import {useMediaQuery} from '@mantine/hooks';
-import {Image, Money} from '@shopify/hydrogen';
-import {IconArrowLeft, IconClockHour4} from '@tabler/icons-react';
-import {TreatmentStepper} from '~/components/TreatmentStepper';
+import {AspectRatio, Avatar, Button, Flex, Stack, Title} from '@mantine/core';
+import {Image, type Storefront} from '@shopify/hydrogen';
+import {IconArrowLeft} from '@tabler/icons-react';
+import {type ProductVariantFragment} from 'storefrontapi.generated';
+import {ArtistShell} from '~/components/ArtistShell';
 import {PRODUCT_SELECTED_OPTIONS_QUERY} from '~/data/queries';
 import {getBookingShopifyApi} from '~/lib/api/bookingShopifyApi';
-import {durationToTime} from '~/lib/duration';
 
 export const meta: MetaFunction<typeof loader> = ({data}) => {
   return [{title: `BySisters | ${data?.product.title ?? ''}`}];
@@ -32,6 +15,32 @@ export const meta: MetaFunction<typeof loader> = ({data}) => {
 
 export function shouldRevalidate() {
   return false;
+}
+
+async function getProduct({
+  storefront,
+  username,
+  productHandle,
+}: {
+  storefront: Storefront<I18nLocale>;
+  username: string;
+  productHandle: string;
+}) {
+  const {payload: userProduct} = await getBookingShopifyApi().userProductGet(
+    username,
+    productHandle,
+  );
+
+  if (!productHandle || !userProduct.selectedOptions) {
+    throw new Error('productHandle and selectedOptions must be provided');
+  }
+
+  return storefront.query(PRODUCT_SELECTED_OPTIONS_QUERY, {
+    variables: {
+      productHandle,
+      selectedOptions: userProduct.selectedOptions,
+    },
+  });
 }
 
 export async function loader({params, request, context}: LoaderFunctionArgs) {
@@ -42,140 +51,55 @@ export async function loader({params, request, context}: LoaderFunctionArgs) {
     throw new Response('Expected product handle to be defined', {status: 404});
   }
 
-  try {
-    const {payload: userProduct} = await getBookingShopifyApi().userProductGet(
-      username,
-      productHandle,
-    );
+  const {payload: artist} = await getBookingShopifyApi().userGet(username);
 
-    const {payload: artist} = await getBookingShopifyApi().userGet(username);
+  const {product} = await getProduct({storefront, username, productHandle});
 
-    const {product} = await storefront.query(PRODUCT_SELECTED_OPTIONS_QUERY, {
-      variables: {
-        productHandle,
-        selectedOptions: userProduct.selectedOptions,
-      },
+  if (!product) {
+    throw new Response('Product handle is wrong', {
+      status: 404,
     });
-
-    if (!product) {
-      throw new Response('Product handle is wrong', {
-        status: 404,
-      });
-    }
-
-    return json({product, artist, userProduct});
-  } catch (err) {
-    throw new Response('Username or product handle is wrong', {status: 404});
   }
+
+  return json({product, artist});
 }
 
 export default function Product() {
-  const {product, artist, userProduct} = useLoaderData<typeof loader>();
-  const isMobile = useMediaQuery('(max-width: 62em)');
-
-  const paths = [
-    {
-      title: '',
-      path: '',
-    },
-    {
-      title: 'Lokation',
-      path: 'pick-location',
-      required: ['locationId'],
-      text: 'Vælge en lokation før du kan forsætte...',
-    },
-    {
-      title: 'Flere behandlinger',
-      path: 'pick-more',
-    },
-    {
-      title: 'Dato & Tid',
-      path: 'pick-datetime',
-      required: ['fromDate', 'toDate'],
-      text: 'Vælge en tid før du kan forsætte...',
-    },
-    {
-      title: 'Køb',
-      path: 'completed',
-    },
-  ];
+  const {product, artist} = useLoaderData<typeof loader>();
 
   return (
-    <div
-      style={{
-        backgroundColor: 'rgb(168, 139, 248)',
-        paddingTop: rem(isMobile ? 0 : 60),
-      }}
-    >
-      <Container size={isMobile ? '100%' : 'sm'} p={0}>
-        <Card
-          radius={isMobile ? 0 : '25px 25px 0 0'}
-          withBorder={!isMobile}
-          p={isMobile ? 'sm' : 'md'}
-          mih={`calc(100vh - ${isMobile ? 58 : 144}px)`}
-        >
-          <Card.Section bg="rgba(168, 139, 248, 0.2)">
-            <Stack gap={isMobile ? 'xs' : 'sm'} p={rem(isMobile ? 16 : 28)}>
-              <Anchor
-                component={Link}
-                to={`/artist/${artist.username}`}
-                c="black"
-                underline="never"
-              >
-                <Group gap={isMobile ? '2px' : 'xs'}>
-                  <IconArrowLeft
-                    style={{width: '24px', height: '24px'}}
-                    stroke={1.5}
-                  />
-                  <Text>{artist.fullname}</Text>
-                </Group>
-              </Anchor>
+    <ArtistShell color={artist.theme.color}>
+      <ArtistShell.Header color={artist.theme.color}>
+        <Stack gap="xs" w="100%" align="flex-start">
+          <Button
+            p="0"
+            variant="transparent"
+            component={Link}
+            to={`/artist/${artist.username}`}
+            c="black"
+            leftSection={
+              <IconArrowLeft
+                style={{width: '24px', height: '24px'}}
+                stroke={1.5}
+              />
+            }
+            rightSection={
+              <Avatar src={artist.images?.profile?.url} size="md" />
+            }
+          >
+            {artist.fullname}
+          </Button>
 
-              <Flex justify="space-between" align="center">
-                <Title order={1} mb="xs" size={rem(isMobile ? 24 : 32)}>
-                  {product?.title}
-                </Title>
+          <Flex justify="space-between" align="center" w="100%">
+            <Title order={1} fw="500" fz={{base: 24, sm: 40}}>
+              {product.title}
+            </Title>
+          </Flex>
+        </Stack>
+      </ArtistShell.Header>
 
-                <Avatar
-                  src={artist.images?.profile?.url}
-                  size="xl"
-                  radius="100%"
-                />
-              </Flex>
-            </Stack>
-          </Card.Section>
-          <Card.Section>
-            <Flex justify="space-between">
-              <Box p="md">
-                {product.selectedVariant?.price && (
-                  <Badge
-                    variant="outline"
-                    color="#ebeaeb"
-                    size="lg"
-                    bg="#f7f7f7"
-                    fz="sm"
-                    c="black"
-                    py="sm"
-                  >
-                    <Money data={product.selectedVariant?.price} />
-                  </Badge>
-                )}
-              </Box>
-              <Divider orientation="vertical" />
-              <Group gap="xs" p="md">
-                <IconClockHour4 />
-                <Text>{durationToTime(userProduct?.duration ?? 0)}</Text>
-              </Group>
-            </Flex>
-            <Divider />
-          </Card.Section>
-
-          <Outlet context={{product}} />
-        </Card>
-
-        <TreatmentStepper paths={paths} />
-      </Container>
-    </div>
+      <Outlet context={{product}} />
+    </ArtistShell>
   );
 }
 

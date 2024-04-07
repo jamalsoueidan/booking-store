@@ -4,7 +4,7 @@
  * Booking Shopify Api
  * OpenAPI spec version: 1.0.0
  */
-import type { CustomeBaserOrderLineItem } from './customeBaserOrderLineItem';
+import type { CustomerBaseOrderLineItem } from './customerBaseOrderLineItem';
 import type { CustomerLocationBase } from './customerLocationBase';
 import type { Shipping } from './shipping';
 import type { CustomerBookingAllOfUser } from './customerBookingAllOfUser';
@@ -12,7 +12,7 @@ import type { CustomerBookingAllOfUser } from './customerBookingAllOfUser';
 export type CustomerBookingAllOf = {
   end: string;
   groupId: string;
-  line_items: CustomeBaserOrderLineItem[];
+  line_items: CustomerBaseOrderLineItem[];
   location: CustomerLocationBase;
   shipping?: Shipping;
   start: string;

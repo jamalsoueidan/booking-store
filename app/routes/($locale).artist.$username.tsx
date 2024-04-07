@@ -3,6 +3,7 @@ import {json, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
 import {useLoaderData} from '@remix-run/react';
 import {ArtistHero} from '~/components/artist/ArtistHero';
 import ArtistPage from '~/components/artist/ArtistPage';
+import {UserProvider} from '~/hooks/use-user';
 import {getBookingShopifyApi} from '~/lib/api/bookingShopifyApi';
 
 export function shouldRevalidate() {
@@ -27,8 +28,10 @@ export default function ArtistIndex() {
   const {artist} = useLoaderData<typeof loader>();
 
   return (
-    <ArtistPage artist={artist}>
-      <ArtistHero artist={artist} />
-    </ArtistPage>
+    <UserProvider user={artist}>
+      <ArtistPage>
+        <ArtistHero />
+      </ArtistPage>
+    </UserProvider>
   );
 }

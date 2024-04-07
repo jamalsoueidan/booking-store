@@ -127,7 +127,7 @@ export function AddToCartButton({
             <Button
               variant="filled"
               color="black"
-              size="md"
+              size="compact-md"
               type="submit"
               onClick={onClick}
               leftSection={<IconShoppingCart />}

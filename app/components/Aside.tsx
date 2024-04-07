@@ -28,7 +28,7 @@ export function Aside({
           window.location.hash = '';
         }}
       />
-      <aside>
+      <aside className="cart">
         <header>
           <h3>{heading}</h3>
           <CloseAside />

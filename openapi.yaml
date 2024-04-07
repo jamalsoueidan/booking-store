@@ -954,7 +954,7 @@ components:
         - tags
         - currency
         - admin_graphql_api_id
-    CustomeBaserOrderLineItem:
+    CustomerBaseOrderLineItem:
       type: object
       properties:
         id:
@@ -1215,7 +1215,7 @@ components:
             - line_items
     CustomerOrderLineItem:
       allOf:
-        - $ref: '#/components/schemas/CustomeBaserOrderLineItem'
+        - $ref: '#/components/schemas/CustomerBaseOrderLineItem'
         - type: object
           properties:
             user:
@@ -1477,7 +1477,7 @@ components:
           type: string
         referenceDocument:
           oneOf:
-            - $ref: '#/components/schemas/CustomeBaserOrderLineItem'
+            - $ref: '#/components/schemas/CustomerBaseOrderLineItem'
             - $ref: '#/components/schemas/Shipping'
       required:
         - _id
@@ -1571,7 +1571,7 @@ components:
             line_items:
               type: array
               items:
-                $ref: '#/components/schemas/CustomeBaserOrderLineItem'
+                $ref: '#/components/schemas/CustomerBaseOrderLineItem'
           required:
             - user
             - location
@@ -1797,6 +1797,11 @@ components:
           type: array
           items:
             type: string
+        theme:
+          type: object
+          properties:
+            color:
+              type: string
     CustomerProductListIdsResponse:
       type: object
       properties:
@@ -2119,6 +2124,13 @@ components:
                   type: integer
                 height:
                   type: integer
+        theme:
+          type: object
+          properties:
+            color:
+              type: string
+          required:
+            - color
       required:
         - customerId
         - fullname
@@ -2134,6 +2146,7 @@ components:
         - social
         - speaks
         - images
+        - theme
     UserScheduleWithLocations:
       type: object
       properties:

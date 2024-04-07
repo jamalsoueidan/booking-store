@@ -63,6 +63,9 @@ export const customerCreateResponse = zod.object({
   "width": zod.number().optional(),
   "height": zod.number().optional()
 }).optional()
+}),
+  "theme":  zod.object({
+  "color": zod.string()
 })
 })
 })
@@ -92,7 +95,10 @@ export const customerUpdateBody = zod.object({
   "instagram": zod.string().optional(),
   "x": zod.string().optional()
 }).optional(),
-  "speaks": zod.array(zod.string()).optional()
+  "speaks": zod.array(zod.string()).optional(),
+  "theme":  zod.object({
+  "color": zod.string().optional()
+}).optional()
 })
 
 export const customerUpdateResponse = zod.object({
@@ -122,6 +128,9 @@ export const customerUpdateResponse = zod.object({
   "width": zod.number().optional(),
   "height": zod.number().optional()
 }).optional()
+}),
+  "theme":  zod.object({
+  "color": zod.string()
 })
 })
 })
@@ -162,6 +171,9 @@ export const customerGetResponse = zod.object({
   "width": zod.number().optional(),
   "height": zod.number().optional()
 }).optional()
+}),
+  "theme":  zod.object({
+  "color": zod.string()
 })
 })
 })
@@ -1122,6 +1134,9 @@ export const customerLocationRemoveResponse = zod.object({
   "width": zod.number().optional(),
   "height": zod.number().optional()
 }).optional()
+}),
+  "theme":  zod.object({
+  "color": zod.string()
 })
 })
 })
@@ -1208,6 +1223,9 @@ export const customerLocationSetDefaultResponse = zod.object({
   "width": zod.number().optional(),
   "height": zod.number().optional()
 }).optional()
+}),
+  "theme":  zod.object({
+  "color": zod.string()
 })
 })
 })
@@ -3134,6 +3152,9 @@ export const userGetResponse = zod.object({
   "width": zod.number().optional(),
   "height": zod.number().optional()
 }).optional()
+}),
+  "theme":  zod.object({
+  "color": zod.string()
 })
 })
 })
@@ -3676,6 +3697,9 @@ export const usersSearchResponse = zod.object({
   "width": zod.number().optional(),
   "height": zod.number().optional()
 }).optional()
+}),
+  "theme":  zod.object({
+  "color": zod.string()
 })
 })),
   "totalCount": zod.number()

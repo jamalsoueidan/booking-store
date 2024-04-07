@@ -46,7 +46,7 @@
 * components/Aside
 * --------------------------------------------------
 */
-aside {
+aside.cart {
   background: var(--color-light);
   box-shadow: 0 0 50px rgba(0, 0, 0, 0.3);
   height: 100vh;
@@ -58,7 +58,7 @@ aside {
   transition: transform 200ms ease-in-out;
 }
 
-aside header {
+aside.cart header {
   align-items: center;
   border-bottom: 1px solid var(--color-dark);
   display: flex;
@@ -67,11 +67,11 @@ aside header {
   padding: 0 20px;
 }
 
-aside header h3 {
+aside.cart header h3 {
   margin: 0;
 }
 
-aside header .close {
+aside.cart header .close {
   font-weight: bold;
   opacity: 0.8;
   text-decoration: none;
@@ -79,24 +79,24 @@ aside header .close {
   width: 20px;
 }
 
-aside header .close:hover {
+aside.cart header .close:hover {
   opacity: 1;
 }
 
-aside header h2 {
+aside.cart header h2 {
   margin-bottom: 0.6rem;
   margin-top: 0;
 }
 
-aside p {
+aside.cart p {
   margin: 0 0 0.25rem;
 }
 
-aside p:last-child {
+aside.cart p:last-child {
   margin: 0;
 }
 
-aside li {
+aside.cart li {
   margin-bottom: 0.125rem;
 }
 

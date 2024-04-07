@@ -1,4 +1,4 @@
-import {Box, Flex, SimpleGrid, Skeleton, Stack} from '@mantine/core';
+import {Flex, SimpleGrid, Skeleton, Stack} from '@mantine/core';
 import {
   Await,
   useLoaderData,
@@ -7,7 +7,9 @@ import {
 import {parseGid} from '@shopify/hydrogen';
 import {defer, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
 import {Suspense} from 'react';
+import {ArtistShell} from '~/components/ArtistShell';
 import TreatmentPickDatetime from '~/components/TreatmentPickDatatime';
+import {TreatmentStepper} from '~/components/TreatmentStepper';
 import {PRODUCT_VALIDATE_HANDLER_QUERY} from '~/data/queries';
 import {getBookingShopifyApi} from '~/lib/api/bookingShopifyApi';
 
@@ -71,33 +73,38 @@ export default function ArtistTreatmentPickDatetime() {
   const {availability} = useLoaderData<typeof loader>();
 
   return (
-    <Box mt="lg">
-      <Suspense
-        fallback={
-          <Stack gap="lg">
-            <SimpleGrid cols={2}>
-              <Skeleton height={30} width="80%" />
-              <Flex gap="lg" justify="flex-end">
-                <Skeleton height={30} width={30} />
-                <Skeleton height={30} width={30} />
+    <>
+      <ArtistShell.Main>
+        <Suspense
+          fallback={
+            <Stack gap="lg">
+              <SimpleGrid cols={2}>
+                <Skeleton height={30} width="80%" />
+                <Flex gap="lg" justify="flex-end">
+                  <Skeleton height={30} width={30} />
+                  <Skeleton height={30} width={30} />
+                </Flex>
+              </SimpleGrid>
+              <Flex gap="lg">
+                <Skeleton height={30} style={{flex: 1}} />
+                <Skeleton height={30} style={{flex: 1}} />
+                <Skeleton height={30} style={{flex: 1}} />
+                <Skeleton height={30} style={{flex: 1}} />
+                <Skeleton height={30} style={{flex: 1}} />
+                <Skeleton height={30} style={{flex: 1}} />
+                <Skeleton height={30} style={{flex: 1}} />
               </Flex>
-            </SimpleGrid>
-            <Flex gap="lg">
-              <Skeleton height={30} style={{flex: 1}} />
-              <Skeleton height={30} style={{flex: 1}} />
-              <Skeleton height={30} style={{flex: 1}} />
-              <Skeleton height={30} style={{flex: 1}} />
-              <Skeleton height={30} style={{flex: 1}} />
-              <Skeleton height={30} style={{flex: 1}} />
-              <Skeleton height={30} style={{flex: 1}} />
-            </Flex>
-          </Stack>
-        }
-      >
-        <Await resolve={availability}>
-          {({payload}) => <TreatmentPickDatetime availability={payload} />}
-        </Await>
-      </Suspense>
-    </Box>
+            </Stack>
+          }
+        >
+          <Await resolve={availability}>
+            {({payload}) => <TreatmentPickDatetime availability={payload} />}
+          </Await>
+        </Suspense>
+      </ArtistShell.Main>
+      <ArtistShell.Footer>
+        <TreatmentStepper />
+      </ArtistShell.Footer>
+    </>
   );
 }

@@ -13,7 +13,8 @@ import {Link} from '@remix-run/react';
 import {Money, parseGid} from '@shopify/hydrogen';
 import {IconArrowRight} from '@tabler/icons-react';
 import {type ArtistServicesProductsQuery} from 'storefrontapi.generated';
-import {type CustomerProductList} from '~/lib/api/model';
+import {useUser} from '~/hooks/use-user';
+import type {CustomerProductList} from '~/lib/api/model';
 import {durationToTime} from '~/lib/duration';
 import {BadgeCollection} from '../BadgeCollection';
 import classes from './ArtistProduct.module.css';
@@ -24,6 +25,7 @@ export type ArtistProductProps = {
 };
 
 export function ArtistProduct({product, services}: ArtistProductProps) {
+  const user = useUser();
   const artistService = services.find(
     ({productId}) => productId.toString() === parseGid(product.id).id,
   );
@@ -80,7 +82,7 @@ export function ArtistProduct({product, services}: ArtistProductProps) {
         </Text>
 
         {artistService?.price && (
-          <Badge variant="light" color="gray" size="lg">
+          <Badge variant="light" color={user.theme.color} size="lg">
             <Money data={artistService?.price as any} />
           </Badge>
         )}
