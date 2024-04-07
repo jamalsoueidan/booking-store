@@ -1,8 +1,9 @@
-import {AppShell, Burger} from '@mantine/core';
+import {ActionIcon, AppShell, Burger, Group} from '@mantine/core';
 import {useDisclosure} from '@mantine/hooks';
-import {Outlet, useLoaderData} from '@remix-run/react';
+import {Link, Outlet, useLoaderData} from '@remix-run/react';
 import {parseGid} from '@shopify/hydrogen';
 import {json, redirect, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
+import {IconEye} from '@tabler/icons-react';
 import {type CustomerQuery} from 'storefrontapi.generated';
 import {AccountMenu} from '~/components/AccountMenu';
 import {getBookingShopifyApi} from '~/lib/api/bookingShopifyApi';
@@ -138,6 +139,31 @@ function AccountLayout({
           backgroundColor: 'var(--mantine-color-gray-1)',
         }}
       >
+        <div
+          style={{
+            position: 'absolute',
+            right: `var(--mantine-spacing-md)`,
+            top: `var(--mantine-spacing-md)`,
+            zIndex: 1,
+          }}
+        >
+          <Group justify="center" align="center">
+            <ActionIcon
+              variant="default"
+              component={Link}
+              to={`/artist/${props.user?.username}`}
+              target="_blank"
+            >
+              <IconEye />
+            </ActionIcon>
+            <Burger
+              opened={opened}
+              onClick={toggle}
+              hiddenFrom="sm"
+              size="sm"
+            />
+          </Group>
+        </div>
         <AccountMenu closeDrawer={close} {...props} />
       </AppShell.Navbar>
 
@@ -145,9 +171,9 @@ function AccountLayout({
         <div
           style={{
             position: 'absolute',
-            right: `var(--mantine-spacing-${opened ? 'sm' : 'xs'})`,
-            top: `var(--mantine-spacing-${opened ? 'xs' : 'xs'})`,
-            zIndex: 1000,
+            right: `var(--mantine-spacing-sm)`,
+            top: `var(--mantine-spacing-xs)`,
+            zIndex: 1,
           }}
         >
           <Burger opened={opened} onClick={toggle} hiddenFrom="sm" size="sm" />

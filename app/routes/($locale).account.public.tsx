@@ -13,6 +13,7 @@ export default function AccountBusiness() {
           <AccountButton to={'.'}>Profil</AccountButton>
           <AccountButton to={'social'}>Social Media</AccountButton>
           <AccountButton to={'theme'}>Tema</AccountButton>
+          <AccountButton to={'/account/upload'}>Skift billed</AccountButton>
         </Group>
       </AccountTitle>
 

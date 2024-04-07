@@ -1,11 +1,4 @@
-import {
-  Avatar,
-  Container,
-  Divider,
-  Group,
-  Text,
-  UnstyledButton,
-} from '@mantine/core';
+import {Avatar, Divider, Group, Text, UnstyledButton} from '@mantine/core';
 import {Form, Link, NavLink} from '@remix-run/react';
 import {
   IconAddressBook,
@@ -154,32 +147,26 @@ export function AccountMenu({
   return (
     <>
       <div className={classes.navbarMain}>
-        <Container pt="sm">
-          <Group maw="90%">
-            {user && (
-              <Avatar
-                src={user.images?.profile?.url}
-                radius="xl"
-                component={Link}
-                to="/account/upload"
-              />
-            )}
-            <UnstyledButton
-              style={{flex: 1}}
+        <Group maw="90%" pt="sm" px="sm">
+          {user && (
+            <Avatar
+              src={user.images?.profile?.url}
+              radius="xl"
               component={Link}
-              to={`/artist/${user?.username}`}
-              target="_blank"
-            >
-              <Text size="sm" fw={500} c="black">
-                {customer?.firstName} {customer?.lastName}
-              </Text>
+              to="/account/upload"
+            />
+          )}
+          <UnstyledButton style={{flex: 1}} component={Link} to="/account/">
+            <Text size="sm" fw={500} c="black">
+              {customer?.firstName} {customer?.lastName}
+            </Text>
 
-              <Text c="dimmed" size="xs">
-                {customer?.email}
-              </Text>
-            </UnstyledButton>
-          </Group>
-        </Container>
+            <Text c="dimmed" size="xs">
+              {customer?.email}
+            </Text>
+          </UnstyledButton>
+        </Group>
+
         <Divider my="xs" />
         {isBusiness ? topLinks : bottomLinks}
       </div>
