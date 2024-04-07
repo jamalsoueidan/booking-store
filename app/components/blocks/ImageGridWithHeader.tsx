@@ -45,32 +45,38 @@ export function ImageGridWithHeader({
           cols={{base: 2, sm: 3, md: 5}}
           spacing={{base: 'lg', sm: rem(50)}}
         >
-          {items?.map((item) => (
-            <Anchor
-              key={item.id}
-              component={Link}
-              to={`categories/${item.handle}`}
-              underline="hover"
-            >
-              <Stack>
-                <AspectRatio>
-                  <Image
-                    src={item.image?.url || ''}
-                    radius="xl"
-                    fallbackSrc="https://placehold.co/400x600?text=Behandling"
-                  />
-                </AspectRatio>
-                <Title
-                  order={3}
-                  c="black"
-                  fw="500"
-                  style={{textDecoration: 'none'}}
-                >
-                  {parseTE(item.title)}
-                </Title>
-              </Stack>
-            </Anchor>
-          ))}
+          {items?.map((item) => {
+            const title = `https://placehold.co/400x600?text=${parseTE(
+              item.title,
+            )}`;
+
+            return (
+              <Anchor
+                key={item.id}
+                component={Link}
+                to={`categories/${item.handle}`}
+                underline="hover"
+              >
+                <Stack>
+                  <AspectRatio>
+                    <Image
+                      src={item.image?.url || ''}
+                      radius="xl"
+                      fallbackSrc={`${title}`}
+                    />
+                  </AspectRatio>
+                  <Title
+                    order={3}
+                    c="black"
+                    fw="500"
+                    style={{textDecoration: 'none'}}
+                  >
+                    {parseTE(item.title)}
+                  </Title>
+                </Stack>
+              </Anchor>
+            );
+          })}
         </SimpleGrid>
       </Stack>
     </Wrapper>

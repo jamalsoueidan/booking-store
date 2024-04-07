@@ -35,7 +35,11 @@ export const ProfessionButton = ({
       }
     >
       <Avatar
-        src={`/professions/${profession.profession}.webp`}
+        src={`${
+          profession.profession
+            ? `/professions/${profession.profession}.webp`
+            : `https://placehold.co/400x600?text=${profession.translation}`
+        }`}
         alt={profession.translation}
         radius="xl"
         size="xl"
