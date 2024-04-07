@@ -12,6 +12,7 @@ import {
   Menu,
   ScrollArea,
   Title,
+  UnstyledButton,
   rem,
 } from '@mantine/core';
 import {useDisclosure} from '@mantine/hooks';
@@ -44,11 +45,13 @@ export function Header({header, isLoggedIn, cart}: HeaderProps) {
     <Box mx={{base: 'md', sm: '42'}} style={{zIndex: 2}}>
       <header className={classes.header}>
         <Flex h="100%" align="center" justify="space-between">
-          <Title order={1} component={Flex} lh="xs" fw="500">
-            ByS
-            <Image src={logo} alt="it's me" h="auto" w="10px" mx="2px" />
-            sters
-          </Title>
+          <UnstyledButton component={Link} to="/">
+            <Title order={1} component={Flex} lh="xs" fw="500">
+              ByS
+              <Image src={logo} alt="it's me" h="auto" w="10px" mx="2px" />
+              sters
+            </Title>
+          </UnstyledButton>
 
           <Group h="100%" w="100%" gap={0} visibleFrom="md" justify="center">
             <HeaderMenu
