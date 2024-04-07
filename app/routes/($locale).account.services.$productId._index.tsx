@@ -221,7 +221,7 @@ export default function EditAddress() {
                 label="Hvor langt ude i fremtiden vil du acceptere bookinger?"
                 data={[
                   {value: 'months', label: 'Måneder'},
-                  {value: 'hours', label: 'Timer'},
+                  {value: 'weeks', label: 'Uger'},
                 ]}
               />
 
