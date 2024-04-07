@@ -1,6 +1,6 @@
-import {useOutletContext} from '@remix-run/react';
+import {Link, useOutletContext} from '@remix-run/react';
 
-import {Text} from '@mantine/core';
+import {Button, Text} from '@mantine/core';
 import {ArtistShell} from '~/components/ArtistShell';
 import {TreatmentStepper} from '~/components/TreatmentStepper';
 
@@ -19,7 +19,11 @@ export default function ProductDescription() {
         ></Text>
       </ArtistShell.Main>
       <ArtistShell.Footer>
-        <TreatmentStepper />
+        <TreatmentStepper>
+          <Button variant="default" component={Link} to="pick-location">
+            Bestil tid
+          </Button>
+        </TreatmentStepper>
       </ArtistShell.Footer>
     </>
   );

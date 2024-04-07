@@ -1,5 +1,5 @@
-import {SimpleGrid, Skeleton, Text, Title} from '@mantine/core';
-import {Await, useLoaderData} from '@remix-run/react';
+import {Button, SimpleGrid, Skeleton, Text, Title} from '@mantine/core';
+import {Await, Link, useLoaderData} from '@remix-run/react';
 import {defer, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
 import {Suspense} from 'react';
 import {type ProductItemFragment} from 'storefrontapi.generated';
@@ -86,7 +86,20 @@ export default function ArtistTreatments() {
         </Suspense>
       </ArtistShell.Main>
       <ArtistShell.Footer>
-        <TreatmentStepper />
+        <TreatmentStepper
+          currentStep={2}
+          totalSteps={3}
+          pageTitle="Behandlinger"
+        >
+          <Button
+            variant="default"
+            component={Link}
+            to={`../pick-datetime${location.search}`}
+            relative="route"
+          >
+            Nej tak
+          </Button>
+        </TreatmentStepper>
       </ArtistShell.Footer>
     </>
   );

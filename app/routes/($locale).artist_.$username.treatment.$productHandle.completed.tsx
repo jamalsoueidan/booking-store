@@ -9,6 +9,7 @@ import {v4 as uuidv4} from 'uuid';
 import {AddToCartTreatment} from '~/components/AddToCartTreatments';
 import {ArtistShell} from '~/components/ArtistShell';
 import {TreatmentArtistCardComplete} from '~/components/treatment/TreatmentArtistCardComplete';
+import {TreatmentStepper} from '~/components/TreatmentStepper';
 import {PRODUCT_SELECTED_OPTIONS_QUERY} from '~/data/queries';
 import {getBookingShopifyApi} from '~/lib/api/bookingShopifyApi';
 import {durationToTime} from '~/lib/duration';
@@ -186,24 +187,14 @@ export default function ArtistTreatmentsBooking() {
         <Stack gap="xs">{productMarkup}</Stack>
       </ArtistShell.Main>
       <ArtistShell.Footer>
-        <Group justify="space-between">
-          <Group gap="xs">
-            <Text c="dimmed" fz={{base: 16, sm: 20}}>
-              4/4
-            </Text>
-            <Text fw={500} tt="uppercase" fz={{base: 16, sm: 20}}>
-              FÆRDIG
-            </Text>
-          </Group>
-          <Group gap="md" align="center">
-            <AddToCartTreatment
-              products={data.products}
-              availability={data.availability}
-              location={data.location}
-              groupId={data.groupId}
-            />
-          </Group>
-        </Group>
+        <TreatmentStepper>
+          <AddToCartTreatment
+            products={data.products}
+            availability={data.availability}
+            location={data.location}
+            groupId={data.groupId}
+          />
+        </TreatmentStepper>
       </ArtistShell.Footer>
     </>
   );

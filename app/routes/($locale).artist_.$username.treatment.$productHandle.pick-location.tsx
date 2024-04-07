@@ -1,8 +1,14 @@
-import {Flex, Skeleton, Title} from '@mantine/core';
+import {Button, Flex, Skeleton, Title} from '@mantine/core';
 import {useDisclosure} from '@mantine/hooks';
-import {Await, useLoaderData, useSearchParams} from '@remix-run/react';
+import {
+  Await,
+  Link,
+  useLoaderData,
+  useLocation,
+  useSearchParams,
+} from '@remix-run/react';
 import {defer, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
-import {Suspense, useEffect} from 'react';
+import {Suspense} from 'react';
 import {ArtistShell} from '~/components/ArtistShell';
 import {LocationModal} from '~/components/LocationModal';
 import {TreatmentStepper} from '~/components/TreatmentStepper';
@@ -42,6 +48,10 @@ export async function loader({request, params, context}: LoaderFunctionArgs) {
 
 export default function ArtistTreatmentPickLocation() {
   const {schedule} = useLoaderData<typeof loader>();
+  const location = useLocation();
+  const searchParams = new URLSearchParams(location.search);
+  const isDisabled =
+    !searchParams.has('locationId') || searchParams.get('locationId') === '';
 
   return (
     <>
@@ -61,7 +71,19 @@ export default function ArtistTreatmentPickLocation() {
         </Suspense>
       </ArtistShell.Main>
       <ArtistShell.Footer>
-        <TreatmentStepper />
+        <TreatmentStepper currentStep={1} totalSteps={3} pageTitle="Lokation">
+          <Button variant="default" component={Link} to="../">
+            Tilbage
+          </Button>
+          <Button
+            variant="default"
+            component={Link}
+            to={`../pick-more${location.search}`}
+            disabled={isDisabled}
+          >
+            Næste
+          </Button>
+        </TreatmentStepper>
       </ArtistShell.Footer>
     </>
   );
@@ -80,11 +102,7 @@ function ArtistLocationPicker({
     if (value) {
       newSearchParams.set('shippingId', value);
     }
-    setSearchParams(newSearchParams, {
-      state: {
-        key: 'booking',
-      },
-    });
+    setSearchParams(newSearchParams);
   };
 
   const setLocationId = (value: CustomerLocation | undefined) => {
@@ -94,11 +112,7 @@ function ArtistLocationPicker({
     if (value) {
       newSearchParams.set('locationId', value._id);
     }
-    setSearchParams(newSearchParams, {
-      state: {
-        key: 'booking',
-      },
-    });
+    setSearchParams(newSearchParams);
   };
 
   const locationId = searchParams.get('locationId');
@@ -123,12 +137,6 @@ function ArtistLocationPicker({
     setShippingId(shippingId);
     close();
   };
-
-  useEffect(() => {
-    if (schedule.locations.length === 1 && !searchParams.has('locationId')) {
-      setLocationId(schedule.locations[0]);
-    }
-  }, []);
 
   const markup = schedule.locations.map((location) => {
     return (

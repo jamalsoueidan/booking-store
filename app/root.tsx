@@ -23,9 +23,7 @@ import {
   useLocation,
   useMatches,
   useRouteError,
-  type Location,
   type ShouldRevalidateFunction,
-  type UIMatch,
 } from '@remix-run/react';
 import {useNonce} from '@shopify/hydrogen';
 import type {CustomerAccessToken} from '@shopify/hydrogen/storefront-api-types';
@@ -171,15 +169,7 @@ export default function App() {
             <Layout {...data}>
               <Outlet />
             </Layout>
-            <ScrollRestoration
-              nonce={nonce}
-              getKey={(location: Location, matches: UIMatch[]) => {
-                if (location.state?.key) {
-                  return location.state.key;
-                }
-                return location.key;
-              }}
-            />
+            <ScrollRestoration nonce={nonce} />
             <Scripts nonce={nonce} />
             {path === '/' ? (
               <ShopifyInbox

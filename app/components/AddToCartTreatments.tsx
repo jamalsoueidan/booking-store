@@ -125,9 +125,7 @@ export function AddToCartButton({
               value={JSON.stringify(analytics)}
             />
             <Button
-              variant="filled"
-              color="black"
-              size="compact-md"
+              variant="default"
               type="submit"
               onClick={onClick}
               leftSection={<IconShoppingCart />}

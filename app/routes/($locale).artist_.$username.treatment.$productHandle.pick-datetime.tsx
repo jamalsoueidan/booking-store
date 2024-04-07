@@ -1,7 +1,9 @@
-import {Flex, SimpleGrid, Skeleton, Stack} from '@mantine/core';
+import {Button, Flex, SimpleGrid, Skeleton, Stack} from '@mantine/core';
 import {
   Await,
+  Link,
   useLoaderData,
+  useLocation,
   type ShouldRevalidateFunctionArgs,
 } from '@remix-run/react';
 import {parseGid} from '@shopify/hydrogen';
@@ -71,6 +73,12 @@ export async function loader({params, request, context}: LoaderFunctionArgs) {
 
 export default function ArtistTreatmentPickDatetime() {
   const {availability} = useLoaderData<typeof loader>();
+  const location = useLocation();
+  const searchParams = new URLSearchParams(location.search);
+  const isDisabled =
+    !searchParams.has('fromDate') ||
+    (searchParams.get('fromDate') === '' && !searchParams.has('toDate')) ||
+    searchParams.get('toDate') === '';
 
   return (
     <>
@@ -103,7 +111,20 @@ export default function ArtistTreatmentPickDatetime() {
         </Suspense>
       </ArtistShell.Main>
       <ArtistShell.Footer>
-        <TreatmentStepper />
+        <TreatmentStepper
+          currentStep={3}
+          totalSteps={3}
+          pageTitle="Tidsbestilling"
+        >
+          <Button
+            variant="default"
+            component={Link}
+            to={`../completed${location.search}`}
+            disabled={isDisabled}
+          >
+            Færdig
+          </Button>
+        </TreatmentStepper>
       </ArtistShell.Footer>
     </>
   );
