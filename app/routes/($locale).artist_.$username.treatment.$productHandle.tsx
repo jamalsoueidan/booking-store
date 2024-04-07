@@ -7,6 +7,7 @@ import {IconArrowLeft} from '@tabler/icons-react';
 import {type ProductVariantFragment} from 'storefrontapi.generated';
 import {ArtistShell} from '~/components/ArtistShell';
 import {PRODUCT_SELECTED_OPTIONS_QUERY} from '~/data/queries';
+import {UserProvider} from '~/hooks/use-user';
 import {getBookingShopifyApi} from '~/lib/api/bookingShopifyApi';
 
 export const meta: MetaFunction<typeof loader> = ({data}) => {
@@ -68,38 +69,40 @@ export default function Product() {
   const {product, artist} = useLoaderData<typeof loader>();
 
   return (
-    <ArtistShell color={artist.theme.color}>
-      <ArtistShell.Header color={artist.theme.color}>
-        <Stack gap="xs" w="100%" align="flex-start">
-          <Button
-            p="0"
-            variant="transparent"
-            component={Link}
-            to={`/artist/${artist.username}`}
-            c="black"
-            leftSection={
-              <IconArrowLeft
-                style={{width: '24px', height: '24px'}}
-                stroke={1.5}
-              />
-            }
-            rightSection={
-              <Avatar src={artist.images?.profile?.url} size="md" />
-            }
-          >
-            {artist.fullname}
-          </Button>
+    <UserProvider user={artist}>
+      <ArtistShell>
+        <ArtistShell.Header>
+          <Stack gap="xs" w="100%" align="flex-start">
+            <Button
+              p="0"
+              variant="transparent"
+              component={Link}
+              to={`/artist/${artist.username}`}
+              c="black"
+              leftSection={
+                <IconArrowLeft
+                  style={{width: '24px', height: '24px'}}
+                  stroke={1.5}
+                />
+              }
+              rightSection={
+                <Avatar src={artist.images?.profile?.url} size="md" />
+              }
+            >
+              {artist.fullname}
+            </Button>
 
-          <Flex justify="space-between" align="center" w="100%">
-            <Title order={1} fw="500" fz={{base: 24, sm: 40}}>
-              {product.title}
-            </Title>
-          </Flex>
-        </Stack>
-      </ArtistShell.Header>
+            <Flex justify="space-between" align="center" w="100%">
+              <Title order={1} fw="500" fz={{base: 24, sm: 40}}>
+                {product.title}
+              </Title>
+            </Flex>
+          </Stack>
+        </ArtistShell.Header>
 
-      <Outlet context={{product}} />
-    </ArtistShell>
+        <Outlet context={{product}} />
+      </ArtistShell>
+    </UserProvider>
   );
 }
 

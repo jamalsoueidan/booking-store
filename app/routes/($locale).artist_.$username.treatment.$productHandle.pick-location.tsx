@@ -26,24 +26,19 @@ export function shouldRevalidate() {
 
 export async function loader({request, params, context}: LoaderFunctionArgs) {
   const {productHandle, username} = params;
-  const url = new URL(request.url);
 
   if (!username || !productHandle) {
     throw new Response('Expected username handle to be defined', {status: 400});
   }
 
-  try {
-    const schedule = getBookingShopifyApi().userScheduleGetByProduct(
-      username,
-      productHandle,
-    );
+  const schedule = getBookingShopifyApi().userScheduleGetByProduct(
+    username,
+    productHandle,
+  );
 
-    return defer({
-      schedule,
-    });
-  } catch (err) {
-    throw new Response('Username or product handle is wrong', {status: 404});
-  }
+  return defer({
+    schedule,
+  });
 }
 
 export default function ArtistTreatmentPickLocation() {

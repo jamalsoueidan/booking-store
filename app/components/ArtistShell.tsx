@@ -1,17 +1,13 @@
-import {AppShell, Card, Flex, Group, type MantineColor} from '@mantine/core';
+import {AppShell, Card, Flex, Group} from '@mantine/core';
 import {useDisclosure, useMediaQuery} from '@mantine/hooks';
 import React from 'react';
+import {useUser} from '~/hooks/use-user';
 
 const desktopHeaderHeight = 140;
 const mobileHeaderHeight = 100;
 
-const ArtistShell = ({
-  color,
-  children,
-}: {
-  color: MantineColor;
-  children: React.ReactNode;
-}) => {
+const ArtistShell = ({children}: {children: React.ReactNode}) => {
+  const user = useUser();
   const [opened] = useDisclosure();
 
   return (
@@ -34,8 +30,8 @@ const ArtistShell = ({
       }}
     >
       {children}
-      <AppShell.Navbar bg={`${color}.6`}></AppShell.Navbar>
-      <AppShell.Aside bg={`${color}.6`}></AppShell.Aside>
+      <AppShell.Navbar bg={`${user.theme.color}.6`}></AppShell.Navbar>
+      <AppShell.Aside bg={`${user.theme.color}.6`}></AppShell.Aside>
     </AppShell>
   );
 };
@@ -48,22 +44,17 @@ const Footer = ({children}: {children: React.ReactNode}) => {
   );
 };
 
-const Header = ({
-  children,
-  color,
-}: {
-  children: React.ReactNode;
-  color: MantineColor;
-}) => {
+const Header = ({children}: {children: React.ReactNode}) => {
   const isMobile = useMediaQuery('(max-width: 48em)');
+  const user = useUser();
   return (
     <AppShell.Header>
-      <Group h="100%" w="inherit" align="flex-end" bg={`${color}.6`}>
+      <Group h="100%" w="inherit" align="flex-end" bg={`${user.theme.color}.6`}>
         <Flex
           h={`${isMobile ? mobileHeaderHeight : desktopHeaderHeight}px`}
           w="100%"
           px={isMobile ? 'md' : 'xl'}
-          bg={`${color}.1`}
+          bg={`${user.theme.color}.1`}
           align="center"
           style={
             isMobile

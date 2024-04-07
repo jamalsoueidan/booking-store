@@ -5,15 +5,7 @@ import {
   getTextareaProps,
   useForm,
 } from '@conform-to/react';
-import {
-  Blockquote,
-  Group,
-  Radio,
-  Stack,
-  TextInput,
-  Textarea,
-  rem,
-} from '@mantine/core';
+import {Blockquote, Stack, TextInput, Textarea, rem} from '@mantine/core';
 import {Form, useActionData, useFetcher, useLoaderData} from '@remix-run/react';
 import {parseGid} from '@shopify/hydrogen';
 import {
@@ -30,6 +22,7 @@ import {type z} from 'zod';
 import {AccountContent} from '~/components/account/AccountContent';
 import {AccountTitle} from '~/components/account/AccountTitle';
 import {MultiTags} from '~/components/form/MultiTags';
+import {RadioGroup} from '~/components/form/RadioGroup';
 import {getBookingShopifyApi} from '~/lib/api/bookingShopifyApi';
 import {type UserUsernameTakenResponsePayload} from '~/lib/api/model';
 import {redirectWithNotification} from '~/lib/show-notification';
@@ -92,7 +85,7 @@ export async function action({request, params, context}: ActionFunctionArgs) {
     });
 
     return redirectWithNotification(context, {
-      redirectUrl: `/account`,
+      redirectUrl: `/account/dashboard?done=true`,
       title: 'Business konto',
       message: 'Du er nu business konto',
       color: 'green',
@@ -198,8 +191,9 @@ export default function AccountBusiness() {
         <Blockquote color="lime" my="md">
           Du er i gang med at registrere dig som selvstændig skønhedsekspert, og
           vi er begejstrede for at have dig med på holdet. Ved at blive en del
-          af bySisters, træder du ind i et fællesskab, hvor passion for skønhed
+          af BySisters, træder du ind i et fællesskab, hvor passion for skønhed
           og ekspertise mødes for at skabe unikke oplevelser for kunderne.{' '}
+          <br />
           <br />
           For at fuldføre din registrering, bedes du udfylde de nødvendige
           oplysninger om dig selv og de ydelser, du tilbyder. Dette vil gøre det
@@ -230,16 +224,14 @@ export default function AccountBusiness() {
                 }
               />
 
-              <Radio.Group
+              <RadioGroup
                 label="Hvad er dit køn?"
-                withAsterisk
-                {...getInputProps(gender, {type: 'radio'})}
-              >
-                <Group mt="xs">
-                  <Radio value="woman" label="Kvinde" />
-                  <Radio value="man" label="Mand" />
-                </Group>
-              </Radio.Group>
+                field={gender}
+                data={[
+                  {value: 'woman', label: 'Kvinde'},
+                  {value: 'man', label: 'Mand'},
+                ]}
+              />
 
               <MultiTags
                 field={professions}

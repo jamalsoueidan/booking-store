@@ -50,7 +50,7 @@ export default function AccountSchedulesIndex() {
           ))}
         </Flex>
 
-        {loaderData.length === 0 ? (
+        {loaderData.length === 0 && !location.pathname.includes('create') ? (
           <Flex gap="lg" direction="column" justify="center" align="center">
             <ThemeIcon variant="white" size={rem(100)}>
               <IconMoodSad stroke={1} style={{width: '100%', height: '100%'}} />
