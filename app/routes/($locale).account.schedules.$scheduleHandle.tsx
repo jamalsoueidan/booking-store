@@ -45,6 +45,7 @@ import {redirectWithNotification} from '~/lib/show-notification';
 import {renderTime} from '~/lib/time';
 import {customerScheduleSlotUpdateBody} from '~/lib/zod/bookingShopifyApi';
 import AccountSchedulesEdit from './($locale).account.schedules.$scheduleHandle.edit';
+import {translationsDays} from './($locale).api.users.filters';
 
 // this must be taken from bookingApi, if it doesn't exist, create it in booking-api
 const schema = customerScheduleSlotUpdateBody;
@@ -190,16 +191,6 @@ function SlotInput({field}: SlotInputProps) {
     }
   };
 
-  const trans: any = {
-    monday: 'mandag',
-    tuesday: 'tirsdag',
-    wednesday: 'onsdag',
-    thursday: 'torsdag',
-    friday: 'fredag',
-    saturday: 'lørdag',
-    sunday: 'søndag',
-  };
-
   return (
     <Table.Tr>
       <Table.Td valign="middle">
@@ -207,7 +198,7 @@ function SlotInput({field}: SlotInputProps) {
         <Checkbox
           checked={intervalsList.length > 0}
           onChange={onChange}
-          label={trans[day.initialValue || '']}
+          label={translationsDays[day.initialValue || '']}
           size="md"
         />
       </Table.Td>
