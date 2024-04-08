@@ -152,11 +152,17 @@ export function AccountMenu({
             <Avatar
               src={user.images?.profile?.url}
               radius="xl"
-              component={Link}
+              component={NavLink}
               to="/account/upload"
+              onClick={() => closeDrawer()}
             />
           )}
-          <UnstyledButton style={{flex: 1}} component={Link} to="/account/">
+          <UnstyledButton
+            style={{flex: 1}}
+            component={Link}
+            to="/account/"
+            onClick={() => closeDrawer()}
+          >
             <Text size="sm" fw={500} c="black">
               {customer?.firstName} {customer?.lastName}
             </Text>
