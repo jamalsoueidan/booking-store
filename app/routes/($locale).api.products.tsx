@@ -12,6 +12,7 @@ export async function loader({request, context}: LoaderFunctionArgs) {
 
   const title = searchParams.get('title') || '';
   const excludeCreated = searchParams.get('excludeCreated');
+  const limit = searchParams.get('limit');
 
   const query = ['treatments'];
 
@@ -29,7 +30,7 @@ export async function loader({request, context}: LoaderFunctionArgs) {
   const products = await storefront.query(PRODUCTS_SEARCH_QUERY, {
     variables: {
       query: query.join(' AND '),
-      first: 5,
+      first: parseInt(limit || '5'),
     },
   });
 

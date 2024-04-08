@@ -39,7 +39,7 @@ export function SelectSearchable({
   const [title, setTitle] = useState('');
 
   const fetchOptions = (query: string) => {
-    fetcher.load(`/api/products?limit=5&title=${query}&excludeCreated=true`);
+    fetcher.load(`/api/products?limit=10&title=${query}&excludeCreated=true`);
   };
 
   const options = fetcher.data?.products.nodes.map((item) => (

@@ -5,7 +5,7 @@ import {
   getTextareaProps,
   useForm,
 } from '@conform-to/react';
-import {Blockquote, Stack, TextInput, Textarea, rem} from '@mantine/core';
+import {Stack, Text, TextInput, Textarea, rem} from '@mantine/core';
 import {Form, useActionData, useFetcher, useLoaderData} from '@remix-run/react';
 import {parseGid} from '@shopify/hydrogen';
 import {
@@ -188,20 +188,21 @@ export default function AccountBusiness() {
       <AccountTitle heading="Register selvstændig" />
 
       <AccountContent>
-        <Blockquote color="lime" my="md">
-          Du er i gang med at registrere dig som selvstændig skønhedsekspert, og
-          vi er begejstrede for at have dig med på holdet. Ved at blive en del
-          af BySisters, træder du ind i et fællesskab, hvor passion for skønhed
-          og ekspertise mødes for at skabe unikke oplevelser for kunderne.{' '}
-          <br />
-          <br />
-          For at fuldføre din registrering, bedes du udfylde de nødvendige
-          oplysninger om dig selv og de ydelser, du tilbyder. Dette vil gøre det
-          muligt for potentielle kunder at finde og booke dig gennem
-          bySisters.dk. Vi ser frem til at se, hvordan du vil berige vores
-          fællesskab med din ekspertise og passion for skønhed. Velkommen til
-          bySisters – sammen skaber vi skønhed!
-        </Blockquote>
+        <Stack mb="xl">
+          <Text>
+            Du er i gang med at registrere dig som selvstændig skønhedsekspert,
+            og vi er begejstrede for at have dig med på holdet. Ved at blive en
+            del af BySisters, træder du ind i et fællesskab, hvor passion for
+            skønhed og ekspertise mødes for at skabe unikke oplevelser for
+            kunderne.{' '}
+          </Text>
+          <Text>
+            For at fuldføre din registrering, bedes du udfylde de nødvendige
+            oplysninger om dig selv. Vi ser frem til at se, hvordan du vil
+            berige vores fællesskab med din ekspertise og passion for skønhed.
+            Velkommen til bySisters – sammen skaber vi skønhed!
+          </Text>
+        </Stack>
         <FormProvider context={form.context}>
           <Form method="post" {...getFormProps(form)}>
             <Stack gap="md">

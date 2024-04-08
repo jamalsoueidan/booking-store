@@ -237,9 +237,11 @@ function BuyerAccount() {
       <Text>
         Du er nu officielt oprettet og logget ind på dit personlige dashboard.
         Herfra har du adgang til en række funktioner til at gøre din oplevelse
-        så glidende og behagelig som muligt. Du kan gennemse din købshistorik,
-        opdatere dit kodeord, og se dine fremtidige bookinger med talentfulde
-        makeupartister, hårstylister og meget mere.{' '}
+        så glidende og behagelig som muligt. Du kan gennemse din{' '}
+        <Link to="/account/orders">købshistorik</Link>,{' '}
+        <Link to="/account/password">opdatere dit kodeord</Link>, og se dine
+        fremtidige bookinger med talentfulde makeupartister, hårstylister og
+        meget mere.{' '}
       </Text>
 
       <Text>
@@ -248,17 +250,16 @@ function BuyerAccount() {
           talenter med verden
         </Mark>
         , giver vi dig en unik mulighed. Du kan nemt konvertere din konto til en
-        business konto - helt gratis! Som business bruger kan du udbyde dine
-        egne ydelser på vores platform og tjene penge, alt imens du udvider din
-        kundekreds og bygger dit brand. At{' '}
-        <Mark>skifte til en business konto</Mark> er enkelt og ligetil. Vælg
-        &apos;Skift til Business Konto&apos;. Udfyld de nødvendige oplysninger
-        om dig, og du er klar til at starte din rejse som udbyder på By Sisters.
+        <Link to="../business">business konto</Link> - helt gratis! Som business
+        bruger kan du udbyde dine egne ydelser på vores platform og tjene penge,
+        alt imens du udvider din kundekreds og bygger dit brand. At{' '}
+        <Mark>skifte til en business konto</Mark> er enkelt og ligetil.
       </Text>
       <Text>
         Vi er her for at støtte dig på hvert skridt af vejen. Så hvis du har
-        spørgsmål eller brug for hjælp undervejs, tøv ikke med at kontakte os.
-        Velkommen ombord, og lad os sammen skabe skønhed!
+        spørgsmål eller brug for hjælp undervejs, tøv ikke med at{' '}
+        <Link to="/pages/contact">kontakte os</Link>. Velkommen ombord, og lad
+        os sammen skabe skønhed!
       </Text>
       <div>
         <Button size="xl" component={Link} to="../business">
