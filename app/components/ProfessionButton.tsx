@@ -1,4 +1,4 @@
-import {Avatar, Space, Title, UnstyledButton} from '@mantine/core';
+import {Image, Space, Title, UnstyledButton} from '@mantine/core';
 import {useNavigate, useSearchParams} from '@remix-run/react';
 import {type Profession} from '~/routes/($locale).api.users.professions';
 import classes from './ProfessionButton.module.css';
@@ -21,7 +21,7 @@ export const ProfessionButton = ({
     } else {
       const newSearchParams = new URLSearchParams(searchParams);
       newSearchParams.set('profession', profession.profession);
-      navigate(`search?${newSearchParams.toString()}`);
+      navigate(`/artists/search?${newSearchParams.toString()}`);
     }
   };
 
@@ -34,15 +34,13 @@ export const ProfessionButton = ({
         (reset && !professionSearchParams)
       }
     >
-      <Avatar
-        src={`${
-          profession.profession
-            ? `/professions/${profession.profession}.webp`
-            : `https://placehold.co/400x600?text=${profession.translation}`
-        }`}
+      <Image
+        src={`/professions/${profession.profession}.webp`}
+        fallbackSrc={`https://placehold.co/120x120?text=${profession.translation}`}
         alt={profession.translation}
-        radius="xl"
-        size="xl"
+        radius="100%"
+        w="100px"
+        h="auto"
       />
       <Space h="xs" />
       <Title

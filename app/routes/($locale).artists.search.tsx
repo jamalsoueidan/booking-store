@@ -24,7 +24,10 @@ import {H2} from '~/components/titles/H2';
 import {METAFIELD_QUERY} from '~/data/fragments';
 import {getBookingShopifyApi} from '~/lib/api/bookingShopifyApi';
 import type {User} from '~/lib/api/model';
-import {ProfessionSentenceTranslations} from './($locale).api.users.professions';
+import {
+  ProfessionSentenceTranslations,
+  ProfessionTranslations,
+} from './($locale).api.users.professions';
 
 const LIMIT = '20';
 
@@ -37,6 +40,8 @@ export const loader = async (args: LoaderFunctionArgs) => {
   const profession = searchParams.get('profession') || undefined;
   const keyword = searchParams.get('keyword') || undefined;
   const days = searchParams.getAll('days') || undefined;
+  const location = searchParams.get('location') || undefined;
+  const locationType = searchParams.get('locationType') || undefined;
 
   const {payload: users} = await getBookingShopifyApi().usersSearch(
     {
@@ -44,6 +49,9 @@ export const loader = async (args: LoaderFunctionArgs) => {
       specialties: speciality.length > 0 ? speciality.join(',') : undefined,
       keyword,
       days,
+      ...(location && locationType
+        ? {location: {city: location, locationType}}
+        : {location: undefined}),
     },
     {
       limit: LIMIT,
@@ -153,11 +161,17 @@ export const UserList = ({initialData, initialCursor}: UserListProps) => {
   };
 
   if (data.length === 0) {
+    const newSearchParams = new URLSearchParams(searchParams.toString());
+    const location = newSearchParams.get('location');
+    const profession = newSearchParams.get('profession') || '';
+    const keyword = newSearchParams.get('keyword') || '';
     return (
       <Flex direction="column" justify="center" align="center" gap="md">
         <IconSearch style={{width: rem(64), height: rem(64)}} stroke="1" />
         <Title fw="500">Ingen resultater fundet</Title>
-        <Text c="dimmed">Prøv at justere dine søgekriterier</Text>
+        <Text c="dimmed">
+          {ProfessionTranslations[profession]}, {location}, {keyword}
+        </Text>
         <Button onClick={reset}>Nulstille søgning</Button>
       </Flex>
     );
