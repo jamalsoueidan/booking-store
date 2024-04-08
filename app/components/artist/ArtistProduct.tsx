@@ -1,22 +1,22 @@
 import {
-  ActionIcon,
   Badge,
+  Button,
   Card,
-  Divider,
   Flex,
   Group,
+  Stack,
   Text,
   Title,
   rem,
 } from '@mantine/core';
 import {Link} from '@remix-run/react';
 import {Money, parseGid} from '@shopify/hydrogen';
-import {IconArrowRight} from '@tabler/icons-react';
+import {IconCalendar} from '@tabler/icons-react';
 import {type ArtistServicesProductsQuery} from 'storefrontapi.generated';
 import {useUser} from '~/hooks/use-user';
 import type {CustomerProductList} from '~/lib/api/model';
+import {parseTE} from '~/lib/clean';
 import {durationToTime} from '~/lib/duration';
-import {BadgeCollection} from '../BadgeCollection';
 import classes from './ArtistProduct.module.css';
 
 export type ArtistProductProps = {
@@ -40,53 +40,57 @@ export function ArtistProduct({product, services}: ArtistProductProps) {
       withBorder
       className={classes.card}
       component={Link}
+      radius="xl"
+      px="md"
+      py="lg"
       to={`treatment/${product.handle}`}
     >
-      <Group justify="space-between" gap="0">
-        <BadgeCollection collection={collection} />
-        <ActionIcon variant="outline" color="black" radius="lg" size="md">
-          <IconArrowRight style={{width: '70%', height: '70%'}} stroke={1.5} />
-        </ActionIcon>
-      </Group>
-      <Title
-        order={2}
-        size={rem(24)}
-        mt={rem(12)}
-        mb={rem(4)}
-        fw={700}
-        lts=".5px"
-      >
-        {product.title}
-      </Title>
-
-      <Flex
-        gap="sm"
-        direction="column"
-        justify="flex-start"
-        style={{flexGrow: 1, position: 'relative'}}
-      >
-        <Text c="dimmed" size="md" fw={400} lineClamp={2}>
-          {artistService?.description ||
-            product.description ||
-            'ingen beskrivelse'}
-        </Text>
-      </Flex>
-
-      <Card.Section>
-        <Divider my={{base: 'xs', md: 'md'}} />
-      </Card.Section>
-
-      <Group justify="space-between" gap="0">
-        <Text c="dimmed" fz="xs" tt="uppercase" fw={700}>
-          {durationToTime(artistService?.duration ?? 0)}
-        </Text>
-
-        {artistService?.price && (
-          <Badge variant="light" color={user.theme.color} size="lg">
-            <Money data={artistService?.price as any} />
+      <Stack gap={rem(48)}>
+        <Stack gap="6px">
+          <Badge c={`${user.theme.color}.6`} color={`${user.theme.color}.1`}>
+            {artistService?.scheduleName}
           </Badge>
-        )}
-      </Group>
+          <Title order={2} size={rem(24)} fw={600} lts=".5px">
+            {product.title}
+          </Title>
+
+          <Text c="dimmed" size="md" fw={400} lineClamp={3}>
+            {artistService?.description ||
+              product.description ||
+              'ingen beskrivelse'}
+          </Text>
+        </Stack>
+
+        <Group
+          justify="space-between"
+          bg="gray.1"
+          w="100%"
+          px="md"
+          py="sm"
+          style={{borderRadius: '25px'}}
+        >
+          <Flex gap="4px">
+            <IconCalendar
+              style={{width: rem(44), height: rem(44)}}
+              stroke="1"
+            />
+            <Flex direction="column">
+              <Text fw="bold">
+                {durationToTime(artistService?.duration ?? 0)}
+              </Text>
+              <Text c="dimmed" fz="xs">
+                {parseTE(collection?.title || '')}
+              </Text>
+            </Flex>
+          </Flex>
+
+          <Button variant="outline" size="xs" color="black" radius="xl">
+            {artistService?.price ? (
+              <Money data={artistService?.price as any} />
+            ) : null}
+          </Button>
+        </Group>
+      </Stack>
     </Card>
   );
 }

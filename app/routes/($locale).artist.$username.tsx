@@ -2,6 +2,7 @@ import {json, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
 
 import {
   ActionIcon,
+  Alert,
   AppShell,
   Box,
   Button,
@@ -15,7 +16,7 @@ import {
 } from '@mantine/core';
 import {useMediaQuery} from '@mantine/hooks';
 import {Link, Outlet, useLoaderData} from '@remix-run/react';
-import {IconLogout} from '@tabler/icons-react';
+import {IconInfoCircle, IconLogout} from '@tabler/icons-react';
 import {UserProvider} from '~/hooks/use-user';
 import {getBookingShopifyApi} from '~/lib/api/bookingShopifyApi';
 
@@ -85,7 +86,7 @@ export default function UserIndex() {
                 src={user.images?.profile?.url}
                 fallbackSrc={`https://placehold.co/300x300?text=${user.username}`}
                 radius="100%"
-                w="60%"
+                w="50%"
                 h="auto"
               />
 
@@ -111,6 +112,18 @@ export default function UserIndex() {
         </AppShell.Navbar>
         <AppShell.Main>
           <Box p={{base: '0', sm: rem(48)}}>
+            {!user.active ? (
+              <Alert
+                variant="light"
+                color="red"
+                title="Bruger ikke aktiv"
+                icon={<IconInfoCircle />}
+                mb="xl"
+              >
+                Din bruger er ikke aktiv, men du kan se din profil side indtil
+                vi godkender den.
+              </Alert>
+            ) : null}
             <Outlet />
           </Box>
         </AppShell.Main>
