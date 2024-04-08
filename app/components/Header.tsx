@@ -1,7 +1,8 @@
 import {
-  ActionIcon,
   Box,
   Burger,
+  Button,
+  ButtonGroup,
   Center,
   Divider,
   Drawer,
@@ -19,7 +20,7 @@ import {useDisclosure} from '@mantine/hooks';
 import {Await, Link, NavLink, useLocation} from '@remix-run/react';
 import {
   IconChevronDown,
-  IconLogin,
+  IconDashboard,
   IconShoppingCart,
   IconShoppingCartPlus,
   IconUser,
@@ -194,24 +195,39 @@ function HeaderCtas({
 }: Pick<HeaderProps, 'isLoggedIn' | 'cart'>) {
   return (
     <>
-      <ActionIcon.Group>
-        <ActionIcon
-          variant="default"
-          size="lg"
-          aria-label="Account"
-          component={Link}
-          to="/account"
-          prefetch="intent"
-        >
-          {isLoggedIn ? (
-            <IconUser style={{width: rem(24)}} stroke={1.5} />
-          ) : (
-            <IconLogin style={{width: rem(24)}} stroke={1.5} />
-          )}
-        </ActionIcon>
+      <ButtonGroup>
+        {isLoggedIn ? (
+          <Button
+            variant="transparent"
+            size="xs"
+            c="black"
+            rightSection={
+              <IconDashboard style={{width: rem(18)}} stroke={1.5} />
+            }
+            aria-label="Account Dashboard"
+            component={Link}
+            to="/account"
+            prefetch="intent"
+          >
+            Dashboard
+          </Button>
+        ) : (
+          <Button
+            variant="transparent"
+            size="xs"
+            c="black"
+            rightSection={<IconUser style={{width: rem(18)}} stroke={1.5} />}
+            aria-label="Account Login"
+            component={Link}
+            to="/account"
+            prefetch="intent"
+          >
+            Login
+          </Button>
+        )}
 
         <CartToggle cart={cart} />
-      </ActionIcon.Group>
+      </ButtonGroup>
     </>
   );
 }
@@ -288,19 +304,23 @@ function HeaderMenuMobile({
 
 function CartBadge({count}: {count: number}) {
   return (
-    <ActionIcon
-      variant="default"
-      size="lg"
+    <Button
       aria-label="Cart"
+      variant="transparent"
+      size="xs"
+      c="black"
       component="a"
       href="#cart-aside"
+      rightSection={
+        count > 0 ? (
+          <IconShoppingCartPlus style={{width: rem(18)}} stroke={1.5} />
+        ) : (
+          <IconShoppingCart style={{width: rem(18)}} stroke={1.5} />
+        )
+      }
     >
-      {count > 0 ? (
-        <IconShoppingCartPlus style={{width: rem(24)}} stroke={1.5} />
-      ) : (
-        <IconShoppingCart style={{width: rem(24)}} stroke={1.5} />
-      )}
-    </ActionIcon>
+      Indkøbskurv
+    </Button>
   );
 }
 

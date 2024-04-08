@@ -133,16 +133,17 @@ export const SearchInput = () => {
   const [opened, {open, close}] = useDisclosure(false);
 
   //query
-  const [searchParams, setSearchParams] = useSearchParams();
+  const [searchParams] = useSearchParams();
 
   //form
-  const [search, setSearch] = useState(searchParams.get('search') || '');
-  const [selectedDays, setSelectedDays] = useState(
-    searchParams.getAll('days') || [],
-  );
-  const [selectedLocations, setSelectedLocations] = useState({
-    location: searchParams.get('location'),
-    locationType: searchParams.get('locationType'),
+  const [search, setSearch] = useState('');
+  const [selectedDays, setSelectedDays] = useState<Array<string>>([]);
+  const [selectedLocations, setSelectedLocations] = useState<{
+    location?: string | null;
+    locationType?: string | null;
+  }>({
+    location: undefined,
+    locationType: undefined,
   });
 
   const navigate = useNavigate();
@@ -172,7 +173,7 @@ export const SearchInput = () => {
   };
 
   const reset = () => {
-    setSearch('');
+    setSearch(searchParams.get('search') || '');
     setSelectedDays([]);
     setSelectedLocations({
       location: null,
@@ -187,6 +188,16 @@ export const SearchInput = () => {
     navigate(`/artists/search?${newSearchParams.toString()}`);
   };
 
+  const openModal = () => {
+    setSearch('');
+    setSelectedDays(searchParams.getAll('days') || []);
+    setSelectedLocations({
+      location: searchParams.get('location'),
+      locationType: searchParams.get('locationType'),
+    });
+    open();
+  };
+
   return (
     <>
       <Flex justify="center">
@@ -195,7 +206,7 @@ export const SearchInput = () => {
           size="lg"
           color="orange"
           variant="outline"
-          onClick={open}
+          onClick={openModal}
           rightSection={
             <IconAdjustmentsHorizontal
               style={{width: rem(24), height: rem(24)}}

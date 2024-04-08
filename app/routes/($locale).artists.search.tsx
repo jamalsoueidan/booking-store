@@ -1,6 +1,22 @@
-import {Box, Container, rem, SimpleGrid, Stack} from '@mantine/core';
-import {useLoaderData, useParams, useSearchParams} from '@remix-run/react';
+import {
+  Box,
+  Button,
+  Container,
+  Flex,
+  rem,
+  SimpleGrid,
+  Stack,
+  Text,
+  Title,
+} from '@mantine/core';
+import {
+  useLoaderData,
+  useNavigate,
+  useParams,
+  useSearchParams,
+} from '@remix-run/react';
 import {json, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
+import {IconSearch} from '@tabler/icons-react';
 import {useEffect, useState} from 'react';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import {ArtistCard} from '~/components/ArtistCard';
@@ -103,6 +119,7 @@ type UserListProps = {
 };
 
 export const UserList = ({initialData, initialCursor}: UserListProps) => {
+  const navigate = useNavigate();
   const [data, setData] = useState(initialData);
   const [cursor, setCursor] = useState(initialCursor);
   const [hasMore, setHasMore] = useState(initialCursor !== undefined);
@@ -126,12 +143,33 @@ export const UserList = ({initialData, initialCursor}: UserListProps) => {
     setHasMore(initialCursor !== undefined);
   }, [initialData, initialCursor]);
 
+  const reset = () => {
+    const newSearchParams = new URLSearchParams(searchParams.toString());
+    newSearchParams.delete('keyword');
+    newSearchParams.delete('days');
+    newSearchParams.delete('location');
+    newSearchParams.delete('locationType');
+    navigate(`/artists/search?${newSearchParams.toString()}`);
+  };
+
+  if (data.length === 0) {
+    return (
+      <Flex direction="column" justify="center" align="center" gap="md">
+        <IconSearch style={{width: rem(64), height: rem(64)}} stroke="1" />
+        <Title fw="500">Ingen resultater fundet</Title>
+        <Text c="dimmed">Prøv at justere dine søgekriterier</Text>
+        <Button onClick={reset}>Nulstille søgning</Button>
+      </Flex>
+    );
+  }
+
   return (
     <InfiniteScroll
       dataLength={data.length}
       next={fetchMoreData}
       hasMore={hasMore}
       loader={<h4>Henter flere...</h4>}
+      hasChildren={data.length === 0}
     >
       <SimpleGrid spacing="lg" cols={{base: 2, sm: 3, md: 4, lg: 5}}>
         {data?.map((user) => {
