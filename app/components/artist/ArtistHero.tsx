@@ -36,7 +36,7 @@ export const ArtistHero = () => {
         </Grid.Col>
         <Grid.Col span={{base: 8, md: 12}}>
           <Flex
-            gap={isMobile ? '0' : 'md'}
+            gap={{base: '0', md: 'md'}}
             direction="column"
             justify="center"
             h={isMobile ? '100%' : 'auto'}
