@@ -148,14 +148,16 @@ function AccountLayout({
           }}
         >
           <Group justify="center" align="center">
-            <ActionIcon
-              variant="default"
-              component={Link}
-              to={`/artist/${props.user?.username}`}
-              target="_blank"
-            >
-              <IconEye />
-            </ActionIcon>
+            {props.isBusiness ? (
+              <ActionIcon
+                variant="default"
+                component={Link}
+                to={`/artist/${props.user?.username}`}
+                target="_blank"
+              >
+                <IconEye />
+              </ActionIcon>
+            ) : null}
             <Burger
               opened={opened}
               onClick={toggle}

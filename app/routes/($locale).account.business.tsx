@@ -5,7 +5,7 @@ import {
   getTextareaProps,
   useForm,
 } from '@conform-to/react';
-import {Stack, Text, TextInput, Textarea, rem} from '@mantine/core';
+import {Stack, Text, TextInput, Textarea, Tooltip, rem} from '@mantine/core';
 import {Form, useActionData, useFetcher, useLoaderData} from '@remix-run/react';
 import {parseGid} from '@shopify/hydrogen';
 import {
@@ -85,7 +85,7 @@ export async function action({request, params, context}: ActionFunctionArgs) {
     });
 
     return redirectWithNotification(context, {
-      redirectUrl: `/account/dashboard?done=true`,
+      redirectUrl: `/account/dashboard?business=true`,
       title: 'Business konto',
       message: 'Du er nu business konto',
       color: 'green',
@@ -212,10 +212,12 @@ export default function AccountBusiness() {
                 onChange={onChangeUsername}
                 rightSection={
                   fetcher.data?.usernameTaken ? (
-                    <IconExclamationCircle
-                      style={{width: rem(20), height: rem(20)}}
-                      color="var(--mantine-color-error)"
-                    />
+                    <Tooltip label="Profilnavn er optaget">
+                      <IconExclamationCircle
+                        style={{width: rem(20), height: rem(20)}}
+                        color="var(--mantine-color-error)"
+                      />
+                    </Tooltip>
                   ) : (
                     <IconCheck
                       style={{width: rem(20), height: rem(20)}}

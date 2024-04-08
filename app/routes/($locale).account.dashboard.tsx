@@ -1,4 +1,13 @@
-import {Button, Mark, Stack, Text, ThemeIcon, Timeline} from '@mantine/core';
+import {
+  Alert,
+  Button,
+  Mark,
+  rem,
+  Stack,
+  Text,
+  ThemeIcon,
+  Timeline,
+} from '@mantine/core';
 import {
   Link,
   useLoaderData,
@@ -7,7 +16,7 @@ import {
 } from '@remix-run/react';
 import {parseGid} from '@shopify/hydrogen';
 import {json, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
-import {IconArrowRight, IconCheck, IconX} from '@tabler/icons-react';
+import {IconArrowRight, IconCheck, IconHeart, IconX} from '@tabler/icons-react';
 import {AccountContent} from '~/components/account/AccountContent';
 import {AccountTitle} from '~/components/account/AccountTitle';
 import {getBookingShopifyApi} from '~/lib/api/bookingShopifyApi';
@@ -51,13 +60,22 @@ export default function AccountIndex() {
 
       <AccountContent>
         {isOfficialBusinessPartner ? (
-          <div className="flex items-center justify-center mb-6 bg-green-100 rounded">
-            <p className="m-4 text-sm text-green-900">
-              Du har nu registeret dig som en selvstændig partner på vores
-              hjemmeside, nu mangler du bare oprette din uge vagtplan og tilføje
-              de ydelser du tilbyder.
-            </p>
-          </div>
+          <Alert
+            variant="light"
+            color="green"
+            mb="xl"
+            icon={<IconHeart style={{width: rem(34), height: rem(34)}} />}
+          >
+            <Text>
+              Du har nu registreret dig som en business-konto på vores
+              hjemmeside.
+            </Text>
+            <Text>
+              Mens vi gennemgår din profil, er du mere end velkommen til at
+              forberede din konto ved at tilføje lokation, vagtplan, ydelser og
+              eventuelt dit billede.
+            </Text>
+          </Alert>
         ) : null}
 
         {isBusiness ? <BusinessAccount status={status} /> : <BuyerAccount />}
@@ -249,7 +267,7 @@ function BuyerAccount() {
           Hvis du har en passion for skønhed og ønsker at dele dine egne
           talenter med verden
         </Mark>
-        , giver vi dig en unik mulighed. Du kan nemt konvertere din konto til en
+        , giver vi dig en unik mulighed. Du kan nemt konvertere din konto til en{' '}
         <Link to="../business">business konto</Link> - helt gratis! Som business
         bruger kan du udbyde dine egne ydelser på vores platform og tjene penge,
         alt imens du udvider din kundekreds og bygger dit brand. At{' '}
