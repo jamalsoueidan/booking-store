@@ -111,7 +111,7 @@ export default function UserIndex() {
           </AppShell.Section>
         </AppShell.Navbar>
         <AppShell.Main>
-          <Box p={{base: '0', sm: rem(48)}}>
+          <Box p={{base: '0', sm: rem(48)}} py={{base: 'md'}}>
             {!user.active ? (
               <Alert
                 variant="light"
