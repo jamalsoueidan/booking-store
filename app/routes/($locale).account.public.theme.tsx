@@ -94,7 +94,7 @@ export default function AccountPublicTheme() {
   return (
     <>
       <Form method="POST" {...getFormProps(form)}>
-        <Stack gap="md">
+        <Stack gap="xl">
           <Flex wrap="wrap" gap="sm">
             {options.map((value) => (
               <Button
@@ -117,7 +117,7 @@ export default function AccountPublicTheme() {
           </Flex>
 
           <div>
-            <SubmitButton>Opdatere</SubmitButton>
+            <SubmitButton disabled={!color.dirty}>Gem</SubmitButton>
           </div>
         </Stack>
       </Form>

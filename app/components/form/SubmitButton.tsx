@@ -1,8 +1,8 @@
-import {Button} from '@mantine/core';
+import {Button, type ButtonProps} from '@mantine/core';
 import {useNavigation} from '@remix-run/react';
 import {type PropsWithChildren} from 'react';
 
-export const SubmitButton: React.FC<PropsWithChildren & any> = ({
+export const SubmitButton: React.FC<PropsWithChildren & ButtonProps> = ({
   children,
   ...props
 }) => {
