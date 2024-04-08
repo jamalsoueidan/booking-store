@@ -66,7 +66,9 @@ export const customerCreateResponse = zod.object({
 }),
   "theme":  zod.object({
   "color": zod.string()
-})
+}),
+  "active": zod.boolean(),
+  "isBusiness": zod.boolean()
 })
 })
 
@@ -131,7 +133,9 @@ export const customerUpdateResponse = zod.object({
 }),
   "theme":  zod.object({
   "color": zod.string()
-})
+}),
+  "active": zod.boolean(),
+  "isBusiness": zod.boolean()
 })
 })
 
@@ -174,7 +178,9 @@ export const customerGetResponse = zod.object({
 }),
   "theme":  zod.object({
   "color": zod.string()
-})
+}),
+  "active": zod.boolean(),
+  "isBusiness": zod.boolean()
 })
 })
 
@@ -1137,7 +1143,9 @@ export const customerLocationRemoveResponse = zod.object({
 }),
   "theme":  zod.object({
   "color": zod.string()
-})
+}),
+  "active": zod.boolean(),
+  "isBusiness": zod.boolean()
 })
 })
 
@@ -1226,7 +1234,9 @@ export const customerLocationSetDefaultResponse = zod.object({
 }),
   "theme":  zod.object({
   "color": zod.string()
-})
+}),
+  "active": zod.boolean(),
+  "isBusiness": zod.boolean()
 })
 })
 
@@ -3155,7 +3165,9 @@ export const userGetResponse = zod.object({
 }),
   "theme":  zod.object({
   "color": zod.string()
-})
+}),
+  "active": zod.boolean(),
+  "isBusiness": zod.boolean()
 })
 })
 
@@ -3700,7 +3712,9 @@ export const usersSearchResponse = zod.object({
 }),
   "theme":  zod.object({
   "color": zod.string()
-})
+}),
+  "active": zod.boolean(),
+  "isBusiness": zod.boolean()
 })),
   "totalCount": zod.number()
 })

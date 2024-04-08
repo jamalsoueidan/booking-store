@@ -2131,6 +2131,10 @@ components:
               type: string
           required:
             - color
+        active:
+          type: boolean
+        isBusiness:
+          type: boolean
       required:
         - customerId
         - fullname
@@ -2147,6 +2151,8 @@ components:
         - speaks
         - images
         - theme
+        - active
+        - isBusiness
     UserScheduleWithLocations:
       type: object
       properties:

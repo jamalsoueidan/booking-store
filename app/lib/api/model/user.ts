@@ -10,11 +10,13 @@ import type { UserTheme } from './userTheme';
 
 export interface User {
   aboutMe: string;
+  active: boolean;
   customerId: number;
   email: string;
   fullname: string;
   gender: string;
   images: UserImages;
+  isBusiness: boolean;
   phone: string;
   professions: string[];
   shortDescription: string;
