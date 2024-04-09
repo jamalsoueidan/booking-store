@@ -15,11 +15,10 @@ jobs:
       - name: Extract Preview URL
         id: extract_url
         run: |
-          echo "Extracting URL..."
-          URL=$(node -e "const body = process.env.COMMENT_BODY; const match = body.match(/Preview deployment.*?(http[s]?:\/\/[^\s]+)/); if (match) console.log(match[1]);" )
+          URL=$(node -e "const body = process.env.COMMENT_BODY; const match = body.match(/\[Preview deployment\]\((.*?)\)/); if (match) console.log(match[1]);")
           echo "::set-output name=preview_url::$URL"
         env:
           COMMENT_BODY: ${{ github.event.comment.body }}
 
       - name: Use the Extracted URL
-        run: echo "The extracted URL is ${{ steps.extract_url.outputs.preview_url }}"
+        run: echo "${{ steps.extract_url.outputs.preview_url }}"
