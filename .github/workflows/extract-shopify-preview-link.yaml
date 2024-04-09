@@ -6,7 +6,7 @@ on:
 
 jobs:
   check-comment:
-    if: contains(github.event.comment.body, 'Preview deployment') && github.event.sender.type == 'Bot'
+    if: contains(github.event.comment.body, 'Preview deployment')
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
