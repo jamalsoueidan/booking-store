@@ -46,7 +46,13 @@ export function Header({header, isLoggedIn, cart}: HeaderProps) {
       <header className={classes.header}>
         <Flex h="100%" align="center" justify="space-between">
           <UnstyledButton component={Link} to="/">
-            <Title order={1} component={Flex} lh="xs" fw="500">
+            <Title
+              order={1}
+              component={Flex}
+              lh="xs"
+              fw="500"
+              data-cy="logo-login"
+            >
               ByS
               <Image src={logo} alt="it's me" h="auto" w="10px" mx="2px" />
               sters
