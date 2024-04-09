@@ -12,16 +12,14 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
 
-      - name: Extract Shopify Preview URL
-        id: extract-url
+      - name: Extract Preview URL
+        id: extract_url
         run: |
-          COMMENT_BODY="${{ github.event.comment.body }}"
-          # Using awk to extract the URL that directly follows "Preview deployment"
-          URL=$(echo "$COMMENT_BODY" | awk '/Preview deployment/{getline; print}' | grep -o 'http[s]\?://[^ ]*' | head -n 1)
-          echo "::set-output name=shopify_preview_url::$URL"
-        shell: bash
+          echo "Extracting URL..."
+          URL=$(node -e "const body = process.env.COMMENT_BODY; const match = body.match(/Preview deployment.*?(http[s]?:\/\/[^\s]+)/); if (match) console.log(match[1]);" )
+          echo "::set-output name=preview_url::$URL"
+        env:
+          COMMENT_BODY: ${{ github.event.comment.body }}
 
-      - name: Use Shopify Preview URL
-        run: |
-          echo "Preview URL is ${{ steps.extract-url.outputs.shopify_preview_url }}"
-        # This is where you can use the URL in subsequent steps or jobs as needed.
+      - name: Use the Extracted URL
+        run: echo "The extracted URL is ${{ steps.extract_url.outputs.preview_url }}"
