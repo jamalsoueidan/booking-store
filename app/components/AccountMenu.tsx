@@ -20,7 +20,7 @@ import {type CustomerQuery} from 'storefrontapi.generated';
 import {type User} from '~/lib/api/model';
 import classes from './AccountMenu.module.css';
 
-const topMenu = [
+export const topMenu = [
   {
     link: '/account/public',
     label: 'Profile',
@@ -47,7 +47,7 @@ const topMenu = [
   },
   {
     link: '/account/bookings',
-    label: 'Bookinger',
+    label: 'Kalendar',
     icon: IconCalendarEvent,
     isBusiness: true,
   },

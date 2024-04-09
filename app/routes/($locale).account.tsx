@@ -1,9 +1,26 @@
-import {ActionIcon, AppShell, Burger, Group} from '@mantine/core';
-import {useDisclosure} from '@mantine/hooks';
+import {
+  ActionIcon,
+  AppShell,
+  Burger,
+  Flex,
+  Group,
+  Text,
+  UnstyledButton,
+} from '@mantine/core';
+import {useDisclosure, useMediaQuery} from '@mantine/hooks';
 import {Link, Outlet, useLoaderData} from '@remix-run/react';
 import {parseGid} from '@shopify/hydrogen';
 import {json, redirect, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
-import {IconEye} from '@tabler/icons-react';
+import {
+  IconAddressBook,
+  IconCalendarEvent,
+  IconClock,
+  IconEye,
+  IconHome,
+  IconMenu2,
+  IconShoppingBag,
+  IconUser,
+} from '@tabler/icons-react';
 import {type CustomerQuery} from 'storefrontapi.generated';
 import {AccountMenu} from '~/components/AccountMenu';
 import {getBookingShopifyApi} from '~/lib/api/bookingShopifyApi';
@@ -129,10 +146,12 @@ function AccountLayout({
   children: React.ReactNode;
 } & AccountOutlet) {
   const [opened, {toggle, close}] = useDisclosure(false);
+  const isMobile = useMediaQuery('(max-width: 48em)');
 
   return (
     <AppShell
       navbar={{width: 300, breakpoint: 'sm', collapsed: {mobile: !opened}}}
+      footer={{height: 84, collapsed: !isMobile || opened}}
     >
       <AppShell.Navbar
         style={{
@@ -169,19 +188,124 @@ function AccountLayout({
         <AccountMenu closeDrawer={close} {...props} />
       </AppShell.Navbar>
 
-      <AppShell.Main>
-        <div
-          style={{
-            position: 'absolute',
-            right: `var(--mantine-spacing-sm)`,
-            top: `var(--mantine-spacing-xs)`,
-            zIndex: 1,
-          }}
-        >
-          <Burger opened={opened} onClick={toggle} hiddenFrom="sm" size="sm" />
-        </div>
-        {children}
-      </AppShell.Main>
+      <AppShell.Main>{children}</AppShell.Main>
+
+      <AppShell.Footer
+        py="sm"
+        style={{filter: 'drop-shadow(0 5mm 6mm rgb(0, 0, 0))'}}
+      >
+        <Flex gap="xs" w="100%">
+          <UnstyledButton component={Link} to="/account/" style={{flex: 1}}>
+            <Flex direction="column" gap="sm" justify="center" align="center">
+              <IconHome />
+              <Text>Hjem</Text>
+            </Flex>
+          </UnstyledButton>
+          {props.user ? (
+            <>
+              <UnstyledButton
+                component={Link}
+                to="/account/schedules"
+                style={{flex: 1}}
+              >
+                <Flex
+                  direction="column"
+                  gap="sm"
+                  justify="center"
+                  align="center"
+                >
+                  <IconClock />
+                  <Text>Vagtplan</Text>
+                </Flex>
+              </UnstyledButton>
+              <UnstyledButton
+                component={Link}
+                to="/account/services"
+                style={{flex: 1}}
+              >
+                <Flex
+                  direction="column"
+                  gap="sm"
+                  justify="center"
+                  align="center"
+                >
+                  <IconAddressBook />
+                  <Text>Ydelser</Text>
+                </Flex>
+              </UnstyledButton>
+              <UnstyledButton
+                component={Link}
+                to="/account/bookings"
+                style={{flex: 1}}
+              >
+                <Flex
+                  direction="column"
+                  gap="sm"
+                  justify="center"
+                  align="center"
+                >
+                  <IconCalendarEvent />
+                  <Text>Kalendar</Text>
+                </Flex>
+              </UnstyledButton>
+            </>
+          ) : (
+            <>
+              <UnstyledButton
+                component={Link}
+                to="/account/orders"
+                style={{flex: 1}}
+              >
+                <Flex
+                  direction="column"
+                  gap="sm"
+                  justify="center"
+                  align="center"
+                >
+                  <IconShoppingBag />
+                  <Text>Købshistorik</Text>
+                </Flex>
+              </UnstyledButton>
+              <UnstyledButton
+                component={Link}
+                to="/account/profile"
+                style={{flex: 1}}
+              >
+                <Flex
+                  direction="column"
+                  gap="sm"
+                  justify="center"
+                  align="center"
+                >
+                  <IconUser />
+                  <Text>Konto</Text>
+                </Flex>
+              </UnstyledButton>
+              <UnstyledButton
+                component={Link}
+                to="/account/addresses"
+                style={{flex: 1}}
+              >
+                <Flex
+                  direction="column"
+                  gap="sm"
+                  justify="center"
+                  align="center"
+                >
+                  <IconAddressBook />
+                  <Text>Adresser</Text>
+                </Flex>
+              </UnstyledButton>
+            </>
+          )}
+          <UnstyledButton onClick={toggle} style={{flex: 1}}>
+            <Flex direction="column" gap="sm" justify="center" align="center">
+              <IconMenu2 />
+              <Text>Menu</Text>
+            </Flex>
+          </UnstyledButton>
+        </Flex>
+      </AppShell.Footer>
     </AppShell>
   );
 }

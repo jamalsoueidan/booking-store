@@ -67,13 +67,14 @@ export default function AccountIndex() {
             icon={<IconHeart style={{width: rem(34), height: rem(34)}} />}
           >
             <Text>
-              Du har nu registreret dig som en business-konto på vores
-              hjemmeside.
+              Du er nu tilmeldt som en business-konto på vores hjemmeside.
             </Text>
             <Text>
-              Mens vi gennemgår din profil, er du mere end velkommen til at
-              forberede din konto ved at tilføje lokation, vagtplan, ydelser og
-              eventuelt dit billede.
+              Mens vi gennemgår og aktiverer din profil, opfordrer vi dig til at
+              udfylde de resterende felter. Du kan gøre dette ved at tilføje
+              lokation, vagtplan, ydelser og eventuelt uploade et billede. Dette
+              vil sikre, at din konto er klar til at byde potentielle kunder
+              velkommen, så snart den er godkendt.
             </Text>
           </Alert>
         ) : null}
