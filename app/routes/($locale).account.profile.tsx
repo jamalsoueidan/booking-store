@@ -3,6 +3,7 @@ import {
   Button,
   Checkbox,
   Group,
+  InputBase,
   Stack,
   Text,
   TextInput,
@@ -23,6 +24,7 @@ import {
   type ActionFunctionArgs,
   type LoaderFunctionArgs,
 } from '@shopify/remix-oxygen';
+import {IMaskInput} from 'react-imask';
 import type {CustomerFragment} from 'storefrontapi.generated';
 import {AccountContent} from '~/components/account/AccountContent';
 import {AccountTitle} from '~/components/account/AccountTitle';
@@ -83,6 +85,7 @@ export async function action({request, context}: ActionFunctionArgs) {
 
     // check for mutation errors
     if (updated.customerUpdate?.customerUserErrors?.length) {
+      console.log(updated.customerUpdate?.customerUserErrors);
       return json(
         {error: updated.customerUpdate?.customerUserErrors[0]},
         {status: 400},
@@ -198,7 +201,7 @@ export default function AccountProfile() {
               required
               minLength={2}
             />
-            <TextInput
+            <InputBase
               label="Mobil"
               id="phone"
               name="phone"
@@ -207,6 +210,8 @@ export default function AccountProfile() {
               placeholder="Mobil"
               aria-label="Mobil"
               defaultValue={customer.phone ?? ''}
+              component={IMaskInput}
+              mask="+4500000000"
             />
             <TextInput
               label="Emailadresse"
@@ -243,40 +248,6 @@ export default function AccountProfile() {
       </AccountContent>
     </>
   );
-}
-
-function getPassword(form: FormData): string | undefined {
-  let password;
-  const currentPassword = form.get('currentPassword');
-  const newPassword = form.get('newPassword');
-  const newPasswordConfirm = form.get('newPasswordConfirm');
-
-  let passwordError;
-  if (newPassword && !currentPassword) {
-    passwordError = new Error('Current password is required.');
-  }
-
-  if (newPassword && newPassword !== newPasswordConfirm) {
-    passwordError = new Error('New passwords must match.');
-  }
-
-  if (newPassword && currentPassword && newPassword === currentPassword) {
-    passwordError = new Error(
-      'New password must be different than current password.',
-    );
-  }
-
-  if (passwordError) {
-    throw passwordError;
-  }
-
-  if (currentPassword && newPassword) {
-    password = newPassword;
-  } else {
-    password = currentPassword;
-  }
-
-  return String(password);
 }
 
 const CUSTOMER_UPDATE_MUTATION = `#graphql
