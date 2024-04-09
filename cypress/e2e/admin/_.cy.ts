@@ -8,7 +8,7 @@ describe('register', () => {
 
     cy.visit('/');
     /* ==== Generated with Cypress Studio ==== */
-    cy.get('[data-cy="login-button"] > .m_80f1301b > .m_811560b9').click();
+    cy.get('[data-cy="login-button"]').click();
     cy.get('[data-cy="register-link"]').click();
     cy.get('[data-cy="email-input"]').clear();
     cy.get('[data-cy="email-input"]').type(email);
