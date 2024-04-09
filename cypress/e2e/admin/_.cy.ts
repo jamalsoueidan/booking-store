@@ -9,7 +9,9 @@ describe('register', () => {
     cy.visit('/');
     /* ==== Generated with Cypress Studio ==== */
     cy.get('[data-cy="login-button"]').click();
+    cy.url().should('include', '/account/login');
     cy.get('[data-cy="register-link"]').click();
+    cy.url().should('include', '/account/register');
     cy.get('[data-cy="email-input"]').clear();
     cy.get('[data-cy="email-input"]').type(email);
     cy.get('[data-cy="password-input"]').clear();
