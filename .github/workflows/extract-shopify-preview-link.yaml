@@ -1,0 +1,27 @@
+name: Extract Shopify Preview Link
+
+on:
+  issue_comment:
+    types: [created]
+
+jobs:
+  check-comment:
+    if: github.event.issue.pull_request && github.event.comment.user.login == 'shopify' && contains(github.event.comment.body, 'Preview deployment')
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Extract Shopify Preview URL
+        id: extract-url
+        run: |
+          COMMENT_BODY="${{ github.event.comment.body }}"
+          # Using awk to extract the URL that directly follows "Preview deployment"
+          URL=$(echo "$COMMENT_BODY" | awk '/Preview deployment/{getline; print}' | grep -o 'http[s]\?://[^ ]*' | head -n 1)
+          echo "::set-output name=shopify_preview_url::$URL"
+        shell: bash
+
+      - name: Use Shopify Preview URL
+        run: |
+          echo "Preview URL is ${{ steps.extract-url.outputs.shopify_preview_url }}"
+        # This is where you can use the URL in subsequent steps or jobs as needed.
