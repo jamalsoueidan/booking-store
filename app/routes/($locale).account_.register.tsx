@@ -134,6 +134,7 @@ export default function Register() {
             placeholder="Email adresse"
             // eslint-disable-next-line jsx-a11y/no-autofocus
             autoFocus
+            data-cy="email-input"
           />
           <PasswordInput
             label="Adgangskode"
@@ -144,6 +145,7 @@ export default function Register() {
             autoComplete="new-password"
             minLength={8}
             mt="md"
+            data-cy="password-input"
           />
           <PasswordInput
             label="Bekræft adgangskode"
@@ -154,13 +156,14 @@ export default function Register() {
             autoComplete="new-password"
             minLength={8}
             mt="md"
+            data-cy="password-confirm-input"
           />
           {error && (
             <Text color="red" size="sm" mt="md">
               <small>{error}</small>
             </Text>
           )}
-          <Button fullWidth mt="xl" type="submit">
+          <Button fullWidth mt="xl" type="submit" data-cy="register-button">
             Registrer
           </Button>
         </Form>

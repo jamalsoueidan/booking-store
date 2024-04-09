@@ -88,7 +88,12 @@ export default function Login() {
       <Title ta="center">Velkommen tilbage!</Title>
       <Text c="dimmed" size="sm" ta="center" mt={5}>
         Har du ikke en konto endnu?{' '}
-        <Anchor size="sm" component={Link} to="/account/register">
+        <Anchor
+          size="sm"
+          component={Link}
+          to="/account/register"
+          data-cy="register-link"
+        >
           Opret konto
         </Anchor>
       </Text>
@@ -103,6 +108,7 @@ export default function Login() {
             autoComplete="email"
             required
             placeholder="Din emailadresse"
+            data-cy="email-input"
           />
           <PasswordInput
             label="Adgangskode"
@@ -111,6 +117,7 @@ export default function Login() {
             placeholder="Din adgangskode"
             required
             mt="md"
+            data-cy="password-input"
           />
           <Group justify="space-between" mt="lg">
             <Checkbox label="Husk mig" />
@@ -118,7 +125,7 @@ export default function Login() {
               Glemt adgangskode?
             </Anchor>
           </Group>
-          <Button fullWidth mt="xl" type="submit">
+          <Button fullWidth mt="xl" type="submit" data-cy="login-button">
             Log ind
           </Button>
           {error ? (

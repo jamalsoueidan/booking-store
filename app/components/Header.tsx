@@ -2,7 +2,6 @@ import {
   Box,
   Burger,
   Button,
-  ButtonGroup,
   Center,
   Divider,
   Drawer,
@@ -195,7 +194,7 @@ function HeaderCtas({
 }: Pick<HeaderProps, 'isLoggedIn' | 'cart'>) {
   return (
     <>
-      <ButtonGroup>
+      <Flex direction={{base: 'column', lg: 'row'}}>
         {isLoggedIn ? (
           <Button
             variant="transparent"
@@ -207,6 +206,7 @@ function HeaderCtas({
             aria-label="Account Dashboard"
             component={Link}
             to="/account"
+            data-cy="dashboard-button"
             prefetch="intent"
           >
             Dashboard
@@ -221,13 +221,14 @@ function HeaderCtas({
             component={Link}
             to="/account"
             prefetch="intent"
+            data-cy="login-button"
           >
             Login
           </Button>
         )}
 
         <CartToggle cart={cart} />
-      </ButtonGroup>
+      </Flex>
     </>
   );
 }
@@ -318,6 +319,7 @@ function CartBadge({count}: {count: number}) {
           <IconShoppingCart style={{width: rem(18)}} stroke={1.5} />
         )
       }
+      data-cy="cart-button"
     >
       Indkøbskurv
     </Button>
