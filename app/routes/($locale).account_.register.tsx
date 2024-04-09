@@ -159,7 +159,7 @@ export default function Register() {
             data-cy="password-confirm-input"
           />
           {error && (
-            <Text color="red" size="sm" mt="md">
+            <Text c="red" size="sm" mt="md">
               <small>{error}</small>
             </Text>
           )}

@@ -36,10 +36,12 @@ Cypress.Commands.add('test', () => {
 });
 
 Cypress.Commands.add('login', (email: string, password: string) => {
-  cy.visit('/account/login');
+  cy.visit('/');
+  cy.get('[data-cy="login-button"]').click();
+  cy.url().should('include', '/account/login');
   cy.get('[data-cy="email-input"]').clear();
   cy.get('[data-cy="email-input"]').type(email);
-  cy.get('[data-cy="password-input"]').clear();
+  cy.get('[data-cy="password-input"]').should('be.enabled').clear();
   cy.get('[data-cy="password-input"]').type(password);
   cy.get('[data-cy="login-button"]').click();
 });
