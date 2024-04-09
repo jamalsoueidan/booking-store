@@ -6,7 +6,7 @@ on:
 
 jobs:
   check-comment:
-    if: github.event.issue.pull_request && github.event.comment.user.login == 'shopify' && contains(github.event.comment.body, 'Preview deployment')
+    if: github.event.issue.pull_request && github.event.comment.user.login == 'shopify'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
