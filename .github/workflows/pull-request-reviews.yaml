@@ -1,5 +1,4 @@
 on:
-  pull_request:
   issue_comment:
 jobs:
   pr_agent_job:
