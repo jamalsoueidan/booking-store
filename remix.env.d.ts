@@ -28,10 +28,6 @@ declare global {
     PRIVATE_STOREFRONT_API_TOKEN: string;
     PUBLIC_STORE_DOMAIN: string;
     PUBLIC_STOREFRONT_ID: string;
-    // adminApi
-    PRIVATE_API_SECRET_KEY: string;
-    PRIVATE_API_KEY: string;
-    PRIVATE_API_ACCESS_TOKEN: string;
   }
 
   /**
@@ -54,7 +50,6 @@ declare module '@shopify/remix-oxygen' {
     storefront: Storefront<I18nLocale>;
     session: HydrogenSession;
     waitUntil: ExecutionContext['waitUntil'];
-    adminApi: GraphqlClient;
   }
 
   /**
