@@ -2,11 +2,11 @@ name: Extract Shopify Preview Link
 
 on:
   issue_comment:
-    types: [created]
+    types: [created, edited]
 
 jobs:
   check-comment:
-    if: github.event.issue.pull_request && github.event.comment.user.login == 'shopify'
+    if: contains(github.event.comment.body, 'Preview deployment') && github.event.sender.type == 'Bot'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
