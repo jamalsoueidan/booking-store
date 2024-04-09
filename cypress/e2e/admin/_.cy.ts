@@ -18,7 +18,7 @@ describe('register', () => {
     cy.get('[data-cy="password-confirm-input"]').type('testerne');
     cy.get('.m_811560b9').click();
     cy.get('.m_6d731127 > .m_8bffd616').click();
-    cy.get('.AccountTitle-module__title__llJ0j').should(
+    cy.get('[data-cy="welcome-title"]').should(
       'have.text',
       'Velkommen til din konto',
     );
