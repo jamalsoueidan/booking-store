@@ -1,5 +1,5 @@
 import {getFormProps, getInputProps, useForm} from '@conform-to/react';
-import {Form, useActionData, useLoaderData} from '@remix-run/react';
+import {Form, Link, useActionData, useLoaderData} from '@remix-run/react';
 
 import {
   json,
@@ -12,7 +12,15 @@ import {getCustomer} from '~/lib/get-customer';
 import {customerLocationUpdateBody} from '~/lib/zod/bookingShopifyApi';
 
 import {parseWithZod} from '@conform-to/zod';
-import {Select, Stack, TextInput} from '@mantine/core';
+import {
+  Anchor,
+  Button,
+  Group,
+  Select,
+  Stack,
+  Text,
+  TextInput,
+} from '@mantine/core';
 import {parseGid} from '@shopify/hydrogen';
 import {AccountContent} from '~/components/account/AccountContent';
 import {AccountTitle} from '~/components/account/AccountTitle';
@@ -85,7 +93,34 @@ export default function AccountLocationsEdit() {
             ? 'Redigere butik lokation'
             : 'Redigere hjemme lokation'
         }
-      />
+      >
+        <Button
+          variant="light"
+          component={Link}
+          to={`https://www.google.com/maps/search/?api=1&query=${defaultValue.geoLocation.coordinates
+            .reverse()
+            .join(',')}`}
+          target="_blank"
+          rel="noreferrer"
+        >
+          Vis kort
+        </Button>
+
+        <Form
+          method="delete"
+          action={`../${defaultValue._id}/destroy`}
+          style={{display: 'inline-block'}}
+        >
+          <Button
+            variant="light"
+            color="red"
+            type="submit"
+            data-cy={`delete-button-${defaultValue._id}`}
+          >
+            Slet {defaultValue.name}
+          </Button>
+        </Form>
+      </AccountTitle>
 
       <AccountContent>
         <Form method="PUT" {...getFormProps(form)}>
@@ -94,7 +129,9 @@ export default function AccountLocationsEdit() {
               label="Navn"
               placeholder="BySisters"
               {...getInputProps(fields.name, {type: 'text'})}
+              data-cy="name-input"
             />
+
             <AddressAutocompleteInput
               label={
                 defaultValue.locationType === 'destination'
@@ -103,6 +140,7 @@ export default function AccountLocationsEdit() {
               }
               placeholder="Sigridsvej 45, 8220 Brabrand"
               {...getInputProps(fields.fullAddress, {type: 'text'})}
+              data-cy="address-input"
             />
 
             {defaultValue.locationType === 'destination' ? (
@@ -120,6 +158,7 @@ export default function AccountLocationsEdit() {
                   {value: 'commercial', label: 'Butik'},
                 ]}
                 {...getInputProps(fields.originType, {type: 'text'})}
+                data-cy="origin-type-input"
               />
             )}
 
@@ -128,6 +167,7 @@ export default function AccountLocationsEdit() {
               label="Udgifter for turen"
               suffix=" kr"
               hidden={defaultValue.locationType !== 'destination'}
+              data-cy="start-fee-input"
             />
 
             <NumericInput
@@ -135,6 +175,7 @@ export default function AccountLocationsEdit() {
               label="Timepris for kørsel"
               suffix=" kr"
               hidden={defaultValue.locationType !== 'destination'}
+              data-cy="hourly-rate-input"
             />
 
             <NumericInput
@@ -142,6 +183,7 @@ export default function AccountLocationsEdit() {
               label="Pris pr. kilometer"
               suffix=" kr"
               hidden={defaultValue.locationType !== 'destination'}
+              data-cy="fixed-rate-input"
             />
 
             <NumericInput
@@ -149,6 +191,7 @@ export default function AccountLocationsEdit() {
               label="Afstanden der køres gratis, inden takstberegningen påbegyndes."
               suffix=" km"
               hidden={defaultValue.locationType !== 'destination'}
+              data-cy="distance-free-input"
             />
 
             <NumericInput
@@ -156,6 +199,7 @@ export default function AccountLocationsEdit() {
               label="Minimum der skal køres for at acceptere en kørselsopgave"
               suffix=" km"
               hidden={defaultValue.locationType !== 'destination'}
+              data-cy="min-drive-distance-input"
             />
 
             <NumericInput
@@ -163,9 +207,20 @@ export default function AccountLocationsEdit() {
               label="Maximum der køres"
               suffix=" km"
               hidden={defaultValue.locationType !== 'destination'}
+              data-cy="max-drive-distance-input"
             />
 
-            <SubmitButton>Opdatere</SubmitButton>
+            <Group>
+              <SubmitButton>Opdatere</SubmitButton>
+              <Text>eller</Text>
+              <Anchor
+                component={Link}
+                to="/account/locations"
+                data-cy="back-link"
+              >
+                Tilbage
+              </Anchor>
+            </Group>
           </Stack>
         </Form>
       </AccountContent>

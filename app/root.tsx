@@ -166,7 +166,11 @@ export default function App() {
       </head>
       <body>
         <MantineProvider theme={theme}>
-          <Notifications position="bottom-center" limit={1} />
+          <Notifications
+            position="bottom-center"
+            limit={1}
+            data-cy="notifications"
+          />
           <GlobalLoadingIndicator />
           <ModalsProvider>
             <Layout {...data}>

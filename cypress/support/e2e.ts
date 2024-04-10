@@ -13,12 +13,6 @@
 // https://on.cypress.io/configuration
 // ***********************************************************
 
-// Import commands.js using ES2015 syntax:
-import './commands';
-
-// Alternatively you can use CommonJS syntax:
-// require('./commands')
-
 Cypress.on('uncaught:exception', (err, runnable) => {
   // returning false here prevents Cypress from
   // failing the test
@@ -35,24 +29,6 @@ Cypress.Commands.add('test', () => {
   Cypress.log({message: 'hej me dig'});
 });
 
-Cypress.Commands.add('login', (email: string, password: string) => {
-  cy.intercept(
-    'POST',
-    '/account/login?_data=routes%2F%28%24locale%29.account_.login',
-  ).as('loginRequest');
-
-  cy.intercept('GET', '/account?_data=routes%2F%28%24locale%29.account').as(
-    'login',
-  );
-
-  cy.visit('/');
-  cy.get('[data-cy="login-button"]').click();
-  cy.wait('@login');
-  cy.url().should('include', '/account/login');
-  cy.get('[data-cy="email-input"]').clear();
-  cy.get('[data-cy="email-input"]').type(email);
-  cy.get('[data-cy="password-input"]').should('be.enabled').clear();
-  cy.get('[data-cy="password-input"]').type(password);
-  cy.get('[data-cy="login-button"]').click();
-  cy.wait('@loginRequest');
+Cypress.Commands.add('dataCy', (value: string) => {
+  return cy.get(`[data-cy="${value}"]`);
 });

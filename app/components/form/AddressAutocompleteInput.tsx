@@ -1,22 +1,20 @@
-import {Combobox, TextInput, useCombobox} from '@mantine/core';
+import {
+  Combobox,
+  TextInput,
+  type TextInputProps,
+  useCombobox,
+} from '@mantine/core';
 import {useFetcher} from '@remix-run/react';
 import {useEffect, useState} from 'react';
 import {type ApiAutoCompleteProposal} from '~/routes/($locale).api.autocomplete';
 
 export type AddressAutocompleteInputProps = {
-  label: string;
-  placeholder: string;
-  error?: string;
   defaultValue?: string;
-  name: string;
-};
+} & TextInputProps;
 
 export function AddressAutocompleteInput({
-  label,
-  placeholder,
   defaultValue,
-  error,
-  name,
+  ...props
 }: AddressAutocompleteInputProps) {
   const fetcher = useFetcher<Array<ApiAutoCompleteProposal>>();
   const [query, setQuery] = useState({
@@ -88,11 +86,8 @@ export function AddressAutocompleteInput({
     <Combobox onOptionSubmit={onOptionSubmit} store={combobox}>
       <Combobox.Target>
         <TextInput
-          label={label} // Hvor vil du kører fra? Hvor skal kunden køre til?
+          {...props}
           value={value}
-          placeholder={placeholder}
-          error={error}
-          name={name}
           onChange={(event) => {
             setValue(event.currentTarget.value);
             setQuery({...query, q: event.currentTarget.value});

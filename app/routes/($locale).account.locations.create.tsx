@@ -107,12 +107,14 @@ export default function Component() {
                   value: 'destination',
                 },
               ]}
+              data-cy="location-type-input"
             />
 
             <TextInput
               label="Navn"
               placeholder="BySisters"
               {...getInputProps(fields.name, {type: 'text'})}
+              data-cy="name-input"
             />
 
             <AddressAutocompleteInput
@@ -123,6 +125,7 @@ export default function Component() {
               }
               placeholder="Sigridsvej 45, 8220 Brabrand"
               {...getInputProps(fields.fullAddress, {type: 'text'})}
+              data-cy="address-input"
             />
 
             {fields.locationType.value === 'destination' ? (
@@ -136,10 +139,11 @@ export default function Component() {
                 label="Arbejdsstedstype"
                 defaultValue={fields.originType.initialValue}
                 data={[
-                  {value: 'home', label: 'Hus/lejlighed'},
                   {value: 'commercial', label: 'Butik'},
+                  {value: 'home', label: 'Eget sted'},
                 ]}
                 {...getInputProps(fields.originType, {type: 'text'})}
+                data-cy="origin-type-input"
               />
             )}
 
@@ -148,6 +152,7 @@ export default function Component() {
               label="Udgifter for turen"
               suffix=" kr"
               hidden={fields.locationType.value !== 'destination'}
+              data-cy="start-fee-input"
             />
 
             <NumericInput
@@ -155,6 +160,7 @@ export default function Component() {
               label="Timepris for kørsel"
               suffix=" kr"
               hidden={fields.locationType.value !== 'destination'}
+              data-cy="hourly-rate-input"
             />
 
             <NumericInput
@@ -162,6 +168,7 @@ export default function Component() {
               label="Pris pr. kilometer"
               suffix=" kr"
               hidden={fields.locationType.value !== 'destination'}
+              data-cy="fixed-rate-input"
             />
 
             <NumericInput
@@ -169,6 +176,7 @@ export default function Component() {
               label="Afstanden der køres gratis, inden takstberegningen påbegyndes."
               suffix=" km"
               hidden={fields.locationType.value !== 'destination'}
+              data-cy="distance-free-input"
             />
 
             <NumericInput
@@ -176,6 +184,7 @@ export default function Component() {
               label="Minimum der skal køres for at acceptere en kørselsopgave"
               suffix=" km"
               hidden={fields.locationType.value !== 'destination'}
+              data-cy="min-drive-distance-input"
             />
 
             <NumericInput
@@ -183,6 +192,7 @@ export default function Component() {
               label="Maximum der køres"
               suffix=" km"
               hidden={fields.locationType.value !== 'destination'}
+              data-cy="max-drive-distance-input"
             />
 
             <SubmitButton>Tilføj</SubmitButton>

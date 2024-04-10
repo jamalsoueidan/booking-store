@@ -116,6 +116,7 @@ function BusinessAccount({status}: {status: CustomerStatus}) {
             component={Link}
             to="../public"
             rightSection={<IconArrowRight size="14" />}
+            data-cy="update-profile-button"
           >
             Opdatere profil
           </Button>
@@ -147,6 +148,7 @@ function BusinessAccount({status}: {status: CustomerStatus}) {
             component={Link}
             to="../locations/create"
             rightSection={<IconArrowRight size="14" />}
+            data-cy="create-location-button"
           >
             Opret lokation
           </Button>
@@ -178,6 +180,7 @@ function BusinessAccount({status}: {status: CustomerStatus}) {
             component={Link}
             to="../schedules/create"
             rightSection={<IconArrowRight size="14" />}
+            data-cy="create-schedule-button"
           >
             Opret vagtplan
           </Button>
@@ -209,6 +212,7 @@ function BusinessAccount({status}: {status: CustomerStatus}) {
             component={Link}
             to="../services/create"
             rightSection={<IconArrowRight size="14" />}
+            data-cy="create-service-button"
           >
             Tilføj ydelser
           </Button>
@@ -240,6 +244,7 @@ function BusinessAccount({status}: {status: CustomerStatus}) {
             component={Link}
             to="../upload"
             rightSection={<IconArrowRight size="14" />}
+            data-cy="upload-image-button"
           >
             Upload et billed
           </Button>

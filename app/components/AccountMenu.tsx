@@ -1,10 +1,22 @@
-import {Avatar, Divider, Group, Text, UnstyledButton} from '@mantine/core';
-import {Form, Link, NavLink} from '@remix-run/react';
+// eslint-disable-next-line eslint-comments/disable-enable-pair
+/* eslint-disable jsx-a11y/anchor-has-content */
+import {
+  ActionIcon,
+  AppShell,
+  Avatar,
+  Burger,
+  Divider,
+  NavLink,
+  ScrollArea,
+  UnstyledButton,
+} from '@mantine/core';
+import {Form, Link, NavLink as RemixNavLink} from '@remix-run/react';
 import {
   IconAddressBook,
   IconCalendarEvent,
   IconClock,
   IconCurrencyDollar,
+  IconEye,
   IconFingerprint,
   IconHeartHandshake,
   IconHome,
@@ -18,7 +30,6 @@ import {
 import {useState} from 'react';
 import {type CustomerQuery} from 'storefrontapi.generated';
 import {type User} from '~/lib/api/model';
-import classes from './AccountMenu.module.css';
 
 export const topMenu = [
   {
@@ -26,42 +37,49 @@ export const topMenu = [
     label: 'Profile',
     icon: IconHeartHandshake,
     isBusiness: true,
+    data: 'public-link',
   },
   {
     link: '/account/locations',
     label: 'Lokationer',
     icon: IconLocation,
     isBusiness: true,
+    data: 'locations-link',
   },
   {
     link: '/account/schedules',
     label: 'Vagtplan',
     icon: IconClock,
     isBusiness: true,
+    data: 'schedules-link',
   },
   {
     link: '/account/services',
     label: 'Ydelser',
     icon: IconAddressBook,
     isBusiness: true,
+    data: 'services-link',
   },
   {
     link: '/account/bookings',
     label: 'Kalendar',
     icon: IconCalendarEvent,
     isBusiness: true,
+    data: 'calendar-link',
   },
   {
     link: '/account/booked',
     label: 'Ferie',
     icon: IconPlaneDeparture,
     isBusiness: true,
+    data: 'booked-link',
   },
   {
     link: '/account/payouts',
     label: 'Udbetalinger',
     icon: IconCurrencyDollar,
     isBusiness: true,
+    data: 'payouts-link',
   },
 ];
 
@@ -70,16 +88,19 @@ const bottomMenu = [
     link: '/account/dashboard',
     label: 'Forside',
     icon: IconHome,
+    data: 'dashboard-link',
   },
   {
     link: '/account/orders',
     label: 'Købshistorik',
     icon: IconShoppingBag,
+    data: 'orders-link',
   },
   {
     link: '/account/profile',
     label: 'Konto',
     icon: IconUser,
+    data: 'profile-link',
   },
   {link: '/account/addresses', label: 'Adresser', icon: IconAddressBook},
   {
@@ -87,11 +108,13 @@ const bottomMenu = [
     label: 'Skift billed',
     icon: IconPhoto,
     isBusiness: true,
+    data: 'change-upload-link',
   },
   {
     link: '/account/password',
     label: 'Skift adgangskode',
     icon: IconFingerprint,
+    data: 'change-password-link',
   },
 ];
 
@@ -100,11 +123,13 @@ export function AccountMenu({
   customer,
   user,
   isBusiness,
+  opened,
 }: {
   closeDrawer: () => void;
   customer: CustomerQuery['customer'];
   user?: User | null;
   isBusiness: boolean;
+  opened: boolean;
 }) {
   const [active, setActive] = useState('Billing');
 
@@ -112,87 +137,123 @@ export function AccountMenu({
     .filter((item) => item.isBusiness === isBusiness || !item.isBusiness)
     .map((item) => (
       <NavLink
-        className={classes.link}
-        data-active={item.label === active || undefined}
+        active={item.label === active || undefined}
+        component={RemixNavLink}
         to={item.link}
         key={item.label}
         onClick={() => {
           closeDrawer();
           setActive(item.label);
         }}
-      >
-        <item.icon className={classes.linkIcon} stroke={1.5} />
-        <Text>{item.label}</Text>
-      </NavLink>
+        label={item.label}
+        data-cy={item.data}
+        leftSection={<item.icon stroke={1.5} />}
+      />
     ));
 
   const bottomLinks = bottomMenu
     .filter((item) => item.isBusiness === isBusiness || !item.isBusiness)
     .map((item) => (
       <NavLink
-        className={classes.link}
-        data-active={item.label === active || undefined}
+        active={item.label === active || undefined}
+        component={RemixNavLink}
         to={item.link}
         key={item.label}
         onClick={() => {
           closeDrawer();
           setActive(item.label);
         }}
-      >
-        <item.icon className={classes.linkIcon} stroke={1.5} />
-        <span>{item.label}</span>
-      </NavLink>
+        label={item.label}
+        data-cy={item.data}
+        leftSection={<item.icon stroke={1.5} />}
+      />
     ));
 
   return (
     <>
-      <div className={classes.navbarMain}>
-        <Group maw="90%" pt="sm" px="sm">
-          {user && (
-            <Avatar
-              src={user.images?.profile?.url}
-              radius="xl"
-              component={NavLink}
-              to="/account/upload"
+      <AppShell.Section grow my="md" component={ScrollArea}>
+        <NavLink
+          label={
+            <UnstyledButton
+              fz="sm"
+              component={Link}
+              to="/account/"
               onClick={() => closeDrawer()}
-            />
-          )}
-          <UnstyledButton
-            style={{flex: 1}}
-            component={Link}
-            to="/account/"
-            onClick={() => closeDrawer()}
-          >
-            <Text size="sm" fw={500} c="black">
+            >
               {customer?.firstName} {customer?.lastName}
-            </Text>
-
-            <Text c="dimmed" size="xs">
-              {customer?.email}
-            </Text>
-          </UnstyledButton>
-        </Group>
-
+            </UnstyledButton>
+          }
+          description={
+            <UnstyledButton
+              fz="xs"
+              component={Link}
+              to="/account/"
+              onClick={() => closeDrawer()}
+            >
+              {customer?.email && customer.email.length > 22
+                ? customer?.email?.substring(0, 22) + '...'
+                : customer?.email}
+            </UnstyledButton>
+          }
+          leftSection={
+            user ? (
+              <Avatar
+                component={Link}
+                to={`/account/upload`}
+                src={user.images?.profile?.url}
+                onClick={() => closeDrawer()}
+              />
+            ) : null
+          }
+          rightSection={
+            user && user.isBusiness ? (
+              <ActionIcon
+                variant="default"
+                component={Link}
+                to={`/artist/${user?.username}`}
+                target="_blank"
+              >
+                <IconEye />
+              </ActionIcon>
+            ) : null
+          }
+        />
         <Divider my="xs" />
         {isBusiness ? topLinks : bottomLinks}
-      </div>
-      <div className={classes.footer}>
-        <Divider my="xs" />
-        {isBusiness && bottomLinks}
+      </AppShell.Section>
+      {isBusiness ? (
+        <AppShell.Section>
+          <Divider my="xs" />
+          {bottomLinks}
 
-        <Form method="POST" action="/account/logout">
-          <UnstyledButton
-            className={classes.link}
-            type="submit"
-            variant="subtle"
-            style={{width: '100%'}}
-            mb="sm"
-          >
-            <IconLogout className={classes.linkIcon} stroke={1.5} />
-            <span>Log ud</span>
-          </UnstyledButton>
-        </Form>
-      </div>
+          <Form method="POST" action="/account/logout">
+            <NavLink
+              component={UnstyledButton}
+              onClick={(e: React.MouseEvent<HTMLAnchorElement>) => {
+                e.preventDefault();
+                const target = e.target as Element;
+                const form = target.closest('form');
+                if (form) {
+                  (form as HTMLFormElement).submit();
+                }
+              }}
+              label="Log ud"
+              data-cy="logout-link"
+              leftSection={<IconLogout stroke={1.5} />}
+            />
+          </Form>
+          <Divider />
+
+          <NavLink
+            onClick={closeDrawer}
+            hiddenFrom="sm"
+            rightSection={
+              <Burger opened={opened} onClick={closeDrawer} size="md" />
+            }
+            data-cy="close-navigation-link"
+          />
+        </AppShell.Section>
+      ) : null}
     </>
   );
 }

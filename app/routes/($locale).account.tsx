@@ -1,12 +1,4 @@
-import {
-  ActionIcon,
-  AppShell,
-  Burger,
-  Flex,
-  Group,
-  Text,
-  UnstyledButton,
-} from '@mantine/core';
+import {AppShell, Flex, Text, UnstyledButton} from '@mantine/core';
 import {useDisclosure, useMediaQuery} from '@mantine/hooks';
 import {Link, Outlet, useLoaderData} from '@remix-run/react';
 import {parseGid} from '@shopify/hydrogen';
@@ -15,7 +7,6 @@ import {
   IconAddressBook,
   IconCalendarEvent,
   IconClock,
-  IconEye,
   IconHome,
   IconMenu2,
   IconShoppingBag,
@@ -153,39 +144,8 @@ function AccountLayout({
       navbar={{width: 300, breakpoint: 'sm', collapsed: {mobile: !opened}}}
       footer={{height: 84, collapsed: !isMobile || opened}}
     >
-      <AppShell.Navbar
-        style={{
-          backgroundColor: 'var(--mantine-color-gray-1)',
-        }}
-      >
-        <div
-          style={{
-            position: 'absolute',
-            right: `var(--mantine-spacing-md)`,
-            top: `var(--mantine-spacing-md)`,
-            zIndex: 1,
-          }}
-        >
-          <Group justify="center" align="center">
-            {props.isBusiness ? (
-              <ActionIcon
-                variant="default"
-                component={Link}
-                to={`/artist/${props.user?.username}`}
-                target="_blank"
-              >
-                <IconEye />
-              </ActionIcon>
-            ) : null}
-            <Burger
-              opened={opened}
-              onClick={toggle}
-              hiddenFrom="sm"
-              size="sm"
-            />
-          </Group>
-        </div>
-        <AccountMenu closeDrawer={close} {...props} />
+      <AppShell.Navbar bg="gray.1">
+        <AccountMenu closeDrawer={close} opened={opened} {...props} />
       </AppShell.Navbar>
 
       <AppShell.Main>{children}</AppShell.Main>
