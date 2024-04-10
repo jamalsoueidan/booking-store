@@ -22,13 +22,10 @@ describe('login', () => {
       cy.get('[data-cy="password-input"]').type(data.password);
       cy.get('[data-cy="login-button"]').click();
       cy.wait('@loginRequest');
-
-      /* ==== Generated with Cypress Studio ==== */
       cy.get('[data-cy="welcome-title"]').should(
         'have.text',
         'Velkommen til din konto',
       );
-      /* ==== End Cypress Studio ==== */
     });
   });
 });

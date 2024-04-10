@@ -43,9 +43,9 @@ describe('business account', () => {
 
       cy.get('[data-cy="required-notification"]').should('exist');
       cy.get('[data-cy="first-name-input"]').clear();
-      cy.get('[data-cy="first-name-input"]').type('fornavn');
+      cy.get('[data-cy="first-name-input"]').type(data.firstName);
       cy.get('[data-cy="last-name-input"]').clear();
-      cy.get('[data-cy="last-name-input"]').type('efternavn');
+      cy.get('[data-cy="last-name-input"]').type(data.lastName);
       cy.get('[data-cy="phone-input"]').type(generateRandomPhoneNumber());
       cy.get('[data-cy="submit-button"]').click();
 

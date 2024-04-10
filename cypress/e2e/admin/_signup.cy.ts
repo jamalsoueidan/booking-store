@@ -15,6 +15,8 @@ describe('register', () => {
       email,
       password,
       username,
+      firstName: 'fornavn',
+      lastName: 'efternavn',
     });
 
     cy.visit('/');
