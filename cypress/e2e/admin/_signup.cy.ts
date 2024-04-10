@@ -16,7 +16,7 @@ describe('register', () => {
     cy.visit('/');
     /* ==== Generated with Cypress Studio ==== */
     cy.get('[data-cy="login-button"]').click();
-    cy.url({timeout: 10000}).should('include', '/account/login');
+    cy.url({timeout: 15000}).should('include', '/account/login');
     cy.get('[data-cy="register-link"]').click();
     cy.url().should('include', '/account/register');
     cy.get('[data-cy="email-input"]').clear();

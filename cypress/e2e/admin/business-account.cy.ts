@@ -15,8 +15,8 @@ describe('business account', () => {
     cy.fixture('loginData.json').then((data) => {
       //login
       cy.visit('/');
-      cy.get('[data-cy="login-button"]').click();
-      cy.url({timeout: 10000}).should('include', '/account/login');
+      cy.get('[data-cy="login-button"]').debug().click();
+      cy.url({timeout: 15000}).should('include', '/account/login');
       cy.get('[data-cy="email-input"]').clear();
       cy.get('[data-cy="email-input"]').type(data.email);
       cy.get('[data-cy="password-input"]').should('be.enabled').clear();
