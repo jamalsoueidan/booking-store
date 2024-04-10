@@ -1,10 +1,4 @@
 describe('register', () => {
-  beforeEach(() => {
-    cy.intercept('GET', '/account?_data=routes%2F%28%24locale%29.account').as(
-      'login',
-    );
-  });
-
   it('passes', () => {
     const timestamp = Date.now();
     const username = `testerne${timestamp}`;
@@ -22,8 +16,7 @@ describe('register', () => {
     cy.visit('/');
     /* ==== Generated with Cypress Studio ==== */
     cy.get('[data-cy="login-button"]').click();
-    cy.wait('@login');
-    cy.url().should('include', '/account/login');
+    cy.url({timeout: 10000}).should('include', '/account/login');
     cy.get('[data-cy="register-link"]').click();
     cy.url().should('include', '/account/register');
     cy.get('[data-cy="email-input"]').clear();

@@ -213,7 +213,6 @@ function HeaderCtas({
             component={Link}
             to="/account"
             data-cy="dashboard-button"
-            prefetch="intent"
           >
             Dashboard
           </Button>
@@ -226,7 +225,6 @@ function HeaderCtas({
             aria-label="Account Login"
             component={Link}
             to="/account"
-            prefetch="intent"
             data-cy="login-button"
           >
             Login
