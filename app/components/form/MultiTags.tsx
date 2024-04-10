@@ -1,20 +1,13 @@
 import {useField, type FieldMetadata} from '@conform-to/react';
-import {MultiSelect} from '@mantine/core';
+import {MultiSelect, type MultiSelectProps} from '@mantine/core';
 import React, {useCallback} from 'react';
 
-interface MultiTagsProps {
+export type MultiTagsProps = {
   field: FieldMetadata<Array<string>>;
   data: {label: string; value: string}[];
-  label: string;
-  placeholder: string;
-}
+} & MultiSelectProps;
 
-export const MultiTags: React.FC<MultiTagsProps> = ({
-  field,
-  data,
-  label,
-  placeholder,
-}) => {
+export const MultiTags: React.FC<MultiTagsProps> = ({field, ...props}) => {
   const [, form] = useField(field.name);
   const list = field.getFieldList();
   const defaultValue = list.map((item) => item.initialValue) as string[];
@@ -32,11 +25,9 @@ export const MultiTags: React.FC<MultiTagsProps> = ({
   return (
     <fieldset>
       <MultiSelect
-        data={data}
-        label={label}
         defaultValue={defaultValue}
-        placeholder={placeholder}
         onChange={handleChange}
+        {...props}
       />
 
       {list.map((item) => (
