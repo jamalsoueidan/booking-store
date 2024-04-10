@@ -45,7 +45,9 @@ export function AccountTitle({
         {children ? (
           <>
             <Divider mx="sm" my="0" />
-            <Box p="xs">{children}</Box>
+            <Flex gap="md" p="xs">
+              {children}
+            </Flex>
           </>
         ) : null}
       </Stack>
