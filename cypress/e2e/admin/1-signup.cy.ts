@@ -20,7 +20,7 @@ describe('register', () => {
     });
 
     cy.visit('/');
-
+    cy.wait(3000);
     cy.get('[data-cy="login-button"]').click();
     cy.wait('@login');
     cy.url().should('include', '/account/login');
