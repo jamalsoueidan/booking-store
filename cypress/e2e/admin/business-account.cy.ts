@@ -6,11 +6,6 @@ function generateRandomPhoneNumber() {
 describe('login', () => {
   beforeEach(() => {
     cy.intercept(
-      'POST',
-      '/account/login?_data=routes%2F%28%24locale%29.account_.login',
-    ).as('loginRequest');
-
-    cy.intercept(
       'GET',
       '/api/usernameTaken?username=mar*&_data=routes%2F%28%24locale%29.api.usernameTaken',
     ).as('usernameCheck');
@@ -19,7 +14,6 @@ describe('login', () => {
   it('passes', () => {
     cy.fixture('loginData.json').then((data) => {
       cy.login(data.email, data.password);
-      cy.wait('@loginRequest');
 
       cy.get('[data-cy="welcome-title"]').should(
         'have.text',

@@ -36,6 +36,10 @@ Cypress.Commands.add('test', () => {
 });
 
 Cypress.Commands.add('login', (email: string, password: string) => {
+  cy.intercept(
+    'POST',
+    '/account/login?_data=routes%2F%28%24locale%29.account_.login',
+  ).as('loginRequest');
   cy.visit('/');
   cy.get('[data-cy="login-button"]').click();
   cy.url().should('include', '/account/login');
@@ -44,4 +48,5 @@ Cypress.Commands.add('login', (email: string, password: string) => {
   cy.get('[data-cy="password-input"]').should('be.enabled').clear();
   cy.get('[data-cy="password-input"]').type(password);
   cy.get('[data-cy="login-button"]').click();
+  cy.wait('@loginRequest');
 });
