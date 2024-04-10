@@ -63,16 +63,17 @@ export default function AccountIndex() {
             color="green"
             mb="xl"
             icon={<IconHeart style={{width: rem(34), height: rem(34)}} />}
+            data-cy="business-notification"
           >
-            <Text>
+            <Text fw="bold">
               Du er nu tilmeldt som en business-konto på vores hjemmeside.
             </Text>
+            <br />
             <Text>
-              Mens vi gennemgår og aktiverer din profil, opfordrer vi dig til at
-              udfylde de resterende felter. Du kan gøre dette ved at tilføje
-              lokation, vagtplan, ydelser og eventuelt uploade et billede. Dette
-              vil sikre, at din konto er klar til at byde potentielle kunder
-              velkommen, så snart den er godkendt.
+              Mens vi gennemgår og aktiverer din profil, opfordres du til at
+              besøge og udfylde siderne for lokation, vagtplan, ydelser og
+              eventuelt uploade et billede, for at gøre din konto klar til
+              potentielle kunder.
             </Text>
           </Alert>
         ) : null}
@@ -279,7 +280,12 @@ function BuyerAccount() {
         os sammen skabe skønhed!
       </Text>
       <div>
-        <Button size="xl" component={Link} to="../business">
+        <Button
+          size="xl"
+          component={Link}
+          to="../business"
+          data-cy="change-business-button"
+        >
           Skift til Business Konto!
         </Button>
       </div>

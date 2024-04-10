@@ -5,7 +5,6 @@ import {
   Group,
   InputBase,
   Stack,
-  Text,
   TextInput,
 } from '@mantine/core';
 import {
@@ -85,11 +84,11 @@ export async function action({request, context}: ActionFunctionArgs) {
 
     // check for mutation errors
     if (updated.customerUpdate?.customerUserErrors?.length) {
-      console.log(updated.customerUpdate?.customerUserErrors);
-      return json(
-        {error: updated.customerUpdate?.customerUserErrors[0]},
-        {status: 400},
-      );
+      throw new Error(updated.customerUpdate?.customerUserErrors[0].message);
+    }
+
+    if (!updated.customerUpdate?.customer) {
+      throw new Error('Customer profile update failed.');
     }
 
     // update session with the updated access token
@@ -148,14 +147,22 @@ export async function action({request, context}: ActionFunctionArgs) {
       },
     );
   } catch (error: any) {
-    return json({error: error.message, customer: null}, {status: 400});
+    return json(
+      {error: error.message, customer: null},
+      {
+        status: 400,
+        headers: {
+          'Set-Cookie': await context.session.commit(),
+        },
+      },
+    );
   }
 }
 
 export default function AccountProfile() {
+  const action = useActionData<ActionResponse>();
   const account = useOutletContext<{customer: CustomerFragment}>();
   const {state} = useNavigation();
-  const action = useActionData<ActionResponse>();
   const [searchParams] = useSearchParams();
   const customer = action?.customer ?? account?.customer;
 
@@ -169,11 +176,19 @@ export default function AccountProfile() {
 
       <AccountContent>
         {comingFromBusiness ? (
-          <Blockquote color="lime" my="md">
+          <Blockquote color="lime" my="md" data-cy="required-notification">
             Du bedes først udfylde din fornavn og efternavn og trykke på knappen
             i bunden på siden.
           </Blockquote>
         ) : undefined}
+
+        {action?.error ? (
+          <Blockquote color="red" my="md" data-cy="required-notification">
+            <strong>Fejl:</strong>
+            <br />
+            {action.error}
+          </Blockquote>
+        ) : null}
 
         <Form method="PUT">
           <Stack>
@@ -188,6 +203,7 @@ export default function AccountProfile() {
               defaultValue={customer.firstName ?? ''}
               required
               minLength={2}
+              data-cy="first-name-input"
             />
             <TextInput
               label="Efternavn"
@@ -200,6 +216,7 @@ export default function AccountProfile() {
               defaultValue={customer.lastName ?? ''}
               required
               minLength={2}
+              data-cy="last-name-input"
             />
             <InputBase
               label="Mobil"
@@ -212,6 +229,7 @@ export default function AccountProfile() {
               defaultValue={customer.phone ?? ''}
               component={IMaskInput}
               mask="+4500000000"
+              data-cy="phone-input"
             />
             <TextInput
               label="Emailadresse"
@@ -223,6 +241,7 @@ export default function AccountProfile() {
               aria-label="Emailadresse"
               defaultValue={customer.email ?? ''}
               required
+              data-cy="email-input"
             />
             <Group>
               <Checkbox
@@ -230,16 +249,16 @@ export default function AccountProfile() {
                 name="acceptsMarketing"
                 label="Tilmeldt markedsføringskommunikation"
                 defaultChecked={customer.acceptsMarketing}
+                data-cy="accept-marketing-checkbox"
               />
             </Group>
 
-            {action?.error && (
-              <Text color="red" size="sm">
-                {action.error}
-              </Text>
-            )}
             <div>
-              <Button type="submit" loading={state !== 'idle'}>
+              <Button
+                type="submit"
+                loading={state !== 'idle'}
+                data-cy="submit-button"
+              >
                 {comingFromBusiness ? 'Gem og gå videre...' : 'Opdater'}
               </Button>
             </div>

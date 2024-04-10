@@ -8,7 +8,7 @@ export type RadioGroupProps = {
   data: Array<{label: string; value: string}>;
 };
 
-export function RadioGroup({label, data, field}: RadioGroupProps) {
+export function RadioGroup({data, field, ...props}: RadioGroupProps) {
   const initialValue = useMemo(() => {
     const findInData = data.findIndex((d) => d.value === field.initialValue);
     if (findInData === -1) {
@@ -22,9 +22,9 @@ export function RadioGroup({label, data, field}: RadioGroupProps) {
   return (
     <>
       <Radio.Group
-        label={label}
         defaultValue={initialValue}
         onChange={control.change}
+        {...props}
       >
         {data.map((d) => (
           <Radio

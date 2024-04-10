@@ -1,6 +1,5 @@
 describe('login', () => {
   beforeEach(() => {
-    // Intercept the POST request to login
     cy.intercept(
       'POST',
       '/account/login?_data=routes%2F%28%24locale%29.account_.login',
@@ -8,7 +7,7 @@ describe('login', () => {
   });
 
   it('passes', () => {
-    cy.fixture('emailData.json').then((data) => {
+    cy.fixture('loginData.json').then((data) => {
       cy.login(data.email, data.password);
       cy.wait('@loginRequest').then((interception) => {
         if (interception.response) {

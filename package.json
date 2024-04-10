@@ -16,7 +16,7 @@
     "fb-openapi": "npm run fetch-openapi & npm run build-openapi",
     "cypress:open": "cypress open",
     "cypress:run": "cypress run",
-    "cy:open": "start-server-and-test preview http://localhost:3000 cypress:open",
+    "cy:open": "start-server-and-test dev http://localhost:3000 cypress:open",
     "cy:run": "start-server-and-test preview http://localhost:3000 cypress:run"
   },
   "prettier": "@shopify/prettier-config",

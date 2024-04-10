@@ -1,10 +1,15 @@
 describe('register', () => {
   it('passes', () => {
     const timestamp = Date.now();
-    const email = `testemail${timestamp}@example.com`;
+    const username = `testerne${timestamp}`;
+    const email = `testerne${timestamp}@example.com`;
     const password = 'testerne';
 
-    cy.writeFile('cypress/fixtures/emailData.json', {email, password});
+    cy.writeFile('cypress/fixtures/loginData.json', {
+      email,
+      password,
+      username,
+    });
 
     cy.visit('/');
     /* ==== Generated with Cypress Studio ==== */
@@ -19,6 +24,7 @@ describe('register', () => {
     cy.get('[data-cy="password-confirm-input"]').clear();
     cy.get('[data-cy="password-confirm-input"]').type('testerne');
     cy.get('[data-cy="register-button"]').click();
+    cy.url().should('include', '/account/dashboard');
     cy.get('[data-cy="welcome-title"]').should(
       'have.text',
       'Velkommen til din konto',

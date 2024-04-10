@@ -10,7 +10,12 @@ export const SubmitButton: React.FC<PropsWithChildren & ButtonProps> = ({
   const isSubmitting = navigation.state === 'submitting';
 
   return (
-    <Button loading={isSubmitting} type="submit" {...props}>
+    <Button
+      loading={isSubmitting}
+      type="submit"
+      {...props}
+      data-cy="submit-button"
+    >
       {children}
     </Button>
   );
