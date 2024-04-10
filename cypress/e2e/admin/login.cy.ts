@@ -5,9 +5,10 @@ describe('login', () => {
       '/account/login?_data=routes%2F%28%24locale%29.account_.login',
     ).as('loginRequest');
 
-    cy.intercept('GET', '/account?_data=routes%2F%28%24locale%29.account').as(
-      'login',
-    );
+    cy.intercept(
+      'GET',
+      '/account/login?_data=routes%2F%28%24locale%29.account_.login',
+    ).as('login');
   });
 
   it('passes', () => {
