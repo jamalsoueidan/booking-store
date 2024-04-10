@@ -9,14 +9,20 @@ describe('business account', () => {
       'POST',
       '/account/login?_data=routes%2F%28%24locale%29.account_.login',
     ).as('loginRequest');
+
+    cy.intercept(
+      'GET',
+      '/account/login?_data=routes%2F%28%24locale%29.account_.login',
+    ).as('login');
   });
 
   it('passes', () => {
     cy.fixture('loginData.json').then((data) => {
       //login
       cy.visit('/');
-      cy.get('[data-cy="login-button"]').debug().click();
-      cy.url({timeout: 15000}).should('include', '/account/login');
+      cy.get('[data-cy="login-button"]').click();
+      cy.wait('@login');
+      cy.url().should('include', '/account/login');
       cy.get('[data-cy="email-input"]').clear();
       cy.get('[data-cy="email-input"]').type(data.email);
       cy.get('[data-cy="password-input"]').should('be.enabled').clear();
