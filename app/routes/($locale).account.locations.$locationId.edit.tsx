@@ -12,7 +12,15 @@ import {getCustomer} from '~/lib/get-customer';
 import {customerLocationUpdateBody} from '~/lib/zod/bookingShopifyApi';
 
 import {parseWithZod} from '@conform-to/zod';
-import {Button, Select, Stack, TextInput} from '@mantine/core';
+import {
+  Anchor,
+  Button,
+  Group,
+  Select,
+  Stack,
+  Text,
+  TextInput,
+} from '@mantine/core';
 import {parseGid} from '@shopify/hydrogen';
 import {AccountContent} from '~/components/account/AccountContent';
 import {AccountTitle} from '~/components/account/AccountTitle';
@@ -99,8 +107,8 @@ export default function AccountLocationsEdit() {
         </Button>
 
         <Form
-          method="post"
-          action={`${defaultValue._id}/destroy`}
+          method="delete"
+          action={`../${defaultValue._id}/destroy`}
           style={{display: 'inline-block'}}
         >
           <Button
@@ -202,7 +210,17 @@ export default function AccountLocationsEdit() {
               data-cy="max-drive-distance-input"
             />
 
-            <SubmitButton>Opdatere</SubmitButton>
+            <Group>
+              <SubmitButton>Opdatere</SubmitButton>
+              <Text>eller</Text>
+              <Anchor
+                component={Link}
+                to="/account/locations"
+                data-cy="back-link"
+              >
+                Tilbage
+              </Anchor>
+            </Group>
           </Stack>
         </Form>
       </AccountContent>
