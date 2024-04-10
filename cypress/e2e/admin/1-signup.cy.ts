@@ -20,7 +20,7 @@ describe('register', () => {
     });
 
     cy.visit('/');
-    /* ==== Generated with Cypress Studio ==== */
+
     cy.get('[data-cy="login-button"]').click();
     cy.wait('@login');
     cy.url().should('include', '/account/login');
@@ -38,6 +38,5 @@ describe('register', () => {
       'have.text',
       'Velkommen til din konto',
     );
-    /* ==== End Cypress Studio ==== */
   });
 });

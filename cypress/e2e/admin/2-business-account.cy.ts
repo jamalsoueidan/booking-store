@@ -20,6 +20,7 @@ describe('business account', () => {
     cy.fixture('loginData.json').then((data) => {
       //login
       cy.visit('/');
+      cy.wait(3000);
       cy.get('[data-cy="login-button"]').click();
       cy.wait('@login');
       cy.url().should('include', '/account/login');
