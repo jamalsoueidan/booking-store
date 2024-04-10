@@ -124,6 +124,7 @@ export default function Register() {
     <BackgroundImage
       src="https://cdn.shopify.com/s/files/1/0682/4060/5458/files/wepik-export-20240410204607VHiw.jpg?v=1712781996"
       p={50}
+      mih="100vh"
     >
       <Container w={{base: '100%', sm: '70%', md: '60%', lg: '40%'}}>
         <Title order={1} ta="center">
