@@ -39,7 +39,7 @@ describe('locations - create, edit, and delete', () => {
       //login
       cy.visit('/account/login');
       cy.url().should('include', '/account/login');
-      cy.dataCy('email-input').clear();
+      cy.dataCy('email-input').should('be.enabled').clear();
       cy.dataCy('email-input').type(data.email);
       cy.dataCy('password-input').should('be.enabled').clear();
       cy.dataCy('password-input').type(data.password);
