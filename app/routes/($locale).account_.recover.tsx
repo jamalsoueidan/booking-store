@@ -1,10 +1,11 @@
 import {
   Anchor,
+  BackgroundImage,
   Box,
   Button,
   Center,
   Container,
-  Group,
+  Flex,
   Paper,
   Text,
   TextInput,
@@ -65,61 +66,73 @@ export default function Recover() {
   const action = useActionData<ActionResponse>();
 
   return (
-    <Container size={460} my={30}>
-      {action?.resetRequested ? (
-        <>
-          <Title ta="center">Anmodning sendt.</Title>
-          <Text c="dimmed" fz="sm" ta="center">
-            Hvis den e-mailadresse er i vores system, vil du modtage en e-mail
-            med instruktioner om, hvordan du nulstiller din adgangskode inden
-            for få minutter.{' '}
-            <Anchor size="sm" href="/account/login">
-              Vend tilbage til login
-            </Anchor>
-          </Text>
-        </>
-      ) : (
-        <>
-          <Title ta="center">Glemt din adgangskode?</Title>
-          <Text c="dimmed" fz="sm" ta="center">
-            Indtast din e-mail for at få et nulstillingslink
-          </Text>
+    <BackgroundImage
+      src="https://cdn.shopify.com/s/files/1/0682/4060/5458/files/wepik-export-20240410204607VHiw.jpg?v=1712781996"
+      p={50}
+      mih="100vh"
+    >
+      <Container w={{base: '100%', sm: '70%', md: '60%', lg: '40%'}}>
+        {action?.resetRequested ? (
+          <>
+            <Title ta="center">Anmodning sendt.</Title>
+            <Text c="dimmed" fz="sm" ta="center">
+              Hvis den e-mailadresse er i vores system, vil du modtage en e-mail
+              med instruktioner om, hvordan du nulstiller din adgangskode inden
+              for få minutter.{' '}
+              <Anchor size="sm" href="/account/login">
+                Vend tilbage til login
+              </Anchor>
+            </Text>
+          </>
+        ) : (
+          <>
+            <Title ta="center">Glemt din adgangskode?</Title>
+            <Text c="dimmed" fz="sm" ta="center">
+              Indtast din e-mail for at få et nulstillingslink
+            </Text>
 
-          <Paper withBorder shadow="md" p={30} radius="md" mt="xl">
-            <Form method="POST">
-              <TextInput
-                label="Din e-mail"
-                placeholder="Emailadresse"
-                autoComplete="email"
-                // eslint-disable-next-line jsx-a11y/no-autofocus
-                autoFocus
-                id="email"
-                name="email"
-                required
-                type="email"
-              />
-              <Group justify="space-between" mt="lg">
-                <Anchor
-                  component={Link}
-                  to="/account/login"
-                  c="dimmed"
-                  size="sm"
-                >
-                  <Center inline>
-                    <IconArrowLeft
-                      style={{width: rem(12), height: rem(12)}}
-                      stroke={1.5}
-                    />
-                    <Box ml={5}>Tilbage til login-siden</Box>
-                  </Center>
-                </Anchor>
-                <Button type="submit">Nulstil adgangskode</Button>
-              </Group>
-            </Form>
-          </Paper>
-        </>
-      )}
-    </Container>
+            <Paper withBorder shadow="md" p={30} radius="md" mt="xl">
+              <Form method="POST">
+                <TextInput
+                  label="Din e-mail"
+                  placeholder="Emailadresse"
+                  autoComplete="email"
+                  // eslint-disable-next-line jsx-a11y/no-autofocus
+                  autoFocus
+                  id="email"
+                  name="email"
+                  required
+                  type="email"
+                />
+
+                <Flex justify="center" mt="lg">
+                  <Button type="submit" color="pink">
+                    Nulstil adgangskode
+                  </Button>
+                </Flex>
+
+                <Text ta="center" mt="md">
+                  <Anchor
+                    component={Link}
+                    to="/account/login"
+                    c="pink"
+                    size="sm"
+                  >
+                    <Center inline>
+                      <IconArrowLeft
+                        style={{width: rem(12), height: rem(12)}}
+                        stroke={1.5}
+                      />
+                      <Box ml={5}>Tilbage til login-siden</Box>
+                    </Center>
+                  </Anchor>
+                </Text>
+              </Form>
+            </Paper>
+          </>
+        )}
+      </Container>
+    </BackgroundImage>
   );
 }
 

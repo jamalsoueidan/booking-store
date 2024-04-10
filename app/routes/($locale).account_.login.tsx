@@ -1,8 +1,10 @@
 import {
   Anchor,
+  BackgroundImage,
   Button,
   Checkbox,
   Container,
+  Flex,
   Group,
   Paper,
   PasswordInput,
@@ -84,62 +86,76 @@ export default function Login() {
   const error = data?.error || null;
 
   return (
-    <Container size={420} my={40}>
-      <Title ta="center">Velkommen tilbage!</Title>
-      <Text c="dimmed" size="sm" ta="center" mt={5}>
-        Har du ikke en konto endnu?{' '}
-        <Anchor
-          size="sm"
-          component={Link}
-          to="/account/register"
-          data-cy="register-link"
-        >
-          Opret konto
-        </Anchor>
-      </Text>
+    <BackgroundImage
+      src="https://cdn.shopify.com/s/files/1/0682/4060/5458/files/wepik-export-20240410204607VHiw.jpg?v=1712781996"
+      p={50}
+      mih="100vh"
+    >
+      <Container w={{base: '100%', sm: '70%', md: '60%', lg: '40%'}}>
+        <Title ta="center">Velkommen tilbage!</Title>
+        <Text size="sm" ta="center" mt={5}>
+          Har du ikke en konto endnu?{' '}
+          <Anchor
+            size="sm"
+            component={Link}
+            c="pink"
+            fw="bold"
+            to="/account/register"
+            data-cy="register-link"
+          >
+            Opret konto
+          </Anchor>
+        </Text>
 
-      <Paper withBorder shadow="md" p={30} mt={30} radius="md">
-        <Form method="POST">
-          <TextInput
-            label="Emailadresse"
-            id="email"
-            name="email"
-            type="email"
-            autoComplete="email"
-            required
-            placeholder="Din emailadresse"
-            data-cy="email-input"
-          />
-          <PasswordInput
-            label="Adgangskode"
-            id="password"
-            name="password"
-            placeholder="Din adgangskode"
-            required
-            mt="md"
-            data-cy="password-input"
-          />
-          <Group justify="space-between" mt="lg">
-            <Checkbox label="Husk mig" />
-            <Anchor component={Link} to="/account/recover" size="sm">
-              Glemt adgangskode?
-            </Anchor>
-          </Group>
-          <Button fullWidth mt="xl" type="submit" data-cy="login-button">
-            Log ind
-          </Button>
-          {error ? (
-            <p>
-              <mark>
-                <small>{error}</small>
-              </mark>
-            </p>
-          ) : (
-            <br />
-          )}
-        </Form>
-      </Paper>
-    </Container>
+        <Paper withBorder shadow="md" p={30} mt={30} radius="md">
+          <Form method="POST">
+            <TextInput
+              label="Emailadresse"
+              id="email"
+              name="email"
+              type="email"
+              autoComplete="email"
+              required
+              placeholder="Din emailadresse"
+              data-cy="email-input"
+            />
+            <PasswordInput
+              label="Adgangskode"
+              id="password"
+              name="password"
+              placeholder="Din adgangskode"
+              required
+              mt="md"
+              data-cy="password-input"
+            />
+
+            <Group justify="space-between" mt="lg">
+              <Checkbox label="Husk mig" />
+            </Group>
+
+            <Flex justify="center">
+              <Button color="pink" mt="xl" type="submit" data-cy="login-button">
+                Log ind
+              </Button>
+            </Flex>
+
+            <Text ta="center" mt="md">
+              <Anchor c="pink" component={Link} to="/account/recover" size="sm">
+                Glemt adgangskode?
+              </Anchor>
+            </Text>
+
+            {error ? (
+              <p>
+                <mark>
+                  <small>{error}</small>
+                </mark>
+              </p>
+            ) : null}
+          </Form>
+        </Paper>
+      </Container>
+    </BackgroundImage>
   );
 }
 

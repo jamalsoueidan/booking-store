@@ -1,9 +1,12 @@
 import {
   Anchor,
+  BackgroundImage,
   Button,
   Container,
+  Flex,
   Paper,
   PasswordInput,
+  Stack,
   Text,
   TextInput,
   Title,
@@ -118,63 +121,95 @@ export default function Register() {
   const error = data?.error || null;
 
   return (
-    <Container size={420} my={40}>
-      <Title order={1} ta="center">
-        Opret en konto!
-      </Title>
-      <Paper withBorder shadow="md" p={30} mt={30} radius="md">
-        <Form method="POST">
-          <TextInput
-            label="Email adresse"
-            id="email"
-            name="email"
-            type="email"
-            autoComplete="email"
-            required
-            placeholder="Email adresse"
-            // eslint-disable-next-line jsx-a11y/no-autofocus
-            autoFocus
-            data-cy="email-input"
-          />
-          <PasswordInput
-            label="Adgangskode"
-            id="password"
-            name="password"
-            placeholder="Adgangskode"
-            required
-            autoComplete="new-password"
-            minLength={8}
-            mt="md"
-            data-cy="password-input"
-          />
-          <PasswordInput
-            label="Bekræft adgangskode"
-            id="passwordConfirm"
-            name="passwordConfirm"
-            placeholder="Gentag adgangskode"
-            required
-            autoComplete="new-password"
-            minLength={8}
-            mt="md"
-            data-cy="password-confirm-input"
-          />
-          {error && (
-            <Text c="red" size="sm" mt="md">
-              <small>{error}</small>
+    <BackgroundImage
+      src="https://cdn.shopify.com/s/files/1/0682/4060/5458/files/wepik-export-20240410204607VHiw.jpg?v=1712781996"
+      p={50}
+      mih="100vh"
+    >
+      <Container w={{base: '100%', sm: '70%', md: '60%', lg: '40%'}}>
+        <Title order={1} ta="center">
+          Opret en konto!
+        </Title>
+        <Stack justify="center" gap="lg">
+          <Text c="dimmed" ta="center">
+            Velkommen til vores fællesskab! Vi er begejstrede for, at du har
+            valgt at registrere dig og blive en del af vores platform...
+          </Text>
+        </Stack>
+
+        <Paper withBorder shadow="md" p={30} mt={30} radius="md">
+          <Form method="POST">
+            <TextInput
+              label="Email adresse"
+              id="email"
+              name="email"
+              type="email"
+              autoComplete="email"
+              required
+              placeholder="Email adresse"
+              // eslint-disable-next-line jsx-a11y/no-autofocus
+              autoFocus
+              data-cy="email-input"
+            />
+            <PasswordInput
+              label="Adgangskode"
+              id="password"
+              name="password"
+              placeholder="Adgangskode"
+              required
+              autoComplete="new-password"
+              minLength={8}
+              mt="md"
+              data-cy="password-input"
+            />
+            <PasswordInput
+              label="Bekræft adgangskode"
+              id="passwordConfirm"
+              name="passwordConfirm"
+              placeholder="Gentag adgangskode"
+              required
+              autoComplete="new-password"
+              minLength={8}
+              mt="md"
+              data-cy="password-confirm-input"
+            />
+            {error && (
+              <Text c="red" size="sm" mt="md">
+                <small>{error}</small>
+              </Text>
+            )}
+            <Flex justify="center">
+              <Button
+                color="pink"
+                mt="xl"
+                type="submit"
+                data-cy="register-button"
+              >
+                Registrer mig!
+              </Button>
+            </Flex>
+
+            <Text ta="center" mt="md">
+              Har du allerede en konto?{' '}
+              <Anchor component={Link} to="/account/login" size="sm" c="pink">
+                Login →
+              </Anchor>
             </Text>
-          )}
-          <Button fullWidth mt="xl" type="submit" data-cy="register-button">
-            Registrer
-          </Button>
-        </Form>
-      </Paper>
-      <Text ta="center" mt="md">
-        Har du allerede en konto?{' '}
-        <Anchor component={Link} to="/account/login" size="sm">
-          Login →
-        </Anchor>
-      </Text>
-    </Container>
+          </Form>
+        </Paper>
+
+        <Text c="dimmed" ta="center" mt="xl">
+          ...ved at oprette en konto her, åbner du døren til en verden af
+          muligheder inden for skønhedspleje og wellness. Når din registrering
+          er gennemført, har du mulighed for at opgradere din konto til en
+          business-konto. Dette skridt er dit springbræt til at blive anerkendt
+          som en skønhedsekspert på vores hjemmeside. Som ekspert kan du ikke
+          blot tilbyde din ekspertise og dine behandlinger til et bredt
+          publikum, men også selv booke behandlinger hos andre talentfulde
+          professionelle inden for skønhedspleje.
+        </Text>
+      </Container>
+    </BackgroundImage>
   );
 }
 

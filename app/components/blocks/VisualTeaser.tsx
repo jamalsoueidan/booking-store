@@ -1,15 +1,21 @@
 import {
   BackgroundImage,
   Box,
+  Button,
   Container,
+  Flex,
   Stack,
   Title,
   getGradient,
   rem,
   useMantineTheme,
 } from '@mantine/core';
+import {Link} from '@remix-run/react';
 import type {Image, Maybe} from '@shopify/hydrogen/storefront-api-types';
-import type {PageComponentFragment} from 'storefrontapi.generated';
+import type {
+  PageComponentFragment,
+  PageComponentMetaobjectFragment,
+} from 'storefrontapi.generated';
 import {H1} from '../titles/H1';
 import classes from './VisualTeaser.module.css';
 import {useField} from './utils';
@@ -33,6 +39,8 @@ export function VisualTeaser({
   const opacity = backgroundField.getFieldValue('opacity');
   const style = backgroundField.getJSON('style');
 
+  const subbutton = field.getMetaObject('subbutton');
+
   if (!component) return null;
 
   return (
@@ -46,6 +54,7 @@ export function VisualTeaser({
       fontColor={fontColor}
       justify={justify}
       height={height}
+      subbutton={subbutton}
     />
   );
 }
@@ -56,6 +65,7 @@ export type VisualTeaserComponentProps = {
   overtitle?: string;
   subtitle?: string;
   image?: Maybe<Pick<Image, 'url' | 'width' | 'height'>>;
+  subbutton: PageComponentMetaobjectFragment | null;
   opacity?: string;
   style?: Record<string, string>;
   height?: string;
@@ -73,8 +83,13 @@ export const VisualTeaserComponent = ({
   height,
   fontColor,
   justify,
+  subbutton,
 }: VisualTeaserComponentProps) => {
   const theme = useMantineTheme();
+
+  const subbuttonField = useField(subbutton);
+  const linkTo = subbuttonField.getFieldValue('link_to');
+  const text = subbuttonField.getFieldValue('text');
 
   return (
     <Box
@@ -115,6 +130,18 @@ export const VisualTeaserComponent = ({
             <Title order={2} ta="center" fw="normal" c={fontColor || 'dimmed'}>
               {subtitle}
             </Title>
+          ) : null}
+          {subbutton ? (
+            <Flex justify="center">
+              <Button
+                variant="default"
+                size="lg"
+                component={Link}
+                to={linkTo || ''}
+              >
+                {text}
+              </Button>
+            </Flex>
           ) : null}
         </Stack>
       </Container>
