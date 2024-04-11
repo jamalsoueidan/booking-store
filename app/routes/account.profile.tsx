@@ -1,12 +1,4 @@
-import {
-  Blockquote,
-  Button,
-  Checkbox,
-  Group,
-  InputBase,
-  Stack,
-  TextInput,
-} from '@mantine/core';
+import {Blockquote, Button, Stack, TextInput} from '@mantine/core';
 import {
   Form,
   useActionData,
@@ -15,20 +7,20 @@ import {
   useSearchParams,
   type MetaFunction,
 } from '@remix-run/react';
-import {parseGid} from '@shopify/hydrogen';
-import type {CustomerUpdateInput} from '@shopify/hydrogen/storefront-api-types';
+import type {CustomerUpdateInput} from '@shopify/hydrogen/customer-account-api-types';
 import {
   json,
   redirect,
   type ActionFunctionArgs,
   type LoaderFunctionArgs,
 } from '@shopify/remix-oxygen';
-import {IMaskInput} from 'react-imask';
-import type {CustomerFragment} from 'storefrontapi.generated';
+import type {CustomerFragment} from 'customer-accountapi.generated';
 import {AccountContent} from '~/components/account/AccountContent';
 import {AccountTitle} from '~/components/account/AccountTitle';
+import {CUSTOMER_UPDATE_MUTATION} from '~/graphql/customer-account/CustomerUpdateMutation';
 import {getBookingShopifyApi} from '~/lib/api/bookingShopifyApi';
-import {CUSTOMER_QUERY} from './($locale).account';
+import {getCustomer} from '~/lib/get-customer';
+
 export type ActionResponse = {
   error: string | null;
   customer: CustomerFragment | null;
@@ -39,35 +31,33 @@ export const meta: MetaFunction = () => {
 };
 
 export async function loader({context}: LoaderFunctionArgs) {
-  const customerAccessToken = await context.session.get('customerAccessToken');
-  if (!customerAccessToken) {
-    return redirect('/account/login');
-  }
-  return json({});
+  await context.customerAccount.handleAuthStatus();
+
+  return json(
+    {},
+    {
+      headers: {
+        'Set-Cookie': await context.session.commit(),
+      },
+    },
+  );
 }
 
 export async function action({request, context}: ActionFunctionArgs) {
-  const {session, storefront} = context;
+  const {customerAccount} = context;
 
   if (request.method !== 'PUT') {
     return json({error: 'Method not allowed'}, {status: 405});
   }
 
   const form = await request.formData();
-  const customerAccessToken = await session.get('customerAccessToken');
-  if (!customerAccessToken) {
-    return json({error: 'Unauthorized'}, {status: 401});
-  }
 
   try {
     const customer: CustomerUpdateInput = {};
-    const validInputKeys = ['firstName', 'lastName', 'email', 'phone'] as const;
+    const validInputKeys = ['firstName', 'lastName'] as const;
     for (const [key, value] of form.entries()) {
       if (!validInputKeys.includes(key as any)) {
         continue;
-      }
-      if (key === 'acceptsMarketing') {
-        customer.acceptsMarketing = value === 'on';
       }
       if (typeof value === 'string' && value.length) {
         customer[key as (typeof validInputKeys)[number]] = value;
@@ -75,31 +65,24 @@ export async function action({request, context}: ActionFunctionArgs) {
     }
 
     // update customer and possibly password
-    const updated = await storefront.mutate(CUSTOMER_UPDATE_MUTATION, {
-      variables: {
-        customerAccessToken: customerAccessToken.accessToken,
-        customer,
+    const {data, errors} = await customerAccount.mutate(
+      CUSTOMER_UPDATE_MUTATION,
+      {
+        variables: {
+          customer,
+        },
       },
-    });
+    );
 
-    // check for mutation errors
-    if (updated.customerUpdate?.customerUserErrors?.length) {
-      throw new Error(updated.customerUpdate?.customerUserErrors[0].message);
+    if (errors?.length) {
+      throw new Error(errors[0].message);
     }
 
-    if (!updated.customerUpdate?.customer) {
+    if (!data?.customerUpdate?.customer) {
       throw new Error('Customer profile update failed.');
     }
 
-    // update session with the updated access token
-    if (updated.customerUpdate?.customerAccessToken?.accessToken) {
-      session.set(
-        'customerAccessToken',
-        updated.customerUpdate?.customerAccessToken,
-      );
-    }
-
-    // if coming from business page
+    // coming from business
     const url = new URL(request.url);
     const searchParams = new URLSearchParams(url.search);
 
@@ -107,42 +90,29 @@ export async function action({request, context}: ActionFunctionArgs) {
       searchParams.has('firstName') || searchParams.has('lastName'),
     );
 
-    const {customer: customerData} = await context.storefront.query(
-      CUSTOMER_QUERY,
-      {
-        variables: {
-          customerAccessToken: customerAccessToken.accessToken,
-          country: context.storefront.i18n.country,
-          language: context.storefront.i18n.language,
-        },
-        cache: context.storefront.CacheNone(),
-      },
-    );
-
     if (!comingFromBusiness) {
-      await getBookingShopifyApi().customerUpdate(
-        parseGid(customerData?.id).id,
-        {
-          phone: customer.phone || '',
-          email: customer.email || '',
-          fullname: `${customer.firstName} ${customer.lastName}`,
-        },
-      );
+      const customerId = await getCustomer({context});
+      await getBookingShopifyApi().customerUpdate(customerId, {
+        fullname: `${customer.firstName} ${customer.lastName}`,
+      });
     }
 
     if (comingFromBusiness) {
       return redirect('/account/business', {
         headers: {
-          'Set-Cookie': await session.commit(),
+          'Set-Cookie': await context.session.commit(),
         },
       });
     }
 
     return json(
-      {error: null, customer: updated.customerUpdate?.customer},
+      {
+        error: null,
+        customer: data?.customerUpdate?.customer,
+      },
       {
         headers: {
-          'Set-Cookie': await session.commit(),
+          'Set-Cookie': await context.session.commit(),
         },
       },
     );
@@ -160,11 +130,11 @@ export async function action({request, context}: ActionFunctionArgs) {
 }
 
 export default function AccountProfile() {
-  const action = useActionData<ActionResponse>();
   const account = useOutletContext<{customer: CustomerFragment}>();
   const {state} = useNavigation();
-  const [searchParams] = useSearchParams();
+  const action = useActionData<ActionResponse>();
   const customer = action?.customer ?? account?.customer;
+  const [searchParams] = useSearchParams();
 
   const comingFromBusiness = Boolean(
     searchParams.has('firstName') || searchParams.has('lastName'),
@@ -218,40 +188,6 @@ export default function AccountProfile() {
               minLength={2}
               data-cy="last-name-input"
             />
-            <InputBase
-              label="Mobil"
-              id="phone"
-              name="phone"
-              type="tel"
-              autoComplete="tel"
-              placeholder="Mobil"
-              aria-label="Mobil"
-              defaultValue={customer.phone ?? ''}
-              component={IMaskInput}
-              mask="+4500000000"
-              data-cy="phone-input"
-            />
-            <TextInput
-              label="Emailadresse"
-              id="email"
-              name="email"
-              type="email"
-              autoComplete="email"
-              placeholder="Emailadresse"
-              aria-label="Emailadresse"
-              defaultValue={customer.email ?? ''}
-              required
-              data-cy="email-input"
-            />
-            <Group>
-              <Checkbox
-                id="acceptsMarketing"
-                name="acceptsMarketing"
-                label="Tilmeldt markedsføringskommunikation"
-                defaultChecked={customer.acceptsMarketing}
-                data-cy="accept-marketing-checkbox"
-              />
-            </Group>
 
             <div>
               <Button
@@ -268,33 +204,3 @@ export default function AccountProfile() {
     </>
   );
 }
-
-const CUSTOMER_UPDATE_MUTATION = `#graphql
-  # https://shopify.dev/docs/api/storefront/latest/mutations/customerUpdate
-  mutation customerUpdate(
-    $customerAccessToken: String!,
-    $customer: CustomerUpdateInput!
-    $country: CountryCode
-    $language: LanguageCode
-  ) @inContext(language: $language, country: $country) {
-    customerUpdate(customerAccessToken: $customerAccessToken, customer: $customer) {
-      customer {
-        acceptsMarketing
-        email
-        firstName
-        id
-        lastName
-        phone
-      }
-      customerAccessToken {
-        accessToken
-        expiresAt
-      }
-      customerUserErrors {
-        code
-        field
-        message
-      }
-    }
-  }
-` as const;

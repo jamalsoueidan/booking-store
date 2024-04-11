@@ -9,8 +9,7 @@ import '@mantine/nprogress/styles.css';
 import '@mantine/tiptap/styles.css';
 
 import {ModalsProvider} from '@mantine/modals';
-import {Notifications, notifications} from '@mantine/notifications';
-
+import {Notifications} from '@mantine/notifications';
 import {
   Links,
   LiveReload,
@@ -20,26 +19,20 @@ import {
   ScrollRestoration,
   isRouteErrorResponse,
   useLoaderData,
-  useLocation,
   useMatches,
   useRouteError,
   type ShouldRevalidateFunction,
 } from '@remix-run/react';
 import {useNonce} from '@shopify/hydrogen';
-import type {CustomerAccessToken} from '@shopify/hydrogen/storefront-api-types';
 import {
   defer,
   type LoaderFunctionArgs,
   type SerializeFrom,
 } from '@shopify/remix-oxygen';
-import {useEffect} from 'react';
 import {Layout} from '~/components/Layout';
-import favicon from '../public/favicon.svg';
-import {Error} from './components/Error';
+import favicon from './assets/favicon.svg';
 import {GlobalLoadingIndicator} from './components/NavigationProgress';
-import {ShopifyInbox} from './components/ShopifyInbox';
 import appStyles from './styles/app.css';
-import resetStyles from './styles/reset.css';
 
 /**
  * This is important to avoid re-fetching root queries on sub-navigations
@@ -65,7 +58,6 @@ export const shouldRevalidate: ShouldRevalidateFunction = ({
 export function links() {
   return [
     ...(cssBundleHref ? [{rel: 'stylesheet', href: cssBundleHref}] : []),
-    {rel: 'stylesheet', href: resetStyles},
     {rel: 'stylesheet', href: appStyles},
     {
       rel: 'preconnect',
@@ -79,25 +71,19 @@ export function links() {
   ];
 }
 
+/**
+ * Access the result of the root loader from a React component.
+ */
 export const useRootLoaderData = () => {
   const [root] = useMatches();
   return root?.data as SerializeFrom<typeof loader>;
 };
 
 export async function loader({context}: LoaderFunctionArgs) {
-  const {storefront, session, cart} = context;
-  const customerAccessToken = await session.get('customerAccessToken');
-  const notify = await session.get('notify');
+  const {storefront, customerAccount, cart} = context;
   const publicStoreDomain = context.env.PUBLIC_STORE_DOMAIN;
 
-  // validate the customer access token is valid
-  const {isLoggedIn, headers} = await validateCustomerAccessToken(
-    session,
-    customerAccessToken,
-    notify,
-  );
-
-  // defer the cart query by not awaiting it
+  const isLoggedInPromise = customerAccount.isLoggedIn();
   const cartPromise = cart.get();
 
   // defer the footer query (below the fold)
@@ -121,35 +107,21 @@ export async function loader({context}: LoaderFunctionArgs) {
       cart: cartPromise,
       footer: footerPromise,
       header: await headerPromise,
-      isLoggedIn,
+      isLoggedIn: isLoggedInPromise,
       publicStoreDomain,
-      notify: notify as
-        | {
-            message: 'deleted';
-          }
-        | undefined,
     },
-    {headers},
+    {
+      headers: {
+        'Set-Cookie': await context.session.commit(),
+      },
+    },
   );
 }
 
 export default function App() {
-  const location = useLocation();
-  const path = location.pathname;
-
   const nonce = useNonce();
   const data = useLoaderData<typeof loader>();
-  const theme = createTheme({
-    /** Put your mantine theme override here */
-  });
-
-  useEffect(() => {
-    if (data.notify) {
-      notifications.show(data.notify);
-      // for some reason some notifications are published twice!
-      notifications.cleanQueue();
-    }
-  }, [data.notify]);
+  const theme = createTheme({});
 
   return (
     <html lang="en">
@@ -159,7 +131,6 @@ export default function App() {
           name="viewport"
           content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"
         />
-        <style data-fullcalendar />
         <Meta />
         <Links />
         <ColorSchemeScript />
@@ -176,24 +147,9 @@ export default function App() {
             <Layout {...data}>
               <Outlet />
             </Layout>
+
             <ScrollRestoration nonce={nonce} />
             <Scripts nonce={nonce} />
-            {path === '/' ? (
-              <ShopifyInbox
-                button={{
-                  color: 'black',
-                  style: 'icon',
-                  horizontalPosition: 'button_right',
-                  verticalPosition: 'lowest',
-                  text: 'chat_with_us',
-                  icon: 'chat_bubble',
-                }}
-                shop={{
-                  domain: 'bysistersdk.myshopify.com',
-                  id: 'hdmxnYE_11NztIDETGzKSZgOznVt7rZKTH8v4phINjo',
-                }}
-              />
-            ) : null}
             <LiveReload nonce={nonce} />
           </ModalsProvider>
         </MantineProvider>
@@ -203,12 +159,10 @@ export default function App() {
 }
 
 export function ErrorBoundary() {
+  const theme = createTheme({});
   const error = useRouteError();
   const rootData = useRootLoaderData();
   const nonce = useNonce();
-  const theme = createTheme({
-    /** Put your mantine theme override here */
-  });
   let errorMessage = 'Unknown error';
   let errorStatus = 500;
 
@@ -216,7 +170,7 @@ export function ErrorBoundary() {
     errorMessage = error?.data?.message ?? error.data;
     errorStatus = error.status;
   } else if (error instanceof Error) {
-    errorMessage = error as any;
+    errorMessage = error.message;
   }
 
   return (
@@ -234,7 +188,15 @@ export function ErrorBoundary() {
       <body>
         <MantineProvider theme={theme}>
           <Layout {...rootData}>
-            <Error errorStatus={errorStatus} errorMessage={errorMessage} />
+            <div className="route-error">
+              <h1>Oops</h1>
+              <h2>{errorStatus}</h2>
+              {errorMessage && (
+                <fieldset>
+                  <pre>{errorMessage}</pre>
+                </fieldset>
+              )}
+            </div>
           </Layout>
           <ScrollRestoration nonce={nonce} />
           <Scripts nonce={nonce} />
@@ -243,48 +205,6 @@ export function ErrorBoundary() {
       </body>
     </html>
   );
-}
-
-/**
- * Validates the customer access token and returns a boolean and headers
- * @see https://shopify.dev/docs/api/storefront/latest/objects/CustomerAccessToken
- *
- * @example
- * ```js
- * const {isLoggedIn, headers} = await validateCustomerAccessToken(
- *  customerAccessToken,
- *  session,
- * );
- * ```
- */
-async function validateCustomerAccessToken(
-  session: LoaderFunctionArgs['context']['session'],
-  customerAccessToken?: CustomerAccessToken,
-  notify?: any,
-) {
-  let isLoggedIn = false;
-  const headers = new Headers();
-  if (!customerAccessToken?.accessToken || !customerAccessToken?.expiresAt) {
-    return {isLoggedIn, headers};
-  }
-
-  const expiresAt = new Date(customerAccessToken.expiresAt).getTime();
-  const dateNow = Date.now();
-  const customerAccessTokenExpired = expiresAt < dateNow;
-
-  if (notify) {
-    session.unset('notify');
-    headers.append('Set-Cookie', await session.commit());
-  }
-
-  if (customerAccessTokenExpired) {
-    session.unset('customerAccessToken');
-    headers.append('Set-Cookie', await session.commit());
-  } else {
-    isLoggedIn = true;
-  }
-
-  return {isLoggedIn, headers};
 }
 
 const MENU_FRAGMENT = `#graphql

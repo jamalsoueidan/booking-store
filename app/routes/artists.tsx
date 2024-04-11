@@ -32,8 +32,8 @@ import {VisualTeaser} from '~/components/blocks/VisualTeaser';
 import {ProfessionButton} from '~/components/ProfessionButton';
 import {METAFIELD_QUERY} from '~/data/fragments';
 import {useComponents} from '~/lib/use-components';
-import {loader as loaderFilter} from './($locale).api.users.filters';
-import {loader as loaderProfessions} from './($locale).api.users.professions';
+import {loader as loaderFilter} from './api.users.filters';
+import {loader as loaderProfessions} from './api.users.professions';
 
 export const shouldRevalidate: ShouldRevalidateFunction = ({
   currentParams,

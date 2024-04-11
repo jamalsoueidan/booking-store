@@ -25,7 +25,7 @@ import type {
   UserScheduleWithLocations,
 } from '~/lib/api/model';
 import {renderTime} from '~/lib/time';
-import {translationsDays} from './($locale).api.users.filters';
+import {translationsDays} from './api.users.filters';
 
 export type SearchParams = {
   [key: string]: string | undefined;

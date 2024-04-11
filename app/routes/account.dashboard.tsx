@@ -14,22 +14,28 @@ import {
   useOutletContext,
   useSearchParams,
 } from '@remix-run/react';
-import {parseGid} from '@shopify/hydrogen';
 import {json, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
 import {IconArrowRight, IconCheck, IconHeart, IconX} from '@tabler/icons-react';
 import {AccountContent} from '~/components/account/AccountContent';
 import {AccountTitle} from '~/components/account/AccountTitle';
+import {CUSTOMER_DETAILS_QUERY} from '~/graphql/customer-account/CustomerDetailsQuery';
 import {getBookingShopifyApi} from '~/lib/api/bookingShopifyApi';
 import {type CustomerStatus} from '~/lib/api/model';
 import {getCustomer} from '~/lib/get-customer';
-import {type AccountOutlet} from './($locale).account';
+import {type AccountOutlet} from './account';
 
 export async function loader({context}: LoaderFunctionArgs) {
-  const customer = await getCustomer({context});
+  const customerId = await getCustomer({context});
 
-  const status = await getBookingShopifyApi().customerStatus(
-    parseGid(customer.id).id,
+  const {data, errors} = await context.customerAccount.query(
+    CUSTOMER_DETAILS_QUERY,
   );
+
+  if (errors?.length || !data?.customer) {
+    throw new Error('Customer not found');
+  }
+
+  const status = await getBookingShopifyApi().customerStatus(customerId);
 
   return json(
     {

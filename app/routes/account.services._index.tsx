@@ -21,13 +21,13 @@ import {AccountTitle} from '~/components/account/AccountTitle';
 import {getBookingShopifyApi} from '~/lib/api/bookingShopifyApi';
 import {durationToTime} from '~/lib/duration';
 import {getCustomer} from '~/lib/get-customer';
-import {ALL_PRODUCTS_QUERY} from './($locale).artist.$username._index';
+import {ALL_PRODUCTS_QUERY} from './artist.$username._index';
 
 export async function loader({context}: LoaderFunctionArgs) {
   const {storefront} = context;
-  const customer = await getCustomer({context});
+  const customerId = await getCustomer({context});
   const response = await getBookingShopifyApi().customerProductsList(
-    customer.id,
+    customerId,
   );
 
   const productIds = response.payload.map(({productId}) => productId);

@@ -1,7 +1,6 @@
 import {Form, useActionData, useLoaderData} from '@remix-run/react';
 import {
   json,
-  redirect,
   type ActionFunctionArgs,
   type LoaderFunctionArgs,
 } from '@shopify/remix-oxygen';
@@ -12,7 +11,6 @@ import {customerLocationCreateBody} from '~/lib/zod/bookingShopifyApi';
 import {getFormProps, getInputProps, useForm} from '@conform-to/react';
 import {parseWithZod} from '@conform-to/zod';
 import {Select, Stack, TextInput} from '@mantine/core';
-import {parseGid} from '@shopify/hydrogen';
 import {AccountContent} from '~/components/account/AccountContent';
 import {AccountTitle} from '~/components/account/AccountTitle';
 import {AddressAutocompleteInput} from '~/components/form/AddressAutocompleteInput';
@@ -25,10 +23,8 @@ import {redirectWithNotification} from '~/lib/show-notification';
 const schema = customerLocationCreateBody;
 
 export async function loader({context}: LoaderFunctionArgs) {
-  const customerAccessToken = await context.session.get('customerAccessToken');
-  if (!customerAccessToken) {
-    return redirect('/account/login');
-  }
+  await context.customerAccount.handleAuthStatus();
+
   return json({
     name: '',
     locationType: 'origin',
@@ -44,7 +40,7 @@ export async function loader({context}: LoaderFunctionArgs) {
 }
 
 export const action = async ({request, context}: ActionFunctionArgs) => {
-  const customer = await getCustomer({context});
+  const customerId = await getCustomer({context});
 
   const formData = await request.formData();
   const submission = parseWithZod(formData, {schema});
@@ -55,7 +51,7 @@ export const action = async ({request, context}: ActionFunctionArgs) => {
 
   try {
     const response = await getBookingShopifyApi().customerLocationCreate(
-      parseGid(customer.id).id,
+      customerId,
       submission.value,
     );
 

@@ -22,19 +22,17 @@ import type {
   CustomerPayoutBalanceResponse,
 } from '~/lib/api/model';
 import {getCustomer} from '~/lib/get-customer';
-import {isMobilePay} from './($locale).account.payouts';
+import {isMobilePay} from './account.payouts';
 
 export async function loader({context}: LoaderFunctionArgs) {
-  const customer = await getCustomer({context});
-  const payoutAccount = getBookingShopifyApi().customerPayoutAccountGet(
-    customer.id,
-  );
+  const customerId = await getCustomer({context});
+  const payoutAccount =
+    getBookingShopifyApi().customerPayoutAccountGet(customerId);
 
-  const payoutBalance = getBookingShopifyApi().customerPayoutBalance(
-    customer.id,
-  );
+  const payoutBalance =
+    getBookingShopifyApi().customerPayoutBalance(customerId);
 
-  const payouts = getBookingShopifyApi().customerPayoutPaginate(customer.id, {
+  const payouts = getBookingShopifyApi().customerPayoutPaginate(customerId, {
     page: '1',
   });
 

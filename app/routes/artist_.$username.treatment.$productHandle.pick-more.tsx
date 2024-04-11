@@ -5,7 +5,7 @@ import {Suspense} from 'react';
 import {type ProductItemFragment} from 'storefrontapi.generated';
 import {getBookingShopifyApi} from '~/lib/api/bookingShopifyApi';
 import {type CustomerProductBase} from '~/lib/api/model';
-import {ALL_PRODUCTS_QUERY} from './($locale).artist.$username._index';
+import {ALL_PRODUCTS_QUERY} from './artist.$username._index';
 
 import {ArtistServiceProduct} from '~/components/artist/ArtistServiceProduct';
 import {ArtistShell} from '~/components/ArtistShell';

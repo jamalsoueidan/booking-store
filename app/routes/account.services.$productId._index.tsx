@@ -47,7 +47,7 @@ export const action = async ({
   params,
   context,
 }: ActionFunctionArgs) => {
-  const customer = await getCustomer({context});
+  const customerId = await getCustomer({context});
 
   const {productId} = params;
   if (!productId) {
@@ -72,7 +72,7 @@ export const action = async ({
       storefront: context.storefront,
     });
 
-    await getBookingShopifyApi().customerProductUpsert(customer.id, productId, {
+    await getBookingShopifyApi().customerProductUpsert(customerId, productId, {
       ...values,
       ...variant,
       compareAtPrice: variant.compareAtPrice,
@@ -85,7 +85,7 @@ export const action = async ({
 };
 
 export async function loader({context, params}: LoaderFunctionArgs) {
-  const customer = await getCustomer({context});
+  const customerId = await getCustomer({context});
 
   const {productId} = params;
   if (!productId) {
@@ -93,15 +93,15 @@ export async function loader({context, params}: LoaderFunctionArgs) {
   }
 
   const schedules = await getBookingShopifyApi().customerScheduleList(
-    customer.id,
+    customerId,
   );
 
   const locations = await getBookingShopifyApi().customerLocationList(
-    customer.id,
+    customerId,
   );
 
   const {payload: customerProduct} =
-    await getBookingShopifyApi().customerProductGet(customer.id, productId);
+    await getBookingShopifyApi().customerProductGet(customerId, productId);
 
   const data = await context.storefront.query(PRODUCT_QUERY_ID, {
     variables: {

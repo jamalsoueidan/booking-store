@@ -18,10 +18,10 @@ import {getBookingShopifyApi} from '~/lib/api/bookingShopifyApi';
 import {getCustomer} from '~/lib/get-customer';
 
 export async function loader({context}: LoaderFunctionArgs) {
-  const customer = await getCustomer({context});
+  const customerId = await getCustomer({context});
 
   const {payload: blocked} = await getBookingShopifyApi().customerBlockedList(
-    customer.id,
+    customerId,
     {limit: '50'},
   );
 

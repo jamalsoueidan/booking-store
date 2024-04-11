@@ -1,6 +1,5 @@
 import {Stack, TextInput, rem} from '@mantine/core';
 import {Form, useActionData, useLoaderData} from '@remix-run/react';
-import {parseGid} from '@shopify/hydrogen';
 import {
   json,
   type ActionFunctionArgs,
@@ -21,7 +20,7 @@ const schema = customerUpdateBody.pick({
 });
 
 export const action = async ({request, context}: ActionFunctionArgs) => {
-  const customer = await getCustomer({context});
+  const customerId = await getCustomer({context});
 
   const formData = await request.formData();
   const submission = parseWithZod(formData, {schema});
@@ -31,10 +30,7 @@ export const action = async ({request, context}: ActionFunctionArgs) => {
   }
 
   try {
-    await getBookingShopifyApi().customerUpdate(
-      parseGid(customer.id).id,
-      submission.value,
-    );
+    await getBookingShopifyApi().customerUpdate(customerId, submission.value);
 
     return redirectWithNotification(context, {
       redirectUrl: `/account/public/social`,
@@ -48,11 +44,9 @@ export const action = async ({request, context}: ActionFunctionArgs) => {
 };
 
 export async function loader({context}: LoaderFunctionArgs) {
-  const customer = await getCustomer({context});
+  const customerId = await getCustomer({context});
 
-  const {payload: user} = await getBookingShopifyApi().customerGet(
-    parseGid(customer.id).id,
-  );
+  const {payload: user} = await getBookingShopifyApi().customerGet(customerId);
 
   return json({user});
 }

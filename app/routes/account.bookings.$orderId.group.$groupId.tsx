@@ -9,7 +9,7 @@ import {
   rem,
 } from '@mantine/core';
 import {useLoaderData} from '@remix-run/react';
-import {Money, parseGid} from '@shopify/hydrogen';
+import {Money} from '@shopify/hydrogen';
 import {json, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
 import {
   IconBuilding,
@@ -25,14 +25,14 @@ import {durationToTime} from '~/lib/duration';
 import {getCustomer} from '~/lib/get-customer';
 
 export async function loader({params, context}: LoaderFunctionArgs) {
-  const customer = await getCustomer({context});
+  const customerId = await getCustomer({context});
 
   const groupId = params.groupId || '';
   const orderId = params.orderId || '';
 
   const {payload: order} =
     await getBookingShopifyApi().customerBookingGetByGroup(
-      parseGid(customer.id).id,
+      customerId,
       orderId,
       groupId,
     );

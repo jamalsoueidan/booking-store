@@ -4,11 +4,11 @@ import {getCustomer} from '~/lib/get-customer';
 import {redirectWithNotification} from '~/lib/show-notification';
 
 export const action: ActionFunction = async ({context, params}) => {
-  const customer = await getCustomer({context});
+  const customerId = await getCustomer({context});
 
   try {
     await getBookingShopifyApi().customerBlockedDestroy(
-      customer.id,
+      customerId,
       params.blockedId || '',
     );
 

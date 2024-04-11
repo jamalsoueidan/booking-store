@@ -12,8 +12,8 @@ export function shouldRevalidate() {
 }
 
 export async function loader({context}: LoaderFunctionArgs) {
-  const customer = await getCustomer({context});
-  const response = await getBookingShopifyApi().customerStatus(customer.id);
+  const customerId = await getCustomer({context});
+  const response = await getBookingShopifyApi().customerStatus(customerId);
 
   return json({
     status: response.payload,

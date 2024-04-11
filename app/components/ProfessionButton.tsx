@@ -1,6 +1,6 @@
 import {Image, Space, Title, UnstyledButton} from '@mantine/core';
 import {useNavigate, useSearchParams} from '@remix-run/react';
-import {type Profession} from '~/routes/($locale).api.users.professions';
+import {type Profession} from '~/routes/api.users.professions';
 import classes from './ProfessionButton.module.css';
 
 export const ProfessionButton = ({

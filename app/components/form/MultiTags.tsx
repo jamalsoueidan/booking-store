@@ -23,7 +23,7 @@ export const MultiTags: React.FC<MultiTagsProps> = ({field, ...props}) => {
   );
 
   return (
-    <fieldset>
+    <>
       <MultiSelect
         defaultValue={defaultValue}
         onChange={handleChange}
@@ -38,6 +38,6 @@ export const MultiTags: React.FC<MultiTagsProps> = ({field, ...props}) => {
           name={item.name}
         />
       ))}
-    </fieldset>
+    </>
   );
 };

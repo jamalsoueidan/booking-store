@@ -21,7 +21,6 @@ import {
   Text,
   TextInput,
 } from '@mantine/core';
-import {parseGid} from '@shopify/hydrogen';
 import {AccountContent} from '~/components/account/AccountContent';
 import {AccountTitle} from '~/components/account/AccountTitle';
 import {AddressAutocompleteInput} from '~/components/form/AddressAutocompleteInput';
@@ -35,7 +34,7 @@ export const action = async ({
   context,
   params,
 }: ActionFunctionArgs) => {
-  const customer = await getCustomer({context});
+  const customerId = await getCustomer({context});
 
   const formData = await request.formData();
   const submission = parseWithZod(formData, {schema});
@@ -46,7 +45,7 @@ export const action = async ({
 
   try {
     const response = await getBookingShopifyApi().customerLocationUpdate(
-      parseGid(customer.id).id,
+      customerId,
       params.locationId || '',
       submission.value,
     );
@@ -58,10 +57,10 @@ export const action = async ({
 };
 
 export async function loader({context, params}: LoaderFunctionArgs) {
-  const customer = await getCustomer({context});
+  const customerId = await getCustomer({context});
 
   const response = await getBookingShopifyApi().customerLocationGet(
-    customer.id,
+    customerId,
     params.locationId || '',
   );
 

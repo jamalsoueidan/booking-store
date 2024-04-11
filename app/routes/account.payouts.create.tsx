@@ -27,12 +27,12 @@ import {SubmitButton} from '~/components/form/SubmitButton';
 import {getBookingShopifyApi} from '~/lib/api/bookingShopifyApi';
 import {CustomerPayoutAccountType} from '~/lib/api/model';
 import {customerPayoutAccountCreateBody} from '~/lib/zod/bookingShopifyApi';
-import {isMobilePay} from './($locale).account.payouts';
+import {isMobilePay} from './account.payouts';
 
 const schema = customerPayoutAccountCreateBody;
 
 export const action = async ({request, context}: ActionFunctionArgs) => {
-  const customer = await getCustomer({context});
+  const customerId = await getCustomer({context});
   const formData = await request.formData();
   const submission = parseWithZod(formData, {
     schema,
@@ -45,7 +45,7 @@ export const action = async ({request, context}: ActionFunctionArgs) => {
   try {
     const values = submission.value;
     await getBookingShopifyApi().customerPayoutAccountCreate(
-      customer.id,
+      customerId,
       isMobilePay(values.payoutDetails)
         ? {
             ...values,

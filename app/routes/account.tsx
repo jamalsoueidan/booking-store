@@ -2,7 +2,7 @@ import {AppShell, Flex, Text, UnstyledButton} from '@mantine/core';
 import {useDisclosure, useMediaQuery} from '@mantine/hooks';
 import {Link, Outlet, useLoaderData} from '@remix-run/react';
 import {parseGid} from '@shopify/hydrogen';
-import {json, redirect, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
+import {json, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
 import {
   IconAddressBook,
   IconCalendarEvent,
@@ -12,112 +12,56 @@ import {
   IconShoppingBag,
   IconUser,
 } from '@tabler/icons-react';
-import {type CustomerQuery} from 'storefrontapi.generated';
+import {type CustomerFragment} from 'customer-accountapi.generated';
 import {AccountMenu} from '~/components/AccountMenu';
+import {CUSTOMER_DETAILS_QUERY} from '~/graphql/customer-account/CustomerDetailsQuery';
 import {getBookingShopifyApi} from '~/lib/api/bookingShopifyApi';
 import {type User} from '~/lib/api/model';
 
 export type AccountOutlet = {
-  customer: CustomerQuery['customer'];
+  customer: CustomerFragment;
   user?: User | null;
   isBusiness: boolean;
 };
 
-export async function loader({request, context}: LoaderFunctionArgs) {
-  const {session, storefront} = context;
-  const {pathname} = new URL(request.url);
-  const customerAccessToken = await session.get('customerAccessToken');
-  const isLoggedIn = !!customerAccessToken?.accessToken;
-  const isAccountHome = pathname === '/account' || pathname === '/account/';
-  const isPrivateRoute =
-    /^\/account\/(payouts|orders|business|profile|dashboard|addresses|upload|public|booked|bookings|password|locations|services|schedules)(\/.*)?$/.test(
-      pathname,
-    );
+export function shouldRevalidate() {
+  return true;
+}
 
-  if (!isLoggedIn) {
-    if (isPrivateRoute || isAccountHome) {
-      session.unset('customerAccessToken');
-      return redirect('/account/login', {
-        headers: {
-          'Set-Cookie': await session.commit(),
-        },
-      });
-    } else {
-      // public subroute such as /account/login...
-      return json({
-        isLoggedIn: false,
-        isAccountHome,
-        isPrivateRoute,
-        customer: null,
-        user: null,
-        isBusiness: null,
-      });
-    }
-  } else {
-    // loggedIn, default redirect to the orders page
-    if (isAccountHome) {
-      return redirect('/account/dashboard');
-    }
+export async function loader({context}: LoaderFunctionArgs) {
+  const {data, errors} = await context.customerAccount.query(
+    CUSTOMER_DETAILS_QUERY,
+  );
+
+  if (errors?.length || !data?.customer) {
+    throw new Error('Customer not found');
   }
 
-  try {
-    const {customer} = await storefront.query(CUSTOMER_QUERY, {
-      variables: {
-        customerAccessToken: customerAccessToken.accessToken,
-        country: storefront.i18n.country,
-        language: storefront.i18n.language,
-      },
-      cache: storefront.CacheNone(),
-    });
-
-    if (!customer) {
-      throw new Response('Customer not found', {status: 404});
-    }
-
-    const {payload: userIsBusiness} =
-      await getBookingShopifyApi().customerIsBusiness(parseGid(customer.id).id);
-
-    let user = undefined;
-    if (userIsBusiness.isBusiness) {
-      user = (
-        await getBookingShopifyApi().customerGet(parseGid(customer.id).id)
-      ).payload;
-    }
-
-    return json(
-      {
-        isLoggedIn,
-        isPrivateRoute,
-        isAccountHome,
-        customer,
-        isBusiness: userIsBusiness.isBusiness,
-        user,
-      },
-      {
-        headers: {
-          'Cache-Control': 'no-cache, no-store, must-revalidate',
-        },
-      },
+  const {payload: userIsBusiness} =
+    await getBookingShopifyApi().customerIsBusiness(
+      parseGid(data.customer.id).id,
     );
-  } catch (error) {
-    // eslint-disable-next-line no-console
-    console.error('There was a problem loading account', error);
-    session.unset('customerAccessToken');
-    return redirect('/account/login', {
+
+  let user = undefined;
+  if (userIsBusiness.isBusiness) {
+    user = (
+      await getBookingShopifyApi().customerGet(parseGid(data.customer.id).id)
+    ).payload;
+  }
+
+  return json(
+    {customer: data.customer, isBusiness: userIsBusiness.isBusiness, user},
+    {
       headers: {
-        'Set-Cookie': await session.commit(),
+        'Cache-Control': 'no-cache, no-store, must-revalidate',
+        'Set-Cookie': await context.session.commit(),
       },
-    });
-  }
+    },
+  );
 }
 
 export default function Acccount() {
-  const {customer, user, isBusiness, isPrivateRoute, isAccountHome} =
-    useLoaderData<typeof loader>();
-
-  if (!isPrivateRoute && !isAccountHome) {
-    return <Outlet context={{customer}} />;
-  }
+  const {customer, user, isBusiness} = useLoaderData<typeof loader>();
 
   return (
     <AccountLayout
@@ -269,51 +213,3 @@ function AccountLayout({
     </AppShell>
   );
 }
-
-export const CUSTOMER_FRAGMENT = `#graphql
-  fragment Customer on Customer {
-    id
-    acceptsMarketing
-    addresses(first: 6) {
-      nodes {
-        ...Address
-      }
-    }
-    defaultAddress {
-      ...Address
-    }
-    email
-    firstName
-    lastName
-    numberOfOrders
-    phone
-  }
-  fragment Address on MailingAddress {
-    id
-    formatted
-    firstName
-    lastName
-    company
-    address1
-    address2
-    country
-    province
-    city
-    zip
-    phone
-  }
-` as const;
-
-// NOTE: https://shopify.dev/docs/api/storefront/latest/queries/customer
-export const CUSTOMER_QUERY = `#graphql
-  query Customer(
-    $customerAccessToken: String!
-    $country: CountryCode
-    $language: LanguageCode
-  ) @inContext(country: $country, language: $language) {
-    customer(customerAccessToken: $customerAccessToken) {
-      ...Customer
-    }
-  }
-  ${CUSTOMER_FRAGMENT}
-` as const;

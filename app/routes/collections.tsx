@@ -55,7 +55,6 @@ export default function Collections() {
   return (
     <>
       <VisualTeaser component={visualTeaser} />
-
       <Container size="xl">
         <Flex
           justify="space-between"

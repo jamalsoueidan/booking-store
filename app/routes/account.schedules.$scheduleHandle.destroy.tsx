@@ -7,7 +7,7 @@ import {setNotification} from '~/lib/show-notification';
 export const action: ActionFunction = async ({context, params}) => {
   try {
     const {scheduleHandle} = params;
-    const customer = await getCustomer({context});
+    const customerId = await getCustomer({context});
 
     if (scheduleHandle) {
       setNotification(context, {
@@ -17,7 +17,7 @@ export const action: ActionFunction = async ({context, params}) => {
       });
 
       await getBookingShopifyApi().customerScheduleDestroy(
-        customer.id,
+        customerId,
         scheduleHandle,
       );
     }

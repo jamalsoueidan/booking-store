@@ -2,7 +2,6 @@ import {getFormProps, getInputProps, useForm} from '@conform-to/react';
 import {parseWithZod} from '@conform-to/zod';
 import {FocusTrap, Modal, Stack, TextInput} from '@mantine/core';
 import {Form, useActionData} from '@remix-run/react';
-import {parseGid} from '@shopify/hydrogen';
 import {json, redirect, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
 import type {ActionFunctionArgs} from 'react-router';
 import {type z} from 'zod';
@@ -16,7 +15,7 @@ import {customerBlockedCreateBody} from '~/lib/zod/bookingShopifyApi';
 const schema = customerBlockedCreateBody;
 
 export const action = async ({request, context}: ActionFunctionArgs) => {
-  const customer = await getCustomer({context});
+  const customerId = await getCustomer({context});
 
   const formData = await request.formData();
   const submission = parseWithZod(formData, {schema});
@@ -27,7 +26,7 @@ export const action = async ({request, context}: ActionFunctionArgs) => {
 
   try {
     await getBookingShopifyApi().customerBlockedCreate(
-      parseGid(customer.id).id,
+      customerId,
       submission.value,
     );
 

@@ -23,7 +23,7 @@ export const action = async ({
   context,
   params,
 }: ActionFunctionArgs) => {
-  const customer = await getCustomer({context});
+  const customerId = await getCustomer({context});
   const {scheduleHandle} = params;
 
   const formData = await request.formData();
@@ -41,7 +41,7 @@ export const action = async ({
     });
 
     const response = await getBookingShopifyApi().customerScheduleUpdate(
-      customer.id,
+      customerId,
       scheduleHandle || '',
       submission.value,
     );
@@ -57,10 +57,10 @@ export const action = async ({
 };
 
 export async function loader({context, params}: LoaderFunctionArgs) {
-  const customer = await getCustomer({context});
+  const customerId = await getCustomer({context});
 
   const response = await getBookingShopifyApi().customerLocationGet(
-    customer.id,
+    customerId,
     params.locationId || '',
   );
 

@@ -13,7 +13,7 @@ import {TreatmentStepper} from '~/components/TreatmentStepper';
 import {PRODUCT_SELECTED_OPTIONS_QUERY} from '~/data/queries';
 import {getBookingShopifyApi} from '~/lib/api/bookingShopifyApi';
 import {durationToTime} from '~/lib/duration';
-import {ALL_PRODUCTS_QUERY} from './($locale).artist.$username._index';
+import {ALL_PRODUCTS_QUERY} from './artist.$username._index';
 
 export const loader = async ({
   request,

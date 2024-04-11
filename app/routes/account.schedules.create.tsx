@@ -12,7 +12,7 @@ import {customerScheduleCreateBody} from '~/lib/zod/bookingShopifyApi';
 const schema = customerScheduleCreateBody;
 
 export const action = async ({request, context}: ActionFunctionArgs) => {
-  const customer = await getCustomer({context});
+  const customerId = await getCustomer({context});
   const formData = await request.formData();
   const submission = parseWithZod(formData, {schema});
 
@@ -22,7 +22,7 @@ export const action = async ({request, context}: ActionFunctionArgs) => {
 
   try {
     const response = await getBookingShopifyApi().customerScheduleCreate(
-      customer.id,
+      customerId,
       submission.value,
     );
 

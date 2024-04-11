@@ -3,9 +3,9 @@ import {getBookingShopifyApi} from '~/lib/api/bookingShopifyApi';
 import {getCustomer} from '~/lib/get-customer';
 
 export const action: ActionFunction = async ({context, params}) => {
-  const customer = await getCustomer({context});
+  const customerId = await getCustomer({context});
 
-  await getBookingShopifyApi().customerPayoutAccountDestroy(customer.id);
+  await getBookingShopifyApi().customerPayoutAccountDestroy(customerId);
 
   return redirect(`/account/payouts`);
 };

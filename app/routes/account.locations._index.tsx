@@ -24,9 +24,9 @@ import {type CustomerLocationIsDefault} from '~/lib/api/model';
 import {getCustomer} from '~/lib/get-customer';
 
 export async function loader({context}: LoaderFunctionArgs) {
-  const customer = await getCustomer({context});
+  const customerId = await getCustomer({context});
   const response = await getBookingShopifyApi().customerLocationList(
-    customer.id,
+    customerId,
   );
 
   return json(response.payload);

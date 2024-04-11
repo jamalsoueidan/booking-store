@@ -27,7 +27,7 @@ import type {User} from '~/lib/api/model';
 import {
   ProfessionSentenceTranslations,
   ProfessionTranslations,
-} from './($locale).api.users.professions';
+} from './api.users.professions';
 
 const LIMIT = '20';
 

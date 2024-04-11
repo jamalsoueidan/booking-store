@@ -16,7 +16,7 @@ import type {
   CustomerPayoutLogResponse,
   Shipping,
 } from '~/lib/api/model';
-import {isMobilePay} from './($locale).account.payouts';
+import {isMobilePay} from './account.payouts';
 
 export function isShipping(
   details: CustomerPayoutLogReferenceDocument,
@@ -25,16 +25,13 @@ export function isShipping(
 }
 
 export async function loader({context, params}: LoaderFunctionArgs) {
-  const customer = await getCustomer({context});
+  const customerId = await getCustomer({context});
   const {id} = params;
 
-  const payout = getBookingShopifyApi().customerPayoutGet(
-    customer.id,
-    id || '',
-  );
+  const payout = getBookingShopifyApi().customerPayoutGet(customerId, id || '');
 
   const payoutLogs = getBookingShopifyApi().customerPayoutLogPaginate(
-    customer.id,
+    customerId,
     id || '',
     {
       page: '1',

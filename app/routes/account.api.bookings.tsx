@@ -3,7 +3,7 @@ import {getBookingShopifyApi} from '~/lib/api/bookingShopifyApi';
 import {getCustomer} from '~/lib/get-customer';
 
 export async function loader({request, context}: LoaderFunctionArgs) {
-  const customer = await getCustomer({context});
+  const customerId = await getCustomer({context});
 
   const url = new URL(request.url);
   const searchParams = new URLSearchParams(url.search);
@@ -11,10 +11,10 @@ export async function loader({request, context}: LoaderFunctionArgs) {
   const start = searchParams.get('start') || '';
   const end = searchParams.get('end') || '';
 
-  const {payload: blocked} = await getBookingShopifyApi().customerBlockedRange(
-    customer.id,
+  const {payload: orders} = await getBookingShopifyApi().customerBookingRange(
+    customerId,
     {start, end},
   );
 
-  return json(blocked);
+  return json(orders);
 }

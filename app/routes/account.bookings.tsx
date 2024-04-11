@@ -153,7 +153,7 @@ export default function AccountBookings() {
           }}
           eventClick={openModal}
           themeSystem="standard"
-          eventSources={['/api/account/bookings', '/api/account/booked']}
+          eventSources={['/account/api/bookings', '/account/api/booked']}
           initialView={isMobile ? 'timeGridDay' : 'dayGridMonth'}
           buttonText={{
             prev: '<',

@@ -44,8 +44,8 @@ import {getCustomer} from '~/lib/get-customer';
 import {redirectWithNotification} from '~/lib/show-notification';
 import {renderTime} from '~/lib/time';
 import {customerScheduleSlotUpdateBody} from '~/lib/zod/bookingShopifyApi';
-import AccountSchedulesEdit from './($locale).account.schedules.$scheduleHandle.edit';
-import {translationsDays} from './($locale).api.users.filters';
+import AccountSchedulesEdit from './account.schedules.$scheduleHandle.edit';
+import {translationsDays} from './api.users.filters';
 
 // this must be taken from bookingApi, if it doesn't exist, create it in booking-api
 const schema = customerScheduleSlotUpdateBody;
@@ -55,7 +55,7 @@ export const action = async ({
   context,
   params,
 }: ActionFunctionArgs) => {
-  const customer = await getCustomer({context});
+  const customerId = await getCustomer({context});
 
   const {scheduleHandle} = params;
   if (!scheduleHandle) {
@@ -77,7 +77,7 @@ export const action = async ({
 
   try {
     const response = await getBookingShopifyApi().customerScheduleSlotUpdate(
-      customer.id,
+      customerId,
       scheduleHandle,
       {slots},
     );
@@ -94,7 +94,7 @@ export const action = async ({
 };
 
 export async function loader({context, params}: LoaderFunctionArgs) {
-  const customer = await getCustomer({context});
+  const customerId = await getCustomer({context});
 
   const {scheduleHandle} = params;
   if (!scheduleHandle) {
@@ -102,7 +102,7 @@ export async function loader({context, params}: LoaderFunctionArgs) {
   }
 
   const response = await getBookingShopifyApi().customerScheduleGet(
-    customer.id,
+    customerId,
     scheduleHandle || '',
   );
 

@@ -1,6 +1,6 @@
+import {json, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
 import {Link, useLoaderData, type MetaFunction} from '@remix-run/react';
 import {type Shop} from '@shopify/hydrogen/storefront-api-types';
-import {json, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
 
 type SelectedPolicies = keyof Pick<
   Shop,
@@ -8,7 +8,7 @@ type SelectedPolicies = keyof Pick<
 >;
 
 export const meta: MetaFunction<typeof loader> = ({data}) => {
-  return [{title: `BySisters | ${data?.policy.title ?? ''}`}];
+  return [{title: `Hydrogen | ${data?.policy.title ?? ''}`}];
 };
 
 export async function loader({params, context}: LoaderFunctionArgs) {

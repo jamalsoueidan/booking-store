@@ -48,7 +48,7 @@ const schema = customerProductUpsertBody
 type DefaultValues = z.infer<typeof schema>;
 
 export const action = async ({request, context}: ActionFunctionArgs) => {
-  const customer = await getCustomer({context});
+  const customerId = await getCustomer({context});
   const formData = await request.formData();
   const submission = parseWithZod(formData, {
     schema,
@@ -68,7 +68,7 @@ export const action = async ({request, context}: ActionFunctionArgs) => {
       storefront: context.storefront,
     });
 
-    await getBookingShopifyApi().customerProductUpsert(customer.id, productId, {
+    await getBookingShopifyApi().customerProductUpsert(customerId, productId, {
       ...values,
       ...variant,
       compareAtPrice: variant.compareAtPrice,
@@ -81,14 +81,14 @@ export const action = async ({request, context}: ActionFunctionArgs) => {
 };
 
 export async function loader({context}: LoaderFunctionArgs) {
-  const customer = await getCustomer({context});
+  const customerId = await getCustomer({context});
 
   const schedule = await getBookingShopifyApi().customerScheduleList(
-    customer.id,
+    customerId,
   );
 
   const locations = await getBookingShopifyApi().customerLocationList(
-    customer.id,
+    customerId,
   );
 
   const findDefaultLocation = locations.payload[0];

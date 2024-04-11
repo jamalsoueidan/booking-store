@@ -8,9 +8,9 @@ export const action: ActionFunction = async ({context, params}) => {
     throw new Response('Missing productId param', {status: 404});
   }
 
-  const customer = await getCustomer({context});
+  const customerId = await getCustomer({context});
 
-  await getBookingShopifyApi().customerProductDestroy(customer.id, productId);
+  await getBookingShopifyApi().customerProductDestroy(customerId, productId);
 
   return redirect(`/account/services`);
 };

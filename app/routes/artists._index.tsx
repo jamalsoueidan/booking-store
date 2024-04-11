@@ -19,7 +19,7 @@ import {getBookingShopifyApi} from '~/lib/api/bookingShopifyApi';
 import {
   ProfessionSentenceTranslations,
   ProfessionTranslations,
-} from './($locale).api.users.professions';
+} from './api.users.professions';
 
 const LIMIT = '20';
 

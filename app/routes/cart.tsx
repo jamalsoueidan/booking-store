@@ -1,5 +1,5 @@
 import {Await, useLoaderData, type MetaFunction} from '@remix-run/react';
-import type {CartQueryData} from '@shopify/hydrogen';
+import type {CartQueryDataReturn} from '@shopify/hydrogen';
 import {CartForm} from '@shopify/hydrogen';
 import {
   json,
@@ -7,23 +7,20 @@ import {
   type LoaderFunctionArgs,
 } from '@shopify/remix-oxygen';
 import {Suspense} from 'react';
+import {VisualTeaser} from '~/components/blocks/VisualTeaser';
 import {CartMain} from '~/components/Cart';
 import {Wrapper} from '~/components/Wrapper';
-import {VisualTeaser} from '~/components/blocks/VisualTeaser';
 import {METAFIELD_QUERY} from '~/data/fragments';
 import {useRootLoaderData} from '~/root';
 
 export const meta: MetaFunction = () => {
-  return [{title: `BySisters | Indkøbskurv`}];
+  return [{title: `Hydrogen | Cart`}];
 };
 
 export async function action({request, context}: ActionFunctionArgs) {
-  const {session, cart} = context;
+  const {cart} = context;
 
-  const [formData, customerAccessToken] = await Promise.all([
-    request.formData(),
-    session.get('customerAccessToken'),
-  ]);
+  const formData = await request.formData();
 
   const {action, inputs} = CartForm.getFormInput(formData);
 
@@ -32,7 +29,7 @@ export async function action({request, context}: ActionFunctionArgs) {
   }
 
   let status = 200;
-  let result: CartQueryData;
+  let result: CartQueryDataReturn;
 
   switch (action) {
     case CartForm.ACTIONS.LinesAdd:
@@ -61,7 +58,6 @@ export async function action({request, context}: ActionFunctionArgs) {
     case CartForm.ACTIONS.BuyerIdentityUpdate: {
       result = await cart.updateBuyerIdentity({
         ...inputs.buyerIdentity,
-        customerAccessToken: customerAccessToken?.accessToken,
       });
       break;
     }
@@ -78,6 +74,8 @@ export async function action({request, context}: ActionFunctionArgs) {
     status = 303;
     headers.set('Location', redirectTo);
   }
+
+  headers.append('Set-Cookie', await context.session.commit());
 
   return json(
     {

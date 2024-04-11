@@ -9,12 +9,12 @@ import {AccountContent} from '~/components/account/AccountContent';
 import {AccountTitle} from '~/components/account/AccountTitle';
 import {getBookingShopifyApi} from '~/lib/api/bookingShopifyApi';
 import {getCustomer} from '~/lib/get-customer';
-import AccountSchedulesCreate from './($locale).account.schedules.create';
+import AccountSchedulesCreate from './account.schedules.create';
 
 export async function loader({context, request}: LoaderFunctionArgs) {
-  const customer = await getCustomer({context});
+  const customerId = await getCustomer({context});
   const response = await getBookingShopifyApi().customerScheduleList(
-    customer.id,
+    customerId,
   );
 
   const url = new URL(request.url);

@@ -17,6 +17,8 @@ const UserContext = React.createContext<User>({
   social: {},
   yearsExperience: '3',
   theme: {color: 'pink'},
+  active: true,
+  isBusiness: false,
 });
 
 export const UserProvider = ({

@@ -43,8 +43,8 @@ import {useComponents} from '~/lib/use-components';
 import {
   loader as loaderProfessions,
   type Profession,
-} from './($locale).api.users.professions';
-import {COLLECTIONS_QUERY} from './($locale).categories';
+} from './api.users.professions';
+import {COLLECTIONS_QUERY} from './categories';
 
 export function shouldRevalidate() {
   return false;

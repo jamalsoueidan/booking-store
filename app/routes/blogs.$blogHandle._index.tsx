@@ -1,10 +1,10 @@
-import {Link, useLoaderData, type MetaFunction} from '@remix-run/react';
-import {getPaginationVariables, Image, Pagination} from '@shopify/hydrogen';
 import {json, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
+import {Link, useLoaderData, type MetaFunction} from '@remix-run/react';
+import {Image, Pagination, getPaginationVariables} from '@shopify/hydrogen';
 import type {ArticleItemFragment} from 'storefrontapi.generated';
 
 export const meta: MetaFunction<typeof loader> = ({data}) => {
-  return [{title: `BySisters | ${data?.blog.title ?? ''} blog`}];
+  return [{title: `Hydrogen | ${data?.blog.title ?? ''} blog`}];
 };
 
 export const loader = async ({

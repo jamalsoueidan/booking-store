@@ -14,33 +14,22 @@ import type {
 } from 'storefrontapi.generated';
 
 import {
-  AspectRatio,
-  Box,
-  Button,
-  Group,
-  SimpleGrid,
-  Text,
-  Title,
-  rem,
-} from '@mantine/core';
-import {
   CartForm,
+  getSelectedProductOptions,
   Image,
   Money,
   VariantSelector,
-  getSelectedProductOptions,
   type VariantOption,
 } from '@shopify/hydrogen';
 import type {
   CartLineInput,
   SelectedOption,
 } from '@shopify/hydrogen/storefront-api-types';
-import {IconShoppingCart} from '@tabler/icons-react';
 import {PRODUCT_SELECTED_OPTIONS_QUERY, VARIANTS_QUERY} from '~/data/queries';
-import {getVariantUrl} from '~/utils';
+import {getVariantUrl} from '~/lib/variants';
 
 export const meta: MetaFunction<typeof loader> = ({data}) => {
-  return [{title: `BySisters | ${data?.product.title ?? ''}`}];
+  return [{title: `Hydrogen | ${data?.product.title ?? ''}`}];
 };
 
 export async function loader({params, request, context}: LoaderFunctionArgs) {
@@ -65,7 +54,7 @@ export async function loader({params, request, context}: LoaderFunctionArgs) {
 
   // await the query for the critical product data
   const {product} = await storefront.query(PRODUCT_SELECTED_OPTIONS_QUERY, {
-    variables: {productHandle: handle, selectedOptions},
+    variables: {handle, selectedOptions},
   });
 
   if (!product?.id) {
@@ -102,7 +91,7 @@ export async function loader({params, request, context}: LoaderFunctionArgs) {
   return defer({product, variants});
 }
 
-export function redirectToFirstVariant({
+function redirectToFirstVariant({
   product,
   request,
 }: {
@@ -129,14 +118,14 @@ export default function Product() {
   const {product, variants} = useLoaderData<typeof loader>();
   const {selectedVariant} = product;
   return (
-    <SimpleGrid cols={{base: 1, md: 2}} spacing={0}>
+    <div className="product">
       <ProductImage image={selectedVariant?.image} />
       <ProductMain
         selectedVariant={selectedVariant}
         product={product}
         variants={variants}
       />
-    </SimpleGrid>
+    </div>
   );
 }
 
@@ -145,17 +134,15 @@ function ProductImage({image}: {image: ProductVariantFragment['image']}) {
     return <div className="product-image" />;
   }
   return (
-    <Box p={rem(42)}>
-      <AspectRatio ratio={1080 / 1080}>
-        <Image
-          alt={image.altText || 'Product Image'}
-          aspectRatio="1/1"
-          data={image}
-          key={image.id}
-          sizes="(min-width: 45em) 50vw, 100vw"
-        />
-      </AspectRatio>
-    </Box>
+    <div className="product-image">
+      <Image
+        alt={image.altText || 'Product Image'}
+        aspectRatio="1/1"
+        data={image}
+        key={image.id}
+        sizes="(min-width: 45em) 50vw, 100vw"
+      />
+    </div>
   );
 }
 
@@ -170,17 +157,10 @@ function ProductMain({
 }) {
   const {title, descriptionHtml} = product;
   return (
-    <Box p={rem(42)} bg="#fafafb">
-      <Title order={1} size={rem(54)}>
-        {title}
-      </Title>
-      <Text
-        size="xl"
-        c="dimmed"
-        fw={400}
-        dangerouslySetInnerHTML={{__html: descriptionHtml}}
-      ></Text>
-
+    <div className="product-main">
+      <h1>{title}</h1>
+      <ProductPrice selectedVariant={selectedVariant} />
+      <br />
       <Suspense
         fallback={
           <ProductForm
@@ -203,30 +183,15 @@ function ProductMain({
           )}
         </Await>
       </Suspense>
-
-      <Group justify="space-between" align="center" mt={rem(64)}>
-        <ProductPrice selectedVariant={selectedVariant} />
-
-        <AddToCartButton
-          disabled={!selectedVariant || !selectedVariant.availableForSale}
-          onClick={() => {
-            window.location.href = window.location.href + '#cart-aside';
-          }}
-          lines={
-            selectedVariant
-              ? [
-                  {
-                    merchandiseId: selectedVariant.id,
-                    quantity: 1,
-                  },
-                ]
-              : []
-          }
-        >
-          {selectedVariant?.availableForSale ? 'Tilføj indkøbskurv' : 'Udsolgt'}
-        </AddToCartButton>
-      </Group>
-    </Box>
+      <br />
+      <br />
+      <p>
+        <strong>Description</strong>
+      </p>
+      <br />
+      <div dangerouslySetInnerHTML={{__html: descriptionHtml}} />
+      <br />
+    </div>
   );
 }
 
@@ -236,24 +201,22 @@ function ProductPrice({
   selectedVariant: ProductFragment['selectedVariant'];
 }) {
   return (
-    <Text size={rem(24)} c="gray" fw={400}>
+    <div className="product-price">
       {selectedVariant?.compareAtPrice ? (
         <>
+          <p>Sale</p>
+          <br />
           <div className="product-price-on-sale">
-            {selectedVariant ? (
-              <Money data={selectedVariant.price} as="span" />
-            ) : null}
+            {selectedVariant ? <Money data={selectedVariant.price} /> : null}
             <s>
-              <Money data={selectedVariant.compareAtPrice} as="span" />
+              <Money data={selectedVariant.compareAtPrice} />
             </s>
           </div>
         </>
       ) : (
-        selectedVariant?.price && (
-          <Money data={selectedVariant?.price} as="span" />
-        )
+        selectedVariant?.price && <Money data={selectedVariant?.price} />
       )}
-    </Text>
+    </div>
   );
 }
 
@@ -275,6 +238,25 @@ function ProductForm({
       >
         {({option}) => <ProductOptions key={option.name} option={option} />}
       </VariantSelector>
+      <br />
+      <AddToCartButton
+        disabled={!selectedVariant || !selectedVariant.availableForSale}
+        onClick={() => {
+          window.location.href = window.location.href + '#cart-aside';
+        }}
+        lines={
+          selectedVariant
+            ? [
+                {
+                  merchandiseId: selectedVariant.id,
+                  quantity: 1,
+                },
+              ]
+            : []
+        }
+      >
+        {selectedVariant?.availableForSale ? 'Add to cart' : 'Sold out'}
+      </AddToCartButton>
     </div>
   );
 }
@@ -308,45 +290,37 @@ function ProductOptions({option}: {option: VariantOption}) {
   );
 }
 
-export function AddToCartButton({
+function AddToCartButton({
   analytics,
   children,
   disabled,
   lines,
   onClick,
-  onFinish,
 }: {
   analytics?: unknown;
   children: React.ReactNode;
   disabled?: boolean;
   lines: CartLineInput[];
   onClick?: () => void;
-  onFinish?: () => void;
 }) {
   return (
     <CartForm route="/cart" inputs={{lines}} action={CartForm.ACTIONS.LinesAdd}>
-      {(fetcher: FetcherWithComponents<any>) => {
-        return (
-          <>
-            <input
-              name="analytics"
-              type="hidden"
-              value={JSON.stringify(analytics)}
-            />
-            <Button
-              variant="filled"
-              color="black"
-              size="md"
-              type="submit"
-              onClick={onClick}
-              leftSection={<IconShoppingCart />}
-              disabled={disabled ?? fetcher.state !== 'idle'}
-            >
-              {children}
-            </Button>
-          </>
-        );
-      }}
+      {(fetcher: FetcherWithComponents<any>) => (
+        <>
+          <input
+            name="analytics"
+            type="hidden"
+            value={JSON.stringify(analytics)}
+          />
+          <button
+            type="submit"
+            onClick={onClick}
+            disabled={disabled ?? fetcher.state !== 'idle'}
+          >
+            {children}
+          </button>
+        </>
+      )}
     </CartForm>
   );
 }

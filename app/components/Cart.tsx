@@ -3,7 +3,7 @@ import {Link} from '@remix-run/react';
 import {CartForm, Image, Money} from '@shopify/hydrogen';
 import type {CartLineUpdateInput} from '@shopify/hydrogen/storefront-api-types';
 import type {CartApiQueryFragment} from 'storefrontapi.generated';
-import {useVariantUrl} from '~/utils';
+import {useVariantUrl} from '~/lib/variants';
 
 type CartLine = CartApiQueryFragment['lines']['nodes'][0];
 

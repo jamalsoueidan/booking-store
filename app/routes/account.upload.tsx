@@ -5,7 +5,6 @@ import {
   useSearchParams,
   useSubmit,
 } from '@remix-run/react';
-import {parseGid} from '@shopify/hydrogen';
 import {
   json,
   type ActionFunctionArgs,
@@ -34,13 +33,13 @@ export const action = async ({
   context,
   params,
 }: ActionFunctionArgs) => {
-  const customer = await getCustomer({context});
+  const customerId = await getCustomer({context});
 
   const formData = await request.formData();
   const resourceUrl = formData.get('url') as string;
 
   await getBookingShopifyApi().upload({
-    customerId: parseInt(parseGid(customer.id).id),
+    customerId,
     resourceUrl,
   });
 
@@ -52,10 +51,10 @@ export const action = async ({
 };
 
 export async function loader({context}: LoaderFunctionArgs) {
-  const customer = await getCustomer({context});
+  const customerId = await getCustomer({context});
 
   const {payload} = await getBookingShopifyApi().customerUploadResourceURL(
-    parseGid(customer.id).id,
+    customerId,
   );
 
   return json(payload);

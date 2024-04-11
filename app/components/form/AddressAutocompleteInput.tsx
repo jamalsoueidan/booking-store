@@ -6,7 +6,7 @@ import {
 } from '@mantine/core';
 import {useFetcher} from '@remix-run/react';
 import {useEffect, useState} from 'react';
-import {type ApiAutoCompleteProposal} from '~/routes/($locale).api.autocomplete';
+import {type ApiAutoCompleteProposal} from '~/routes/api.autocomplete';
 
 export type AddressAutocompleteInputProps = {
   defaultValue?: string;

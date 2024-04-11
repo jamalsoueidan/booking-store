@@ -1,123 +1,114 @@
 import {Button, Card, Flex, Table, Title} from '@mantine/core';
 import {Link, useLoaderData, type MetaFunction} from '@remix-run/react';
-import {Money, Pagination, getPaginationVariables} from '@shopify/hydrogen';
-import {json, redirect, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
+import {
+  Money,
+  Pagination,
+  flattenConnection,
+  getPaginationVariables,
+} from '@shopify/hydrogen';
+import {json, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
 import {IconHeartHandshake} from '@tabler/icons-react';
-import {format} from 'date-fns';
-import {da} from 'date-fns/locale';
 import type {
   CustomerOrdersFragment,
   OrderItemFragment,
-} from 'storefrontapi.generated';
+} from 'customer-accountapi.generated';
+import {format} from 'date-fns';
+import {da} from 'date-fns/locale';
 import {AccountContent} from '~/components/account/AccountContent';
 import {AccountTitle} from '~/components/account/AccountTitle';
+import {CUSTOMER_ORDERS_QUERY} from '~/graphql/customer-account/CustomerOrdersQuery';
 
 export const meta: MetaFunction = () => {
   return [{title: 'Orders'}];
 };
 
 export async function loader({request, context}: LoaderFunctionArgs) {
-  const {session, storefront} = context;
+  const paginationVariables = getPaginationVariables(request, {
+    pageBy: 20,
+  });
 
-  const customerAccessToken = await session.get('customerAccessToken');
-  if (!customerAccessToken?.accessToken) {
-    return redirect('/account/login');
-  }
-
-  try {
-    const paginationVariables = getPaginationVariables(request, {
-      pageBy: 20,
-    });
-
-    const {customer} = await storefront.query(CUSTOMER_ORDERS_QUERY, {
+  const {data, errors} = await context.customerAccount.query(
+    CUSTOMER_ORDERS_QUERY,
+    {
       variables: {
-        customerAccessToken: customerAccessToken.accessToken,
-        country: storefront.i18n.country,
-        language: storefront.i18n.language,
         ...paginationVariables,
       },
-      cache: storefront.CacheNone(),
-    });
+    },
+  );
 
-    if (!customer) {
-      throw new Error('Customer not found');
-    }
-
-    return json({customer});
-  } catch (error: unknown) {
-    if (error instanceof Error) {
-      return json({error: error.message}, {status: 400});
-    }
-    return json({error}, {status: 400});
+  if (errors?.length || !data?.customer) {
+    throw Error('Customer orders not found');
   }
+
+  return json(
+    {customer: data.customer},
+    {
+      headers: {
+        'Set-Cookie': await context.session.commit(),
+      },
+    },
+  );
 }
 
 export default function Orders() {
   const {customer} = useLoaderData<{customer: CustomerOrdersFragment}>();
-  const {orders, numberOfOrders} = customer;
+  const {orders} = customer;
   return (
     <>
       <AccountTitle
         heading={
           <>
-            Orders <small>({numberOfOrders})</small>
+            Orders <small>({orders.nodes.length})</small>
           </>
         }
       />
       <AccountContent>
-        {orders.nodes.length ? (
-          <OrdersTable orders={orders} />
-        ) : (
-          <EmptyOrders />
-        )}
+        <OrdersTable orders={orders} />
       </AccountContent>
     </>
   );
 }
 
 function OrdersTable({orders}: Pick<CustomerOrdersFragment, 'orders'>) {
-  return (
-    <>
-      {orders?.nodes.length ? (
-        <Pagination connection={orders}>
-          {({nodes, isLoading, PreviousLink, NextLink}) => {
-            return (
-              <>
-                <Flex justify="center">
-                  <Button component={PreviousLink} loading={isLoading}>
-                    ↑ Hent tidligere
-                  </Button>
-                </Flex>
-                <Table>
-                  <Table.Thead>
-                    <Table.Tr>
-                      <Table.Th>Dato</Table.Th>
-                      <Table.Th>Betaling</Table.Th>
-                      <Table.Th>Beløb</Table.Th>
-                      <Table.Th></Table.Th>
-                    </Table.Tr>
-                  </Table.Thead>
-                  <Table.Tbody>
-                    {nodes.map((order) => {
-                      return <OrderItem key={order.id} order={order} />;
-                    })}
-                  </Table.Tbody>
-                </Table>
+  return orders?.nodes.length ? (
+    <Pagination connection={orders}>
+      {({nodes, isLoading, PreviousLink, NextLink}) => {
+        return (
+          <>
+            <Flex justify="center">
+              <Button component={PreviousLink} loading={isLoading}>
+                ↑ Hent tidligere
+              </Button>
+            </Flex>
+            <Table>
+              <Table.Thead>
+                <Table.Tr>
+                  <Table.Th>Dato</Table.Th>
+                  <Table.Th>Betaling</Table.Th>
+                  <Table.Th>Status</Table.Th>
+                  <Table.Th>Beløb</Table.Th>
+                  <Table.Th></Table.Th>
+                </Table.Tr>
+              </Table.Thead>
+              <Table.Tbody>
+                {nodes.map((order) => {
+                  return <OrderItem key={order.id} order={order} />;
+                })}
+              </Table.Tbody>
+            </Table>
 
-                <br />
-                <Flex justify="center">
-                  <Button component={NextLink} loading={isLoading}>
-                    Hent flere ↓
-                  </Button>
-                </Flex>
-              </>
-            );
-          }}
-        </Pagination>
-      ) : (
-        <EmptyOrders />
-      )}
-    </>
+            <br />
+            <Flex justify="center">
+              <Button component={NextLink} loading={isLoading}>
+                Hent flere ↓
+              </Button>
+            </Flex>
+          </>
+        );
+      }}
+    </Pagination>
+  ) : (
+    <EmptyOrders />
   );
 }
 
@@ -138,14 +129,16 @@ function EmptyOrders() {
 }
 
 function OrderItem({order}: {order: OrderItemFragment}) {
+  const fulfillmentStatus = flattenConnection(order.fulfillments)[0]?.status;
   return (
     <Table.Tr>
       <Table.Td>
         {format(new Date(order.processedAt), 'PPPP', {locale: da})}
       </Table.Td>
       <Table.Td>{order.financialStatus}</Table.Td>
+      <Table.Td>{fulfillmentStatus && <p>{fulfillmentStatus}</p>}</Table.Td>
       <Table.Td>
-        <Money data={order.currentTotalPrice} />
+        <Money data={order.totalPrice} />
       </Table.Td>
       <Table.Td>
         <Button
@@ -153,81 +146,9 @@ function OrderItem({order}: {order: OrderItemFragment}) {
           component={Link}
           to={`/account/orders/${btoa(order.id)}`}
         >
-          #{order.orderNumber}
+          #{order.number}
         </Button>
       </Table.Td>
     </Table.Tr>
   );
 }
-
-const ORDER_ITEM_FRAGMENT = `#graphql
-  fragment OrderItem on Order {
-    currentTotalPrice {
-      amount
-      currencyCode
-    }
-    financialStatus
-    fulfillmentStatus
-    id
-    lineItems(first: 10) {
-      nodes {
-        title
-        variant {
-          image {
-            url
-            altText
-            height
-            width
-          }
-        }
-      }
-    }
-    orderNumber
-    customerUrl
-    statusUrl
-    processedAt
-  }
-` as const;
-
-export const CUSTOMER_FRAGMENT = `#graphql
-  fragment CustomerOrders on Customer {
-    numberOfOrders
-    orders(
-      sortKey: PROCESSED_AT,
-      reverse: true,
-      first: $first,
-      last: $last,
-      before: $startCursor,
-      after: $endCursor
-    ) {
-      nodes {
-        ...OrderItem
-      }
-      pageInfo {
-        hasPreviousPage
-        hasNextPage
-        endCursor
-        startCursor
-      }
-    }
-  }
-  ${ORDER_ITEM_FRAGMENT}
-` as const;
-
-// NOTE: https://shopify.dev/docs/api/storefront/latest/queries/customer
-const CUSTOMER_ORDERS_QUERY = `#graphql
-  ${CUSTOMER_FRAGMENT}
-  query CustomerOrders(
-    $country: CountryCode
-    $customerAccessToken: String!
-    $endCursor: String
-    $first: Int
-    $language: LanguageCode
-    $last: Int
-    $startCursor: String
-  ) @inContext(country: $country, language: $language) {
-    customer(customerAccessToken: $customerAccessToken) {
-      ...CustomerOrders
-    }
-  }
-` as const;

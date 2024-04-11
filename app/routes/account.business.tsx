@@ -23,11 +23,11 @@ import {AccountContent} from '~/components/account/AccountContent';
 import {AccountTitle} from '~/components/account/AccountTitle';
 import {MultiTags} from '~/components/form/MultiTags';
 import {RadioGroup} from '~/components/form/RadioGroup';
+import {CUSTOMER_DETAILS_QUERY} from '~/graphql/customer-account/CustomerDetailsQuery';
 import {getBookingShopifyApi} from '~/lib/api/bookingShopifyApi';
 import {type UserUsernameTakenResponsePayload} from '~/lib/api/model';
 import {redirectWithNotification} from '~/lib/show-notification';
 import {customerCreateBody} from '~/lib/zod/bookingShopifyApi';
-import {CUSTOMER_QUERY} from './($locale).account';
 
 export const schema = customerCreateBody.omit({
   fullname: true,
@@ -41,11 +41,7 @@ export const schema = customerCreateBody.omit({
 });
 
 export async function action({request, params, context}: ActionFunctionArgs) {
-  const customerAccessToken = await context.session.get('customerAccessToken');
-
-  if (!customerAccessToken) {
-    return redirect('/account/login');
-  }
+  await context.customerAccount.handleAuthStatus();
 
   const formData = await request.formData();
   const submission = parseWithZod(formData, {schema});
@@ -55,24 +51,20 @@ export async function action({request, params, context}: ActionFunctionArgs) {
   }
 
   try {
-    const {customer} = await context.storefront.query(CUSTOMER_QUERY, {
-      variables: {
-        customerAccessToken: customerAccessToken.accessToken,
-        country: context.storefront.i18n.country,
-        language: context.storefront.i18n.language,
-      },
-      cache: context.storefront.CacheNone(),
-    });
+    const {data, errors} = await context.customerAccount.query(
+      CUSTOMER_DETAILS_QUERY,
+    );
 
-    if (!customer) {
-      return redirect('/account/login');
+    if (errors?.length || !data?.customer) {
+      throw new Error('Customer not found');
     }
+
     await getBookingShopifyApi().customerCreate({
       ...submission.value,
-      customerId: parseInt(parseGid(customer.id).id),
-      phone: customer.phone || '',
-      email: customer.email || '',
-      fullname: `${customer.firstName} ${customer.lastName}`,
+      customerId: parseInt(parseGid(data.customer.id).id),
+      phone: '',
+      email: '',
+      fullname: `${data.customer.firstName} ${data.customer.lastName}`,
       aboutMe: '',
       yearsExperience: '1',
       social: {
@@ -96,37 +88,30 @@ export async function action({request, params, context}: ActionFunctionArgs) {
 }
 
 export async function loader({context, params}: LoaderFunctionArgs) {
-  const customerAccessToken = await context.session.get('customerAccessToken');
+  await context.customerAccount.handleAuthStatus();
 
-  if (!customerAccessToken) {
-    return redirect('/account/login');
-  }
+  const {data, errors} = await context.customerAccount.query(
+    CUSTOMER_DETAILS_QUERY,
+  );
 
-  const {customer} = await context.storefront.query(CUSTOMER_QUERY, {
-    variables: {
-      customerAccessToken: customerAccessToken.accessToken,
-      country: context.storefront.i18n.country,
-      language: context.storefront.i18n.language,
-    },
-    cache: context.storefront.CacheNone(),
-  });
-
-  if (!customer) {
-    return redirect('/account/login');
+  if (errors?.length || !data?.customer) {
+    throw new Error('Customer not found');
   }
 
   const {payload: userIsBusiness} =
-    await getBookingShopifyApi().customerIsBusiness(parseGid(customer.id).id);
+    await getBookingShopifyApi().customerIsBusiness(
+      parseGid(data.customer.id).id,
+    );
 
   if (userIsBusiness.isBusiness) {
     return redirect('/account/public');
   }
 
-  if (!customer.firstName || !customer.lastName) {
+  if (!data.customer.firstName || !data.customer.lastName) {
     return redirect(
-      `${params?.locale || ''}/account/profile?${
-        !customer.firstName ? 'firstName=true&' : ''
-      }${!customer.lastName ? 'lastName=true' : ''}`,
+      `/account/profile?${!data.customer.firstName ? 'firstName=true&' : ''}${
+        !data.customer.lastName ? 'lastName=true' : ''
+      }`,
     );
   }
 
@@ -134,8 +119,8 @@ export async function loader({context, params}: LoaderFunctionArgs) {
     await getBookingShopifyApi().metaProfessions();
 
   const username = convertToValidUrlPath(
-    customer.firstName || '',
-    customer.lastName || '',
+    data.customer.firstName || '',
+    data.customer.lastName || '',
   );
 
   const {payload: usernameTaken} =
@@ -147,8 +132,8 @@ export async function loader({context, params}: LoaderFunctionArgs) {
       username: !usernameTaken.usernameTaken
         ? username
         : convertToValidUrlPath(
-            customer.firstName || '',
-            customer.lastName || '',
+            data.customer.firstName || '',
+            data.customer.lastName || '',
             true,
           ),
       shortDescription: '',
