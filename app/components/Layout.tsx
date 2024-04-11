@@ -19,7 +19,7 @@ export type LayoutProps = {
   children?: React.ReactNode;
   footer: Promise<FooterQuery>;
   header: HeaderQuery;
-  isLoggedIn: boolean;
+  isLoggedIn: Promise<boolean>;
 };
 
 export function Layout({
@@ -89,7 +89,15 @@ function SearchAside() {
                 type="search"
               />
               &nbsp;
-              <button type="submit">Search</button>
+              <button
+                onClick={() => {
+                  window.location.href = inputRef?.current?.value
+                    ? `/search?q=${inputRef.current.value}`
+                    : `/search`;
+                }}
+              >
+                Search
+              </button>
             </div>
           )}
         </PredictiveSearchForm>
@@ -107,12 +115,15 @@ function MobileMenuAside({
   shop: HeaderQuery['shop'];
 }) {
   return (
-    <Aside id="mobile-menu-aside" heading="MENU">
-      <HeaderMenu
-        menu={menu}
-        viewport="mobile"
-        primaryDomainUrl={shop.primaryDomain.url}
-      />
-    </Aside>
+    menu &&
+    shop?.primaryDomain?.url && (
+      <Aside id="mobile-menu-aside" heading="MENU">
+        <HeaderMenu
+          menu={menu}
+          viewport="mobile"
+          primaryDomainUrl={shop.primaryDomain.url}
+        />
+      </Aside>
+    )
   );
 }

@@ -13,6 +13,7 @@ export default async function handleRequest(
   const {nonce, header, NonceProvider} = createContentSecurityPolicy({
     connectSrc: [
       "'self'",
+      'wss://deciding-seasnail-seriously.ngrok-free.app:*',
       'cdn.shopify.com',
       'monorail-edge.shopifysvc.com',
       'shopify-chat.shopifyapps.com', // Shopify Inbox
@@ -43,7 +44,7 @@ export default async function handleRequest(
     'https://shopify.com',
     'https://shopify.com https://www.google.com',
   );
-  //responseHeaders.set('Content-Security-Policy', newHeader);
+  //responseHeaders.set('Content-Security-Policy', header);
 
   return new Response(body, {
     headers: responseHeaders,

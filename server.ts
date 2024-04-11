@@ -6,15 +6,15 @@ import {
   createCartHandler,
   createStorefrontClient,
   storefrontRedirect,
+  createCustomerAccountClient,
 } from '@shopify/hydrogen';
 import {
-  createCookieSessionStorage,
   createRequestHandler,
   getStorefrontHeaders,
-  type Session,
-  type SessionStorage,
+  type AppLoadContext,
 } from '@shopify/remix-oxygen';
-import '@shopify/shopify-api/adapters/cf-worker';
+import {AppSession} from '~/lib/session';
+import {CART_QUERY_FRAGMENT} from '~/lib/fragments';
 
 /**
  * Export a fetch handler in module format.
@@ -36,7 +36,7 @@ export default {
       const waitUntil = executionContext.waitUntil.bind(executionContext);
       const [cache, session] = await Promise.all([
         caches.open('hydrogen'),
-        HydrogenSession.init(request, [env.SESSION_SECRET]),
+        AppSession.init(request, [env.SESSION_SECRET]),
       ]);
 
       /**
@@ -51,7 +51,18 @@ export default {
         storeDomain: env.PUBLIC_STORE_DOMAIN,
         storefrontId: env.PUBLIC_STOREFRONT_ID,
         storefrontHeaders: getStorefrontHeaders(request),
-      } as any);
+      });
+
+      /**
+       * Create a client for Customer Account API.
+       */
+      const customerAccount = createCustomerAccountClient({
+        waitUntil,
+        request,
+        session,
+        customerAccountId: env.PUBLIC_CUSTOMER_ACCOUNT_API_CLIENT_ID,
+        customerAccountUrl: env.PUBLIC_CUSTOMER_ACCOUNT_API_URL,
+      });
 
       /*
        * Create a cart handler that will be used to
@@ -59,6 +70,7 @@ export default {
        */
       const cart = createCartHandler({
         storefront,
+        customerAccount,
         getCartId: cartGetIdDefault(request.headers),
         setCartId: cartSetIdDefault(),
         cartQueryFragment: CART_QUERY_FRAGMENT,
@@ -71,9 +83,10 @@ export default {
       const handleRequest = createRequestHandler({
         build: remixBuild,
         mode: process.env.NODE_ENV,
-        getLoadContext: () => ({
+        getLoadContext: (): AppLoadContext => ({
           session,
           storefront,
+          customerAccount,
           cart,
           env,
           waitUntil,
@@ -101,180 +114,20 @@ export default {
 };
 
 function getLocaleFromRequest(request: Request): I18nLocale {
+  const defaultLocale: I18nLocale = {language: 'EN', country: 'US'};
+  const supportedLocales = {
+    ES: 'ES',
+    FR: 'FR',
+    DE: 'DE',
+    JP: 'JA',
+  } as Record<I18nLocale['country'], I18nLocale['language']>;
+
   const url = new URL(request.url);
-  const firstPathPart = url.pathname.split('/')[1]?.toUpperCase() ?? '';
+  const firstSubdomain = url.hostname
+    .split('.')[0]
+    ?.toUpperCase() as keyof typeof supportedLocales;
 
-  type I18nFromUrl = [I18nLocale['language'], I18nLocale['country']];
-
-  let pathPrefix = '';
-  let [language, country]: I18nFromUrl = ['EN', 'US'];
-
-  if (/^[A-Z]{2}-[A-Z]{2}$/i.test(firstPathPart)) {
-    pathPrefix = '/' + firstPathPart;
-    [language, country] = firstPathPart.split('-') as I18nFromUrl;
-  }
-
-  return {language, country, pathPrefix};
+  return supportedLocales[firstSubdomain]
+    ? {language: supportedLocales[firstSubdomain], country: firstSubdomain}
+    : defaultLocale;
 }
-
-/**
- * This is a custom session implementation for your Hydrogen shop.
- * Feel free to customize it to your needs, add helper methods, or
- * swap out the cookie-based implementation with something else!
- */
-export class HydrogenSession {
-  #sessionStorage;
-  #session;
-
-  constructor(sessionStorage: SessionStorage, session: Session) {
-    this.#sessionStorage = sessionStorage;
-    this.#session = session;
-  }
-
-  static async init(request: Request, secrets: string[]) {
-    const storage = createCookieSessionStorage({
-      cookie: {
-        name: 'session',
-        httpOnly: true,
-        path: '/',
-        sameSite: 'lax',
-        secrets,
-      },
-    });
-
-    const session = await storage.getSession(request.headers.get('Cookie'));
-
-    return new this(storage, session);
-  }
-
-  get has() {
-    return this.#session.has;
-  }
-
-  get get() {
-    return this.#session.get;
-  }
-
-  get flash() {
-    return this.#session.flash;
-  }
-
-  get unset() {
-    return this.#session.unset;
-  }
-
-  get set() {
-    return this.#session.set;
-  }
-
-  destroy() {
-    return this.#sessionStorage.destroySession(this.#session);
-  }
-
-  commit() {
-    return this.#sessionStorage.commitSession(this.#session);
-  }
-}
-
-// NOTE: https://shopify.dev/docs/api/storefront/latest/queries/cart
-const CART_QUERY_FRAGMENT = `#graphql
-  fragment Money on MoneyV2 {
-    currencyCode
-    amount
-  }
-  fragment CartLine on CartLine {
-    id
-    quantity
-    attributes {
-      key
-      value
-    }
-    cost {
-      totalAmount {
-        ...Money
-      }
-      amountPerQuantity {
-        ...Money
-      }
-      compareAtAmountPerQuantity {
-        ...Money
-      }
-    }
-    merchandise {
-      ... on ProductVariant {
-        id
-        availableForSale
-        compareAtPrice {
-          ...Money
-        }
-        price {
-          ...Money
-        }
-        requiresShipping
-        title
-        image {
-          id
-          url
-          altText
-          width
-          height
-
-        }
-        product {
-          handle
-          title
-          id
-        }
-        selectedOptions {
-          name
-          value
-        }
-      }
-    }
-  }
-  fragment CartApiQuery on Cart {
-    id
-    checkoutUrl
-    totalQuantity
-    buyerIdentity {
-      countryCode
-      customer {
-        id
-        email
-        firstName
-        lastName
-        displayName
-      }
-      email
-      phone
-    }
-    lines(first: $numCartLines) {
-      nodes {
-        ...CartLine
-      }
-    }
-    cost {
-      subtotalAmount {
-        ...Money
-      }
-      totalAmount {
-        ...Money
-      }
-      totalDutyAmount {
-        ...Money
-      }
-      totalTaxAmount {
-        ...Money
-      }
-    }
-    note
-    attributes {
-      key
-      value
-    }
-    discountCodes {
-      code
-      applicable
-    }
-  }
-` as const;

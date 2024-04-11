@@ -2,7 +2,7 @@ import {Badge, Card, Stack, Text} from '@mantine/core';
 import {Link} from '@remix-run/react';
 import {Image, Money} from '@shopify/hydrogen';
 import {type ProductItemFragment} from 'storefrontapi.generated';
-import {useVariantUrl} from '~/utils';
+import {useVariantUrl} from '~/lib/variants';
 import classes from './ProductCard.module.css';
 
 export function ProductCard({

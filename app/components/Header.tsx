@@ -42,7 +42,10 @@ export function Header({header, isLoggedIn, cart}: HeaderProps) {
     useDisclosure(false);
 
   return (
-    <Box mx={{base: 'md', sm: '42'}} style={{zIndex: 2}}>
+    <Box
+      mx={{base: 'md', sm: '42'}}
+      style={{zIndex: 2, position: 'relative', top: 0}}
+    >
       <header className={classes.header}>
         <Flex h="100%" align="center" justify="space-between">
           <UnstyledButton component={Link} to="/">
@@ -199,43 +202,48 @@ function HeaderCtas({
   cart,
 }: Pick<HeaderProps, 'isLoggedIn' | 'cart'>) {
   return (
-    <>
-      <Flex direction={{base: 'column', lg: 'row'}}>
-        {isLoggedIn ? (
-          <Button
-            variant="transparent"
-            size="xs"
-            c="black"
-            rightSection={
-              <IconDashboard style={{width: rem(18)}} stroke={1.5} />
-            }
-            aria-label="Account Dashboard"
-            component={Link}
-            to="/account"
-            data-cy="dashboard-button"
-            prefetch="intent"
-          >
-            Dashboard
-          </Button>
-        ) : (
-          <Button
-            variant="transparent"
-            size="xs"
-            c="black"
-            rightSection={<IconUser style={{width: rem(18)}} stroke={1.5} />}
-            aria-label="Account Login"
-            component={Link}
-            to="/account"
-            prefetch="intent"
-            data-cy="login-button"
-          >
-            Login
-          </Button>
-        )}
-
-        <CartToggle cart={cart} />
-      </Flex>
-    </>
+    <Flex direction={{base: 'column', lg: 'row'}}>
+      <Suspense fallback="Log ind">
+        <Await resolve={isLoggedIn} errorElement="Log ind">
+          {(isLoggedIn) =>
+            isLoggedIn ? (
+              <Button
+                variant="transparent"
+                size="xs"
+                c="black"
+                rightSection={
+                  <IconDashboard style={{width: rem(18)}} stroke={1.5} />
+                }
+                aria-label="Account Dashboard"
+                component={Link}
+                to="/account"
+                data-cy="dashboard-button"
+                prefetch="intent"
+              >
+                Dashboard
+              </Button>
+            ) : (
+              <Button
+                variant="transparent"
+                size="xs"
+                c="black"
+                rightSection={
+                  <IconUser style={{width: rem(18)}} stroke={1.5} />
+                }
+                aria-label="Account Login"
+                component={Link}
+                to="/account"
+                prefetch="intent"
+                data-cy="login-button"
+              >
+                Login
+              </Button>
+            )
+          }
+        </Await>
+      </Suspense>
+      <CartToggle cart={cart} />
+    </Flex>
   );
 }
 

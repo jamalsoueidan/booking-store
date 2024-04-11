@@ -1,47 +1,21 @@
-import {redirect, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
+import {parseGid} from '@shopify/hydrogen';
+import {type LoaderFunctionArgs} from '@shopify/remix-oxygen';
+import {CUSTOMER_DETAILS_QUERY} from '~/graphql/customer-account/CustomerDetailsQuery';
 
 export async function getCustomer({
   context,
 }: {
   context: LoaderFunctionArgs['context'];
 }) {
-  const customerAccessToken = await context.session.get('customerAccessToken');
+  await context.customerAccount.handleAuthStatus();
 
-  if (!customerAccessToken) {
-    return redirect('/account/login');
+  const {data, errors} = await context.customerAccount.query(
+    CUSTOMER_DETAILS_QUERY,
+  );
+
+  if (errors?.length || !data?.customer) {
+    throw new Error('Customer not found');
   }
 
-  const {customer} = await context.storefront.query(CUSTOMER_QUERY, {
-    variables: {
-      customerAccessToken: customerAccessToken.accessToken,
-      country: context.storefront.i18n.country,
-      language: context.storefront.i18n.language,
-    },
-    cache: context.storefront.CacheNone(),
-  });
-
-  if (!customer) {
-    return redirect('/account/login');
-  }
-
-  return customer;
+  return parseGid(data.customer.id).id;
 }
-
-export const CUSTOMER_FRAGMENT = `#graphql
-  fragment CustomerId on Customer {
-    id
-  }
-` as const;
-
-const CUSTOMER_QUERY = `#graphql
-  query CustomerId(
-    $customerAccessToken: String!
-    $country: CountryCode
-    $language: LanguageCode
-  ) @inContext(country: $country, language: $language) {
-    customer(customerAccessToken: $customerAccessToken) {
-      ...CustomerId
-    }
-  }
-  ${CUSTOMER_FRAGMENT}
-` as const;

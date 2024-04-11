@@ -28,7 +28,6 @@ import {
   IconUser,
 } from '@tabler/icons-react';
 import {useState} from 'react';
-import {type CustomerQuery} from 'storefrontapi.generated';
 import {type User} from '~/lib/api/model';
 
 export const topMenu = [
