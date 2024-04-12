@@ -8,15 +8,10 @@ import {
   Text,
   Title,
 } from '@mantine/core';
-import {MonthPickerInput, type DateValue} from '@mantine/dates';
-import 'dayjs/locale/da';
+import {type DateValue} from '@mantine/dates';
 
 import {useSearchParams} from '@remix-run/react';
-import {
-  IconArrowLeft,
-  IconArrowRight,
-  IconChevronDown,
-} from '@tabler/icons-react';
+import {IconArrowLeft, IconArrowRight} from '@tabler/icons-react';
 import {addDays, format, isValid} from 'date-fns';
 import {da} from 'date-fns/locale';
 import {useCallback, useState} from 'react';
@@ -117,16 +112,7 @@ export default function TreatmentPickDatetime({
   return (
     <Stack gap="lg">
       <SimpleGrid cols={2}>
-        <div>
-          <MonthPickerInput
-            locale="da"
-            minDate={new Date()}
-            defaultValue={new Date(selectedCalendar)}
-            onChange={onPickDate}
-            rightSection={<IconChevronDown />}
-            rightSectionPointerEvents="none"
-          />
-        </div>
+        <div>MonthPickerInput</div>
         <Flex justify="flex-end" gap="lg" w="100%">
           <ActionIcon variant="default" onClick={scrollPrev} size="lg">
             <IconArrowLeft />

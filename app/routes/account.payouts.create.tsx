@@ -9,7 +9,6 @@ import {
   Title,
 } from '@mantine/core';
 import {redirect, type ActionFunctionArgs} from '@shopify/remix-oxygen';
-import {IMaskInput} from 'react-imask';
 import {getCustomer} from '~/lib/get-customer';
 
 import {
@@ -146,9 +145,7 @@ export default function AccountPayoutsSettings() {
                 <Flex gap="lg">
                   <InputBase
                     label="Regnr"
-                    component={IMaskInput}
                     w="80"
-                    mask="0000"
                     {...getInputProps(
                       fields.payoutDetails.getFieldset().regNum,
                       {
@@ -158,8 +155,6 @@ export default function AccountPayoutsSettings() {
                   />
                   <InputBase
                     label="Kontonummer"
-                    component={IMaskInput}
-                    mask="0000-0000-0000-0000"
                     {...getInputProps(
                       fields.payoutDetails.getFieldset().bankName,
                       {
@@ -172,8 +167,6 @@ export default function AccountPayoutsSettings() {
             ) : (
               <InputBase
                 label="Mobilnummer"
-                component={IMaskInput}
-                mask="+45 00 00 00 00"
                 {...getInputProps(
                   fields.payoutDetails.getFieldset().phoneNumber,
                   {
