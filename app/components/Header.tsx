@@ -28,9 +28,9 @@ import clsx from 'clsx';
 import React, {Suspense} from 'react';
 import type {HeaderQuery} from 'storefrontapi.generated';
 import {useRootLoaderData} from '~/root';
-import logo from '../../public/Artboard4.svg';
 import classes from './Header.module.css';
 import type {LayoutProps} from './Layout';
+import logo from '/Artboard4.svg';
 
 type HeaderProps = Pick<LayoutProps, 'header' | 'cart' | 'isLoggedIn'>;
 
