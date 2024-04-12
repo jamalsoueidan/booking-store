@@ -1,23 +1,18 @@
-import {ColorSchemeScript, MantineProvider, createTheme} from '@mantine/core';
-import {cssBundleHref} from '@remix-run/css-bundle';
-
-import '@mantine/carousel/styles.css';
-import '@mantine/core/styles.css';
-import '@mantine/dates/styles.css';
-import '@mantine/notifications/styles.css';
-import '@mantine/nprogress/styles.css';
-import '@mantine/tiptap/styles.css';
-
+import carousel from '@mantine/carousel/styles.css?url';
+import {ColorSchemeScript, createTheme, MantineProvider} from '@mantine/core';
+import mantineStyle from '@mantine/core/styles.css?url';
+import dates from '@mantine/dates/styles.css?url';
 import {ModalsProvider} from '@mantine/modals';
-import {Notifications} from '@mantine/notifications';
+import notification from '@mantine/notifications/styles.css?url';
+import progress from '@mantine/nprogress/styles.css?url';
+import tiptap from '@mantine/tiptap/styles.css?url';
 import {
+  isRouteErrorResponse,
   Links,
-  LiveReload,
   Meta,
   Outlet,
   Scripts,
   ScrollRestoration,
-  isRouteErrorResponse,
   useLoaderData,
   useMatches,
   useRouteError,
@@ -31,8 +26,7 @@ import {
 } from '@shopify/remix-oxygen';
 import {Layout} from '~/components/Layout';
 import favicon from './assets/favicon.svg';
-import {GlobalLoadingIndicator} from './components/NavigationProgress';
-import appStyles from './styles/app.css';
+import appStyles from './styles/app.css?url';
 
 /**
  * This is important to avoid re-fetching root queries on sub-navigations
@@ -57,8 +51,13 @@ export const shouldRevalidate: ShouldRevalidateFunction = ({
 
 export function links() {
   return [
-    ...(cssBundleHref ? [{rel: 'stylesheet', href: cssBundleHref}] : []),
     {rel: 'stylesheet', href: appStyles},
+    {rel: 'stylesheet', href: mantineStyle},
+    {rel: 'stylesheet', href: carousel},
+    {rel: 'stylesheet', href: dates},
+    {rel: 'stylesheet', href: notification},
+    {rel: 'stylesheet', href: progress},
+    {rel: 'stylesheet', href: tiptap},
     {
       rel: 'preconnect',
       href: 'https://cdn.shopify.com',
@@ -137,12 +136,6 @@ export default function App() {
       </head>
       <body>
         <MantineProvider theme={theme}>
-          <Notifications
-            position="bottom-center"
-            limit={1}
-            data-cy="notifications"
-          />
-          <GlobalLoadingIndicator />
           <ModalsProvider>
             <Layout {...data}>
               <Outlet />
@@ -150,7 +143,6 @@ export default function App() {
 
             <ScrollRestoration nonce={nonce} />
             <Scripts nonce={nonce} />
-            <LiveReload nonce={nonce} />
           </ModalsProvider>
         </MantineProvider>
       </body>
@@ -200,7 +192,6 @@ export function ErrorBoundary() {
           </Layout>
           <ScrollRestoration nonce={nonce} />
           <Scripts nonce={nonce} />
-          <LiveReload nonce={nonce} />
         </MantineProvider>
       </body>
     </html>
