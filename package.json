@@ -8,6 +8,7 @@
     "tunnel": "ngrok http --domain=deciding-seasnail-seriously.ngrok-free.app 3000",
     "build": "shopify hydrogen build --codegen",
     "dev": "shopify hydrogen dev --codegen",
+    "dev-tunnel": "concurrently --kill-others --success first \"npm run tunnel\" \"npm run dev\"",
     "preview": "npm run build && shopify hydrogen preview",
     "lint": "eslint --no-error-on-unmatched-pattern --ext .js,.ts,.jsx,.tsx .",
     "typecheck": "tsc --noEmit",
@@ -15,10 +16,9 @@
     "fetch-openapi": "curl -o ./openapi.yaml https://raw.githubusercontent.com/jamalsoueidan/booking-api/main/docs/openapi.yaml",
     "build-openapi": "npx rimraf app/lib/api/model && npx orval --config ./orval.config.js",
     "fb-openapi": "npm run fetch-openapi & npm run build-openapi",
-    "cypress:open": "cypress open",
-    "cypress:run": "cypress run",
-    "cy:open": "start-server-and-test dev http://localhost:3000 cypress:open",
-    "cy:run": "start-server-and-test preview http://localhost:3000 cypress:run"
+    "cy:open-e2e": "cypress open --e2e --browser chrome",
+    "cy:run-e2e": "cypress run --e2e",
+    "cy:e2e": "start-server-and-test dev http-get://localhost:3000 cy:open-e2e"
   },
   "prettier": "@shopify/prettier-config",
   "dependencies": {
@@ -55,6 +55,7 @@
     "@tiptap/react": "^2.2.5",
     "@tiptap/starter-kit": "^2.2.5",
     "clsx": "^2.1.0",
+    "cypress-mailosaur": "^2.14.0",
     "date-fns": "^2.30.0",
     "date-fns-tz": "^2.0.1",
     "dayjs": "^1.11.10",
@@ -83,7 +84,9 @@
     "@types/react": "^18.2.22",
     "@types/react-dom": "^18.2.7",
     "@types/uuid": "^9.0.8",
+    "concurrently": "^8.2.2",
     "cypress": "^13.7.2",
+    "dotenv": "^16.4.5",
     "eslint": "^8.20.0",
     "eslint-plugin-hydrogen": "0.12.2",
     "orval": "^6.25.0",
@@ -91,9 +94,11 @@
     "postcss-preset-mantine": "^1.14.4",
     "postcss-simple-vars": "^7.0.1",
     "prettier": "^2.8.4",
+    "start-server-and-test": "^2.0.3",
     "typescript": "^5.2.2",
     "vite": "^5.1.0",
-    "vite-tsconfig-paths": "^4.3.1"
+    "vite-tsconfig-paths": "^4.3.1",
+    "wait-on": "^7.2.0"
   },
   "engines": {
     "node": ">=18.0.0"
