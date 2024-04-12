@@ -6,8 +6,9 @@
   "type": "commonjs",
   "scripts": {
     "tunnel": "ngrok http --domain=deciding-seasnail-seriously.ngrok-free.app 3000",
+    "dev-server": "shopify hydrogen dev --codegen",
+    "dev": "concurrently --kill-others --success first \"npm run tunnel\" \"npm run dev-server\"",
     "build": "shopify hydrogen build",
-    "dev": "shopify hydrogen dev --codegen",
     "preview": "npm run build && shopify hydrogen preview",
     "lint": "eslint --no-error-on-unmatched-pattern --ext .js,.ts,.jsx,.tsx .",
     "typecheck": "tsc --noEmit",
@@ -15,10 +16,10 @@
     "fetch-openapi": "curl -o ./openapi.yaml https://raw.githubusercontent.com/jamalsoueidan/booking-api/main/docs/openapi.yaml",
     "build-openapi": "npx rimraf app/lib/api/model && npx orval --config ./orval.config.js",
     "fb-openapi": "npm run fetch-openapi & npm run build-openapi",
-    "cypress:open": "cypress open",
-    "cypress:run": "cypress run",
-    "cy:open": "start-server-and-test dev http://localhost:3000 cypress:open",
-    "cy:run": "start-server-and-test preview http://localhost:3000 cypress:run"
+    "cypress-open": "cypress open",
+    "cypress-run": "cypress run",
+    "cy:open": "concurrently \"npm run tunnel\" \"npm run dev-server\" \"wait-on http://localhost:3000 && npm run cypress-open\"",
+    "cy:run": "concurrently \"npm run tunnel\" \"npm run prev\" \"wait-on http://localhost:3000 && npm run cypress-run\""
   },
   "prettier": "@shopify/prettier-config",
   "dependencies": {
@@ -59,6 +60,7 @@
     "date-fns": "^2.30.0",
     "date-fns-tz": "^2.0.1",
     "dayjs": "^1.11.10",
+    "dotenv": "^16.4.5",
     "embla-carousel-autoplay": "^7.1.0",
     "embla-carousel-react": "^7.1.0",
     "framer-motion": "^11.0.25",
@@ -81,17 +83,19 @@
     "@types/eslint": "^8.4.10",
     "@types/react": "^18.2.22",
     "@types/react-dom": "^18.2.7",
-    "eslint": "^8.20.0",
     "@types/uuid": "^9.0.8",
+    "concurrently": "^8.2.2",
     "cypress": "^13.7.2",
+    "cypress-mailosaur": "^2.14.0",
+    "eslint": "^8.20.0",
     "eslint-plugin-hydrogen": "0.12.2",
-    "prettier": "^2.8.4",
     "orval": "^6.25.0",
     "postcss": "^8.4.31",
     "postcss-preset-mantine": "^1.9.1",
     "postcss-simple-vars": "^7.0.1",
-    "start-server-and-test": "^2.0.3",
-    "typescript": "^5.2.2"
+    "prettier": "^2.8.4",
+    "typescript": "^5.2.2",
+    "wait-on": "^7.2.0"
   },
   "engines": {
     "node": ">=18.0.0"
