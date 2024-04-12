@@ -29,6 +29,7 @@ import {
 } from '@tabler/icons-react';
 import {useState} from 'react';
 import {type User} from '~/lib/api/model';
+import {modifyImageUrl} from '~/lib/image';
 
 export const topMenu = [
   {
@@ -199,7 +200,7 @@ export function AccountMenu({
               <Avatar
                 component={Link}
                 to={`/account/upload`}
-                src={user.images?.profile?.url}
+                src={modifyImageUrl(user.images?.profile?.url, '50x50')}
                 onClick={() => closeDrawer()}
               />
             ) : null

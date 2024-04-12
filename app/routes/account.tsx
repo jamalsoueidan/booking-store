@@ -25,7 +25,7 @@ export type AccountOutlet = {
 };
 
 export function shouldRevalidate() {
-  return true;
+  return false;
 }
 
 export async function loader({context}: LoaderFunctionArgs) {

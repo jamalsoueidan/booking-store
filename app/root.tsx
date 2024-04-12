@@ -1,11 +1,13 @@
-import carousel from '@mantine/carousel/styles.css?url';
 import {ColorSchemeScript, createTheme, MantineProvider} from '@mantine/core';
-import mantineStyle from '@mantine/core/styles.css?url';
-import dates from '@mantine/dates/styles.css?url';
 import {ModalsProvider} from '@mantine/modals';
-import notification from '@mantine/notifications/styles.css?url';
-import progress from '@mantine/nprogress/styles.css?url';
-import tiptap from '@mantine/tiptap/styles.css?url';
+
+import '@mantine/carousel/styles.css';
+import '@mantine/core/styles.css';
+import '@mantine/dates/styles.css';
+import '@mantine/notifications/styles.css';
+import '@mantine/nprogress/styles.css';
+import '@mantine/tiptap/styles.css';
+
 import {
   isRouteErrorResponse,
   Links,
@@ -52,12 +54,6 @@ export const shouldRevalidate: ShouldRevalidateFunction = ({
 export function links() {
   return [
     {rel: 'stylesheet', href: appStyles},
-    {rel: 'stylesheet', href: mantineStyle},
-    {rel: 'stylesheet', href: carousel},
-    {rel: 'stylesheet', href: dates},
-    {rel: 'stylesheet', href: notification},
-    {rel: 'stylesheet', href: progress},
-    {rel: 'stylesheet', href: tiptap},
     {
       rel: 'preconnect',
       href: 'https://cdn.shopify.com',
