@@ -22,8 +22,8 @@ jobs:
 
       - name: Install Ngrok
         run: |
-          wget https://bin.equinox.io/c/4VmDzA7iaHb/ngrok-stable-linux-amd64.zip
-          unzip ngrok-stable-linux-amd64.zip
+          wget https://bin.equinox.io/c/bNyj1mQVY4c/ngrok-v3-stable-linux-amd64.tgz
+          tar xvzf ngrok-v3-stable-linux-amd64.tgz
 
       - name: Setup Ngrok Auth
         run: ./ngrok authtoken ${{ secrets.NGROK }}
@@ -43,6 +43,9 @@ jobs:
           PUBLIC_STOREFRONT_ID: ${{ secrets.PUBLIC_STOREFRONT_ID }}
           PUBLIC_CUSTOMER_ACCOUNT_API_CLIENT_ID: ${{ secrets.PUBLIC_CUSTOMER_ACCOUNT_API_CLIENT_ID }}
           PUBLIC_CUSTOMER_ACCOUNT_API_URL: ${{ secrets.PUBLIC_CUSTOMER_ACCOUNT_API_URL }}
+
+      - name: Wait for preview to be ready
+        run: npx wait-on http://localhost:3000
 
       - name: Run Playwright tests
         run: npm run test
