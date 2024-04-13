@@ -70,13 +70,10 @@ export default defineConfig({
 
   webServer: [
     {
-      command: 'npm run dev',
+      command: `cross-env SESSION_SECRET=${process.env.SESSION_SECRET} npm run dev`,
       url: 'http://localhost:3000',
       timeout: 120 * 1000,
       reuseExistingServer: !process.env.CI,
-      env: {
-        SESSION_SECRET: process.env.SESSION_SECRET,
-      } as any,
     },
     {
       command: 'npm run tunnel',
