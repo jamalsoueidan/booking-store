@@ -31,6 +31,13 @@ jobs:
       - name: Run Playwright tests
         run: npx playwright test
         env:
+          SESSION_SECRET: ${{ env.SESSION_SECRET }}
+          PUBLIC_STOREFRONT_API_TOKEN: ${{ env.PUBLIC_STOREFRONT_API_TOKEN }}
+          PRIVATE_STOREFRONT_API_TOKEN: ${{ env.PRIVATE_STOREFRONT_API_TOKEN }}
+          PUBLIC_STORE_DOMAIN: ${{ env.PUBLIC_STORE_DOMAIN }}
+          PUBLIC_STOREFRONT_ID: ${{ env.PUBLIC_STOREFRONT_ID }}
+          PUBLIC_CUSTOMER_ACCOUNT_API_CLIENT_ID: ${{ env.PUBLIC_CUSTOMER_ACCOUNT_API_CLIENT_ID }}
+          PUBLIC_CUSTOMER_ACCOUNT_API_URL: ${{ env.PUBLIC_CUSTOMER_ACCOUNT_API_URL }}
           NGROK_URL: ${{ env.NGROK_URL }}
           MAILOSAUR_API_KEY: ${{ env.MAILOSAUR_API_KEY }}
 
