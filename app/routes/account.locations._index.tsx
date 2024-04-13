@@ -42,7 +42,7 @@ export default function AccountLocationsIndex() {
           <AccountButton
             to={'create'}
             leftSection={<IconPlus size={14} />}
-            data-cy="create-button"
+            data-testid="create-button"
           >
             Opret lokation
           </AccountButton>
@@ -55,16 +55,20 @@ export default function AccountLocationsIndex() {
             <ThemeIcon variant="white" size={rem(100)}>
               <IconMoodSad stroke={1} style={{width: '100%', height: '100%'}} />
             </ThemeIcon>
-            <Title ta="center" data-cy="empty-title">
+            <Title ta="center" data-testid="empty-title">
               Du har ingen lokationer
             </Title>
-            <Button component={Link} to="create" data-cy="empty-create-button">
+            <Button
+              component={Link}
+              to="create"
+              data-testid="empty-create-button"
+            >
               Opret lokation
             </Button>
           </Flex>
         ) : null}
 
-        <SimpleGrid cols={{base: 1, md: 2, lg: 3}} data-cy="locations-grid">
+        <SimpleGrid cols={{base: 1, md: 2, lg: 3}} data-testid="locations-grid">
           {loaderData.map((d) => (
             <Card
               key={d._id}
@@ -72,7 +76,7 @@ export default function AccountLocationsIndex() {
               radius="md"
               h="100%"
               withBorder
-              data-cy={`location-item-${d._id}`}
+              data-testid={`location-item-${d._id}`}
             >
               <AccountLocation data={d} />
             </Card>
@@ -94,10 +98,10 @@ export const AccountLocation = ({data}: AccountLocationProps) => {
         <IconGps />
         <Stack>
           <div>
-            <Title order={3} data-cy="name-title">
+            <Title order={3} data-testid="name-title">
               {data.name}
             </Title>
-            <Text c="dimmed" data-cy="address-text">
+            <Text c="dimmed" data-testid="address-text">
               {data.fullAddress}
             </Text>
           </div>
@@ -146,10 +150,10 @@ export const AccountLocation = ({data}: AccountLocationProps) => {
         <IconHome />
         <Stack gap="xs" style={{flex: 1}}>
           <div>
-            <Title order={3} data-cy="name-title">
+            <Title order={3} data-testid="name-title">
               {data.name}
             </Title>
-            <Text c="dimmed" data-cy="address-text">
+            <Text c="dimmed" data-testid="address-text">
               {data.fullAddress}
             </Text>
           </div>
@@ -161,7 +165,7 @@ export const AccountLocation = ({data}: AccountLocationProps) => {
     <UnstyledButton
       component={Link}
       to={`${data._id}/edit`}
-      data-cy={`edit-button-${data._id}`}
+      data-testid={`edit-button-${data._id}`}
     >
       {markup}
     </UnstyledButton>

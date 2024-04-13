@@ -69,7 +69,7 @@ export default function AccountIndex() {
             color="green"
             mb="xl"
             icon={<IconHeart style={{width: rem(34), height: rem(34)}} />}
-            data-cy="business-notification"
+            data-testid="business-notification"
           >
             <Text fw="bold">
               Du er nu tilmeldt som en business-konto på vores hjemmeside.
@@ -122,7 +122,7 @@ function BusinessAccount({status}: {status: CustomerStatus}) {
             component={Link}
             to="../public"
             rightSection={<IconArrowRight size="14" />}
-            data-cy="update-profile-button"
+            data-testid="update-profile-button"
           >
             Opdatere profil
           </Button>
@@ -154,7 +154,7 @@ function BusinessAccount({status}: {status: CustomerStatus}) {
             component={Link}
             to="../locations/create"
             rightSection={<IconArrowRight size="14" />}
-            data-cy="create-location-button"
+            data-testid="create-location-button"
           >
             Opret lokation
           </Button>
@@ -186,7 +186,7 @@ function BusinessAccount({status}: {status: CustomerStatus}) {
             component={Link}
             to="../schedules/create"
             rightSection={<IconArrowRight size="14" />}
-            data-cy="create-schedule-button"
+            data-testid="create-schedule-button"
           >
             Opret vagtplan
           </Button>
@@ -218,7 +218,7 @@ function BusinessAccount({status}: {status: CustomerStatus}) {
             component={Link}
             to="../services/create"
             rightSection={<IconArrowRight size="14" />}
-            data-cy="create-service-button"
+            data-testid="create-service-button"
           >
             Tilføj ydelser
           </Button>
@@ -250,7 +250,7 @@ function BusinessAccount({status}: {status: CustomerStatus}) {
             component={Link}
             to="../upload"
             rightSection={<IconArrowRight size="14" />}
-            data-cy="upload-image-button"
+            data-testid="upload-image-button"
           >
             Upload et billed
           </Button>
@@ -295,7 +295,7 @@ function BuyerAccount() {
           size="xl"
           component={Link}
           to="../business"
-          data-cy="change-business-button"
+          data-testid="change-business-button"
         >
           Skift til Business Konto!
         </Button>

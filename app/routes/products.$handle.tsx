@@ -54,7 +54,7 @@ export async function loader({params, request, context}: LoaderFunctionArgs) {
 
   // await the query for the critical product data
   const {product} = await storefront.query(PRODUCT_SELECTED_OPTIONS_QUERY, {
-    variables: {handle, selectedOptions},
+    variables: {productHandle: handle, selectedOptions},
   });
 
   if (!product?.id) {

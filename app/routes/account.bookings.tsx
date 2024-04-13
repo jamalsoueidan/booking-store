@@ -8,7 +8,6 @@ import {Modal, rem} from '@mantine/core';
 import {useMediaQuery} from '@mantine/hooks';
 import {Outlet, useNavigate, useOutlet} from '@remix-run/react';
 import {IconCar} from '@tabler/icons-react';
-import {createRoot} from 'react-dom/client';
 import {AccountContent} from '~/components/account/AccountContent';
 import {AccountTitle} from '~/components/account/AccountTitle';
 import type {CustomerBlocked, CustomerBooking} from '~/lib/api/model';
@@ -124,33 +123,22 @@ export default function AccountBookings() {
             }
             return input;
           }}
-          eventDidMount={(info) => {
+          /*eventDidMount={(info) => {
+            console.log('eventDidMount');
             const eventElement = info.el.querySelector(
               '.fc-event-title-container',
             );
+            console.log(eventElement);
 
             const order = info.event.extendedProps as CustomerBooking;
             if (eventElement && order.shipping) {
               // Create a container for your React component
               const descriptionElement = document.createElement('span');
               descriptionElement.classList.add('fc-event-icon');
+              descriptionElement.innerHTML = '[Bil]'
               eventElement.prepend(descriptionElement);
-
-              // Use createRoot to render the React component
-              const root = createRoot(descriptionElement);
-              root.render(<CustomDescription />);
             }
-          }}
-          eventWillUnmount={(info) => {
-            const descriptionElement = info.el.querySelector(
-              '.fc-event-title-container > div',
-            );
-            if (descriptionElement) {
-              // Clean up the React component
-              const root = createRoot(descriptionElement);
-              root.unmount();
-            }
-          }}
+          }}*/
           eventClick={openModal}
           themeSystem="standard"
           eventSources={['/account/api/bookings', '/account/api/booked']}

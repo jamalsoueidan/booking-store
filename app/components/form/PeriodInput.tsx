@@ -20,21 +20,19 @@ export default function PeriodInput({data, field, ...props}: PeriodInputProps) {
   const noticePeriod = field.getFieldset();
 
   return (
-    <fieldset>
-      <Flex align={'flex-end'} gap="md">
-        <TextInput
-          w="70%"
-          {...props}
-          {...getInputProps(noticePeriod.value, {type: 'number'})}
-        />
-        <Select
-          w="30%"
-          data={data}
-          allowDeselect={false}
-          {...getSelectProps(noticePeriod.unit)}
-          defaultValue={field.initialValue?.unit}
-        />
-      </Flex>
-    </fieldset>
+    <Flex align={'flex-end'} gap="md">
+      <TextInput
+        w="70%"
+        {...props}
+        {...getInputProps(noticePeriod.value, {type: 'number'})}
+      />
+      <Select
+        w="30%"
+        data={data}
+        allowDeselect={false}
+        {...getSelectProps(noticePeriod.unit)}
+        defaultValue={field.initialValue?.unit}
+      />
+    </Flex>
   );
 }

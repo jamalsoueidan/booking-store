@@ -1,9 +1,9 @@
 import {Group, Image, Radio, Stack, Text, UnstyledButton} from '@mantine/core';
 import {useUncontrolled} from '@mantine/hooks';
 import {type CustomerLocation} from '~/lib/api/model';
-import estimate from '../../../public/estimate.svg';
-import precision from '../../../public/precision.svg';
 import classes from './ArtistLocationRadioCard.module.css';
+import estimate from '/estimate.svg';
+import precision from '/precision.svg';
 
 interface AristLocationRadioCardProps {
   checked?: boolean;

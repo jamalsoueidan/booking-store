@@ -29,6 +29,7 @@ import {
 } from '@tabler/icons-react';
 import {useState} from 'react';
 import {type User} from '~/lib/api/model';
+import {modifyImageUrl} from '~/lib/image';
 
 export const topMenu = [
   {
@@ -145,7 +146,7 @@ export function AccountMenu({
           setActive(item.label);
         }}
         label={item.label}
-        data-cy={item.data}
+        data-testid={item.data}
         leftSection={<item.icon stroke={1.5} />}
       />
     ));
@@ -163,7 +164,7 @@ export function AccountMenu({
           setActive(item.label);
         }}
         label={item.label}
-        data-cy={item.data}
+        data-testid={item.data}
         leftSection={<item.icon stroke={1.5} />}
       />
     ));
@@ -199,7 +200,7 @@ export function AccountMenu({
               <Avatar
                 component={Link}
                 to={`/account/upload`}
-                src={user.images?.profile?.url}
+                src={modifyImageUrl(user.images?.profile?.url, '50x50')}
                 onClick={() => closeDrawer()}
               />
             ) : null
@@ -237,7 +238,7 @@ export function AccountMenu({
                 }
               }}
               label="Log ud"
-              data-cy="logout-link"
+              data-testid="logout-link"
               leftSection={<IconLogout stroke={1.5} />}
             />
           </Form>
@@ -249,7 +250,7 @@ export function AccountMenu({
             rightSection={
               <Burger opened={opened} onClick={closeDrawer} size="md" />
             }
-            data-cy="close-navigation-link"
+            data-testid="close-navigation-link"
           />
         </AppShell.Section>
       ) : null}

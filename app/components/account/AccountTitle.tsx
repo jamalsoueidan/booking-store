@@ -38,7 +38,11 @@ export function AccountTitle({
               />
             </ActionIcon>
           ) : null}
-          <Title className={classes.title} {...props} data-cy="welcome-title">
+          <Title
+            className={classes.title}
+            {...props}
+            data-testid="welcome-title"
+          >
             {heading}
           </Title>
         </Flex>

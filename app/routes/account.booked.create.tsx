@@ -2,7 +2,6 @@ import {getFormProps, getInputProps, useForm} from '@conform-to/react';
 import {parseWithZod} from '@conform-to/zod';
 import {FocusTrap, Modal, Stack, TextInput} from '@mantine/core';
 import {Form, useActionData} from '@remix-run/react';
-import {json, redirect, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
 import type {ActionFunctionArgs} from 'react-router';
 import {type z} from 'zod';
 import DateTimeInput from '~/components/form/DateTimeInput';
@@ -40,14 +39,6 @@ export const action = async ({request, context}: ActionFunctionArgs) => {
     return submission.reply();
   }
 };
-
-export async function loader({context}: LoaderFunctionArgs) {
-  const customerAccessToken = await context.session.get('customerAccessToken');
-  if (!customerAccessToken) {
-    return redirect('/account/login');
-  }
-  return json(null);
-}
 
 export default function AccountBookings() {
   const lastResult = useActionData<typeof action>();

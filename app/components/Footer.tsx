@@ -14,8 +14,8 @@ import {Link, NavLink} from '@remix-run/react';
 import {IconBrandFacebook, IconBrandInstagram} from '@tabler/icons-react';
 import type {FooterQuery, HeaderQuery} from 'storefrontapi.generated';
 import {useRootLoaderData} from '~/root';
-import logo from '../../public/logo.avif';
 import classes from './Footer.module.css';
+import logo from '/logo.avif';
 
 export function Footer({
   menu,
