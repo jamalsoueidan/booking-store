@@ -8,7 +8,7 @@ const mailosaur = new MailosaurClient(process.env.MAILOSAUR_API_KEY || '');
 test('test', async ({page}) => {
   const timestamp = Date.now();
 
-  await page.goto('./');
+  await page.goto('');
 
   await page.getByLabel('Account Login').click();
   await page.getByLabel('Email', {exact: true}).click();
