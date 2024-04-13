@@ -3,16 +3,16 @@ import {
   ActionIcon,
   Button,
   Flex,
+  Select,
   SimpleGrid,
   Stack,
   Text,
   Title,
 } from '@mantine/core';
-import {type DateValue} from '@mantine/dates';
 
 import {useSearchParams} from '@remix-run/react';
 import {IconArrowLeft, IconArrowRight} from '@tabler/icons-react';
-import {addDays, format, isValid} from 'date-fns';
+import {format, isValid, parse, set} from 'date-fns';
 import {da} from 'date-fns/locale';
 import {useCallback, useState} from 'react';
 import type {
@@ -40,10 +40,16 @@ export default function TreatmentPickDatetime({
 
   const [searchParams, setSearchParams] = useSearchParams();
 
-  const onPickDate = (date: DateValue) => {
-    if (date) {
+  const onPickDate = (month: string | null) => {
+    if (month) {
+      const monthDate = parse(month, 'MMMM', new Date());
+      const startOfMonthDate = set(monthDate, {
+        hours: 2,
+        minutes: 0,
+        seconds: 0,
+      });
       const newSearchParams = new URLSearchParams(searchParams);
-      newSearchParams.set('calendar', addDays(date, 1).toJSON());
+      newSearchParams.set('calendar', startOfMonthDate.toJSON());
       newSearchParams.delete('date');
       newSearchParams.delete('fromDate');
       newSearchParams.delete('toDate');
@@ -112,7 +118,24 @@ export default function TreatmentPickDatetime({
   return (
     <Stack gap="lg">
       <SimpleGrid cols={2}>
-        <div>MonthPickerInput</div>
+        <Select
+          onChange={onPickDate}
+          value={format(new Date(selectedCalendar), 'MMMM').toLowerCase()}
+          data={[
+            {label: 'Januar', value: 'january'},
+            {label: 'Februar', value: 'february'},
+            {label: 'Marts', value: 'march'},
+            {label: 'April', value: 'april'},
+            {label: 'Maj', value: 'may'},
+            {label: 'Juni', value: 'june'},
+            {label: 'Juli', value: 'july'},
+            {label: 'August', value: 'august'},
+            {label: 'September', value: 'september'},
+            {label: 'Oktober', value: 'october'},
+            {label: 'November', value: 'november'},
+            {label: 'December', value: 'december'},
+          ]}
+        />
         <Flex justify="flex-end" gap="lg" w="100%">
           <ActionIcon variant="default" onClick={scrollPrev} size="lg">
             <IconArrowLeft />

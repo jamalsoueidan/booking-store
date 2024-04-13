@@ -5,10 +5,8 @@
   "version": "1.0.7",
   "type": "module",
   "scripts": {
-    "tunnel": "ngrok http --region eu --domain=deciding-seasnail-seriously.ngrok-free.app 3000",
     "build": "shopify hydrogen build --codegen",
-    "dev": "shopify hydrogen dev --codegen",
-    "dev-tunnel": "concurrently --kill-others --success first \"npm run tunnel\" \"npm run dev\"",
+    "dev": "shopify hydrogen dev --codegen --customer-account-push__unstable",
     "preview": "npm run build && shopify hydrogen preview",
     "lint": "eslint --no-error-on-unmatched-pattern --ext .js,.ts,.jsx,.tsx .",
     "typecheck": "tsc --noEmit",
