@@ -114,7 +114,7 @@ export default function AccountLocationsEdit() {
             variant="light"
             color="red"
             type="submit"
-            data-cy={`delete-button-${defaultValue._id}`}
+            data-testid={`delete-button-${defaultValue._id}`}
           >
             Slet {defaultValue.name}
           </Button>
@@ -128,7 +128,7 @@ export default function AccountLocationsEdit() {
               label="Navn"
               placeholder="BySisters"
               {...getInputProps(fields.name, {type: 'text'})}
-              data-cy="name-input"
+              data-testid="name-input"
             />
 
             <AddressAutocompleteInput
@@ -139,7 +139,7 @@ export default function AccountLocationsEdit() {
               }
               placeholder="Sigridsvej 45, 8220 Brabrand"
               {...getInputProps(fields.fullAddress, {type: 'text'})}
-              data-cy="address-input"
+              data-testid="address-input"
             />
 
             {defaultValue.locationType === 'destination' ? (
@@ -157,7 +157,7 @@ export default function AccountLocationsEdit() {
                   {value: 'commercial', label: 'Butik'},
                 ]}
                 {...getInputProps(fields.originType, {type: 'text'})}
-                data-cy="origin-type-input"
+                data-testid="origin-type-input"
               />
             )}
 
@@ -166,7 +166,7 @@ export default function AccountLocationsEdit() {
               label="Udgifter for turen"
               suffix=" kr"
               hidden={defaultValue.locationType !== 'destination'}
-              data-cy="start-fee-input"
+              data-testid="start-fee-input"
             />
 
             <NumericInput
@@ -174,7 +174,7 @@ export default function AccountLocationsEdit() {
               label="Timepris for kørsel"
               suffix=" kr"
               hidden={defaultValue.locationType !== 'destination'}
-              data-cy="hourly-rate-input"
+              data-testid="hourly-rate-input"
             />
 
             <NumericInput
@@ -182,7 +182,7 @@ export default function AccountLocationsEdit() {
               label="Pris pr. kilometer"
               suffix=" kr"
               hidden={defaultValue.locationType !== 'destination'}
-              data-cy="fixed-rate-input"
+              data-testid="fixed-rate-input"
             />
 
             <NumericInput
@@ -190,7 +190,7 @@ export default function AccountLocationsEdit() {
               label="Afstanden der køres gratis, inden takstberegningen påbegyndes."
               suffix=" km"
               hidden={defaultValue.locationType !== 'destination'}
-              data-cy="distance-free-input"
+              data-testid="distance-free-input"
             />
 
             <NumericInput
@@ -198,7 +198,7 @@ export default function AccountLocationsEdit() {
               label="Minimum der skal køres for at acceptere en kørselsopgave"
               suffix=" km"
               hidden={defaultValue.locationType !== 'destination'}
-              data-cy="min-drive-distance-input"
+              data-testid="min-drive-distance-input"
             />
 
             <NumericInput
@@ -206,7 +206,7 @@ export default function AccountLocationsEdit() {
               label="Maximum der køres"
               suffix=" km"
               hidden={defaultValue.locationType !== 'destination'}
-              data-cy="max-drive-distance-input"
+              data-testid="max-drive-distance-input"
             />
 
             <Group>
@@ -215,7 +215,7 @@ export default function AccountLocationsEdit() {
               <Anchor
                 component={Link}
                 to="/account/locations"
-                data-cy="back-link"
+                data-testid="back-link"
               >
                 Tilbage
               </Anchor>

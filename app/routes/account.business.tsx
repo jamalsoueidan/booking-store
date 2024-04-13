@@ -201,18 +201,18 @@ export default function AccountBusiness() {
                       <IconExclamationCircle
                         style={{width: rem(20), height: rem(20)}}
                         color="var(--mantine-color-error)"
-                        data-cy="username-error"
+                        data-testid="username-error"
                       />
                     </Tooltip>
                   ) : (
                     <IconCheck
                       style={{width: rem(20), height: rem(20)}}
                       color="var(--mantine-color-green-filled)"
-                      data-cy="username-success"
+                      data-testid="username-success"
                     />
                   )
                 }
-                data-cy="username-input"
+                data-testid="username-input"
               />
 
               <RadioGroup
@@ -222,7 +222,7 @@ export default function AccountBusiness() {
                   {value: 'woman', label: 'Kvinde'},
                   {value: 'man', label: 'Mand'},
                 ]}
-                data-cy="gender-input"
+                data-testid="gender-input"
               />
 
               <MultiTags
@@ -230,7 +230,7 @@ export default function AccountBusiness() {
                 data={professionOptions}
                 label="Professioner"
                 placeholder="Vælg professioner"
-                data-cy="professions-input"
+                data-testid="professions-input"
               />
 
               <MultiTags
@@ -241,7 +241,7 @@ export default function AccountBusiness() {
                 ]}
                 label="Hvilken sprog taler du"
                 placeholder="Vælge sprog"
-                data-cy="speaks-input"
+                data-testid="speaks-input"
               />
 
               <Textarea
@@ -249,7 +249,7 @@ export default function AccountBusiness() {
                 {...getTextareaProps(shortDescription)}
                 error={shortDescription.errors && 'Udfyld venligst'}
                 minRows={10}
-                data-cy="short-description-input"
+                data-testid="short-description-input"
               />
 
               <div>

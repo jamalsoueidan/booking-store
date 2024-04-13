@@ -8,3 +8,7 @@ node_modules
 .shopify
 .DS_STORE
 cypress/fixtures
+/test-results/
+/playwright-report/
+/blob-report/
+/playwright/.cache/

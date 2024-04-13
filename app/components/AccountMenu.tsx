@@ -146,7 +146,7 @@ export function AccountMenu({
           setActive(item.label);
         }}
         label={item.label}
-        data-cy={item.data}
+        data-testid={item.data}
         leftSection={<item.icon stroke={1.5} />}
       />
     ));
@@ -164,7 +164,7 @@ export function AccountMenu({
           setActive(item.label);
         }}
         label={item.label}
-        data-cy={item.data}
+        data-testid={item.data}
         leftSection={<item.icon stroke={1.5} />}
       />
     ));
@@ -238,7 +238,7 @@ export function AccountMenu({
                 }
               }}
               label="Log ud"
-              data-cy="logout-link"
+              data-testid="logout-link"
               leftSection={<IconLogout stroke={1.5} />}
             />
           </Form>
@@ -250,7 +250,7 @@ export function AccountMenu({
             rightSection={
               <Burger opened={opened} onClick={closeDrawer} size="md" />
             }
-            data-cy="close-navigation-link"
+            data-testid="close-navigation-link"
           />
         </AppShell.Section>
       ) : null}

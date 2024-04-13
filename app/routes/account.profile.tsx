@@ -146,14 +146,14 @@ export default function AccountProfile() {
 
       <AccountContent>
         {comingFromBusiness ? (
-          <Blockquote color="lime" my="md" data-cy="required-notification">
+          <Blockquote color="lime" my="md" data-testid="required-notification">
             Du bedes først udfylde din fornavn og efternavn og trykke på knappen
             i bunden på siden.
           </Blockquote>
         ) : undefined}
 
         {action?.error ? (
-          <Blockquote color="red" my="md" data-cy="required-notification">
+          <Blockquote color="red" my="md" data-testid="required-notification">
             <strong>Fejl:</strong>
             <br />
             {action.error}
@@ -173,7 +173,7 @@ export default function AccountProfile() {
               defaultValue={customer.firstName ?? ''}
               required
               minLength={2}
-              data-cy="first-name-input"
+              data-testid="first-name-input"
             />
             <TextInput
               label="Efternavn"
@@ -186,14 +186,14 @@ export default function AccountProfile() {
               defaultValue={customer.lastName ?? ''}
               required
               minLength={2}
-              data-cy="last-name-input"
+              data-testid="last-name-input"
             />
 
             <div>
               <Button
                 type="submit"
                 loading={state !== 'idle'}
-                data-cy="submit-button"
+                data-testid="submit-button"
               >
                 {comingFromBusiness ? 'Gem og gå videre...' : 'Opdater'}
               </Button>

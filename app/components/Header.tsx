@@ -54,7 +54,7 @@ export function Header({header, isLoggedIn, cart}: HeaderProps) {
               component={Flex}
               lh="xs"
               fw="500"
-              data-cy="logo-login"
+              data-testid="logo-login"
             >
               ByS
               <Image src={logo} alt="it's me" h="auto" w="10px" mx="2px" />
@@ -217,7 +217,7 @@ function HeaderCtas({
                 aria-label="Account Dashboard"
                 component={Link}
                 to="/account"
-                data-cy="dashboard-button"
+                data-testid="dashboard-button"
                 prefetch="intent"
               >
                 Dashboard
@@ -234,7 +234,7 @@ function HeaderCtas({
                 component={Link}
                 to="/account"
                 prefetch="intent"
-                data-cy="login-button"
+                data-testid="login-button"
               >
                 Login
               </Button>
@@ -333,7 +333,7 @@ function CartBadge({count}: {count: number}) {
           <IconShoppingCart style={{width: rem(18)}} stroke={1.5} />
         )
       }
-      data-cy="cart-button"
+      data-testid="cart-button"
     >
       Indkøbskurv
     </Button>
