@@ -28,8 +28,10 @@ jobs:
       - name: Setup Ngrok Auth
         run: ./ngrok authtoken ${{ secrets.NGROK }}
 
-      - name: Set up Ngrok tunnel
-        run: npm run tunnel
+      - name: Start Ngrok with Configured URL
+        run: ./ngrok http -hostname=${{ secrets.NGROK_URL }} 8080 &
+        env:
+          NGROK_URL: ${{ secrets.NGROK_URL }}
 
       - name: Debug Environment Variables
         run: |
