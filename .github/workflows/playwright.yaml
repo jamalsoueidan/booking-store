@@ -6,11 +6,15 @@ on:
 
 jobs:
   test:
-    if: github.event.issue.pull_request != null && contains(github.event.comment.body, 'Oxygen deployed a preview of your')
+    if: github.event.issue.pull_request != null && contains(github.event.comment.body, 'Oxygen deployed a preview of your') && github.event.comment.user.login == 'shopify'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+
+      - name: Log Details
+        run: |
+          echo "Comment was made by Shopify bot and contains the deployment preview link."
 
       - uses: actions/setup-node@v4
         with:
