@@ -33,14 +33,8 @@ jobs:
         env:
           NGROK_URL: ${{ secrets.NGROK_URL }}
 
-      - name: Debug Environment Variables
-        run: |
-          echo "Session Secret: ${SESSION_SECRET:+set}"
-        env:
-          SESSION_SECRET: ${{ secrets.SESSION_SECRET }}
-
       - name: Run preview
-        run: npm run preview
+        run: npm run preview &
         env:
           SESSION_SECRET: ${{ secrets.SESSION_SECRET }}
           PUBLIC_STOREFRONT_API_TOKEN: ${{ secrets.PUBLIC_STOREFRONT_API_TOKEN }}
