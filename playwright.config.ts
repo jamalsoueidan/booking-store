@@ -74,7 +74,7 @@ export default defineConfig({
     },
     {
       command: 'npm run tunnel',
-      url: 'https://' + process.env.NGROK_URL,
+      url: process.env.NGROK_URL,
       timeout: 120 * 1000,
       reuseExistingServer: !process.env.CI,
     },
