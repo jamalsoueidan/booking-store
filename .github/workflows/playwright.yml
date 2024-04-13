@@ -25,11 +25,15 @@ jobs:
           wget https://bin.equinox.io/c/4VmDzA7iaHb/ngrok-stable-linux-amd64.zip
           unzip ngrok-stable-linux-amd64.zip
 
+      - name: Debug Environment Variables
+        run: |
+          echo "Session Secret: ${SESSION_SECRET:+set}"
+
       - name: Setup Ngrok Auth
         run: ./ngrok authtoken ${{ secrets.NGROK }}
 
       - name: Run Playwright tests
-        run: npx playwright test
+        run: npm run test
         env:
           SESSION_SECRET: ${{ secrets.SESSION_SECRET }}
           PUBLIC_STOREFRONT_API_TOKEN: ${{ secrets.PUBLIC_STOREFRONT_API_TOKEN }}
