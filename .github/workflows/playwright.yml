@@ -15,37 +15,9 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: lts/*
-      - name: Install dependencies
-        run: npm ci
-      - name: Install Playwright Browsers
-        run: npx playwright install --with-deps
-
-      - name: Install Ngrok
-        run: |
-          wget https://bin.equinox.io/c/bNyj1mQVY4c/ngrok-v3-stable-linux-amd64.tgz
-          tar xvzf ngrok-v3-stable-linux-amd64.tgz
-
-      - name: Setup Ngrok Auth
-        run: ./ngrok authtoken ${{ secrets.NGROK }}
-
-      - name: Debug Environment Variables
-        run: |
-          echo "Session Secret: ${SESSION_SECRET:+set}"
-        env:
-          SESSION_SECRET: ${{ secrets.SESSION_SECRET }}
 
       - name: Run Playwright tests
         run: npx playwright test
-        env:
-          NGROK_URL: ${{ secrets.NGROK_URL }}
-          MAILOSAUR_API_KEY: ${{ secrets.MAILOSAUR_API_KEY }}
-          SESSION_SECRET: ${{ secrets.SESSION_SECRET }}
-          PUBLIC_STOREFRONT_API_TOKEN: ${{ secrets.PUBLIC_STOREFRONT_API_TOKEN }}
-          PRIVATE_STOREFRONT_API_TOKEN: ${{ secrets.PRIVATE_STOREFRONT_API_TOKEN }}
-          PUBLIC_STORE_DOMAIN: ${{ secrets.PUBLIC_STORE_DOMAIN }}
-          PUBLIC_STOREFRONT_ID: ${{ secrets.PUBLIC_STOREFRONT_ID }}
-          PUBLIC_CUSTOMER_ACCOUNT_API_CLIENT_ID: ${{ secrets.PUBLIC_CUSTOMER_ACCOUNT_API_CLIENT_ID }}
-          PUBLIC_CUSTOMER_ACCOUNT_API_URL: ${{ secrets.PUBLIC_CUSTOMER_ACCOUNT_API_URL }}
 
       - uses: actions/upload-artifact@v4
         if: always()

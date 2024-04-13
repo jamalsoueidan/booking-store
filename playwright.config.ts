@@ -1,10 +1,8 @@
 import {defineConfig, devices} from '@playwright/test';
-/*if (process.env.CI) {
-  // Dynamically import dotenv only if not in CI
-  await import('dotenv').then((dotenv) => dotenv.config());
-}*/
 
-console.log('test', process.env.SESSION_SECRET);
+import dotenv from 'dotenv';
+
+dotenv.config();
 
 /**
  * See https://playwright.dev/docs/test-configuration.
@@ -70,7 +68,7 @@ export default defineConfig({
 
   webServer: [
     {
-      command: `cross-env SESSION_SECRET=${process.env.SESSION_SECRET} npm run dev`,
+      command: `npm run dev`,
       url: 'http://localhost:3000',
       timeout: 120 * 1000,
       reuseExistingServer: !process.env.CI,
