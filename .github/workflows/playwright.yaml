@@ -5,10 +5,21 @@ on:
     types: [created, edited]
 
 jobs:
-  test:
-    if: github.event.issue.pull_request != null && contains(github.event.comment.body, 'Oxygen deployed a preview of your') && github.event.comment.user.login == 'shopify'
+  check-comments:
     runs-on: ubuntu-latest
     steps:
+      - name: Print Event Details
+        run: |
+          echo "Event Payload: ${{ toJson(github.event) }}"
+          echo "Comment Author: ${{ github.event.comment.user.login }}"
+          echo "Is PR? : ${{ github.event.issue.pull_request != null }}"
+          echo "Contains Expected Text? : ${{ contains(github.event.comment.body, 'Oxygen deployed a preview of your') }}"
+
+      - name: Check Conditions
+        if: github.event.issue.pull_request != null && contains(github.event.comment.body, 'Oxygen deployed a preview of your') && github.event.comment.user.login == 'shopify[bot]'
+        run: |
+          echo "The job conditions are met. Proceeding with actions."
+
       - name: Checkout
         uses: actions/checkout@v4
 
