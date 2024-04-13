@@ -14,7 +14,7 @@ import {METAFIELD_QUERY} from '~/data/fragments';
 import {useRootLoaderData} from '~/root';
 
 export const meta: MetaFunction = () => {
-  return [{title: `Hydrogen | Cart`}];
+  return [{title: `BySisters | Cart`}];
 };
 
 export async function action({request, context}: ActionFunctionArgs) {
