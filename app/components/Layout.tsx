@@ -32,9 +32,10 @@ export function Layout({
   const location = useLocation();
   const path = location.pathname;
 
+  console.log(path);
   return (
     <>
-      {!path.includes('/account/') ? (
+      {!path.includes('/account') ? (
         <>
           <CartAside cart={cart} />
           {!path.includes('/artist/') ? (
@@ -47,7 +48,7 @@ export function Layout({
         </>
       ) : null}
       <main>{children}</main>
-      {!path.includes('/account/') && !path.includes('/artist/') ? (
+      {!path.includes('/account') && !path.includes('/artist/') ? (
         <Suspense>
           <Await resolve={footer}>
             {(footer) => <Footer menu={footer.menu} shop={header.shop} />}

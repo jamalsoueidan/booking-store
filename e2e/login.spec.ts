@@ -30,4 +30,6 @@ test('test', async ({page}) => {
   }
 
   await page.goto(`./account/dashboard`);
+
+  await page.getByTestId('change-business-button').click();
 });
