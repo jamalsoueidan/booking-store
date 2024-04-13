@@ -4,7 +4,7 @@ import {defineConfig, devices} from '@playwright/test';
   await import('dotenv').then((dotenv) => dotenv.config());
 }*/
 
-console.log('test', process.env.NGROK_URL);
+console.log('test', process.env.SESSION_SECRET);
 
 /**
  * See https://playwright.dev/docs/test-configuration.
@@ -74,6 +74,9 @@ export default defineConfig({
       url: 'http://localhost:3000',
       timeout: 120 * 1000,
       reuseExistingServer: !process.env.CI,
+      env: {
+        SESSION_SECRET: process.env.SESSION_SECRET,
+      } as any,
     },
     {
       command: 'npm run tunnel',
