@@ -134,11 +134,10 @@ export default function App() {
             <Layout {...data}>
               <Outlet />
             </Layout>
-
-            <ScrollRestoration nonce={nonce} />
-            <Scripts nonce={nonce} />
           </ModalsProvider>
         </MantineProvider>
+        <ScrollRestoration nonce={nonce} />
+        <Scripts nonce={nonce} />
       </body>
     </html>
   );
@@ -185,10 +184,10 @@ export function ErrorBoundary() {
                 )}
               </div>
             </Layout>
-            <ScrollRestoration nonce={nonce} />
-            <Scripts nonce={nonce} />
           </ModalsProvider>
         </MantineProvider>
+        <ScrollRestoration nonce={nonce} />
+        <Scripts nonce={nonce} />
       </body>
     </html>
   );
