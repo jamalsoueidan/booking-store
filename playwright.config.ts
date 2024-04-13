@@ -70,13 +70,13 @@ export default defineConfig({
       command: 'npm run dev',
       url: 'http://localhost:3000',
       timeout: 120 * 1000,
-      reuseExistingServer: !process.env.CI,
+      reuseExistingServer: true,
     },
     {
       command: 'npm run tunnel',
       url: 'https://' + process.env.NGROK_URL,
       timeout: 120 * 1000,
-      reuseExistingServer: !process.env.CI,
+      reuseExistingServer: true,
     },
   ],
 });
