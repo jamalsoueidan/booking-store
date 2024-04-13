@@ -113,8 +113,8 @@ export default function Homepage() {
               [behandlinger] direkte på vores platform
             </H1>
             <Title order={2} c="dimmed" fw="normal" ta="center" lineClamp={2}>
-              Vores platform forbinder dig med talentfulde eksperter inden for
-              alle aspekter af skønhed.
+              Vores platform forbinder dig med talentfulde skønhedseksperter
+              inden for alle aspekter af skønhed.
             </Title>
 
             <Flex
