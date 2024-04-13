@@ -1,7 +1,10 @@
 import {defineConfig, devices} from '@playwright/test';
-import dotenv from 'dotenv';
+/*if (process.env.CI) {
+  // Dynamically import dotenv only if not in CI
+  await import('dotenv').then((dotenv) => dotenv.config());
+}*/
 
-dotenv.config();
+console.log('test', process.env.NGROK_URL);
 
 /**
  * See https://playwright.dev/docs/test-configuration.
@@ -70,13 +73,13 @@ export default defineConfig({
       command: 'npm run dev',
       url: 'http://localhost:3000',
       timeout: 120 * 1000,
-      reuseExistingServer: true,
+      reuseExistingServer: !process.env.CI,
     },
     {
       command: 'npm run tunnel',
       url: 'https://' + process.env.NGROK_URL,
       timeout: 120 * 1000,
-      reuseExistingServer: true,
+      reuseExistingServer: !process.env.CI,
     },
   ],
 });

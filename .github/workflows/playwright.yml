@@ -8,7 +8,7 @@ on:
 
 jobs:
   test:
-    timeout-minutes: 60
+    timeout-minutes: 30
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -28,14 +28,17 @@ jobs:
       - name: Setup Ngrok Auth
         run: ./ngrok authtoken ${{ secrets.NGROK }}
 
-      - name: Start Ngrok with Configured URL
-        run: ./ngrok http -hostname=${{ secrets.NGROK_URL }} 8080 &
+      - name: Debug Environment Variables
+        run: |
+          echo "Session Secret: ${SESSION_SECRET:+set}"
+        env:
+          SESSION_SECRET: ${{ secrets.SESSION_SECRET }}
+
+      - name: Run Playwright tests
+        run: npx playwright test
         env:
           NGROK_URL: ${{ secrets.NGROK_URL }}
-
-      - name: Run preview
-        run: npm run preview &
-        env:
+          MAILOSAUR_API_KEY: ${{ secrets.MAILOSAUR_API_KEY }}
           SESSION_SECRET: ${{ secrets.SESSION_SECRET }}
           PUBLIC_STOREFRONT_API_TOKEN: ${{ secrets.PUBLIC_STOREFRONT_API_TOKEN }}
           PRIVATE_STOREFRONT_API_TOKEN: ${{ secrets.PRIVATE_STOREFRONT_API_TOKEN }}
@@ -43,15 +46,6 @@ jobs:
           PUBLIC_STOREFRONT_ID: ${{ secrets.PUBLIC_STOREFRONT_ID }}
           PUBLIC_CUSTOMER_ACCOUNT_API_CLIENT_ID: ${{ secrets.PUBLIC_CUSTOMER_ACCOUNT_API_CLIENT_ID }}
           PUBLIC_CUSTOMER_ACCOUNT_API_URL: ${{ secrets.PUBLIC_CUSTOMER_ACCOUNT_API_URL }}
-
-      - name: Wait for preview to be ready
-        run: npx wait-on http://localhost:3000
-
-      - name: Run Playwright tests
-        run: npm run test
-        env:
-          NGROK_URL: ${{ secrets.NGROK_URL }}
-          MAILOSAUR_API_KEY: ${{ secrets.MAILOSAUR_API_KEY }}
 
       - uses: actions/upload-artifact@v4
         if: always()
