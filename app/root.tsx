@@ -1,4 +1,17 @@
-import {ColorSchemeScript, createTheme, MantineProvider} from '@mantine/core';
+import {
+  AppShell,
+  Burger,
+  Button,
+  ColorSchemeScript,
+  createTheme,
+  Flex,
+  Group,
+  Image,
+  MantineProvider,
+  rem,
+  Title,
+  UnstyledButton,
+} from '@mantine/core';
 import {ModalsProvider} from '@mantine/modals';
 
 import '@mantine/carousel/styles.css';
@@ -7,9 +20,17 @@ import '@mantine/core/styles.css';
 import '@mantine/tiptap/styles.css';
 
 import {
+  useDisclosure,
+  useHeadroom,
+  useMediaQuery,
+  useWindowScroll,
+} from '@mantine/hooks';
+import {
   isRouteErrorResponse,
+  Link,
   Links,
   Meta,
+  NavLink,
   Outlet,
   Scripts,
   ScrollRestoration,
@@ -27,6 +48,7 @@ import {
 import {Layout} from '~/components/Layout';
 import favicon from './assets/favicon.svg';
 import appStyles from './styles/app.css?url';
+import logo from '/Artboard4.svg';
 
 /**
  * This is important to avoid re-fetching root queries on sub-navigations
@@ -114,7 +136,10 @@ export async function loader({context}: LoaderFunctionArgs) {
 export default function App() {
   const nonce = useNonce();
   const data = useLoaderData<typeof loader>();
-  const theme = createTheme({});
+  const [opened, {toggle}] = useDisclosure();
+  const pinned = useHeadroom({fixedAt: 120});
+  const [scroll] = useWindowScroll();
+  const isMobile = useMediaQuery('(max-width: 62em)');
 
   return (
     <html lang="en">
@@ -129,11 +154,104 @@ export default function App() {
         <ColorSchemeScript />
       </head>
       <body>
-        <MantineProvider theme={theme}>
+        <MantineProvider>
           <ModalsProvider>
-            <Layout {...data}>
-              <Outlet />
-            </Layout>
+            <AppShell
+              header={{
+                height: 70,
+                collapsed: !pinned && !isMobile,
+                offset: !!isMobile,
+              }}
+              navbar={{
+                width: 300,
+                breakpoint: 'sm',
+                collapsed: {desktop: true, mobile: !opened},
+              }}
+              withBorder={false}
+            >
+              <AppShell.Header
+                component={Flex}
+                p="md"
+                bg={scroll.y === 0 ? 'transparent' : 'white'}
+              >
+                <Group h="100%" miw="150px">
+                  <Burger
+                    opened={opened}
+                    onClick={toggle}
+                    hiddenFrom="sm"
+                    size="sm"
+                  />
+                  <UnstyledButton component={Link} to="/">
+                    <Title
+                      order={1}
+                      component={Flex}
+                      lh="xs"
+                      fz={rem(20)}
+                      fw="500"
+                      data-testid="logo-login"
+                    >
+                      ByS
+                      <Image
+                        src={logo}
+                        alt="it's me"
+                        h="auto"
+                        w="8px"
+                        mx="2px"
+                      />
+                      sters
+                    </Title>
+                  </UnstyledButton>
+                </Group>
+                <Flex
+                  justify="center"
+                  align="center"
+                  visibleFrom="sm"
+                  style={{flex: 1}}
+                  h="100%"
+                >
+                  {data.header.menu?.items.map(({url, title}) => (
+                    <NavLink key={url} to={new URL(url || '').pathname}>
+                      {({isActive}) => (
+                        <Button
+                          radius="xl"
+                          fz="md"
+                          fw="500"
+                          variant={
+                            title.includes('skønhedskarriere')
+                              ? 'filled'
+                              : 'transparent'
+                          }
+                          color={
+                            title.includes('skønhedskarriere')
+                              ? '#8a60f6'
+                              : 'black'
+                          }
+                        >
+                          {title}
+                        </Button>
+                      )}
+                    </NavLink>
+                  ))}
+                </Flex>
+                <Flex
+                  justify="flex-end"
+                  align="center"
+                  gap={0}
+                  visibleFrom="sm"
+                  miw="150px"
+                >
+                  login
+                </Flex>
+              </AppShell.Header>
+
+              <AppShell.Navbar py="md" px={4}>
+                x
+              </AppShell.Navbar>
+
+              <AppShell.Main py="md">
+                <Outlet />
+              </AppShell.Main>
+            </AppShell>
           </ModalsProvider>
         </MantineProvider>
         <ScrollRestoration nonce={nonce} />
