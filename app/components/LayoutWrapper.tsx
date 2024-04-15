@@ -168,6 +168,7 @@ export function LayoutWrapper({children}: {children: ReactNode}) {
                         color="black"
                         component={Link}
                         to="/account"
+                        data-testid="login-button"
                         rightSection={
                           isLoggedIn ? <IconDashboard /> : <IconLogin />
                         }
@@ -187,6 +188,7 @@ export function LayoutWrapper({children}: {children: ReactNode}) {
                           color="black"
                           component={Link}
                           to="/cart"
+                          data-testid="cart-button"
                           rightSection={<IconShoppingCartPlus />}
                         >
                           Indkøbskurv {cart.totalQuantity}
@@ -225,6 +227,7 @@ export function LayoutWrapper({children}: {children: ReactNode}) {
                         color="black"
                         component={Link}
                         to="/account"
+                        data-testid="login-button"
                         rightSection={
                           isLoggedIn ? <IconDashboard /> : <IconLogin />
                         }
@@ -246,6 +249,7 @@ export function LayoutWrapper({children}: {children: ReactNode}) {
                           component={Link}
                           to="/cart"
                           onClick={toggle}
+                          data-testid="cart-button"
                           rightSection={<IconShoppingCartPlus />}
                           fullWidth
                         >
