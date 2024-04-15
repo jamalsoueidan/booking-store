@@ -54,7 +54,7 @@ export default function AccountIndex() {
   const {status} = useLoaderData<typeof loader>();
   const [searchParams] = useSearchParams();
 
-  const heading = `Velkommen til din konto`;
+  const heading = `Velkommen, ${customer.firstName} ${customer.lastName}`;
 
   const isOfficialBusinessPartner = searchParams.has('business');
 

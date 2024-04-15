@@ -1,5 +1,4 @@
-import {ColorSchemeScript, createTheme, MantineProvider} from '@mantine/core';
-import {ModalsProvider} from '@mantine/modals';
+import {ColorSchemeScript} from '@mantine/core';
 
 import '@mantine/carousel/styles.css';
 import '@mantine/core/styles.css';
@@ -13,7 +12,6 @@ import {
   Outlet,
   Scripts,
   ScrollRestoration,
-  useLoaderData,
   useMatches,
   useRouteError,
   type ShouldRevalidateFunction,
@@ -24,8 +22,9 @@ import {
   type LoaderFunctionArgs,
   type SerializeFrom,
 } from '@shopify/remix-oxygen';
-import {Layout} from '~/components/Layout';
+import {type ReactNode} from 'react';
 import favicon from './assets/favicon.svg';
+import {LayoutWrapper} from './components/LayoutWrapper';
 import appStyles from './styles/app.css?url';
 
 /**
@@ -111,10 +110,8 @@ export async function loader({context}: LoaderFunctionArgs) {
   );
 }
 
-export default function App() {
+export function Layout({children}: {children: ReactNode}) {
   const nonce = useNonce();
-  const data = useLoaderData<typeof loader>();
-  const theme = createTheme({});
 
   return (
     <html lang="en">
@@ -129,13 +126,7 @@ export default function App() {
         <ColorSchemeScript />
       </head>
       <body>
-        <MantineProvider theme={theme}>
-          <ModalsProvider>
-            <Layout {...data}>
-              <Outlet />
-            </Layout>
-          </ModalsProvider>
-        </MantineProvider>
+        <LayoutWrapper>{children}</LayoutWrapper>
         <ScrollRestoration nonce={nonce} />
         <Scripts nonce={nonce} />
       </body>
@@ -143,11 +134,12 @@ export default function App() {
   );
 }
 
+export default function App() {
+  return <Outlet />;
+}
+
 export function ErrorBoundary() {
-  const theme = createTheme({});
   const error = useRouteError();
-  const rootData = useRootLoaderData();
-  const nonce = useNonce();
   let errorMessage = 'Unknown error';
   let errorStatus = 500;
 
@@ -159,37 +151,15 @@ export function ErrorBoundary() {
   }
 
   return (
-    <html lang="en">
-      <head>
-        <meta charSet="utf-8" />
-        <meta
-          name="viewport"
-          content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"
-        />
-        <Meta />
-        <Links />
-        <ColorSchemeScript />
-      </head>
-      <body>
-        <MantineProvider theme={theme}>
-          <ModalsProvider>
-            <Layout {...rootData}>
-              <div className="route-error">
-                <h1>Oops</h1>
-                <h2>{errorStatus}</h2>
-                {errorMessage && (
-                  <fieldset>
-                    <pre>{errorMessage}</pre>
-                  </fieldset>
-                )}
-              </div>
-            </Layout>
-          </ModalsProvider>
-        </MantineProvider>
-        <ScrollRestoration nonce={nonce} />
-        <Scripts nonce={nonce} />
-      </body>
-    </html>
+    <div className="route-error">
+      <h1>Oops</h1>
+      <h2>{errorStatus}</h2>
+      {errorMessage && (
+        <fieldset>
+          <pre>{errorMessage}</pre>
+        </fieldset>
+      )}
+    </div>
   );
 }
 

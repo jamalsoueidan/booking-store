@@ -40,7 +40,7 @@ export const schema = customerCreateBody.omit({
   yearsExperience: true,
 });
 
-export async function action({request, params, context}: ActionFunctionArgs) {
+export async function action({request, context}: ActionFunctionArgs) {
   await context.customerAccount.handleAuthStatus();
 
   const formData = await request.formData();
@@ -105,14 +105,6 @@ export async function loader({context, params}: LoaderFunctionArgs) {
 
   if (userIsBusiness.isBusiness) {
     return redirect('/account/public');
-  }
-
-  if (!data.customer.firstName || !data.customer.lastName) {
-    return redirect(
-      `/account/profile?${!data.customer.firstName ? 'firstName=true&' : ''}${
-        !data.customer.lastName ? 'lastName=true' : ''
-      }`,
-    );
   }
 
   const {payload: professionOptions} =

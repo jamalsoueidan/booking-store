@@ -6,7 +6,6 @@ module.exports = {
     '@remix-run/eslint-config',
     'plugin:hydrogen/recommended',
     'plugin:hydrogen/typescript',
-    'mantine',
   ],
   rules: {
     '@typescript-eslint/ban-ts-comment': 'off',
