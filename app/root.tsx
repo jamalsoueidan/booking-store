@@ -1,19 +1,4 @@
-import {
-  AppShell,
-  Burger,
-  Button,
-  ColorSchemeScript,
-  createTheme,
-  Flex,
-  Group,
-  Image,
-  MantineProvider,
-  NavLink as NavLinkMantine,
-  rem,
-  Title,
-  UnstyledButton,
-} from '@mantine/core';
-import {ModalsProvider} from '@mantine/modals';
+import {ColorSchemeScript} from '@mantine/core';
 
 import '@mantine/carousel/styles.css';
 import '@mantine/core/styles.css';
@@ -21,23 +6,12 @@ import '@mantine/core/styles.css';
 import '@mantine/tiptap/styles.css';
 
 import {
-  useDisclosure,
-  useHeadroom,
-  useMediaQuery,
-  useWindowScroll,
-} from '@mantine/hooks';
-import {
-  Await,
   isRouteErrorResponse,
-  Link,
   Links,
   Meta,
-  NavLink,
   Outlet,
   Scripts,
   ScrollRestoration,
-  useLoaderData,
-  useLocation,
   useMatches,
   useRouteError,
   type ShouldRevalidateFunction,
@@ -48,17 +22,10 @@ import {
   type LoaderFunctionArgs,
   type SerializeFrom,
 } from '@shopify/remix-oxygen';
-import {
-  IconChevronRight,
-  IconDashboard,
-  IconLogin,
-  IconShoppingCartPlus,
-} from '@tabler/icons-react';
-import {Suspense} from 'react';
+import {type ReactNode} from 'react';
 import favicon from './assets/favicon.svg';
-import {Footer} from './components/Footer';
+import {LayoutWrapper} from './components/LayoutWrapper';
 import appStyles from './styles/app.css?url';
-import logo from '/Artboard4.svg';
 
 /**
  * This is important to avoid re-fetching root queries on sub-navigations
@@ -143,15 +110,8 @@ export async function loader({context}: LoaderFunctionArgs) {
   );
 }
 
-export default function App() {
+export function Layout({children}: {children: ReactNode}) {
   const nonce = useNonce();
-  const data = useLoaderData<typeof loader>();
-  const [opened, {toggle}] = useDisclosure();
-  const pinned = useHeadroom({fixedAt: 120});
-  const [scroll] = useWindowScroll();
-  const isMobile = useMediaQuery('(max-width: 62em)');
-  const location = useLocation();
-  const path = location.pathname;
 
   return (
     <html lang="en">
@@ -166,208 +126,7 @@ export default function App() {
         <ColorSchemeScript />
       </head>
       <body>
-        <MantineProvider>
-          <ModalsProvider>
-            {!path.includes('/account') && !path.includes('/artist/') ? (
-              <AppShell
-                header={{
-                  height: 70,
-                  collapsed: !pinned && !isMobile,
-                  offset: opened,
-                }}
-                navbar={{
-                  width: 300,
-                  breakpoint: 'sm',
-                  collapsed: {desktop: true, mobile: !opened},
-                }}
-                withBorder={false}
-              >
-                <AppShell.Header
-                  component={Flex}
-                  p="md"
-                  bg={scroll.y === 0 ? 'transparent' : 'white'}
-                >
-                  <Group h="100%" miw="150px">
-                    <Burger
-                      opened={opened}
-                      onClick={toggle}
-                      hiddenFrom="sm"
-                      size="sm"
-                    />
-                    <UnstyledButton component={Link} to="/">
-                      <Title
-                        order={1}
-                        component={Flex}
-                        lh="xs"
-                        fz={rem(20)}
-                        fw="500"
-                        data-testid="logo-login"
-                      >
-                        ByS
-                        <Image
-                          src={logo}
-                          alt="it's me"
-                          h="auto"
-                          w="8px"
-                          mx="2px"
-                        />
-                        sters
-                      </Title>
-                    </UnstyledButton>
-                  </Group>
-                  <Flex
-                    justify="center"
-                    align="center"
-                    visibleFrom="sm"
-                    style={{flex: 1}}
-                    h="100%"
-                  >
-                    {data.header.menu?.items.map(({url, title}) => (
-                      <NavLink key={url} to={new URL(url || '').pathname}>
-                        {({isActive}) => (
-                          <Button
-                            radius="xl"
-                            fz="md"
-                            fw="500"
-                            variant={
-                              title.includes('skønhedskarriere')
-                                ? 'filled'
-                                : 'transparent'
-                            }
-                            color={
-                              title.includes('skønhedskarriere')
-                                ? '#8a60f6'
-                                : 'black'
-                            }
-                          >
-                            {title}
-                          </Button>
-                        )}
-                      </NavLink>
-                    ))}
-                  </Flex>
-                  <Flex
-                    justify="flex-end"
-                    align="center"
-                    gap={0}
-                    visibleFrom="sm"
-                    miw="150px"
-                  >
-                    <Suspense>
-                      <Await resolve={data.isLoggedIn}>
-                        {(isLoggedIn) => (
-                          <Button
-                            variant="outline"
-                            size="compact-md"
-                            color="black"
-                            component={Link}
-                            to="/account"
-                            rightSection={
-                              isLoggedIn ? <IconDashboard /> : <IconLogin />
-                            }
-                          >
-                            {isLoggedIn ? 'Dashboard' : 'Log ind'}
-                          </Button>
-                        )}
-                      </Await>
-                    </Suspense>
-                    <Suspense>
-                      <Await resolve={data.cart}>
-                        {(cart) =>
-                          cart?.totalQuantity && cart?.totalQuantity > 0 ? (
-                            <Button
-                              variant="outline"
-                              size="compact-md"
-                              color="black"
-                              component={Link}
-                              to="/cart"
-                              rightSection={<IconShoppingCartPlus />}
-                            >
-                              Indkøbskurv {cart.totalQuantity}
-                            </Button>
-                          ) : null
-                        }
-                      </Await>
-                    </Suspense>
-                  </Flex>
-                </AppShell.Header>
-
-                <AppShell.Navbar px={4}>
-                  {data.header.menu?.items.map(({url, title}) => (
-                    <NavLinkMantine
-                      component={NavLink}
-                      key={url}
-                      to={new URL(url || '').pathname}
-                      onClick={toggle}
-                      label={title}
-                      rightSection={
-                        <IconChevronRight
-                          size="0.8rem"
-                          stroke={1.5}
-                          className="mantine-rotate-rtl"
-                        />
-                      }
-                    />
-                  ))}
-                  <Flex gap="xs" p="xs">
-                    <Suspense>
-                      <Await resolve={data.isLoggedIn}>
-                        {(isLoggedIn) => (
-                          <Button
-                            variant="outline"
-                            size="compact-lg"
-                            color="black"
-                            component={Link}
-                            to="/account"
-                            rightSection={
-                              isLoggedIn ? <IconDashboard /> : <IconLogin />
-                            }
-                            fullWidth
-                          >
-                            {isLoggedIn ? 'Dashboard' : 'Log ind'}
-                          </Button>
-                        )}
-                      </Await>
-                    </Suspense>
-                    <Suspense>
-                      <Await resolve={data.cart}>
-                        {(cart) =>
-                          cart?.totalQuantity && cart?.totalQuantity > 0 ? (
-                            <Button
-                              variant="outline"
-                              size="compact-lg"
-                              color="black"
-                              component={Link}
-                              to="/cart"
-                              onClick={toggle}
-                              rightSection={<IconShoppingCartPlus />}
-                              fullWidth
-                            >
-                              Indkøbskurv {cart.totalQuantity}
-                            </Button>
-                          ) : null
-                        }
-                      </Await>
-                    </Suspense>
-                  </Flex>
-                </AppShell.Navbar>
-
-                <AppShell.Main>
-                  <Outlet />
-                  <Suspense>
-                    <Await resolve={data.footer}>
-                      {(footer) => (
-                        <Footer menu={footer.menu} shop={data.header.shop} />
-                      )}
-                    </Await>
-                  </Suspense>
-                </AppShell.Main>
-              </AppShell>
-            ) : (
-              <Outlet />
-            )}
-          </ModalsProvider>
-        </MantineProvider>
+        <LayoutWrapper>{children}</LayoutWrapper>
         <ScrollRestoration nonce={nonce} />
         <Scripts nonce={nonce} />
       </body>
@@ -375,11 +134,12 @@ export default function App() {
   );
 }
 
+export default function App() {
+  return <Outlet />;
+}
+
 export function ErrorBoundary() {
-  const theme = createTheme({});
   const error = useRouteError();
-  const rootData = useRootLoaderData();
-  const nonce = useNonce();
   let errorMessage = 'Unknown error';
   let errorStatus = 500;
 
@@ -391,35 +151,15 @@ export function ErrorBoundary() {
   }
 
   return (
-    <html lang="en">
-      <head>
-        <meta charSet="utf-8" />
-        <meta
-          name="viewport"
-          content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"
-        />
-        <Meta />
-        <Links />
-        <ColorSchemeScript />
-      </head>
-      <body>
-        <MantineProvider theme={theme}>
-          <ModalsProvider>
-            <div className="route-error">
-              <h1>Oops</h1>
-              <h2>{errorStatus}</h2>
-              {errorMessage && (
-                <fieldset>
-                  <pre>{errorMessage}</pre>
-                </fieldset>
-              )}
-            </div>
-          </ModalsProvider>
-        </MantineProvider>
-        <ScrollRestoration nonce={nonce} />
-        <Scripts nonce={nonce} />
-      </body>
-    </html>
+    <div className="route-error">
+      <h1>Oops</h1>
+      <h2>{errorStatus}</h2>
+      {errorMessage && (
+        <fieldset>
+          <pre>{errorMessage}</pre>
+        </fieldset>
+      )}
+    </div>
   );
 }
 

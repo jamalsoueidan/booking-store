@@ -105,12 +105,12 @@ export default function Homepage() {
 
   return (
     <>
-      <Box py={rem(100)}>
+      <Box pt={rem(100)} pb={rem(50)}>
         <Container size="xl">
           <Stack gap="xl">
             <H1 gradients={{from: 'orange', to: 'orange.3'}}>
-              Find professionelle [skønhedseksperter] og book deres
-              [behandlinger] direkte på vores platform
+              Find [skønhedseksperter] og book deres [behandlinger] direkte på
+              vores platform
             </H1>
             <Title order={2} c="dimmed" fw="normal" ta="center" lineClamp={2}>
               Vores platform forbinder dig med talentfulde skønhedseksperter
