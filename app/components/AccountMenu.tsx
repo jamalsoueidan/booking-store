@@ -18,7 +18,6 @@ import {
   IconClock,
   IconCurrencyDollar,
   IconEye,
-  IconFingerprint,
   IconHeartHandshake,
   IconHome,
   IconLocation,
@@ -111,12 +110,6 @@ const bottomMenu = [
     icon: IconPhoto,
     isBusiness: true,
     data: 'change-upload-link',
-  },
-  {
-    link: '/account/password',
-    label: 'Skift adgangskode',
-    icon: IconFingerprint,
-    data: 'change-password-link',
   },
 ];
 
