@@ -6,6 +6,7 @@ import {
   Avatar,
   Burger,
   Divider,
+  Flex,
   NavLink,
   ScrollArea,
   UnstyledButton,
@@ -27,6 +28,7 @@ import {
   IconShoppingBag,
   IconUser,
 } from '@tabler/icons-react';
+import {type CustomerFragment} from 'customer-accountapi.generated';
 import {useState} from 'react';
 import {type User} from '~/lib/api/model';
 import {modifyImageUrl} from '~/lib/image';
@@ -126,7 +128,7 @@ export function AccountMenu({
   opened,
 }: {
   closeDrawer: () => void;
-  customer: CustomerQuery['customer'];
+  customer: CustomerFragment;
   user?: User | null;
   isBusiness: boolean;
   opened: boolean;
@@ -171,53 +173,39 @@ export function AccountMenu({
 
   return (
     <>
-      <AppShell.Section grow my="md" component={ScrollArea}>
-        <NavLink
-          label={
-            <UnstyledButton
-              fz="sm"
+      <AppShell.Section grow component={ScrollArea}>
+        <Flex justify="center" align="center" px="sm" pt="md" pb="4px" gap="xs">
+          {user ? (
+            <Avatar
               component={Link}
-              to="/account/"
+              to={`/account/upload`}
+              size="sm"
+              src={modifyImageUrl(user.images?.profile?.url, '50x50')}
               onClick={() => closeDrawer()}
-            >
-              {customer?.firstName} {customer?.lastName}
-            </UnstyledButton>
-          }
-          description={
-            <UnstyledButton
-              fz="xs"
+            />
+          ) : (
+            <Avatar size="sm" src="" onClick={() => closeDrawer()} />
+          )}
+          <UnstyledButton
+            fz="sm"
+            component={Link}
+            to="/account/"
+            onClick={() => closeDrawer()}
+            style={{flex: 1}}
+          >
+            {customer?.firstName} {customer?.lastName}
+          </UnstyledButton>
+          {user && user.isBusiness ? (
+            <ActionIcon
+              variant="default"
               component={Link}
-              to="/account/"
-              onClick={() => closeDrawer()}
+              to={`/artist/${user?.username}`}
+              target="_blank"
             >
-              {customer?.email && customer.email.length > 22
-                ? customer?.email?.substring(0, 22) + '...'
-                : customer?.email}
-            </UnstyledButton>
-          }
-          leftSection={
-            user ? (
-              <Avatar
-                component={Link}
-                to={`/account/upload`}
-                src={modifyImageUrl(user.images?.profile?.url, '50x50')}
-                onClick={() => closeDrawer()}
-              />
-            ) : null
-          }
-          rightSection={
-            user && user.isBusiness ? (
-              <ActionIcon
-                variant="default"
-                component={Link}
-                to={`/artist/${user?.username}`}
-                target="_blank"
-              >
-                <IconEye />
-              </ActionIcon>
-            ) : null
-          }
-        />
+              <IconEye />
+            </ActionIcon>
+          ) : null}
+        </Flex>
         <Divider my="xs" />
         {isBusiness ? topLinks : bottomLinks}
       </AppShell.Section>
