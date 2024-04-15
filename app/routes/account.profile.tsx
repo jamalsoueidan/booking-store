@@ -4,13 +4,11 @@ import {
   useActionData,
   useNavigation,
   useOutletContext,
-  useSearchParams,
   type MetaFunction,
 } from '@remix-run/react';
 import type {CustomerUpdateInput} from '@shopify/hydrogen/customer-account-api-types';
 import {
   json,
-  redirect,
   type ActionFunctionArgs,
   type LoaderFunctionArgs,
 } from '@shopify/remix-oxygen';
@@ -18,8 +16,6 @@ import type {CustomerFragment} from 'customer-accountapi.generated';
 import {AccountContent} from '~/components/account/AccountContent';
 import {AccountTitle} from '~/components/account/AccountTitle';
 import {CUSTOMER_UPDATE_MUTATION} from '~/graphql/customer-account/CustomerUpdateMutation';
-import {getBookingShopifyApi} from '~/lib/api/bookingShopifyApi';
-import {getCustomer} from '~/lib/get-customer';
 
 export type ActionResponse = {
   error: string | null;
@@ -82,29 +78,6 @@ export async function action({request, context}: ActionFunctionArgs) {
       throw new Error('Customer profile update failed.');
     }
 
-    // coming from business
-    const url = new URL(request.url);
-    const searchParams = new URLSearchParams(url.search);
-
-    const comingFromBusiness = Boolean(
-      searchParams.has('firstName') || searchParams.has('lastName'),
-    );
-
-    if (!comingFromBusiness) {
-      const customerId = await getCustomer({context});
-      await getBookingShopifyApi().customerUpdate(customerId, {
-        fullname: `${customer.firstName} ${customer.lastName}`,
-      });
-    }
-
-    if (comingFromBusiness) {
-      return redirect('/account/business', {
-        headers: {
-          'Set-Cookie': await context.session.commit(),
-        },
-      });
-    }
-
     return json(
       {
         error: null,
@@ -134,24 +107,12 @@ export default function AccountProfile() {
   const {state} = useNavigation();
   const action = useActionData<ActionResponse>();
   const customer = action?.customer ?? account?.customer;
-  const [searchParams] = useSearchParams();
-
-  const comingFromBusiness = Boolean(
-    searchParams.has('firstName') || searchParams.has('lastName'),
-  );
 
   return (
     <>
       <AccountTitle heading="Personlige oplysninger" />
 
       <AccountContent>
-        {comingFromBusiness ? (
-          <Blockquote color="lime" my="md" data-testid="required-notification">
-            Du bedes først udfylde din fornavn og efternavn og trykke på knappen
-            i bunden på siden.
-          </Blockquote>
-        ) : undefined}
-
         {action?.error ? (
           <Blockquote color="red" my="md" data-testid="required-notification">
             <strong>Fejl:</strong>
@@ -195,7 +156,7 @@ export default function AccountProfile() {
                 loading={state !== 'idle'}
                 data-testid="submit-button"
               >
-                {comingFromBusiness ? 'Gem og gå videre...' : 'Opdater'}
+                Opdatere
               </Button>
             </div>
           </Stack>
