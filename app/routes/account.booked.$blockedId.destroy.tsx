@@ -1,5 +1,5 @@
 import {redirect, type ActionFunction} from '@shopify/remix-oxygen';
-import {redirectWithToast} from 'remix-toast';
+import {redirectWithSuccess} from 'remix-toast';
 import {getBookingShopifyApi} from '~/lib/api/bookingShopifyApi';
 import {getCustomer} from '~/lib/get-customer';
 
@@ -12,9 +12,8 @@ export const action: ActionFunction = async ({context, params}) => {
       params.blockedId || '',
     );
 
-    return redirectWithToast('/account/booked', {
+    return redirectWithSuccess('/account/booked', {
       message: 'Ferie er nu slettet!',
-      type: 'success',
     });
   } catch (error) {
     return redirect('/account/booked');

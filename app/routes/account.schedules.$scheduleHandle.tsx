@@ -37,7 +37,7 @@ import {
 } from '@tabler/icons-react';
 import {addMinutes, format, set} from 'date-fns';
 import {useRef} from 'react';
-import {redirectWithToast} from 'remix-toast';
+import {redirectWithSuccess} from 'remix-toast';
 import MobileModal from '~/components/MobileModal';
 import {SubmitButton} from '~/components/form/SubmitButton';
 import {CustomerScheduleSlotDay, type CustomerSchedule} from '~/lib/api/model';
@@ -82,9 +82,8 @@ export const action = async ({
       {slots},
     );
 
-    return redirectWithToast(`/account/schedules/${response.payload._id}`, {
+    return redirectWithSuccess(`/account/schedules/${response.payload._id}`, {
       message: 'Vagtplan navn er opdateret!',
-      type: 'success',
     });
   } catch (error) {
     return json(submission);

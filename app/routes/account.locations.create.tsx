@@ -11,7 +11,7 @@ import {customerLocationCreateBody} from '~/lib/zod/bookingShopifyApi';
 import {getFormProps, getInputProps, useForm} from '@conform-to/react';
 import {parseWithZod} from '@conform-to/zod';
 import {Select, Stack, TextInput} from '@mantine/core';
-import {redirectWithToast} from 'remix-toast';
+import {redirectWithSuccess} from 'remix-toast';
 import {AccountContent} from '~/components/account/AccountContent';
 import {AccountTitle} from '~/components/account/AccountTitle';
 import {AddressAutocompleteInput} from '~/components/form/AddressAutocompleteInput';
@@ -55,9 +55,8 @@ export const action = async ({request, context}: ActionFunctionArgs) => {
       submission.value,
     );
 
-    return redirectWithToast('/account/locations', {
+    return redirectWithSuccess('/account/locations', {
       message: 'Lokation er nu oprettet!',
-      type: 'success',
     });
   } catch (error) {
     return submission.reply();

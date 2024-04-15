@@ -3,7 +3,7 @@ import {parseWithZod} from '@conform-to/zod';
 import {FocusTrap, Stack, TextInput} from '@mantine/core';
 import {Form, useActionData} from '@remix-run/react';
 import {type ActionFunctionArgs} from '@shopify/remix-oxygen';
-import {redirectWithToast} from 'remix-toast';
+import {redirectWithSuccess} from 'remix-toast';
 import {SubmitButton} from '~/components/form/SubmitButton';
 import {getBookingShopifyApi} from '~/lib/api/bookingShopifyApi';
 import {getCustomer} from '~/lib/get-customer';
@@ -26,9 +26,8 @@ export const action = async ({request, context}: ActionFunctionArgs) => {
       submission.value,
     );
 
-    return redirectWithToast(`/account/schedules/${response.payload._id}`, {
+    return redirectWithSuccess(`/account/schedules/${response.payload._id}`, {
       message: 'Du har oprettet en ny vagtplan',
-      type: 'success',
     });
   } catch (error) {
     return submission.reply();

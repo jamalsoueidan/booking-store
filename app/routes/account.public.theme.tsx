@@ -15,7 +15,7 @@ import {
 import {getFormProps, useForm, useInputControl} from '@conform-to/react';
 import {parseWithZod} from '@conform-to/zod';
 import {IconCheck} from '@tabler/icons-react';
-import {redirectWithToast} from 'remix-toast';
+import {redirectWithSuccess} from 'remix-toast';
 import {SubmitButton} from '~/components/form/SubmitButton';
 import {getBookingShopifyApi} from '~/lib/api/bookingShopifyApi';
 import {getCustomer} from '~/lib/get-customer';
@@ -38,9 +38,8 @@ export const action = async ({request, context}: ActionFunctionArgs) => {
   try {
     await getBookingShopifyApi().customerUpdate(customerId, submission.value);
 
-    return redirectWithToast('/account/public/theme', {
+    return redirectWithSuccess('/account/public/theme', {
       message: 'Tema er opdateret!',
-      type: 'success',
     });
   } catch (error) {
     return submission.reply();

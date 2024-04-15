@@ -12,7 +12,7 @@ import {customerScheduleCreateBody} from '~/lib/zod/bookingShopifyApi';
 
 import {parseWithZod} from '@conform-to/zod';
 import {FocusTrap, Stack, TextInput} from '@mantine/core';
-import {redirectWithToast} from 'remix-toast';
+import {redirectWithSuccess} from 'remix-toast';
 import {SubmitButton} from '~/components/form/SubmitButton';
 
 const schema = customerScheduleCreateBody;
@@ -43,9 +43,8 @@ export const action = async ({
       submission.value,
     );
 
-    return redirectWithToast(`/account/schedules/${response.payload._id}`, {
+    return redirectWithSuccess(`/account/schedules/${response.payload._id}`, {
       message: 'Vagtplan er opdateret!',
-      type: 'success',
     });
   } catch (error) {
     return submission.reply();

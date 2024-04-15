@@ -18,7 +18,7 @@ import {SubmitButton} from '~/components/form/SubmitButton';
 
 import {parseWithZod} from '@conform-to/zod';
 import {IconCheck, IconExclamationCircle} from '@tabler/icons-react';
-import {redirectWithToast} from 'remix-toast';
+import {redirectWithSuccess} from 'remix-toast';
 import {type z} from 'zod';
 import {AccountContent} from '~/components/account/AccountContent';
 import {AccountTitle} from '~/components/account/AccountTitle';
@@ -76,9 +76,8 @@ export async function action({request, context}: ActionFunctionArgs) {
       specialties: [],
     });
 
-    return redirectWithToast('/account/dashboard?business=true', {
+    return redirectWithSuccess('/account/dashboard?business=true', {
       message: 'Du er nu opgraderet til business konto!',
-      type: 'success',
     });
   } catch (error) {
     return submission.reply();

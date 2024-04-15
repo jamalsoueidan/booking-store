@@ -14,7 +14,7 @@ import {
   useInputControl,
 } from '@conform-to/react';
 import {parseWithZod} from '@conform-to/zod';
-import {redirectWithToast} from 'remix-toast';
+import {redirectWithSuccess} from 'remix-toast';
 import {MultiTags} from '~/components/form/MultiTags';
 import {RadioGroup} from '~/components/form/RadioGroup';
 import {SubmitButton} from '~/components/form/SubmitButton';
@@ -38,9 +38,8 @@ export const action = async ({request, context}: ActionFunctionArgs) => {
   try {
     await getBookingShopifyApi().customerUpdate(customerId, submission.value);
 
-    return redirectWithToast('/account/public', {
+    return redirectWithSuccess('/account/public', {
       message: 'Profil er opdateret!',
-      type: 'success',
     });
   } catch (error) {
     return submission.reply();
