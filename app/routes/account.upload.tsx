@@ -44,7 +44,7 @@ export const action = async ({
   });
 
   return redirectWithToast('/account/upload', {
-    message: 'er kan gå få sekunder inden dit billed bliver opdateret!',
+    message: 'Der kan gå få sekunder inden dit billed bliver opdateret!',
     type: 'success',
   });
 };

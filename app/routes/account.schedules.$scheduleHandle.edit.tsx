@@ -25,6 +25,10 @@ export const action = async ({
   const customerId = await getCustomer({context});
   const {scheduleHandle} = params;
 
+  if (!customerId || !scheduleHandle) {
+    throw new Error('Missing customer ID or schedule handle');
+  }
+
   const formData = await request.formData();
   const submission = parseWithZod(formData, {schema});
 
@@ -35,7 +39,7 @@ export const action = async ({
   try {
     const response = await getBookingShopifyApi().customerScheduleUpdate(
       customerId,
-      scheduleHandle || '',
+      scheduleHandle,
       submission.value,
     );
 

@@ -51,7 +51,12 @@ export function shouldRevalidate() {
 }
 
 export const meta: MetaFunction = () => {
-  return [{title: 'BySisters | Hjem'}];
+  return [
+    {
+      title:
+        'BySisters | Find skønhedseksperter og book deres [behandlinger] direkte på vores platform. Vores platform forbinder dig med talentfulde skønhedseksperter inden for alle aspekter af skønhed.',
+    },
+  ];
 };
 
 export async function loader(args: LoaderFunctionArgs) {

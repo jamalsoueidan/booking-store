@@ -59,15 +59,17 @@ export function LayoutWrapper({children}: {children: ReactNode}) {
   }, [state]);
 
   useEffect(() => {
-    switch (data.toast?.type) {
-      case 'success':
-        notify.success(data.toast.message);
-        return;
-      case 'error':
-        notify.error(data.toast.message);
-        return;
-      default:
-        return;
+    if (data.toast) {
+      switch (data.toast.type) {
+        case 'success':
+          notify.success(data.toast.message);
+          return;
+        case 'error':
+          notify.error(data.toast.message);
+          return;
+        default:
+          return;
+      }
     }
   }, [data.toast]);
 
