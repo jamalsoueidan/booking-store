@@ -103,8 +103,8 @@ export const VisualTeaserComponent = ({
         <BackgroundImage
           src={image?.url || ''}
           opacity={opacity || 1}
-          bgsz="100%"
-          bgp="contain"
+          bgsz={{base: 'cover', xs: 'contain'}}
+          bgp="center"
           bgr="no-repeat"
           style={{
             borderBottomRightRadius: '40% 15%',
