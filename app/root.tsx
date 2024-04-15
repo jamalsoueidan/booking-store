@@ -8,6 +8,7 @@ import {
   Group,
   Image,
   MantineProvider,
+  NavLink as NavLinkMantine,
   rem,
   Title,
   UnstyledButton,
@@ -45,6 +46,7 @@ import {
   type LoaderFunctionArgs,
   type SerializeFrom,
 } from '@shopify/remix-oxygen';
+import {IconActivity, IconChevronRight} from '@tabler/icons-react';
 import {Layout} from '~/components/Layout';
 import favicon from './assets/favicon.svg';
 import appStyles from './styles/app.css?url';
@@ -160,7 +162,7 @@ export default function App() {
               header={{
                 height: 70,
                 collapsed: !pinned && !isMobile,
-                offset: !!isMobile,
+                offset: opened,
               }}
               navbar={{
                 width: 300,
@@ -244,11 +246,32 @@ export default function App() {
                 </Flex>
               </AppShell.Header>
 
-              <AppShell.Navbar py="md" px={4}>
-                x
+              <AppShell.Navbar px={4}>
+                {data.header.menu?.items.map(({url, title}) => (
+                  <NavLink
+                    key={url}
+                    to={new URL(url || '').pathname}
+                    onClick={toggle}
+                  >
+                    {({isActive}) => (
+                      <NavLinkMantine
+                        label={title}
+                        leftSection={<IconActivity size="1rem" stroke={1.5} />}
+                        rightSection={
+                          <IconChevronRight
+                            size="0.8rem"
+                            stroke={1.5}
+                            className="mantine-rotate-rtl"
+                          />
+                        }
+                        active={isActive}
+                      />
+                    )}
+                  </NavLink>
+                ))}
               </AppShell.Navbar>
 
-              <AppShell.Main py="md">
+              <AppShell.Main>
                 <Outlet />
               </AppShell.Main>
             </AppShell>

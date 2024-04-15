@@ -32,7 +32,6 @@ export function Layout({
   const location = useLocation();
   const path = location.pathname;
 
-  console.log(path);
   return (
     <>
       {!path.includes('/account') ? (

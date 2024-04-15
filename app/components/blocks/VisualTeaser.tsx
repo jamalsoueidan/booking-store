@@ -17,7 +17,6 @@ import type {
   PageComponentMetaobjectFragment,
 } from 'storefrontapi.generated';
 import {H1} from '../titles/H1';
-import classes from './VisualTeaser.module.css';
 import {useField} from './utils';
 
 export function VisualTeaser({
@@ -97,14 +96,17 @@ export const VisualTeaserComponent = ({
         {deg: 180, from: backgroundColor || 'white', to: 'white'},
         theme,
       )}
-      className={classes.box}
+      pt={'70px'} //because of App.Header
+      style={{position: 'relative', overflow: 'hidden'}}
     >
       {image ? (
         <BackgroundImage
           src={image?.url || ''}
           opacity={opacity || 1}
+          bgsz="100%"
+          bgp="contain"
+          bgr="no-repeat"
           style={{
-            ...style,
             borderBottomRightRadius: '40% 15%',
             borderBottomLeftRadius: '40% 15%',
             position: 'absolute',
@@ -116,7 +118,7 @@ export const VisualTeaserComponent = ({
         ></BackgroundImage>
       ) : null}
 
-      <Container size="lg" py={0} h={height} className={classes.container}>
+      <Container size="lg" py={0} h={height} pos="relative" style={{zIndex: 1}}>
         <Stack pt={rem(30)} pb={rem(50)} justify={justify || 'center'} h="100%">
           {title ? (
             <H1
