@@ -12,11 +12,11 @@ import {
 } from '@shopify/remix-oxygen';
 import {IconFileCv, IconInfoCircle} from '@tabler/icons-react';
 import {useEffect, useRef, useState} from 'react';
+import {redirectWithToast} from 'remix-toast';
 import {AccountContent} from '~/components/account/AccountContent';
 import {AccountTitle} from '~/components/account/AccountTitle';
 import {getBookingShopifyApi} from '~/lib/api/bookingShopifyApi';
 import {getCustomer} from '~/lib/get-customer';
-import {redirectWithNotification} from '~/lib/show-notification';
 
 /**
  * Image Upload and Processing Workflow:
@@ -43,10 +43,9 @@ export const action = async ({
     resourceUrl,
   });
 
-  return redirectWithNotification(context, {
-    redirectUrl: `${params.locale || ''}/account/upload`,
-    title: 'Billed uploaded',
-    message: 'Der kan gå få sekunder inden dit billed bliver opdateret!',
+  return redirectWithToast('/account/upload', {
+    message: 'er kan gå få sekunder inden dit billed bliver opdateret!',
+    type: 'success',
   });
 };
 

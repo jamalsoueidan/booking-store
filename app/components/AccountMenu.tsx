@@ -123,7 +123,7 @@ export function AccountMenu({
   closeDrawer: () => void;
   customer: CustomerFragment;
   user?: User | null;
-  isBusiness: boolean;
+  isBusiness?: boolean;
   opened: boolean;
 }) {
   const [active, setActive] = useState('Billing');

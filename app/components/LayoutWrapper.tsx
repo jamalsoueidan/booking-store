@@ -19,12 +19,14 @@ import {
   useMediaQuery,
   useWindowScroll,
 } from '@mantine/hooks';
+import {NavigationProgress, nprogress} from '@mantine/nprogress';
 import {
   Await,
   Link,
   NavLink,
   useLoaderData,
   useLocation,
+  useNavigation,
 } from '@remix-run/react';
 import {
   IconChevronRight,
@@ -32,7 +34,8 @@ import {
   IconLogin,
   IconShoppingCartPlus,
 } from '@tabler/icons-react';
-import {Suspense, type ReactNode} from 'react';
+import {Suspense, useEffect, type ReactNode} from 'react';
+import notify, {Toaster} from 'react-hot-toast';
 import {type loader} from '~/root';
 import {Footer} from './Footer';
 import logo from '/Artboard4.svg';
@@ -45,9 +48,33 @@ export function LayoutWrapper({children}: {children: ReactNode}) {
   const isMobile = useMediaQuery('(max-width: 62em)');
   const location = useLocation();
   const path = location.pathname;
+  const {state} = useNavigation();
+
+  useEffect(() => {
+    if (state === 'loading' || state === 'submitting') {
+      nprogress.start();
+    } else {
+      nprogress.complete();
+    }
+  }, [state]);
+
+  useEffect(() => {
+    switch (data.toast?.type) {
+      case 'success':
+        notify.success(data.toast.message);
+        return;
+      case 'error':
+        notify.error(data.toast.message);
+        return;
+      default:
+        return;
+    }
+  }, [data.toast]);
 
   return (
     <MantineProvider>
+      <Toaster position="top-center" reverseOrder={false} />
+      <NavigationProgress />
       <ModalsProvider>
         {!path.includes('/account') && !path.includes('/artist/') ? (
           <AppShell

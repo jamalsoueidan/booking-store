@@ -14,13 +14,13 @@ import {
   useInputControl,
 } from '@conform-to/react';
 import {parseWithZod} from '@conform-to/zod';
+import {redirectWithToast} from 'remix-toast';
 import {MultiTags} from '~/components/form/MultiTags';
 import {RadioGroup} from '~/components/form/RadioGroup';
 import {SubmitButton} from '~/components/form/SubmitButton';
 import {TextEditor} from '~/components/richtext/TextEditor';
 import {getBookingShopifyApi} from '~/lib/api/bookingShopifyApi';
 import {getCustomer} from '~/lib/get-customer';
-import {redirectWithNotification} from '~/lib/show-notification';
 import {customerUpdateBody} from '~/lib/zod/bookingShopifyApi';
 
 const schema = customerUpdateBody;
@@ -38,11 +38,9 @@ export const action = async ({request, context}: ActionFunctionArgs) => {
   try {
     await getBookingShopifyApi().customerUpdate(customerId, submission.value);
 
-    return redirectWithNotification(context, {
-      redirectUrl: `/account/public`,
-      title: 'Din profil',
-      message: 'Profil opdateret',
-      color: 'green',
+    return redirectWithToast('/account/public', {
+      message: 'Profil er opdateret!',
+      type: 'success',
     });
   } catch (error) {
     return submission.reply();

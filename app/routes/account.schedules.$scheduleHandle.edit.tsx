@@ -3,7 +3,6 @@ import {Form, useActionData, useLoaderData} from '@remix-run/react';
 
 import {
   json,
-  redirect,
   type ActionFunctionArgs,
   type LoaderFunctionArgs,
 } from '@shopify/remix-oxygen';
@@ -13,8 +12,8 @@ import {customerScheduleCreateBody} from '~/lib/zod/bookingShopifyApi';
 
 import {parseWithZod} from '@conform-to/zod';
 import {FocusTrap, Stack, TextInput} from '@mantine/core';
+import {redirectWithToast} from 'remix-toast';
 import {SubmitButton} from '~/components/form/SubmitButton';
-import {setNotification} from '~/lib/show-notification';
 
 const schema = customerScheduleCreateBody;
 
@@ -34,22 +33,15 @@ export const action = async ({
   }
 
   try {
-    setNotification(context, {
-      title: 'Vagtplan',
-      message: 'Vagtplan navn er opdateret!',
-      color: 'green',
-    });
-
     const response = await getBookingShopifyApi().customerScheduleUpdate(
       customerId,
       scheduleHandle || '',
       submission.value,
     );
 
-    return redirect(`/account/schedules/${response.payload._id}`, {
-      headers: {
-        'Set-Cookie': await context.session.commit(),
-      },
+    return redirectWithToast(`/account/schedules/${response.payload._id}`, {
+      message: 'Vagtplan er opdateret!',
+      type: 'success',
     });
   } catch (error) {
     return submission.reply();

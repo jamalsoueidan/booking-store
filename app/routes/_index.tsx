@@ -51,7 +51,7 @@ export function shouldRevalidate() {
 }
 
 export const meta: MetaFunction = () => {
-  return [{title: 'BySisters | Home'}];
+  return [{title: 'BySisters | Hjem'}];
 };
 
 export async function loader(args: LoaderFunctionArgs) {
