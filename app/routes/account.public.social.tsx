@@ -9,10 +9,10 @@ import {
 import {getFormProps, getInputProps, useForm} from '@conform-to/react';
 import {parseWithZod} from '@conform-to/zod';
 import {IconAt} from '@tabler/icons-react';
+import {redirectWithSuccess} from 'remix-toast';
 import {SubmitButton} from '~/components/form/SubmitButton';
 import {getBookingShopifyApi} from '~/lib/api/bookingShopifyApi';
 import {getCustomer} from '~/lib/get-customer';
-import {redirectWithNotification} from '~/lib/show-notification';
 import {customerUpdateBody} from '~/lib/zod/bookingShopifyApi';
 
 const schema = customerUpdateBody.pick({
@@ -32,11 +32,8 @@ export const action = async ({request, context}: ActionFunctionArgs) => {
   try {
     await getBookingShopifyApi().customerUpdate(customerId, submission.value);
 
-    return redirectWithNotification(context, {
-      redirectUrl: `/account/public/social`,
-      title: 'Din profil',
-      message: 'Profil opdateret',
-      color: 'green',
+    return redirectWithSuccess('/account/public/social', {
+      message: 'Social er opdateret!',
     });
   } catch (error) {
     return submission.reply();

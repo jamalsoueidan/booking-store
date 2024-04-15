@@ -33,7 +33,7 @@
     "@mantine/core": "^7.8.0",
     "@mantine/hooks": "^7.8.0",
     "@mantine/modals": "^7.8.0",
-    "@mantine/notifications": "^7.8.0",
+    "@mantine/nprogress": "^7.8.0",
     "@mantine/tiptap": "^7.8.0",
     "@remix-run/react": "^2.8.0",
     "@remix-run/server-runtime": "^2.8.0",
@@ -62,7 +62,9 @@
     "isbot": "^3.8.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
+    "react-hot-toast": "^2.4.1",
     "react-infinite-scroll-component": "^6.1.0",
+    "remix-toast": "^1.2.0",
     "uuid": "^9.0.1",
     "zod": "^3.21.4"
   },

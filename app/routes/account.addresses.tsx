@@ -1,14 +1,3 @@
-import type {CustomerAddressInput} from '@shopify/hydrogen/customer-account-api-types';
-import type {
-  AddressFragment,
-  CustomerFragment,
-} from 'customer-accountapi.generated';
-import {
-  json,
-  redirect,
-  type ActionFunctionArgs,
-  type LoaderFunctionArgs,
-} from '@shopify/remix-oxygen';
 import {
   Form,
   useActionData,
@@ -16,10 +5,20 @@ import {
   useOutletContext,
   type MetaFunction,
 } from '@remix-run/react';
+import type {CustomerAddressInput} from '@shopify/hydrogen/customer-account-api-types';
 import {
-  UPDATE_ADDRESS_MUTATION,
-  DELETE_ADDRESS_MUTATION,
+  json,
+  type ActionFunctionArgs,
+  type LoaderFunctionArgs,
+} from '@shopify/remix-oxygen';
+import type {
+  AddressFragment,
+  CustomerFragment,
+} from 'customer-accountapi.generated';
+import {
   CREATE_ADDRESS_MUTATION,
+  DELETE_ADDRESS_MUTATION,
+  UPDATE_ADDRESS_MUTATION,
 } from '~/graphql/customer-account/CustomerAddressMutations';
 
 export type ActionResponse = {
@@ -32,7 +31,7 @@ export type ActionResponse = {
 };
 
 export const meta: MetaFunction = () => {
-  return [{title: 'Addresses'}];
+  return [{title: 'Adresser'}];
 };
 
 export async function loader({context}: LoaderFunctionArgs) {

@@ -18,6 +18,7 @@ import {SubmitButton} from '~/components/form/SubmitButton';
 
 import {parseWithZod} from '@conform-to/zod';
 import {IconCheck, IconExclamationCircle} from '@tabler/icons-react';
+import {redirectWithSuccess} from 'remix-toast';
 import {type z} from 'zod';
 import {AccountContent} from '~/components/account/AccountContent';
 import {AccountTitle} from '~/components/account/AccountTitle';
@@ -26,7 +27,6 @@ import {RadioGroup} from '~/components/form/RadioGroup';
 import {CUSTOMER_DETAILS_QUERY} from '~/graphql/customer-account/CustomerDetailsQuery';
 import {getBookingShopifyApi} from '~/lib/api/bookingShopifyApi';
 import {type UserUsernameTakenResponsePayload} from '~/lib/api/model';
-import {redirectWithNotification} from '~/lib/show-notification';
 import {customerCreateBody} from '~/lib/zod/bookingShopifyApi';
 
 export const schema = customerCreateBody.omit({
@@ -76,11 +76,8 @@ export async function action({request, context}: ActionFunctionArgs) {
       specialties: [],
     });
 
-    return redirectWithNotification(context, {
-      redirectUrl: `/account/dashboard?business=true`,
-      title: 'Business konto',
-      message: 'Du er nu business konto',
-      color: 'green',
+    return redirectWithSuccess('/account/dashboard?business=true', {
+      message: 'Du er nu opgraderet til business konto!',
     });
   } catch (error) {
     return submission.reply();

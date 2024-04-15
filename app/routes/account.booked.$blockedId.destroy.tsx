@@ -1,7 +1,7 @@
 import {redirect, type ActionFunction} from '@shopify/remix-oxygen';
+import {redirectWithSuccess} from 'remix-toast';
 import {getBookingShopifyApi} from '~/lib/api/bookingShopifyApi';
 import {getCustomer} from '~/lib/get-customer';
-import {redirectWithNotification} from '~/lib/show-notification';
 
 export const action: ActionFunction = async ({context, params}) => {
   const customerId = await getCustomer({context});
@@ -12,11 +12,8 @@ export const action: ActionFunction = async ({context, params}) => {
       params.blockedId || '',
     );
 
-    return redirectWithNotification(context, {
-      redirectUrl: `/account/booked`,
-      title: 'Ferie',
+    return redirectWithSuccess('/account/booked', {
       message: 'Ferie er nu slettet!',
-      color: 'red',
     });
   } catch (error) {
     return redirect('/account/booked');

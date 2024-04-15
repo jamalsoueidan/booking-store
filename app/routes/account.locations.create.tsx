@@ -11,6 +11,7 @@ import {customerLocationCreateBody} from '~/lib/zod/bookingShopifyApi';
 import {getFormProps, getInputProps, useForm} from '@conform-to/react';
 import {parseWithZod} from '@conform-to/zod';
 import {Select, Stack, TextInput} from '@mantine/core';
+import {redirectWithSuccess} from 'remix-toast';
 import {AccountContent} from '~/components/account/AccountContent';
 import {AccountTitle} from '~/components/account/AccountTitle';
 import {AddressAutocompleteInput} from '~/components/form/AddressAutocompleteInput';
@@ -18,7 +19,6 @@ import {NumericInput} from '~/components/form/NumericInput';
 import {RadioGroup} from '~/components/form/RadioGroup';
 import {SubmitButton} from '~/components/form/SubmitButton';
 import {getBookingShopifyApi} from '~/lib/api/bookingShopifyApi';
-import {redirectWithNotification} from '~/lib/show-notification';
 
 const schema = customerLocationCreateBody;
 
@@ -50,16 +50,13 @@ export const action = async ({request, context}: ActionFunctionArgs) => {
   }
 
   try {
-    const response = await getBookingShopifyApi().customerLocationCreate(
+    await getBookingShopifyApi().customerLocationCreate(
       customerId,
       submission.value,
     );
 
-    return redirectWithNotification(context, {
-      redirectUrl: `/account/locations`,
-      title: 'Lokation',
+    return redirectWithSuccess('/account/locations', {
       message: 'Lokation er nu oprettet!',
-      color: 'green',
     });
   } catch (error) {
     return submission.reply();

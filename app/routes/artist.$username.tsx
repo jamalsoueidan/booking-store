@@ -1,4 +1,8 @@
-import {json, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
+import {
+  json,
+  type LoaderFunctionArgs,
+  type MetaFunction,
+} from '@shopify/remix-oxygen';
 
 import {
   ActionIcon,
@@ -23,6 +27,10 @@ import {getBookingShopifyApi} from '~/lib/api/bookingShopifyApi';
 export function shouldRevalidate() {
   return false;
 }
+
+export const meta: MetaFunction<typeof loader> = ({data}) => {
+  return [{title: `BySisters | ${data?.user.fullname ?? ''}`}];
+};
 
 export async function loader({params}: LoaderFunctionArgs) {
   const {username} = params;

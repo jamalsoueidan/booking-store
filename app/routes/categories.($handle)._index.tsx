@@ -15,7 +15,7 @@ export const meta: MetaFunction<typeof loader> = ({data}) => {
     {
       title: `BySisters | ${
         parseTE(data?.collection.title || '') ?? ''
-      } Collection`,
+      } Kollektion`,
     },
   ];
 };

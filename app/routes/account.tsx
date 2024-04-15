@@ -2,7 +2,11 @@ import {AppShell, Flex, Text, UnstyledButton} from '@mantine/core';
 import {useDisclosure, useMediaQuery} from '@mantine/hooks';
 import {Link, Outlet, useLoaderData} from '@remix-run/react';
 import {parseGid} from '@shopify/hydrogen';
-import {json, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
+import {
+  json,
+  type LoaderFunctionArgs,
+  type SerializeFrom,
+} from '@shopify/remix-oxygen';
 import {
   IconAddressBook,
   IconCalendarEvent,
@@ -50,7 +54,11 @@ export async function loader({context}: LoaderFunctionArgs) {
   }
 
   return json(
-    {customer: data.customer, isBusiness: userIsBusiness.isBusiness, user},
+    {
+      customer: data.customer,
+      isBusiness: userIsBusiness.isBusiness,
+      user,
+    },
     {
       headers: {
         'Cache-Control': 'no-cache, no-store, must-revalidate',
@@ -79,7 +87,7 @@ function AccountLayout({
   ...props
 }: {
   children: React.ReactNode;
-} & AccountOutlet) {
+} & Awaited<SerializeFrom<typeof loader>>) {
   const [opened, {toggle, close}] = useDisclosure(false);
   const isMobile = useMediaQuery('(max-width: 48em)');
 
@@ -89,7 +97,12 @@ function AccountLayout({
       footer={{height: 84, collapsed: !isMobile || opened}}
     >
       <AppShell.Navbar bg="gray.1">
-        <AccountMenu closeDrawer={close} opened={opened} {...props} />
+        <AccountMenu
+          closeDrawer={close}
+          opened={opened}
+          customer={props.customer}
+          isBusiness={props.isBusiness}
+        />
       </AppShell.Navbar>
 
       <AppShell.Main>{children}</AppShell.Main>

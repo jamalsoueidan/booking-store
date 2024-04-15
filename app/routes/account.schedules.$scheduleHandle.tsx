@@ -37,11 +37,11 @@ import {
 } from '@tabler/icons-react';
 import {addMinutes, format, set} from 'date-fns';
 import {useRef} from 'react';
+import {redirectWithSuccess} from 'remix-toast';
 import MobileModal from '~/components/MobileModal';
 import {SubmitButton} from '~/components/form/SubmitButton';
 import {CustomerScheduleSlotDay, type CustomerSchedule} from '~/lib/api/model';
 import {getCustomer} from '~/lib/get-customer';
-import {redirectWithNotification} from '~/lib/show-notification';
 import {renderTime} from '~/lib/time';
 import {customerScheduleSlotUpdateBody} from '~/lib/zod/bookingShopifyApi';
 import AccountSchedulesEdit from './account.schedules.$scheduleHandle.edit';
@@ -82,11 +82,8 @@ export const action = async ({
       {slots},
     );
 
-    return redirectWithNotification(context, {
-      redirectUrl: `/account/schedules/${response.payload._id}`,
-      title: 'Vagtplan',
+    return redirectWithSuccess(`/account/schedules/${response.payload._id}`, {
       message: 'Vagtplan navn er opdateret!',
-      color: 'green',
     });
   } catch (error) {
     return json(submission);

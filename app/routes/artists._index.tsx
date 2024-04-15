@@ -10,7 +10,11 @@ import {
   useMantineTheme,
 } from '@mantine/core';
 import {Link, useLoaderData} from '@remix-run/react';
-import {json, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
+import {
+  json,
+  type LoaderFunctionArgs,
+  type MetaFunction,
+} from '@shopify/remix-oxygen';
 import {IconArrowRight} from '@tabler/icons-react';
 import {ArtistCard} from '~/components/ArtistCard';
 import {H2} from '~/components/titles/H2';
@@ -22,6 +26,10 @@ import {
 } from './api.users.professions';
 
 const LIMIT = '20';
+
+export const meta: MetaFunction = () => {
+  return [{title: `BySisters | Find Skønhedseksperter`}];
+};
 
 export const loader = async (args: LoaderFunctionArgs) => {
   const {context} = args;

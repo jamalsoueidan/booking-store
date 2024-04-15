@@ -7,7 +7,7 @@ import {ProductCard} from '~/components/ProductCard';
 import {PRODUCT_ITEM_FRAGMENT} from '~/data/fragments';
 
 export const meta: MetaFunction<typeof loader> = ({data}) => {
-  return [{title: `BySisters | ${data?.collection.title ?? ''} Collection`}];
+  return [{title: `BySisters | ${data?.collection.title ?? ''} Kollektion`}];
 };
 
 export async function loader({request, params, context}: LoaderFunctionArgs) {

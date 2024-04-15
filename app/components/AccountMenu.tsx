@@ -117,7 +117,7 @@ export function AccountMenu({
   closeDrawer,
   customer,
   user,
-  isBusiness,
+  isBusiness = false,
   opened,
 }: {
   closeDrawer: () => void;

@@ -3,10 +3,10 @@ import {parseWithZod} from '@conform-to/zod';
 import {FocusTrap, Stack, TextInput} from '@mantine/core';
 import {Form, useActionData} from '@remix-run/react';
 import {type ActionFunctionArgs} from '@shopify/remix-oxygen';
+import {redirectWithSuccess} from 'remix-toast';
 import {SubmitButton} from '~/components/form/SubmitButton';
 import {getBookingShopifyApi} from '~/lib/api/bookingShopifyApi';
 import {getCustomer} from '~/lib/get-customer';
-import {redirectWithNotification} from '~/lib/show-notification';
 import {customerScheduleCreateBody} from '~/lib/zod/bookingShopifyApi';
 
 const schema = customerScheduleCreateBody;
@@ -26,11 +26,8 @@ export const action = async ({request, context}: ActionFunctionArgs) => {
       submission.value,
     );
 
-    return redirectWithNotification(context, {
-      redirectUrl: `/account/schedules/${response.payload._id}`,
-      title: 'Vagtplan',
+    return redirectWithSuccess(`/account/schedules/${response.payload._id}`, {
       message: 'Du har oprettet en ny vagtplan',
-      color: 'green',
     });
   } catch (error) {
     return submission.reply();

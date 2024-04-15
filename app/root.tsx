@@ -2,7 +2,7 @@ import {ColorSchemeScript} from '@mantine/core';
 
 import '@mantine/carousel/styles.css';
 import '@mantine/core/styles.css';
-//import '@mantine/notifications/styles.css';
+import '@mantine/nprogress/styles.css';
 import '@mantine/tiptap/styles.css';
 
 import {
@@ -23,6 +23,7 @@ import {
   type SerializeFrom,
 } from '@shopify/remix-oxygen';
 import {type ReactNode} from 'react';
+import {getToast} from 'remix-toast';
 import favicon from './assets/favicon.svg';
 import {LayoutWrapper} from './components/LayoutWrapper';
 import appStyles from './styles/app.css?url';
@@ -71,8 +72,8 @@ export const useRootLoaderData = () => {
   return root?.data as SerializeFrom<typeof loader>;
 };
 
-export async function loader({context}: LoaderFunctionArgs) {
-  const {storefront, customerAccount, cart} = context;
+export async function loader({context, request}: LoaderFunctionArgs) {
+  const {storefront, customerAccount, cart, session} = context;
   const publicStoreDomain = context.env.PUBLIC_STORE_DOMAIN;
 
   const isLoggedInPromise = customerAccount.isLoggedIn();
@@ -94,6 +95,8 @@ export async function loader({context}: LoaderFunctionArgs) {
     },
   });
 
+  const {toast, headers} = await getToast(request);
+
   return defer(
     {
       cart: cartPromise,
@@ -101,11 +104,10 @@ export async function loader({context}: LoaderFunctionArgs) {
       header: await headerPromise,
       isLoggedIn: isLoggedInPromise,
       publicStoreDomain,
+      toast,
     },
     {
-      headers: {
-        'Set-Cookie': await context.session.commit(),
-      },
+      headers,
     },
   );
 }

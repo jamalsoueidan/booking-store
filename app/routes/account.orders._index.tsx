@@ -19,7 +19,7 @@ import {AccountTitle} from '~/components/account/AccountTitle';
 import {CUSTOMER_ORDERS_QUERY} from '~/graphql/customer-account/CustomerOrdersQuery';
 
 export const meta: MetaFunction = () => {
-  return [{title: 'Orders'}];
+  return [{title: 'Købshistorik'}];
 };
 
 export async function loader({request, context}: LoaderFunctionArgs) {
