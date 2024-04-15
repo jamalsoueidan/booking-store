@@ -105,7 +105,7 @@ export default function Homepage() {
 
   return (
     <>
-      <Box py={rem(80)}>
+      <Box py={rem(100)}>
         <Container size="xl">
           <Stack gap="xl">
             <H1 gradients={{from: 'orange', to: 'orange.3'}}>
