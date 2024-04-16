@@ -10,7 +10,6 @@ import {Flex, Select, Stack, TextInput} from '@mantine/core';
 import {Form, useActionData, useLoaderData} from '@remix-run/react';
 import {
   json,
-  redirect,
   type ActionFunctionArgs,
   type LoaderFunctionArgs,
 } from '@shopify/remix-oxygen';
@@ -25,6 +24,7 @@ import {getBookingShopifyApi} from '~/lib/api/bookingShopifyApi';
 
 import {parseGid} from '@shopify/hydrogen';
 import {useState} from 'react';
+import {redirectWithSuccess} from 'remix-toast';
 import {AccountContent} from '~/components/account/AccountContent';
 import {AccountTitle} from '~/components/account/AccountTitle';
 import {NumericInput} from '~/components/form/NumericInput';
@@ -78,7 +78,9 @@ export const action = async ({request, context}: ActionFunctionArgs) => {
       compareAtPrice: variant.compareAtPrice,
     });
 
-    return redirect(`/account/services/${productId}`);
+    return redirectWithSuccess(`/account/services/${productId}`, {
+      message: 'Ydelsen er nu oprettet!',
+    });
   } catch (error) {
     return submission.reply();
   }
