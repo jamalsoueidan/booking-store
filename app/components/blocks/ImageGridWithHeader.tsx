@@ -63,6 +63,7 @@ export function ImageGridWithHeader({
                       src={item.image?.url || ''}
                       radius="xl"
                       fallbackSrc={`${title}`}
+                      loading="lazy"
                     />
                   </AspectRatio>
                   <Title

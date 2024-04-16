@@ -280,7 +280,7 @@ function RecommendedTreatments({
                   <TreatmentCard
                     product={product}
                     productUsers={productUsers}
-                    loading={'eager'}
+                    loading="lazy"
                   />
                 </Carousel.Slide>
               );

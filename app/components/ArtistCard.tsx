@@ -21,6 +21,7 @@ export const ArtistCard = ({artist}: {artist: User | UserTop}) => (
         borderTopRightRadius: '5%',
       }}
       fallbackSrc="https://placehold.co/400x600?text=Ekspert"
+      loading="lazy"
     />
     <Box p="xs" pb="xs" pt="6px">
       <Text fz="lg" fw={500} c="black">
