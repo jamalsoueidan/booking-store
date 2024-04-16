@@ -118,7 +118,7 @@ export function AddToCartButton({
       {(fetcher: FetcherWithComponents<any>) => {
         return (
           <>
-            <input type="hidden" name="redirectTo" defaultValue="cart" />
+            <input type="hidden" name="redirectTo" defaultValue="" />
             <input
               name="analytics"
               type="hidden"

@@ -1,21 +1,21 @@
-// @ts-ignore
 // Virtual entry point for the app
-import * as remixBuild from 'virtual:remix/server-build';
 import {
   cartGetIdDefault,
   cartSetIdDefault,
   createCartHandler,
+  createCustomerAccountClient,
   createStorefrontClient,
   storefrontRedirect,
-  createCustomerAccountClient,
 } from '@shopify/hydrogen';
 import {
   createRequestHandler,
   getStorefrontHeaders,
   type AppLoadContext,
 } from '@shopify/remix-oxygen';
-import {AppSession} from '~/lib/session';
+// @ts-ignore
+import * as remixBuild from 'virtual:remix/server-build';
 import {CART_QUERY_FRAGMENT} from '~/lib/fragments';
+import {AppSession} from '~/lib/session';
 
 /**
  * Export a fetch handler in module format.
@@ -115,12 +115,10 @@ export default {
 };
 
 function getLocaleFromRequest(request: Request): I18nLocale {
-  const defaultLocale: I18nLocale = {language: 'EN', country: 'US'};
+  const defaultLocale: I18nLocale = {language: 'DA', country: 'DK'};
   const supportedLocales = {
-    ES: 'ES',
-    FR: 'FR',
-    DE: 'DE',
-    JP: 'JA',
+    DK: 'DA',
+    US: 'EN',
   } as Record<I18nLocale['country'], I18nLocale['language']>;
 
   const url = new URL(request.url);

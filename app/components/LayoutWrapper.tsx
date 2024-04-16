@@ -42,7 +42,7 @@ import logo from '/Artboard4.svg';
 
 export function LayoutWrapper({children}: {children: ReactNode}) {
   const data = useLoaderData<typeof loader>();
-  const [opened, {toggle}] = useDisclosure();
+  const [opened, {toggle, close}] = useDisclosure();
   const pinned = useHeadroom({fixedAt: 120});
   const [scroll] = useWindowScroll();
   const isMobile = useMediaQuery('(max-width: 62em)');
@@ -104,12 +104,12 @@ export function LayoutWrapper({children}: {children: ReactNode}) {
                   hiddenFrom="sm"
                   size="sm"
                 />
-                <UnstyledButton component={Link} to="/">
+                <UnstyledButton component={Link} to="/" onClick={close}>
                   <Title
                     order={1}
                     component={Flex}
                     lh="xs"
-                    fz={rem(20)}
+                    fz={rem(28)}
                     fw="500"
                     data-testid="logo-login"
                   >
@@ -155,7 +155,7 @@ export function LayoutWrapper({children}: {children: ReactNode}) {
               <Flex
                 justify="flex-end"
                 align="center"
-                gap={0}
+                gap="sm"
                 visibleFrom="sm"
                 miw="150px"
               >
