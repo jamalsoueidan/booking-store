@@ -8,16 +8,15 @@ import {
   rem,
   ScrollArea,
   SimpleGrid,
-  Skeleton,
   Stack,
   Title,
   useMantineTheme,
 } from '@mantine/core';
-import {Await, Link, useLoaderData, type MetaFunction} from '@remix-run/react';
+import {Link, useLoaderData, type MetaFunction} from '@remix-run/react';
 import {parseGid} from '@shopify/hydrogen';
-import {defer, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
+import {json, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
 import Autoplay from 'embla-carousel-autoplay';
-import {Suspense, useRef} from 'react';
+import {useRef} from 'react';
 import type {
   PageComponentMetaobjectFragment,
   PageFragment,
@@ -63,20 +62,19 @@ export async function loader(args: LoaderFunctionArgs) {
   const {context} = args;
   const {storefront} = context;
 
-  const recommendedTreatments = await storefront.query(
+  const {products: recommendedTreatments} = await storefront.query(
     RECOMMENDED_TREATMENT_QUERY,
   );
 
   const recommendedTreatmentsProductsUsers =
-    getBookingShopifyApi().productsGetUsersImage({
+    await getBookingShopifyApi().productsGetUsersImage({
       productIds:
-        recommendedTreatments?.products.nodes.map((p) => parseGid(p.id).id) ||
-        [],
+        recommendedTreatments?.nodes.map((p) => parseGid(p.id).id) || [],
     });
 
-  const professions = loaderProfessions(args).then((r) => r.json());
+  const professions = await loaderProfessions(args).then((r) => r.json());
 
-  const artists = getBookingShopifyApi().usersSearch(
+  const artists = await getBookingShopifyApi().usersSearch(
     {},
     {
       limit: '5',
@@ -84,25 +82,32 @@ export async function loader(args: LoaderFunctionArgs) {
     },
   );
 
-  const collections = context.storefront.query(COLLECTIONS_QUERY, {
+  const collections = await context.storefront.query(COLLECTIONS_QUERY, {
     variables: {first: 10},
   });
 
-  const components = context.storefront.query(METAFIELD_QUERY, {
+  const components = await context.storefront.query(METAFIELD_QUERY, {
     variables: {
       handle: 'index',
       type: 'components',
     },
   });
 
-  return defer({
-    recommendedTreatmentsProductsUsers,
-    recommendedTreatments,
-    collections,
-    artists,
-    components,
-    professions,
-  });
+  return json(
+    {
+      recommendedTreatmentsProductsUsers,
+      recommendedTreatments,
+      collections,
+      artists,
+      components,
+      professions,
+    },
+    {
+      headers: {
+        'Cache-Control': 's-maxage=3600, stale-while-revalidate',
+      },
+    },
+  );
 }
 
 export default function Homepage() {
@@ -161,13 +166,7 @@ export default function Homepage() {
         productsUsers={data.recommendedTreatmentsProductsUsers}
       />
 
-      <Suspense fallback={<></>}>
-        <Await resolve={data.components}>
-          {(metaobject) => (
-            <DynamicComponents components={metaobject.metaobject} />
-          )}
-        </Await>
-      </Suspense>
+      <DynamicComponents components={data.components.metaobject} />
     </>
   );
 }
@@ -187,8 +186,8 @@ function FeaturedArtists({
   artists,
   professions,
 }: {
-  artists: Promise<UsersSearchResponse>;
-  professions?: Promise<Array<Profession>>;
+  artists: UsersSearchResponse;
+  professions?: Array<Profession>;
 }) {
   const theme = useMantineTheme();
   if (!artists) return null;
@@ -206,41 +205,19 @@ function FeaturedArtists({
 
           <ScrollArea h="auto" w="100%" type="never">
             <Flex justify="center" gap="lg">
-              <Suspense
-                fallback={[...Array(5)].map((_, index) => (
-                  // eslint-disable-next-line react/no-array-index-key
-                  <Skeleton key={index} height={50} circle />
-                ))}
-              >
-                <Await resolve={professions}>
-                  {(profession) =>
-                    profession?.map((profession) => (
-                      <ProfessionButton
-                        key={profession.translation}
-                        profession={profession}
-                      />
-                    ))
-                  }
-                </Await>
-              </Suspense>
+              {professions?.map((profession) => (
+                <ProfessionButton
+                  key={profession.translation}
+                  profession={profession}
+                />
+              ))}
             </Flex>
           </ScrollArea>
 
           <SimpleGrid cols={{base: 2, sm: 3, md: 5}} spacing="xl">
-            <Suspense
-              fallback={[...Array(5)].map((_, index) => (
-                // eslint-disable-next-line react/no-array-index-key
-                <Skeleton key={index} height={250} />
-              ))}
-            >
-              <Await resolve={artists}>
-                {({payload}) =>
-                  payload.results.map((artist) => (
-                    <ArtistCard key={artist.customerId} artist={artist} />
-                  ))
-                }
-              </Await>
-            </Suspense>
+            {artists.payload.results.map((artist) => (
+              <ArtistCard key={artist.customerId} artist={artist} />
+            ))}
           </SimpleGrid>
           <Flex justify="center">
             <Button
@@ -271,8 +248,8 @@ function RecommendedTreatments({
   products,
   productsUsers,
 }: {
-  products: RecommendedTreatmentsQuery;
-  productsUsers: Promise<ProductsGetUsersImageResponse>;
+  products: RecommendedTreatmentsQuery['products'];
+  productsUsers: ProductsGetUsersImageResponse;
 }) {
   const theme = useMantineTheme();
   const AUTOPLAY_DELAY = useRef(Autoplay({delay: 2000}));
@@ -289,63 +266,26 @@ function RecommendedTreatments({
           </H2>
         </Container>
         <Box px="xl" style={{overflow: 'hidden'}}>
-          <Suspense
-            fallback={
-              <Flex gap="lg">
-                {[...Array(6)].map((_, index) => (
-                  // eslint-disable-next-line react/no-array-index-key
-                  <Skeleton key={index} height={300} />
-                ))}
-              </Flex>
-            }
+          <Slider
+            plugins={[AUTOPLAY_DELAY.current]}
+            slideSize={{base: '100%', md: '20%'}}
           >
-            <Await resolve={productsUsers}>
-              {({payload: productsUsers}) => (
-                <Suspense
-                  fallback={
-                    <Slider
-                      plugins={[AUTOPLAY_DELAY.current]}
-                      slideSize={{base: '100%', md: '20%'}}
-                    >
-                      {[...Array(4)].map((_, index) => (
-                        // eslint-disable-next-line react/no-array-index-key
-                        <Carousel.Slide key={index}>
-                          <Skeleton height={50} />
-                        </Carousel.Slide>
-                      ))}
-                    </Slider>
-                  }
-                >
-                  <Await resolve={products}>
-                    {({products}) => (
-                      <Slider
-                        plugins={[AUTOPLAY_DELAY.current]}
-                        slideSize={{base: '100%', md: '20%'}}
-                      >
-                        {products.nodes.map((product) => {
-                          const productUsers = productsUsers.find(
-                            (p) =>
-                              p.productId.toString() ===
-                              parseGid(product.id).id,
-                          );
+            {products.nodes.map((product) => {
+              const productUsers = productsUsers.payload.find(
+                (p) => p.productId.toString() === parseGid(product.id).id,
+              );
 
-                          return (
-                            <Carousel.Slide key={product.id}>
-                              <TreatmentCard
-                                product={product}
-                                productUsers={productUsers}
-                                loading={'eager'}
-                              />
-                            </Carousel.Slide>
-                          );
-                        })}
-                      </Slider>
-                    )}
-                  </Await>
-                </Suspense>
-              )}
-            </Await>
-          </Suspense>
+              return (
+                <Carousel.Slide key={product.id}>
+                  <TreatmentCard
+                    product={product}
+                    productUsers={productUsers}
+                    loading={'eager'}
+                  />
+                </Carousel.Slide>
+              );
+            })}
+          </Slider>
         </Box>
         <Container size="xl">
           <Flex justify="center">
