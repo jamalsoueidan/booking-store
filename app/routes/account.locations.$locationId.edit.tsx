@@ -3,7 +3,6 @@ import {Form, Link, useActionData, useLoaderData} from '@remix-run/react';
 
 import {
   json,
-  redirect,
   type ActionFunctionArgs,
   type LoaderFunctionArgs,
 } from '@shopify/remix-oxygen';
@@ -21,6 +20,7 @@ import {
   Text,
   TextInput,
 } from '@mantine/core';
+import {redirectWithSuccess} from 'remix-toast';
 import {AccountContent} from '~/components/account/AccountContent';
 import {AccountTitle} from '~/components/account/AccountTitle';
 import {AddressAutocompleteInput} from '~/components/form/AddressAutocompleteInput';
@@ -50,7 +50,12 @@ export const action = async ({
       submission.value,
     );
 
-    return redirect(`/account/locations/${response.payload._id}/edit`);
+    return redirectWithSuccess(
+      `/account/locations/${response.payload._id}/edit`,
+      {
+        message: 'Lokation er opdateret!!',
+      },
+    );
   } catch (error) {
     return submission.reply();
   }

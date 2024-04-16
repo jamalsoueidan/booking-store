@@ -123,7 +123,7 @@ export function AccountMenu({
   closeDrawer: () => void;
   customer: CustomerFragment;
   user?: User | null;
-  isBusiness: boolean;
+  isBusiness?: boolean;
   opened: boolean;
 }) {
   const [active, setActive] = useState('Billing');
@@ -200,41 +200,40 @@ export function AccountMenu({
           ) : null}
         </Flex>
         <Divider my="xs" />
-        {isBusiness ? topLinks : bottomLinks}
+        {isBusiness ? topLinks : null}
       </AppShell.Section>
-      {isBusiness ? (
-        <AppShell.Section>
-          <Divider my="xs" />
-          {bottomLinks}
 
-          <Form method="POST" action="/account/logout">
-            <NavLink
-              component={UnstyledButton}
-              onClick={(e: React.MouseEvent<HTMLAnchorElement>) => {
-                e.preventDefault();
-                const target = e.target as Element;
-                const form = target.closest('form');
-                if (form) {
-                  (form as HTMLFormElement).submit();
-                }
-              }}
-              label="Log ud"
-              data-testid="logout-link"
-              leftSection={<IconLogout stroke={1.5} />}
-            />
-          </Form>
-          <Divider />
+      <AppShell.Section>
+        <Divider my="xs" />
+        {bottomLinks}
 
+        <Form method="POST" action="/account/logout">
           <NavLink
-            onClick={closeDrawer}
-            hiddenFrom="sm"
-            rightSection={
-              <Burger opened={opened} onClick={closeDrawer} size="md" />
-            }
-            data-testid="close-navigation-link"
+            component={UnstyledButton}
+            onClick={(e: React.MouseEvent<HTMLAnchorElement>) => {
+              e.preventDefault();
+              const target = e.target as Element;
+              const form = target.closest('form');
+              if (form) {
+                (form as HTMLFormElement).submit();
+              }
+            }}
+            label="Log ud"
+            data-testid="logout-link"
+            leftSection={<IconLogout stroke={1.5} />}
           />
-        </AppShell.Section>
-      ) : null}
+        </Form>
+        <Divider />
+
+        <NavLink
+          onClick={closeDrawer}
+          hiddenFrom="sm"
+          rightSection={
+            <Burger opened={opened} onClick={closeDrawer} size="md" />
+          }
+          data-testid="close-navigation-link"
+        />
+      </AppShell.Section>
     </>
   );
 }
