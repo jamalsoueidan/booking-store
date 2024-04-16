@@ -68,7 +68,14 @@ export const loader = async (args: LoaderFunctionArgs) => {
     },
   );
 
-  return json({users, components});
+  return json(
+    {users, components},
+    {
+      headers: {
+        'Cache-Control': 's-maxage=3600, stale-while-revalidate',
+      },
+    },
+  );
 };
 
 export default function ArtistsIndex() {

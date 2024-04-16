@@ -73,12 +73,19 @@ export const loader = async (args: LoaderFunctionArgs) => {
     },
   );
 
-  return json({
-    components,
-    visualTeaser,
-    professions,
-    filters,
-  });
+  return json(
+    {
+      components,
+      visualTeaser,
+      professions,
+      filters,
+    },
+    {
+      headers: {
+        'Cache-Control': 's-maxage=3600, stale-while-revalidate',
+      },
+    },
+  );
 };
 
 export default function Artists() {

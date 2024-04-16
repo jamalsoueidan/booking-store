@@ -2,6 +2,7 @@ import {Box, Image, Text, UnstyledButton} from '@mantine/core';
 import {Link} from '@remix-run/react';
 import {Image as ShopifyImage} from '@shopify/hydrogen';
 import type {User, UserTop} from '~/lib/api/model';
+import {modifyImageUrl} from '~/lib/image';
 import classes from './ArtistCard.module.css';
 
 export const ArtistCard = ({artist}: {artist: User | UserTop}) => (
@@ -15,7 +16,7 @@ export const ArtistCard = ({artist}: {artist: User | UserTop}) => (
       component={ShopifyImage}
       sizes="(min-width: 45em) 50vw, 100vw"
       aspectRatio="2/5"
-      src={artist.images?.profile?.url}
+      src={modifyImageUrl(artist.images?.profile?.url, '250x250')}
       style={{
         borderTopLeftRadius: '5%',
         borderTopRightRadius: '5%',

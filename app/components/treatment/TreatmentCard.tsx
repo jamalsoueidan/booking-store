@@ -2,6 +2,7 @@ import {Avatar, Button, Card} from '@mantine/core';
 import {Link} from '@remix-run/react';
 import {type ProductItemFragment} from 'storefrontapi.generated';
 import {type ProductsGetUsersImage} from '~/lib/api/model';
+import {modifyImageUrl} from '~/lib/image';
 import {TreatmentCardContent} from './TreatmentCardContent';
 
 export function TreatmentCard({
@@ -19,7 +20,7 @@ export function TreatmentCard({
         {productUsers.users.map((user) => (
           <Avatar
             key={user.customerId}
-            src={user.images.profile?.url || ''}
+            src={modifyImageUrl(user.images.profile?.url, '50x50')}
             radius="lg"
             size="sm"
           />

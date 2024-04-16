@@ -45,7 +45,14 @@ export async function loader({request, params, context}: LoaderFunctionArgs) {
       status: 404,
     });
   }
-  return json({collection, productsUsers});
+  return json(
+    {collection, productsUsers},
+    {
+      headers: {
+        'Cache-Control': 's-maxage=3600, stale-while-revalidate',
+      },
+    },
+  );
 }
 
 export default function Collection() {

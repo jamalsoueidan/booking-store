@@ -60,12 +60,13 @@ export function ImageGridWithHeader({
                 <Stack>
                   <AspectRatio>
                     <Image
-                      src={item.image?.url || ''}
+                      src={item.image?.url}
                       radius="xl"
                       fallbackSrc={`${title}`}
                       loading="lazy"
                     />
                   </AspectRatio>
+
                   <Title
                     order={3}
                     c="black"

@@ -23,7 +23,14 @@ export async function loader({params, context}: LoaderFunctionArgs) {
     throw new Response('Not Found', {status: 404});
   }
 
-  return json({page});
+  return json(
+    {page},
+    {
+      headers: {
+        'Cache-Control': 's-maxage=3600, stale-while-revalidate',
+      },
+    },
+  );
 }
 
 export default function Page() {
