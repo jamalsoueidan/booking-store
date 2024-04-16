@@ -123,7 +123,7 @@ export function AccountMenu({
   closeDrawer: () => void;
   customer: CustomerFragment;
   user?: User | null;
-  isBusiness: boolean;
+  isBusiness?: boolean;
   opened: boolean;
 }) {
   const [active, setActive] = useState('Billing');
@@ -200,7 +200,7 @@ export function AccountMenu({
           ) : null}
         </Flex>
         <Divider my="xs" />
-        {isBusiness ? topLinks : bottomLinks}
+        {isBusiness ? topLinks : null}
       </AppShell.Section>
 
       <AppShell.Section>

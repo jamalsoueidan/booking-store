@@ -13,7 +13,7 @@ test.describe('Signup for business account', async () => {
 
   test('Login Email', async () => {
     await page.goto('./');
-    await page.getByTestId('login-button').first().click();
+    await page.getByTestId('login-button').click();
     await page.getByLabel('Email', {exact: true}).click();
     await page
       .getByLabel('Email', {exact: true})

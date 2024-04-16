@@ -227,7 +227,7 @@ export function LayoutWrapper({children}: {children: ReactNode}) {
                         color="black"
                         component={Link}
                         to="/account"
-                        data-testid="login-button"
+                        data-testid="nav-login-button"
                         rightSection={
                           isLoggedIn ? <IconDashboard /> : <IconLogin />
                         }
@@ -249,7 +249,7 @@ export function LayoutWrapper({children}: {children: ReactNode}) {
                           component={Link}
                           to="/cart"
                           onClick={toggle}
-                          data-testid="cart-button"
+                          data-testid="nav-cart-button"
                           rightSection={<IconShoppingCartPlus />}
                           fullWidth
                         >
