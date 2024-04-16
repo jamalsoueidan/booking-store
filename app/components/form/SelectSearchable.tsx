@@ -47,7 +47,7 @@ export function SelectSearchable({
   const fetchOptions = useCallback(
     (keyword: string) => {
       fetcher.load(
-        `/account/api/products?limit=10&keyword=${keyword}&excludeCreated=tru&collection=${collectionTitle}`,
+        `/account/api/products?limit=10&keyword=${keyword}&excludeCreated=true&collection=${collectionTitle}`,
       );
     },
     [collectionTitle, fetcher],
