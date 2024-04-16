@@ -23,6 +23,7 @@ import {SwitchGroupLocations} from '~/components/form/SwitchGroupLocations';
 
 import {getBookingShopifyApi} from '~/lib/api/bookingShopifyApi';
 
+import {parseGid} from '@shopify/hydrogen';
 import {useState} from 'react';
 import {AccountContent} from '~/components/account/AccountContent';
 import {AccountTitle} from '~/components/account/AccountTitle';
@@ -132,7 +133,7 @@ export default function AccountServicesCreate() {
   const {locations, defaultValue, schedules, collections} =
     useLoaderData<typeof loader>();
   const lastResult = useActionData<typeof action>();
-  const [collectionTitle, setCollectionTitle] = useState<string | null>(null);
+  const [collectionId, setCollectionId] = useState<string | null>(null);
 
   const [form, fields] = useForm({
     lastResult,
@@ -159,9 +160,9 @@ export default function AccountServicesCreate() {
           <Form method="post" {...getFormProps(form)}>
             <Stack>
               <Select
-                onChange={setCollectionTitle}
+                onChange={setCollectionId}
                 data={collections.nodes.map((c) => ({
-                  value: c.title,
+                  value: parseGid(c.id).id,
                   label: parseTE(c.title),
                 }))}
                 label="Vælge behandlingskategori"
@@ -170,8 +171,8 @@ export default function AccountServicesCreate() {
               <SelectSearchable
                 label="Hvilken ydelse vil du tilbyde?"
                 placeholder="Vælg ydelse"
-                collectionTitle={collectionTitle}
-                disabled={collectionTitle === null}
+                collectionId={collectionId}
+                disabled={collectionId === null}
                 field={fields.productId}
               />
 

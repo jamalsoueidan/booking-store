@@ -1,3 +1,4 @@
+import {parseGid} from '@shopify/hydrogen';
 import {json, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
 import {PRODUCT_SIMPLE_FRAGMENT} from '~/data/fragments';
 import {getBookingShopifyApi} from '~/lib/api/bookingShopifyApi';
@@ -11,33 +12,26 @@ export async function loader({request, context}: LoaderFunctionArgs) {
   const searchParams = new URLSearchParams(url.search);
 
   const keyword = searchParams.get('keyword') || '';
-  const collection = searchParams.get('collection') || '';
-  const excludeCreated = searchParams.get('excludeCreated');
+  const collectionId = searchParams.get('collectionId') || '';
   const limit = searchParams.get('limit');
 
-  const query = ['treatments'];
-
-  if (excludeCreated === 'true') {
-    const {payload: productIds} =
-      await getBookingShopifyApi().customerProductsListIds(customerId);
-
-    productIds.forEach((id) => query.push(`-${id}`));
+  if (!collectionId) {
+    return json([]);
   }
 
-  if (keyword) {
-    query.push(keyword);
-  }
-
-  if (collection) {
-    query.push(collection);
-  }
-
-  const products = await storefront.query(PRODUCTS_SEARCH_QUERY, {
+  const {collection} = await storefront.query(PRODUCTS_SEARCH_QUERY, {
     variables: {
-      query: query.join(' AND '),
+      collectionId: `gid://shopify/Collection/${collectionId}`,
       first: parseInt(limit || '5'),
     },
   });
+
+  const {payload: productIds} =
+    await getBookingShopifyApi().customerProductsListIds(customerId);
+
+  const products = collection?.products.nodes
+    .filter(({id}) => !productIds.includes(parseInt(parseGid(id).id)))
+    .filter((product) => product.title.toLowerCase().includes(keyword));
 
   return json(products);
 }
@@ -45,18 +39,16 @@ export async function loader({request, context}: LoaderFunctionArgs) {
 const PRODUCTS_SEARCH_QUERY = `#graphql
   ${PRODUCT_SIMPLE_FRAGMENT}
   query ProductSearchQuery(
-    $query: String!
+    $collectionId: ID!
     $country: CountryCode
     $language: LanguageCode
     $first: Int
   ) @inContext(country: $country, language: $language) {
-    products(
-      first: $first,
-      sortKey: TITLE,
-      query: $query
-    ) {
-      nodes {
-        ...ProductSimple
+    collection(id: $collectionId) {
+      products(first: $first) {
+        nodes {
+          ...ProductSimple
+        }
       }
     }
   }

@@ -21,7 +21,7 @@ export type SelectSearchableProps = {
   label: string;
   placeholder?: string;
   field: FieldMetadata<string>;
-  collectionTitle?: string | null;
+  collectionId?: string | null;
   disabled: boolean;
 };
 
@@ -31,7 +31,7 @@ export function SelectSearchable({
   placeholder,
   field,
   disabled,
-  collectionTitle,
+  collectionId,
 }: SelectSearchableProps) {
   const combobox = useCombobox({
     onDropdownClose: () => combobox.resetSelectedOption(),
@@ -46,21 +46,24 @@ export function SelectSearchable({
 
   const fetchOptions = useCallback(
     (keyword: string) => {
+      console.log(
+        `/account/api/products?keyword=${keyword}&collectionId=${collectionId}`,
+      );
       fetcher.load(
-        `/account/api/products?limit=10&keyword=${keyword}&excludeCreated=true&collection=${collectionTitle}`,
+        `/account/api/products?keyword=${keyword}&collectionId=${collectionId}`,
       );
     },
-    [collectionTitle, fetcher],
+    [collectionId, fetcher],
   );
 
   useEffect(() => {
-    if (!disabled && collectionTitle) {
+    if (!disabled && collectionId) {
       fetchOptions('');
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [collectionTitle, disabled]);
+  }, [collectionId, disabled]);
 
-  const options = fetcher.data?.products.nodes.map((item) => (
+  const options = fetcher.data?.map((item) => (
     <Combobox.Option value={parseGid(item.id).id} key={item.id}>
       <Highlight
         highlight={parseGid(item.id).id === field.value ? item.title : ''}
@@ -86,7 +89,7 @@ export function SelectSearchable({
 
       <Combobox
         onOptionSubmit={(optionValue) => {
-          const node = fetcher.data?.products.nodes.find(
+          const node = fetcher.data?.find(
             (item) => parseGid(item.id).id === optionValue,
           );
           if (node?.title) {
@@ -132,9 +135,10 @@ export function SelectSearchable({
 
         <Combobox.Dropdown hidden={fetcher.data === null}>
           <Combobox.Options>
-            {options}
-            {(!fetcher.data || fetcher.data?.products.nodes.length === 0) && (
+            {!fetcher.data || fetcher.data?.length === 0 ? (
               <Combobox.Empty>Ingen produkt med dette navn</Combobox.Empty>
+            ) : (
+              options
             )}
           </Combobox.Options>
         </Combobox.Dropdown>

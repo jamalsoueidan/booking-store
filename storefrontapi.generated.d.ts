@@ -2073,28 +2073,30 @@ export type RecommendedTreatmentsQuery = {
 };
 
 export type ProductSearchQueryQueryVariables = StorefrontAPI.Exact<{
-  query: StorefrontAPI.Scalars['String']['input'];
+  collectionId: StorefrontAPI.Scalars['ID']['input'];
   country?: StorefrontAPI.InputMaybe<StorefrontAPI.CountryCode>;
   language?: StorefrontAPI.InputMaybe<StorefrontAPI.LanguageCode>;
   first?: StorefrontAPI.InputMaybe<StorefrontAPI.Scalars['Int']['input']>;
 }>;
 
 export type ProductSearchQueryQuery = {
-  products: {
-    nodes: Array<
-      Pick<
-        StorefrontAPI.Product,
-        'id' | 'title' | 'description' | 'handle' | 'publishedAt'
-      > & {
-        featuredImage?: StorefrontAPI.Maybe<
-          Pick<
-            StorefrontAPI.Image,
-            'id' | 'altText' | 'url' | 'width' | 'height'
-          >
-        >;
-      }
-    >;
-  };
+  collection?: StorefrontAPI.Maybe<{
+    products: {
+      nodes: Array<
+        Pick<
+          StorefrontAPI.Product,
+          'id' | 'title' | 'description' | 'handle' | 'publishedAt'
+        > & {
+          featuredImage?: StorefrontAPI.Maybe<
+            Pick<
+              StorefrontAPI.Image,
+              'id' | 'altText' | 'url' | 'width' | 'height'
+            >
+          >;
+        }
+      >;
+    };
+  }>;
 };
 
 export type ProductVariantIdsQueryVariables = StorefrontAPI.Exact<{
@@ -2795,7 +2797,7 @@ interface GeneratedQueryTypes {
     return: RecommendedTreatmentsQuery;
     variables: RecommendedTreatmentsQueryVariables;
   };
-  '#graphql\n  #graphql\n  fragment ProductSimple on Product {\n    id\n    title\n    description\n    handle\n    publishedAt\n    featuredImage {\n      id\n      altText\n      url\n      width\n      height\n    }\n  }\n\n  query ProductSearchQuery(\n    $query: String!\n    $country: CountryCode\n    $language: LanguageCode\n    $first: Int\n  ) @inContext(country: $country, language: $language) {\n    products(\n      first: $first,\n      sortKey: TITLE,\n      query: $query\n    ) {\n      nodes {\n        ...ProductSimple\n      }\n    }\n  }\n': {
+  '#graphql\n  #graphql\n  fragment ProductSimple on Product {\n    id\n    title\n    description\n    handle\n    publishedAt\n    featuredImage {\n      id\n      altText\n      url\n      width\n      height\n    }\n  }\n\n  query ProductSearchQuery(\n    $collectionId: ID!\n    $country: CountryCode\n    $language: LanguageCode\n    $first: Int\n  ) @inContext(country: $country, language: $language) {\n    collection(id: $collectionId) {\n      products(first: $first) {\n        nodes {\n          ...ProductSimple\n        }\n      }\n    }\n  }\n': {
     return: ProductSearchQueryQuery;
     variables: ProductSearchQueryQueryVariables;
   };
