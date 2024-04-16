@@ -10,10 +10,10 @@ import {Flex, Select, Stack, TextInput} from '@mantine/core';
 import {Form, useActionData, useLoaderData} from '@remix-run/react';
 import {
   json,
-  redirect,
   type ActionFunctionArgs,
   type LoaderFunctionArgs,
 } from '@shopify/remix-oxygen';
+import {redirectWithSuccess} from 'remix-toast';
 import {z} from 'zod';
 import {AccountContent} from '~/components/account/AccountContent';
 import {AccountTitle} from '~/components/account/AccountTitle';
@@ -78,7 +78,9 @@ export const action = async ({
       compareAtPrice: variant.compareAtPrice,
     });
 
-    return redirect(`/account/services/${productId}`);
+    return redirectWithSuccess(`/account/services/${productId}`, {
+      message: 'Ydelsen er nu opdateret!',
+    });
   } catch (error) {
     return submission.reply();
   }

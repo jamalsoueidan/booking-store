@@ -10,7 +10,6 @@ import {Flex, Select, Stack, TextInput} from '@mantine/core';
 import {Form, useActionData, useLoaderData} from '@remix-run/react';
 import {
   json,
-  redirect,
   type ActionFunctionArgs,
   type LoaderFunctionArgs,
 } from '@shopify/remix-oxygen';
@@ -23,12 +22,17 @@ import {SwitchGroupLocations} from '~/components/form/SwitchGroupLocations';
 
 import {getBookingShopifyApi} from '~/lib/api/bookingShopifyApi';
 
+import {parseGid} from '@shopify/hydrogen';
+import {useState} from 'react';
+import {redirectWithSuccess} from 'remix-toast';
 import {AccountContent} from '~/components/account/AccountContent';
 import {AccountTitle} from '~/components/account/AccountTitle';
 import {NumericInput} from '~/components/form/NumericInput';
+import {parseTE} from '~/lib/clean';
 import {createOrFindProductVariant} from '~/lib/create-or-find-variant';
 import {getCustomer} from '~/lib/get-customer';
 import {customerProductUpsertBody} from '~/lib/zod/bookingShopifyApi';
+import {COLLECTIONS_QUERY} from './categories';
 
 const schema = customerProductUpsertBody
   .omit({
@@ -74,7 +78,9 @@ export const action = async ({request, context}: ActionFunctionArgs) => {
       compareAtPrice: variant.compareAtPrice,
     });
 
-    return redirect(`/account/services/${productId}`);
+    return redirectWithSuccess(`/account/services/${productId}`, {
+      message: 'Ydelsen er nu oprettet!',
+    });
   } catch (error) {
     return submission.reply();
   }
@@ -82,6 +88,10 @@ export const action = async ({request, context}: ActionFunctionArgs) => {
 
 export async function loader({context}: LoaderFunctionArgs) {
   const customerId = await getCustomer({context});
+
+  const {collections} = await context.storefront.query(COLLECTIONS_QUERY, {
+    variables: {first: 20, endCursor: null},
+  });
 
   const schedule = await getBookingShopifyApi().customerScheduleList(
     customerId,
@@ -96,6 +106,7 @@ export async function loader({context}: LoaderFunctionArgs) {
   return json({
     locations: locations.payload,
     schedules: schedule.payload,
+    collections,
     defaultValue: {
       scheduleId: schedule.payload[0]._id,
       duration: 60,
@@ -121,8 +132,10 @@ export async function loader({context}: LoaderFunctionArgs) {
 }
 
 export default function AccountServicesCreate() {
-  const {locations, defaultValue, schedules} = useLoaderData<typeof loader>();
+  const {locations, defaultValue, schedules, collections} =
+    useLoaderData<typeof loader>();
   const lastResult = useActionData<typeof action>();
+  const [collectionId, setCollectionId] = useState<string | null>(null);
 
   const [form, fields] = useForm({
     lastResult,
@@ -148,9 +161,20 @@ export default function AccountServicesCreate() {
         <FormProvider context={form.context}>
           <Form method="post" {...getFormProps(form)}>
             <Stack>
+              <Select
+                onChange={setCollectionId}
+                data={collections.nodes.map((c) => ({
+                  value: parseGid(c.id).id,
+                  label: parseTE(c.title),
+                }))}
+                label="Vælge behandlingskategori"
+              />
+
               <SelectSearchable
                 label="Hvilken ydelse vil du tilbyde?"
                 placeholder="Vælg ydelse"
+                collectionId={collectionId}
+                disabled={collectionId === null}
                 field={fields.productId}
               />
 

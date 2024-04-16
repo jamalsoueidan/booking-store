@@ -1,4 +1,5 @@
-import {redirect, type ActionFunction} from '@shopify/remix-oxygen';
+import {type ActionFunction} from '@shopify/remix-oxygen';
+import {redirectWithSuccess} from 'remix-toast';
 import {getBookingShopifyApi} from '~/lib/api/bookingShopifyApi';
 import {getCustomer} from '~/lib/get-customer';
 
@@ -12,5 +13,7 @@ export const action: ActionFunction = async ({context, params}) => {
 
   await getBookingShopifyApi().customerProductDestroy(customerId, productId);
 
-  return redirect(`/account/services`);
+  return redirectWithSuccess('/account/services', {
+    message: 'Ydelsen er nu slettet!',
+  });
 };

@@ -11,15 +11,18 @@ import {
   useCombobox,
 } from '@mantine/core';
 import {useFetcher} from '@remix-run/react';
+import {type SerializeFrom} from '@remix-run/server-runtime';
 import {parseGid} from '@shopify/hydrogen';
-import {useRef, useState} from 'react';
-import type {ProductSearchQueryQuery} from 'storefrontapi.generated';
+import {useCallback, useEffect, useRef, useState} from 'react';
+import type {loader as accountApiProductsLoader} from '~/routes/account.api.products';
 
 export type SelectSearchableProps = {
   onChange?: (value: string | undefined) => void;
   label: string;
   placeholder?: string;
   field: FieldMetadata<string>;
+  collectionId?: string | null;
+  disabled: boolean;
 };
 
 export function SelectSearchable({
@@ -27,6 +30,8 @@ export function SelectSearchable({
   label,
   placeholder,
   field,
+  disabled,
+  collectionId,
 }: SelectSearchableProps) {
   const combobox = useCombobox({
     onDropdownClose: () => combobox.resetSelectedOption(),
@@ -35,14 +40,30 @@ export function SelectSearchable({
   const customInputRef = useRef<HTMLInputElement>(null);
   const control = useInputControl(field);
 
-  const fetcher = useFetcher<ProductSearchQueryQuery>();
+  const fetcher =
+    useFetcher<Awaited<SerializeFrom<typeof accountApiProductsLoader>>>();
   const [title, setTitle] = useState('');
 
-  const fetchOptions = (query: string) => {
-    fetcher.load(`/api/products?limit=10&title=${query}&excludeCreated=true`);
-  };
+  const fetchOptions = useCallback(
+    (keyword: string) => {
+      console.log(
+        `/account/api/products?keyword=${keyword}&collectionId=${collectionId}`,
+      );
+      fetcher.load(
+        `/account/api/products?keyword=${keyword}&collectionId=${collectionId}`,
+      );
+    },
+    [collectionId, fetcher],
+  );
 
-  const options = fetcher.data?.products.nodes.map((item) => (
+  useEffect(() => {
+    if (!disabled && collectionId) {
+      fetchOptions('');
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [collectionId, disabled]);
+
+  const options = fetcher.data?.map((item) => (
     <Combobox.Option value={parseGid(item.id).id} key={item.id}>
       <Highlight
         highlight={parseGid(item.id).id === field.value ? item.title : ''}
@@ -68,7 +89,7 @@ export function SelectSearchable({
 
       <Combobox
         onOptionSubmit={(optionValue) => {
-          const node = fetcher.data?.products.nodes.find(
+          const node = fetcher.data?.find(
             (item) => parseGid(item.id).id === optionValue,
           );
           if (node?.title) {
@@ -85,6 +106,7 @@ export function SelectSearchable({
             ref={customInputRef}
             label={label}
             placeholder={placeholder}
+            disabled={disabled}
             value={title}
             onChange={(event) => {
               setTitle(event.currentTarget.value);
@@ -113,9 +135,10 @@ export function SelectSearchable({
 
         <Combobox.Dropdown hidden={fetcher.data === null}>
           <Combobox.Options>
-            {options}
-            {(!fetcher.data || fetcher.data?.products.nodes.length === 0) && (
+            {!fetcher.data || fetcher.data?.length === 0 ? (
               <Combobox.Empty>Ingen produkt med dette navn</Combobox.Empty>
+            ) : (
+              options
             )}
           </Combobox.Options>
         </Combobox.Dropdown>
