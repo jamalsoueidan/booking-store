@@ -41,7 +41,7 @@ export const ProfessionButton = ({
         src={modifyImageUrl(profession.url, '200x200')}
         alt={profession.translation}
         radius="100%"
-        size={isMobile ? 'lg' : rem(100)}
+        size={isMobile ? rem(90) : rem(100)}
       />
       <Space h="xs" />
       <Title

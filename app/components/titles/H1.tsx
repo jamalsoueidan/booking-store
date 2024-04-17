@@ -22,7 +22,7 @@ export const H1 = ({
       ta="center"
       lts="1px"
       fw="bold"
-      fz={{base: rem(38), sm: rem(65)}}
+      fz={{base: rem(36), sm: rem(65)}}
       lh={{base: rem(45), sm: rem(70)}}
       {...props}
     >
