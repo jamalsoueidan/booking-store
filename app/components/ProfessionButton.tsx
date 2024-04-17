@@ -1,4 +1,5 @@
 import {Image, Space, Title, UnstyledButton} from '@mantine/core';
+import {useMediaQuery} from '@mantine/hooks';
 import {useNavigate, useSearchParams} from '@remix-run/react';
 import {type Profession} from '~/routes/api.users.professions';
 import classes from './ProfessionButton.module.css';
@@ -10,7 +11,8 @@ export const ProfessionButton = ({
   profession: Profession;
   reset?: boolean;
 }) => {
-  const [searchParams, setSearchParams] = useSearchParams();
+  const isMobile = useMediaQuery('(max-width: 62em)');
+  const [searchParams] = useSearchParams();
   const navigate = useNavigate(); // Get the navigate function
 
   const professionSearchParams = searchParams.get('profession') || '';
@@ -39,7 +41,7 @@ export const ProfessionButton = ({
         fallbackSrc={`https://placehold.co/120x120?text=${profession.translation}`}
         alt={profession.translation}
         radius="100%"
-        w="100px"
+        w={isMobile ? '60px' : '100px'}
         h="auto"
       />
       <Space h="xs" />

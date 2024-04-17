@@ -9,6 +9,8 @@ import {
   Flex,
   NavLink,
   ScrollArea,
+  Stack,
+  Text,
   UnstyledButton,
 } from '@mantine/core';
 import {Form, Link, NavLink as RemixNavLink} from '@remix-run/react';
@@ -179,15 +181,25 @@ export function AccountMenu({
           ) : (
             <Avatar size="sm" src="" onClick={() => closeDrawer()} />
           )}
-          <UnstyledButton
-            fz="sm"
-            component={Link}
-            to="/account/"
-            onClick={() => closeDrawer()}
-            style={{flex: 1}}
-          >
-            {customer?.firstName} {customer?.lastName}
-          </UnstyledButton>
+
+          <Stack gap="0" style={{flex: 1}}>
+            <UnstyledButton
+              fz="sm"
+              component={Link}
+              to="/account/"
+              onClick={() => closeDrawer()}
+            >
+              <Text fz="sm">
+                {customer?.firstName} {customer?.lastName}
+              </Text>
+            </UnstyledButton>
+            {user ? (
+              <Text c="dimmed" fz="xs">
+                {user?.customerId}
+              </Text>
+            ) : null}
+          </Stack>
+
           {user && user.isBusiness ? (
             <ActionIcon
               variant="default"

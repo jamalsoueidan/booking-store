@@ -39,7 +39,7 @@ export const ArtistHero = () => {
             gap={{base: '0', md: 'md'}}
             direction="column"
             justify="center"
-            h={isMobile ? '100%' : 'auto'}
+            h={{base: '100%', sm: 'auto'}}
           >
             <Title order={isMobile ? 2 : 1}>{user.fullname}</Title>
             <Text fz={{base: 'md', md: 'lg'}}>
