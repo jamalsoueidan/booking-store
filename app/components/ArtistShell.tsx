@@ -51,9 +51,9 @@ const Header = ({children}: {children: React.ReactNode}) => {
     <AppShell.Header>
       <Group h="100%" w="inherit" align="flex-end" bg={`${user.theme.color}.6`}>
         <Flex
-          h={`${isMobile ? mobileHeaderHeight : desktopHeaderHeight}px`}
+          h={{base: mobileHeaderHeight, sm: `desktopHeaderHeight}px`}}
           w="100%"
-          px={isMobile ? 'md' : 'xl'}
+          px={{base: 'md', sm: 'xl'}}
           bg={`${user.theme.color}.1`}
           align="center"
           style={

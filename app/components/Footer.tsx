@@ -9,7 +9,6 @@ import {
   Stack,
   Text,
 } from '@mantine/core';
-import {useMediaQuery} from '@mantine/hooks';
 import {Link, NavLink} from '@remix-run/react';
 import {IconBrandFacebook, IconBrandInstagram} from '@tabler/icons-react';
 import type {FooterQuery, HeaderQuery} from 'storefrontapi.generated';
@@ -21,14 +20,12 @@ export function Footer({
   menu,
   shop,
 }: FooterQuery & {shop: HeaderQuery['shop']}) {
-  const isMobile = useMediaQuery('(max-width: 62em)');
-
   return (
     <footer className={classes.footer}>
       <Container size="xl">
         <Flex direction={{base: 'column', sm: 'row'}} gap="xl">
           <Stack style={{flex: 1}} gap="xl">
-            <Flex direction="column" align={isMobile ? 'center' : undefined}>
+            <Flex direction="column" align={{base: 'center', sm: undefined}}>
               <NavLink prefetch="intent" to="/">
                 <img src={logo} alt={shop.name} className={classes.logo} />
               </NavLink>
@@ -39,7 +36,7 @@ export function Footer({
             </Flex>
             <Flex
               align="center"
-              direction={isMobile ? 'column' : 'row'}
+              direction={{base: 'column', sm: 'row'}}
               gap="lg"
             >
               <Button

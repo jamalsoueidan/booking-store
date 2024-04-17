@@ -33,6 +33,7 @@ import type {
   UsersSearchResponse,
 } from '~/lib/api/model';
 
+import {useMediaQuery} from '@mantine/hooks';
 import {ArtistCard} from '~/components/ArtistCard';
 import {useField} from '~/components/blocks/utils';
 import {ProfessionButton} from '~/components/ProfessionButton';
@@ -190,6 +191,7 @@ function FeaturedArtists({
   professions?: Array<Profession>;
 }) {
   const theme = useMantineTheme();
+  const isMobile = useMediaQuery('(max-width: 62em)');
   if (!artists) return null;
 
   return (
@@ -203,8 +205,13 @@ function FeaturedArtists({
             Mød vores [talentfulde eksperter]
           </H2>
 
-          <ScrollArea h="auto" w="100%" type="never">
-            <Flex justify="center" gap="lg">
+          <ScrollArea
+            h="auto"
+            w="100%"
+            type={isMobile ? 'always' : 'never'}
+            py={isMobile ? 'md' : undefined}
+          >
+            <Flex justify="center" gap={isMobile ? 'sm' : 'lg'}>
               {professions?.map((profession) => (
                 <ProfessionButton
                   key={profession.translation}
