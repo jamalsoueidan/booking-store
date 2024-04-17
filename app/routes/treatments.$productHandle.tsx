@@ -99,7 +99,11 @@ export default function Product() {
     <>
       <SimpleGrid cols={{base: 1, md: 2}} spacing={0}>
         <ProductImage image={product.selectedVariant?.image} />
-        <Box p={{base: rem(10), md: rem(42)}} bg="#fafafb">
+        <Box
+          pt={{base: rem(30), md: rem(86)}}
+          px={{base: rem(10), md: rem(42)}}
+          bg="#fafafb"
+        >
           <BadgeCollection collection={collection} linkBack />
           <Group my="xs" justify="space-between">
             <Title order={1}>{product?.title}</Title>

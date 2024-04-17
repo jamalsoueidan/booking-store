@@ -12,6 +12,7 @@ import {
   Title,
   rem,
 } from '@mantine/core';
+import {useMediaQuery} from '@mantine/hooks';
 import {Await, Link, useLoaderData, useLocation} from '@remix-run/react';
 import {IconBuildingSkyscraper, IconCar, IconHome} from '@tabler/icons-react';
 import {Suspense} from 'react';
@@ -75,7 +76,7 @@ export default function ArtistIndex() {
       <Await resolve={data.locations}>
         {({payload}) => {
           return (
-            <Stack gap="xl">
+            <Flex direction="column" gap={{base: 'md', sm: 'xl'}}>
               <ArtistSchedulesMenu schedules={payload} />
               <SimpleGrid cols={{base: 1, md: 2}} spacing="lg">
                 <Suspense
@@ -105,7 +106,7 @@ export default function ArtistIndex() {
                   <TextViewer content={user.aboutMe} />
                 </Stack>
               ) : null}
-            </Stack>
+            </Flex>
           );
         }}
       </Await>
@@ -120,10 +121,12 @@ function ArtistSchedulesMenu({
 }) {
   const user = useUser();
   const location = useLocation();
+  const isMobile = useMediaQuery('(max-width: 62em)');
+
   return (
-    <Flex gap="lg" justify="center" align="center">
+    <Flex gap={{base: 'sm', sm: 'lg'}} justify="center" align="center">
       <Button
-        size="lg"
+        size={isMobile ? 'md' : 'lg'}
         radius="lg"
         variant={location.search === '' ? 'filled' : 'light'}
         color={location.search === '' ? 'black' : user.theme.color}
@@ -143,7 +146,7 @@ function ArtistSchedulesMenu({
         >
           <HoverCard.Target>
             <Button
-              size="lg"
+              size={isMobile ? 'md' : 'lg'}
               radius="lg"
               variant={
                 location.search.includes(schedule._id) ? 'filled' : 'light'

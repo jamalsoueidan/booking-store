@@ -89,6 +89,7 @@ export const loader = async (args: LoaderFunctionArgs) => {
 };
 
 export default function Artists() {
+  const isMobile = useMediaQuery('(max-width: 62em)');
   const {professions, components, visualTeaser} =
     useLoaderData<typeof loader>();
 
@@ -102,13 +103,17 @@ export default function Artists() {
 
       <Container size="xl">
         <Stack gap="xl">
-          <ScrollArea h="auto" type="never">
-            <Flex gap="lg" justify="center">
+          <ScrollArea
+            h="auto"
+            type={isMobile ? 'always' : 'never'}
+            py={isMobile ? 'md' : undefined}
+          >
+            <Flex gap={isMobile ? 'sm' : 'lg'} justify="center">
               <ProfessionButton
                 profession={{
                   count: 0,
                   profession: 'all',
-                  translation: 'Alle eksperter',
+                  translation: 'Vis alle',
                 }}
                 reset
               />

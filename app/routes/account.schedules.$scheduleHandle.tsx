@@ -240,7 +240,7 @@ function IntervalInput({field}: IntervalInputProps) {
   const {from, to} = field.getFieldset();
 
   return (
-    <Flex gap={isMobile ? 'xs' : 'md'}>
+    <Flex gap={{base: 'xs', sm: 'md'}}>
       <Select
         size={isMobile ? 'sm' : 'md'}
         placeholder="Fra"

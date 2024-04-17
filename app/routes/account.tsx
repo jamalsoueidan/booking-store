@@ -102,6 +102,7 @@ function AccountLayout({
           opened={opened}
           customer={props.customer}
           isBusiness={props.isBusiness}
+          user={props.user}
         />
       </AppShell.Navbar>
 
