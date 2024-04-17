@@ -1,6 +1,7 @@
-import {Image, Space, Title, UnstyledButton} from '@mantine/core';
+import {Avatar, rem, Space, Title, UnstyledButton} from '@mantine/core';
 import {useMediaQuery} from '@mantine/hooks';
 import {useNavigate, useSearchParams} from '@remix-run/react';
+import {modifyImageUrl} from '~/lib/image';
 import {type Profession} from '~/routes/api.users.professions';
 import classes from './ProfessionButton.module.css';
 
@@ -36,13 +37,11 @@ export const ProfessionButton = ({
         (reset && !professionSearchParams)
       }
     >
-      <Image
-        src={`/professions/${profession.profession}.webp`}
-        fallbackSrc={`https://placehold.co/120x120?text=${profession.translation}`}
+      <Avatar
+        src={modifyImageUrl(profession.url, '200x200')}
         alt={profession.translation}
         radius="100%"
-        w={isMobile ? '60px' : '100px'}
-        h="auto"
+        size={isMobile ? 'lg' : rem(100)}
       />
       <Space h="xs" />
       <Title
