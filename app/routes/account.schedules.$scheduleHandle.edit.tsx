@@ -90,6 +90,7 @@ export default function AccountSchedulesEdit({close}: {close: () => void}) {
             autoComplete="off"
             {...getInputProps(name, {type: 'text'})}
             data-autofocus
+            data-testid="name-input"
           />
           <SubmitButton>Opdatere</SubmitButton>
         </Stack>

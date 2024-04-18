@@ -62,7 +62,7 @@ export default function AccountSchedulesCreate({close}: {close: () => void}) {
             label="Navn"
             autoComplete="off"
             {...getInputProps(name, {type: 'text'})}
-            data-autofocus
+            data-testid="name-input"
           />
           <SubmitButton>Opret</SubmitButton>
         </Stack>

@@ -12,7 +12,7 @@ import {
 export type PeriodInputProps = {
   data: Array<{label: string; value: string}>;
   field: FieldMetadata<
-    CustomerProductBookingPeriod | CustomerProductNoticePeriod
+    CustomerProductBookingPeriod | CustomerProductNoticePeriod | null
   >;
 } & TextInputProps;
 
@@ -31,7 +31,10 @@ export default function PeriodInput({data, field, ...props}: PeriodInputProps) {
         data={data}
         allowDeselect={false}
         {...getSelectProps(noticePeriod.unit)}
-        defaultValue={field.initialValue?.unit}
+        defaultValue={
+          (field as FieldMetadata<CustomerProductBookingPeriod>).initialValue
+            ?.unit
+        }
       />
     </Flex>
   );

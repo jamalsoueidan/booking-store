@@ -1,12 +1,11 @@
 import {
   FormProvider,
   getFormProps,
-  getInputProps,
   getSelectProps,
   useForm,
 } from '@conform-to/react';
 import {parseWithZod} from '@conform-to/zod';
-import {Flex, Select, Stack, TextInput} from '@mantine/core';
+import {Flex, Select, Stack} from '@mantine/core';
 import {Form, useActionData, useLoaderData} from '@remix-run/react';
 import {
   json,
@@ -14,7 +13,6 @@ import {
   type LoaderFunctionArgs,
 } from '@shopify/remix-oxygen';
 import {z} from 'zod';
-import PeriodInput from '~/components/form/PeriodInput';
 import {SelectSearchable} from '~/components/form/SelectSearchable';
 
 import {SubmitButton} from '~/components/form/SubmitButton';
@@ -31,10 +29,10 @@ import {NumericInput} from '~/components/form/NumericInput';
 import {parseTE} from '~/lib/clean';
 import {createOrFindProductVariant} from '~/lib/create-or-find-variant';
 import {getCustomer} from '~/lib/get-customer';
-import {customerProductUpsertBody} from '~/lib/zod/bookingShopifyApi';
+import {customerProductAddBody} from '~/lib/zod/bookingShopifyApi';
 import {COLLECTIONS_QUERY} from './categories';
 
-const schema = customerProductUpsertBody
+const schema = customerProductAddBody
   .omit({
     variantId: true,
     selectedOptions: true,
@@ -43,7 +41,6 @@ const schema = customerProductUpsertBody
     productHandle: true,
   })
   .extend({
-    productId: z.string().min(1),
     scheduleId: z.string().min(1),
     price: z.number(),
     compareAtPrice: z.number(),
@@ -63,24 +60,25 @@ export const action = async ({request, context}: ActionFunctionArgs) => {
   }
 
   try {
-    const {productId, ...values} = submission.value;
-
     const variant = await createOrFindProductVariant({
-      productId,
-      price: values.price,
-      compareAtPrice: values.compareAtPrice,
+      productId: submission.value.productId,
+      price: submission.value.price,
+      compareAtPrice: submission.value.compareAtPrice,
       storefront: context.storefront,
     });
 
-    await getBookingShopifyApi().customerProductUpsert(customerId, productId, {
-      ...values,
+    await getBookingShopifyApi().customerProductAdd(customerId, {
+      ...submission.value,
       ...variant,
       compareAtPrice: variant.compareAtPrice,
     });
 
-    return redirectWithSuccess(`/account/services/${productId}`, {
-      message: 'Ydelsen er nu oprettet!',
-    });
+    return redirectWithSuccess(
+      `/account/services/${submission.value.productId}`,
+      {
+        message: 'Ydelsen er nu oprettet!',
+      },
+    );
   } catch (error) {
     return submission.reply();
   }
@@ -109,18 +107,8 @@ export async function loader({context}: LoaderFunctionArgs) {
     collections,
     defaultValue: {
       scheduleId: schedule.payload[0]._id,
-      duration: 60,
-      breakTime: 15,
       compareAtPrice: 0,
       price: 0,
-      bookingPeriod: {
-        unit: 'months',
-        value: 4,
-      },
-      noticePeriod: {
-        unit: 'days',
-        value: 1,
-      },
       locations: [
         {
           location: findDefaultLocation?._id,
@@ -169,7 +157,6 @@ export default function AccountServicesCreate() {
                 }))}
                 label="Vælge behandlingskategori"
               />
-
               <SelectSearchable
                 label="Hvilken ydelse vil du tilbyde?"
                 placeholder="Vælg ydelse"
@@ -183,24 +170,22 @@ export default function AccountServicesCreate() {
                   field={fields.price}
                   label="Pris"
                   required
-                  w={'25%'}
                   hideControls={true}
+                  style={{flex: 1}}
                 />
                 <NumericInput
                   field={fields.compareAtPrice}
                   label="Før-pris"
-                  w={'25%'}
                   hideControls={true}
+                  style={{flex: 1}}
                 />
               </Flex>
-
               <SwitchGroupLocations
                 label="Fra hvilken lokation(er) vil du tilbyde den ydelse?"
                 description="Mindst (1) skal være valgt."
                 field={fields.locations}
                 data={locations}
               />
-
               <Select
                 label="Hvilken vagtplan vil du tilknytte den ydelse på."
                 data={selectSchedules}
@@ -208,40 +193,6 @@ export default function AccountServicesCreate() {
                 allowDeselect={false}
                 defaultValue={fields.scheduleId.initialValue}
               />
-
-              <Flex gap="md">
-                <TextInput
-                  w="50%"
-                  label="Behandlingstid:"
-                  rightSection="min"
-                  {...getInputProps(fields.duration, {type: 'number'})}
-                />
-                <TextInput
-                  w="50%"
-                  label="Pause efter behandling:"
-                  rightSection="min"
-                  {...getInputProps(fields.breakTime, {type: 'number'})}
-                />
-              </Flex>
-
-              <PeriodInput
-                field={fields.bookingPeriod}
-                label="Hvor langt ude i fremtiden vil du acceptere bookinger?"
-                data={[
-                  {value: 'months', label: 'Måneder'},
-                  {value: 'weeks', label: 'Uger'},
-                ]}
-              />
-
-              <PeriodInput
-                field={fields.noticePeriod}
-                label="Minimum tid før ankomst en kunde kan booke online?"
-                data={[
-                  {value: 'days', label: 'Dage'},
-                  {value: 'hours', label: 'Timer'},
-                ]}
-              />
-
               <SubmitButton>Tilføj ny ydelse</SubmitButton>
             </Stack>
           </Form>

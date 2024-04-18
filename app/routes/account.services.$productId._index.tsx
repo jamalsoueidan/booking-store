@@ -6,41 +6,33 @@ import {
   useForm,
 } from '@conform-to/react';
 import {parseWithZod} from '@conform-to/zod';
-import {Flex, Select, Stack, TextInput} from '@mantine/core';
-import {Form, useActionData, useLoaderData} from '@remix-run/react';
+import {Flex, Select, TextInput} from '@mantine/core';
+import {
+  Form,
+  useActionData,
+  useLoaderData,
+  useOutletContext,
+} from '@remix-run/react';
 import {
   json,
   type ActionFunctionArgs,
   type LoaderFunctionArgs,
 } from '@shopify/remix-oxygen';
 import {redirectWithSuccess} from 'remix-toast';
+import {type ProductItemByIdQuery} from 'storefrontapi.generated';
 import {z} from 'zod';
-import {AccountContent} from '~/components/account/AccountContent';
-import {AccountTitle} from '~/components/account/AccountTitle';
 import {NumericInput} from '~/components/form/NumericInput';
-import PeriodInput from '~/components/form/PeriodInput';
 import {SubmitButton} from '~/components/form/SubmitButton';
 import {SwitchGroupLocations} from '~/components/form/SwitchGroupLocations';
-import {PRODUCT_QUERY_ID} from '~/data/queries';
 import {getBookingShopifyApi} from '~/lib/api/bookingShopifyApi';
 import {createOrFindProductVariant} from '~/lib/create-or-find-variant';
 import {getCustomer} from '~/lib/get-customer';
+import {customerProductUpdateBody} from '~/lib/zod/bookingShopifyApi';
 
-import {customerProductUpsertBody} from '~/lib/zod/bookingShopifyApi';
-
-const schema = customerProductUpsertBody
-  .omit({
-    variantId: true,
-    price: true,
-    compareAtPrice: true,
-    productHandle: true,
-    selectedOptions: true,
-  })
-  .extend({
-    scheduleId: z.string().min(1),
-    price: z.number(),
-    compareAtPrice: z.number(),
-  });
+const schema = customerProductUpdateBody.extend({
+  price: z.number(),
+  compareAtPrice: z.number(),
+});
 
 export const action = async ({
   request,
@@ -72,7 +64,7 @@ export const action = async ({
       storefront: context.storefront,
     });
 
-    await getBookingShopifyApi().customerProductUpsert(customerId, productId, {
+    await getBookingShopifyApi().customerProductUpdate(customerId, productId, {
       ...values,
       ...variant,
       compareAtPrice: variant.compareAtPrice,
@@ -105,18 +97,6 @@ export async function loader({context, params}: LoaderFunctionArgs) {
   const {payload: customerProduct} =
     await getBookingShopifyApi().customerProductGet(customerId, productId);
 
-  const data = await context.storefront.query(PRODUCT_QUERY_ID, {
-    variables: {
-      Id: `gid://shopify/Product/${productId}`,
-      country: context.storefront.i18n.country,
-      language: context.storefront.i18n.language,
-    },
-  });
-
-  if (!data?.product?.id) {
-    throw new Response('product', {status: 404});
-  }
-
   return json({
     defaultValue: {
       ...customerProduct,
@@ -129,14 +109,14 @@ export async function loader({context, params}: LoaderFunctionArgs) {
     },
     locations: locations.payload,
     schedules: schedules.payload,
-    selectedProduct: data.product,
   });
 }
 
 export default function EditAddress() {
-  const {locations, schedules, selectedProduct, defaultValue} =
-    useLoaderData<typeof loader>();
-
+  const {selectedProduct} = useOutletContext<{
+    selectedProduct: ProductItemByIdQuery['product'];
+  }>();
+  const {locations, schedules, defaultValue} = useLoaderData<typeof loader>();
   const lastResult = useActionData<typeof action>();
   const [form, fields] = useForm({
     lastResult,
@@ -156,90 +136,55 @@ export default function EditAddress() {
   }));
 
   return (
-    <>
-      <AccountTitle
-        linkBack="/account/services"
-        heading={<>Redigere {selectedProduct.title}</>}
-      />
+    <FormProvider context={form.context}>
+      <Form method="put" {...getFormProps(form)}>
+        <Flex
+          direction="column"
+          gap={{base: 'sm', sm: 'lg'}}
+          w={{base: '100%', sm: '50%'}}
+        >
+          <input {...getInputProps(fields.scheduleId, {type: 'hidden'})} />
 
-      <AccountContent>
-        <FormProvider context={form.context}>
-          <Form method="put" {...getFormProps(form)}>
-            <Stack>
-              <TextInput
-                label="Hvilken ydelse vil du tilbyde?"
-                disabled
-                value={selectedProduct.title}
-              />
+          <TextInput
+            label="Hvilken ydelse vil du tilbyde?"
+            disabled
+            value={selectedProduct?.title}
+          />
 
-              <Flex gap="md">
-                <NumericInput
-                  field={fields.price}
-                  label="Pris"
-                  required
-                  w={'25%'}
-                  hideControls={true}
-                />
-                <NumericInput
-                  field={fields.compareAtPrice}
-                  label="Før-pris"
-                  w={'25%'}
-                  hideControls={true}
-                />
-              </Flex>
+          <Flex gap={{base: 'sm', sm: 'lg'}}>
+            <NumericInput
+              field={fields.price}
+              label="Pris"
+              required
+              w={'25%'}
+              hideControls={true}
+            />
+            <NumericInput
+              field={fields.compareAtPrice}
+              label="Før-pris"
+              w={'25%'}
+              hideControls={true}
+            />
+          </Flex>
 
-              <SwitchGroupLocations
-                label="Fra hvilken lokation(er) vil du tilbyde den ydelse?"
-                description="Mindst (1) skal være valgt."
-                field={fields.locations}
-                data={locations}
-              />
+          <SwitchGroupLocations
+            label="Fra hvilken lokation(er) vil du tilbyde den ydelse?"
+            description="Mindst (1) skal være valgt."
+            field={fields.locations}
+            data={locations}
+          />
 
-              <Select
-                label="Hvilken vagtplan vil du tilknytte den ydelse på."
-                data={selectSchedules}
-                {...getSelectProps(fields.scheduleId)}
-                allowDeselect={false}
-                defaultValue={fields.scheduleId.initialValue}
-              />
+          <Select
+            label="Hvilken vagtplan vil du tilknytte den ydelse på."
+            data={selectSchedules}
+            {...getSelectProps(fields.scheduleId)}
+            allowDeselect={false}
+            defaultValue={fields.scheduleId.initialValue}
+          />
 
-              <Flex gap="md">
-                <TextInput
-                  w="50%"
-                  label="Behandlingstid:"
-                  rightSection="min"
-                  {...getInputProps(fields.duration, {type: 'number'})}
-                />
-                <TextInput
-                  w="50%"
-                  label="Pause efter behandling:"
-                  rightSection="min"
-                  {...getInputProps(fields.breakTime, {type: 'number'})}
-                />
-              </Flex>
-
-              <PeriodInput
-                field={fields.bookingPeriod}
-                label="Hvor langt ude i fremtiden vil du acceptere bookinger?"
-                data={[
-                  {value: 'months', label: 'Måneder'},
-                  {value: 'weeks', label: 'Uger'},
-                ]}
-              />
-
-              <PeriodInput
-                field={fields.noticePeriod}
-                label="Hvor hurtigt kan du være klar?"
-                data={[
-                  {value: 'days', label: 'Dage'},
-                  {value: 'hours', label: 'Timer'},
-                ]}
-              />
-              <SubmitButton>Opdatere</SubmitButton>
-            </Stack>
-          </Form>
-        </FormProvider>
-      </AccountContent>
-    </>
+          <SubmitButton>Opdatere</SubmitButton>
+        </Flex>
+      </Form>
+    </FormProvider>
   );
 }
