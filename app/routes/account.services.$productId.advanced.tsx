@@ -20,22 +20,12 @@ import {PRODUCT_QUERY_ID} from '~/data/queries';
 import {getBookingShopifyApi} from '~/lib/api/bookingShopifyApi';
 import {createOrFindProductVariant} from '~/lib/create-or-find-variant';
 import {getCustomer} from '~/lib/get-customer';
+import {customerProductUpdateBody} from '~/lib/zod/bookingShopifyApi';
 
-import {customerProductUpsertBody} from '~/lib/zod/bookingShopifyApi';
-
-const schema = customerProductUpsertBody
-  .omit({
-    variantId: true,
-    price: true,
-    compareAtPrice: true,
-    productHandle: true,
-    selectedOptions: true,
-  })
-  .extend({
-    scheduleId: z.string().min(1),
-    price: z.number(),
-    compareAtPrice: z.number(),
-  });
+const schema = customerProductUpdateBody.extend({
+  price: z.number(),
+  compareAtPrice: z.number(),
+});
 
 export const action = async ({
   request,
@@ -67,7 +57,7 @@ export const action = async ({
       storefront: context.storefront,
     });
 
-    await getBookingShopifyApi().customerProductUpsert(customerId, productId, {
+    await getBookingShopifyApi().customerProductUpdate(customerId, productId, {
       ...values,
       ...variant,
       compareAtPrice: variant.compareAtPrice,
