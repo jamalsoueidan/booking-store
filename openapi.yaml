@@ -335,7 +335,7 @@ components:
         required:
           - location
           - locationType
-    CustomerProductUpsertResponse:
+    CustomerProductUpdateResponse:
       type: object
       properties:
         success:
@@ -346,12 +346,10 @@ components:
       required:
         - success
         - payload
-    CustomerProductUpsertBody:
+    CustomerProductUpdateBody:
       type: object
       properties:
         scheduleId:
-          type: string
-        productHandle:
           type: string
         variantId:
           type: number
@@ -395,16 +393,68 @@ components:
           $ref: '#/components/schemas/CustomerProductBookingPeriod'
         locations:
           $ref: '#/components/schemas/CustomerProductLocations'
+        description:
+          type: string
+      required:
+        - scheduleId
+    CustomerProductAddResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: true
+        payload:
+          $ref: '#/components/schemas/CustomerProductList'
+      required:
+        - success
+        - payload
+    CustomerProductAddBody:
+      type: object
+      properties:
+        scheduleId:
+          type: string
+        productHandle:
+          type: string
+        variantId:
+          type: number
+        selectedOptions:
+          type: object
+          properties:
+            name:
+              type: string
+            value:
+              type: string
+          required:
+            - name
+            - value
+        price:
+          type: object
+          properties:
+            amount:
+              type: string
+            currencyCode:
+              type: string
+          required:
+            - amount
+            - currencyCode
+        compareAtPrice:
+          type: object
+          properties:
+            amount:
+              type: string
+            currencyCode:
+              type: string
+          required:
+            - amount
+            - currencyCode
+        locations:
+          $ref: '#/components/schemas/CustomerProductLocations'
       required:
         - scheduleId
         - productHandle
         - variantId
         - price
-        - duration
         - selectedOptions
-        - breakTime
-        - noticePeriod
-        - bookingPeriod
         - locations
     CustomerProductDestroyResponse:
       type: object
@@ -3925,22 +3975,22 @@ paths:
     put:
       tags:
         - CustomerProduct
-      operationId: customerProductUpsert
-      summary: PUT Upsert product to schedule
+      operationId: customerProductUpdate
+      summary: PUT Update product in schedule
       description: This endpoint update product that exist in schedule
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/CustomerProductUpsertBody'
+              $ref: '#/components/schemas/CustomerProductUpdateBody'
       responses:
         '200':
           description: Response with schedule product payload
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/CustomerProductUpsertResponse'
+                $ref: '#/components/schemas/CustomerProductUpdateResponse'
         '400':
           $ref: '#/components/responses/BadResponse'
         '401':
@@ -3963,6 +4013,41 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/CustomerProductDestroyResponse'
+        '400':
+          $ref: '#/components/responses/BadResponse'
+        '401':
+          $ref: '#/components/responses/UnauthorizedResponse'
+        '403':
+          $ref: '#/components/responses/ForbiddenResponse'
+        '404':
+          $ref: '#/components/responses/NotFoundResponse'
+      security: []
+  '/customer/{customerId}/product':
+    post:
+      parameters:
+        - name: customerId
+          in: path
+          required: true
+          schema:
+            type: string
+      tags:
+        - CustomerProduct
+      operationId: customerProductAdd
+      summary: PUT Add product to schedule
+      description: This endpoint add product that does not exist in schedule
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CustomerProductAddBody'
+      responses:
+        '200':
+          description: Response with schedule product payload
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CustomerProductAddResponse'
         '400':
           $ref: '#/components/responses/BadResponse'
         '401':
