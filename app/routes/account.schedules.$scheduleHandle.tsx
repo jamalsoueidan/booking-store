@@ -41,6 +41,7 @@ import {redirectWithSuccess} from 'remix-toast';
 import MobileModal from '~/components/MobileModal';
 import {SubmitButton} from '~/components/form/SubmitButton';
 import {CustomerScheduleSlotDay, type CustomerSchedule} from '~/lib/api/model';
+import {baseURL} from '~/lib/api/mutator/query-client';
 import {getCustomer} from '~/lib/get-customer';
 import {renderTime} from '~/lib/time';
 import {customerScheduleSlotUpdateBody} from '~/lib/zod/bookingShopifyApi';
@@ -82,6 +83,10 @@ export const action = async ({
       {slots},
     );
 
+    await context.storefront.cache?.delete(
+      `${baseURL}/customer/${customerId}/schedule/${scheduleHandle}`,
+    );
+
     return redirectWithSuccess(`/account/schedules/${response.payload._id}`, {
       message: 'Vagtplan navn er opdateret!',
     });
@@ -101,6 +106,7 @@ export async function loader({context, params}: LoaderFunctionArgs) {
   const response = await getBookingShopifyApi().customerScheduleGet(
     customerId,
     scheduleHandle || '',
+    context,
   );
 
   const days = Object.values(CustomerScheduleSlotDay);

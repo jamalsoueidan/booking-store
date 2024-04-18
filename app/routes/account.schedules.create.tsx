@@ -6,6 +6,7 @@ import {type ActionFunctionArgs} from '@shopify/remix-oxygen';
 import {redirectWithSuccess} from 'remix-toast';
 import {SubmitButton} from '~/components/form/SubmitButton';
 import {getBookingShopifyApi} from '~/lib/api/bookingShopifyApi';
+import {baseURL} from '~/lib/api/mutator/query-client';
 import {getCustomer} from '~/lib/get-customer';
 import {customerScheduleCreateBody} from '~/lib/zod/bookingShopifyApi';
 
@@ -24,6 +25,10 @@ export const action = async ({request, context}: ActionFunctionArgs) => {
     const response = await getBookingShopifyApi().customerScheduleCreate(
       customerId,
       submission.value,
+    );
+
+    await context.storefront.cache?.delete(
+      `${baseURL}/customer/${customerId}/schedules`,
     );
 
     return redirectWithSuccess(`/account/schedules/${response.payload._id}`, {
