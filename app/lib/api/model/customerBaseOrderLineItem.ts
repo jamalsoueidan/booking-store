@@ -4,8 +4,8 @@
  * Booking Shopify Api
  * OpenAPI spec version: 1.0.0
  */
-import type { CustomerBaseOrderMoney } from './customerBaseOrderMoney';
-import type { CustomerBaseOrderLineItemProperties } from './customerBaseOrderLineItemProperties';
+import type {CustomerBaseOrderMoney} from './customerBaseOrderMoney';
+import type {CustomerBaseOrderLineItemProperties} from './customerBaseOrderLineItemProperties';
 
 export interface CustomerBaseOrderLineItem {
   admin_graphql_api_id: string;

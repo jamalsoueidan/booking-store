@@ -4,7 +4,7 @@
  * Booking Shopify Api
  * OpenAPI spec version: 1.0.0
  */
-import type { CustomerLocationAllOfGeoLocationType } from './customerLocationAllOfGeoLocationType';
+import type {CustomerLocationAllOfGeoLocationType} from './customerLocationAllOfGeoLocationType';
 
 export type CustomerLocationAllOfGeoLocation = {
   coordinates: number[];

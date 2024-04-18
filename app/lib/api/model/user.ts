@@ -4,9 +4,9 @@
  * Booking Shopify Api
  * OpenAPI spec version: 1.0.0
  */
-import type { UserImages } from './userImages';
-import type { UserSocial } from './userSocial';
-import type { UserTheme } from './userTheme';
+import type {UserImages} from './userImages';
+import type {UserSocial} from './userSocial';
+import type {UserTheme} from './userTheme';
 
 export interface User {
   aboutMe: string;

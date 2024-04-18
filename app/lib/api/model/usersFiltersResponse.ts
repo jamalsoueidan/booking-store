@@ -4,7 +4,7 @@
  * Booking Shopify Api
  * OpenAPI spec version: 1.0.0
  */
-import type { UsersFiltersPayload } from './usersFiltersPayload';
+import type {UsersFiltersPayload} from './usersFiltersPayload';
 
 export interface UsersFiltersResponse {
   payload: UsersFiltersPayload;

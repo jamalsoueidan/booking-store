@@ -4,7 +4,7 @@
  * Booking Shopify Api
  * OpenAPI spec version: 1.0.0
  */
-import type { CustomerPayoutMobilePayPhoneNumber } from './customerPayoutMobilePayPhoneNumber';
+import type {CustomerPayoutMobilePayPhoneNumber} from './customerPayoutMobilePayPhoneNumber';
 
 export interface CustomerPayoutMobilePay {
   phoneNumber: CustomerPayoutMobilePayPhoneNumber;

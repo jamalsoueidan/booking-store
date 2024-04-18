@@ -4,9 +4,9 @@
  * Booking Shopify Api
  * OpenAPI spec version: 1.0.0
  */
-import type { CustomerPayoutAccountCustomerId } from './customerPayoutAccountCustomerId';
-import type { CustomerPayoutAccountPayoutDetails } from './customerPayoutAccountPayoutDetails';
-import type { CustomerPayoutAccountType } from './customerPayoutAccountType';
+import type {CustomerPayoutAccountCustomerId} from './customerPayoutAccountCustomerId';
+import type {CustomerPayoutAccountPayoutDetails} from './customerPayoutAccountPayoutDetails';
+import type {CustomerPayoutAccountType} from './customerPayoutAccountType';
 
 export interface CustomerPayoutAccount {
   customerId: CustomerPayoutAccountCustomerId;

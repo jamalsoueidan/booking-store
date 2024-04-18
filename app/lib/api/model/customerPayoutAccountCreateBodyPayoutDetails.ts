@@ -4,7 +4,9 @@
  * Booking Shopify Api
  * OpenAPI spec version: 1.0.0
  */
-import type { CustomerPayoutMobilePay } from './customerPayoutMobilePay';
-import type { CustomerPayoutBankAccount } from './customerPayoutBankAccount';
+import type {CustomerPayoutMobilePay} from './customerPayoutMobilePay';
+import type {CustomerPayoutBankAccount} from './customerPayoutBankAccount';
 
-export type CustomerPayoutAccountCreateBodyPayoutDetails = CustomerPayoutMobilePay | CustomerPayoutBankAccount;
+export type CustomerPayoutAccountCreateBodyPayoutDetails =
+  | CustomerPayoutMobilePay
+  | CustomerPayoutBankAccount;

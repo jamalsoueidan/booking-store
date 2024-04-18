@@ -4,7 +4,7 @@
  * Booking Shopify Api
  * OpenAPI spec version: 1.0.0
  */
-import type { ProductsGetUsersImageUsersItem } from './productsGetUsersImageUsersItem';
+import type {ProductsGetUsersImageUsersItem} from './productsGetUsersImageUsersItem';
 
 export interface ProductsGetUsersImage {
   productId: number;

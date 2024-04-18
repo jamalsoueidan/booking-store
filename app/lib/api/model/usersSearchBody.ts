@@ -4,7 +4,7 @@
  * Booking Shopify Api
  * OpenAPI spec version: 1.0.0
  */
-import type { UsersSearchBodyLocation } from './usersSearchBodyLocation';
+import type {UsersSearchBodyLocation} from './usersSearchBodyLocation';
 
 export interface UsersSearchBody {
   days?: string[];

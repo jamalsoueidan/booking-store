@@ -4,8 +4,8 @@
  * Booking Shopify Api
  * OpenAPI spec version: 1.0.0
  */
-import type { UserAvailabilityCustomer } from './userAvailabilityCustomer';
-import type { Shipping } from './shipping';
+import type {UserAvailabilityCustomer} from './userAvailabilityCustomer';
+import type {Shipping} from './shipping';
 
 export interface UserAvailability {
   customer: UserAvailabilityCustomer;

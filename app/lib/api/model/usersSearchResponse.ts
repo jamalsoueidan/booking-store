@@ -4,7 +4,7 @@
  * Booking Shopify Api
  * OpenAPI spec version: 1.0.0
  */
-import type { UsersSearchResponsePayload } from './usersSearchResponsePayload';
+import type {UsersSearchResponsePayload} from './usersSearchResponsePayload';
 
 export interface UsersSearchResponse {
   payload: UsersSearchResponsePayload;

@@ -4,7 +4,7 @@
  * Booking Shopify Api
  * OpenAPI spec version: 1.0.0
  */
-import type { CustomerProductNoticeUnit } from './customerProductNoticeUnit';
+import type {CustomerProductNoticeUnit} from './customerProductNoticeUnit';
 
 export interface CustomerProductNoticePeriod {
   unit: CustomerProductNoticeUnit;

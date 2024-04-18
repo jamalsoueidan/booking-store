@@ -4,13 +4,13 @@
  * Booking Shopify Api
  * OpenAPI spec version: 1.0.0
  */
-import type { CustomerBaseOrderClient } from './customerBaseOrderClient';
-import type { CustomerBaseOrderMoney } from './customerBaseOrderMoney';
-import type { CustomerBaseOrderCustomer } from './customerBaseOrderCustomer';
-import type { CustomerBaseOrderFulfillment } from './customerBaseOrderFulfillment';
-import type { CustomerBaseOrderRefund } from './customerBaseOrderRefund';
-import type { CustomerBaseOrderAddress } from './customerBaseOrderAddress';
-import type { CustomerBaseOrderShippingLinesPropertyItem } from './customerBaseOrderShippingLinesPropertyItem';
+import type {CustomerBaseOrderClient} from './customerBaseOrderClient';
+import type {CustomerBaseOrderMoney} from './customerBaseOrderMoney';
+import type {CustomerBaseOrderCustomer} from './customerBaseOrderCustomer';
+import type {CustomerBaseOrderFulfillment} from './customerBaseOrderFulfillment';
+import type {CustomerBaseOrderRefund} from './customerBaseOrderRefund';
+import type {CustomerBaseOrderAddress} from './customerBaseOrderAddress';
+import type {CustomerBaseOrderShippingLinesPropertyItem} from './customerBaseOrderShippingLinesPropertyItem';
 
 export interface CustomerBaseOrder {
   admin_graphql_api_id: string;

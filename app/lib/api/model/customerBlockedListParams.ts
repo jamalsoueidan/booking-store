@@ -6,12 +6,12 @@
  */
 
 export type CustomerBlockedListParams = {
-/**
- * paginate
- */
-nextCursor?: string;
-/**
- * limit counts of documents
- */
-limit?: string;
+  /**
+   * paginate
+   */
+  nextCursor?: string;
+  /**
+   * limit counts of documents
+   */
+  limit?: string;
 };

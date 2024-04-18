@@ -4,7 +4,7 @@
  * Booking Shopify Api
  * OpenAPI spec version: 1.0.0
  */
-import type { UserAvailabilitySlotProductsItemPrice } from './userAvailabilitySlotProductsItemPrice';
+import type {UserAvailabilitySlotProductsItemPrice} from './userAvailabilitySlotProductsItemPrice';
 
 export type UserAvailabilitySlotProductsItem = {
   breakTime: number;

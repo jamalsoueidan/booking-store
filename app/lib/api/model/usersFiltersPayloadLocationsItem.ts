@@ -4,7 +4,7 @@
  * Booking Shopify Api
  * OpenAPI spec version: 1.0.0
  */
-import type { UsersFiltersPayloadLocationsItemLocationType } from './usersFiltersPayloadLocationsItemLocationType';
+import type {UsersFiltersPayloadLocationsItemLocationType} from './usersFiltersPayloadLocationsItemLocationType';
 
 export type UsersFiltersPayloadLocationsItem = {
   city: string;

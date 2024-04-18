@@ -4,7 +4,7 @@
  * Booking Shopify Api
  * OpenAPI spec version: 1.0.0
  */
-import type { LocationCoordinates } from './locationCoordinates';
+import type {LocationCoordinates} from './locationCoordinates';
 
 export interface LocationGetCoordinatesResponse {
   payload: LocationCoordinates;

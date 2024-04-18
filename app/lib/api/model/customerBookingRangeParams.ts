@@ -6,12 +6,12 @@
  */
 
 export type CustomerBookingRangeParams = {
-/**
- * start of date
- */
-start: string;
-/**
- * end of date
- */
-end: string;
+  /**
+   * start of date
+   */
+  start: string;
+  /**
+   * end of date
+   */
+  end: string;
 };

@@ -4,7 +4,7 @@
  * Booking Shopify Api
  * OpenAPI spec version: 1.0.0
  */
-import type { UserAvailabilitySingle } from './userAvailabilitySingle';
+import type {UserAvailabilitySingle} from './userAvailabilitySingle';
 
 export interface UserAvailabilityGeResponse {
   payload: UserAvailabilitySingle;

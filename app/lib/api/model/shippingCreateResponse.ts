@@ -4,7 +4,7 @@
  * Booking Shopify Api
  * OpenAPI spec version: 1.0.0
  */
-import type { Shipping } from './shipping';
+import type {Shipping} from './shipping';
 
 export interface ShippingCreateResponse {
   payload: Shipping;

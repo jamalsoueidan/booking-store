@@ -4,19 +4,19 @@
  * Booking Shopify Api
  * OpenAPI spec version: 1.0.0
  */
-import type { UsersSearchSortOrder } from './usersSearchSortOrder';
+import type {UsersSearchSortOrder} from './usersSearchSortOrder';
 
 export type UsersSearchParams = {
-/**
- * nextCursor
- */
-nextCursor?: string;
-/**
- * limit items (default 10)
- */
-limit?: string;
-/**
- * asc or desc
- */
-sortOrder?: UsersSearchSortOrder;
+  /**
+   * nextCursor
+   */
+  nextCursor?: string;
+  /**
+   * limit items (default 10)
+   */
+  limit?: string;
+  /**
+   * asc or desc
+   */
+  sortOrder?: UsersSearchSortOrder;
 };

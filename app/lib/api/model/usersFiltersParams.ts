@@ -6,8 +6,8 @@
  */
 
 export type UsersFiltersParams = {
-/**
- * profession
- */
-profession?: string;
+  /**
+   * profession
+   */
+  profession?: string;
 };

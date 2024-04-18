@@ -4,7 +4,7 @@
  * Booking Shopify Api
  * OpenAPI spec version: 1.0.0
  */
-import type { ErrorsErrorsItem } from './errorsErrorsItem';
+import type {ErrorsErrorsItem} from './errorsErrorsItem';
 
 export interface Errors {
   errors: ErrorsErrorsItem[];

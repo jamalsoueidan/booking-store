@@ -4,8 +4,8 @@
  * Booking Shopify Api
  * OpenAPI spec version: 1.0.0
  */
-import type { CustomerBaseOrderRefundRefundLineItemsItem } from './customerBaseOrderRefundRefundLineItemsItem';
-import type { CustomerBaseOrderMoney } from './customerBaseOrderMoney';
+import type {CustomerBaseOrderRefundRefundLineItemsItem} from './customerBaseOrderRefundRefundLineItemsItem';
+import type {CustomerBaseOrderMoney} from './customerBaseOrderMoney';
 
 export interface CustomerBaseOrderRefund {
   admin_graphql_api_id: string;

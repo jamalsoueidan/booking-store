@@ -5,8 +5,8 @@
  * OpenAPI spec version: 1.0.0
  */
 
-export type UsersSearchSortOrder = typeof UsersSearchSortOrder[keyof typeof UsersSearchSortOrder];
-
+export type UsersSearchSortOrder =
+  (typeof UsersSearchSortOrder)[keyof typeof UsersSearchSortOrder];
 
 // eslint-disable-next-line @typescript-eslint/no-redeclare
 export const UsersSearchSortOrder = {

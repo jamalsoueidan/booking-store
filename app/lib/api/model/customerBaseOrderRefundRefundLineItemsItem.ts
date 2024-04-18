@@ -4,10 +4,10 @@
  * Booking Shopify Api
  * OpenAPI spec version: 1.0.0
  */
-import type { CustomerBaseOrderSimpleLineItem } from './customerBaseOrderSimpleLineItem';
-import type { CustomerBaseOrderRefundRefundLineItemsItemSubtotal } from './customerBaseOrderRefundRefundLineItemsItemSubtotal';
-import type { CustomerBaseOrderMoney } from './customerBaseOrderMoney';
-import type { CustomerBaseOrderRefundRefundLineItemsItemTotalTax } from './customerBaseOrderRefundRefundLineItemsItemTotalTax';
+import type {CustomerBaseOrderSimpleLineItem} from './customerBaseOrderSimpleLineItem';
+import type {CustomerBaseOrderRefundRefundLineItemsItemSubtotal} from './customerBaseOrderRefundRefundLineItemsItemSubtotal';
+import type {CustomerBaseOrderMoney} from './customerBaseOrderMoney';
+import type {CustomerBaseOrderRefundRefundLineItemsItemTotalTax} from './customerBaseOrderRefundRefundLineItemsItemTotalTax';
 
 export type CustomerBaseOrderRefundRefundLineItemsItem = {
   id: number;

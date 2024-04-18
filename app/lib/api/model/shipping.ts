@@ -4,8 +4,10 @@
  * Booking Shopify Api
  * OpenAPI spec version: 1.0.0
  */
-import type { LocationTravelTime } from './locationTravelTime';
-import type { ShippingCostDestination } from './shippingCostDestination';
-import type { ShippingAllOf } from './shippingAllOf';
+import type {LocationTravelTime} from './locationTravelTime';
+import type {ShippingCostDestination} from './shippingCostDestination';
+import type {ShippingAllOf} from './shippingAllOf';
 
-export type Shipping = LocationTravelTime & ShippingCostDestination & ShippingAllOf;
+export type Shipping = LocationTravelTime &
+  ShippingCostDestination &
+  ShippingAllOf;

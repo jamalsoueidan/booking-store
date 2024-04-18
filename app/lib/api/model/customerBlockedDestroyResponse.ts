@@ -4,7 +4,7 @@
  * Booking Shopify Api
  * OpenAPI spec version: 1.0.0
  */
-import type { CustomerBlockedDestroyResponsePayload } from './customerBlockedDestroyResponsePayload';
+import type {CustomerBlockedDestroyResponsePayload} from './customerBlockedDestroyResponsePayload';
 
 export interface CustomerBlockedDestroyResponse {
   payload: CustomerBlockedDestroyResponsePayload;

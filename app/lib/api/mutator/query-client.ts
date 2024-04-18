@@ -1,6 +1,7 @@
 // custom-instance.ts
 
-import {type Errors} from '../model';
+import type {LoaderFunctionArgs} from '@shopify/remix-oxygen';
+import type {Errors} from '../model';
 
 const baseURL = 'https://booking-shopify-api.azurewebsites.net/api'; // use your own URL here or environment variable
 
@@ -52,20 +53,19 @@ export function isError(obj: any): obj is Errors {
   return obj && (obj as Errors).success === false;
 }
 
-export const queryClient = async <T>({
-  url,
-  method,
-  headers,
-  params,
-  data,
-}: {
+export type Config = {
   url: string;
-  method: 'get' | 'post' | 'put' | 'delete' | 'patch';
+  method: 'GET' | 'POST' | 'PUT' | 'DELETE' | 'PATCH';
   params?: any;
   headers?: any;
   data?: BodyType<unknown>;
   responseType?: string;
-}): Promise<T> => {
+};
+
+export const queryClient = async <T>(
+  {url, method, headers, params, data}: Config,
+  context?: LoaderFunctionArgs['context'],
+): Promise<T> => {
   console.log(
     `${baseURL}${url.replace(/gid:\/\/shopify\/[A-Za-z]+\//, '')}` +
       paramsToQueryString(params),

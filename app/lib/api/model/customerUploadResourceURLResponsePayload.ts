@@ -4,7 +4,7 @@
  * Booking Shopify Api
  * OpenAPI spec version: 1.0.0
  */
-import type { CustomerUploadResourceURLResponsePayloadParametersItem } from './customerUploadResourceURLResponsePayloadParametersItem';
+import type {CustomerUploadResourceURLResponsePayloadParametersItem} from './customerUploadResourceURLResponsePayloadParametersItem';
 
 export type CustomerUploadResourceURLResponsePayload = {
   parameters: CustomerUploadResourceURLResponsePayloadParametersItem[];

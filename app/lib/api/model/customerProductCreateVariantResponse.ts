@@ -4,7 +4,7 @@
  * Booking Shopify Api
  * OpenAPI spec version: 1.0.0
  */
-import type { CustomerProductCreateVariant } from './customerProductCreateVariant';
+import type {CustomerProductCreateVariant} from './customerProductCreateVariant';
 
 export interface CustomerProductCreateVariantResponse {
   payload: CustomerProductCreateVariant;

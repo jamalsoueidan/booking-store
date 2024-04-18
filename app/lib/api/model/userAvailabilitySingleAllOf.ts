@@ -4,7 +4,7 @@
  * Booking Shopify Api
  * OpenAPI spec version: 1.0.0
  */
-import type { UserAvailabilitySlot } from './userAvailabilitySlot';
+import type {UserAvailabilitySlot} from './userAvailabilitySlot';
 
 export type UserAvailabilitySingleAllOf = {
   slot: UserAvailabilitySlot;

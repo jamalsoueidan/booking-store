@@ -4,7 +4,7 @@
  * Booking Shopify Api
  * OpenAPI spec version: 1.0.0
  */
-import type { CustomerPayoutLogPayload } from './customerPayoutLogPayload';
+import type {CustomerPayoutLogPayload} from './customerPayoutLogPayload';
 
 export interface CustomerPayoutLogResponse {
   payload: CustomerPayoutLogPayload;

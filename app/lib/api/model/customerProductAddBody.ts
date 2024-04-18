@@ -4,10 +4,10 @@
  * Booking Shopify Api
  * OpenAPI spec version: 1.0.0
  */
-import type { CustomerProductAddBodyCompareAtPrice } from './customerProductAddBodyCompareAtPrice';
-import type { CustomerProductLocations } from './customerProductLocations';
-import type { CustomerProductAddBodyPrice } from './customerProductAddBodyPrice';
-import type { CustomerProductAddBodySelectedOptions } from './customerProductAddBodySelectedOptions';
+import type {CustomerProductAddBodyCompareAtPrice} from './customerProductAddBodyCompareAtPrice';
+import type {CustomerProductAddBodyPrice} from './customerProductAddBodyPrice';
+import type {CustomerProductAddBodySelectedOptions} from './customerProductAddBodySelectedOptions';
+import type {CustomerProductLocations} from './customerProductLocations';
 
 export interface CustomerProductAddBody {
   compareAtPrice?: CustomerProductAddBodyCompareAtPrice;

@@ -6,12 +6,12 @@
  */
 
 export type UsersTopParams = {
-/**
- * limit items (default 5)
- */
-limit?: string;
-/**
- * page
- */
-page?: string;
+  /**
+   * limit items (default 5)
+   */
+  limit?: string;
+  /**
+   * page
+   */
+  page?: string;
 };

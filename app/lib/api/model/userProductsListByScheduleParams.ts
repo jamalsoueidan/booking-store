@@ -6,8 +6,8 @@
  */
 
 export type UserProductsListByScheduleParams = {
-/**
- * scheduleId is optional
- */
-scheduleId?: string;
+  /**
+   * scheduleId is optional
+   */
+  scheduleId?: string;
 };

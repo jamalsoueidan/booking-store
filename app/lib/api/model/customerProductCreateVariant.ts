@@ -4,8 +4,8 @@
  * Booking Shopify Api
  * OpenAPI spec version: 1.0.0
  */
-import type { CustomerProductCreateVariantProduct } from './customerProductCreateVariantProduct';
-import type { CustomerProductSelectedOptions } from './customerProductSelectedOptions';
+import type {CustomerProductCreateVariantProduct} from './customerProductCreateVariantProduct';
+import type {CustomerProductSelectedOptions} from './customerProductSelectedOptions';
 
 export interface CustomerProductCreateVariant {
   compareAtPrice: string;

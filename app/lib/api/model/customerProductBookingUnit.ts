@@ -5,8 +5,8 @@
  * OpenAPI spec version: 1.0.0
  */
 
-export type CustomerProductBookingUnit = typeof CustomerProductBookingUnit[keyof typeof CustomerProductBookingUnit];
-
+export type CustomerProductBookingUnit =
+  (typeof CustomerProductBookingUnit)[keyof typeof CustomerProductBookingUnit];
 
 // eslint-disable-next-line @typescript-eslint/no-redeclare
 export const CustomerProductBookingUnit = {

@@ -4,7 +4,7 @@
  * Booking Shopify Api
  * OpenAPI spec version: 1.0.0
  */
-import type { UsersProfessionsPayload } from './usersProfessionsPayload';
+import type {UsersProfessionsPayload} from './usersProfessionsPayload';
 
 export interface UsersProfessionsResponse {
   payload: UsersProfessionsPayload[];

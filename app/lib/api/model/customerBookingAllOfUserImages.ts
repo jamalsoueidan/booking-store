@@ -4,7 +4,7 @@
  * Booking Shopify Api
  * OpenAPI spec version: 1.0.0
  */
-import type { CustomerBookingAllOfUserImagesProfile } from './customerBookingAllOfUserImagesProfile';
+import type {CustomerBookingAllOfUserImagesProfile} from './customerBookingAllOfUserImagesProfile';
 
 export type CustomerBookingAllOfUserImages = {
   profile?: CustomerBookingAllOfUserImagesProfile;

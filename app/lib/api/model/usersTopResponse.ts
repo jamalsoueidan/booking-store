@@ -4,7 +4,7 @@
  * Booking Shopify Api
  * OpenAPI spec version: 1.0.0
  */
-import type { UsersTopResponsePayloadItem } from './usersTopResponsePayloadItem';
+import type {UsersTopResponsePayloadItem} from './usersTopResponsePayloadItem';
 
 export interface UsersTopResponse {
   payload: UsersTopResponsePayloadItem[];

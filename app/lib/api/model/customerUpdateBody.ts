@@ -4,8 +4,8 @@
  * Booking Shopify Api
  * OpenAPI spec version: 1.0.0
  */
-import type { CustomerUpdateBodySocial } from './customerUpdateBodySocial';
-import type { CustomerUpdateBodyTheme } from './customerUpdateBodyTheme';
+import type {CustomerUpdateBodySocial} from './customerUpdateBodySocial';
+import type {CustomerUpdateBodyTheme} from './customerUpdateBodyTheme';
 
 export interface CustomerUpdateBody {
   aboutMe?: string;
