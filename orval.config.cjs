@@ -6,6 +6,7 @@ module.exports = {
       client: 'axios',
       target: 'app/lib/api/',
       mock: false,
+      prettier: true,
       override: {
         useDates: true,
         query: {

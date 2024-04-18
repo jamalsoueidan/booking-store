@@ -14,7 +14,7 @@
     "typecheck": "tsc --noEmit",
     "codegen": "shopify hydrogen codegen",
     "fetch-openapi": "curl -o ./openapi.yaml https://raw.githubusercontent.com/jamalsoueidan/booking-api/main/docs/openapi.yaml",
-    "build-openapi": "npx rimraf app/lib/api/model && npx orval --config ./orval.config.js",
+    "build-openapi": "npx rimraf app/lib/api/model && npx orval --config ./orval.config.cjs",
     "fb-openapi": "npm run fetch-openapi & npm run build-openapi",
     "test": "npx playwright test && npx playwright show-report",
     "test:ui": "npx playwright test --ui",
