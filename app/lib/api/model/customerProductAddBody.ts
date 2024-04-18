@@ -14,6 +14,7 @@ export interface CustomerProductAddBody {
   locations: CustomerProductLocations;
   price: CustomerProductAddBodyPrice;
   productHandle: string;
+  productId: string;
   scheduleId: string;
   selectedOptions: CustomerProductAddBodySelectedOptions;
   variantId: number;

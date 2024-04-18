@@ -2229,6 +2229,7 @@ export const customerProductAddParams = zod.object({
 
 export const customerProductAddBody = zod.object({
   "scheduleId": zod.string(),
+  "productId": zod.string(),
   "productHandle": zod.string(),
   "variantId": zod.number(),
   "selectedOptions":  zod.object({

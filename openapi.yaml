@@ -413,6 +413,8 @@ components:
       properties:
         scheduleId:
           type: string
+        productId:
+          type: string
         productHandle:
           type: string
         variantId:
@@ -450,6 +452,7 @@ components:
         locations:
           $ref: '#/components/schemas/CustomerProductLocations'
       required:
+        - productId
         - scheduleId
         - productHandle
         - variantId
