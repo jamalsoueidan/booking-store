@@ -3,7 +3,7 @@
 import type {LoaderFunctionArgs} from '@shopify/remix-oxygen';
 import type {Errors} from '../model';
 
-const baseURL = 'https://booking-shopify-api.azurewebsites.net/api'; // use your own URL here or environment variable
+export const baseURL = 'https://booking-shopify-api.azurewebsites.net/api'; // use your own URL here or environment variable
 
 export type ErrorType<ErrorData> = ErrorData;
 // In case you want to wrap the body type (optional)
@@ -66,27 +66,56 @@ export const queryClient = async <T>(
   {url, method, headers, params, data}: Config,
   context?: LoaderFunctionArgs['context'],
 ): Promise<T> => {
-  console.log(
-    `${baseURL}${url.replace(/gid:\/\/shopify\/[A-Za-z]+\//, '')}` +
-      paramsToQueryString(params),
-    data ? {body: JSON.stringify(data)} : {},
-  );
-  const response = await fetch(
-    `${baseURL}${url.replace(/gid:\/\/shopify\/[A-Za-z]+\//, '')}` +
-      paramsToQueryString(params),
-    {
-      method,
-      ...(data ? {body: JSON.stringify(data)} : {}),
-    },
-  );
+  if (context && method === 'GET' && context.storefront.cache) {
+    const cache = await context?.storefront.cache;
+    const cacheKey =
+      `${baseURL}${url.replace(/gid:\/\/shopify\/[A-Za-z]+\//, '')}` +
+      paramsToQueryString(params);
 
-  const responseJson = await response.json();
-  if (isError(responseJson)) {
-    console.log(JSON.stringify(data), JSON.stringify(responseJson));
-    throw convertErrorMessage(responseJson);
+    let response = await cache.match(cacheKey);
+    if (!response) {
+      console.log('Cache/Write', cacheKey);
+      response = await fetch(
+        `${baseURL}${url.replace(/gid:\/\/shopify\/[A-Za-z]+\//, '')}` +
+          paramsToQueryString(params),
+        {
+          method,
+          ...(data ? {body: JSON.stringify(data)} : {}),
+        },
+      );
+      response = new Response(response.body, response);
+      response.headers.set('Cache-Control', 'public, max-age=3600');
+      context.waitUntil(
+        context.storefront.cache.put(cacheKey, response.clone()),
+      );
+    } else {
+      console.log('Cache/Read', cacheKey);
+    }
+
+    const responseJson = await response.json();
+    return responseJson as T;
+  } else {
+    console.log(
+      `Request ${method}`,
+      `${baseURL}${url.replace(/gid:\/\/shopify\/[A-Za-z]+\//, '')}` +
+        paramsToQueryString(params),
+    );
+    const response = await fetch(
+      `${baseURL}${url.replace(/gid:\/\/shopify\/[A-Za-z]+\//, '')}` +
+        paramsToQueryString(params),
+      {
+        method,
+        ...(data ? {body: JSON.stringify(data)} : {}),
+      },
+    );
+
+    const responseJson = await response.json();
+    if (isError(responseJson)) {
+      throw convertErrorMessage(responseJson);
+    }
+
+    return responseJson as T;
   }
-
-  return responseJson as T;
 };
 
 export default queryClient;

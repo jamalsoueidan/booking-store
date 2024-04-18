@@ -27,6 +27,7 @@ export async function loader({context}: LoaderFunctionArgs) {
   const customerId = await getCustomer({context});
   const response = await getBookingShopifyApi().customerLocationList(
     customerId,
+    context,
   );
 
   return json(response.payload);

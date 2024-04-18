@@ -14,6 +14,7 @@ import {parseWithZod} from '@conform-to/zod';
 import {FocusTrap, Stack, TextInput} from '@mantine/core';
 import {redirectWithSuccess} from 'remix-toast';
 import {SubmitButton} from '~/components/form/SubmitButton';
+import {baseURL} from '~/lib/api/mutator/query-client';
 
 const schema = customerScheduleCreateBody;
 
@@ -43,6 +44,10 @@ export const action = async ({
       submission.value,
     );
 
+    await context.storefront.cache?.delete(
+      `${baseURL}/customer/${customerId}/schedule/${scheduleHandle}`,
+    );
+
     return redirectWithSuccess(`/account/schedules/${response.payload._id}`, {
       message: 'Vagtplan er opdateret!',
     });
@@ -57,6 +62,7 @@ export async function loader({context, params}: LoaderFunctionArgs) {
   const response = await getBookingShopifyApi().customerLocationGet(
     customerId,
     params.locationId || '',
+    context,
   );
 
   return json(response.payload);

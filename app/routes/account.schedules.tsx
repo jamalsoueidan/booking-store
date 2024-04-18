@@ -15,6 +15,7 @@ export async function loader({context, request}: LoaderFunctionArgs) {
   const customerId = await getCustomer({context});
   const response = await getBookingShopifyApi().customerScheduleList(
     customerId,
+    context,
   );
 
   const url = new URL(request.url);

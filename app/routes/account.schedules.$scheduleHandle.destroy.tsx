@@ -2,6 +2,7 @@ import {json, type ActionFunction} from '@shopify/remix-oxygen';
 import {redirectWithSuccess} from 'remix-toast';
 
 import {getBookingShopifyApi} from '~/lib/api/bookingShopifyApi';
+import {baseURL} from '~/lib/api/mutator/query-client';
 import {getCustomer} from '~/lib/get-customer';
 
 export const action: ActionFunction = async ({context, params}) => {
@@ -16,6 +17,10 @@ export const action: ActionFunction = async ({context, params}) => {
     await getBookingShopifyApi().customerScheduleDestroy(
       customerId,
       scheduleHandle,
+    );
+
+    await context.storefront.cache?.delete(
+      `${baseURL}/customer/${customerId}/schedules`,
     );
 
     return redirectWithSuccess('/account/schedules', {
