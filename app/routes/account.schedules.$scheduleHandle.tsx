@@ -197,6 +197,7 @@ function SlotInput({field}: SlotInputProps) {
           onChange={onChange}
           label={translationsDays[day.initialValue || '']}
           size="md"
+          data-testid={`${day.initialValue}-checkbox`}
         />
       </Table.Td>
       <Table.Td>
@@ -204,11 +205,12 @@ function SlotInput({field}: SlotInputProps) {
           {intervalsList.length === 0 && <>Ingen tider</>}
           {intervalsList.map((interval: any, index: number) => (
             <Flex gap="sm" w="100%" key={interval.key}>
-              <IntervalInput field={interval} />
+              <IntervalInput field={interval} day={day.initialValue || ''} />
               {index > 0 ? (
                 <button
                   {...form.remove.getButtonProps({name: intervals.name, index})}
                   style={{display: 'flex', alignItems: 'center'}}
+                  data-testid={`${day.initialValue}-remove-button`}
                 >
                   <IconMinus style={{width: rem(24), height: rem(24)}} />
                 </button>
@@ -218,6 +220,7 @@ function SlotInput({field}: SlotInputProps) {
                     name: intervals.name,
                     defaultValue,
                   })}
+                  data-testid={`${day.initialValue}-add-button`}
                   style={{display: 'flex', alignItems: 'center'}}
                 >
                   <IconPlus style={{width: rem(24), height: rem(24)}} />
@@ -233,9 +236,10 @@ function SlotInput({field}: SlotInputProps) {
 
 type IntervalInputProps = {
   field: FieldMetadata<z.infer<typeof intervalsSchema.element>>;
+  day: string;
 };
 
-function IntervalInput({field}: IntervalInputProps) {
+function IntervalInput({field, day}: IntervalInputProps) {
   const isMobile = useMediaQuery('(max-width: 62em)');
   const {from, to} = field.getFieldset();
 
@@ -249,6 +253,7 @@ function IntervalInput({field}: IntervalInputProps) {
         defaultValue={field.initialValue?.from}
         error={from.errors}
         withCheckIcon={false}
+        data-testid={`${day}-from-select`}
       />
       <Select
         size={isMobile ? 'sm' : 'md'}
@@ -258,6 +263,7 @@ function IntervalInput({field}: IntervalInputProps) {
         data={generateTimeSlots(4, 20, 30)}
         error={to.errors}
         withCheckIcon={false}
+        data-testid={`${day}-to-select`}
       />
     </Flex>
   );
@@ -300,7 +306,11 @@ function MenuToggle({
     <>
       <Menu width={200} shadow="md" trigger="click">
         <Menu.Target>
-          <ActionIcon variant="light" aria-label="Settings">
+          <ActionIcon
+            variant="light"
+            aria-label="Settings"
+            data-testid="settings-button"
+          >
             <IconAdjustments
               style={{width: '70%', height: '70%'}}
               stroke={1.5}
@@ -310,7 +320,12 @@ function MenuToggle({
 
         <Menu.Dropdown>
           <Menu.Item
-            leftSection={<IconEdit style={{width: rem(14), height: rem(14)}} />}
+            leftSection={
+              <IconEdit
+                style={{width: rem(14), height: rem(14)}}
+                data-testid="change-name-button"
+              />
+            }
             onClick={open}
           >
             Ændre navn
@@ -330,6 +345,7 @@ function MenuToggle({
                 formRef.current.submit();
               }
             }}
+            data-testid="delete-button"
           >
             Slet
           </Menu.Item>

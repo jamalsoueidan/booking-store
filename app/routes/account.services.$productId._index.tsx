@@ -19,7 +19,7 @@ import {
   type LoaderFunctionArgs,
 } from '@shopify/remix-oxygen';
 import {redirectWithSuccess} from 'remix-toast';
-import {ProductItemByIdQuery} from 'storefrontapi.generated';
+import {type ProductItemByIdQuery} from 'storefrontapi.generated';
 import {z} from 'zod';
 import {NumericInput} from '~/components/form/NumericInput';
 import {SubmitButton} from '~/components/form/SubmitButton';
