@@ -1,11 +1,11 @@
 import {
   FormProvider,
   getFormProps,
-  getSelectProps,
+  getInputProps,
   useForm,
 } from '@conform-to/react';
 import {parseWithZod} from '@conform-to/zod';
-import {Flex, Select, TextInput} from '@mantine/core';
+import {Flex, TextInput} from '@mantine/core';
 import {Form, useActionData, useLoaderData} from '@remix-run/react';
 import {
   json,
@@ -14,9 +14,8 @@ import {
 } from '@shopify/remix-oxygen';
 import {redirectWithSuccess} from 'remix-toast';
 import {z} from 'zod';
-import {NumericInput} from '~/components/form/NumericInput';
+import PeriodInput from '~/components/form/PeriodInput';
 import {SubmitButton} from '~/components/form/SubmitButton';
-import {SwitchGroupLocations} from '~/components/form/SwitchGroupLocations';
 import {PRODUCT_QUERY_ID} from '~/data/queries';
 import {getBookingShopifyApi} from '~/lib/api/bookingShopifyApi';
 import {createOrFindProductVariant} from '~/lib/create-or-find-variant';
@@ -159,43 +158,38 @@ export default function EditAddress() {
           gap={{base: 'sm', sm: 'lg'}}
           w={{base: '100%', sm: '50%'}}
         >
-          <TextInput
-            label="Hvilken ydelse vil du tilbyde?"
-            disabled
-            value={selectedProduct.title}
-          />
-
           <Flex gap={{base: 'sm', sm: 'lg'}}>
-            <NumericInput
-              field={fields.price}
-              label="Pris"
-              required
-              w={'25%'}
-              hideControls={true}
+            <TextInput
+              w="50%"
+              label="Behandlingstid:"
+              rightSection="min"
+              {...getInputProps(fields.duration, {type: 'number'})}
             />
-            <NumericInput
-              field={fields.compareAtPrice}
-              label="Før-pris"
-              w={'25%'}
-              hideControls={true}
+            <TextInput
+              w="50%"
+              label="Pause efter behandling:"
+              rightSection="min"
+              {...getInputProps(fields.breakTime, {type: 'number'})}
             />
           </Flex>
 
-          <SwitchGroupLocations
-            label="Fra hvilken lokation(er) vil du tilbyde den ydelse?"
-            description="Mindst (1) skal være valgt."
-            field={fields.locations}
-            data={locations}
+          <PeriodInput
+            field={fields.bookingPeriod}
+            label="Hvor langt ude i fremtiden vil du acceptere bookinger?"
+            data={[
+              {value: 'months', label: 'Måneder'},
+              {value: 'weeks', label: 'Uger'},
+            ]}
           />
 
-          <Select
-            label="Hvilken vagtplan vil du tilknytte den ydelse på."
-            data={selectSchedules}
-            {...getSelectProps(fields.scheduleId)}
-            allowDeselect={false}
-            defaultValue={fields.scheduleId.initialValue}
+          <PeriodInput
+            field={fields.noticePeriod}
+            label="Hvor hurtigt kan du være klar?"
+            data={[
+              {value: 'days', label: 'Dage'},
+              {value: 'hours', label: 'Timer'},
+            ]}
           />
-
           <SubmitButton>Opdatere</SubmitButton>
         </Flex>
       </Form>

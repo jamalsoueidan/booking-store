@@ -169,7 +169,6 @@ export default function AccountServicesCreate() {
                 }))}
                 label="Vælge behandlingskategori"
               />
-
               <SelectSearchable
                 label="Hvilken ydelse vil du tilbyde?"
                 placeholder="Vælg ydelse"
@@ -183,24 +182,22 @@ export default function AccountServicesCreate() {
                   field={fields.price}
                   label="Pris"
                   required
-                  w={'25%'}
                   hideControls={true}
+                  style={{flex: 1}}
                 />
                 <NumericInput
                   field={fields.compareAtPrice}
                   label="Før-pris"
-                  w={'25%'}
                   hideControls={true}
+                  style={{flex: 1}}
                 />
               </Flex>
-
               <SwitchGroupLocations
                 label="Fra hvilken lokation(er) vil du tilbyde den ydelse?"
                 description="Mindst (1) skal være valgt."
                 field={fields.locations}
                 data={locations}
               />
-
               <Select
                 label="Hvilken vagtplan vil du tilknytte den ydelse på."
                 data={selectSchedules}
@@ -208,41 +205,41 @@ export default function AccountServicesCreate() {
                 allowDeselect={false}
                 defaultValue={fields.scheduleId.initialValue}
               />
-
-              <Flex gap="md">
-                <TextInput
-                  w="50%"
-                  label="Behandlingstid:"
-                  rightSection="min"
-                  {...getInputProps(fields.duration, {type: 'number'})}
-                />
-                <TextInput
-                  w="50%"
-                  label="Pause efter behandling:"
-                  rightSection="min"
-                  {...getInputProps(fields.breakTime, {type: 'number'})}
-                />
-              </Flex>
-
-              <PeriodInput
-                field={fields.bookingPeriod}
-                label="Hvor langt ude i fremtiden vil du acceptere bookinger?"
-                data={[
-                  {value: 'months', label: 'Måneder'},
-                  {value: 'weeks', label: 'Uger'},
-                ]}
-              />
-
-              <PeriodInput
-                field={fields.noticePeriod}
-                label="Minimum tid før ankomst en kunde kan booke online?"
-                data={[
-                  {value: 'days', label: 'Dage'},
-                  {value: 'hours', label: 'Timer'},
-                ]}
-              />
-
               <SubmitButton>Tilføj ny ydelse</SubmitButton>
+              <div style={{visibility: 'hidden', height: '0px'}}>
+                <Flex gap="md">
+                  <TextInput
+                    w="50%"
+                    label="Behandlingstid:"
+                    rightSection="min"
+                    {...getInputProps(fields.duration, {type: 'number'})}
+                  />
+                  <TextInput
+                    w="50%"
+                    label="Pause efter behandling:"
+                    rightSection="min"
+                    {...getInputProps(fields.breakTime, {type: 'number'})}
+                  />
+                </Flex>
+
+                <PeriodInput
+                  field={fields.bookingPeriod}
+                  label="Hvor langt ude i fremtiden vil du acceptere bookinger?"
+                  data={[
+                    {value: 'months', label: 'Måneder'},
+                    {value: 'weeks', label: 'Uger'},
+                  ]}
+                />
+
+                <PeriodInput
+                  field={fields.noticePeriod}
+                  label="Minimum tid før ankomst en kunde kan booke online?"
+                  data={[
+                    {value: 'days', label: 'Dage'},
+                    {value: 'hours', label: 'Timer'},
+                  ]}
+                />
+              </div>
             </Stack>
           </Form>
         </FormProvider>
