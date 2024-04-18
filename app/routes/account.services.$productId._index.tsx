@@ -1,23 +1,29 @@
 import {
   FormProvider,
   getFormProps,
+  getInputProps,
   getSelectProps,
   useForm,
 } from '@conform-to/react';
 import {parseWithZod} from '@conform-to/zod';
 import {Flex, Select, TextInput} from '@mantine/core';
-import {Form, useActionData, useLoaderData} from '@remix-run/react';
+import {
+  Form,
+  useActionData,
+  useLoaderData,
+  useOutletContext,
+} from '@remix-run/react';
 import {
   json,
   type ActionFunctionArgs,
   type LoaderFunctionArgs,
 } from '@shopify/remix-oxygen';
 import {redirectWithSuccess} from 'remix-toast';
+import {ProductItemByIdQuery} from 'storefrontapi.generated';
 import {z} from 'zod';
 import {NumericInput} from '~/components/form/NumericInput';
 import {SubmitButton} from '~/components/form/SubmitButton';
 import {SwitchGroupLocations} from '~/components/form/SwitchGroupLocations';
-import {PRODUCT_QUERY_ID} from '~/data/queries';
 import {getBookingShopifyApi} from '~/lib/api/bookingShopifyApi';
 import {createOrFindProductVariant} from '~/lib/create-or-find-variant';
 import {getCustomer} from '~/lib/get-customer';
@@ -91,18 +97,6 @@ export async function loader({context, params}: LoaderFunctionArgs) {
   const {payload: customerProduct} =
     await getBookingShopifyApi().customerProductGet(customerId, productId);
 
-  const data = await context.storefront.query(PRODUCT_QUERY_ID, {
-    variables: {
-      Id: `gid://shopify/Product/${productId}`,
-      country: context.storefront.i18n.country,
-      language: context.storefront.i18n.language,
-    },
-  });
-
-  if (!data?.product?.id) {
-    throw new Response('product', {status: 404});
-  }
-
   return json({
     defaultValue: {
       ...customerProduct,
@@ -115,14 +109,14 @@ export async function loader({context, params}: LoaderFunctionArgs) {
     },
     locations: locations.payload,
     schedules: schedules.payload,
-    selectedProduct: data.product,
   });
 }
 
 export default function EditAddress() {
-  const {locations, schedules, selectedProduct, defaultValue} =
-    useLoaderData<typeof loader>();
-
+  const {selectedProduct} = useOutletContext<{
+    selectedProduct: ProductItemByIdQuery['product'];
+  }>();
+  const {locations, schedules, defaultValue} = useLoaderData<typeof loader>();
   const lastResult = useActionData<typeof action>();
   const [form, fields] = useForm({
     lastResult,
@@ -149,10 +143,12 @@ export default function EditAddress() {
           gap={{base: 'sm', sm: 'lg'}}
           w={{base: '100%', sm: '50%'}}
         >
+          <input {...getInputProps(fields.scheduleId, {type: 'hidden'})} />
+
           <TextInput
             label="Hvilken ydelse vil du tilbyde?"
             disabled
-            value={selectedProduct.title}
+            value={selectedProduct?.title}
           />
 
           <Flex gap={{base: 'sm', sm: 'lg'}}>

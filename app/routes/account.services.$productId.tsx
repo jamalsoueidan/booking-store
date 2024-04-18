@@ -44,7 +44,7 @@ export default function EditAddress() {
       </AccountTitle>
 
       <AccountContent>
-        <Outlet />
+        <Outlet context={{selectedProduct}} />
       </AccountContent>
     </>
   );

@@ -13,19 +13,13 @@ import {
   type LoaderFunctionArgs,
 } from '@shopify/remix-oxygen';
 import {redirectWithSuccess} from 'remix-toast';
-import {z} from 'zod';
 import PeriodInput from '~/components/form/PeriodInput';
 import {SubmitButton} from '~/components/form/SubmitButton';
-import {PRODUCT_QUERY_ID} from '~/data/queries';
 import {getBookingShopifyApi} from '~/lib/api/bookingShopifyApi';
-import {createOrFindProductVariant} from '~/lib/create-or-find-variant';
 import {getCustomer} from '~/lib/get-customer';
 import {customerProductUpdateBody} from '~/lib/zod/bookingShopifyApi';
 
-const schema = customerProductUpdateBody.extend({
-  price: z.number(),
-  compareAtPrice: z.number(),
-});
+const schema = customerProductUpdateBody;
 
 export const action = async ({
   request,
@@ -49,21 +43,13 @@ export const action = async ({
   }
 
   try {
-    const values = submission.value;
-    const variant = await createOrFindProductVariant({
+    await getBookingShopifyApi().customerProductUpdate(
+      customerId,
       productId,
-      price: values.price,
-      compareAtPrice: values.compareAtPrice,
-      storefront: context.storefront,
-    });
+      submission.value,
+    );
 
-    await getBookingShopifyApi().customerProductUpdate(customerId, productId, {
-      ...values,
-      ...variant,
-      compareAtPrice: variant.compareAtPrice,
-    });
-
-    return redirectWithSuccess(`/account/services/${productId}`, {
+    return redirectWithSuccess(`/account/services/${productId}/advanced`, {
       message: 'Ydelsen er nu opdateret!',
     });
   } catch (error) {
@@ -79,48 +65,16 @@ export async function loader({context, params}: LoaderFunctionArgs) {
     throw new Error('Missing productHandle param, check route filename');
   }
 
-  const schedules = await getBookingShopifyApi().customerScheduleList(
-    customerId,
-  );
-
-  const locations = await getBookingShopifyApi().customerLocationList(
-    customerId,
-  );
-
   const {payload: customerProduct} =
     await getBookingShopifyApi().customerProductGet(customerId, productId);
 
-  const data = await context.storefront.query(PRODUCT_QUERY_ID, {
-    variables: {
-      Id: `gid://shopify/Product/${productId}`,
-      country: context.storefront.i18n.country,
-      language: context.storefront.i18n.language,
-    },
-  });
-
-  if (!data?.product?.id) {
-    throw new Response('product', {status: 404});
-  }
-
   return json({
-    defaultValue: {
-      ...customerProduct,
-      price: parseInt(customerProduct.price.amount),
-      compareAtPrice: customerProduct.compareAtPrice?.amount
-        ? parseInt(customerProduct.compareAtPrice?.amount)
-        : 0,
-      variantId: customerProduct.variantId.toString(),
-      productId: customerProduct.productId.toString(),
-    },
-    locations: locations.payload,
-    schedules: schedules.payload,
-    selectedProduct: data.product,
+    defaultValue: customerProduct,
   });
 }
 
 export default function EditAddress() {
-  const {locations, schedules, selectedProduct, defaultValue} =
-    useLoaderData<typeof loader>();
+  const {defaultValue} = useLoaderData<typeof loader>();
 
   const lastResult = useActionData<typeof action>();
   const [form, fields] = useForm({
@@ -135,11 +89,6 @@ export default function EditAddress() {
     shouldRevalidate: 'onInput',
   });
 
-  const selectSchedules = schedules.map((schedule) => ({
-    value: schedule._id,
-    label: schedule.name,
-  }));
-
   return (
     <FormProvider context={form.context}>
       <Form method="put" {...getFormProps(form)}>
@@ -148,6 +97,8 @@ export default function EditAddress() {
           gap={{base: 'sm', sm: 'lg'}}
           w={{base: '100%', sm: '50%'}}
         >
+          <input {...getInputProps(fields.scheduleId, {type: 'hidden'})} />
+
           <Flex gap={{base: 'sm', sm: 'lg'}}>
             <TextInput
               w="50%"
