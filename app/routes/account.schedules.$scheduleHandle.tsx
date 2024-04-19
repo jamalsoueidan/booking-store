@@ -86,9 +86,6 @@ export const action = async ({
       {slots},
     );
 
-    console.log(JSON.stringify(slots));
-    console.log(JSON.stringify(response.payload, null, 2));
-
     await context.storefront.cache?.delete(
       `${baseURL}/customer/${customerId}/schedules/${scheduleHandle}`,
     );
