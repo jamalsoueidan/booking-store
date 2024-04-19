@@ -20,9 +20,9 @@ test.describe('Schedules create, edit, delete', async () => {
   test('Login Email', async () => {
     await page.goto('./');
     await page.getByTestId('login-button').click();
-    await page.getByLabel('Email', {exact: true}).click();
-    await page.getByLabel('Email', {exact: true}).fill(testEmail);
-    await page.getByRole('button', {name: 'Continue'}).click();
+    await page.getByLabel('Mailadresse', {exact: true}).click();
+    await page.getByLabel('Mailadresse', {exact: true}).fill(testEmail);
+    await page.getByRole('button', {name: 'Fortsæt'}).click();
   });
 
   test('Login Code', async () => {
@@ -30,10 +30,10 @@ test.describe('Schedules create, edit, delete', async () => {
       sentTo: testEmail,
     });
 
-    await page.getByPlaceholder('-digit code').click();
+    await page.getByPlaceholder('6-cifret kode').click();
     if (email.text && email.text.codes) {
       await page
-        .getByPlaceholder('-digit code')
+        .getByPlaceholder('6-cifret kode')
         .fill(email.text?.codes[0].value || '');
     }
 
@@ -83,6 +83,7 @@ test.describe('Schedules create, edit, delete', async () => {
   });
 
   test('Confirm edited schedule and delete it', async () => {
+    await page.waitForTimeout(2000);
     const tuesdayFrom = await page
       .getByTestId('tuesday-from-select')
       .evaluate<any, HTMLSelectElement>((select) => select.value);

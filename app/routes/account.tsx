@@ -1,6 +1,11 @@
 import {AppShell, Flex, Text, UnstyledButton} from '@mantine/core';
 import {useDisclosure, useMediaQuery} from '@mantine/hooks';
-import {Link, Outlet, useLoaderData} from '@remix-run/react';
+import {
+  Link,
+  Outlet,
+  type ShouldRevalidateFunction,
+  useLoaderData,
+} from '@remix-run/react';
 import {parseGid} from '@shopify/hydrogen';
 import {
   json,
@@ -28,9 +33,22 @@ export type AccountOutlet = {
   isBusiness: boolean;
 };
 
-export function shouldRevalidate() {
+export const shouldRevalidate: ShouldRevalidateFunction = ({
+  formMethod,
+  currentUrl,
+  nextUrl,
+}) => {
+  if (formMethod && formMethod !== 'GET') {
+    return true;
+  }
+
+  // revalidate when manually revalidating via useRevalidator
+  if (currentUrl.toString() === nextUrl.toString()) {
+    return true;
+  }
+
   return false;
-}
+};
 
 export async function loader({context}: LoaderFunctionArgs) {
   const {data, errors} = await context.customerAccount.query(

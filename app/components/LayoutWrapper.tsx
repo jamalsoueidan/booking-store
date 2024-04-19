@@ -60,6 +60,7 @@ export function LayoutWrapper({children}: {children: ReactNode}) {
 
   useEffect(() => {
     if (data?.toast) {
+      console.log(data.toast);
       switch (data.toast.type) {
         case 'success':
           notify.success(data.toast.message);

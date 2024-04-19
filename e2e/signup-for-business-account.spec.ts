@@ -14,12 +14,12 @@ test.describe('Signup for business account', async () => {
   test('Login Email', async () => {
     await page.goto('./');
     await page.getByTestId('login-button').click();
-    await page.getByLabel('Email', {exact: true}).click();
+    await page.getByLabel('Mailadresse', {exact: true}).click();
     await page
-      .getByLabel('Email', {exact: true})
+      .getByLabel('Mailadresse', {exact: true})
       .fill(`testerne${timestamp}@pyen5ufb.mailosaur.net`);
 
-    await page.getByRole('button', {name: 'Continue'}).click();
+    await page.getByRole('button', {name: 'Fortsæt'}).click();
   });
 
   test('Login Code', async () => {
@@ -27,10 +27,10 @@ test.describe('Signup for business account', async () => {
       sentTo: `testerne${timestamp}@pyen5ufb.mailosaur.net`,
     });
 
-    await page.getByPlaceholder('-digit code').click();
+    await page.getByPlaceholder('6-cifret kode').click();
     if (email.text && email.text.codes) {
       await page
-        .getByPlaceholder('-digit code')
+        .getByPlaceholder('6-cifret kode')
         .fill(email.text?.codes[0].value || '');
     }
 
