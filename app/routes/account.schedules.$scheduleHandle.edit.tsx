@@ -1,5 +1,10 @@
 import {getFormProps, getInputProps, useForm} from '@conform-to/react';
-import {Form, useActionData, useLoaderData} from '@remix-run/react';
+import {
+  Form,
+  useActionData,
+  useLoaderData,
+  useNavigate,
+} from '@remix-run/react';
 
 import {
   json,
@@ -47,6 +52,7 @@ export const action = async ({
     await context.storefront.cache?.delete(
       `${baseURL}/customer/${customerId}/schedule/${scheduleHandle}`,
     );
+    console.log('edit');
 
     return redirectWithSuccess(`/account/schedules/${response.payload._id}`, {
       message: 'Vagtplan er opdateret!',
@@ -68,9 +74,10 @@ export async function loader({context, params}: LoaderFunctionArgs) {
   return json(response.payload);
 }
 
-export default function AccountSchedulesEdit({close}: {close: () => void}) {
+export default function AccountSchedulesEdit() {
   const defaultValue = useLoaderData<typeof loader>();
   const lastResult = useActionData<typeof action>();
+  const navigate = useNavigate();
 
   const [form, {name}] = useForm({
     lastResult,
@@ -81,7 +88,7 @@ export default function AccountSchedulesEdit({close}: {close: () => void}) {
       });
     },
     onSubmit(event, context) {
-      close();
+      navigate('../');
     },
     shouldValidate: 'onSubmit',
     shouldRevalidate: 'onInput',
@@ -89,7 +96,7 @@ export default function AccountSchedulesEdit({close}: {close: () => void}) {
 
   return (
     <FocusTrap active={true}>
-      <Form method="PUT" action="edit" {...getFormProps(form)}>
+      <Form method="PUT" {...getFormProps(form)}>
         <Stack>
           <TextInput
             label="Navn"

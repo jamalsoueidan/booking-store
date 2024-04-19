@@ -184,7 +184,7 @@ function BusinessAccount({status}: {status: CustomerStatus}) {
             size="compact-xs"
             radius="lg"
             component={Link}
-            to="../schedules/create"
+            to="../schedules#create"
             rightSection={<IconArrowRight size="14" />}
             data-testid="create-schedule-button"
           >

@@ -111,6 +111,7 @@ export const queryClient = async <T>(
 
     const responseJson = await response.json();
     if (isError(responseJson)) {
+      console.log('ERROR', JSON.stringify(responseJson));
       throw convertErrorMessage(responseJson);
     }
 

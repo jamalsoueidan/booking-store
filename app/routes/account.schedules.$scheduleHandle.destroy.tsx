@@ -19,6 +19,7 @@ export const action: ActionFunction = async ({context, params}) => {
       scheduleHandle,
     );
 
+    console.log('Destroyed schedule');
     await context.storefront.cache?.delete(
       `${baseURL}/customer/${customerId}/schedules`,
     );

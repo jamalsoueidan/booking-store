@@ -1,4 +1,12 @@
-import {Form, useActionData, useLoaderData} from '@remix-run/react';
+import {
+  Form,
+  Link,
+  Outlet,
+  useActionData,
+  useLoaderData,
+  useNavigate,
+  useOutlet,
+} from '@remix-run/react';
 import {
   json,
   type ActionFunctionArgs,
@@ -34,14 +42,13 @@ import {IconEdit, IconMinus, IconPlus, IconX} from '@tabler/icons-react';
 import {addMinutes, format, set} from 'date-fns';
 import {useRef} from 'react';
 import {redirectWithSuccess} from 'remix-toast';
-import MobileModal from '~/components/MobileModal';
 import {SubmitButton} from '~/components/form/SubmitButton';
+import MobileModal from '~/components/MobileModal';
 import {CustomerScheduleSlotDay} from '~/lib/api/model';
 import {baseURL} from '~/lib/api/mutator/query-client';
 import {getCustomer} from '~/lib/get-customer';
 import {renderTime} from '~/lib/time';
 import {customerScheduleSlotUpdateBody} from '~/lib/zod/bookingShopifyApi';
-import AccountSchedulesEdit from './account.schedules.$scheduleHandle.edit';
 import {translationsDays} from './api.users.filters';
 
 // this must be taken from bookingApi, if it doesn't exist, create it in booking-api
@@ -104,7 +111,7 @@ export async function loader({context, params}: LoaderFunctionArgs) {
 
   const response = await getBookingShopifyApi().customerScheduleGet(
     customerId,
-    scheduleHandle || '',
+    scheduleHandle,
     context,
   );
 
@@ -128,6 +135,12 @@ export async function loader({context, params}: LoaderFunctionArgs) {
 export default function AccountSchedules() {
   const defaultValue = useLoaderData<typeof loader>();
   const lastResult = useActionData<typeof action>();
+  const opened = !!useOutlet();
+  const navigate = useNavigate();
+
+  const close = () => {
+    navigate('../');
+  };
 
   const [form, fields] = useForm({
     lastResult,
@@ -165,6 +178,9 @@ export default function AccountSchedules() {
           </Group>
         </Form>
       </FormProvider>
+      <MobileModal opened={opened} onClose={close} title="Opdater navn">
+        <Outlet />
+      </MobileModal>
     </>
   );
 }
@@ -305,7 +321,7 @@ function EditName({id}: {id: string}) {
 
   return (
     <Flex gap={{base: 'xs', sm: 'sm'}}>
-      <ActionIcon onClick={open} size="md">
+      <ActionIcon component={Link} to="edit" size="md">
         <IconEdit
           style={{width: rem(24), height: rem(24)}}
           data-testid="change-name-button"
@@ -328,10 +344,6 @@ function EditName({id}: {id: string}) {
       >
         <IconX style={{width: rem(24), height: rem(24)}} />
       </ActionIcon>
-
-      <MobileModal opened={opened} onClose={close} title="Opdater navn">
-        <AccountSchedulesEdit close={close} />
-      </MobileModal>
     </Flex>
   );
 }
