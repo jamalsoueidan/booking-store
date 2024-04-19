@@ -59,7 +59,7 @@ export function LayoutWrapper({children}: {children: ReactNode}) {
   }, [state]);
 
   useEffect(() => {
-    if (data && data.toast) {
+    if (data?.toast) {
       switch (data.toast.type) {
         case 'success':
           notify.success(data.toast.message);
@@ -72,7 +72,7 @@ export function LayoutWrapper({children}: {children: ReactNode}) {
           return;
       }
     }
-  }, [data]);
+  }, [data.toast]);
 
   return (
     <MantineProvider>
