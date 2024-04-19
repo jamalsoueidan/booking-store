@@ -37,7 +37,7 @@ import {
   Text,
   rem,
 } from '@mantine/core';
-import {useDisclosure, useMediaQuery} from '@mantine/hooks';
+import {useMediaQuery} from '@mantine/hooks';
 import {IconEdit, IconMinus, IconPlus, IconX} from '@tabler/icons-react';
 import {addMinutes, format, set} from 'date-fns';
 import {useRef} from 'react';
@@ -106,7 +106,7 @@ export async function loader({context, params}: LoaderFunctionArgs) {
 
   const {scheduleHandle} = params;
   if (!scheduleHandle) {
-    throw new Error('Missing productHandle param, check route filename');
+    throw new Error('Missing scheduleHandle param');
   }
 
   const response = await getBookingShopifyApi().customerScheduleGet(
@@ -316,7 +316,6 @@ const generateTimeSlots = (
 };
 
 function EditName({id}: {id: string}) {
-  const [opened, {open, close}] = useDisclosure(false);
   const formRef = useRef<HTMLFormElement>(null);
 
   return (
