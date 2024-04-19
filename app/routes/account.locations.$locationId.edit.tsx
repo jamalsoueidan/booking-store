@@ -66,9 +66,14 @@ export const action = async ({
 export async function loader({context, params}: LoaderFunctionArgs) {
   const customerId = await getCustomer({context});
 
+  const {locationId} = params;
+  if (!locationId) {
+    throw new Error('Missing scheduleHandle param');
+  }
+
   const response = await getBookingShopifyApi().customerLocationGet(
     customerId,
-    params.locationId || '',
+    locationId,
   );
 
   return json(response.payload);
