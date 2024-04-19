@@ -137,7 +137,7 @@ export default function EditAddress() {
 
   return (
     <FormProvider context={form.context}>
-      <Form method="put" {...getFormProps(form)}>
+      <Form method="post" {...getFormProps(form)}>
         <Flex
           direction="column"
           gap={{base: 'sm', sm: 'lg'}}

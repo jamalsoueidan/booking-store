@@ -1,4 +1,12 @@
-import {Form, useActionData, useLoaderData} from '@remix-run/react';
+import {
+  Form,
+  Link,
+  Outlet,
+  useActionData,
+  useLoaderData,
+  useNavigate,
+  useOutlet,
+} from '@remix-run/react';
 import {
   json,
   type ActionFunctionArgs,
@@ -29,19 +37,18 @@ import {
   Text,
   rem,
 } from '@mantine/core';
-import {useDisclosure, useMediaQuery} from '@mantine/hooks';
+import {useMediaQuery} from '@mantine/hooks';
 import {IconEdit, IconMinus, IconPlus, IconX} from '@tabler/icons-react';
 import {addMinutes, format, set} from 'date-fns';
 import {useRef} from 'react';
 import {redirectWithSuccess} from 'remix-toast';
-import MobileModal from '~/components/MobileModal';
 import {SubmitButton} from '~/components/form/SubmitButton';
+import MobileModal from '~/components/MobileModal';
 import {CustomerScheduleSlotDay} from '~/lib/api/model';
 import {baseURL} from '~/lib/api/mutator/query-client';
 import {getCustomer} from '~/lib/get-customer';
 import {renderTime} from '~/lib/time';
 import {customerScheduleSlotUpdateBody} from '~/lib/zod/bookingShopifyApi';
-import AccountSchedulesEdit from './account.schedules.$scheduleHandle.edit';
 import {translationsDays} from './api.users.filters';
 
 // this must be taken from bookingApi, if it doesn't exist, create it in booking-api
@@ -79,9 +86,6 @@ export const action = async ({
       {slots},
     );
 
-    console.log(JSON.stringify(slots));
-    console.log(JSON.stringify(response.payload, null, 2));
-
     await context.storefront.cache?.delete(
       `${baseURL}/customer/${customerId}/schedules/${scheduleHandle}`,
     );
@@ -99,12 +103,12 @@ export async function loader({context, params}: LoaderFunctionArgs) {
 
   const {scheduleHandle} = params;
   if (!scheduleHandle) {
-    throw new Error('Missing productHandle param, check route filename');
+    throw new Error('Missing scheduleHandle param');
   }
 
   const response = await getBookingShopifyApi().customerScheduleGet(
     customerId,
-    scheduleHandle || '',
+    scheduleHandle,
     context,
   );
 
@@ -128,6 +132,12 @@ export async function loader({context, params}: LoaderFunctionArgs) {
 export default function AccountSchedules() {
   const defaultValue = useLoaderData<typeof loader>();
   const lastResult = useActionData<typeof action>();
+  const opened = !!useOutlet();
+  const navigate = useNavigate();
+
+  const close = () => {
+    navigate('../');
+  };
 
   const [form, fields] = useForm({
     lastResult,
@@ -152,7 +162,7 @@ export default function AccountSchedules() {
         <EditName id={defaultValue._id} />
       </Group>
       <FormProvider context={form.context}>
-        <Form method="PUT" {...getFormProps(form)}>
+        <Form method="post" {...getFormProps(form)}>
           <Table mt="lg" withTableBorder>
             <Table.Tbody>
               {slotsList.map((slot) => (
@@ -165,6 +175,9 @@ export default function AccountSchedules() {
           </Group>
         </Form>
       </FormProvider>
+      <MobileModal opened={opened} onClose={close} title="Opdater navn">
+        <Outlet />
+      </MobileModal>
     </>
   );
 }
@@ -300,12 +313,11 @@ const generateTimeSlots = (
 };
 
 function EditName({id}: {id: string}) {
-  const [opened, {open, close}] = useDisclosure(false);
   const formRef = useRef<HTMLFormElement>(null);
 
   return (
     <Flex gap={{base: 'xs', sm: 'sm'}}>
-      <ActionIcon onClick={open} size="md">
+      <ActionIcon component={Link} to="edit" size="md">
         <IconEdit
           style={{width: rem(24), height: rem(24)}}
           data-testid="change-name-button"
@@ -328,10 +340,6 @@ function EditName({id}: {id: string}) {
       >
         <IconX style={{width: rem(24), height: rem(24)}} />
       </ActionIcon>
-
-      <MobileModal opened={opened} onClose={close} title="Opdater navn">
-        <AccountSchedulesEdit close={close} />
-      </MobileModal>
     </Flex>
   );
 }

@@ -8,10 +8,10 @@ export function AccountButton({
 }: ButtonProps & {to: string}) {
   return (
     <Button
-      component={Link}
       color="gray"
       radius="xl"
       size="compact-sm"
+      component={Link}
       classNames={classes}
       {...props}
     >

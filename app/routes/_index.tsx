@@ -123,7 +123,7 @@ export default function Homepage() {
               Find [skønhedseksperter] og book deres [behandlinger] direkte på
               vores platform
             </H1>
-            <Title order={2} c="dimmed" fw="normal" ta="center" lineClamp={2}>
+            <Title order={2} c="dimmed" fw="normal" ta="center">
               Vores platform forbinder dig med talentfulde skønhedseksperter
               inden for alle aspekter af skønhed.
             </Title>

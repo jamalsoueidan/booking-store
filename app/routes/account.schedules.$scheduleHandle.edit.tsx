@@ -1,5 +1,10 @@
 import {getFormProps, getInputProps, useForm} from '@conform-to/react';
-import {Form, useActionData, useLoaderData} from '@remix-run/react';
+import {
+  Form,
+  useActionData,
+  useLoaderData,
+  useNavigate,
+} from '@remix-run/react';
 
 import {
   json,
@@ -59,18 +64,24 @@ export const action = async ({
 export async function loader({context, params}: LoaderFunctionArgs) {
   const customerId = await getCustomer({context});
 
-  const response = await getBookingShopifyApi().customerLocationGet(
+  const {scheduleHandle} = params;
+  if (!scheduleHandle) {
+    throw new Error('Missing scheduleHandle param');
+  }
+
+  const response = await getBookingShopifyApi().customerScheduleGet(
     customerId,
-    params.locationId || '',
+    scheduleHandle,
     context,
   );
 
   return json(response.payload);
 }
 
-export default function AccountSchedulesEdit({close}: {close: () => void}) {
+export default function AccountSchedulesEdit() {
   const defaultValue = useLoaderData<typeof loader>();
   const lastResult = useActionData<typeof action>();
+  const navigate = useNavigate();
 
   const [form, {name}] = useForm({
     lastResult,
@@ -80,16 +91,13 @@ export default function AccountSchedulesEdit({close}: {close: () => void}) {
         schema,
       });
     },
-    onSubmit(event, context) {
-      close();
-    },
     shouldValidate: 'onSubmit',
     shouldRevalidate: 'onInput',
   });
 
   return (
     <FocusTrap active={true}>
-      <Form method="PUT" action="edit" {...getFormProps(form)}>
+      <Form method="post" {...getFormProps(form)}>
         <Stack>
           <TextInput
             label="Navn"
@@ -98,7 +106,7 @@ export default function AccountSchedulesEdit({close}: {close: () => void}) {
             data-autofocus
             data-testid="name-input"
           />
-          <SubmitButton>Opdatere</SubmitButton>
+          <SubmitButton data-testid="update-button">Opdatere</SubmitButton>
         </Stack>
       </Form>
     </FocusTrap>

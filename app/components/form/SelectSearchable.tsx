@@ -46,9 +46,6 @@ export function SelectSearchable({
 
   const fetchOptions = useCallback(
     (keyword: string) => {
-      console.log(
-        `/account/api/products?keyword=${keyword}&collectionId=${collectionId}`,
-      );
       fetcher.load(
         `/account/api/products?keyword=${keyword}&collectionId=${collectionId}`,
       );

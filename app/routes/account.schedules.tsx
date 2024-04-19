@@ -7,23 +7,25 @@ import {
   ThemeIcon,
   Title,
 } from '@mantine/core';
+import {useDisclosure} from '@mantine/hooks';
 import {
   Link,
   Outlet,
   useLoaderData,
   useLocation,
   useNavigate,
-  useOutlet,
   useParams,
 } from '@remix-run/react';
 import {json, redirect, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
 import {IconMoodSad} from '@tabler/icons-react';
+import {useEffect} from 'react';
 import MobileModal from '~/components/MobileModal';
 import {AccountButton} from '~/components/account/AccountButton';
 import {AccountContent} from '~/components/account/AccountContent';
 import {AccountTitle} from '~/components/account/AccountTitle';
 import {getBookingShopifyApi} from '~/lib/api/bookingShopifyApi';
 import {getCustomer} from '~/lib/get-customer';
+import {AccountSchedulesCreate} from './account.schedules.create';
 
 export async function loader({context, request}: LoaderFunctionArgs) {
   const customerId = await getCustomer({context});
@@ -41,14 +43,10 @@ export async function loader({context, request}: LoaderFunctionArgs) {
 
 export default function AccountSchedulesIndex() {
   const loaderData = useLoaderData<typeof loader>();
-  const location = useLocation();
   const navigate = useNavigate();
-  const inOutlet = !!useOutlet();
+  const location = useLocation();
+  const [opened, {open, close}] = useDisclosure(false);
   const params = useParams();
-
-  const closeModal = () => {
-    navigate('/account/schedules');
-  };
 
   const selectScheduleMarkup =
     loaderData.length > 1 ? (
@@ -75,18 +73,30 @@ export default function AccountSchedulesIndex() {
       </>
     ) : null;
 
+  const closeModal = () => {
+    navigate('#');
+  };
+
+  useEffect(() => {
+    if (location.hash === '#create') {
+      open();
+    } else {
+      close();
+    }
+  }, [close, location.hash, open]);
+
   return (
     <>
       <AccountTitle heading="Vagtplaner">
         {loaderData.length > 0 ? (
-          <AccountButton to="create" data-testid="create-schedule-button">
+          <AccountButton to="#create" data-testid="create-schedule-button">
             Opret ny vagtplan
           </AccountButton>
         ) : null}
       </AccountTitle>
 
       <AccountContent>
-        {loaderData.length === 0 && !location.pathname.includes('create') ? (
+        {loaderData.length === 0 ? (
           <Flex gap="lg" direction="column" justify="center" align="center">
             <ThemeIcon variant="white" size={rem(100)}>
               <IconMoodSad stroke={1} style={{width: '100%', height: '100%'}} />
@@ -94,7 +104,7 @@ export default function AccountSchedulesIndex() {
             <Title ta="center">Du har ingen vagtplaner</Title>
             <Button
               component={Link}
-              to="create"
+              to="#create"
               data-testid="empty-create-button"
             >
               Tilføj vagtplan
@@ -104,17 +114,15 @@ export default function AccountSchedulesIndex() {
           selectScheduleMarkup
         )}
 
-        {!location.pathname.includes('create') ? <Outlet /> : null}
+        <Outlet />
 
-        {location.pathname.includes('create') ? (
-          <MobileModal
-            opened={inOutlet}
-            onClose={closeModal}
-            title="Opret vagtplan"
-          >
-            <Outlet />
-          </MobileModal>
-        ) : null}
+        <MobileModal
+          opened={opened}
+          onClose={closeModal}
+          title="Opret vagtplan"
+        >
+          <AccountSchedulesCreate />
+        </MobileModal>
       </AccountContent>
     </>
   );

@@ -186,7 +186,7 @@ export function AccountMenu({
             <UnstyledButton
               fz="sm"
               component={Link}
-              to="/account/"
+              to="/account"
               onClick={() => closeDrawer()}
             >
               <Text fz="sm">

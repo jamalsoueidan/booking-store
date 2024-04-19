@@ -133,7 +133,7 @@ export default function AccountLocationsEdit() {
       </AccountTitle>
 
       <AccountContent>
-        <Form method="PUT" {...getFormProps(form)}>
+        <Form method="post" {...getFormProps(form)}>
           <Stack>
             <TextInput
               label="Navn"
