@@ -20,6 +20,10 @@ export const action: ActionFunction = async ({context, params}) => {
     );
 
     await context.storefront.cache?.delete(
+      `${baseURL}/customer/${customerId}/schedule/${scheduleHandle}`,
+    );
+
+    await context.storefront.cache?.delete(
       `${baseURL}/customer/${customerId}/schedules`,
     );
 

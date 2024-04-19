@@ -1,4 +1,4 @@
-import {type Page, test} from '@playwright/test';
+import {expect, type Page, test} from '@playwright/test';
 import MailosaurClient from 'mailosaur';
 
 const serverId = 'pyen5ufb';
@@ -69,20 +69,26 @@ test.describe('Locations create, edit, delete', async () => {
   });
 
   test('Edit location', async () => {
-    await page.getByTestId('name-input').fill('');
+    await page.getByTestId('name-input').clear();
     await page.getByTestId('name-input').fill(`${NAME} edited`);
     await page.getByTestId('submit-button').click();
-    await page.waitForTimeout(1000);
+    await page.waitForSelector('text="Lokation er opdateret!!"');
     await page.getByTestId('back-link').click();
     await page.waitForURL('/account/locations');
   });
 
   test('Confirm the edited location and delete it', async () => {
-    await page
+    const respond = await page.getByTestId('name-title').textContent();
+    expect(respond).toBe(`${NAME} edited:`);
+
+    const location = page
       .locator('[data-testid^="location-item"]')
-      .locator(`[data-testid="name-title"]:has-text("${NAME} edited")`)
-      .click();
+      .locator('[data-testid="name-title"]')
+      .locator(`text=${NAME}`)
+      .first();
+    await location.click();
     await page.waitForURL('**/edit');
+
     await page.locator('[data-testid^="delete-button"]').click();
     await page.waitForURL('/account/locations');
     await page.getByTestId('empty-title').isVisible();

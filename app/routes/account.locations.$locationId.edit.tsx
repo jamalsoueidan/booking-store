@@ -55,12 +55,9 @@ export const action = async ({
       `${baseURL}/customer/${customerId}/locations/${response.payload._id}`,
     );
 
-    return redirectWithSuccess(
-      `/account/locations/${response.payload._id}/edit`,
-      {
-        message: 'Lokation er opdateret!!',
-      },
-    );
+    return redirectWithSuccess(`/account/locations/${response.payload._id}`, {
+      message: 'Lokation er opdateret!!',
+    });
   } catch (error) {
     return submission.reply();
   }
@@ -72,7 +69,6 @@ export async function loader({context, params}: LoaderFunctionArgs) {
   const response = await getBookingShopifyApi().customerLocationGet(
     customerId,
     params.locationId || '',
-    context,
   );
 
   return json(response.payload);

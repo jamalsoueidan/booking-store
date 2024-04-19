@@ -53,6 +53,10 @@ export const action = async ({
       `${baseURL}/customer/${customerId}/schedule/${scheduleHandle}`,
     );
 
+    await context.storefront.cache?.delete(
+      `${baseURL}/customer/${customerId}/schedules`,
+    );
+
     return redirectWithSuccess(`/account/schedules/${response.payload._id}`, {
       message: 'Vagtplan er opdateret!',
     });
