@@ -19,6 +19,7 @@ import {NumericInput} from '~/components/form/NumericInput';
 import {RadioGroup} from '~/components/form/RadioGroup';
 import {SubmitButton} from '~/components/form/SubmitButton';
 import {getBookingShopifyApi} from '~/lib/api/bookingShopifyApi';
+import {baseURL} from '~/lib/api/mutator/query-client';
 
 const schema = customerLocationCreateBody;
 
@@ -53,6 +54,10 @@ export const action = async ({request, context}: ActionFunctionArgs) => {
     await getBookingShopifyApi().customerLocationCreate(
       customerId,
       submission.value,
+    );
+
+    await context.storefront.cache?.delete(
+      `${baseURL}/customer/${customerId}/locations`,
     );
 
     return redirectWithSuccess('/account/locations', {

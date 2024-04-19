@@ -1,6 +1,21 @@
-import {Button, Flex, rem, ThemeIcon, Title} from '@mantine/core';
-import {useDisclosure} from '@mantine/hooks';
-import {Link, Outlet, useLoaderData, useLocation} from '@remix-run/react';
+import {
+  Button,
+  Divider,
+  Flex,
+  rem,
+  Select,
+  ThemeIcon,
+  Title,
+} from '@mantine/core';
+import {
+  Link,
+  Outlet,
+  useLoaderData,
+  useLocation,
+  useNavigate,
+  useOutlet,
+  useParams,
+} from '@remix-run/react';
 import {json, redirect, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
 import {IconMoodSad} from '@tabler/icons-react';
 import MobileModal from '~/components/MobileModal';
@@ -9,7 +24,6 @@ import {AccountContent} from '~/components/account/AccountContent';
 import {AccountTitle} from '~/components/account/AccountTitle';
 import {getBookingShopifyApi} from '~/lib/api/bookingShopifyApi';
 import {getCustomer} from '~/lib/get-customer';
-import AccountSchedulesCreate from './account.schedules.create';
 
 export async function loader({context, request}: LoaderFunctionArgs) {
   const customerId = await getCustomer({context});
@@ -28,13 +42,44 @@ export async function loader({context, request}: LoaderFunctionArgs) {
 export default function AccountSchedulesIndex() {
   const loaderData = useLoaderData<typeof loader>();
   const location = useLocation();
-  const [opened, {open, close}] = useDisclosure(false);
+  const navigate = useNavigate();
+  const inOutlet = !!useOutlet();
+  const params = useParams();
+
+  const closeModal = () => {
+    navigate('/account/schedules');
+  };
+
+  const selectScheduleMarkup =
+    loaderData.length > 1 ? (
+      <>
+        <Flex gap="xs">
+          <Select
+            //variant={location.pathname.includes(d._id) ? 'outline' : 'light'}
+            size="md"
+            label="Vælge vagtplan du vil redigere"
+            description="Tryk på select for at opdatere den pågældende vagtplan"
+            value={params.scheduleHandle}
+            onChange={(value) => {
+              if (value) {
+                navigate(value);
+              }
+            }}
+            data={loaderData.map((d) => ({
+              value: d._id,
+              label: d.name,
+            }))}
+          ></Select>
+        </Flex>
+        <Divider my="xl" />
+      </>
+    ) : null;
 
   return (
     <>
       <AccountTitle heading="Vagtplaner">
         {loaderData.length > 0 ? (
-          <AccountButton onClick={open} data-testid="create-schedule-button">
+          <AccountButton to="create" data-testid="create-schedule-button">
             Opret ny vagtplan
           </AccountButton>
         ) : null}
@@ -47,33 +92,29 @@ export default function AccountSchedulesIndex() {
               <IconMoodSad stroke={1} style={{width: '100%', height: '100%'}} />
             </ThemeIcon>
             <Title ta="center">Du har ingen vagtplaner</Title>
-            <Button onClick={open} data-testid="empty-create-button">
+            <Button
+              component={Link}
+              to="create"
+              data-testid="empty-create-button"
+            >
               Tilføj vagtplan
             </Button>
           </Flex>
         ) : (
-          <Flex gap="xs">
-            {loaderData.map((d) => (
-              <Button
-                key={d._id}
-                component={Link}
-                variant={
-                  location.pathname.includes(d._id) ? 'light' : 'outline'
-                }
-                size="sm"
-                to={d._id}
-              >
-                {d.name}
-              </Button>
-            ))}
-          </Flex>
+          selectScheduleMarkup
         )}
 
-        <Outlet key={location.pathname} />
+        {!location.pathname.includes('create') ? <Outlet /> : null}
 
-        <MobileModal opened={opened} onClose={close} title="Opret vagtplan">
-          <AccountSchedulesCreate close={close} />
-        </MobileModal>
+        {location.pathname.includes('create') ? (
+          <MobileModal
+            opened={inOutlet}
+            onClose={closeModal}
+            title="Opret vagtplan"
+          >
+            <Outlet />
+          </MobileModal>
+        ) : null}
       </AccountContent>
     </>
   );

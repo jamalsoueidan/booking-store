@@ -39,7 +39,7 @@ export default function AccountLocationsIndex() {
   return (
     <>
       <AccountTitle heading="Lokationer">
-        <Group>
+        {loaderData.length > 0 ? (
           <AccountButton
             to={'create'}
             leftSection={<IconPlus size={14} />}
@@ -47,7 +47,7 @@ export default function AccountLocationsIndex() {
           >
             Opret lokation
           </AccountButton>
-        </Group>
+        ) : null}
       </AccountTitle>
 
       <AccountContent>

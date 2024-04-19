@@ -4,17 +4,12 @@ import dayGridPlugin from '@fullcalendar/daygrid';
 import interactionPlugin from '@fullcalendar/interaction';
 import FullCalendar from '@fullcalendar/react';
 import timeGridPlugin from '@fullcalendar/timegrid';
-import {Modal, rem} from '@mantine/core';
+import {Modal} from '@mantine/core';
 import {useMediaQuery} from '@mantine/hooks';
 import {Outlet, useNavigate, useOutlet} from '@remix-run/react';
-import {IconCar} from '@tabler/icons-react';
 import {AccountContent} from '~/components/account/AccountContent';
 import {AccountTitle} from '~/components/account/AccountTitle';
 import type {CustomerBlocked, CustomerBooking} from '~/lib/api/model';
-
-const CustomDescription = () => (
-  <IconCar style={{width: rem(24), height: rem(24)}} stroke={1.5} />
-);
 
 function isCustomerBlocked(
   input: CustomerBooking | CustomerBlocked,

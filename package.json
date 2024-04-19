@@ -9,7 +9,7 @@
     "build": "shopify hydrogen build --codegen",
     "dev": "shopify hydrogen dev --codegen",
     "dev:tunnel": "shopify hydrogen dev --codegen --customer-account-push__unstable",
-    "preview": "npm run build && shopify hydrogen preview",
+    "preview": "npm run build && shopify hydrogen preview --customer-account-push__unstable",
     "lint": "eslint --no-error-on-unmatched-pattern --ext .js,.ts,.jsx,.tsx .",
     "typecheck": "tsc --noEmit",
     "codegen": "shopify hydrogen codegen",

@@ -39,7 +39,7 @@ export const action = async ({request, context}: ActionFunctionArgs) => {
   }
 };
 
-export default function AccountSchedulesCreate({close}: {close: () => void}) {
+export default function AccountSchedulesCreate() {
   const lastResult = useActionData<typeof action>();
 
   const [form, {name}] = useForm({
@@ -61,7 +61,7 @@ export default function AccountSchedulesCreate({close}: {close: () => void}) {
 
   return (
     <FocusTrap active={true}>
-      <Form method="PUT" action="create" {...getFormProps(form)}>
+      <Form method="POST" {...getFormProps(form)}>
         <Stack>
           <TextInput
             label="Navn"

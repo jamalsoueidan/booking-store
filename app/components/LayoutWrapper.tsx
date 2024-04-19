@@ -59,19 +59,21 @@ export function LayoutWrapper({children}: {children: ReactNode}) {
   }, [state]);
 
   useEffect(() => {
-    if (data && data.toast) {
+    if (data?.toast) {
+      console.log(data.toast);
       switch (data.toast.type) {
         case 'success':
           notify.success(data.toast.message);
           return;
         case 'error':
           notify.error(data.toast.message);
+
           return;
         default:
           return;
       }
     }
-  }, [data]);
+  }, [data.toast]);
 
   return (
     <MantineProvider>
