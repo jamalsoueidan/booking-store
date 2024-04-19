@@ -39,7 +39,7 @@ export const action = async ({request, context}: ActionFunctionArgs) => {
   }
 };
 
-export default function AccountSchedulesCreate({close}: {close: () => void}) {
+export default function AccountSchedulesCreate() {
   const lastResult = useActionData<typeof action>();
 
   const [form, {name}] = useForm({

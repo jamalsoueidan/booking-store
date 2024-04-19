@@ -7,12 +7,13 @@ import {
   ThemeIcon,
   Title,
 } from '@mantine/core';
-import {useDisclosure} from '@mantine/hooks';
 import {
+  Link,
   Outlet,
   useLoaderData,
   useLocation,
   useNavigate,
+  useOutlet,
   useParams,
 } from '@remix-run/react';
 import {json, redirect, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
@@ -23,7 +24,6 @@ import {AccountContent} from '~/components/account/AccountContent';
 import {AccountTitle} from '~/components/account/AccountTitle';
 import {getBookingShopifyApi} from '~/lib/api/bookingShopifyApi';
 import {getCustomer} from '~/lib/get-customer';
-import AccountSchedulesCreate from './account.schedules.create';
 
 export async function loader({context, request}: LoaderFunctionArgs) {
   const customerId = await getCustomer({context});
@@ -43,8 +43,12 @@ export default function AccountSchedulesIndex() {
   const loaderData = useLoaderData<typeof loader>();
   const location = useLocation();
   const navigate = useNavigate();
+  const inOutlet = !!useOutlet();
   const params = useParams();
-  const [opened, {open, close}] = useDisclosure(false);
+
+  const closeModal = () => {
+    navigate('/account/schedules');
+  };
 
   const selectScheduleMarkup =
     loaderData.length > 1 ? (
@@ -75,8 +79,8 @@ export default function AccountSchedulesIndex() {
     <>
       <AccountTitle heading="Vagtplaner">
         {loaderData.length > 0 ? (
-          <AccountButton onClick={open} data-testid="create-schedule-button">
-            Opret ny vagtplanas
+          <AccountButton to="create" data-testid="create-schedule-button">
+            Opret ny vagtplan
           </AccountButton>
         ) : null}
       </AccountTitle>
@@ -88,7 +92,11 @@ export default function AccountSchedulesIndex() {
               <IconMoodSad stroke={1} style={{width: '100%', height: '100%'}} />
             </ThemeIcon>
             <Title ta="center">Du har ingen vagtplaner</Title>
-            <Button onClick={open} data-testid="empty-create-button">
+            <Button
+              component={Link}
+              to="create"
+              data-testid="empty-create-button"
+            >
               Tilføj vagtplan
             </Button>
           </Flex>
@@ -96,11 +104,17 @@ export default function AccountSchedulesIndex() {
           selectScheduleMarkup
         )}
 
-        <Outlet key={location.pathname} />
+        {!location.pathname.includes('create') ? <Outlet /> : null}
 
-        <MobileModal opened={opened} onClose={close} title="Opret vagtplan">
-          <AccountSchedulesCreate close={close} />
-        </MobileModal>
+        {location.pathname.includes('create') ? (
+          <MobileModal
+            opened={inOutlet}
+            onClose={closeModal}
+            title="Opret vagtplan"
+          >
+            <Outlet />
+          </MobileModal>
+        ) : null}
       </AccountContent>
     </>
   );

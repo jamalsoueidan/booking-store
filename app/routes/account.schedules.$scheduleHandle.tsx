@@ -79,8 +79,11 @@ export const action = async ({
       {slots},
     );
 
+    console.log(JSON.stringify(slots));
+    console.log(JSON.stringify(response.payload, null, 2));
+
     await context.storefront.cache?.delete(
-      `${baseURL}/customer/${customerId}/schedule/${scheduleHandle}`,
+      `${baseURL}/customer/${customerId}/schedules/${scheduleHandle}`,
     );
 
     return redirectWithSuccess(`/account/schedules/${response.payload._id}`, {
@@ -125,7 +128,6 @@ export async function loader({context, params}: LoaderFunctionArgs) {
 export default function AccountSchedules() {
   const defaultValue = useLoaderData<typeof loader>();
   const lastResult = useActionData<typeof action>();
-  const formRef = useRef<HTMLFormElement>(null);
 
   const [form, fields] = useForm({
     lastResult,
@@ -142,26 +144,28 @@ export default function AccountSchedules() {
   const slotsList = fields.slots.getFieldList();
 
   return (
-    <FormProvider context={form.context}>
-      <Form method="PUT" {...getFormProps(form)}>
-        <Group justify="space-between">
-          <Text fz="xl" fw="bold">
-            {defaultValue.name} vagtplan:
-          </Text>
-          <EditName id={defaultValue._id} />
-        </Group>
-        <Table mt="lg" withTableBorder>
-          <Table.Tbody>
-            {slotsList.map((slot) => (
-              <SlotInput key={slot.key} field={slot} />
-            ))}
-          </Table.Tbody>
-        </Table>
-        <Group mt="md">
-          <SubmitButton size="sm">Gem ændringer</SubmitButton>
-        </Group>
-      </Form>
-    </FormProvider>
+    <>
+      <Group justify="space-between">
+        <Text fz="xl" fw="bold" data-testid="schedule-title">
+          {defaultValue.name} vagtplan:
+        </Text>
+        <EditName id={defaultValue._id} />
+      </Group>
+      <FormProvider context={form.context}>
+        <Form method="PUT" {...getFormProps(form)}>
+          <Table mt="lg" withTableBorder>
+            <Table.Tbody>
+              {slotsList.map((slot) => (
+                <SlotInput key={slot.key} field={slot} />
+              ))}
+            </Table.Tbody>
+          </Table>
+          <Group mt="md">
+            <SubmitButton size="sm">Gem ændringer</SubmitButton>
+          </Group>
+        </Form>
+      </FormProvider>
+    </>
   );
 }
 
