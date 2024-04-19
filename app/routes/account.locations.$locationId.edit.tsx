@@ -52,12 +52,15 @@ export const action = async ({
     );
 
     await context.storefront.cache?.delete(
-      `${baseURL}/customer/${customerId}/locations/${response.payload._id}`,
+      `${baseURL}/customer/${customerId}/locations`,
     );
 
-    return redirectWithSuccess(`/account/locations/${response.payload._id}`, {
-      message: 'Lokation er opdateret!!',
-    });
+    return redirectWithSuccess(
+      `/account/locations/${response.payload._id}/edit`,
+      {
+        message: 'Lokation er opdateret!!',
+      },
+    );
   } catch (error) {
     return submission.reply();
   }
@@ -118,7 +121,7 @@ export default function AccountLocationsEdit() {
         </Button>
 
         <Form
-          method="delete"
+          method="post"
           action={`../${defaultValue._id}/destroy`}
           style={{display: 'inline-block'}}
         >

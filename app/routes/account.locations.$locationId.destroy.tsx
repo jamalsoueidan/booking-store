@@ -7,10 +7,12 @@ import {getCustomer} from '~/lib/get-customer';
 export const action: ActionFunction = async ({context, params}) => {
   const customerId = await getCustomer({context});
 
-  await getBookingShopifyApi().customerLocationRemove(
-    customerId,
-    params.locationId || '',
-  );
+  const {locationId} = params;
+  if (!locationId) {
+    throw new Error('missing locationId');
+  }
+
+  await getBookingShopifyApi().customerLocationRemove(customerId, locationId);
 
   await context.storefront.cache?.delete(
     `${baseURL}/customer/${customerId}/locations`,

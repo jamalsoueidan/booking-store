@@ -53,7 +53,7 @@ export default function AccountBookings() {
       </Table.Td>
       <Table.Td>
         <Form
-          method="DELETE"
+          method="post"
           action={`${row._id}/destroy`}
           style={{display: 'inline-block'}}
         >

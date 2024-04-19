@@ -60,7 +60,6 @@ export function LayoutWrapper({children}: {children: ReactNode}) {
 
   useEffect(() => {
     if (data?.toast) {
-      console.log(data.toast);
       switch (data.toast.type) {
         case 'success':
           notify.success(data.toast.message);
@@ -77,7 +76,11 @@ export function LayoutWrapper({children}: {children: ReactNode}) {
 
   return (
     <MantineProvider>
-      <Toaster position="top-center" reverseOrder={false} />
+      <Toaster
+        position="top-center"
+        reverseOrder={false}
+        toastOptions={{duration: 15000, className: 'toast', id: 'toast'}}
+      />
       <NavigationProgress />
       <ModalsProvider>
         {!path.includes('/account') && !path.includes('/artist/') ? (
