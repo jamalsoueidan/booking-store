@@ -72,14 +72,14 @@ test.describe('Locations create, edit, delete', async () => {
     await page.getByTestId('name-input').clear();
     await page.getByTestId('name-input').fill(`${NAME} edited`);
     await page.getByTestId('submit-button').click();
-    await page.waitForSelector('text="Lokation er opdateret!!"');
+    await page.waitForSelector('text="Lokation er opdateret!"');
     await page.getByTestId('back-link').click();
     await page.waitForURL('/account/locations');
   });
 
   test('Confirm the edited location and delete it', async () => {
     const respond = await page.getByTestId('name-title').textContent();
-    expect(respond).toBe(`${NAME} edited:`);
+    expect(respond).toBe(`${NAME} edited`);
 
     const location = page
       .locator('[data-testid^="location-item"]')

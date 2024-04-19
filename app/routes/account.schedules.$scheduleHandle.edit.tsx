@@ -1,10 +1,5 @@
 import {getFormProps, getInputProps, useForm} from '@conform-to/react';
-import {
-  Form,
-  useActionData,
-  useLoaderData,
-  useNavigate,
-} from '@remix-run/react';
+import {Form, useActionData, useLoaderData} from '@remix-run/react';
 
 import {
   json,
@@ -85,7 +80,6 @@ export async function loader({context, params}: LoaderFunctionArgs) {
 export default function AccountSchedulesEdit() {
   const defaultValue = useLoaderData<typeof loader>();
   const lastResult = useActionData<typeof action>();
-  const navigate = useNavigate();
 
   const [form, {name}] = useForm({
     lastResult,

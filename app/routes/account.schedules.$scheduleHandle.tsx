@@ -136,7 +136,7 @@ export default function AccountSchedules() {
   const navigate = useNavigate();
 
   const close = () => {
-    navigate('../');
+    navigate('./');
   };
 
   const [form, fields] = useForm({

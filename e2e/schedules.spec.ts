@@ -114,6 +114,7 @@ test.describe('Schedules create, edit, delete', async () => {
   });
 
   test('Verify schedule title is changed', async () => {
+    await page.waitForSelector('text="Vagtplan er opdateret!"');
     const respond = await page.getByTestId('schedule-title').textContent();
     expect(respond).toBe(`${CHANGE_NAME} vagtplan:`);
   });
