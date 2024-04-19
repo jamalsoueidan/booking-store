@@ -52,15 +52,12 @@ export const action = async ({
     );
 
     await context.storefront.cache?.delete(
-      `${baseURL}/customer/${customerId}/locations/${response.payload._id}`,
+      `${baseURL}/customer/${customerId}/locations`,
     );
 
-    return redirectWithSuccess(
-      `/account/locations/${response.payload._id}/edit`,
-      {
-        message: 'Lokation er opdateret!!',
-      },
-    );
+    return redirectWithSuccess(`/account/locations/${response.payload._id}`, {
+      message: 'Lokation er opdateret!!',
+    });
   } catch (error) {
     return submission.reply();
   }
@@ -69,10 +66,14 @@ export const action = async ({
 export async function loader({context, params}: LoaderFunctionArgs) {
   const customerId = await getCustomer({context});
 
+  const {locationId} = params;
+  if (!locationId) {
+    throw new Error('Missing scheduleHandle param');
+  }
+
   const response = await getBookingShopifyApi().customerLocationGet(
     customerId,
-    params.locationId || '',
-    context,
+    locationId,
   );
 
   return json(response.payload);
