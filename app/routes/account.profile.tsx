@@ -42,10 +42,6 @@ export async function loader({context}: LoaderFunctionArgs) {
 export async function action({request, context}: ActionFunctionArgs) {
   const {customerAccount} = context;
 
-  if (request.method !== 'PUT') {
-    return json({error: 'Method not allowed'}, {status: 405});
-  }
-
   const form = await request.formData();
 
   try {
@@ -121,7 +117,7 @@ export default function AccountProfile() {
           </Blockquote>
         ) : null}
 
-        <Form method="PUT">
+        <Form method="post">
           <Stack>
             <TextInput
               label="Fornavn"

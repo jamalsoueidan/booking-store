@@ -165,7 +165,7 @@ export default function AccountSchedules() {
         <EditName id={defaultValue._id} />
       </Group>
       <FormProvider context={form.context}>
-        <Form method="PUT" {...getFormProps(form)}>
+        <Form method="post" {...getFormProps(form)}>
           <Table mt="lg" withTableBorder>
             <Table.Tbody>
               {slotsList.map((slot) => (

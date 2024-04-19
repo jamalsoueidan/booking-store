@@ -59,7 +59,7 @@ export default function AccountBookings() {
       </Modal.Header>
       <Modal.Body>
         <FocusTrap active={true}>
-          <Form method="POST" {...getFormProps(form)}>
+          <Form method="post" {...getFormProps(form)}>
             <Stack>
               <TextInput
                 label="Title"

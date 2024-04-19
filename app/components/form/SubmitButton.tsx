@@ -14,8 +14,8 @@ export const SubmitButton: React.FC<PropsWithChildren & ButtonProps> = ({
       <Button
         loading={isSubmitting}
         type="submit"
-        {...props}
         data-testid="submit-button"
+        {...props}
       >
         {children}
       </Button>

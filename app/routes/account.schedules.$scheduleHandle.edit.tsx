@@ -52,7 +52,6 @@ export const action = async ({
     await context.storefront.cache?.delete(
       `${baseURL}/customer/${customerId}/schedule/${scheduleHandle}`,
     );
-    console.log('edit');
 
     return redirectWithSuccess(`/account/schedules/${response.payload._id}`, {
       message: 'Vagtplan er opdateret!',
@@ -92,16 +91,13 @@ export default function AccountSchedulesEdit() {
         schema,
       });
     },
-    onSubmit(event, context) {
-      navigate('../');
-    },
     shouldValidate: 'onSubmit',
     shouldRevalidate: 'onInput',
   });
 
   return (
     <FocusTrap active={true}>
-      <Form method="PUT" {...getFormProps(form)}>
+      <Form method="post" {...getFormProps(form)}>
         <Stack>
           <TextInput
             label="Navn"
@@ -110,7 +106,7 @@ export default function AccountSchedulesEdit() {
             data-autofocus
             data-testid="name-input"
           />
-          <SubmitButton>Opdatere</SubmitButton>
+          <SubmitButton data-testid="update-button">Opdatere</SubmitButton>
         </Stack>
       </Form>
     </FocusTrap>

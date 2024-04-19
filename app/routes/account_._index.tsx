@@ -62,10 +62,6 @@ export async function loader({context}: LoaderFunctionArgs) {
 export async function action({request, context}: ActionFunctionArgs) {
   const {customerAccount} = context;
 
-  if (request.method !== 'PUT') {
-    return json({error: 'Method not allowed'}, {status: 405});
-  }
-
   const form = await request.formData();
 
   try {
@@ -138,7 +134,7 @@ export default function AccountProfile() {
         <Paper
           radius={0}
           component={Form}
-          method="PUT"
+          method="post"
           p="30"
           mih={rem('900px')}
           maw={{base: '100%', xs: rem('450px')}}
