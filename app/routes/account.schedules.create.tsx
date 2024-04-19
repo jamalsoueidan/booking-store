@@ -61,7 +61,7 @@ export default function AccountSchedulesCreate({close}: {close: () => void}) {
 
   return (
     <FocusTrap active={true}>
-      <Form method="PUT" action="create" {...getFormProps(form)}>
+      <Form method="POST" {...getFormProps(form)}>
         <Stack>
           <TextInput
             label="Navn"

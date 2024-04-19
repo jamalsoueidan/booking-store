@@ -22,25 +22,21 @@ import {
   ActionIcon,
   Checkbox,
   Flex,
-  Menu,
+  Group,
   Select,
   Stack,
   Table,
+  Text,
   rem,
 } from '@mantine/core';
 import {useDisclosure, useMediaQuery} from '@mantine/hooks';
-import {
-  IconAdjustments,
-  IconEdit,
-  IconMinus,
-  IconPlus,
-} from '@tabler/icons-react';
+import {IconEdit, IconMinus, IconPlus, IconX} from '@tabler/icons-react';
 import {addMinutes, format, set} from 'date-fns';
 import {useRef} from 'react';
 import {redirectWithSuccess} from 'remix-toast';
 import MobileModal from '~/components/MobileModal';
 import {SubmitButton} from '~/components/form/SubmitButton';
-import {CustomerScheduleSlotDay, type CustomerSchedule} from '~/lib/api/model';
+import {CustomerScheduleSlotDay} from '~/lib/api/model';
 import {baseURL} from '~/lib/api/mutator/query-client';
 import {getCustomer} from '~/lib/get-customer';
 import {renderTime} from '~/lib/time';
@@ -114,7 +110,7 @@ export async function loader({context, params}: LoaderFunctionArgs) {
   // ensure all days exists in slots, so user can toggle on/off
   const slots = days
     .map((day) => {
-      const existingSlot = response.payload.slots.find(
+      const existingSlot = response.payload?.slots?.find(
         (slot) => slot.day === day,
       );
       return existingSlot || {day, intervals: []};
@@ -129,6 +125,7 @@ export async function loader({context, params}: LoaderFunctionArgs) {
 export default function AccountSchedules() {
   const defaultValue = useLoaderData<typeof loader>();
   const lastResult = useActionData<typeof action>();
+  const formRef = useRef<HTMLFormElement>(null);
 
   const [form, fields] = useForm({
     lastResult,
@@ -147,24 +144,22 @@ export default function AccountSchedules() {
   return (
     <FormProvider context={form.context}>
       <Form method="PUT" {...getFormProps(form)}>
+        <Group justify="space-between">
+          <Text fz="xl" fw="bold">
+            {defaultValue.name} vagtplan:
+          </Text>
+          <EditName id={defaultValue._id} />
+        </Group>
         <Table mt="lg" withTableBorder>
-          <Table.Thead>
-            <Table.Tr>
-              <Table.Th w="30%">{defaultValue.name}</Table.Th>
-              <Table.Th>
-                <Flex justify="right" gap="sm">
-                  <SubmitButton size="xs">Gem</SubmitButton>
-                  <MenuToggle schedule={defaultValue} />
-                </Flex>
-              </Table.Th>
-            </Table.Tr>
-          </Table.Thead>
           <Table.Tbody>
             {slotsList.map((slot) => (
               <SlotInput key={slot.key} field={slot} />
             ))}
           </Table.Tbody>
         </Table>
+        <Group mt="md">
+          <SubmitButton size="sm">Gem ændringer</SubmitButton>
+        </Group>
       </Form>
     </FormProvider>
   );
@@ -196,13 +191,13 @@ function SlotInput({field}: SlotInputProps) {
 
   return (
     <Table.Tr>
-      <Table.Td valign="middle">
+      <Table.Td valign="top">
         <input {...getInputProps(day, {type: 'hidden'})} />
         <Checkbox
           checked={intervalsList.length > 0}
           onChange={onChange}
           label={translationsDays[day.initialValue || '']}
-          size="md"
+          size={'sm'}
           data-testid={`${day.initialValue}-checkbox`}
         />
       </Table.Td>
@@ -246,13 +241,13 @@ type IntervalInputProps = {
 };
 
 function IntervalInput({field, day}: IntervalInputProps) {
-  const isMobile = useMediaQuery('(max-width: 62em)');
+  const isMobile = useMediaQuery('(max-width: 48em)');
   const {from, to} = field.getFieldset();
 
   return (
     <Flex gap={{base: 'xs', sm: 'md'}}>
       <Select
-        size={isMobile ? 'sm' : 'md'}
+        size={isMobile ? 'xs' : 'md'}
         placeholder="Fra"
         data={generateTimeSlots(4, 20, 30)}
         {...getSelectProps(from)}
@@ -262,7 +257,7 @@ function IntervalInput({field, day}: IntervalInputProps) {
         data-testid={`${day}-from-select`}
       />
       <Select
-        size={isMobile ? 'sm' : 'md'}
+        size={isMobile ? 'xs' : 'md'}
         placeholder="Til"
         {...getSelectProps(to)}
         defaultValue={field.initialValue?.to}
@@ -300,66 +295,39 @@ const generateTimeSlots = (
   return timeSlots;
 };
 
-function MenuToggle({
-  schedule,
-}: {
-  schedule: Pick<CustomerSchedule, '_id' | 'name'>;
-}) {
+function EditName({id}: {id: string}) {
   const [opened, {open, close}] = useDisclosure(false);
   const formRef = useRef<HTMLFormElement>(null);
 
   return (
-    <>
-      <Menu width={200} shadow="md" trigger="click">
-        <Menu.Target>
-          <ActionIcon
-            variant="light"
-            aria-label="Settings"
-            data-testid="settings-button"
-          >
-            <IconAdjustments
-              style={{width: '70%', height: '70%'}}
-              stroke={1.5}
-            />
-          </ActionIcon>
-        </Menu.Target>
+    <Flex gap={{base: 'xs', sm: 'sm'}}>
+      <ActionIcon onClick={open} size="md">
+        <IconEdit
+          style={{width: rem(24), height: rem(24)}}
+          data-testid="change-name-button"
+        />
+      </ActionIcon>
+      <ActionIcon
+        size="md"
+        color="red"
+        ref={formRef}
+        component="form"
+        method="post"
+        action={`${id}/destroy`}
+        onClick={(event: React.MouseEvent<HTMLFormElement>) => {
+          event.preventDefault();
+          if (formRef.current) {
+            formRef.current.submit();
+          }
+        }}
+        data-testid="delete-button"
+      >
+        <IconX style={{width: rem(24), height: rem(24)}} />
+      </ActionIcon>
 
-        <Menu.Dropdown>
-          <Menu.Item
-            leftSection={
-              <IconEdit
-                style={{width: rem(14), height: rem(14)}}
-                data-testid="change-name-button"
-              />
-            }
-            onClick={open}
-          >
-            Ændre navn
-          </Menu.Item>
-          <Menu.Item
-            color="red"
-            ref={formRef}
-            leftSection={
-              <IconMinus style={{width: rem(14), height: rem(14)}} />
-            }
-            component="form"
-            method="post"
-            action={`${schedule._id}/destroy`}
-            onClick={(event: React.MouseEvent<HTMLFormElement>) => {
-              event.preventDefault();
-              if (formRef.current) {
-                formRef.current.submit();
-              }
-            }}
-            data-testid="delete-button"
-          >
-            Slet
-          </Menu.Item>
-        </Menu.Dropdown>
-      </Menu>
       <MobileModal opened={opened} onClose={close} title="Opdater navn">
         <AccountSchedulesEdit close={close} />
       </MobileModal>
-    </>
+    </Flex>
   );
 }

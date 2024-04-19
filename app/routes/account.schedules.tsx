@@ -1,6 +1,20 @@
-import {Button, Flex, rem, ThemeIcon, Title} from '@mantine/core';
+import {
+  Button,
+  Divider,
+  Flex,
+  rem,
+  Select,
+  ThemeIcon,
+  Title,
+} from '@mantine/core';
 import {useDisclosure} from '@mantine/hooks';
-import {Link, Outlet, useLoaderData, useLocation} from '@remix-run/react';
+import {
+  Outlet,
+  useLoaderData,
+  useLocation,
+  useNavigate,
+  useParams,
+} from '@remix-run/react';
 import {json, redirect, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
 import {IconMoodSad} from '@tabler/icons-react';
 import MobileModal from '~/components/MobileModal';
@@ -28,14 +42,41 @@ export async function loader({context, request}: LoaderFunctionArgs) {
 export default function AccountSchedulesIndex() {
   const loaderData = useLoaderData<typeof loader>();
   const location = useLocation();
+  const navigate = useNavigate();
+  const params = useParams();
   const [opened, {open, close}] = useDisclosure(false);
+
+  const selectScheduleMarkup =
+    loaderData.length > 1 ? (
+      <>
+        <Flex gap="xs">
+          <Select
+            //variant={location.pathname.includes(d._id) ? 'outline' : 'light'}
+            size="md"
+            label="Vælge vagtplan du vil redigere"
+            description="Tryk på select for at opdatere den pågældende vagtplan"
+            value={params.scheduleHandle}
+            onChange={(value) => {
+              if (value) {
+                navigate(value);
+              }
+            }}
+            data={loaderData.map((d) => ({
+              value: d._id,
+              label: d.name,
+            }))}
+          ></Select>
+        </Flex>
+        <Divider my="xl" />
+      </>
+    ) : null;
 
   return (
     <>
       <AccountTitle heading="Vagtplaner">
         {loaderData.length > 0 ? (
           <AccountButton onClick={open} data-testid="create-schedule-button">
-            Opret ny vagtplan
+            Opret ny vagtplanas
           </AccountButton>
         ) : null}
       </AccountTitle>
@@ -52,21 +93,7 @@ export default function AccountSchedulesIndex() {
             </Button>
           </Flex>
         ) : (
-          <Flex gap="xs">
-            {loaderData.map((d) => (
-              <Button
-                key={d._id}
-                component={Link}
-                variant={
-                  location.pathname.includes(d._id) ? 'light' : 'outline'
-                }
-                size="sm"
-                to={d._id}
-              >
-                {d.name}
-              </Button>
-            ))}
-          </Flex>
+          selectScheduleMarkup
         )}
 
         <Outlet key={location.pathname} />

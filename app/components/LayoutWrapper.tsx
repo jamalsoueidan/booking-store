@@ -66,6 +66,7 @@ export function LayoutWrapper({children}: {children: ReactNode}) {
           return;
         case 'error':
           notify.error(data.toast.message);
+
           return;
         default:
           return;

@@ -26,6 +26,7 @@ import {AccountTitle} from '~/components/account/AccountTitle';
 import {AddressAutocompleteInput} from '~/components/form/AddressAutocompleteInput';
 import {NumericInput} from '~/components/form/NumericInput';
 import {SubmitButton} from '~/components/form/SubmitButton';
+import {baseURL} from '~/lib/api/mutator/query-client';
 
 const schema = customerLocationUpdateBody;
 
@@ -50,6 +51,10 @@ export const action = async ({
       submission.value,
     );
 
+    await context.storefront.cache?.delete(
+      `${baseURL}/customer/${customerId}/locations/${response.payload._id}`,
+    );
+
     return redirectWithSuccess(
       `/account/locations/${response.payload._id}/edit`,
       {
@@ -67,6 +72,7 @@ export async function loader({context, params}: LoaderFunctionArgs) {
   const response = await getBookingShopifyApi().customerLocationGet(
     customerId,
     params.locationId || '',
+    context,
   );
 
   return json(response.payload);
