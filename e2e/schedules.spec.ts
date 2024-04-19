@@ -43,15 +43,11 @@ test.describe('Schedules create, edit, delete', async () => {
   test('Go to schedules, and create new', async () => {
     await page.waitForURL(`./account/dashboard`);
     await page.getByTestId('create-schedule-button').click();
-    await page.waitForURL(`./account/schedules/create`);
+    await page.waitForURL(`./account/schedules#create`);
     await page.getByTestId('name-input').click();
     await page.getByTestId('name-input').fill(NAME);
     await Promise.all([
-      page.waitForResponse(
-        (response) =>
-          getSchedule.test(response.url()) &&
-          response.request().method() === 'GET',
-      ),
+      page.waitForURL('/account/schedules/**'),
       page.getByTestId('submit-button').click(),
     ]);
   });
@@ -61,6 +57,7 @@ test.describe('Schedules create, edit, delete', async () => {
   });
 
   test('Edit schedule', async () => {
+    await page.waitForTimeout(2000);
     await page.getByTestId('tuesday-checkbox').click();
     await page.getByTestId('tuesday-from-select').click();
     await page.getByRole('option', {name: '08:00'}).click();
@@ -83,7 +80,6 @@ test.describe('Schedules create, edit, delete', async () => {
   });
 
   test('Confirm edited schedule and delete it', async () => {
-    await page.waitForTimeout(2000);
     const tuesdayFrom = await page
       .getByTestId('tuesday-from-select')
       .evaluate<any, HTMLSelectElement>((select) => select.value);
