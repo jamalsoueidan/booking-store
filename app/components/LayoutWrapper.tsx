@@ -79,7 +79,7 @@ export function LayoutWrapper({children}: {children: ReactNode}) {
       <Toaster
         position="top-center"
         reverseOrder={false}
-        toastOptions={{duration: 15000, className: 'toast', id: 'toast'}}
+        toastOptions={{duration: 3000, className: 'toast', id: 'toast'}}
       />
       <NavigationProgress />
       <ModalsProvider>

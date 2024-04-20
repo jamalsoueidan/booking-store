@@ -1,58 +1,32 @@
 import {expect, test} from '@playwright/test';
 
 import {type Page} from '@playwright/test';
-import MailosaurClient from 'mailosaur';
+import {PlaywrightAuthPage} from './models/auth';
+import {PlaywrightSchedulePage} from './models/schedule';
 
-const serverId = 'pyen5ufb';
-const testEmail = 'testerne1713224438542@pyen5ufb.mailosaur.net';
 const NAME = 'Your Schedule Name';
 const CHANGE_NAME = 'Test Schedule';
-const mailosaur = new MailosaurClient(process.env.MAILOSAUR_API_KEY || '');
 
 test.describe('Schedules create, edit, delete', async () => {
   let page: Page;
+  let auth: PlaywrightAuthPage;
+  let schedule: PlaywrightSchedulePage;
   test.beforeAll(async ({browser}) => {
-    await mailosaur.messages.deleteAll(serverId);
     page = await browser.newPage();
+    auth = new PlaywrightAuthPage(page);
+    schedule = new PlaywrightSchedulePage(page);
   });
 
-  test('Login Email', async () => {
-    await page.goto('./');
-    await page.getByTestId('login-button').click();
-    await page.getByLabel('Mailadresse', {exact: true}).click();
-    await page.getByLabel('Mailadresse', {exact: true}).fill(testEmail);
-    await page.getByRole('button', {name: 'Fortsæt'}).click();
-  });
-
-  test('Login Code', async () => {
-    const email = await mailosaur.messages.get(serverId, {
-      sentTo: testEmail,
-    });
-
-    await page.getByPlaceholder('6-cifret kode').click();
-    if (email.text && email.text.codes) {
-      await page
-        .getByPlaceholder('6-cifret kode')
-        .fill(email.text?.codes[0].value || '');
-    }
-
-    await page.click('button[type="submit"]');
-  });
+  test('Login and enter code', () => auth.login());
 
   test('Go to schedules, and create new', async () => {
-    await page.waitForURL(`./account/dashboard`);
-    await page.getByTestId('create-schedule-button').click();
-    await page.waitForURL(`./account/schedules#create`);
-    await page.getByTestId('name-input').click();
-    await page.getByTestId('name-input').fill(NAME);
-    await Promise.all([
-      page.waitForURL('/account/schedules/**'),
-      page.getByTestId('submit-button').click(),
-    ]);
+    await schedule.navigateToCreatePage();
+    await schedule.submitForm(NAME);
   });
 
   test('Verify schedule creation', async () => {
-    await page.getByTestId('schedule-title').isVisible();
+    const isVisible = await page.getByTestId('schedule-title').isVisible();
+    expect(isVisible).toBeTruthy();
     await page.waitForLoadState('load');
   });
 
@@ -96,8 +70,6 @@ test.describe('Schedules create, edit, delete', async () => {
 
     expect(wednesdayFrom).toBe('08:00');
     expect(wednesdayTo).toBe('18:00');
-
-    await page.screenshot({path: '../screenshot.png'});
   });
 
   test('Rename schedule title', async () => {

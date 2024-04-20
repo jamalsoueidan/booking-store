@@ -1,6 +1,7 @@
 import {type ActionFunction} from '@shopify/remix-oxygen';
 import {redirectWithSuccess} from 'remix-toast';
 import {getBookingShopifyApi} from '~/lib/api/bookingShopifyApi';
+import {baseURL} from '~/lib/api/mutator/query-client';
 import {getCustomer} from '~/lib/get-customer';
 
 export const action: ActionFunction = async ({context, params}) => {
@@ -12,6 +13,10 @@ export const action: ActionFunction = async ({context, params}) => {
   const customerId = await getCustomer({context});
 
   await getBookingShopifyApi().customerProductDestroy(customerId, productId);
+
+  await context.storefront.cache?.delete(
+    `${baseURL}/customer/${customerId}/products`,
+  );
 
   return redirectWithSuccess('/account/services', {
     message: 'Ydelsen er nu slettet!',

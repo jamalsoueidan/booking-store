@@ -17,6 +17,7 @@ import {
   IconCalendarEvent,
   IconClock,
   IconHome,
+  IconLocation,
   IconMenu2,
   IconShoppingBag,
   IconUser,
@@ -130,15 +131,24 @@ function AccountLayout({
         py="sm"
         style={{filter: 'drop-shadow(0 5mm 6mm rgb(0, 0, 0))'}}
       >
-        <Flex gap="xs" w="100%">
-          <UnstyledButton component={Link} to="/account/" style={{flex: 1}}>
-            <Flex direction="column" gap="sm" justify="center" align="center">
-              <IconHome />
-              <Text>Hjem</Text>
-            </Flex>
-          </UnstyledButton>
+        <Flex gap="0" w="100%">
           {props.user ? (
             <>
+              <UnstyledButton
+                component={Link}
+                to="/account/locations"
+                style={{flex: 1}}
+              >
+                <Flex
+                  direction="column"
+                  gap="sm"
+                  justify="center"
+                  align="center"
+                >
+                  <IconLocation />
+                  <Text fz="sm">Lokationer</Text>
+                </Flex>
+              </UnstyledButton>
               <UnstyledButton
                 component={Link}
                 to="/account/schedules"
@@ -151,7 +161,7 @@ function AccountLayout({
                   align="center"
                 >
                   <IconClock />
-                  <Text>Vagtplan</Text>
+                  <Text fz="sm">Vagtplan</Text>
                 </Flex>
               </UnstyledButton>
               <UnstyledButton
@@ -166,7 +176,7 @@ function AccountLayout({
                   align="center"
                 >
                   <IconAddressBook />
-                  <Text>Ydelser</Text>
+                  <Text fz="sm">Ydelser</Text>
                 </Flex>
               </UnstyledButton>
               <UnstyledButton
@@ -181,12 +191,23 @@ function AccountLayout({
                   align="center"
                 >
                   <IconCalendarEvent />
-                  <Text>Kalendar</Text>
+                  <Text fz="sm">Kalendar</Text>
                 </Flex>
               </UnstyledButton>
             </>
           ) : (
             <>
+              <UnstyledButton component={Link} to="/account/" style={{flex: 1}}>
+                <Flex
+                  direction="column"
+                  gap="sm"
+                  justify="center"
+                  align="center"
+                >
+                  <IconHome />
+                  <Text fz="sm">Hjem</Text>
+                </Flex>
+              </UnstyledButton>
               <UnstyledButton
                 component={Link}
                 to="/account/orders"
@@ -199,7 +220,7 @@ function AccountLayout({
                   align="center"
                 >
                   <IconShoppingBag />
-                  <Text>Købshistorik</Text>
+                  <Text fz="sm">Købshistorik</Text>
                 </Flex>
               </UnstyledButton>
               <UnstyledButton
@@ -214,7 +235,7 @@ function AccountLayout({
                   align="center"
                 >
                   <IconUser />
-                  <Text>Konto</Text>
+                  <Text fz="sm">Konto</Text>
                 </Flex>
               </UnstyledButton>
               <UnstyledButton
@@ -229,15 +250,15 @@ function AccountLayout({
                   align="center"
                 >
                   <IconAddressBook />
-                  <Text>Adresser</Text>
+                  <Text fz="sm">Adresser</Text>
                 </Flex>
               </UnstyledButton>
             </>
           )}
-          <UnstyledButton onClick={toggle} style={{flex: 1}}>
+          <UnstyledButton onClick={toggle} style={{flex: 0.7}}>
             <Flex direction="column" gap="sm" justify="center" align="center">
               <IconMenu2 />
-              <Text>Menu</Text>
+              <Text fz="sm">Menu</Text>
             </Flex>
           </UnstyledButton>
         </Flex>

@@ -16,6 +16,7 @@ import {redirectWithSuccess} from 'remix-toast';
 import PeriodInput from '~/components/form/PeriodInput';
 import {SubmitButton} from '~/components/form/SubmitButton';
 import {getBookingShopifyApi} from '~/lib/api/bookingShopifyApi';
+import {baseURL} from '~/lib/api/mutator/query-client';
 import {getCustomer} from '~/lib/get-customer';
 import {customerProductUpdateBody} from '~/lib/zod/bookingShopifyApi';
 
@@ -47,6 +48,10 @@ export const action = async ({
       customerId,
       productId,
       submission.value,
+    );
+
+    await context.storefront.cache?.delete(
+      `${baseURL}/customer/${customerId}/products`,
     );
 
     return redirectWithSuccess(`/account/services/${productId}/advanced`, {

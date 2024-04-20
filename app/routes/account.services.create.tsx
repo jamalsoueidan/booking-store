@@ -5,23 +5,37 @@ import {
   useForm,
 } from '@conform-to/react';
 import {parseWithZod} from '@conform-to/zod';
-import {Flex, Select, Stack} from '@mantine/core';
-import {Form, useActionData, useLoaderData} from '@remix-run/react';
+
+import {Form, useActionData, useFetcher, useLoaderData} from '@remix-run/react';
 import {
   json,
   type ActionFunctionArgs,
   type LoaderFunctionArgs,
 } from '@shopify/remix-oxygen';
 import {z} from 'zod';
-import {SelectSearchable} from '~/components/form/SelectSearchable';
 
+import {useInputControl, type FieldMetadata} from '@conform-to/react';
+import {
+  Combobox,
+  Flex,
+  Highlight,
+  Loader,
+  ScrollArea,
+  Select,
+  Text,
+  TextInput,
+  useCombobox,
+} from '@mantine/core';
+import {redirect, type SerializeFrom} from '@remix-run/server-runtime';
+
+import {useCallback, useEffect, useRef, useState} from 'react';
 import {SubmitButton} from '~/components/form/SubmitButton';
 import {SwitchGroupLocations} from '~/components/form/SwitchGroupLocations';
+import type {loader as accountApiProductsLoader} from '~/routes/account.api.products';
 
 import {getBookingShopifyApi} from '~/lib/api/bookingShopifyApi';
 
-import {parseGid} from '@shopify/hydrogen';
-import {useState} from 'react';
+import {CacheLong, parseGid} from '@shopify/hydrogen';
 import {redirectWithSuccess} from 'remix-toast';
 import {AccountContent} from '~/components/account/AccountContent';
 import {AccountTitle} from '~/components/account/AccountTitle';
@@ -89,24 +103,27 @@ export async function loader({context}: LoaderFunctionArgs) {
 
   const {collections} = await context.storefront.query(COLLECTIONS_QUERY, {
     variables: {first: 20, endCursor: null},
+    cache: CacheLong(),
   });
 
-  const schedule = await getBookingShopifyApi().customerScheduleList(
-    customerId,
-  );
+  const {payload: schedules} =
+    await getBookingShopifyApi().customerScheduleList(customerId, context);
 
-  const locations = await getBookingShopifyApi().customerLocationList(
-    customerId,
-  );
+  const {payload: locations} =
+    await getBookingShopifyApi().customerLocationList(customerId, context);
 
-  const findDefaultLocation = locations.payload[0];
+  if (locations.length === 0 || schedules.length === 0) {
+    return redirect('/account/services');
+  }
+
+  const findDefaultLocation = locations[0];
 
   return json({
-    locations: locations.payload,
-    schedules: schedule.payload,
+    locations,
+    schedules,
     collections,
     defaultValue: {
-      scheduleId: schedule.payload[0]._id,
+      scheduleId: schedules[0]._id,
       compareAtPrice: 0,
       price: 0,
       locations: [
@@ -148,20 +165,27 @@ export default function AccountServicesCreate() {
       <AccountContent>
         <FormProvider context={form.context}>
           <Form method="post" {...getFormProps(form)}>
-            <Stack>
+            <Flex
+              direction="column"
+              gap={{base: 'sm', sm: 'lg'}}
+              w={{base: '100%', sm: '50%'}}
+            >
               <Select
                 onChange={setCollectionId}
                 data={collections.nodes.map((c) => ({
                   value: parseGid(c.id).id,
                   label: parseTE(c.title),
                 }))}
-                label="Vælge behandlingskategori"
+                label="Hvilken kategori ligger ydelsen i?"
+                placeholder="Vælg kategori"
+                allowDeselect={false}
+                data-testid="category-select"
               />
+
               <SelectSearchable
                 label="Hvilken ydelse vil du tilbyde?"
                 placeholder="Vælg ydelse"
                 collectionId={collectionId}
-                disabled={collectionId === null}
                 field={fields.productId}
               />
 
@@ -172,32 +196,159 @@ export default function AccountServicesCreate() {
                   required
                   hideControls={true}
                   style={{flex: 1}}
+                  data-testid="price-input"
                 />
                 <NumericInput
                   field={fields.compareAtPrice}
                   label="Før-pris"
                   hideControls={true}
                   style={{flex: 1}}
+                  data-testid="compare-at-price-input"
                 />
               </Flex>
+
               <SwitchGroupLocations
                 label="Fra hvilken lokation(er) vil du tilbyde den ydelse?"
                 description="Mindst (1) skal være valgt."
                 field={fields.locations}
                 data={locations}
               />
+
               <Select
                 label="Hvilken vagtplan vil du tilknytte den ydelse på."
                 data={selectSchedules}
                 {...getSelectProps(fields.scheduleId)}
                 allowDeselect={false}
                 defaultValue={fields.scheduleId.initialValue}
+                data-testid="schedules-select"
               />
               <SubmitButton>Tilføj ny ydelse</SubmitButton>
-            </Stack>
+            </Flex>
           </Form>
         </FormProvider>
       </AccountContent>
+    </>
+  );
+}
+
+export type SelectSearchableProps = {
+  label: string;
+  placeholder?: string;
+  field: FieldMetadata<string>;
+  collectionId?: string | null;
+};
+
+export function SelectSearchable({
+  label,
+  placeholder,
+  field,
+  collectionId,
+}: SelectSearchableProps) {
+  const combobox = useCombobox({
+    onDropdownClose: () => combobox.resetSelectedOption(),
+  });
+
+  const textInput = useRef<HTMLInputElement>(null);
+  const control = useInputControl(field);
+
+  const fetcher =
+    useFetcher<Awaited<SerializeFrom<typeof accountApiProductsLoader>>>();
+  const [title, setTitle] = useState('');
+
+  const fetchOptions = useCallback(
+    (keyword: string) => {
+      fetcher.load(
+        `/account/api/products?keyword=${keyword}&collectionId=${collectionId}`,
+      );
+    },
+    [collectionId, fetcher],
+  );
+
+  useEffect(() => {
+    setTitle('');
+    control.change('');
+    if (collectionId) {
+      fetchOptions('');
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [collectionId, setTitle, control.change]);
+
+  const options = fetcher.data?.map((item) => (
+    <Combobox.Option value={parseGid(item.id).id} key={item.id}>
+      <Highlight
+        highlight={parseGid(item.id).id === field.value ? item.title : ''}
+        size="sm"
+      >
+        {item.title}
+      </Highlight>
+    </Combobox.Option>
+  ));
+
+  return (
+    <>
+      <Combobox
+        onOptionSubmit={(optionValue) => {
+          const node = fetcher.data?.find(
+            (item) => parseGid(item.id).id === optionValue,
+          );
+          if (node?.title) {
+            setTitle(node?.title);
+          }
+          control.change(optionValue);
+          combobox.closeDropdown();
+          textInput.current?.blur();
+        }}
+        withinPortal={false}
+        store={combobox}
+      >
+        <Combobox.Target>
+          <TextInput
+            label={label}
+            ref={textInput}
+            placeholder={placeholder}
+            disabled={!collectionId}
+            value={title}
+            onChange={(event) => {
+              setTitle(event.currentTarget.value);
+              fetchOptions(event.currentTarget.value);
+              control.change('');
+              combobox.resetSelectedOption();
+              combobox.openDropdown();
+            }}
+            onClick={() => {
+              combobox.openDropdown();
+            }}
+            onFocus={() => {
+              combobox.openDropdown();
+              if (!fetcher.data) {
+                fetchOptions(title);
+              }
+            }}
+            onBlur={() => {
+              combobox.closeDropdown();
+            }}
+            rightSection={fetcher.state === 'loading' && <Loader size={18} />}
+            data-testid="product-select"
+          />
+        </Combobox.Target>
+
+        <Combobox.Dropdown hidden={fetcher.data === null}>
+          <Combobox.Options>
+            <ScrollArea.Autosize mah={200} type="scroll">
+              {!fetcher.data || fetcher.data?.length === 0 ? (
+                <Combobox.Empty>Ingen produkt med dette navn</Combobox.Empty>
+              ) : (
+                options
+              )}
+            </ScrollArea.Autosize>
+          </Combobox.Options>
+          <Combobox.Footer>
+            <Text fz="xs" c="dimmed">
+              Kontakt os, for at tilføje manglende behandlinger.
+            </Text>
+          </Combobox.Footer>
+        </Combobox.Dropdown>
+      </Combobox>
     </>
   );
 }

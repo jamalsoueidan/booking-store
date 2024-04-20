@@ -126,12 +126,12 @@ export default function AccountLocationsEdit() {
           style={{display: 'inline-block'}}
         >
           <Button
-            variant="light"
+            variant="filled"
             color="red"
             type="submit"
             data-testid={`delete-button-${defaultValue._id}`}
           >
-            Slet {defaultValue.name}
+            Slet
           </Button>
         </Form>
       </AccountTitle>
