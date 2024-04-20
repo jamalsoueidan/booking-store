@@ -2,7 +2,6 @@ import {
   Button,
   Card,
   Flex,
-  Group,
   rem,
   SimpleGrid,
   Stack,
@@ -14,7 +13,13 @@ import {
 import {Link, useLoaderData} from '@remix-run/react';
 
 import {json, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
-import {IconGps, IconHome, IconMoodSad, IconPlus} from '@tabler/icons-react';
+import {
+  IconBuildingStore,
+  IconGps,
+  IconHome,
+  IconMoodSad,
+  IconPlus,
+} from '@tabler/icons-react';
 
 import {AccountButton} from '~/components/account/AccountButton';
 import {AccountContent} from '~/components/account/AccountContent';
@@ -95,8 +100,7 @@ export type AccountLocationProps = {
 export const AccountLocation = ({data}: AccountLocationProps) => {
   const markup =
     data.locationType === 'destination' ? (
-      <Group align="flex-start">
-        <IconGps />
+      <div style={{position: 'relative'}}>
         <Stack>
           <div>
             <Title order={3} data-testid="name-title">
@@ -106,50 +110,60 @@ export const AccountLocation = ({data}: AccountLocationProps) => {
               {data.fullAddress}
             </Text>
           </div>
-          <SimpleGrid cols={2}>
+          <SimpleGrid cols={3}>
             <div>
-              <Text size="sm">Udgifter</Text>
-              <Text fw={600} size="sm">
+              <Text size="xs">Udgifter</Text>
+              <Text fw={600} size="xs">
                 {data.startFee} DKK
               </Text>
             </div>
             <div>
-              <Text size="sm">Timepris for kørsel</Text>
-              <Text fw={600} size="sm">
+              <Text size="xs">Timepris for kørsel</Text>
+              <Text fw={600} size="xs">
                 {data.distanceHourlyRate} DKK
               </Text>
             </div>
             <div>
-              <Text size="sm">Pris pr. kilometer:</Text>
-              <Text fw={600} size="sm">
+              <Text size="xs">Pris pr. kilometer:</Text>
+              <Text fw={600} size="xs">
                 {data.fixedRatePerKm} DKK
               </Text>
             </div>
             <div>
-              <Text size="sm">Gratis. kilometer:</Text>
-              <Text fw={600} size="sm">
+              <Text size="xs">Gratis. kilometer:</Text>
+              <Text fw={600} size="xs">
                 {data.distanceForFree} km
               </Text>
             </div>
             <div>
-              <Text size="sm">Min. kilometer:</Text>
-              <Text fw={600} size="sm">
+              <Text size="xs">Min. kilometer:</Text>
+              <Text fw={600} size="xs">
                 {data.minDriveDistance} km
               </Text>
             </div>
             <div>
-              <Text size="sm">Max. kilometer:</Text>
-              <Text fw={600} size="sm">
+              <Text size="xs">Max. kilometer:</Text>
+              <Text fw={600} size="xs">
                 {data.maxDriveDistance} km
               </Text>
             </div>
           </SimpleGrid>
         </Stack>
-      </Group>
+        <div style={{position: 'absolute', top: 0, right: 0}}>
+          <IconGps style={{width: rem(32), height: rem(32)}} />
+        </div>
+      </div>
     ) : (
-      <Group align="flex-start">
-        <IconHome />
-        <Stack gap="xs" style={{flex: 1}}>
+      <div style={{position: 'relative'}}>
+        <div style={{position: 'absolute', top: 0, right: 0}}>
+          {data.originType === 'commercial' ? (
+            <IconBuildingStore style={{width: rem(32), height: rem(32)}} />
+          ) : (
+            <IconHome style={{width: rem(32), height: rem(32)}} />
+          )}
+        </div>
+
+        <Stack>
           <div>
             <Title order={3} data-testid="name-title">
               {data.name}
@@ -158,8 +172,16 @@ export const AccountLocation = ({data}: AccountLocationProps) => {
               {data.fullAddress}
             </Text>
           </div>
+          <SimpleGrid cols={1}>
+            <div>
+              <Text size="xs">Arbejdsstedstype</Text>
+              <Text fw={600} size="xs">
+                {data.originType === 'commercial' ? 'Butik' : 'Eget sted'}
+              </Text>
+            </div>
+          </SimpleGrid>
         </Stack>
-      </Group>
+      </div>
     );
 
   return (

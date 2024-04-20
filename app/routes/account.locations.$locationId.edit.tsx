@@ -100,14 +100,7 @@ export default function AccountLocationsEdit() {
 
   return (
     <>
-      <AccountTitle
-        linkBack="/account/locations"
-        heading={
-          defaultValue.originType === 'commercial'
-            ? 'Redigere butik lokation'
-            : 'Redigere hjemme lokation'
-        }
-      >
+      <AccountTitle linkBack="/account/locations" heading={defaultValue.name}>
         <Button
           variant="light"
           component={Link}
