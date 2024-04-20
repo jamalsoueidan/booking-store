@@ -56,7 +56,7 @@ export default function AccountLocationsIndex() {
             <ThemeIcon variant="white" size={rem(100)}>
               <IconMoodSad stroke={1} style={{width: '100%', height: '100%'}} />
             </ThemeIcon>
-            <Title ta="center" data-testid="empty-title">
+            <Title ta="center" order={2} data-testid="empty-title">
               Du har ingen lokationer
             </Title>
             <Button

@@ -101,7 +101,9 @@ export default function AccountSchedulesIndex() {
             <ThemeIcon variant="white" size={rem(100)}>
               <IconMoodSad stroke={1} style={{width: '100%', height: '100%'}} />
             </ThemeIcon>
-            <Title ta="center">Du har ingen vagtplaner</Title>
+            <Title ta="center" order={2} data-testid="empty-title">
+              Du har ingen vagtplaner
+            </Title>
             <Button
               component={Link}
               to="#create"

@@ -1,6 +1,5 @@
 import {parseGid} from '@shopify/hydrogen';
 import {json, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
-import {PRODUCT_SIMPLE_FRAGMENT} from '~/data/fragments';
 import {getBookingShopifyApi} from '~/lib/api/bookingShopifyApi';
 import {getCustomer} from '~/lib/get-customer';
 
@@ -13,7 +12,6 @@ export async function loader({request, context}: LoaderFunctionArgs) {
 
   const keyword = searchParams.get('keyword') || '';
   const collectionId = searchParams.get('collectionId') || '';
-  const limit = searchParams.get('limit');
 
   if (!collectionId) {
     return json([]);
@@ -22,7 +20,7 @@ export async function loader({request, context}: LoaderFunctionArgs) {
   const {collection} = await storefront.query(PRODUCTS_SEARCH_QUERY, {
     variables: {
       collectionId: `gid://shopify/Collection/${collectionId}`,
-      first: parseInt(limit || '5'),
+      first: 50,
     },
   });
 
@@ -36,8 +34,16 @@ export async function loader({request, context}: LoaderFunctionArgs) {
   return json(products);
 }
 
+export const PRODUCT_SEARCH_SIMPLE_FRAGMENT = `#graphql
+  fragment ProductSearchSimple on Product {
+    id
+    title
+    handle
+  }
+` as const;
+
 const PRODUCTS_SEARCH_QUERY = `#graphql
-  ${PRODUCT_SIMPLE_FRAGMENT}
+  ${PRODUCT_SEARCH_SIMPLE_FRAGMENT}
   query ProductSearchQuery(
     $collectionId: ID!
     $country: CountryCode
@@ -47,7 +53,7 @@ const PRODUCTS_SEARCH_QUERY = `#graphql
     collection(id: $collectionId) {
       products(first: $first) {
         nodes {
-          ...ProductSimple
+          ...ProductSearchSimple
         }
       }
     }

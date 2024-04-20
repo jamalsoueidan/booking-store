@@ -1,4 +1,6 @@
-import {Outlet, useLoaderData} from '@remix-run/react';
+import {Button} from '@mantine/core';
+import {Form, Outlet, useLoaderData} from '@remix-run/react';
+import {parseGid} from '@shopify/hydrogen';
 import {json, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
 import {AccountButton} from '~/components/account/AccountButton';
 import {AccountContent} from '~/components/account/AccountContent';
@@ -41,6 +43,22 @@ export default function EditAddress() {
       >
         <AccountButton to={'./'}>Basic</AccountButton>
         <AccountButton to={'advanced'}>Advanceret</AccountButton>
+        <Form
+          method="post"
+          action={`${parseGid(selectedProduct.id).id}/destroy`}
+          style={{display: 'inline-block'}}
+        >
+          <Button
+            radius="xl"
+            size="compact-sm"
+            variant="filled"
+            color="red"
+            fullWidth
+            type="submit"
+          >
+            Slet
+          </Button>
+        </Form>
       </AccountTitle>
 
       <AccountContent>

@@ -132,7 +132,7 @@ const PayoutBalance = ({
               <Title order={3}>Balance</Title>
               <Text>Total: {payload.totalAmount} DKK</Text>
               <Text>Kørsel: {payload.totalShippingAmount} DKK</Text>
-              <Text>Behandlinger: {payload.totalLineItems}</Text>
+              <Text>Behandlinger: {payload.totalLineItems} antal</Text>
               {payload.totalAmount > 0 ? (
                 <Form method="post" action="request">
                   <Button type="submit" variant="light">

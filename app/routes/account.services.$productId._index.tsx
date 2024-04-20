@@ -25,6 +25,7 @@ import {NumericInput} from '~/components/form/NumericInput';
 import {SubmitButton} from '~/components/form/SubmitButton';
 import {SwitchGroupLocations} from '~/components/form/SwitchGroupLocations';
 import {getBookingShopifyApi} from '~/lib/api/bookingShopifyApi';
+import {baseURL} from '~/lib/api/mutator/query-client';
 import {createOrFindProductVariant} from '~/lib/create-or-find-variant';
 import {getCustomer} from '~/lib/get-customer';
 import {customerProductUpdateBody} from '~/lib/zod/bookingShopifyApi';
@@ -70,6 +71,10 @@ export const action = async ({
       compareAtPrice: variant.compareAtPrice,
     });
 
+    await context.storefront.cache?.delete(
+      `${baseURL}/customer/${customerId}/products`,
+    );
+
     return redirectWithSuccess(`/account/services/${productId}`, {
       message: 'Ydelsen er nu opdateret!',
     });
@@ -88,10 +93,12 @@ export async function loader({context, params}: LoaderFunctionArgs) {
 
   const schedules = await getBookingShopifyApi().customerScheduleList(
     customerId,
+    context,
   );
 
   const locations = await getBookingShopifyApi().customerLocationList(
     customerId,
+    context,
   );
 
   const {payload: customerProduct} =
