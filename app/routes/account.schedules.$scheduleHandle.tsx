@@ -40,7 +40,6 @@ import {
 import {useMediaQuery} from '@mantine/hooks';
 import {IconEdit, IconMinus, IconPlus, IconX} from '@tabler/icons-react';
 import {addMinutes, format, set} from 'date-fns';
-import {useRef} from 'react';
 import {redirectWithSuccess} from 'remix-toast';
 import {SubmitButton} from '~/components/form/SubmitButton';
 import MobileModal from '~/components/MobileModal';
@@ -159,7 +158,24 @@ export default function AccountSchedules() {
         <Text fz="xl" fw="bold" data-testid="schedule-title">
           {defaultValue.name} vagtplan:
         </Text>
-        <EditName id={defaultValue._id} />
+        <Flex gap={{base: 'xs', sm: 'sm'}}>
+          <ActionIcon component={Link} to="edit" size="md">
+            <IconEdit
+              style={{width: rem(24), height: rem(24)}}
+              data-testid="change-name-button"
+            />
+          </ActionIcon>
+          <Form method="post" action="destroy">
+            <ActionIcon
+              size="md"
+              color="red"
+              type="submit"
+              data-testid="delete-button"
+            >
+              <IconX style={{width: rem(24), height: rem(24)}} />
+            </ActionIcon>
+          </Form>
+        </Flex>
       </Group>
       <FormProvider context={form.context}>
         <Form method="post" {...getFormProps(form)}>
@@ -311,35 +327,3 @@ const generateTimeSlots = (
 
   return timeSlots;
 };
-
-function EditName({id}: {id: string}) {
-  const formRef = useRef<HTMLFormElement>(null);
-
-  return (
-    <Flex gap={{base: 'xs', sm: 'sm'}}>
-      <ActionIcon component={Link} to="edit" size="md">
-        <IconEdit
-          style={{width: rem(24), height: rem(24)}}
-          data-testid="change-name-button"
-        />
-      </ActionIcon>
-      <ActionIcon
-        size="md"
-        color="red"
-        ref={formRef}
-        component="form"
-        method="post"
-        action={`${id}/destroy`}
-        onClick={(event: React.MouseEvent<HTMLFormElement>) => {
-          event.preventDefault();
-          if (formRef.current) {
-            formRef.current.submit();
-          }
-        }}
-        data-testid="delete-button"
-      >
-        <IconX style={{width: rem(24), height: rem(24)}} />
-      </ActionIcon>
-    </Flex>
-  );
-}
