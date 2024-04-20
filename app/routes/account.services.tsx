@@ -65,7 +65,7 @@ export default function AccountServices() {
               <IconClock stroke={1} style={{width: '100%', height: '100%'}} />
             </ThemeIcon>
             <Title ta="center" order={2} data-testid="empty-title">
-              Du mangler tilføje en vagtplan inden du kan tilføje ydelser.
+              Du mangler tilføje en vagtplan inden du kan tilføje ydelser
             </Title>
             <Button
               component={Link}

@@ -51,7 +51,12 @@ export function SwitchGroupLocations({
     >
       <Stack mt="xs" gap="xs">
         {data.map((l) => (
-          <Switch key={l._id} value={l._id} label={l.name} />
+          <Switch
+            key={l._id}
+            value={l._id}
+            label={l.name}
+            data-testid={`${l.name}-switch`}
+          />
         ))}
       </Stack>
 

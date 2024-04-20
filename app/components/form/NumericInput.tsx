@@ -1,6 +1,7 @@
 import {useInputControl, type FieldMetadata} from '@conform-to/react';
 import {NumberInput, type NumberInputProps} from '@mantine/core';
 import {useRef} from 'react';
+
 type NumericInputProps = {
   field: FieldMetadata<number>;
 } & NumberInputProps;

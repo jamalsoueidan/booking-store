@@ -176,8 +176,10 @@ export default function AccountServicesCreate() {
                   value: parseGid(c.id).id,
                   label: parseTE(c.title),
                 }))}
-                label="Vælge behandlingskategori"
+                label="Hvilken kategori ligger ydelsen i?"
+                placeholder="Vælg kategori"
                 allowDeselect={false}
+                data-testid="category-select"
               />
 
               <SelectSearchable
@@ -194,26 +196,31 @@ export default function AccountServicesCreate() {
                   required
                   hideControls={true}
                   style={{flex: 1}}
+                  data-testid="price-input"
                 />
                 <NumericInput
                   field={fields.compareAtPrice}
                   label="Før-pris"
                   hideControls={true}
                   style={{flex: 1}}
+                  data-testid="compare-at-price-input"
                 />
               </Flex>
+
               <SwitchGroupLocations
                 label="Fra hvilken lokation(er) vil du tilbyde den ydelse?"
                 description="Mindst (1) skal være valgt."
                 field={fields.locations}
                 data={locations}
               />
+
               <Select
                 label="Hvilken vagtplan vil du tilknytte den ydelse på."
                 data={selectSchedules}
                 {...getSelectProps(fields.scheduleId)}
                 allowDeselect={false}
                 defaultValue={fields.scheduleId.initialValue}
+                data-testid="schedules-select"
               />
               <SubmitButton>Tilføj ny ydelse</SubmitButton>
             </Flex>
@@ -321,6 +328,7 @@ export function SelectSearchable({
               combobox.closeDropdown();
             }}
             rightSection={fetcher.state === 'loading' && <Loader size={18} />}
+            data-testid="product-select"
           />
         </Combobox.Target>
 
