@@ -26,7 +26,7 @@ import {
   TextInput,
   useCombobox,
 } from '@mantine/core';
-import {type SerializeFrom} from '@remix-run/server-runtime';
+import {redirect, type SerializeFrom} from '@remix-run/server-runtime';
 
 import {useCallback, useEffect, useRef, useState} from 'react';
 import {SubmitButton} from '~/components/form/SubmitButton';
@@ -106,24 +106,24 @@ export async function loader({context}: LoaderFunctionArgs) {
     cache: CacheLong(),
   });
 
-  const schedule = await getBookingShopifyApi().customerScheduleList(
-    customerId,
-    context,
-  );
+  const {payload: schedules} =
+    await getBookingShopifyApi().customerScheduleList(customerId, context);
 
-  const locations = await getBookingShopifyApi().customerLocationList(
-    customerId,
-    context,
-  );
+  const {payload: locations} =
+    await getBookingShopifyApi().customerLocationList(customerId, context);
 
-  const findDefaultLocation = locations.payload[0];
+  if (locations.length === 0 || schedules.length === 0) {
+    return redirect('/account/services');
+  }
+
+  const findDefaultLocation = locations[0];
 
   return json({
-    locations: locations.payload,
-    schedules: schedule.payload,
+    locations,
+    schedules,
     collections,
     defaultValue: {
-      scheduleId: schedule.payload[0]._id,
+      scheduleId: schedules[0]._id,
       compareAtPrice: 0,
       price: 0,
       locations: [

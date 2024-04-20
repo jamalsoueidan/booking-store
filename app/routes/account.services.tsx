@@ -12,12 +12,14 @@ export function shouldRevalidate() {
   return false;
 }
 
-export async function loader({context}: LoaderFunctionArgs) {
+export async function loader({request, context}: LoaderFunctionArgs) {
   const customerId = await getCustomer({context});
-  const response = await getBookingShopifyApi().customerStatus(customerId);
+  const {payload: status} = await getBookingShopifyApi().customerStatus(
+    customerId,
+  );
 
   return json({
-    status: response.payload,
+    status,
   });
 }
 
@@ -52,6 +54,7 @@ export default function AccountServices() {
       </>
     );
   }
+
   if (!status.schedules) {
     return (
       <>
@@ -76,5 +79,6 @@ export default function AccountServices() {
       </>
     );
   }
+
   return <Outlet context={context} />;
 }
