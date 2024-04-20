@@ -1,41 +1,18 @@
 import {type Page, test} from '@playwright/test';
-import MailosaurClient from 'mailosaur';
-
-const serverId = 'pyen5ufb';
-const timestamp = Date.now();
-const mailosaur = new MailosaurClient(process.env.MAILOSAUR_API_KEY || '');
+import {PlaywrightAuthPage} from './models/auth';
 
 test.describe('Signup for business account', async () => {
   let page: Page;
+  let auth: PlaywrightAuthPage;
   test.beforeAll(async ({browser}) => {
     page = await browser.newPage();
+    auth = new PlaywrightAuthPage(
+      page,
+      `testerne${Date.now()}@pyen5ufb.mailosaur.net`,
+    );
   });
 
-  test('Login Email', async () => {
-    await page.goto('./');
-    await page.getByTestId('login-button').click();
-    await page.getByLabel('Mailadresse', {exact: true}).click();
-    await page
-      .getByLabel('Mailadresse', {exact: true})
-      .fill(`testerne${timestamp}@pyen5ufb.mailosaur.net`);
-
-    await page.getByRole('button', {name: 'Fortsæt'}).click();
-  });
-
-  test('Login Code', async () => {
-    const email = await mailosaur.messages.get(serverId, {
-      sentTo: `testerne${timestamp}@pyen5ufb.mailosaur.net`,
-    });
-
-    await page.getByPlaceholder('6-cifret kode').click();
-    if (email.text && email.text.codes) {
-      await page
-        .getByPlaceholder('6-cifret kode')
-        .fill(email.text?.codes[0].value || '');
-    }
-
-    await page.click('button[type="submit"]');
-  });
+  test('Login and enter code', () => auth.login());
 
   test('First time user, type firstname, lastname', async () => {
     await page.waitForURL(`./account`);
