@@ -2,7 +2,6 @@ import {getFormProps, getInputProps, useForm} from '@conform-to/react';
 import {Form, Link, useActionData, useLoaderData} from '@remix-run/react';
 
 import {
-  json,
   type ActionFunctionArgs,
   type LoaderFunctionArgs,
 } from '@shopify/remix-oxygen';
@@ -20,7 +19,7 @@ import {
   Text,
   TextInput,
 } from '@mantine/core';
-import {redirectWithSuccess} from 'remix-toast';
+import {jsonWithSuccess, redirectWithSuccess} from 'remix-toast';
 import {AccountContent} from '~/components/account/AccountContent';
 import {AccountTitle} from '~/components/account/AccountTitle';
 import {AddressAutocompleteInput} from '~/components/form/AddressAutocompleteInput';
@@ -79,7 +78,7 @@ export async function loader({context, params}: LoaderFunctionArgs) {
     locationId,
   );
 
-  return json(response.payload);
+  return jsonWithSuccess(response.payload, {message: 'Location er opdateret!'});
 }
 
 export default function AccountLocationsEdit() {

@@ -23,6 +23,9 @@ import {
   IconUser,
 } from '@tabler/icons-react';
 import {type CustomerFragment} from 'customer-accountapi.generated';
+import {useEffect} from 'react';
+import notify, {Toaster} from 'react-hot-toast';
+import {getToast} from 'remix-toast';
 import {AccountMenu} from '~/components/AccountMenu';
 import {CUSTOMER_DETAILS_QUERY} from '~/graphql/customer-account/CustomerDetailsQuery';
 import {getBookingShopifyApi} from '~/lib/api/bookingShopifyApi';
@@ -51,7 +54,7 @@ export const shouldRevalidate: ShouldRevalidateFunction = ({
   return false;
 };
 
-export async function loader({context}: LoaderFunctionArgs) {
+export async function loader({context, request}: LoaderFunctionArgs) {
   const {data, errors} = await context.customerAccount.query(
     CUSTOMER_DETAILS_QUERY,
   );
@@ -72,11 +75,14 @@ export async function loader({context}: LoaderFunctionArgs) {
     ).payload;
   }
 
+  const {toast} = await getToast(request);
+
   return json(
     {
       customer: data.customer,
       isBusiness: userIsBusiness.isBusiness,
       user,
+      toast,
     },
     {
       headers: {
@@ -88,7 +94,23 @@ export async function loader({context}: LoaderFunctionArgs) {
 }
 
 export default function Acccount() {
-  const {customer, user, isBusiness} = useLoaderData<typeof loader>();
+  const {customer, user, isBusiness, toast} = useLoaderData<typeof loader>();
+
+  useEffect(() => {
+    if (toast) {
+      switch (toast.type) {
+        case 'success':
+          notify.success(toast.message);
+          return;
+        case 'error':
+          notify.error(toast.message);
+
+          return;
+        default:
+          return;
+      }
+    }
+  }, [toast]);
 
   return (
     <AccountLayout
@@ -96,6 +118,12 @@ export default function Acccount() {
       user={user}
       isBusiness={isBusiness || false}
     >
+      {' '}
+      <Toaster
+        position="top-center"
+        reverseOrder={false}
+        toastOptions={{duration: 3000, className: 'toast', id: 'toast'}}
+      />
       <Outlet context={{customer, user, isBusiness}} />
     </AccountLayout>
   );

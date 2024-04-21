@@ -23,7 +23,6 @@ import {
   type SerializeFrom,
 } from '@shopify/remix-oxygen';
 import {type ReactNode} from 'react';
-import {getToast} from 'remix-toast';
 import favicon from './assets/favicon.svg';
 import {LayoutWrapper} from './components/LayoutWrapper';
 import appStyles from './styles/app.css?url';
@@ -95,21 +94,13 @@ export async function loader({context, request}: LoaderFunctionArgs) {
     },
   });
 
-  const {toast, headers} = await getToast(request);
-
-  return defer(
-    {
-      cart: cartPromise,
-      footer: footerPromise,
-      header: await headerPromise,
-      isLoggedIn: isLoggedInPromise,
-      publicStoreDomain,
-      toast,
-    },
-    {
-      headers,
-    },
-  );
+  return defer({
+    cart: cartPromise,
+    footer: footerPromise,
+    header: await headerPromise,
+    isLoggedIn: isLoggedInPromise,
+    publicStoreDomain,
+  });
 }
 
 export function Layout({children}: {children: ReactNode}) {

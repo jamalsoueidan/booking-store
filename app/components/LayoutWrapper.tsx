@@ -35,7 +35,6 @@ import {
   IconShoppingCartPlus,
 } from '@tabler/icons-react';
 import {Suspense, useEffect, type ReactNode} from 'react';
-import notify, {Toaster} from 'react-hot-toast';
 import {type loader} from '~/root';
 import {Footer} from './Footer';
 import logo from '/Artboard4.svg';
@@ -58,29 +57,8 @@ export function LayoutWrapper({children}: {children: ReactNode}) {
     }
   }, [state]);
 
-  useEffect(() => {
-    if (data?.toast) {
-      switch (data.toast.type) {
-        case 'success':
-          notify.success(data.toast.message);
-          return;
-        case 'error':
-          notify.error(data.toast.message);
-
-          return;
-        default:
-          return;
-      }
-    }
-  }, [data.toast]);
-
   return (
     <MantineProvider>
-      <Toaster
-        position="top-center"
-        reverseOrder={false}
-        toastOptions={{duration: 3000, className: 'toast', id: 'toast'}}
-      />
       <NavigationProgress />
       <ModalsProvider>
         {!path.includes('/account') && !path.includes('/artist/') ? (
