@@ -50,7 +50,6 @@ export default function UserIndex() {
   const {user} = useLoaderData<typeof loader>();
   const isMobile = useMediaQuery('(max-width: 48em)');
 
-  console.log(user);
   return (
     <UserProvider user={user}>
       <AppShell
@@ -119,7 +118,7 @@ export default function UserIndex() {
             </Button>
           </AppShell.Section>
         </AppShell.Navbar>
-        <AppShell.Main>
+        <AppShell.Main bg="gray.1">
           <Box p={{base: '0', sm: rem(48)}}>
             {!user.active ? (
               <Alert

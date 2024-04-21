@@ -1,14 +1,5 @@
 .card {
-  transition: transform 150ms ease, box-shadow 150ms ease;
-
-  @media (min-width: $mantine-breakpoint-md) {
-    &:hover {
-      transform: scale(1.01);
-    }
+  &:hover {
+    border: 1px solid #000;
   }
-}
-
-.title {
-  font-family: 'Greycliff CF', var(--mantine-font-family);
-  font-weight: bold;
 }

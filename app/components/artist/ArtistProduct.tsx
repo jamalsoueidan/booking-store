@@ -38,6 +38,7 @@ export function ArtistProduct({product, services}: ArtistProductProps) {
     <Card
       key={product.handle}
       withBorder
+      shadow="sm"
       className={classes.card}
       component={Link}
       radius="xl"
@@ -45,8 +46,8 @@ export function ArtistProduct({product, services}: ArtistProductProps) {
       py="lg"
       to={`treatment/${product.handle}`}
     >
-      <Stack gap={rem(48)}>
-        <Stack gap="6px">
+      <Flex direction="column" gap={rem(48)} h="100%">
+        <Stack gap="6px" style={{flex: 1}}>
           <Badge c={`${user.theme.color}.6`} color={`${user.theme.color}.1`}>
             {artistService?.scheduleName}
           </Badge>
@@ -90,7 +91,7 @@ export function ArtistProduct({product, services}: ArtistProductProps) {
             ) : null}
           </Button>
         </Group>
-      </Stack>
+      </Flex>
     </Card>
   );
 }
