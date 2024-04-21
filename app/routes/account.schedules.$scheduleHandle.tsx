@@ -125,7 +125,14 @@ export async function loader({context, params}: LoaderFunctionArgs) {
       return days.indexOf(a.day) - days.indexOf(b.day);
     });
 
-  return json({...response.payload, slots});
+  return json(
+    {...response.payload, slots},
+    {
+      headers: {
+        'Cache-Control': 'no-cache, no-store, must-revalidate',
+      },
+    },
+  );
 }
 
 export default function AccountSchedules() {

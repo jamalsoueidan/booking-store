@@ -38,7 +38,11 @@ export async function loader({context, request}: LoaderFunctionArgs) {
   if (url.pathname === '/account/schedules' && response.payload.length > 0) {
     return redirect(response.payload[0]._id);
   }
-  return json(response.payload);
+  return json(response.payload, {
+    headers: {
+      'Cache-Control': 'no-cache, no-store, must-revalidate',
+    },
+  });
 }
 
 export default function AccountSchedulesIndex() {
