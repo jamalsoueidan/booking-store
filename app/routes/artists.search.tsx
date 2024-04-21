@@ -72,7 +72,9 @@ export const loader = async (args: LoaderFunctionArgs) => {
     {users, components},
     {
       headers: {
-        'Cache-Control': 'public, s-maxage=3600, stale-while-revalidate=3600',
+        'Oxygen-Cache-Control':
+          'public, s-maxage=3600, stale-while-revalidate=3600',
+        Vary: 'Accept-Encoding',
       },
     },
   );
