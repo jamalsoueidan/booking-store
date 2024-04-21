@@ -49,7 +49,7 @@ export async function loader({request, params, context}: LoaderFunctionArgs) {
     {collection, productsUsers},
     {
       headers: {
-        'Cache-Control': 's-maxage=3600, stale-while-revalidate',
+        'Cache-Control': 'public, s-maxage=3600, stale-while-revalidate=3600',
       },
     },
   );

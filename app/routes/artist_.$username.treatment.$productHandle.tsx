@@ -1,7 +1,7 @@
 import {Link, Outlet, useLoaderData, type MetaFunction} from '@remix-run/react';
 import {json, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
 
-import {AspectRatio, Avatar, Button, Flex, Stack, Title} from '@mantine/core';
+import {AspectRatio, Avatar, Button, Flex, Title} from '@mantine/core';
 import {Image, type Storefront} from '@shopify/hydrogen';
 import {IconArrowLeft} from '@tabler/icons-react';
 import {type ProductVariantFragment} from 'storefrontapi.generated';
@@ -72,7 +72,12 @@ export default function Product() {
     <UserProvider user={artist}>
       <ArtistShell>
         <ArtistShell.Header>
-          <Stack gap="xs" w="100%" align="flex-start">
+          <Flex
+            direction="column"
+            gap={{base: 'xs', sm: '0'}}
+            w="100%"
+            align="flex-start"
+          >
             <Button
               p="0"
               variant="transparent"
@@ -91,13 +96,12 @@ export default function Product() {
             >
               {artist.fullname}
             </Button>
-
             <Flex justify="space-between" align="center" w="100%">
-              <Title order={1} fw="500" fz={{base: 24, sm: 40}}>
+              <Title order={1} fw="500" fz={{base: 24, sm: 36}}>
                 {product.title}
               </Title>
             </Flex>
-          </Stack>
+          </Flex>
         </ArtistShell.Header>
 
         <Outlet context={{product}} />
