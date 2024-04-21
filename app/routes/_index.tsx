@@ -107,7 +107,6 @@ export async function loader(args: LoaderFunctionArgs) {
       headers: {
         'Oxygen-Cache-Control':
           'public, s-maxage=3600, stale-while-revalidate=3600',
-        Vary: 'Accept-Encoding',
       },
     },
   );
