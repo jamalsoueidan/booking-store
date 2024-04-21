@@ -74,8 +74,8 @@ export default function ArtistIndex() {
   return (
     <Suspense fallback={<Skeleton height={8} radius="xl" />}>
       <Await resolve={data.locations}>
-        {({payload}) => {
-          return (
+        {({payload}) =>
+          payload.length > 0 ? (
             <Flex direction="column" gap={{base: 'md', sm: 'xl'}}>
               <ArtistSchedulesMenu schedules={payload} />
               <SimpleGrid cols={{base: 1, md: 2}} spacing="lg">
@@ -107,8 +107,13 @@ export default function ArtistIndex() {
                 </Stack>
               ) : null}
             </Flex>
-          );
-        }}
+          ) : (
+            <Text>
+              Du mangler stadig udfylde resten af felter, lokation, vagtplan, og
+              ydelser
+            </Text>
+          )
+        }
       </Await>
     </Suspense>
   );

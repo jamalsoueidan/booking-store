@@ -15,7 +15,7 @@ import {Link, useLoaderData} from '@remix-run/react';
 import {json, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
 import {
   IconBuildingStore,
-  IconGps,
+  IconCar,
   IconHome,
   IconMoodSad,
   IconPlus,
@@ -101,6 +101,9 @@ export const AccountLocation = ({data}: AccountLocationProps) => {
   const markup =
     data.locationType === 'destination' ? (
       <div style={{position: 'relative'}}>
+        <div style={{position: 'absolute', top: 0, right: 0}}>
+          <IconCar style={{width: rem(32), height: rem(32)}} />
+        </div>
         <Stack>
           <div>
             <Title order={3} data-testid="name-title">
@@ -149,9 +152,6 @@ export const AccountLocation = ({data}: AccountLocationProps) => {
             </div>
           </SimpleGrid>
         </Stack>
-        <div style={{position: 'absolute', top: 0, right: 0}}>
-          <IconGps style={{width: rem(32), height: rem(32)}} />
-        </div>
       </div>
     ) : (
       <div style={{position: 'relative'}}>

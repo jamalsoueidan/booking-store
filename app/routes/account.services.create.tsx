@@ -40,6 +40,7 @@ import {redirectWithSuccess} from 'remix-toast';
 import {AccountContent} from '~/components/account/AccountContent';
 import {AccountTitle} from '~/components/account/AccountTitle';
 import {NumericInput} from '~/components/form/NumericInput';
+import {baseURL} from '~/lib/api/mutator/query-client';
 import {parseTE} from '~/lib/clean';
 import {createOrFindProductVariant} from '~/lib/create-or-find-variant';
 import {getCustomer} from '~/lib/get-customer';
@@ -86,6 +87,10 @@ export const action = async ({request, context}: ActionFunctionArgs) => {
       ...variant,
       compareAtPrice: variant.compareAtPrice,
     });
+
+    await context.storefront.cache?.delete(
+      `${baseURL}/customer/${customerId}/products`,
+    );
 
     return redirectWithSuccess(
       `/account/services/${submission.value.productId}`,

@@ -50,6 +50,7 @@ export default function UserIndex() {
   const {user} = useLoaderData<typeof loader>();
   const isMobile = useMediaQuery('(max-width: 48em)');
 
+  console.log(user);
   return (
     <UserProvider user={user}>
       <AppShell

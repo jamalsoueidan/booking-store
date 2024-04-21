@@ -13,7 +13,12 @@ import {
   Title,
 } from '@mantine/core';
 import {Link, useLoaderData, useOutletContext} from '@remix-run/react';
-import {Money, parseGid, Image as ShopifyImage} from '@shopify/hydrogen';
+import {
+  CacheLong,
+  Money,
+  parseGid,
+  Image as ShopifyImage,
+} from '@shopify/hydrogen';
 import {type ProductConnection} from '@shopify/hydrogen/storefront-api-types';
 import {json, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
 import {IconEye, IconMoodSad, IconPlus} from '@tabler/icons-react';
@@ -44,6 +49,7 @@ export async function loader({context}: LoaderFunctionArgs) {
       country: storefront.i18n.country,
       language: storefront.i18n.language,
     },
+    cache: CacheLong(),
   });
 
   return json({

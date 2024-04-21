@@ -1,6 +1,6 @@
 import {Button} from '@mantine/core';
 import {Form, Outlet, useLoaderData} from '@remix-run/react';
-import {parseGid} from '@shopify/hydrogen';
+import {CacheLong, parseGid} from '@shopify/hydrogen';
 import {json, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
 import {AccountButton} from '~/components/account/AccountButton';
 import {AccountContent} from '~/components/account/AccountContent';
@@ -21,6 +21,7 @@ export async function loader({context, params}: LoaderFunctionArgs) {
       country: context.storefront.i18n.country,
       language: context.storefront.i18n.language,
     },
+    cache: CacheLong(),
   });
 
   if (!data?.product?.id) {
