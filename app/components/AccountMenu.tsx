@@ -176,10 +176,20 @@ export function AccountMenu({
               to={`/account/upload`}
               size="sm"
               src={modifyImageUrl(user.images?.profile?.url, '50x50')}
-              onClick={() => closeDrawer()}
+              onClick={() => {
+                setActive('');
+                closeDrawer();
+              }}
             />
           ) : (
-            <Avatar size="sm" src="" onClick={() => closeDrawer()} />
+            <Avatar
+              size="sm"
+              src=""
+              onClick={() => {
+                setActive('');
+                closeDrawer();
+              }}
+            />
           )}
 
           <Stack gap="0" style={{flex: 1}}>
@@ -187,7 +197,10 @@ export function AccountMenu({
               fz="sm"
               component={Link}
               to="/account"
-              onClick={() => closeDrawer()}
+              onClick={() => {
+                setActive('');
+                closeDrawer();
+              }}
             >
               <Text fz="sm">
                 {customer?.firstName} {customer?.lastName}
