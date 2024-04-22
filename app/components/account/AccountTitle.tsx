@@ -3,11 +3,9 @@ import {
   Box,
   Divider,
   Flex,
-  Stack,
   Title,
   type TitleProps,
 } from '@mantine/core';
-import {useMediaQuery} from '@mantine/hooks';
 import {Link} from '@remix-run/react';
 import {IconArrowLeft} from '@tabler/icons-react';
 import classes from './AccountTitle.module.css';
@@ -18,11 +16,14 @@ export function AccountTitle({
   children,
   ...props
 }: TitleProps & {heading: string | React.ReactNode; linkBack?: string}) {
-  const isMobile = useMediaQuery('(max-width: 62em)');
   return (
-    <Box bg="var(--mantine-color-gray-1)" mb="-32px" pb="34px">
-      <Stack gap={'2'}>
-        <Flex direction="row" align="center" p={isMobile ? 'xs' : 'md'}>
+    <Box>
+      <Flex
+        direction="column"
+        gap={{base: 'sm', md: 'lg'}}
+        p={{base: 'xs', md: 'xl'}}
+      >
+        <Flex direction="row" align="center">
           {linkBack ? (
             <ActionIcon
               variant="transparent"
@@ -48,13 +49,11 @@ export function AccountTitle({
         </Flex>
         {children ? (
           <>
-            <Divider mx="sm" my="0" />
-            <Flex gap="md" p="xs">
-              {children}
-            </Flex>
+            <Flex gap="md">{children}</Flex>
           </>
         ) : null}
-      </Stack>
+      </Flex>
+      <Divider />
     </Box>
   );
 }

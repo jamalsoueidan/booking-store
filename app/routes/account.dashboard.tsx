@@ -88,12 +88,14 @@ function BusinessAccount({
   }
 
   return (
-    <Grid>
+    <Grid gutter={{base: 'sm', md: 'xl'}}>
       <Grid.Col span={{sm: 12, md: 8}} order={{base: 2, md: 1}}>
         <Card shadow="lg" radius="lg" p="0" withBorder>
           <Flex gap="xs" justify="space-between" px="lg" py="sm">
             <Flex direction="column" justify="center">
-              <Title order={3}>Kom i gang med BySisters</Title>
+              <Title order={3} fw="600">
+                Kom i gang med BySisters
+              </Title>
               <Text>Brug denne guide til at få din side op og køre.</Text>
             </Flex>
             <RingProgress

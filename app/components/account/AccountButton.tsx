@@ -1,21 +1,26 @@
 import {Button, type ButtonProps} from '@mantine/core';
-import {Link} from '@remix-run/react';
+import {NavLink} from '@remix-run/react';
 import classes from './AccountButton.module.css';
 
 export function AccountButton({
   children,
+  to,
   ...props
 }: ButtonProps & {to: string}) {
   return (
-    <Button
-      color="gray"
-      radius="xl"
-      size="compact-sm"
-      component={Link}
-      classNames={classes}
-      {...props}
-    >
-      {children}
-    </Button>
+    <NavLink to={to} prefetch="intent">
+      {({isActive, isPending}) => (
+        <Button
+          variant="outline"
+          radius="xl"
+          color="black"
+          fw={!isActive ? '300' : undefined}
+          size="sm"
+          classNames={classes}
+        >
+          {children}
+        </Button>
+      )}
+    </NavLink>
   );
 }

@@ -10,11 +10,11 @@ export class PlaywrightAuthPage {
     process.env.MAILOSAUR_API_KEY || '',
   );
 
-  readonly email: string = '';
+  readonly defaultEmail: string = '';
 
   constructor(page: Page, email?: string) {
     this.page = page;
-    this.email = email || DEFAULT_EMAIL;
+    this.defaultEmail = email || DEFAULT_EMAIL;
   }
 
   async login() {
@@ -27,13 +27,15 @@ export class PlaywrightAuthPage {
     await this.page.goto('./');
     await this.page.getByTestId('login-button').click();
     await this.page.getByLabel('Mailadresse', {exact: true}).click();
-    await this.page.getByLabel('Mailadresse', {exact: true}).fill(this.email);
+    await this.page
+      .getByLabel('Mailadresse', {exact: true})
+      .fill(this.defaultEmail);
     await this.page.getByRole('button', {name: 'Fortsæt'}).click();
   }
 
   private async enterCode() {
     const email = await this.mailosaur.messages.get(this.serverId, {
-      sentTo: this.email,
+      sentTo: this.defaultEmail,
     });
 
     await this.page.getByPlaceholder('6-cifret kode').click();
