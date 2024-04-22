@@ -44,15 +44,13 @@ export default function AccountLocationsIndex() {
   return (
     <>
       <AccountTitle heading="Lokationer">
-        {loaderData.length > 0 ? (
-          <AccountButton
-            to={'create'}
-            leftSection={<IconPlus size={14} />}
-            data-testid="create-button"
-          >
-            Opret lokation
-          </AccountButton>
-        ) : null}
+        <AccountButton
+          to={'create'}
+          leftSection={<IconPlus size={14} />}
+          data-testid="create-button"
+        >
+          Opret lokation
+        </AccountButton>
       </AccountTitle>
 
       <AccountContent>
@@ -68,6 +66,7 @@ export default function AccountLocationsIndex() {
               component={Link}
               to="create"
               data-testid="empty-create-button"
+              leftSection={<IconPlus size={14} />}
             >
               Opret lokation
             </Button>

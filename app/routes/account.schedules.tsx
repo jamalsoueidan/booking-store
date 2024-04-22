@@ -18,7 +18,7 @@ import {
   type ShouldRevalidateFunction,
 } from '@remix-run/react';
 import {json, redirect, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
-import {IconMoodSad} from '@tabler/icons-react';
+import {IconMoodSad, IconPlus} from '@tabler/icons-react';
 import {useEffect} from 'react';
 import MobileModal from '~/components/MobileModal';
 import {AccountButton} from '~/components/account/AccountButton';
@@ -29,16 +29,8 @@ import {getCustomer} from '~/lib/get-customer';
 import {AccountSchedulesCreate} from './account.schedules.create';
 
 export const shouldRevalidate: ShouldRevalidateFunction = ({
-  actionResult,
   currentParams,
-  currentUrl,
-  defaultShouldRevalidate,
-  formAction,
-  formData,
-  formEncType,
-  formMethod,
   nextParams,
-  nextUrl,
 }) => {
   return currentParams !== nextParams;
 };
@@ -108,11 +100,13 @@ export default function AccountSchedulesIndex() {
   return (
     <>
       <AccountTitle heading="Vagtplaner">
-        {loaderData.length > 0 ? (
-          <AccountButton to="#create" data-testid="create-schedule-button">
-            Opret ny vagtplan
-          </AccountButton>
-        ) : null}
+        <AccountButton
+          to="#create"
+          data-testid="create-button"
+          leftSection={<IconPlus size={14} />}
+        >
+          Opret vagtplan
+        </AccountButton>
       </AccountTitle>
 
       <AccountContent>
@@ -128,8 +122,9 @@ export default function AccountSchedulesIndex() {
               component={Link}
               to="#create"
               data-testid="empty-create-button"
+              leftSection={<IconPlus size={14} />}
             >
-              Tilføj vagtplan
+              Opret vagtplan
             </Button>
           </Flex>
         ) : (

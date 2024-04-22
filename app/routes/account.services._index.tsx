@@ -65,7 +65,11 @@ export default function AccountServicesIndex() {
   return (
     <>
       <AccountTitle heading="Ydelser">
-        <AccountButton to={'create'} leftSection={<IconPlus size={14} />}>
+        <AccountButton
+          to={'create'}
+          leftSection={<IconPlus size={14} />}
+          data-testid="create-button"
+        >
           Tilføj ydelse
         </AccountButton>
       </AccountTitle>
@@ -89,8 +93,9 @@ export default function AccountServicesIndex() {
               component={Link}
               to="create"
               data-testid="empty-create-button"
+              leftSection={<IconPlus size={14} />}
             >
-              Opret en ydelse
+              Tilføj ydelse
             </Button>
           </Flex>
         ) : (

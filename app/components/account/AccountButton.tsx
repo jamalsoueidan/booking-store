@@ -17,6 +17,7 @@ export function AccountButton({
           fw={!isActive ? '300' : 'bolder'}
           size="sm"
           classNames={classes}
+          {...props}
         >
           {children}
         </Button>

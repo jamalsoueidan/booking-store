@@ -2,7 +2,7 @@ import {Button, Flex, rem, ThemeIcon, Title} from '@mantine/core';
 import {Link, Outlet, useLoaderData, useOutletContext} from '@remix-run/react';
 
 import {json, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
-import {IconClock, IconLocation} from '@tabler/icons-react';
+import {IconClock, IconLocation, IconPlus} from '@tabler/icons-react';
 import {AccountContent} from '~/components/account/AccountContent';
 import {AccountTitle} from '~/components/account/AccountTitle';
 import {getBookingShopifyApi} from '~/lib/api/bookingShopifyApi';
@@ -40,14 +40,15 @@ export default function AccountServices() {
               />
             </ThemeIcon>
             <Title ta="center" order={2} data-testid="empty-title">
-              Du mangler tilføje en lokation inden du kan tilføje ydelser
+              Du mangler oprette en lokation inden du kan tilføje ydelser
             </Title>
             <Button
               component={Link}
               to="/account/locations/create"
               data-testid="empty-create-button"
+              leftSection={<IconPlus size={14} />}
             >
-              Tilføj location
+              Opret location
             </Button>
           </Flex>
         </AccountContent>
@@ -65,14 +66,14 @@ export default function AccountServices() {
               <IconClock stroke={1} style={{width: '100%', height: '100%'}} />
             </ThemeIcon>
             <Title ta="center" order={2} data-testid="empty-title">
-              Du mangler tilføje en vagtplan inden du kan tilføje ydelser
+              Du mangler oprette en vagtplan inden du kan tilføje ydelser
             </Title>
             <Button
               component={Link}
               to="/account/schedules#create"
               data-testid="empty-create-button"
             >
-              Tilføj vagtplan
+              Opret vagtplan
             </Button>
           </Flex>
         </AccountContent>
