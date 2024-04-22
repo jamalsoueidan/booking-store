@@ -20,7 +20,7 @@ test.describe('Locations create, edit, delete', async () => {
   test('Navigate to locations section', () =>
     location.navigateToLocationsPage());
 
-  test('Verify empty locations', () =>
+  test('Verify location section is empty', () =>
     location.verifyCreateButtonVisibleOnEmptyPage());
 
   test('Navigate to create location', () => location.navigateToCreatePage());
@@ -30,29 +30,49 @@ test.describe('Locations create, edit, delete', async () => {
   test('Navigate back to locations section', () =>
     location.navigateToLocationsPage());
 
-  test('Verify location creation', () =>
+  test('Verify location is created', () =>
     location.verifyLocationNameIsVisible(NAME));
+
+  test('Navigate to dashboard', () => location.navigateToDashboardPage());
+
+  test('Verify locations is checked as done on the dashboard', async () => {
+    const isVisible = await page
+      .getByTestId('locations-icon-check')
+      .isVisible();
+    expect(isVisible).toBeTruthy();
+  });
+
+  test('Return to locations section', () => location.navigateToLocationsPage());
 
   test('Navigate to edit location', () =>
     location.navigateToLocationByName(NAME));
 
   test('Update location form', () => location.updateForm(EDIT_NAME));
 
-  test('Navigate again back to locations section', () =>
+  test('Navigate back again to locations section', () =>
     location.navigateToLocationsPage());
 
-  test('Verify edited location creation', () =>
+  test('Verify location is edited', () =>
     location.verifyLocationNameIsVisible(NAME));
 
   test('Delete it', () => location.destroy(EDIT_NAME));
 
-  test('Verify deleted', async () => {
+  test('Verify location is deleted', async () => {
     const locator = await page.locator(
       `[data-testid="name-title"]:has-text("${EDIT_NAME}")`,
     );
     expect(locator).not.toBeVisible();
   });
 
-  test('Verify again empty locations', () =>
+  test('Verify locations is empty again', () =>
     location.verifyCreateButtonVisibleOnEmptyPage());
+
+  test('Navigate back to dashboard', () => location.navigateToDashboardPage());
+
+  test('Verify locations is not done on the dashboard', async () => {
+    const isVisible = await page
+      .getByTestId('locations-icon-uncheck')
+      .isVisible();
+    expect(isVisible).toBeTruthy();
+  });
 });

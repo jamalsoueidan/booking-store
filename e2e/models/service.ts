@@ -1,12 +1,6 @@
-import {type Page} from '@playwright/test';
+import {PlaywrightAdminPage} from './admin';
 
-export class PlaywrightServicePage {
-  private readonly page: Page;
-
-  constructor(page: Page) {
-    this.page = page;
-  }
-
+export class PlaywrightServicePage extends PlaywrightAdminPage {
   async attemptNavigateToCreatePage() {
     await this.page.goto('./account/dashboard');
     await this.page.waitForURL(`./account/dashboard`);

@@ -1,12 +1,7 @@
-import {expect, type Page} from '@playwright/test';
+import {expect} from '@playwright/test';
+import {PlaywrightAdminPage} from './admin';
 
-export class PlaywrightLocationPage {
-  private readonly page: Page;
-
-  constructor(page: Page) {
-    this.page = page;
-  }
-
+export class PlaywrightLocationPage extends PlaywrightAdminPage {
   async navigateToCreatePage() {
     await this.page.getByTestId('empty-create-button').click();
     await this.page.waitForURL('./account/locations/create');
