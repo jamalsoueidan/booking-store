@@ -13,7 +13,7 @@ import {
   Text,
   UnstyledButton,
 } from '@mantine/core';
-import {Form, Link, NavLink as RemixNavLink} from '@remix-run/react';
+import {Form, Link} from '@remix-run/react';
 import {
   IconAddressBook,
   IconCalendarEvent,
@@ -30,9 +30,9 @@ import {
   IconUser,
 } from '@tabler/icons-react';
 import {type CustomerFragment} from 'customer-accountapi.generated';
-import {useState} from 'react';
 import {type User} from '~/lib/api/model';
 import {modifyImageUrl} from '~/lib/image';
+import {AccountMenuLink} from './account/AccountMenuLink';
 
 export const topMenu = [
   {
@@ -92,20 +92,29 @@ const bottomMenu = [
     label: 'Forside',
     icon: IconHome,
     data: 'dashboard-link',
+    isBusiness: false,
   },
   {
     link: '/account/orders',
     label: 'Købshistorik',
     icon: IconShoppingBag,
     data: 'orders-link',
+    isBusiness: false,
   },
   {
     link: '/account/profile',
     label: 'Konto',
     icon: IconUser,
     data: 'profile-link',
+    isBusiness: false,
   },
-  {link: '/account/addresses', label: 'Adresser', icon: IconAddressBook},
+  {
+    link: '/account/addresses',
+    label: 'Adresser',
+    icon: IconAddressBook,
+    isBusiness: false,
+    data: '',
+  },
   {
     link: '/account/upload',
     label: 'Skift billed',
@@ -128,42 +137,16 @@ export function AccountMenu({
   isBusiness?: boolean;
   opened: boolean;
 }) {
-  const [active, setActive] = useState('Billing');
-
   const topLinks = topMenu
     .filter((item) => item.isBusiness === isBusiness || !item.isBusiness)
     .map((item) => (
-      <NavLink
-        active={item.label === active || undefined}
-        component={RemixNavLink}
-        to={item.link}
-        key={item.label}
-        onClick={() => {
-          closeDrawer();
-          setActive(item.label);
-        }}
-        label={item.label}
-        data-testid={item.data}
-        leftSection={<item.icon stroke={1.5} />}
-      />
+      <AccountMenuLink key={item.label} item={item} onClick={closeDrawer} />
     ));
 
   const bottomLinks = bottomMenu
     .filter((item) => item.isBusiness === isBusiness || !item.isBusiness)
     .map((item) => (
-      <NavLink
-        active={item.label === active || undefined}
-        component={RemixNavLink}
-        to={item.link}
-        key={item.label}
-        onClick={() => {
-          closeDrawer();
-          setActive(item.label);
-        }}
-        label={item.label}
-        data-testid={item.data}
-        leftSection={<item.icon stroke={1.5} />}
-      />
+      <AccountMenuLink key={item.label} item={item} onClick={closeDrawer} />
     ));
 
   return (
@@ -176,10 +159,10 @@ export function AccountMenu({
               to={`/account/upload`}
               size="sm"
               src={modifyImageUrl(user.images?.profile?.url, '50x50')}
-              onClick={() => closeDrawer()}
+              onClick={closeDrawer}
             />
           ) : (
-            <Avatar size="sm" src="" onClick={() => closeDrawer()} />
+            <Avatar size="sm" src="" onClick={closeDrawer} />
           )}
 
           <Stack gap="0" style={{flex: 1}}>
@@ -187,7 +170,7 @@ export function AccountMenu({
               fz="sm"
               component={Link}
               to="/account"
-              onClick={() => closeDrawer()}
+              onClick={closeDrawer}
             >
               <Text fz="sm">
                 {customer?.firstName} {customer?.lastName}
@@ -220,8 +203,15 @@ export function AccountMenu({
         {bottomLinks}
 
         <Form method="POST" action="/account/logout">
-          <NavLink
-            component={UnstyledButton}
+          <AccountMenuLink
+            item={{
+              link: '#',
+              label: 'Log ud',
+              icon: IconLogout,
+              isBusiness: true,
+              data: 'logout-link',
+              deactiveActive: true,
+            }}
             onClick={(e: React.MouseEvent<HTMLAnchorElement>) => {
               e.preventDefault();
               const target = e.target as Element;
@@ -230,9 +220,6 @@ export function AccountMenu({
                 (form as HTMLFormElement).submit();
               }
             }}
-            label="Log ud"
-            data-testid="logout-link"
-            leftSection={<IconLogout stroke={1.5} />}
           />
         </Form>
         <Divider />

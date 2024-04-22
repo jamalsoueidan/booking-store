@@ -72,7 +72,13 @@ export default function AccountServicesIndex() {
 
       <AccountContent>
         {storeProducts.nodes.length === 0 ? (
-          <Flex gap="lg" direction="column" justify="center" align="center">
+          <Flex
+            gap="lg"
+            direction="column"
+            justify="center"
+            align="center"
+            mih="100%"
+          >
             <ThemeIcon variant="white" size={rem(100)}>
               <IconMoodSad stroke={1} style={{width: '100%', height: '100%'}} />
             </ThemeIcon>
