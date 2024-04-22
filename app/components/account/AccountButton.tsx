@@ -8,8 +8,8 @@ export function AccountButton({
   ...props
 }: ButtonProps & {to: string}) {
   return (
-    <NavLink to={to} prefetch="intent">
-      {({isActive, isPending}) => (
+    <NavLink to={to} prefetch="intent" end>
+      {({isActive}) => (
         <Button
           variant="outline"
           radius="xl"
