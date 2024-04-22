@@ -14,7 +14,7 @@ export function AccountButton({
           variant="outline"
           radius="xl"
           color="black"
-          fw={!isActive ? '300' : undefined}
+          fw={!isActive ? '300' : 'bolder'}
           size="sm"
           classNames={classes}
         >
