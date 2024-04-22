@@ -42,7 +42,11 @@ export default function EditAddress() {
         linkBack="/account/services"
         heading={selectedProduct.title}
       >
-        <AccountButton to={'./'}>Basic</AccountButton>
+        <AccountButton
+          to={`/account/services/${parseGid(selectedProduct.id).id}`}
+        >
+          Basic
+        </AccountButton>
         <AccountButton to={'advanced'}>Advanceret</AccountButton>
         <Form
           method="post"
@@ -50,9 +54,8 @@ export default function EditAddress() {
           style={{display: 'inline-block'}}
         >
           <Button
+            variant="outline"
             radius="xl"
-            size="compact-sm"
-            variant="filled"
             color="red"
             fullWidth
             type="submit"
