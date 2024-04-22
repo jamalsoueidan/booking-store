@@ -1,0 +1,34 @@
+.root {
+  border-radius: 0;
+  background-color: light-dark(
+    var(--mantine-color-gray-0),
+    var(--mantine-color-dark-6)
+  );
+}
+
+.item {
+  border-radius: 0;
+  background-color: light-dark(
+    var(--mantine-color-gray-0),
+    var(--mantine-color-dark-6)
+  );
+  border-top: 1px solid var(--mantine-color-gray-1);
+  border-bottom: 1px solid var(--mantine-color-gray-1);
+
+  &[data-active] {
+    background-color: var(--mantine-color-body);
+    border-color: light-dark(
+      var(--mantine-color-gray-2),
+      var(--mantine-color-dark-4)
+    );
+    box-shadow: var(--mantine-shadow-md);
+  }
+}
+
+.panel {
+  padding-left: var(--mantine-spacing-xl);
+}
+
+.content {
+  line-height: 50px;
+}
