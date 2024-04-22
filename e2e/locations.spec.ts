@@ -17,38 +17,32 @@ test.describe('Locations create, edit, delete', async () => {
 
   test('Login and enter code', () => auth.login());
 
-  test('Go to locations, and create new', async () => {
-    await location.navigateToCreatePage();
-    await location.submitForm(NAME);
-  });
+  test('Navigate to locations section', () =>
+    location.navigateToLocationsPage());
 
-  test('Verify location creation', async () => {
-    await location.navigateToLocationsPage();
-    const locator = await page.locator(
-      `[data-testid="name-title"]:has-text("${NAME}")`,
-    );
+  test('Verify empty locations', () =>
+    location.verifyCreateButtonVisibleOnEmptyPage());
 
-    expect(locator).toHaveCount(1);
-  });
+  test('Navigate to create location', () => location.navigateToCreatePage());
 
-  test('Navigate to edit location', async () => {
-    const locations = await page.locator('[data-testid^="location-item"]');
-    const location = locations.locator(`text=${NAME}`);
-    await location.click();
-    await page.waitForURL('**/edit');
-    await page.getByTestId('name-input').clear();
-    await page.getByTestId('name-input').fill(EDIT_NAME);
-    await page.getByTestId('submit-button').click();
-    await page.waitForSelector('text="Lokation er opdateret!"');
-  });
+  test('Fill location form', () => location.submitForm(NAME));
 
-  test('Verify the edited location', async () => {
-    await location.navigateToLocationsPage();
-    const locator = await page.locator(
-      `[data-testid="name-title"]:has-text("${EDIT_NAME}")`,
-    );
-    expect(locator).toHaveCount(1);
-  });
+  test('Navigate back to locations section', () =>
+    location.navigateToLocationsPage());
+
+  test('Verify location creation', () =>
+    location.verifyLocationNameIsVisible(NAME));
+
+  test('Navigate to edit location', () =>
+    location.navigateToLocationByName(NAME));
+
+  test('Update location form', () => location.updateForm(EDIT_NAME));
+
+  test('Navigate again back to locations section', () =>
+    location.navigateToLocationsPage());
+
+  test('Verify edited location creation', () =>
+    location.verifyLocationNameIsVisible(NAME));
 
   test('Delete it', () => location.destroy(EDIT_NAME));
 
@@ -58,4 +52,7 @@ test.describe('Locations create, edit, delete', async () => {
     );
     expect(locator).not.toBeVisible();
   });
+
+  test('Verify again empty locations', () =>
+    location.verifyCreateButtonVisibleOnEmptyPage());
 });

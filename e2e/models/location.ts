@@ -1,4 +1,4 @@
-import {type Page} from '@playwright/test';
+import {expect, type Page} from '@playwright/test';
 
 export class PlaywrightLocationPage {
   private readonly page: Page;
@@ -8,7 +8,6 @@ export class PlaywrightLocationPage {
   }
 
   async navigateToCreatePage() {
-    await this.navigateToLocationsPage();
     await this.page.getByTestId('empty-create-button').click();
     await this.page.waitForURL('./account/locations/create');
   }
@@ -16,6 +15,25 @@ export class PlaywrightLocationPage {
   async navigateToLocationsPage() {
     await this.page.getByTestId('locations-link').click();
     await this.page.waitForURL(`./account/locations`);
+  }
+
+  async navigateToLocationByName(name: string) {
+    const locations = await this.page.locator('[data-testid^="location-item"]');
+    const location = locations.locator(`text=${name}`);
+    await location.click();
+    await this.page.waitForURL('**/edit');
+  }
+
+  async verifyCreateButtonVisibleOnEmptyPage() {
+    const locator = await this.page.getByTestId('empty-create-button');
+    await expect(locator.isVisible()).toBeTruthy();
+  }
+
+  async verifyLocationNameIsVisible(name: string) {
+    const locator = await this.page.locator(
+      `[data-testid="name-title"]:has-text("${name}")`,
+    );
+    expect(locator).toHaveCount(1);
   }
 
   async submitForm(name: string) {
@@ -34,6 +52,13 @@ export class PlaywrightLocationPage {
 
     await this.page.getByTestId('submit-button').click();
     await this.page.waitForURL('./account/locations');
+  }
+
+  async updateForm(editName: string) {
+    await this.page.getByTestId('name-input').clear();
+    await this.page.getByTestId('name-input').fill(editName);
+    await this.page.getByTestId('submit-button').click();
+    await this.page.waitForSelector('text="Lokation er opdateret!"');
   }
 
   async destroy(name: string) {
