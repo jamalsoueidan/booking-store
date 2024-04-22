@@ -102,7 +102,7 @@ function BusinessAccount({
               size={74}
               thickness={9}
               label={
-                <Text size="xl" ta="center">
+                <Text size="xl" ta="center" data-testid="status-text">
                   {finishedCount}/{totalCount}
                 </Text>
               }
@@ -113,8 +113,8 @@ function BusinessAccount({
           </Flex>
 
           <AccordionGuide variant="filled">
-            <Accordion.Item value="profile">
-              <Accordion.Control icon={IconCheckOrX(status.profile)}>
+            <Accordion.Item value="profile" data-testid="profil-accordion">
+              <Accordion.Control icon={IconCheckOrX(status.profile, 'profile')}>
                 Færdiggøre din profil
               </Accordion.Control>
               <Accordion.Panel>
@@ -129,8 +129,10 @@ function BusinessAccount({
                 </Button>
               </Accordion.Panel>
             </Accordion.Item>
-            <Accordion.Item value="locations">
-              <Accordion.Control icon={IconCheckOrX(status.locations)}>
+            <Accordion.Item value="locations" data-testid="locations-accordion">
+              <Accordion.Control
+                icon={IconCheckOrX(status.locations, 'locations')}
+              >
                 Lokationer
               </Accordion.Control>
               <Accordion.Panel>
@@ -148,8 +150,10 @@ function BusinessAccount({
                 </Button>
               </Accordion.Panel>
             </Accordion.Item>
-            <Accordion.Item value="schedules">
-              <Accordion.Control icon={IconCheckOrX(status.schedules)}>
+            <Accordion.Item value="schedules" data-testid="schedules-accordion">
+              <Accordion.Control
+                icon={IconCheckOrX(status.schedules, 'schedules')}
+              >
                 Vagtplan
               </Accordion.Control>
               <Accordion.Panel>
@@ -167,8 +171,10 @@ function BusinessAccount({
                 </Button>
               </Accordion.Panel>
             </Accordion.Item>
-            <Accordion.Item value="services">
-              <Accordion.Control icon={IconCheckOrX(status.services)}>
+            <Accordion.Item value="services" data-testid="services-accordion">
+              <Accordion.Control
+                icon={IconCheckOrX(status.services, 'services')}
+              >
                 Tilføj en ydelse
               </Accordion.Control>
               <Accordion.Panel>
@@ -186,8 +192,13 @@ function BusinessAccount({
                 </Button>
               </Accordion.Panel>
             </Accordion.Item>
-            <Accordion.Item value="profileImage">
-              <Accordion.Control icon={IconCheckOrX(status.profileImage)}>
+            <Accordion.Item
+              value="profileImage"
+              data-testid="profil-image-accordion"
+            >
+              <Accordion.Control
+                icon={IconCheckOrX(status.profileImage, 'profile-image')}
+              >
                 Upload dit billed
               </Accordion.Control>
               <Accordion.Panel>
@@ -277,7 +288,7 @@ function BuyerAccount() {
   );
 }
 
-function IconCheckOrX(boolean: boolean) {
+function IconCheckOrX(boolean: boolean, name: string) {
   return boolean ? (
     <ThemeIcon radius="lg" color="green" size="xs">
       <IconCheck
@@ -285,6 +296,7 @@ function IconCheckOrX(boolean: boolean) {
           width: '100%',
           height: '100%',
         }}
+        data-testid={`${name}-icon-check`}
       />
     </ThemeIcon>
   ) : (
@@ -294,6 +306,7 @@ function IconCheckOrX(boolean: boolean) {
           width: '100%',
           height: '100%',
         }}
+        data-testid={`${name}-icon-uncheck`}
       />
     </ThemeIcon>
   );
