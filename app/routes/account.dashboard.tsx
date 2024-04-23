@@ -114,7 +114,10 @@ function BusinessAccount({
 
           <AccordionGuide variant="filled">
             <Accordion.Item value="profile" data-testid="profil-accordion">
-              <Accordion.Control icon={IconCheckOrX(status.profile, 'profile')}>
+              <Accordion.Control
+                icon={IconCheckOrX(status.profile, 'profile')}
+                data-testid="profil-control"
+              >
                 Færdiggøre din profil
               </Accordion.Control>
               <Accordion.Panel>
@@ -132,6 +135,7 @@ function BusinessAccount({
             <Accordion.Item value="locations" data-testid="locations-accordion">
               <Accordion.Control
                 icon={IconCheckOrX(status.locations, 'locations')}
+                data-testid="locations-control"
               >
                 Lokationer
               </Accordion.Control>
@@ -153,6 +157,7 @@ function BusinessAccount({
             <Accordion.Item value="schedules" data-testid="schedules-accordion">
               <Accordion.Control
                 icon={IconCheckOrX(status.schedules, 'schedules')}
+                data-testid="schedules-control"
               >
                 Vagtplan
               </Accordion.Control>
@@ -174,6 +179,7 @@ function BusinessAccount({
             <Accordion.Item value="services" data-testid="services-accordion">
               <Accordion.Control
                 icon={IconCheckOrX(status.services, 'services')}
+                data-testid="services-control"
               >
                 Tilføj en ydelse
               </Accordion.Control>
@@ -198,6 +204,7 @@ function BusinessAccount({
             >
               <Accordion.Control
                 icon={IconCheckOrX(status.profileImage, 'profile-image')}
+                data-testid="profile-image-control"
               >
                 Upload dit billed
               </Accordion.Control>

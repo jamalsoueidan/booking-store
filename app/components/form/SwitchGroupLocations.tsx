@@ -55,7 +55,7 @@ export function SwitchGroupLocations({
             key={l._id}
             value={l._id}
             label={l.name}
-            data-testid={`${l.name}-switch`}
+            data-testid={`location-switch-${l._id}`}
           />
         ))}
       </Stack>
