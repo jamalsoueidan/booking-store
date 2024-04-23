@@ -101,7 +101,9 @@ export default function AccountLocationsEdit() {
     <>
       <AccountTitle linkBack="/account/locations" heading={defaultValue.name}>
         <Button
-          variant="light"
+          variant="outline"
+          radius="xl"
+          color="black"
           component={Link}
           to={`https://www.google.com/maps/search/?api=1&query=${defaultValue.geoLocation.coordinates
             .reverse()
@@ -118,7 +120,8 @@ export default function AccountLocationsEdit() {
           style={{display: 'inline-block'}}
         >
           <Button
-            variant="filled"
+            variant="outline"
+            radius="xl"
             color="red"
             type="submit"
             data-testid={`delete-button-${defaultValue._id}`}
