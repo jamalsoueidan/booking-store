@@ -1,10 +1,8 @@
+import carouselStyles from '@mantine/carousel/styles.css?url';
 import {ColorSchemeScript} from '@mantine/core';
-
-import '@mantine/carousel/styles.css';
-import '@mantine/core/styles.css';
-import '@mantine/nprogress/styles.css';
-import '@mantine/tiptap/styles.css';
-
+import coreStyles from '@mantine/core/styles.css?url';
+import nprogressStyles from '@mantine/nprogress/styles.css?url';
+import tiptapStyles from '@mantine/tiptap/styles.css?url';
 import {
   isRouteErrorResponse,
   Links,
@@ -12,11 +10,16 @@ import {
   Outlet,
   Scripts,
   ScrollRestoration,
+  useLoaderData,
   useMatches,
   useRouteError,
   type ShouldRevalidateFunction,
 } from '@remix-run/react';
-import {useNonce} from '@shopify/hydrogen';
+import {
+  UNSTABLE_Analytics as Analytics,
+  getShopAnalytics,
+  useNonce,
+} from '@shopify/hydrogen';
 import {
   defer,
   type LoaderFunctionArgs,
@@ -24,6 +27,7 @@ import {
 } from '@shopify/remix-oxygen';
 import {type ReactNode} from 'react';
 import favicon from './assets/favicon.svg';
+import {CustomAnalytics} from './components/CustomAnalytics';
 import {LayoutWrapper} from './components/LayoutWrapper';
 import appStyles from './styles/app.css?url';
 
@@ -51,6 +55,10 @@ export const shouldRevalidate: ShouldRevalidateFunction = ({
 export function links() {
   return [
     {rel: 'stylesheet', href: appStyles},
+    {rel: 'stylesheet', href: carouselStyles},
+    {rel: 'stylesheet', href: coreStyles},
+    {rel: 'stylesheet', href: nprogressStyles},
+    {rel: 'stylesheet', href: tiptapStyles},
     {
       rel: 'preconnect',
       href: 'https://cdn.shopify.com',
@@ -71,8 +79,8 @@ export const useRootLoaderData = () => {
   return root?.data as SerializeFrom<typeof loader>;
 };
 
-export async function loader({context, request}: LoaderFunctionArgs) {
-  const {storefront, customerAccount, cart, session} = context;
+export async function loader({context}: LoaderFunctionArgs) {
+  const {storefront, customerAccount, cart, env} = context;
   const publicStoreDomain = context.env.PUBLIC_STORE_DOMAIN;
 
   const isLoggedInPromise = customerAccount.isLoggedIn();
@@ -100,11 +108,20 @@ export async function loader({context, request}: LoaderFunctionArgs) {
     header: await headerPromise,
     isLoggedIn: isLoggedInPromise,
     publicStoreDomain,
+    shop: getShopAnalytics({
+      storefront,
+      publicStorefrontId: env.PUBLIC_STOREFRONT_ID,
+    }),
+    consent: {
+      checkoutDomain: env.PUBLIC_CHECKOUT_DOMAIN,
+      storefrontAccessToken: env.PUBLIC_STOREFRONT_API_TOKEN,
+    },
   });
 }
 
 export function Layout({children}: {children: ReactNode}) {
   const nonce = useNonce();
+  const data = useLoaderData<typeof loader>();
 
   return (
     <html lang="en">
@@ -119,7 +136,15 @@ export function Layout({children}: {children: ReactNode}) {
         <ColorSchemeScript />
       </head>
       <body>
-        <LayoutWrapper>{children}</LayoutWrapper>
+        <Analytics.Provider
+          cart={data.cart}
+          shop={data.shop}
+          consent={data.consent}
+          customData={{foo: 'bar'}}
+        >
+          <LayoutWrapper>{children}</LayoutWrapper>
+          <CustomAnalytics />
+        </Analytics.Provider>
         <ScrollRestoration nonce={nonce} />
         <Scripts nonce={nonce} />
       </body>

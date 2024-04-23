@@ -10,7 +10,12 @@ import {
   useNavigate,
   useSearchParams,
 } from '@remix-run/react';
-import {getSelectedProductOptions, Image, parseGid} from '@shopify/hydrogen';
+import {
+  UNSTABLE_Analytics as Analytics,
+  getSelectedProductOptions,
+  Image,
+  parseGid,
+} from '@shopify/hydrogen';
 import {Suspense} from 'react';
 import type {
   ProductFragment,
@@ -90,6 +95,7 @@ export async function loader({params, request, context}: LoaderFunctionArgs) {
 
 export default function Product() {
   const {product, variantsUsers} = useLoaderData<typeof loader>();
+  const {selectedVariant} = product;
 
   const collection = product.collections.nodes.find((p) =>
     p.title.includes('treatments'),
@@ -139,6 +145,21 @@ export default function Product() {
             </Suspense>
           </Stack>
         </Box>
+        <Analytics.ProductView
+          data={{
+            products: [
+              {
+                id: product.id,
+                title: product.title,
+                price: selectedVariant?.price.amount || '0',
+                vendor: product.vendor,
+                variantId: selectedVariant?.id || '',
+                variantTitle: selectedVariant?.title || '',
+                quantity: 1,
+              },
+            ],
+          }}
+        />
       </SimpleGrid>
     </>
   );

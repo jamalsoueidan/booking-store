@@ -1,3 +1,7 @@
+body {
+  background-color: #fff;
+}
+
 :root {
   --aside-width: 360px;
   --cart-aside-summary-height-with-discount: 300px;

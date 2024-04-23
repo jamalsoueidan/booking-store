@@ -1,4 +1,5 @@
 import {RemixServer} from '@remix-run/react';
+import {type AppLoadContext} from '@remix-run/server-runtime';
 import {createContentSecurityPolicy} from '@shopify/hydrogen';
 import type {EntryContext} from '@shopify/remix-oxygen';
 import isbot from 'isbot';
@@ -9,11 +10,15 @@ export default async function handleRequest(
   responseStatusCode: number,
   responseHeaders: Headers,
   remixContext: EntryContext,
+  context: AppLoadContext,
 ) {
-  const {nonce, header, NonceProvider} = createContentSecurityPolicy({
+  const {nonce, NonceProvider} = createContentSecurityPolicy({
+    shop: {
+      checkoutDomain: context.env.PUBLIC_CHECKOUT_DOMAIN,
+      storeDomain: context.env.PUBLIC_STORE_DOMAIN,
+    },
     connectSrc: [
       "'self'",
-      'wss://deciding-seasnail-seriously.ngrok-free.app:*',
       'cdn.shopify.com',
       'monorail-edge.shopifysvc.com',
       'shopify-chat.shopifyapps.com', // Shopify Inbox
@@ -40,11 +45,6 @@ export default async function handleRequest(
   }
 
   responseHeaders.set('Content-Type', 'text/html');
-  const newHeader = header.replace(
-    'https://shopify.com',
-    'https://shopify.com https://www.google.com',
-  );
-  //responseHeaders.set('Content-Security-Policy', header);
 
   return new Response(body, {
     headers: responseHeaders,
