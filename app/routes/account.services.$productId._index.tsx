@@ -156,6 +156,7 @@ export default function EditAddress() {
             label="Hvilken ydelse vil du tilbyde?"
             disabled
             value={selectedProduct?.title}
+            data-testid="product-input"
           />
 
           <Flex gap={{base: 'sm', sm: 'lg'}}>
@@ -165,12 +166,14 @@ export default function EditAddress() {
               required
               w={'25%'}
               hideControls={true}
+              data-testid="price-input"
             />
             <NumericInput
               field={fields.compareAtPrice}
               label="Før-pris"
               w={'25%'}
               hideControls={true}
+              data-testid="compare-at-price-input"
             />
           </Flex>
 
@@ -187,6 +190,7 @@ export default function EditAddress() {
             {...getSelectProps(fields.scheduleId)}
             allowDeselect={false}
             defaultValue={fields.scheduleId.initialValue}
+            data-testid="schedules-select"
           />
 
           <SubmitButton>Opdatere</SubmitButton>

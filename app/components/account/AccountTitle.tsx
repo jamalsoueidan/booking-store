@@ -42,7 +42,7 @@ export function AccountTitle({
           <Title
             className={classes.title}
             {...props}
-            data-testid="welcome-title"
+            data-testid="account-title"
           >
             {heading}
           </Title>

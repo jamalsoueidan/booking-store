@@ -44,10 +44,13 @@ export default function EditAddress() {
       >
         <AccountButton
           to={`/account/services/${parseGid(selectedProduct.id).id}`}
+          data-testid="basic-button"
         >
           Basic
         </AccountButton>
-        <AccountButton to={'advanced'}>Advanceret</AccountButton>
+        <AccountButton to={'booking'} data-testid="booking-button">
+          Booking Konfiguration
+        </AccountButton>
         <Form
           method="post"
           action={`${parseGid(selectedProduct.id).id}/destroy`}
@@ -59,6 +62,7 @@ export default function EditAddress() {
             color="red"
             fullWidth
             type="submit"
+            data-testid="delete-button"
           >
             Slet
           </Button>
