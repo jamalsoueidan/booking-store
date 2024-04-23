@@ -136,7 +136,7 @@ export default function EditAddress() {
               {value: 'hours', label: 'Timer'},
             ]}
           />
-          <SubmitButton>Opdatere</SubmitButton>
+          <SubmitButton>Gem ændringer</SubmitButton>
         </Flex>
       </Form>
     </FormProvider>

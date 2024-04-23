@@ -6,7 +6,7 @@ import {
   useForm,
 } from '@conform-to/react';
 import {parseWithZod} from '@conform-to/zod';
-import {Flex, Select, TextInput} from '@mantine/core';
+import {Flex, Select} from '@mantine/core';
 import {
   Form,
   useActionData,
@@ -152,12 +152,7 @@ export default function EditAddress() {
         >
           <input {...getInputProps(fields.scheduleId, {type: 'hidden'})} />
 
-          <TextInput
-            label="Hvilken ydelse vil du tilbyde?"
-            disabled
-            value={selectedProduct?.title}
-            data-testid="product-input"
-          />
+          <input {...getInputProps(fields.productId, {type: 'hidden'})} />
 
           <Flex gap={{base: 'sm', sm: 'lg'}}>
             <NumericInput
@@ -193,7 +188,7 @@ export default function EditAddress() {
             data-testid="schedules-select"
           />
 
-          <SubmitButton>Opdatere</SubmitButton>
+          <SubmitButton>Gem ændringer</SubmitButton>
         </Flex>
       </Form>
     </FormProvider>

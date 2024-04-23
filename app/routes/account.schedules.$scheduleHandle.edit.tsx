@@ -104,7 +104,7 @@ export default function AccountSchedulesEdit() {
             data-autofocus
             data-testid="name-input"
           />
-          <SubmitButton data-testid="update-button">Opdatere</SubmitButton>
+          <SubmitButton data-testid="update-button">Gem ændringer</SubmitButton>
         </Stack>
       </Form>
     </FocusTrap>

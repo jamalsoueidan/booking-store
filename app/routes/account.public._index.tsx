@@ -149,7 +149,7 @@ export default function AccountBusiness() {
           </div>
 
           <div>
-            <SubmitButton>Opdatere</SubmitButton>
+            <SubmitButton>Gem ændringer</SubmitButton>
           </div>
         </Stack>
       </Form>

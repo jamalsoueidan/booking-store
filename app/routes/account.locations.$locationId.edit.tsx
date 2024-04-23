@@ -220,7 +220,7 @@ export default function AccountLocationsEdit() {
             />
 
             <Group>
-              <SubmitButton>Opdatere</SubmitButton>
+              <SubmitButton>Gem ændringer</SubmitButton>
               <Text>eller</Text>
               <Anchor
                 component={Link}

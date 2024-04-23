@@ -95,7 +95,7 @@ export default function AccountBusiness() {
             {...getInputProps(facebook, {type: 'text'})}
           />
           <div>
-            <SubmitButton>Opdatere</SubmitButton>
+            <SubmitButton>Gem ændringer</SubmitButton>
           </div>
         </Stack>
       </Form>
