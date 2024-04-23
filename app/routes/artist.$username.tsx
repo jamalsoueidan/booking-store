@@ -124,12 +124,12 @@ export default function UserIndex() {
               <Alert
                 variant="light"
                 color="red"
-                title="Bruger ikke aktiv"
+                title="Din konto er inaktiv"
                 icon={<IconInfoCircle />}
                 mb="xl"
               >
-                Din bruger er ikke aktiv, men du kan se din profil side indtil
-                vi godkender den.
+                Din konto er pt. ikke aktiv, men du kan stadig tilgå din
+                profilside, indtil den bliver godkendt.
               </Alert>
             ) : null}
             <Outlet />
