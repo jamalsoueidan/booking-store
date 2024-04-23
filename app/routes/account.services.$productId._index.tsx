@@ -7,19 +7,13 @@ import {
 } from '@conform-to/react';
 import {parseWithZod} from '@conform-to/zod';
 import {Flex, Select} from '@mantine/core';
-import {
-  Form,
-  useActionData,
-  useLoaderData,
-  useOutletContext,
-} from '@remix-run/react';
+import {Form, useActionData, useLoaderData} from '@remix-run/react';
 import {
   json,
   type ActionFunctionArgs,
   type LoaderFunctionArgs,
 } from '@shopify/remix-oxygen';
 import {redirectWithSuccess} from 'remix-toast';
-import {type ProductItemByIdQuery} from 'storefrontapi.generated';
 import {z} from 'zod';
 import {NumericInput} from '~/components/form/NumericInput';
 import {SubmitButton} from '~/components/form/SubmitButton';
@@ -120,9 +114,6 @@ export async function loader({context, params}: LoaderFunctionArgs) {
 }
 
 export default function EditAddress() {
-  const {selectedProduct} = useOutletContext<{
-    selectedProduct: ProductItemByIdQuery['product'];
-  }>();
   const {locations, schedules, defaultValue} = useLoaderData<typeof loader>();
   const lastResult = useActionData<typeof action>();
   const [form, fields] = useForm({
