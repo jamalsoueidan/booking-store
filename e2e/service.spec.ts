@@ -1,6 +1,5 @@
-import {expect, test} from '@playwright/test';
+import {type BrowserContext, expect, type Page, test} from '@playwright/test';
 
-import {type Page} from '@playwright/test';
 import {PlaywrightAuthPage} from './models/auth';
 import {PlaywrightLocationPage} from './models/location';
 import {PlaywrightSchedulePage} from './models/schedule';
@@ -8,15 +7,18 @@ import {PlaywrightServicePage} from './models/service';
 
 const locationName = 'test service location';
 const scheduleName = 'test service schedule';
+
 test.describe('Services create, edit, delete', async () => {
   let page: Page;
   let location: PlaywrightLocationPage;
   let schedule: PlaywrightSchedulePage;
   let auth: PlaywrightAuthPage;
   let service: PlaywrightServicePage;
+  let context: BrowserContext;
 
   test.beforeAll(async ({browser}) => {
     page = await browser.newPage();
+    context = await browser.newContext();
     auth = new PlaywrightAuthPage(page);
     location = new PlaywrightLocationPage(page);
     schedule = new PlaywrightSchedulePage(page);
@@ -26,53 +28,60 @@ test.describe('Services create, edit, delete', async () => {
   test('Login and enter code', () => auth.login());
 
   test('Try to create a service, reject because locations is empty', async () => {
-    await service.attemptNavigateToCreatePage();
-    await page.waitForURL('./account/services');
+    await service.navigateToServicesSection();
     const text = await page.getByTestId('empty-title').textContent();
     expect(text).toBe(
-      'Du mangler tilføje en lokation inden du kan tilføje ydelser',
+      'Du mangler oprette en lokation inden du kan tilføje ydelser',
     );
   });
 
-  test('Go to locations, and create new', async () => {
-    await page.getByTestId('empty-create-button').click();
-    await page.waitForURL('./account/locations/create');
+  test('Navigate to locations, and create new', async () => {
+    await location.navigateToLocationsPage();
+    await location.navigateToCreatePage();
     await location.submitForm(locationName);
   });
 
   test('Try to create a service, reject because schedules is empty', async () => {
-    await service.attemptNavigateToCreatePage();
-    await page.waitForURL('./account/services');
+    await service.navigateToServicesSection();
     const text = await page.getByTestId('empty-title').textContent();
     expect(text).toBe(
-      'Du mangler tilføje en vagtplan inden du kan tilføje ydelser',
+      'Du mangler oprette en vagtplan inden du kan tilføje ydelser',
     );
   });
 
-  test('Go to schedules, and create new', async () => {
-    await page.getByTestId('empty-create-button').click();
-    await page.waitForURL('./account/schedules#create');
+  test('Navigate to schedules, and create new', async () => {
+    await schedule.navigateToSchedulesPage();
+    await schedule.navigateToCreatePage();
     await schedule.submitForm(scheduleName);
   });
 
-  test('Go to services, and add new service to user', async () => {
-    await service.attemptNavigateToCreatePage();
-    await page.waitForURL('./account/services/create');
-    await page.getByTestId('category-select').click();
-    await page.getByRole('option', {name: 'Hårklip'}).click();
+  test('Navigate to services', () => service.navigateToServicesSection());
 
-    await page.waitForResponse('/account/api/products**');
-    await page.getByTestId('product-select').click();
-    await page.getByRole('option', {name: 'Pandehår'}).click();
+  test('Navigate to service create page', () =>
+    service.navigateToServicesCreatePage());
 
-    await page.getByTestId('price-input').clear();
-    await page.getByTestId('price-input').fill('99');
+  test('Submit service form', () => service.submitForm('Hårklip', 'Pandehår'));
 
-    const value = await page.getByTestId('schedules-select').inputValue();
-    expect(value).toBe(scheduleName);
-    await Promise.all([
-      page.waitForURL('/account/services/**'),
-      page.getByTestId('submit-button').click(),
+  test('Verify service data', async () => {
+    const text = await page.getByTestId('account-title').textContent();
+    expect(text).toContain('Pandehår');
+  });
+
+  test('Navigate to dashboard', () => service.navigateToDashboardPage());
+
+  test('Verify schedules is checked as done on the dashboard', async () => {
+    const isVisible = await page.getByTestId('services-icon-check').isVisible();
+    expect(isVisible).toBeTruthy();
+  });
+
+  test('Navigate to the artist page', async () => {
+    const [newPage] = await Promise.all([
+      context.waitForEvent('page'),
+      await page.getByTestId('preview-link').click(),
     ]);
+
+    await newPage.waitForSelector('h1');
+    const headerText = await newPage.textContent('h1');
+    console.log('Header Text:', headerText);
   });
 });
