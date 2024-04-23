@@ -137,7 +137,7 @@ function BusinessAccount({
                 icon={IconCheckOrX(status.locations, 'locations')}
                 data-testid="locations-control"
               >
-                Lokationer
+                Opret en lokation
               </Accordion.Control>
               <Accordion.Panel>
                 <Text size="sm">
@@ -159,7 +159,7 @@ function BusinessAccount({
                 icon={IconCheckOrX(status.schedules, 'schedules')}
                 data-testid="schedules-control"
               >
-                Vagtplan
+                Opret en vagtplan
               </Accordion.Control>
               <Accordion.Panel>
                 <Text size="sm">
