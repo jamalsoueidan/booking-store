@@ -17,8 +17,8 @@ test.describe('Services create, edit, delete', async () => {
   let context: BrowserContext;
 
   test.beforeAll(async ({browser}) => {
-    page = await browser.newPage();
     context = await browser.newContext();
+    page = await context.newPage();
     location = new PlaywrightLocationPage(page);
     schedule = new PlaywrightSchedulePage(page);
     service = new PlaywrightServicePage(page);
@@ -26,7 +26,6 @@ test.describe('Services create, edit, delete', async () => {
   });
 
   test('Try to create a service, reject because locations is empty', async () => {
-    await page.goto('./account/dashboard');
     await service.navigateToServicesSection();
     const text = await page.getByTestId('empty-title').textContent();
     expect(text).toBe(
@@ -74,10 +73,11 @@ test.describe('Services create, edit, delete', async () => {
   });
 
   test('Navigate to the artist page', async () => {
-    const [newPage] = await Promise.all([
-      context.waitForEvent('page'),
-      await page.getByTestId('preview-link').click(),
-    ]);
+    const pagePromise = context.waitForEvent('page');
+    await page.getByTestId('preview-link').click();
+    const newPage = await pagePromise;
+    await newPage.waitForLoadState();
+    console.log(await newPage.title());
 
     await newPage.waitForSelector('h1');
     const headerText = await newPage.textContent('h1');
