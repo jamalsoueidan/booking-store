@@ -11,14 +11,13 @@ import {
   Title,
   UnstyledButton,
 } from '@mantine/core';
-import {ModalsProvider} from '@mantine/modals';
-
 import {
   useDisclosure,
   useHeadroom,
   useMediaQuery,
   useWindowScroll,
 } from '@mantine/hooks';
+import {ModalsProvider} from '@mantine/modals';
 import {NavigationProgress, nprogress} from '@mantine/nprogress';
 import {
   Await,
@@ -28,6 +27,7 @@ import {
   useLocation,
   useNavigation,
 } from '@remix-run/react';
+import {unstable_useAnalytics as useAnalytics} from '@shopify/hydrogen';
 import {
   IconChevronRight,
   IconDashboard,
@@ -48,6 +48,12 @@ export function LayoutWrapper({children}: {children: ReactNode}) {
   const location = useLocation();
   const path = location.pathname;
   const {state} = useNavigation();
+
+  const {publish, cart: analyticsCart} = useAnalytics();
+  // Example: publishing a custom event when the side cart is toggled
+  function publishSideCartViewed() {
+    publish('custom_click_menu', {cart: analyticsCart});
+  }
 
   useEffect(() => {
     if (state === 'loading' || state === 'submitting') {
@@ -112,7 +118,11 @@ export function LayoutWrapper({children}: {children: ReactNode}) {
                 {data &&
                   data.header &&
                   data.header.menu?.items.map(({url, title}) => (
-                    <NavLink key={url} to={new URL(url || '').pathname}>
+                    <NavLink
+                      key={url}
+                      to={new URL(url || '').pathname}
+                      onClick={publishSideCartViewed}
+                    >
                       {({isActive}) => (
                         <Button
                           radius="xl"

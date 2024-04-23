@@ -1,5 +1,8 @@
 import {useLoaderData, type MetaFunction} from '@remix-run/react';
-import {getPaginationVariables} from '@shopify/hydrogen';
+import {
+  UNSTABLE_Analytics as Analytics,
+  getPaginationVariables,
+} from '@shopify/hydrogen';
 import {defer, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
 
 import {NoSearchResults, SearchForm, SearchResults} from '~/components/Search';
@@ -62,6 +65,7 @@ export default function SearchPage() {
           searchTerm={searchTerm}
         />
       )}
+      <Analytics.SearchView data={{searchTerm, searchResults}} />
     </div>
   );
 }

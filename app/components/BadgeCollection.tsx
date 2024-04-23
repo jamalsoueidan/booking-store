@@ -1,4 +1,4 @@
-import {Badge, Image, UnstyledButton, rem} from '@mantine/core';
+import {Badge, UnstyledButton} from '@mantine/core';
 import {Link} from '@remix-run/react';
 
 import {type ProductCollectionFragment} from 'storefrontapi.generated';
@@ -17,24 +17,8 @@ export function BadgeCollection({
     return null;
   }
 
-  const leftSection = (
-    <Image
-      src={`/categories/${
-        collection.icon?.value || 'reshot-icon-beauty-mirror'
-      }.svg`}
-      style={{width: rem(18), height: rem(18)}}
-      alt={collection.icon?.value || 'reshot-icon-beauty-mirror'}
-    />
-  );
-
   const markup = (
-    <Badge
-      leftSection={leftSection}
-      size="lg"
-      radius="md"
-      variant="light"
-      color={user.theme.color}
-    >
+    <Badge size="lg" radius="md" variant="light" color={user.theme.color}>
       {parseTE(collection.title)}
     </Badge>
   );

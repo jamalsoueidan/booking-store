@@ -1,6 +1,10 @@
 import {Button, Container, Flex, SimpleGrid, Stack} from '@mantine/core';
 import {useLoaderData, type MetaFunction} from '@remix-run/react';
-import {Pagination, getPaginationVariables} from '@shopify/hydrogen';
+import {
+  UNSTABLE_Analytics as Analytics,
+  Pagination,
+  getPaginationVariables,
+} from '@shopify/hydrogen';
 import {json, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
 import type {ProductItemFragment} from 'storefrontapi.generated';
 import {ProductCard} from '~/components/ProductCard';
@@ -68,6 +72,14 @@ export default function Collection() {
           </Stack>
         )}
       </Pagination>
+      <Analytics.CollectionView
+        data={{
+          collection: {
+            id: collection.id,
+            handle: collection.handle,
+          },
+        }}
+      />
     </Container>
   );
 }
