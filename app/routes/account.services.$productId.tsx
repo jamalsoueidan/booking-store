@@ -53,7 +53,9 @@ export default function EditAddress() {
         </AccountButton>
         <Form
           method="post"
-          action={`${parseGid(selectedProduct.id).id}/destroy`}
+          action={`/account/services/${
+            parseGid(selectedProduct.id).id
+          }/destroy`}
           style={{display: 'inline-block'}}
         >
           <Button
