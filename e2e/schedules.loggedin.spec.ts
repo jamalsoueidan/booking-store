@@ -1,7 +1,6 @@
 import {expect, test} from '@playwright/test';
 
 import {type Page} from '@playwright/test';
-import {PlaywrightAuthPage} from './models/auth';
 import {PlaywrightSchedulePage} from './models/schedule';
 
 const NAME = 'Your Schedule Name';
@@ -9,15 +8,13 @@ const CHANGE_NAME = 'Test Schedule';
 
 test.describe('Schedules create, edit, delete', async () => {
   let page: Page;
-  let auth: PlaywrightAuthPage;
   let schedule: PlaywrightSchedulePage;
+
   test.beforeAll(async ({browser}) => {
     page = await browser.newPage();
-    auth = new PlaywrightAuthPage(page);
     schedule = new PlaywrightSchedulePage(page);
+    await page.goto('./account/dashboard');
   });
-
-  test('Login and enter code', () => auth.login());
 
   test('Navigate to schedule section', () =>
     schedule.navigateToSchedulesPage());

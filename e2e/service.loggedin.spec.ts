@@ -1,6 +1,5 @@
 import {type BrowserContext, expect, type Page, test} from '@playwright/test';
 
-import {PlaywrightAuthPage} from './models/auth';
 import {PlaywrightLocationPage} from './models/location';
 import {PlaywrightSchedulePage} from './models/schedule';
 import {PlaywrightServicePage} from './models/service';
@@ -8,26 +7,26 @@ import {PlaywrightServicePage} from './models/service';
 const locationName = 'test service location';
 const scheduleName = 'test service schedule';
 
+test.describe.configure({mode: 'serial'});
+
 test.describe('Services create, edit, delete', async () => {
   let page: Page;
   let location: PlaywrightLocationPage;
   let schedule: PlaywrightSchedulePage;
-  let auth: PlaywrightAuthPage;
   let service: PlaywrightServicePage;
   let context: BrowserContext;
 
   test.beforeAll(async ({browser}) => {
     page = await browser.newPage();
     context = await browser.newContext();
-    auth = new PlaywrightAuthPage(page);
     location = new PlaywrightLocationPage(page);
     schedule = new PlaywrightSchedulePage(page);
     service = new PlaywrightServicePage(page);
+    await page.goto('./account/dashboard');
   });
 
-  test('Login and enter code', () => auth.login());
-
   test('Try to create a service, reject because locations is empty', async () => {
+    await page.goto('./account/dashboard');
     await service.navigateToServicesSection();
     const text = await page.getByTestId('empty-title').textContent();
     expect(text).toBe(

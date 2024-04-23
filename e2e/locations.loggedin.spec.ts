@@ -1,5 +1,4 @@
 import {expect, type Page, test} from '@playwright/test';
-import {PlaywrightAuthPage} from './models/auth';
 import {PlaywrightLocationPage} from './models/location';
 
 const NAME = 'location ' + new Date().getTime();
@@ -8,14 +7,12 @@ const EDIT_NAME = NAME + ' edited';
 test.describe('Locations create, edit, delete', async () => {
   let page: Page;
   let location: PlaywrightLocationPage;
-  let auth: PlaywrightAuthPage;
+
   test.beforeAll(async ({browser}) => {
     page = await browser.newPage();
-    auth = new PlaywrightAuthPage(page);
     location = new PlaywrightLocationPage(page);
+    await page.goto('./account/dashboard');
   });
-
-  test('Login and enter code', () => auth.login());
 
   test('Navigate to locations section', () =>
     location.navigateToLocationsPage());
