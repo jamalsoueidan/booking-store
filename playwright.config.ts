@@ -3,11 +3,8 @@ import dotenv from 'dotenv';
 
 dotenv.config();
 
-/**
- * See https://playwright.dev/docs/test-configuration.
- */
 export default defineConfig({
-  timeout: 35000,
+  timeout: 45000,
   testDir: './e2e',
   /* Run tests in files in parallel */
   fullyParallel: false,
@@ -29,40 +26,28 @@ export default defineConfig({
 
   /* Configure projects for major browsers */
   projects: [
+    /*{
+      name: 'e2e sign up',
+      testMatch: 'signup-for-business-account.spec.ts',
+      use: {
+        storageState: undefined,
+        ...devices['Desktop Chrome'],
+      },
+    },*/
     {
-      name: 'chromium',
+      name: 'setup',
+      testMatch: 'login.setup.ts',
       use: {...devices['Desktop Chrome']},
     },
-    /*
     {
-      name: 'firefox',
-      use: {...devices['Desktop Firefox']},
+      name: 'e2e tests logged in',
+      dependencies: ['setup'],
+      testMatch: '**/*loggedin.spec.ts',
+      use: {
+        storageState: 'auth.json',
+        ...devices['Desktop Chrome'],
+      },
     },
-
-    {
-      name: 'webkit',
-      use: {...devices['Desktop Safari']},
-    },*/
-
-    /* Test against mobile viewports. */
-    // {
-    //   name: 'Mobile Chrome',
-    //   use: { ...devices['Pixel 5'] },
-    // },
-    // {
-    //   name: 'Mobile Safari',
-    //   use: { ...devices['iPhone 12'] },
-    // },
-
-    /* Test against branded browsers. */
-    // {
-    //   name: 'Microsoft Edge',
-    //   use: { ...devices['Desktop Edge'], channel: 'msedge' },
-    // },
-    // {
-    //   name: 'Google Chrome',
-    //   use: { ...devices['Desktop Chrome'], channel: 'chrome' },
-    // },
   ],
 
   /*webServer: [
