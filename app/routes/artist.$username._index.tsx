@@ -137,6 +137,7 @@ function ArtistSchedulesMenu({
         color={location.search === '' ? 'black' : user.theme.color}
         component={Link}
         to="?"
+        data-testid="all"
       >
         Alle
       </Button>
@@ -151,6 +152,7 @@ function ArtistSchedulesMenu({
         >
           <HoverCard.Target>
             <Button
+              data-testid={`schedule-${schedule._id}`}
               size={isMobile ? 'md' : 'lg'}
               radius="lg"
               variant={

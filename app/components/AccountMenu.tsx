@@ -189,6 +189,7 @@ export function AccountMenu({
               component={Link}
               to={`/artist/${user?.username}`}
               target="_blank"
+              data-testid="preview-link"
             >
               <IconEye />
             </ActionIcon>
