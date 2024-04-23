@@ -46,7 +46,7 @@ export default function EditAddress() {
           to={`/account/services/${parseGid(selectedProduct.id).id}`}
           data-testid="basic-button"
         >
-          Basic
+          Produkt detaljer
         </AccountButton>
         <AccountButton to={'booking'} data-testid="booking-button">
           Booking Konfiguration
