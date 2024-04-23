@@ -44,6 +44,7 @@ export function ArtistProduct({product, services}: ArtistProductProps) {
       radius="xl"
       px="md"
       py="lg"
+      data-testid={`service-item-${artistService?.productId}`}
       to={`treatment/${product.handle}`}
     >
       <Flex direction="column" gap={rem(48)} h="100%">
@@ -51,7 +52,13 @@ export function ArtistProduct({product, services}: ArtistProductProps) {
           <Badge c={`${user.theme.color}.6`} color={`${user.theme.color}.1`}>
             {artistService?.scheduleName}
           </Badge>
-          <Title order={2} size={rem(24)} fw={600} lts=".5px">
+          <Title
+            order={2}
+            size={rem(24)}
+            fw={600}
+            lts=".5px"
+            data-testid={`service-title-${artistService?.productId}`}
+          >
             {product.title}
           </Title>
 
@@ -76,16 +83,29 @@ export function ArtistProduct({product, services}: ArtistProductProps) {
               stroke="1"
             />
             <Flex direction="column">
-              <Text fw="bold">
+              <Text
+                fw="bold"
+                data-testid={`service-duration-text-${artistService?.productId}`}
+              >
                 {durationToTime(artistService?.duration ?? 0)}
               </Text>
-              <Text c="dimmed" fz="xs">
+              <Text
+                c="dimmed"
+                fz="xs"
+                data-testid={`service-collection-text-${artistService?.productId}`}
+              >
                 {parseTE(collection?.title || '')}
               </Text>
             </Flex>
           </Flex>
 
-          <Button variant="outline" size="xs" color="black" radius="xl">
+          <Button
+            variant="outline"
+            size="xs"
+            color="black"
+            radius="xl"
+            data-testid={`service-button-${artistService?.productId}`}
+          >
             {artistService?.price ? (
               <Money data={artistService?.price as any} />
             ) : null}
