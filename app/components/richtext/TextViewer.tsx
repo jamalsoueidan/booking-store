@@ -58,5 +58,10 @@ export function TextViewer({content}: {content: string}) {
     ]);
   }, [contentJSON]);
 
-  return <div dangerouslySetInnerHTML={{__html: output}} />;
+  return (
+    <div
+      dangerouslySetInnerHTML={{__html: output}}
+      data-testid="about-me-text"
+    />
+  );
 }
