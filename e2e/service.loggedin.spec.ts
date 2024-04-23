@@ -4,8 +4,10 @@ import {PlaywrightLocationPage} from './models/location';
 import {PlaywrightSchedulePage} from './models/schedule';
 import {PlaywrightServicePage} from './models/service';
 
-const locationName = 'test service location';
-const scheduleName = 'test service schedule';
+const LOCATION_NAME = 'test service location';
+const SCHEDULE_NAME = 'test service schedule';
+const CATEGORY = 'Hårklip';
+const PRODUCT = 'Pandehår';
 
 test.describe.configure({mode: 'serial'});
 
@@ -36,7 +38,7 @@ test.describe('Services create, edit, delete', async () => {
   test('Navigate to locations, and create new', async () => {
     await location.navigateToLocationsPage();
     await location.navigateToCreatePage();
-    await location.submitForm(locationName);
+    await location.submitForm(LOCATION_NAME);
   });
 
   test('Try to create a service, reject because schedules is empty', async () => {
@@ -50,7 +52,7 @@ test.describe('Services create, edit, delete', async () => {
   test('Navigate to schedules, and create new', async () => {
     await schedule.navigateToSchedulesPage();
     await schedule.navigateToCreatePage();
-    await schedule.submitForm(scheduleName);
+    await schedule.submitForm(SCHEDULE_NAME);
   });
 
   test('Navigate to services', () => service.navigateToServicesSection());
@@ -58,11 +60,11 @@ test.describe('Services create, edit, delete', async () => {
   test('Navigate to service create page', () =>
     service.navigateToServicesCreatePage());
 
-  test('Submit service form', () => service.submitForm('Hårklip', 'Pandehår'));
+  test('Submit service form', () => service.submitForm(CATEGORY, PRODUCT));
 
   test('Verify service data', async () => {
     const text = await page.getByTestId('account-title').textContent();
-    expect(text).toContain('Pandehår');
+    expect(text).toContain(PRODUCT);
   });
 
   test('Navigate to dashboard', () => service.navigateToDashboardPage());
@@ -77,10 +79,23 @@ test.describe('Services create, edit, delete', async () => {
     await page.getByTestId('preview-link').click();
     const newPage = await pagePromise;
     await newPage.waitForLoadState();
-    console.log(await newPage.title());
 
-    await newPage.waitForSelector('h1');
-    const headerText = await newPage.textContent('h1');
-    console.log('Header Text:', headerText);
+    const notActiveProfile = await newPage
+      .getByText('Din konto er inaktiv')
+      .isVisible();
+
+    expect(notActiveProfile).toBeTruthy();
+
+    const scheduleButtonVisible = await newPage
+      .locator(`[data-testid^="schedule-button"]:has-text("${SCHEDULE_NAME}")`)
+      .isVisible();
+
+    expect(scheduleButtonVisible).toBeTruthy();
+
+    const serviceTitleVisible = await newPage
+      .locator(`[data-testid^="service-title"]:has-text("${PRODUCT}")`)
+      .isVisible();
+
+    expect(serviceTitleVisible).toBeTruthy();
   });
 });
