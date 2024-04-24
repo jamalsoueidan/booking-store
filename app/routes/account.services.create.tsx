@@ -43,6 +43,7 @@ import {redirectWithSuccess} from 'remix-toast';
 import {AccountContent} from '~/components/account/AccountContent';
 import {AccountTitle} from '~/components/account/AccountTitle';
 import {NumericInput} from '~/components/form/NumericInput';
+import {FlexInnerForm} from '~/components/tiny/FlexInnerForm';
 import {baseURL} from '~/lib/api/mutator/query-client';
 import {parseTE} from '~/lib/clean';
 import {createOrFindProductVariant} from '~/lib/create-or-find-variant';
@@ -173,29 +174,41 @@ export default function AccountServicesCreate() {
       <AccountContent>
         <FormProvider context={form.context}>
           <Form method="post" {...getFormProps(form)}>
-            <Flex
-              direction="column"
-              gap={{base: 'sm', sm: 'lg'}}
-              w={{base: '100%', sm: '50%'}}
-            >
-              <Select
-                onChange={setCollectionId}
-                data={collections.nodes.map((c) => ({
-                  value: parseGid(c.id).id,
-                  label: parseTE(c.title),
-                }))}
-                label="Vælg den kategori for den ydelse, du ønsker at tilbyde?"
-                placeholder="-"
-                allowDeselect={false}
-                data-testid="category-select"
-              />
+            <FlexInnerForm>
+              <Flex direction={{base: 'column', md: 'row'}} gap="md">
+                <Stack gap="0" style={{flex: 1}}>
+                  <Text fw="bold">Kategori:</Text>
+                  <Text>
+                    Vælg den kategori for den ydelse, du ønsker at tilbyde?
+                  </Text>
+                </Stack>
+                <div style={{flex: 1}}>
+                  <Select
+                    onChange={setCollectionId}
+                    data={collections.nodes.map((c) => ({
+                      value: parseGid(c.id).id,
+                      label: parseTE(c.title),
+                    }))}
+                    placeholder="-"
+                    allowDeselect={false}
+                    data-testid="category-select"
+                  />
+                </div>
+              </Flex>
 
-              <SelectSearchable
-                label="Vælg ydelse inden for den valgte kategori"
-                placeholder="-"
-                collectionId={collectionId}
-                field={fields.productId}
-              />
+              <Flex direction={{base: 'column', md: 'row'}} gap="md">
+                <Stack gap="0" style={{flex: 1}}>
+                  <Text fw="bold">Ydelse:</Text>
+                  <Text>Vælg ydelse inden for den valgte kategori</Text>
+                </Stack>
+                <div style={{flex: 1}}>
+                  <SelectSearchable
+                    placeholder="-"
+                    collectionId={collectionId}
+                    field={fields.productId}
+                  />
+                </div>
+              </Flex>
 
               <Divider />
               <Title order={3}>Pris</Title>
@@ -265,7 +278,7 @@ export default function AccountServicesCreate() {
                 />
               </Flex>
               <SubmitButton>Tilføj ny ydelse</SubmitButton>
-            </Flex>
+            </FlexInnerForm>
           </Form>
         </FormProvider>
       </AccountContent>
@@ -274,14 +287,12 @@ export default function AccountServicesCreate() {
 }
 
 export type SelectSearchableProps = {
-  label: string;
   placeholder?: string;
   field: FieldMetadata<string>;
   collectionId?: string | null;
 };
 
 export function SelectSearchable({
-  label,
   placeholder,
   field,
   collectionId,
@@ -345,7 +356,6 @@ export function SelectSearchable({
       >
         <Combobox.Target>
           <TextInput
-            label={label}
             ref={textInput}
             placeholder={placeholder}
             disabled={!collectionId}

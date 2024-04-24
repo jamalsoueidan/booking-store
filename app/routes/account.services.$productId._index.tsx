@@ -18,6 +18,7 @@ import {z} from 'zod';
 import {NumericInput} from '~/components/form/NumericInput';
 import {SubmitButton} from '~/components/form/SubmitButton';
 import {SwitchGroupLocations} from '~/components/form/SwitchGroupLocations';
+import {FlexInnerForm} from '~/components/tiny/FlexInnerForm';
 import {getBookingShopifyApi} from '~/lib/api/bookingShopifyApi';
 import {baseURL} from '~/lib/api/mutator/query-client';
 import {createOrFindProductVariant} from '~/lib/create-or-find-variant';
@@ -136,11 +137,7 @@ export default function EditAddress() {
   return (
     <FormProvider context={form.context}>
       <Form method="post" {...getFormProps(form)}>
-        <Flex
-          direction="column"
-          gap={{base: 'sm', sm: 'lg'}}
-          w={{base: '100%', sm: '50%'}}
-        >
+        <FlexInnerForm>
           <input {...getInputProps(fields.scheduleId, {type: 'hidden'})} />
 
           <input {...getInputProps(fields.productId, {type: 'hidden'})} />
@@ -213,7 +210,7 @@ export default function EditAddress() {
           </Flex>
 
           <SubmitButton>Gem ændringer</SubmitButton>
-        </Flex>
+        </FlexInnerForm>
       </Form>
     </FormProvider>
   );

@@ -22,7 +22,7 @@ export default function PeriodInput({data, field, ...props}: PeriodInputProps) {
   return (
     <Flex align={'flex-end'} gap="md">
       <TextInput
-        w="70%"
+        w="30%"
         {...props}
         {...getInputProps(noticePeriod.value, {type: 'number'})}
       />

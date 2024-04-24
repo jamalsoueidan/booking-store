@@ -5,7 +5,7 @@ import {
   useForm,
 } from '@conform-to/react';
 import {parseWithZod} from '@conform-to/zod';
-import {Flex, TextInput} from '@mantine/core';
+import {Flex, Stack, Text, TextInput} from '@mantine/core';
 import {Form, useActionData, useLoaderData} from '@remix-run/react';
 import {
   json,
@@ -15,6 +15,7 @@ import {
 import {redirectWithSuccess} from 'remix-toast';
 import PeriodInput from '~/components/form/PeriodInput';
 import {SubmitButton} from '~/components/form/SubmitButton';
+import {FlexInnerForm} from '~/components/tiny/FlexInnerForm';
 import {getBookingShopifyApi} from '~/lib/api/bookingShopifyApi';
 import {baseURL} from '~/lib/api/mutator/query-client';
 import {getCustomer} from '~/lib/get-customer';
@@ -97,47 +98,75 @@ export default function EditAddress() {
   return (
     <FormProvider context={form.context}>
       <Form method="post" {...getFormProps(form)}>
-        <Flex
-          direction="column"
-          gap={{base: 'sm', sm: 'lg'}}
-          w={{base: '100%', sm: '50%'}}
-        >
+        <FlexInnerForm>
           <input {...getInputProps(fields.scheduleId, {type: 'hidden'})} />
 
-          <Flex gap={{base: 'sm', sm: 'lg'}}>
-            <TextInput
-              w="50%"
-              label="Behandlingstid:"
-              rightSection="min"
-              {...getInputProps(fields.duration, {type: 'number'})}
-            />
-            <TextInput
-              w="50%"
-              label="Pause efter behandling:"
-              rightSection="min"
-              {...getInputProps(fields.breakTime, {type: 'number'})}
-            />
+          <Flex direction={{base: 'column', md: 'row'}} gap="md">
+            <Stack gap="0" style={{flex: 1}}>
+              <Text fw="bold">Behandlingstid</Text>
+              <Text>Hvor langtid varer behandlingen</Text>
+            </Stack>
+            <div style={{flex: 1}}>
+              <TextInput
+                w="50%"
+                rightSection="min"
+                {...getInputProps(fields.duration, {type: 'number'})}
+              />
+            </div>
           </Flex>
 
-          <PeriodInput
-            field={fields.bookingPeriod}
-            label="Hvor langt ude i fremtiden vil du acceptere bookinger?"
-            data={[
-              {value: 'months', label: 'Måneder'},
-              {value: 'weeks', label: 'Uger'},
-            ]}
-          />
+          <Flex direction={{base: 'column', md: 'row'}} gap="md">
+            <Stack gap="0" style={{flex: 1}}>
+              <Text fw="bold">Pausetid</Text>
+              <Text>
+                Hvor lang pause ønsker du at holde efter behandlingen?
+              </Text>
+            </Stack>
+            <div style={{flex: 1}}>
+              <TextInput
+                w="50%"
+                rightSection="min"
+                {...getInputProps(fields.breakTime, {type: 'number'})}
+              />
+            </div>
+          </Flex>
 
-          <PeriodInput
-            field={fields.noticePeriod}
-            label="Hvor hurtigt kan du være klar?"
-            data={[
-              {value: 'days', label: 'Dage'},
-              {value: 'hours', label: 'Timer'},
-            ]}
-          />
+          <Flex direction={{base: 'column', md: 'row'}} gap="md">
+            <Stack gap="0" style={{flex: 1}}>
+              <Text fw="bold">Bookingaccept</Text>
+              <Text>
+                Hvor langt ude i fremtiden vil du acceptere bookinger?
+              </Text>
+            </Stack>
+            <div style={{flex: 1}}>
+              <PeriodInput
+                field={fields.bookingPeriod}
+                data={[
+                  {value: 'months', label: 'Måneder'},
+                  {value: 'weeks', label: 'Uger'},
+                ]}
+              />
+            </div>
+          </Flex>
+
+          <Flex direction={{base: 'column', md: 'row'}} gap="md">
+            <Stack gap="0" style={{flex: 1}}>
+              <Text fw="bold">Responsivitet</Text>
+              <Text>Hvor hurtigt kan du være klar?</Text>
+            </Stack>
+            <div style={{flex: 1}}>
+              <PeriodInput
+                field={fields.noticePeriod}
+                data={[
+                  {value: 'days', label: 'Dage'},
+                  {value: 'hours', label: 'Timer'},
+                ]}
+              />
+            </div>
+          </Flex>
+
           <SubmitButton>Gem ændringer</SubmitButton>
-        </Flex>
+        </FlexInnerForm>
       </Form>
     </FormProvider>
   );
