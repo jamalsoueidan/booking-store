@@ -32,7 +32,7 @@ export const action = async ({request, context}: ActionFunctionArgs) => {
   try {
     await getBookingShopifyApi().customerUpdate(customerId, submission.value);
 
-    return redirectWithSuccess('/account/public/social', {
+    return redirectWithSuccess('.', {
       message: 'Social er opdateret!',
     });
   } catch (error) {

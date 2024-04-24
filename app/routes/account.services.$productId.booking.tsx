@@ -55,7 +55,7 @@ export const action = async ({
       `${baseURL}/customer/${customerId}/products`,
     );
 
-    return redirectWithSuccess(`/account/services/${productId}/advanced`, {
+    return redirectWithSuccess('.', {
       message: 'Ydelsen er nu opdateret!',
     });
   } catch (error) {

@@ -54,12 +54,9 @@ export const action = async ({
       `${baseURL}/customer/${customerId}/locations`,
     );
 
-    return redirectWithSuccess(
-      `/account/locations/${response.payload._id}/edit`,
-      {
-        message: 'Lokation er opdateret!',
-      },
-    );
+    return redirectWithSuccess('.', {
+      message: 'Lokation er opdateret!',
+    });
   } catch (error) {
     return submission.reply();
   }

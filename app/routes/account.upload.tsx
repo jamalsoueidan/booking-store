@@ -43,7 +43,7 @@ export const action = async ({
     resourceUrl,
   });
 
-  return redirectWithSuccess('/account/upload', {
+  return redirectWithSuccess('.', {
     message: 'Der kan gå få sekunder inden dit billed bliver opdateret!',
   });
 };

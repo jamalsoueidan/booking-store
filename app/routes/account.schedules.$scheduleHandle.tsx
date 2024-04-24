@@ -89,7 +89,7 @@ export const action = async ({
       `${baseURL}/customer/${customerId}/schedules/${scheduleHandle}`,
     );
 
-    return redirectWithSuccess(`/account/schedules/${response.payload._id}`, {
+    return redirectWithSuccess('.', {
       message: 'Vagtplan navn er opdateret!',
     });
   } catch (error) {

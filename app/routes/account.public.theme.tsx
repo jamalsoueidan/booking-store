@@ -38,7 +38,7 @@ export const action = async ({request, context}: ActionFunctionArgs) => {
   try {
     await getBookingShopifyApi().customerUpdate(customerId, submission.value);
 
-    return redirectWithSuccess('/account/public/theme', {
+    return redirectWithSuccess('.', {
       message: 'Tema er opdateret!',
     });
   } catch (error) {
