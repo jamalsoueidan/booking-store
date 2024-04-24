@@ -70,6 +70,10 @@ export const action = async ({
       `${baseURL}/customer/${customerId}/products`,
     );
 
+    await context.storefront.cache?.delete(
+      `${baseURL}/customer/${customerId}/schedule/${submission.value.scheduleId}`,
+    );
+
     return redirectWithSuccess('.', {
       message: 'Ydelsen er nu opdateret!',
     });
@@ -97,7 +101,11 @@ export async function loader({context, params}: LoaderFunctionArgs) {
   );
 
   const {payload: customerProduct} =
-    await getBookingShopifyApi().customerProductGet(customerId, productId);
+    await getBookingShopifyApi().customerProductGet(
+      customerId,
+      productId,
+      context,
+    );
 
   return json({
     defaultValue: {

@@ -52,7 +52,7 @@ export const action = async ({
     );
 
     await context.storefront.cache?.delete(
-      `${baseURL}/customer/${customerId}/products`,
+      `${baseURL}/customer/${customerId}/schedule/${submission.value.scheduleId}`,
     );
 
     return redirectWithSuccess('.', {
@@ -72,7 +72,11 @@ export async function loader({context, params}: LoaderFunctionArgs) {
   }
 
   const {payload: customerProduct} =
-    await getBookingShopifyApi().customerProductGet(customerId, productId);
+    await getBookingShopifyApi().customerProductGet(
+      customerId,
+      productId,
+      context,
+    );
 
   return json({
     defaultValue: customerProduct,
