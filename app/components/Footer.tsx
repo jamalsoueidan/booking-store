@@ -5,6 +5,7 @@ import {
   Container,
   Flex,
   Group,
+  Image,
   rem,
   Stack,
   Text,
@@ -25,9 +26,13 @@ export function Footer({
       <Container size="xl">
         <Flex direction={{base: 'column', sm: 'row'}} gap="xl">
           <Stack style={{flex: 1}} gap="xl">
-            <Flex direction="column" align={{base: 'center', sm: undefined}}>
+            <Flex
+              direction="column"
+              align={{base: 'center', sm: 'flex-start'}}
+              gap="sm"
+            >
               <NavLink prefetch="intent" to="/">
-                <img src={logo} alt={shop.name} className={classes.logo} />
+                <Image src={logo} alt={shop.name} maw={200} />
               </NavLink>
               <Text size="md" c="dimmed" className={classes.description}>
                 Vores platform forbinder dig med talentfulde eksperter inden for

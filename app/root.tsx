@@ -1,6 +1,8 @@
 import carouselStyles from '@mantine/carousel/styles.css?url';
-import {ColorSchemeScript} from '@mantine/core';
+import {ColorSchemeScript, MantineProvider} from '@mantine/core';
 import coreStyles from '@mantine/core/styles.css?url';
+import {ModalsProvider} from '@mantine/modals';
+import {NavigationProgress, nprogress} from '@mantine/nprogress';
 import nprogressStyles from '@mantine/nprogress/styles.css?url';
 import tiptapStyles from '@mantine/tiptap/styles.css?url';
 import {
@@ -11,7 +13,9 @@ import {
   Scripts,
   ScrollRestoration,
   useLoaderData,
+  useLocation,
   useMatches,
+  useNavigation,
   useRouteError,
   type ShouldRevalidateFunction,
 } from '@remix-run/react';
@@ -25,7 +29,7 @@ import {
   type LoaderFunctionArgs,
   type SerializeFrom,
 } from '@shopify/remix-oxygen';
-import {type ReactNode} from 'react';
+import {useEffect, type ReactNode} from 'react';
 import favicon from './assets/favicon.svg';
 import {CustomAnalytics} from './components/CustomAnalytics';
 import {LayoutWrapper} from './components/LayoutWrapper';
@@ -122,6 +126,17 @@ export async function loader({context}: LoaderFunctionArgs) {
 export function Layout({children}: {children: ReactNode}) {
   const nonce = useNonce();
   const data = useLoaderData<typeof loader>();
+  const location = useLocation();
+  const path = location.pathname;
+  const {state} = useNavigation();
+
+  useEffect(() => {
+    if (state === 'loading' || state === 'submitting') {
+      nprogress.start();
+    } else {
+      nprogress.complete();
+    }
+  }, [state]);
 
   return (
     <html lang="en">
@@ -136,15 +151,24 @@ export function Layout({children}: {children: ReactNode}) {
         <ColorSchemeScript />
       </head>
       <body>
-        <Analytics.Provider
-          cart={data.cart}
-          shop={data.shop}
-          consent={data.consent}
-          customData={{foo: 'bar'}}
-        >
-          <LayoutWrapper>{children}</LayoutWrapper>
-          <CustomAnalytics />
-        </Analytics.Provider>
+        <MantineProvider>
+          <NavigationProgress />
+          <ModalsProvider>
+            {!path.includes('/account') && !path.includes('/artist/') ? (
+              <Analytics.Provider
+                cart={data.cart}
+                shop={data.shop}
+                consent={data.consent}
+                customData={{foo: 'bar'}}
+              >
+                <LayoutWrapper>{children}</LayoutWrapper>
+                <CustomAnalytics />
+              </Analytics.Provider>
+            ) : (
+              children
+            )}
+          </ModalsProvider>
+        </MantineProvider>
         <ScrollRestoration nonce={nonce} />
         <Scripts nonce={nonce} />
       </body>
