@@ -1,6 +1,7 @@
 import {useInputControl, type FieldMetadata} from '@conform-to/react';
 import {NumberInput, type NumberInputProps} from '@mantine/core';
 import {useRef} from 'react';
+import classes from './NumericInput.module.css';
 
 type NumericInputProps = {
   field: FieldMetadata<number>;
@@ -31,6 +32,7 @@ export function NumericInput({field, ...props}: NumericInputProps) {
           allowNegative={false}
           allowDecimal={false}
           {...props}
+          classNames={classes}
         />
       ) : null}
     </>

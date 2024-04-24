@@ -6,7 +6,7 @@ import {
   useForm,
 } from '@conform-to/react';
 import {parseWithZod} from '@conform-to/zod';
-import {Flex, Select} from '@mantine/core';
+import {Divider, Flex, Select, Stack, Text, Title} from '@mantine/core';
 import {Form, useActionData, useLoaderData} from '@remix-run/react';
 import {
   json,
@@ -145,39 +145,72 @@ export default function EditAddress() {
 
           <input {...getInputProps(fields.productId, {type: 'hidden'})} />
 
-          <Flex gap={{base: 'sm', sm: 'lg'}}>
-            <NumericInput
-              field={fields.price}
-              label="Pris"
-              required
-              w={'25%'}
-              hideControls={true}
-              data-testid="price-input"
-            />
-            <NumericInput
-              field={fields.compareAtPrice}
-              label="Før-pris"
-              w={'25%'}
-              hideControls={true}
-              data-testid="compare-at-price-input"
+          <Title order={3}>Pris</Title>
+          <Flex direction={{base: 'column', md: 'row'}} gap="md">
+            <Stack gap="0" style={{flex: 1}}>
+              <Text fw="bold">Pris:</Text>
+              <Text>Den pris, kunden skal betale.</Text>
+            </Stack>
+            <div style={{flex: 1}}>
+              <NumericInput
+                field={fields.price}
+                required
+                hideControls={true}
+                data-testid="price-input"
+                rightSection="DKK"
+                rightSectionWidth={50}
+                style={{width: '100px'}}
+              />
+            </div>
+          </Flex>
+          <Flex direction={{base: 'column', md: 'row'}} gap="md">
+            <Stack gap="0" style={{flex: 1}}>
+              <Text fw="bold">Før-pris:</Text>
+              <Text>Hvad har prisen været tidligere?</Text>
+            </Stack>
+            <div style={{flex: 1}}>
+              <NumericInput
+                field={fields.compareAtPrice}
+                hideControls={true}
+                rightSection="DKK"
+                rightSectionWidth={50}
+                data-testid="compare-at-price-input"
+                style={{width: '100px'}}
+              />
+            </div>
+          </Flex>
+
+          <Divider />
+          <Title order={3}>Lokation</Title>
+          <Flex direction={{base: 'column', md: 'row'}} gap="md">
+            <Stack gap="0" style={{flex: 1}}>
+              <Text fw="bold">Lokation for denne ydelse:</Text>
+              <Text>Tilknyt en eller flere lokationer</Text>
+            </Stack>
+            <SwitchGroupLocations
+              style={{flex: 1}}
+              description="Mindst (1) skal være valgt."
+              field={fields.locations}
+              data={locations}
             />
           </Flex>
 
-          <SwitchGroupLocations
-            label="Fra hvilken lokation(er) vil du tilbyde den ydelse?"
-            description="Mindst (1) skal være valgt."
-            field={fields.locations}
-            data={locations}
-          />
-
-          <Select
-            label="Hvilken vagtplan vil du tilknytte den ydelse på."
-            data={selectSchedules}
-            {...getSelectProps(fields.scheduleId)}
-            allowDeselect={false}
-            defaultValue={fields.scheduleId.initialValue}
-            data-testid="schedules-select"
-          />
+          <Divider />
+          <Title order={3}>Vagtplan</Title>
+          <Flex direction={{base: 'column', md: 'row'}} gap="md">
+            <Stack gap="0" style={{flex: 1}}>
+              <Text fw="bold">Vagtplan for denne ydelse:</Text>
+              <Text>Tilknyt denne ydelse med en vagtplan</Text>
+            </Stack>
+            <Select
+              style={{flex: 1}}
+              data={selectSchedules}
+              {...getSelectProps(fields.scheduleId)}
+              allowDeselect={false}
+              defaultValue={fields.scheduleId.initialValue}
+              data-testid="schedules-select"
+            />
+          </Flex>
 
           <SubmitButton>Gem ændringer</SubmitButton>
         </Flex>

@@ -3,6 +3,7 @@ import {
   Box,
   Divider,
   Flex,
+  ScrollArea,
   Title,
   type TitleProps,
 } from '@mantine/core';
@@ -48,9 +49,11 @@ export function AccountTitle({
           </Title>
         </Flex>
         {children ? (
-          <>
-            <Flex gap="md">{children}</Flex>
-          </>
+          <ScrollArea type="auto" h="52px">
+            <Flex gap="md" direction="row">
+              {children}
+            </Flex>
+          </ScrollArea>
         ) : null}
       </Flex>
       <Divider />

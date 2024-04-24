@@ -17,13 +17,16 @@ import {z} from 'zod';
 import {useInputControl, type FieldMetadata} from '@conform-to/react';
 import {
   Combobox,
+  Divider,
   Flex,
   Highlight,
   Loader,
   ScrollArea,
   Select,
+  Stack,
   Text,
   TextInput,
+  Title,
   useCombobox,
 } from '@mantine/core';
 import {redirect, type SerializeFrom} from '@remix-run/server-runtime';
@@ -181,52 +184,86 @@ export default function AccountServicesCreate() {
                   value: parseGid(c.id).id,
                   label: parseTE(c.title),
                 }))}
-                label="Hvilken kategori ligger ydelsen i?"
-                placeholder="Vælg kategori"
+                label="Vælg den kategori for den ydelse, du ønsker at tilbyde?"
+                placeholder="-"
                 allowDeselect={false}
                 data-testid="category-select"
               />
 
               <SelectSearchable
-                label="Hvilken ydelse vil du tilbyde?"
-                placeholder="Vælg ydelse"
+                label="Vælg ydelse inden for den valgte kategori"
+                placeholder="-"
                 collectionId={collectionId}
                 field={fields.productId}
               />
 
-              <Flex gap="md">
-                <NumericInput
-                  field={fields.price}
-                  label="Pris"
-                  required
-                  hideControls={true}
+              <Divider />
+              <Title order={3}>Pris</Title>
+              <Flex direction={{base: 'column', md: 'row'}} gap="md">
+                <Stack gap="0" style={{flex: 1}}>
+                  <Text fw="bold">Pris:</Text>
+                  <Text>Den pris, kunden skal betale.</Text>
+                </Stack>
+                <div style={{flex: 1}}>
+                  <NumericInput
+                    field={fields.price}
+                    required
+                    hideControls={true}
+                    data-testid="price-input"
+                    rightSection="DKK"
+                    rightSectionWidth={50}
+                    style={{width: '100px'}}
+                  />
+                </div>
+              </Flex>
+              <Flex direction={{base: 'column', md: 'row'}} gap="md">
+                <Stack gap="0" style={{flex: 1}}>
+                  <Text fw="bold">Før-pris:</Text>
+                  <Text>Hvad har prisen været tidligere?</Text>
+                </Stack>
+                <div style={{flex: 1}}>
+                  <NumericInput
+                    field={fields.compareAtPrice}
+                    hideControls={true}
+                    rightSection="DKK"
+                    rightSectionWidth={50}
+                    data-testid="compare-at-price-input"
+                    style={{width: '100px'}}
+                  />
+                </div>
+              </Flex>
+
+              <Divider />
+              <Title order={3}>Lokation</Title>
+              <Flex direction={{base: 'column', md: 'row'}} gap="md">
+                <Stack gap="0" style={{flex: 1}}>
+                  <Text fw="bold">Lokation for denne ydelse:</Text>
+                  <Text>Tilknyt en eller flere lokationer</Text>
+                </Stack>
+                <SwitchGroupLocations
                   style={{flex: 1}}
-                  data-testid="price-input"
-                />
-                <NumericInput
-                  field={fields.compareAtPrice}
-                  label="Før-pris"
-                  hideControls={true}
-                  style={{flex: 1}}
-                  data-testid="compare-at-price-input"
+                  description="Mindst (1) skal være valgt."
+                  field={fields.locations}
+                  data={locations}
                 />
               </Flex>
 
-              <SwitchGroupLocations
-                label="Fra hvilken lokation(er) vil du tilbyde den ydelse?"
-                description="Mindst (1) skal være valgt."
-                field={fields.locations}
-                data={locations}
-              />
-
-              <Select
-                label="Hvilken vagtplan vil du tilknytte den ydelse på."
-                data={selectSchedules}
-                {...getSelectProps(fields.scheduleId)}
-                allowDeselect={false}
-                defaultValue={fields.scheduleId.initialValue}
-                data-testid="schedules-select"
-              />
+              <Divider />
+              <Title order={3}>Vagtplan</Title>
+              <Flex direction={{base: 'column', md: 'row'}} gap="md">
+                <Stack gap="0" style={{flex: 1}}>
+                  <Text fw="bold">Vagtplan for denne ydelse:</Text>
+                  <Text>Tilknyt denne ydelse med en vagtplan</Text>
+                </Stack>
+                <Select
+                  style={{flex: 1}}
+                  data={selectSchedules}
+                  {...getSelectProps(fields.scheduleId)}
+                  allowDeselect={false}
+                  defaultValue={fields.scheduleId.initialValue}
+                  data-testid="schedules-select"
+                />
+              </Flex>
               <SubmitButton>Tilføj ny ydelse</SubmitButton>
             </Flex>
           </Form>

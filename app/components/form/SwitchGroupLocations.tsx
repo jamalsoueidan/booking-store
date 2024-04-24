@@ -1,5 +1,5 @@
 import {useField, type FieldMetadata} from '@conform-to/react';
-import {Stack, Switch} from '@mantine/core';
+import {Stack, Switch, type SwitchGroupProps} from '@mantine/core';
 import React, {useCallback} from 'react';
 import type {
   CustomerLocation,
@@ -7,17 +7,14 @@ import type {
 } from '~/lib/api/model';
 
 export type SwitchGroupLocations = {
-  label: string;
-  description?: string;
   field: FieldMetadata<Array<CustomerProductLocationsItem>>;
   data: CustomerLocation[];
-};
+} & Omit<SwitchGroupProps, 'children'>;
 
 export function SwitchGroupLocations({
-  label,
-  description,
   data,
   field,
+  ...props
 }: SwitchGroupLocations) {
   const [, form] = useField(field.name);
   const list = field.getFieldList();
@@ -44,10 +41,9 @@ export function SwitchGroupLocations({
 
   return (
     <Switch.Group
-      description={description}
       value={list.map((l) => l.initialValue?.location!)}
-      label={label}
       onChange={handleChange}
+      {...props}
     >
       <Stack mt="xs" gap="xs">
         {data.map((l) => (
