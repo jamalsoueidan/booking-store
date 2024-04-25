@@ -13,11 +13,16 @@ export function LocationIcon({
       <IconCar {...props} />
     </Tooltip>;
   }
-  return location.originType === 'home' ? (
-    <Tooltip label="Salon">
-      <IconHome {...props} />
-    </Tooltip>
-  ) : (
+
+  if (location.originType === 'home') {
+    return (
+      <Tooltip label="Salon">
+        <IconHome {...props} />
+      </Tooltip>
+    );
+  }
+
+  return (
     <Tooltip label="Hjemme">
       <IconBuilding {...props} />
     </Tooltip>
