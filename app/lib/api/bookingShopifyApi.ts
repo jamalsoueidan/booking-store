@@ -103,8 +103,8 @@ import type {
   UsersTopParams,
   UsersTopResponse,
 } from './model';
-import type {BodyType} from './mutator/query-client';
 import {queryClient} from './mutator/query-client';
+import type {BodyType} from './mutator/query-client';
 
 type SecondParameter<T extends (...args: any) => any> = Parameters<T>[1];
 

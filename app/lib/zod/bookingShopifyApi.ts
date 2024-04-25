@@ -189,6 +189,10 @@ export const customerGetResponse = zod.object({
  * This endpoint create new blocked
  * @summary POST Create blocked
  */
+export const customerBlockedCreateParams = zod.object({
+  "customerId": zod.string()
+})
+
 export const customerBlockedCreateBody = zod.object({
   "title": zod.string(),
   "start": zod.string(),
@@ -2032,6 +2036,10 @@ export const customerPayoutAccountDestroyResponse = zod.object({
  * This endpoint get products for customer
  * @summary GET Get products for customer
  */
+export const customerProductsListParams = zod.object({
+  "customerId": zod.string()
+})
+
 export const customerProductsListResponse = zod.object({
   "success": zod.boolean(),
   "payload": zod.array( zod.object({
@@ -2077,6 +2085,10 @@ export const customerProductsListResponse = zod.object({
  * This endpoint get product ids for customer
  * @summary GET Get product ids for customer
  */
+export const customerProductsListIdsParams = zod.object({
+  "customerId": zod.string()
+})
+
 export const customerProductsListIdsResponse = zod.object({
   "success": zod.boolean(),
   "payload": zod.array(zod.number())
@@ -2087,6 +2099,11 @@ export const customerProductsListIdsResponse = zod.object({
  * This endpoint get product for customer
  * @summary GET Get product that exist in one of the schedules for customer
  */
+export const customerProductGetParams = zod.object({
+  "customerId": zod.string(),
+  "productId": zod.string()
+})
+
 export const customerProductGetResponse = zod.object({
   "success": zod.boolean(),
   "payload":  zod.object({
@@ -2132,6 +2149,11 @@ export const customerProductGetResponse = zod.object({
  * This endpoint update product that exist in schedule
  * @summary PUT Update product in schedule
  */
+export const customerProductUpdateParams = zod.object({
+  "customerId": zod.string(),
+  "productId": zod.string()
+})
+
 export const customerProductUpdateBody = zod.object({
   "scheduleId": zod.string(),
   "variantId": zod.number().optional(),
@@ -2209,6 +2231,11 @@ export const customerProductUpdateResponse = zod.object({
  * This endpoint remove product from schedule for customer
  * @summary DEL destroy product
  */
+export const customerProductDestroyParams = zod.object({
+  "customerId": zod.string(),
+  "productId": zod.string()
+})
+
 export const customerProductDestroyResponse = zod.object({
   "success": zod.boolean(),
   "payload":  zod.object({
@@ -2349,6 +2376,10 @@ export const customerUploadResourceURLResponse = zod.object({
  * This endpoint create new schedule
  * @summary POST Create schedule
  */
+export const customerScheduleCreateParams = zod.object({
+  "customerId": zod.string()
+})
+
 export const customerScheduleCreateBody = zod.object({
   "name": zod.string()
 })
@@ -2407,6 +2438,10 @@ export const customerScheduleCreateResponse = zod.object({
  * This endpoint get all schedule for customer
  * @summary GET Get all schedule for customer
  */
+export const customerScheduleListParams = zod.object({
+  "customerId": zod.string()
+})
+
 export const customerScheduleListResponse = zod.object({
   "success": zod.boolean(),
   "payload": zod.array( zod.object({
@@ -2461,6 +2496,11 @@ export const customerScheduleListResponse = zod.object({
  * This endpoint get schedule for customer
  * @summary GET Get schedule for customer
  */
+export const customerScheduleGetParams = zod.object({
+  "customerId": zod.string(),
+  "scheduleId": zod.string()
+})
+
 export const customerScheduleGetResponse = zod.object({
   "success": zod.boolean(),
   "payload":  zod.object({
@@ -2515,6 +2555,11 @@ export const customerScheduleGetResponse = zod.object({
  * This endpoint update schedule
  * @summary PUT Update schedule
  */
+export const customerScheduleUpdateParams = zod.object({
+  "customerId": zod.string(),
+  "scheduleId": zod.string()
+})
+
 export const customerScheduleUpdateBody = zod.object({
   "name": zod.string()
 })
@@ -2573,6 +2618,11 @@ export const customerScheduleUpdateResponse = zod.object({
  * This endpoint destroy schedule for customer
  * @summary DEL destroy schedule
  */
+export const customerScheduleDestroyParams = zod.object({
+  "customerId": zod.string(),
+  "scheduleId": zod.string()
+})
+
 export const customerScheduleDestroyResponse = zod.object({
   "success": zod.boolean(),
   "payload":  zod.object({
@@ -2586,6 +2636,11 @@ export const customerScheduleDestroyResponse = zod.object({
  * This endpoint update schedule slot
  * @summary PUT Update schedule slot
  */
+export const customerScheduleSlotUpdateParams = zod.object({
+  "customerId": zod.string(),
+  "scheduleId": zod.string()
+})
+
 export const customerScheduleSlotUpdateBody = zod.object({
   "slots": zod.array( zod.object({
   "day": zod.enum(['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday']),
@@ -2805,6 +2860,13 @@ export const productsGetUsersImageResponse = zod.object({
  * This endpoint get all users for specific productId and variantId
  * @summary GET Get all users for specific productId and variantId
  */
+export const productsGetUsersByVariantQueryParams = zod.object({
+  "productId": zod.string(),
+  "variantId": zod.string().optional(),
+  "nextCursor": zod.string().optional(),
+  "limit": zod.string().optional()
+})
+
 export const productsGetUsersByVariantResponse = zod.object({
   "success": zod.boolean(),
   "payload":  zod.object({
@@ -3009,6 +3071,11 @@ export const shippingGetResponse = zod.object({
  * This endpoint generate availabilty for user
  * @summary POST generate availabilty for user
  */
+export const userAvailabilityGenerateParams = zod.object({
+  "username": zod.string(),
+  "locationId": zod.string()
+})
+
 export const userAvailabilityGenerateBody = zod.object({
   "fromDate": zod.string().optional(),
   "productIds": zod.array(zod.string()),
@@ -3091,6 +3158,11 @@ export const userAvailabilityGenerateResponse = zod.object({
  * This endpoint get's one single availabilty for user
  * @summary POST get single availabilty for user
  */
+export const userAvailabilityGetParams = zod.object({
+  "username": zod.string(),
+  "locationId": zod.string()
+})
+
 export const userAvailabilityGetBody = zod.object({
   "fromDate": zod.string(),
   "toDate": zod.string(),
@@ -3207,6 +3279,10 @@ export const userLocationGetResponse = zod.object({
  * This endpoint gets user object
  * @summary GET Get user
  */
+export const userGetParams = zod.object({
+  "username": zod.string()
+})
+
 export const userGetResponse = zod.object({
   "success": zod.boolean(),
   "payload":  zod.object({
@@ -3797,6 +3873,11 @@ export const usersSearchResponse = zod.object({
  * This endpoint get all users group by professions
  * @summary GET Get all users grouped by professions
  */
+export const usersTopQueryParams = zod.object({
+  "limit": zod.string().optional(),
+  "page": zod.string().optional()
+})
+
 export const usersTopResponse = zod.object({
   "success": zod.boolean(),
   "payload": zod.array( zod.object({
