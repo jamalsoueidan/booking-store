@@ -15,6 +15,10 @@ export const action: ActionFunction = async ({context, params}) => {
   await getBookingShopifyApi().customerLocationRemove(customerId, locationId);
 
   await context.storefront.cache?.delete(
+    `${baseURL}/customer/${customerId}/location/${locationId}`,
+  );
+
+  await context.storefront.cache?.delete(
     `${baseURL}/customer/${customerId}/locations`,
   );
 
