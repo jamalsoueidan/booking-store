@@ -17,6 +17,7 @@ import {useUser} from '~/hooks/use-user';
 import type {CustomerProductList} from '~/lib/api/model';
 import {parseTE} from '~/lib/clean';
 import {durationToTime} from '~/lib/duration';
+import {LocationIcon} from '../LocationIcon';
 import classes from './ArtistProduct.module.css';
 
 export type ArtistProductProps = {
@@ -49,9 +50,16 @@ export function ArtistProduct({product, services}: ArtistProductProps) {
     >
       <Flex direction="column" gap={rem(48)} h="100%">
         <Stack gap="6px" style={{flex: 1}}>
-          <Badge c={`${user.theme.color}.6`} color={`${user.theme.color}.1`}>
-            {artistService?.scheduleName}
-          </Badge>
+          <Flex justify="space-between">
+            <Badge c={`${user.theme.color}.6`} color={`${user.theme.color}.1`}>
+              {artistService?.scheduleName}
+            </Badge>
+            <Flex gap="4px">
+              {artistService?.locations.map((location) => (
+                <LocationIcon key={location.location} location={location} />
+              ))}
+            </Flex>
+          </Flex>
           <Title
             order={2}
             size={rem(24)}
