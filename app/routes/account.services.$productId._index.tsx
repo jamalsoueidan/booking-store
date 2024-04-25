@@ -129,6 +129,11 @@ export default function EditAddress() {
     lastResult,
     defaultValue,
     onValidate({formData}) {
+      console.log(
+        parseWithZod(formData, {
+          schema,
+        }),
+      );
       return parseWithZod(formData, {
         schema,
       });
@@ -146,8 +151,6 @@ export default function EditAddress() {
     <FormProvider context={form.context}>
       <Form method="post" {...getFormProps(form)}>
         <FlexInnerForm>
-          <input {...getInputProps(fields.scheduleId, {type: 'hidden'})} />
-
           <input {...getInputProps(fields.productId, {type: 'hidden'})} />
 
           <Title order={3}>Pris</Title>
