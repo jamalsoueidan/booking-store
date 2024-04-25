@@ -11,14 +11,10 @@ import {
 import {useLoaderData} from '@remix-run/react';
 import {Money} from '@shopify/hydrogen';
 import {json, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
-import {
-  IconBuilding,
-  IconCar,
-  IconHome,
-  IconStarFilled,
-} from '@tabler/icons-react';
+import {IconCar, IconStarFilled} from '@tabler/icons-react';
 import {differenceInMinutes, format} from 'date-fns';
 import {da} from 'date-fns/locale';
+import {LocationIcon} from '~/components/LocationIcon';
 import {PRODUCT_VARIANT_FRAGMENT} from '~/data/fragments';
 import {getBookingShopifyApi} from '~/lib/api/bookingShopifyApi';
 import {durationToTime} from '~/lib/duration';
@@ -110,10 +106,7 @@ export default function AccountBookingsShowOrder() {
           <Stack gap={rem(4)} mt="sm">
             <Card shadow="0" padding="xs" radius="0" withBorder>
               <Flex align="center" gap="xs">
-                <IconCar
-                  style={{width: rem(48), height: rem(48)}}
-                  stroke={1.5}
-                />
+                <LocationIcon location={order.location} />
                 <div>
                   <Text size="xs" fw={600}>
                     Kører fra:
@@ -168,12 +161,7 @@ export default function AccountBookingsShowOrder() {
         ) : (
           <>
             <Text size="md" fw={500}>
-              {order.location?.name}{' '}
-              {order.location?.originType === 'home' ? (
-                <IconHome />
-              ) : (
-                <IconBuilding />
-              )}
+              {order.location?.name} <LocationIcon location={order.location} />
             </Text>
             <Text size="md" fw={500}>
               {order.location?.fullAddress}

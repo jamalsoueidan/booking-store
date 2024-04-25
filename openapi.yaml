@@ -332,9 +332,15 @@ components:
             enum:
               - origin
               - destination
+          originType:
+            type: string
+            enum:
+              - home
+              - commercial
         required:
           - location
           - locationType
+          - originType
     CustomerProductUpdateResponse:
       type: object
       properties:
@@ -2035,6 +2041,19 @@ components:
       required:
         - success
         - payload
+    CustomerLocationGetProductsResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: true
+        payload:
+          type: array
+          items:
+            $ref: '#/components/schemas/CustomerProduct'
+      required:
+        - success
+        - payload
     CustomerLocationUpdateBody:
       type: object
       properties:
@@ -3133,14 +3152,14 @@ paths:
           $ref: '#/components/responses/NotFoundResponse'
       security: []
   '/customer/{customerId}/blocked':
-    parameters:
-      - name: customerId
-        in: path
-        description: The ID of the customerId
-        required: true
-        schema:
-          type: string
     post:
+      parameters:
+        - name: customerId
+          in: path
+          description: The ID of the customerId
+          required: true
+          schema:
+            type: string
       tags:
         - CustomerBlocked
       operationId: customerBlockedCreate
@@ -3469,6 +3488,40 @@ paths:
           $ref: '#/components/responses/UnauthorizedResponse'
         '403':
           $ref: '#/components/responses/ForbiddenResponse'
+      security: []
+  '/customer/{customerId}/location/{locationId}/products':
+    get:
+      parameters:
+        - name: customerId
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: locationId
+          in: path
+          required: true
+          schema:
+            type: string
+      tags:
+        - CustomerLocation
+      operationId: customerLocationGetProducts
+      summary: GET Get products that belongs to location
+      description: This endpoint get products belonging to the user
+      responses:
+        '200':
+          description: Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CustomerLocationGetProductsResponse'
+        '400':
+          $ref: '#/components/responses/BadResponse'
+        '401':
+          $ref: '#/components/responses/UnauthorizedResponse'
+        '403':
+          $ref: '#/components/responses/ForbiddenResponse'
+        '404':
+          $ref: '#/components/responses/NotFoundResponse'
       security: []
   '/customer/{customerId}/location/{locationId}/setDefault':
     put:
@@ -3886,14 +3939,14 @@ paths:
           $ref: '#/components/responses/ForbiddenResponse'
       security: []
   '/customer/{customerId}/products':
-    parameters:
-      - name: customerId
-        in: path
-        description: customerId is needed
-        required: true
-        schema:
-          type: string
     get:
+      parameters:
+        - name: customerId
+          in: path
+          description: customerId is needed
+          required: true
+          schema:
+            type: string
       tags:
         - CustomerProduct
       operationId: customerProductsList
@@ -3914,14 +3967,14 @@ paths:
           $ref: '#/components/responses/ForbiddenResponse'
       security: []
   '/customer/{customerId}/products/ids':
-    parameters:
-      - name: customerId
-        in: path
-        description: customerId is needed
-        required: true
-        schema:
-          type: string
     get:
+      parameters:
+        - name: customerId
+          in: path
+          description: customerId is needed
+          required: true
+          schema:
+            type: string
       tags:
         - CustomerProduct
       operationId: customerProductsListIds
@@ -3942,18 +3995,18 @@ paths:
           $ref: '#/components/responses/ForbiddenResponse'
       security: []
   '/customer/{customerId}/product/{productId}':
-    parameters:
-      - name: customerId
-        in: path
-        required: true
-        schema:
-          type: string
-      - name: productId
-        in: path
-        required: true
-        schema:
-          type: string
     get:
+      parameters:
+        - name: customerId
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: productId
+          in: path
+          required: true
+          schema:
+            type: string
       tags:
         - CustomerProduct
       operationId: customerProductGet
@@ -3976,6 +4029,17 @@ paths:
           $ref: '#/components/responses/NotFoundResponse'
       security: []
     put:
+      parameters:
+        - name: customerId
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: productId
+          in: path
+          required: true
+          schema:
+            type: string
       tags:
         - CustomerProduct
       operationId: customerProductUpdate
@@ -4004,6 +4068,17 @@ paths:
           $ref: '#/components/responses/NotFoundResponse'
       security: []
     delete:
+      parameters:
+        - name: customerId
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: productId
+          in: path
+          required: true
+          schema:
+            type: string
       tags:
         - CustomerProduct
       operationId: customerProductDestroy
@@ -4130,14 +4205,14 @@ paths:
           $ref: '#/components/responses/NotFoundResponse'
       security: []
   '/customer/{customerId}/schedule':
-    parameters:
-      - name: customerId
-        in: path
-        description: The ID of the customerId
-        required: true
-        schema:
-          type: string
     post:
+      parameters:
+        - name: customerId
+          in: path
+          description: The ID of the customerId
+          required: true
+          schema:
+            type: string
       tags:
         - CustomerSchedule
       operationId: customerScheduleCreate
@@ -4166,14 +4241,14 @@ paths:
           $ref: '#/components/responses/NotFoundResponse'
       security: []
   '/customer/{customerId}/schedules':
-    parameters:
-      - name: customerId
-        in: path
-        description: The ID of the customerId
-        required: true
-        schema:
-          type: string
     get:
+      parameters:
+        - name: customerId
+          in: path
+          description: The ID of the customerId
+          required: true
+          schema:
+            type: string
       tags:
         - CustomerSchedule
       operationId: customerScheduleList
@@ -4194,20 +4269,20 @@ paths:
           $ref: '#/components/responses/ForbiddenResponse'
       security: []
   '/customer/{customerId}/schedule/{scheduleId}':
-    parameters:
-      - name: customerId
-        in: path
-        description: The ID of the customerId
-        required: true
-        schema:
-          type: string
-      - name: scheduleId
-        in: path
-        description: The ID of the scheduleId
-        required: true
-        schema:
-          type: string
     get:
+      parameters:
+        - name: customerId
+          in: path
+          description: The ID of the customerId
+          required: true
+          schema:
+            type: string
+        - name: scheduleId
+          in: path
+          description: The ID of the scheduleId
+          required: true
+          schema:
+            type: string
       tags:
         - CustomerSchedule
       operationId: customerScheduleGet
@@ -4230,6 +4305,19 @@ paths:
           $ref: '#/components/responses/NotFoundResponse'
       security: []
     put:
+      parameters:
+        - name: customerId
+          in: path
+          description: The ID of the customerId
+          required: true
+          schema:
+            type: string
+        - name: scheduleId
+          in: path
+          description: The ID of the scheduleId
+          required: true
+          schema:
+            type: string
       tags:
         - CustomerSchedule
       operationId: customerScheduleUpdate
@@ -4258,6 +4346,19 @@ paths:
           $ref: '#/components/responses/NotFoundResponse'
       security: []
     delete:
+      parameters:
+        - name: customerId
+          in: path
+          description: The ID of the customerId
+          required: true
+          schema:
+            type: string
+        - name: scheduleId
+          in: path
+          description: The ID of the scheduleId
+          required: true
+          schema:
+            type: string
       tags:
         - CustomerSchedule
       operationId: customerScheduleDestroy
@@ -4278,20 +4379,20 @@ paths:
           $ref: '#/components/responses/ForbiddenResponse'
       security: []
   '/customer/{customerId}/schedule/{scheduleId}/slots':
-    parameters:
-      - name: customerId
-        in: path
-        description: The ID of the customerId
-        required: true
-        schema:
-          type: string
-      - name: scheduleId
-        in: path
-        description: The ID of the scheduleId
-        required: true
-        schema:
-          type: string
     put:
+      parameters:
+        - name: customerId
+          in: path
+          description: The ID of the customerId
+          required: true
+          schema:
+            type: string
+        - name: scheduleId
+          in: path
+          description: The ID of the scheduleId
+          required: true
+          schema:
+            type: string
       tags:
         - CustomerSchedule
       operationId: customerScheduleSlotUpdate
@@ -4561,29 +4662,29 @@ paths:
           $ref: '#/components/responses/ForbiddenResponse'
       security: []
   /products/get-users-by-variant:
-    parameters:
-      - name: productId
-        in: query
-        description: product Id
-        required: true
-        schema:
-          type: string
-      - name: variantId
-        in: query
-        description: variant Id
-        schema:
-          type: string
-      - name: nextCursor
-        in: query
-        description: nextCursor
-        schema:
-          type: string
-      - name: limit
-        in: query
-        description: limit items (default 5)
-        schema:
-          type: string
     get:
+      parameters:
+        - name: productId
+          in: query
+          description: product Id
+          required: true
+          schema:
+            type: string
+        - name: variantId
+          in: query
+          description: variant Id
+          schema:
+            type: string
+        - name: nextCursor
+          in: query
+          description: nextCursor
+          schema:
+            type: string
+        - name: limit
+          in: query
+          description: limit items (default 5)
+          schema:
+            type: string
       tags:
         - Products
       operationId: productsGetUsersByVariant
@@ -4687,20 +4788,20 @@ paths:
           $ref: '#/components/responses/NotFoundResponse'
       security: []
   '/user/{username}/availability/{locationId}/generate':
-    parameters:
-      - name: username
-        in: path
-        description: This field for username
-        required: true
-        schema:
-          type: string
-      - name: locationId
-        in: path
-        description: This field for locationId
-        required: true
-        schema:
-          type: string
     post:
+      parameters:
+        - name: username
+          in: path
+          description: This field for username
+          required: true
+          schema:
+            type: string
+        - name: locationId
+          in: path
+          description: This field for locationId
+          required: true
+          schema:
+            type: string
       tags:
         - UserAvailability
       operationId: userAvailabilityGenerate
@@ -4727,20 +4828,20 @@ paths:
           $ref: '#/components/responses/ForbiddenResponse'
       security: []
   '/user/{username}/availability/{locationId}/get':
-    parameters:
-      - name: username
-        in: path
-        description: This field for username
-        required: true
-        schema:
-          type: string
-      - name: locationId
-        in: path
-        description: This field for locationId
-        required: true
-        schema:
-          type: string
     post:
+      parameters:
+        - name: username
+          in: path
+          description: This field for username
+          required: true
+          schema:
+            type: string
+        - name: locationId
+          in: path
+          description: This field for locationId
+          required: true
+          schema:
+            type: string
       tags:
         - UserAvailability
       operationId: UserAvailabilityGet
@@ -4801,14 +4902,14 @@ paths:
           $ref: '#/components/responses/NotFoundResponse'
       security: []
   '/user/{username}':
-    parameters:
-      - name: username
-        in: path
-        description: username
-        required: true
-        schema:
-          type: string
     get:
+      parameters:
+        - name: username
+          in: path
+          description: username
+          required: true
+          schema:
+            type: string
       tags:
         - User
       operationId: userGet
@@ -5225,18 +5326,18 @@ paths:
           $ref: '#/components/responses/NotFoundResponse'
       security: []
   /users/top:
-    parameters:
-      - name: limit
-        in: query
-        description: limit items (default 5)
-        schema:
-          type: string
-      - name: page
-        in: query
-        description: page
-        schema:
-          type: string
     get:
+      parameters:
+        - name: limit
+          in: query
+          description: limit items (default 5)
+          schema:
+            type: string
+        - name: page
+          in: query
+          description: page
+          schema:
+            type: string
       tags:
         - Users
       operationId: usersTop

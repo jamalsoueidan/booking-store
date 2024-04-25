@@ -139,6 +139,7 @@ export async function loader({context}: LoaderFunctionArgs) {
         {
           location: findDefaultLocation?._id,
           locationType: findDefaultLocation?.locationType,
+          originType: findDefaultLocation?.originType,
         },
       ],
     } as DefaultValues,

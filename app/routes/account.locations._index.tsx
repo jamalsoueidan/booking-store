@@ -186,7 +186,7 @@ export const AccountLocation = ({data}: AccountLocationProps) => {
   return (
     <UnstyledButton
       component={Link}
-      to={`${data._id}/edit`}
+      to={data._id}
       data-testid={`edit-button-${data._id}`}
     >
       {markup}

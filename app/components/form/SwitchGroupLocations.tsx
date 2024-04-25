@@ -1,10 +1,11 @@
 import {useField, type FieldMetadata} from '@conform-to/react';
-import {Stack, Switch, type SwitchGroupProps} from '@mantine/core';
+import {Flex, rem, Stack, Switch, type SwitchGroupProps} from '@mantine/core';
 import React, {useCallback} from 'react';
 import type {
   CustomerLocation,
   CustomerProductLocationsItem,
 } from '~/lib/api/model';
+import {LocationIcon} from '../LocationIcon';
 
 export type SwitchGroupLocations = {
   field: FieldMetadata<Array<CustomerProductLocationsItem>>;
@@ -32,6 +33,7 @@ export function SwitchGroupLocations({
             .map((newLocation) => ({
               location: newLocation._id,
               locationType: newLocation.locationType,
+              originType: newLocation.originType,
             })),
         });
       }
@@ -47,12 +49,17 @@ export function SwitchGroupLocations({
     >
       <Stack mt="xs" gap="xs">
         {data.map((l) => (
-          <Switch
-            key={l._id}
-            value={l._id}
-            label={l.name}
-            data-testid={`location-switch-${l._id}`}
-          />
+          <Flex key={l._id} align="center" gap="xs">
+            <Switch
+              value={l._id}
+              label={l.name}
+              data-testid={`location-switch-${l._id}`}
+            />
+            <LocationIcon
+              location={l}
+              style={{width: rem(16), height: rem(16)}}
+            />
+          </Flex>
         ))}
       </Stack>
 
@@ -67,6 +74,11 @@ export function SwitchGroupLocations({
             hidden
             name={`${field.name}[${index}].locationType`}
             defaultValue={item.initialValue?.locationType}
+          />
+          <input
+            hidden
+            name={`${field.name}[${index}].originType`}
+            defaultValue={item.initialValue?.originType}
           />
         </React.Fragment>
       ))}

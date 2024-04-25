@@ -12,11 +12,15 @@ export const action: ActionFunction = async ({context, params}) => {
     throw new Error('missing locationId');
   }
 
-  await getBookingShopifyApi().customerLocationRemove(customerId, locationId);
-
-  await context.storefront.cache?.delete(
-    `${baseURL}/customer/${customerId}/locations`,
-  );
+  await Promise.all([
+    getBookingShopifyApi().customerLocationRemove(customerId, locationId),
+    context.storefront.cache?.delete(
+      `${baseURL}/customer/${customerId}/location/${locationId}`,
+    ),
+    context.storefront.cache?.delete(
+      `${baseURL}/customer/${customerId}/locations`,
+    ),
+  ]);
 
   return redirectWithSuccess('/account/locations', {
     message: 'Lokation er slettet!!',
