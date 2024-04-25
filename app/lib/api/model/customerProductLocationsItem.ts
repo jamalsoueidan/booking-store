@@ -5,8 +5,10 @@
  * OpenAPI spec version: 1.0.0
  */
 import type {CustomerProductLocationsItemLocationType} from './customerProductLocationsItemLocationType';
+import type {CustomerProductLocationsItemOriginType} from './customerProductLocationsItemOriginType';
 
 export type CustomerProductLocationsItem = {
   location: string;
   locationType: CustomerProductLocationsItemLocationType;
+  originType: CustomerProductLocationsItemOriginType;
 };

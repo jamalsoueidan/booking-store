@@ -21,6 +21,7 @@ import type {
   CustomerIsBusinessResponse,
   CustomerLocationCreateBody,
   CustomerLocationCreateResponse,
+  CustomerLocationGetProductsResponse,
   CustomerLocationGetResponse,
   CustomerLocationListResponse,
   CustomerLocationRemoveResponse,
@@ -307,6 +308,24 @@ export const getBookingShopifyApi = () => {
         method: 'PUT',
         headers: {'Content-Type': 'application/json'},
         data: customerLocationUpdateBody,
+      },
+      options,
+    );
+  };
+
+  /**
+   * This endpoint get products belonging to the user
+   * @summary GET Get products that belongs to location
+   */
+  const customerLocationGetProducts = (
+    customerId: string,
+    locationId: string,
+    options?: SecondParameter<typeof queryClient>,
+  ) => {
+    return queryClient<CustomerLocationGetProductsResponse>(
+      {
+        url: `/customer/${customerId}/location/${locationId}/products`,
+        method: 'GET',
       },
       options,
     );
@@ -1204,6 +1223,7 @@ export const getBookingShopifyApi = () => {
     customerLocationGet,
     customerLocationRemove,
     customerLocationUpdate,
+    customerLocationGetProducts,
     customerLocationSetDefault,
     customerLocationCreate,
     customerLocationList,
@@ -1319,6 +1339,13 @@ export type CustomerLocationUpdateResult = NonNullable<
   Awaited<
     ReturnType<
       ReturnType<typeof getBookingShopifyApi>['customerLocationUpdate']
+    >
+  >
+>;
+export type CustomerLocationGetProductsResult = NonNullable<
+  Awaited<
+    ReturnType<
+      ReturnType<typeof getBookingShopifyApi>['customerLocationGetProducts']
     >
   >
 >;
