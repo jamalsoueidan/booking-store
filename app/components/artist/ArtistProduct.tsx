@@ -35,6 +35,8 @@ export function ArtistProduct({product, services}: ArtistProductProps) {
     p.title.includes('treatments'),
   );
 
+  console.log(artistService?.locations);
+
   return (
     <Card
       key={product.handle}

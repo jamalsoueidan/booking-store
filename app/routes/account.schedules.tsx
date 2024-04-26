@@ -131,7 +131,7 @@ export default function AccountSchedulesIndex() {
           selectScheduleMarkup
         )}
 
-        <Outlet />
+        <Outlet key={new Date().toJSON()} />
 
         <MobileModal
           opened={opened}

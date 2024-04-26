@@ -124,7 +124,7 @@ export default function AccountLocationsEdit() {
           />
         ) : (
           <Select
-            label="Arbejdsstedstype"
+            label="Arbejdsstedssted"
             defaultValue={fields.originType.initialValue}
             data={[
               {value: 'home', label: 'Hus/lejlighed'},

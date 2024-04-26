@@ -13,17 +13,12 @@ import {
 import {Link, useLoaderData} from '@remix-run/react';
 
 import {json, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
-import {
-  IconBuildingStore,
-  IconCar,
-  IconHome,
-  IconMoodSad,
-  IconPlus,
-} from '@tabler/icons-react';
+import {IconCar, IconMoodSad, IconPlus} from '@tabler/icons-react';
 
 import {AccountButton} from '~/components/account/AccountButton';
 import {AccountContent} from '~/components/account/AccountContent';
 import {AccountTitle} from '~/components/account/AccountTitle';
+import {LocationIcon} from '~/components/LocationIcon';
 import {getBookingShopifyApi} from '~/lib/api/bookingShopifyApi';
 import {type CustomerLocationIsDefault} from '~/lib/api/model';
 import {getCustomer} from '~/lib/get-customer';
@@ -155,11 +150,10 @@ export const AccountLocation = ({data}: AccountLocationProps) => {
     ) : (
       <div style={{position: 'relative'}}>
         <div style={{position: 'absolute', top: 0, right: 0}}>
-          {data.originType === 'commercial' ? (
-            <IconBuildingStore style={{width: rem(32), height: rem(32)}} />
-          ) : (
-            <IconHome style={{width: rem(32), height: rem(32)}} />
-          )}
+          <LocationIcon
+            location={data}
+            style={{width: rem(32), height: rem(32)}}
+          />
         </div>
 
         <Stack>
@@ -173,7 +167,7 @@ export const AccountLocation = ({data}: AccountLocationProps) => {
           </div>
           <SimpleGrid cols={1}>
             <div>
-              <Text size="xs">Arbejdsstedstype</Text>
+              <Text size="xs">Arbejdsstedssted</Text>
               <Text fw={600} size="xs">
                 {data.originType === 'commercial' ? 'Butik' : 'Eget sted'}
               </Text>

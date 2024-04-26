@@ -9,9 +9,11 @@ export function LocationIcon({
   location: Pick<CustomerLocationBase, 'locationType' | 'originType'>;
 } & CheckIconProps) {
   if (location.locationType === 'destination') {
-    <Tooltip label="Kører til dig">
-      <IconCar {...props} />
-    </Tooltip>;
+    return (
+      <Tooltip label="Kører til dig">
+        <IconCar {...props} />
+      </Tooltip>
+    );
   }
 
   if (location.originType === 'home') {

@@ -134,7 +134,7 @@ export default function Component() {
               />
             ) : (
               <Select
-                label="Arbejdsstedstype"
+                label="Arbejdsstedssted"
                 defaultValue={fields.originType.initialValue}
                 data={[
                   {value: 'commercial', label: 'Butik'},
