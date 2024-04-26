@@ -79,6 +79,13 @@ export default function AccountBusiness() {
   ] = useForm({
     lastResult,
     defaultValue: user,
+    onValidate({formData}) {
+      return parseWithZod(formData, {
+        schema,
+      });
+    },
+    shouldValidate: 'onSubmit',
+    shouldRevalidate: 'onSubmit',
   });
 
   const control = useInputControl(aboutMe);
