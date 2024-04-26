@@ -8,18 +8,19 @@ export type MultiTagsProps = {
 } & MultiSelectProps;
 
 export const MultiTags: React.FC<MultiTagsProps> = ({field, ...props}) => {
-  const [, form] = useField(field.name);
+  const [form, fields] = useField(field.name);
   const list = field.getFieldList();
   const defaultValue = list.map((item) => item.initialValue) as string[];
 
   const handleChange = useCallback(
     (value: string[]) => {
-      form.update({
+      fields.update({
         name: field.name,
         value,
+        validated: false,
       });
     },
-    [field.name, form],
+    [field.name, fields],
   );
 
   return (

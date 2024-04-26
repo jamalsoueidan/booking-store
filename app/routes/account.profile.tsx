@@ -1,8 +1,7 @@
-import {Blockquote, Button, Stack, TextInput} from '@mantine/core';
+import {Blockquote, Stack, TextInput} from '@mantine/core';
 import {
   Form,
   useActionData,
-  useNavigation,
   useOutletContext,
   type MetaFunction,
 } from '@remix-run/react';
@@ -15,6 +14,7 @@ import {
 import type {CustomerFragment} from 'customer-accountapi.generated';
 import {AccountContent} from '~/components/account/AccountContent';
 import {AccountTitle} from '~/components/account/AccountTitle';
+import {SubmitButton} from '~/components/form/SubmitButton';
 import {CUSTOMER_UPDATE_MUTATION} from '~/graphql/customer-account/CustomerUpdateMutation';
 
 export type ActionResponse = {
@@ -100,7 +100,6 @@ export async function action({request, context}: ActionFunctionArgs) {
 
 export default function AccountProfile() {
   const account = useOutletContext<{customer: CustomerFragment}>();
-  const {state} = useNavigation();
   const action = useActionData<ActionResponse>();
   const customer = action?.customer ?? account?.customer;
 
@@ -147,13 +146,7 @@ export default function AccountProfile() {
             />
 
             <div>
-              <Button
-                type="submit"
-                loading={state !== 'idle'}
-                data-testid="submit-button"
-              >
-                Opdatere
-              </Button>
+              <SubmitButton>Gem ændringer</SubmitButton>
             </div>
           </Stack>
         </Form>
