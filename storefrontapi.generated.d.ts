@@ -1730,6 +1730,117 @@ export type ProductValidateHandlerQuery = {
   >;
 };
 
+export type ProductTagOptionsFragment = Pick<
+  StorefrontAPI.Product,
+  'id' | 'handle' | 'title'
+> & {
+  options: Array<Pick<StorefrontAPI.ProductOption, 'name' | 'values'>>;
+  variants: {
+    nodes: Array<
+      Pick<StorefrontAPI.ProductVariant, 'id' | 'title'> & {
+        price: Pick<StorefrontAPI.MoneyV2, 'amount' | 'currencyCode'>;
+      }
+    >;
+  };
+};
+
+export type SearchForProductByTagsQueryVariables = StorefrontAPI.Exact<{
+  country?: StorefrontAPI.InputMaybe<StorefrontAPI.CountryCode>;
+  language?: StorefrontAPI.InputMaybe<StorefrontAPI.LanguageCode>;
+}>;
+
+export type SearchForProductByTagsQuery = {
+  products: {
+    nodes: Array<
+      Pick<StorefrontAPI.Product, 'id' | 'handle' | 'title'> & {
+        options: Array<Pick<StorefrontAPI.ProductOption, 'name' | 'values'>>;
+        variants: {
+          nodes: Array<
+            Pick<StorefrontAPI.ProductVariant, 'id' | 'title'> & {
+              price: Pick<StorefrontAPI.MoneyV2, 'amount' | 'currencyCode'>;
+            }
+          >;
+        };
+      }
+    >;
+  };
+};
+
+export type TreatmentVariantFragment = Pick<
+  StorefrontAPI.ProductVariant,
+  'id' | 'title'
+> & {
+  image?: StorefrontAPI.Maybe<
+    Pick<StorefrontAPI.Image, 'id' | 'url' | 'altText' | 'width' | 'height'>
+  >;
+  price: Pick<StorefrontAPI.MoneyV2, 'amount' | 'currencyCode'>;
+  compareAtPrice?: StorefrontAPI.Maybe<
+    Pick<StorefrontAPI.MoneyV2, 'amount' | 'currencyCode'>
+  >;
+  selectedOptions: Array<Pick<StorefrontAPI.SelectedOption, 'name' | 'value'>>;
+};
+
+export type TreatmentOptionsFragment = Pick<
+  StorefrontAPI.Product,
+  'id' | 'title' | 'handle'
+> & {
+  options: Array<Pick<StorefrontAPI.ProductOption, 'name' | 'values'>>;
+  variants: {
+    nodes: Array<
+      Pick<StorefrontAPI.ProductVariant, 'id' | 'title'> & {
+        image?: StorefrontAPI.Maybe<
+          Pick<
+            StorefrontAPI.Image,
+            'id' | 'url' | 'altText' | 'width' | 'height'
+          >
+        >;
+        price: Pick<StorefrontAPI.MoneyV2, 'amount' | 'currencyCode'>;
+        compareAtPrice?: StorefrontAPI.Maybe<
+          Pick<StorefrontAPI.MoneyV2, 'amount' | 'currencyCode'>
+        >;
+        selectedOptions: Array<
+          Pick<StorefrontAPI.SelectedOption, 'name' | 'value'>
+        >;
+      }
+    >;
+  };
+};
+
+export type GetTreatmentOptionsQueryVariables = StorefrontAPI.Exact<{
+  country?: StorefrontAPI.InputMaybe<StorefrontAPI.CountryCode>;
+  language?: StorefrontAPI.InputMaybe<StorefrontAPI.LanguageCode>;
+  query: StorefrontAPI.Scalars['String']['input'];
+}>;
+
+export type GetTreatmentOptionsQuery = {
+  products: {
+    nodes: Array<
+      Pick<StorefrontAPI.Product, 'id' | 'title' | 'handle'> & {
+        options: Array<Pick<StorefrontAPI.ProductOption, 'name' | 'values'>>;
+        variants: {
+          nodes: Array<
+            Pick<StorefrontAPI.ProductVariant, 'id' | 'title'> & {
+              image?: StorefrontAPI.Maybe<
+                Pick<
+                  StorefrontAPI.Image,
+                  'id' | 'url' | 'altText' | 'width' | 'height'
+                >
+              >;
+              price: Pick<StorefrontAPI.MoneyV2, 'amount' | 'currencyCode'>;
+              compareAtPrice?: StorefrontAPI.Maybe<
+                Pick<StorefrontAPI.MoneyV2, 'amount' | 'currencyCode'>
+              >;
+              selectedOptions: Array<
+                Pick<StorefrontAPI.SelectedOption, 'name' | 'value'>
+              >;
+            }
+          >;
+        };
+      }
+    >;
+  };
+};
+
 export type ProductCreateVariantFragment = Pick<
   StorefrontAPI.ProductVariant,
   'id' | 'title'
@@ -2765,6 +2876,14 @@ interface GeneratedQueryTypes {
   '#graphql\n#graphql\n  fragment ProductValidateHandler on Product {\n    id\n    title\n    vendor\n    selectedVariant: variantBySelectedOptions(selectedOptions: [{name: "asd", value: "asd"}]) {\n      id\n    }\n  }\n\n  query ProductValidateHandler(\n    $country: CountryCode\n    $productHandle: String!\n    $language: LanguageCode\n  ) @inContext(country: $country, language: $language) {\n    product(handle: $productHandle) {\n      ...ProductValidateHandler\n    }\n  }\n': {
     return: ProductValidateHandlerQuery;
     variables: ProductValidateHandlerQueryVariables;
+  };
+  '#graphql\n  #graphql\n  fragment MoneyProductItem on MoneyV2 {\n    amount\n    currencyCode\n  }\n\n  fragment ProductTagOptions on Product {\n    id\n    handle\n    title\n    options {\n      name\n      values\n    }\n    variants(first: 10) {\n      nodes {\n        id\n        price {\n          ...MoneyProductItem\n        }\n        title\n      }\n    }\n  }\n\n  query SearchForProductByTags(\n    $country: CountryCode\n    $language: LanguageCode\n  ) @inContext(country: $country, language: $language) {\n    products(first: 10, query: "tag:\'options\'") {\n      nodes {\n        ...ProductTagOptions\n      }\n    }\n  }\n': {
+    return: SearchForProductByTagsQuery;
+    variables: SearchForProductByTagsQueryVariables;
+  };
+  '#graphql\n  #graphql\n  fragment TreatmentOptions on Product {\n    id\n    title\n    handle\n    options {\n      name\n      values\n    }\n    variants(first: 5) {\n      nodes {\n        ...TreatmentVariant\n      }\n    }\n  }\n  #graphql\n  fragment TreatmentVariant on ProductVariant {\n    id\n    title\n    image {\n      id\n      url\n      altText\n      width\n      height\n    }\n    price {\n      amount\n      currencyCode\n    }\n    compareAtPrice {\n      amount\n      currencyCode\n    }\n    selectedOptions {\n      name\n      value\n    }\n  }\n\n\n  query GetTreatmentOptions(\n    $country: CountryCode\n    $language: LanguageCode\n    $query: String!\n  ) @inContext(country: $country, language: $language) {\n    products(first: 10, query: $query) {\n      nodes {\n        ...TreatmentOptions\n      }\n    }\n  }\n': {
+    return: GetTreatmentOptionsQuery;
+    variables: GetTreatmentOptionsQueryVariables;
   };
   '#graphql\n  #graphql\n  fragment ProductCreateVariant on ProductVariant {\n    id\n    title\n    compareAtPrice {\n      amount\n      currencyCode\n    }\n    price {\n      amount\n      currencyCode\n    }\n    product {\n      title\n      handle\n    }\n    selectedOptions {\n      name\n      value\n    }\n  }\n\n  query ProductCreateVariantId(\n    $country: CountryCode\n    $Id: ID!\n    $language: LanguageCode\n    $selectedOptions: [SelectedOptionInput!]!\n  ) @inContext(country: $country, language: $language) {\n    product(id: $Id) {\n      ...on Product {\n        selectedVariant: variantBySelectedOptions(selectedOptions: $selectedOptions) {\n          ...ProductCreateVariant\n        }\n      }\n    }\n  }\n': {
     return: ProductCreateVariantIdQuery;
