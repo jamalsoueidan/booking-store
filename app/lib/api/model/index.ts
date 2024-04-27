@@ -115,6 +115,8 @@ export * from './customerProductAddResponse';
 export * from './customerProductAllOf';
 export * from './customerProductBase';
 export * from './customerProductBaseCompareAtPrice';
+export * from './customerProductBaseOptionsItem';
+export * from './customerProductBaseOptionsItemVariantsItem';
 export * from './customerProductBasePrice';
 export * from './customerProductBookingPeriod';
 export * from './customerProductBookingUnit';

@@ -1211,6 +1211,13 @@ export const customerLocationGetProductsParams = zod.object({
 export const customerLocationGetProductsResponse = zod.object({
   "success": zod.boolean(),
   "payload": zod.array( zod.object({
+  "options": zod.array( zod.object({
+  "productId": zod.number(),
+  "variants": zod.array( zod.object({
+  "variantId": zod.number(),
+  "duration": zod.number()
+}))
+})).optional(),
   "productHandle": zod.string().optional(),
   "productId": zod.number(),
   "variantId": zod.number(),
@@ -2091,6 +2098,13 @@ export const customerProductsListParams = zod.object({
 export const customerProductsListResponse = zod.object({
   "success": zod.boolean(),
   "payload": zod.array( zod.object({
+  "options": zod.array( zod.object({
+  "productId": zod.number(),
+  "variants": zod.array( zod.object({
+  "variantId": zod.number(),
+  "duration": zod.number()
+}))
+})).optional(),
   "productHandle": zod.string().optional(),
   "productId": zod.number(),
   "variantId": zod.number(),
@@ -2156,6 +2170,13 @@ export const customerProductGetParams = zod.object({
 export const customerProductGetResponse = zod.object({
   "success": zod.boolean(),
   "payload":  zod.object({
+  "options": zod.array( zod.object({
+  "productId": zod.number(),
+  "variants": zod.array( zod.object({
+  "variantId": zod.number(),
+  "duration": zod.number()
+}))
+})).optional(),
   "productHandle": zod.string().optional(),
   "productId": zod.number(),
   "variantId": zod.number(),
@@ -2240,6 +2261,13 @@ export const customerProductUpdateBody = zod.object({
 export const customerProductUpdateResponse = zod.object({
   "success": zod.boolean(),
   "payload":  zod.object({
+  "options": zod.array( zod.object({
+  "productId": zod.number(),
+  "variants": zod.array( zod.object({
+  "variantId": zod.number(),
+  "duration": zod.number()
+}))
+})).optional(),
   "productHandle": zod.string().optional(),
   "productId": zod.number(),
   "variantId": zod.number(),
@@ -2333,6 +2361,13 @@ export const customerProductAddBody = zod.object({
 export const customerProductAddResponse = zod.object({
   "success": zod.boolean(),
   "payload":  zod.object({
+  "options": zod.array( zod.object({
+  "productId": zod.number(),
+  "variants": zod.array( zod.object({
+  "variantId": zod.number(),
+  "duration": zod.number()
+}))
+})).optional(),
   "productHandle": zod.string().optional(),
   "productId": zod.number(),
   "variantId": zod.number(),
@@ -2452,6 +2487,13 @@ export const customerScheduleCreateResponse = zod.object({
 }))
 })),
   "products": zod.array( zod.object({
+  "options": zod.array( zod.object({
+  "productId": zod.number(),
+  "variants": zod.array( zod.object({
+  "variantId": zod.number(),
+  "duration": zod.number()
+}))
+})).optional(),
   "productHandle": zod.string().optional(),
   "productId": zod.number(),
   "variantId": zod.number(),
@@ -2511,6 +2553,13 @@ export const customerScheduleListResponse = zod.object({
 }))
 })),
   "products": zod.array( zod.object({
+  "options": zod.array( zod.object({
+  "productId": zod.number(),
+  "variants": zod.array( zod.object({
+  "variantId": zod.number(),
+  "duration": zod.number()
+}))
+})).optional(),
   "productHandle": zod.string().optional(),
   "productId": zod.number(),
   "variantId": zod.number(),
@@ -2571,6 +2620,13 @@ export const customerScheduleGetResponse = zod.object({
 }))
 })),
   "products": zod.array( zod.object({
+  "options": zod.array( zod.object({
+  "productId": zod.number(),
+  "variants": zod.array( zod.object({
+  "variantId": zod.number(),
+  "duration": zod.number()
+}))
+})).optional(),
   "productHandle": zod.string().optional(),
   "productId": zod.number(),
   "variantId": zod.number(),
@@ -2635,6 +2691,13 @@ export const customerScheduleUpdateResponse = zod.object({
 }))
 })),
   "products": zod.array( zod.object({
+  "options": zod.array( zod.object({
+  "productId": zod.number(),
+  "variants": zod.array( zod.object({
+  "variantId": zod.number(),
+  "duration": zod.number()
+}))
+})).optional(),
   "productHandle": zod.string().optional(),
   "productId": zod.number(),
   "variantId": zod.number(),
@@ -2723,6 +2786,13 @@ export const customerScheduleSlotUpdateResponse = zod.object({
 }))
 })),
   "products": zod.array( zod.object({
+  "options": zod.array( zod.object({
+  "productId": zod.number(),
+  "variants": zod.array( zod.object({
+  "variantId": zod.number(),
+  "duration": zod.number()
+}))
+})).optional(),
   "productHandle": zod.string().optional(),
   "productId": zod.number(),
   "variantId": zod.number(),
@@ -3410,6 +3480,13 @@ export const userProductsListByScheduleQueryParams = zod.object({
 export const userProductsListByScheduleResponse = zod.object({
   "success": zod.boolean(),
   "payload": zod.array( zod.object({
+  "options": zod.array( zod.object({
+  "productId": zod.number(),
+  "variants": zod.array( zod.object({
+  "variantId": zod.number(),
+  "duration": zod.number()
+}))
+})).optional(),
   "productHandle": zod.string().optional(),
   "productId": zod.number(),
   "variantId": zod.number(),
@@ -3461,6 +3538,13 @@ export const userProductGetParams = zod.object({
 export const userProductGetResponse = zod.object({
   "success": zod.boolean(),
   "payload":  zod.object({
+  "options": zod.array( zod.object({
+  "productId": zod.number(),
+  "variants": zod.array( zod.object({
+  "variantId": zod.number(),
+  "duration": zod.number()
+}))
+})).optional(),
   "productHandle": zod.string().optional(),
   "productId": zod.number(),
   "variantId": zod.number(),
@@ -3516,6 +3600,13 @@ export const userProductsGetProductsBody = zod.object({
 export const userProductsGetProductsResponse = zod.object({
   "success": zod.boolean(),
   "payload": zod.array( zod.object({
+  "options": zod.array( zod.object({
+  "productId": zod.number(),
+  "variants": zod.array( zod.object({
+  "variantId": zod.number(),
+  "duration": zod.number()
+}))
+})).optional(),
   "productHandle": zod.string().optional(),
   "productId": zod.number(),
   "variantId": zod.number(),
@@ -3559,6 +3650,13 @@ export const userProductsListByLocationParams = zod.object({
 export const userProductsListByLocationResponse = zod.object({
   "success": zod.boolean(),
   "payload": zod.array( zod.object({
+  "options": zod.array( zod.object({
+  "productId": zod.number(),
+  "variants": zod.array( zod.object({
+  "variantId": zod.number(),
+  "duration": zod.number()
+}))
+})).optional(),
   "productHandle": zod.string().optional(),
   "productId": zod.number(),
   "variantId": zod.number(),
@@ -3632,6 +3730,13 @@ export const userScheduleGetByProductResponse = zod.object({
 })))
 }).and( zod.object({
   "product":  zod.object({
+  "options": zod.array( zod.object({
+  "productId": zod.number(),
+  "variants": zod.array( zod.object({
+  "variantId": zod.number(),
+  "duration": zod.number()
+}))
+})).optional(),
   "productHandle": zod.string().optional(),
   "productId": zod.number(),
   "variantId": zod.number(),
@@ -3727,6 +3832,13 @@ export const userScheduleGetByLocationResponse = zod.object({
 })))
 }).and( zod.object({
   "products": zod.array( zod.object({
+  "options": zod.array( zod.object({
+  "productId": zod.number(),
+  "variants": zod.array( zod.object({
+  "variantId": zod.number(),
+  "duration": zod.number()
+}))
+})).optional(),
   "productHandle": zod.string().optional(),
   "productId": zod.number(),
   "variantId": zod.number(),
