@@ -5,7 +5,7 @@ projects:
       - '!*.d.ts'
       - '*.{ts,tsx,js,jsx}'
       - 'app/**/*.{ts,tsx,js,jsx}'
-      - '!app/graphql/**/*.{ts,tsx,js,jsx}'
+      - '!app/graphql/customer-account/*.{ts,tsx,js,jsx}'
   customer-account:
     schema: 'node_modules/@shopify/hydrogen/customer-account.schema.json'
     documents:
