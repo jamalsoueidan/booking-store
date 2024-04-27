@@ -49,7 +49,10 @@ export default function EditAddress() {
           Produkt detaljer
         </AccountButton>
         <AccountButton to={'booking'} data-testid="booking-button">
-          Booking Konfiguration
+          Bookingkonfiguration
+        </AccountButton>
+        <AccountButton to={'options'} data-testid="booking-button">
+          Valg muligheder
         </AccountButton>
         <Form
           method="post"
