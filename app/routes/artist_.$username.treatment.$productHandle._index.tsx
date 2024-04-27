@@ -14,7 +14,7 @@ import {
 } from '@remix-run/server-runtime';
 import {Money, parseGid} from '@shopify/hydrogen';
 import {type ProductOption} from '@shopify/hydrogen-react/storefront-api-types';
-import React from 'react';
+import React, {useMemo} from 'react';
 import type {
   TreatmentOptionsFragment,
   TreatmentVariantFragment,
@@ -23,6 +23,11 @@ import {ArtistShell} from '~/components/ArtistShell';
 import {TreatmentStepper} from '~/components/TreatmentStepper';
 import {TREATMENT_OPTIONS_QUERY} from '~/graphql/storefront/TreatmentOptions';
 import {getBookingShopifyApi} from '~/lib/api/bookingShopifyApi';
+import type {
+  CustomerProductBaseOptionsItem,
+  CustomerProductBaseOptionsItemVariantsItem,
+} from '~/lib/api/model';
+import {matchesGid} from '~/lib/matches-gid';
 import type {loader as rootLoader} from './artist_.$username.treatment.$productHandle';
 
 function redirectToVariants({
@@ -95,6 +100,30 @@ function pickedVariants({
   return variants;
 }
 
+function pickedOptions({
+  userProductsOptions,
+  request,
+}: {
+  userProductsOptions: CustomerProductBaseOptionsItem[];
+  request: Request;
+}) {
+  const parsedUrl = new URL(request.url);
+  const pickedVariantsInURL = parseNestedQueryParameters(parsedUrl.search);
+
+  const variants = userProductsOptions.map((product) => {
+    const value = pickedVariantsInURL[product.productId];
+    const pickedVariant = product.variants.find(
+      ({variantId}) => variantId.toString() === value,
+    );
+    if (!pickedVariant) {
+      throw new Response('Variant not found', {status: 404});
+    }
+    return pickedVariant;
+  });
+
+  return variants;
+}
+
 export async function loader({params, request, context}: LoaderFunctionArgs) {
   const {username, productHandle} = params;
   const {storefront} = context;
@@ -125,6 +154,9 @@ export async function loader({params, request, context}: LoaderFunctionArgs) {
     },
   );
 
+  let selectedVariants: TreatmentVariantFragment[] = [];
+  let selectedOptions: CustomerProductBaseOptionsItemVariantsItem[] = [];
+
   if (productsWithVariants.nodes.length > 0) {
     redirectToVariants({
       productsWithVariants: productsWithVariants.nodes,
@@ -132,19 +164,50 @@ export async function loader({params, request, context}: LoaderFunctionArgs) {
     });
   }
 
-  const selectedVariants = pickedVariants({
-    productsWithVariants: productsWithVariants.nodes,
-    request,
-  });
+  if (userProduct.options) {
+    selectedVariants = pickedVariants({
+      productsWithVariants: productsWithVariants.nodes,
+      request,
+    });
 
-  return json({productsWithVariants, selectedVariants});
+    selectedOptions = pickedOptions({
+      userProductsOptions: userProduct.options,
+      request,
+    });
+  }
+
+  return json({
+    productsWithVariants, // to render all variants
+    userProductsOptions: userProduct.options, //to get all durations
+    selectedVariants, //for calculate price
+    selectedOptions, //for calculate duration
+  });
 }
 
 export default function ProductDescription() {
-  const {productsWithVariants, selectedVariants} =
-    useLoaderData<typeof loader>();
-  const {product} = useOutletContext<SerializeFrom<typeof rootLoader>>();
+  const {
+    productsWithVariants,
+    selectedVariants,
+    userProductsOptions,
+    selectedOptions,
+  } = useLoaderData<typeof loader>();
+
+  const {product, userProduct} =
+    useOutletContext<SerializeFrom<typeof rootLoader>>();
   const {descriptionHtml} = product;
+
+  const totalPrice = useMemo(() => {
+    return selectedVariants.reduce(
+      (total, variant) => total + parseInt(variant.price.amount || ''),
+      parseInt(product.selectedVariant?.price.amount || '0'),
+    );
+  }, [product.selectedVariant?.price.amount, selectedVariants]);
+
+  const totalTime = useMemo(() => {
+    return selectedOptions.reduce((total, option) => {
+      return total + option.duration;
+    }, userProduct.duration);
+  }, [selectedOptions, userProduct.duration]);
 
   return (
     <>
@@ -156,20 +219,41 @@ export default function ProductDescription() {
           dangerouslySetInnerHTML={{__html: descriptionHtml}}
         ></Text>
         <Divider />
-        {productsWithVariants.nodes.map((productVariant) => (
-          <VariantSelector
-            key={productVariant.id}
-            productVariant={productVariant}
-          >
-            {(props) => {
-              return <ProductOption {...props} />;
-            }}
-          </VariantSelector>
-        ))}
-        <Divider />
-        Total pris: {product.selectedVariant?.price.amount}
-        Valg:
-        {selectedVariants[0].price.amount}
+        {productsWithVariants ? (
+          <>
+            {productsWithVariants.nodes.map((productVariant) => {
+              const userProductOptions = userProductsOptions.find((up) =>
+                matchesGid(productVariant.id, up.productId),
+              );
+              if (!userProductOptions) {
+                return <>Error: option not found</>;
+              }
+
+              return (
+                <VariantSelector
+                  key={productVariant.id}
+                  productVariant={productVariant}
+                  userProductOptions={userProductOptions}
+                >
+                  {(props) => {
+                    return <ProductOption {...props} />;
+                  }}
+                </VariantSelector>
+              );
+            })}
+            <Divider />
+            Total pris:{' '}
+            <Money
+              as="span"
+              data={{
+                __typename: 'MoneyV2',
+                amount: totalPrice.toString(),
+                currencyCode: 'DKK',
+              }}
+            />
+            Total tid: {totalTime} min
+          </>
+        ) : null}
       </ArtistShell.Main>
       <ArtistShell.Footer>
         <TreatmentStepper>
@@ -182,25 +266,39 @@ export default function ProductDescription() {
   );
 }
 
-type VariantSelectorChildrenProp = {
-  productId: TreatmentOptionsFragment['id'];
-  variant: TreatmentVariantFragment;
-};
-
-function VariantSelector({
-  productVariant,
-  children,
-}: {
+type VariantSelectorProps = {
+  userProductOptions: CustomerProductBaseOptionsItem;
   productVariant: TreatmentOptionsFragment;
   children: ({
     productId,
     variant,
+    userVariant,
   }: VariantSelectorChildrenProp) => React.ReactElement;
-}) {
+};
+
+type VariantSelectorChildrenProp = {
+  productId: TreatmentOptionsFragment['id'];
+  variant: TreatmentVariantFragment;
+  userVariant: CustomerProductBaseOptionsItemVariantsItem;
+};
+
+function VariantSelector({
+  productVariant,
+  userProductOptions,
+  children,
+}: VariantSelectorProps) {
   const optionsMarkup = productVariant.variants.nodes.map((variant) => {
+    const userVariant = userProductOptions.variants.find((v) =>
+      matchesGid(variant.id, v.variantId),
+    );
+
+    if (!userVariant) {
+      return <>Error: variant not found</>;
+    }
+
     return (
       <Flex key={variant.id}>
-        {children({productId: productVariant.id, variant})}
+        {children({productId: productVariant.id, variant, userVariant})}
       </Flex>
     );
   });
@@ -215,8 +313,12 @@ function VariantSelector({
   );
 }
 
-function ProductOption({productId, variant}: VariantSelectorChildrenProp) {
-  const [searchParams, setSearchParams] = useSearchParams();
+function ProductOption({
+  productId,
+  variant,
+  userVariant,
+}: VariantSelectorChildrenProp) {
+  const [, setSearchParams] = useSearchParams();
   const location = useLocation();
   const pickedVariantsInURL = parseNestedQueryParameters(location.search);
 
@@ -231,13 +333,13 @@ function ProductOption({productId, variant}: VariantSelectorChildrenProp) {
     <Button
       onClick={updateSearchParams}
       variant={
-        pickedVariantsInURL[parseGid(productId).id] === parseGid(variant.id).id
+        pickedVariantsInURL[parseGid(productId).id] !== parseGid(variant.id).id
           ? 'outline'
-          : undefined
+          : 'transparent'
       }
     >
       {variant.title} +<Money as="span" data={variant.price} withoutCurrency />
-      &nbsp; DKK
+      &nbsp; DKK - {userVariant.duration} min
     </Button>
   );
 }
