@@ -220,6 +220,28 @@ components:
     CustomerProductBase:
       type: object
       properties:
+        options:
+          type: array
+          items:
+            type: object
+            properties:
+              productId:
+                type: number
+              variants:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    variantId:
+                      type: number
+                    duration:
+                      type: number
+                  required:
+                    - variantId
+                    - duration
+            required:
+              - productId
+              - variants
         productHandle:
           type: string
         productId:
@@ -267,6 +289,7 @@ components:
         - breakTime
         - noticePeriod
         - bookingPeriod
+        - options
     CustomerProduct:
       type: object
       allOf:
@@ -2668,6 +2691,10 @@ components:
           type: string
         toDate:
           type: string
+        optionIds:
+          type: object
+          additionalProperties:
+            type: string
         productIds:
           type: array
           items:
@@ -2710,6 +2737,10 @@ components:
         productIds:
           type: array
           items:
+            type: string
+        optionIds:
+          type: object
+          additionalProperties:
             type: string
         shippingId:
           type: string
