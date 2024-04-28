@@ -14,6 +14,7 @@ import {PRODUCT_SELECTED_OPTIONS_QUERY} from '~/data/queries';
 import {getBookingShopifyApi} from '~/lib/api/bookingShopifyApi';
 import {durationToTime} from '~/lib/duration';
 import {ALL_PRODUCTS_QUERY} from './artist.$username._index';
+import {parseOptionsQueryParameters} from './artist_.$username.treatment.$productHandle._index';
 
 export const loader = async ({
   request,
@@ -59,12 +60,17 @@ export const loader = async ({
         fromDate, //: '2023-11-26T05:15:00.000Z',
         toDate, //: '2023-11-26T08:05:00.000Z',
         shippingId: shippingId ? shippingId : undefined,
+        optionIds: parseOptionsQueryParameters(url.search),
       });
+
+    const availabilityProducts = availability.slot.products.map(
+      (p) => p.productId,
+    );
 
     const {products} = await context.storefront.query(ALL_PRODUCTS_QUERY, {
       variables: {
-        first: joinProductIds.length,
-        query: joinProductIds.join(' OR '),
+        first: availabilityProducts.length,
+        query: availabilityProducts.join(' OR '),
         country: context.storefront.i18n.country,
         language: context.storefront.i18n.language,
       },

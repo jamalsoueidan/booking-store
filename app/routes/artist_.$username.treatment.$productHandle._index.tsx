@@ -3,7 +3,6 @@ import {
   Link,
   redirect,
   useLoaderData,
-  useLocation,
   useOutletContext,
   useSearchParams,
 } from '@remix-run/react';
@@ -62,7 +61,7 @@ function redirectToVariants({
   }
 }
 
-function parseNestedQueryParameters(search: string) {
+export function parseOptionsQueryParameters(search: string) {
   const searchParams = new URLSearchParams(search);
   const options: Record<string, string> = {};
 
@@ -84,7 +83,7 @@ function pickedVariants({
   request: Request;
 }) {
   const parsedUrl = new URL(request.url);
-  const pickedVariantsInURL = parseNestedQueryParameters(parsedUrl.search);
+  const pickedVariantsInURL = parseOptionsQueryParameters(parsedUrl.search);
 
   const variants = productsWithVariants.map((product) => {
     const value = pickedVariantsInURL[parseGid(product.id).id];
@@ -108,7 +107,7 @@ function pickedOptions({
   request: Request;
 }) {
   const parsedUrl = new URL(request.url);
-  const pickedVariantsInURL = parseNestedQueryParameters(parsedUrl.search);
+  const pickedVariantsInURL = parseOptionsQueryParameters(parsedUrl.search);
 
   const variants = userProductsOptions.map((product) => {
     const value = pickedVariantsInURL[product.productId];
@@ -185,6 +184,8 @@ export async function loader({params, request, context}: LoaderFunctionArgs) {
 }
 
 export default function ProductDescription() {
+  const [searchParams] = useSearchParams();
+
   const {
     productsWithVariants,
     selectedVariants,
@@ -257,7 +258,12 @@ export default function ProductDescription() {
       </ArtistShell.Main>
       <ArtistShell.Footer>
         <TreatmentStepper>
-          <Button variant="default" component={Link} to="pick-options">
+          <Button
+            variant="default"
+            component={Link}
+            to={`pick-location?${searchParams.toString()}`}
+            relative="route"
+          >
             Bestil tid
           </Button>
         </TreatmentStepper>
@@ -318,9 +324,10 @@ function ProductOption({
   variant,
   userVariant,
 }: VariantSelectorChildrenProp) {
-  const [, setSearchParams] = useSearchParams();
-  const location = useLocation();
-  const pickedVariantsInURL = parseNestedQueryParameters(location.search);
+  const [searchParams, setSearchParams] = useSearchParams();
+  const pickedVariantsInURL = parseOptionsQueryParameters(
+    searchParams.toString(),
+  );
 
   const updateSearchParams = () => {
     setSearchParams((prev) => {

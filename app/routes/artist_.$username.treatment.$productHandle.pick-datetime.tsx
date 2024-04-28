@@ -8,6 +8,7 @@ import {
   Stack,
   Text,
   Title,
+  type SelectProps,
 } from '@mantine/core';
 import {useMediaQuery} from '@mantine/hooks';
 import {
@@ -32,6 +33,7 @@ import type {
   UserAvailabilityMulti,
   UserAvailabilitySlot,
 } from '~/lib/api/model';
+import {parseOptionsQueryParameters} from './artist_.$username.treatment.$productHandle._index';
 
 export function shouldRevalidate({
   currentUrl,
@@ -63,6 +65,7 @@ export async function loader({params, request, context}: LoaderFunctionArgs) {
   const calendar = searchParams.get('calendar') || new Date().toJSON();
   const locationId = searchParams.get('locationId') as string | undefined;
   const shippingId = searchParams.get('shippingId') as string | undefined;
+  const optionIds = searchParams.getAll('options');
 
   if (!username || !productHandle || !locationId) {
     throw new Response('Expected artist handle to be defined', {status: 400});
@@ -83,6 +86,7 @@ export async function loader({params, request, context}: LoaderFunctionArgs) {
       productIds: [parseGid(product.id).id, ...productIds],
       fromDate: calendar.substring(0, 10),
       shippingId: shippingId ? shippingId : undefined, //stringify ignore undefined values but not NULL
+      optionIds: parseOptionsQueryParameters(url.search),
     },
   );
 
@@ -164,15 +168,13 @@ function TreatmentPickDatetime({availability}: TreatmentPickDatetimeProps) {
         minutes: 0,
         seconds: 0,
       });
-      const newSearchParams = new URLSearchParams(searchParams);
-      newSearchParams.set('calendar', startOfMonthDate.toJSON());
-      newSearchParams.delete('date');
-      newSearchParams.delete('fromDate');
-      newSearchParams.delete('toDate');
-      setSearchParams(newSearchParams, {
-        state: {
-          key: 'booking',
-        },
+
+      setSearchParams((prev) => {
+        prev.delete('date');
+        prev.delete('fromDate');
+        prev.delete('toDate');
+        prev.set('calendar', startOfMonthDate.toJSON());
+        return prev;
       });
     }
   };
@@ -185,25 +187,19 @@ function TreatmentPickDatetime({availability}: TreatmentPickDatetimeProps) {
     : new Date().toJSON();
 
   const onChangeDate = (availability: UserAvailability) => () => {
-    const newSearchParams = new URLSearchParams(searchParams);
-    newSearchParams.set('date', availability.date);
-    newSearchParams.delete('fromDate');
-    newSearchParams.delete('toDate');
-    setSearchParams(newSearchParams, {
-      state: {
-        key: 'booking',
-      },
+    setSearchParams((prev) => {
+      prev.set('date', availability.date);
+      prev.delete('fromDate');
+      prev.delete('toDate');
+      return prev;
     });
   };
 
   const onChangeSlot = (slot: UserAvailabilitySlot) => () => {
-    const newSearchParams = new URLSearchParams(searchParams);
-    newSearchParams.set('fromDate', slot.from);
-    newSearchParams.set('toDate', slot.to);
-    setSearchParams(newSearchParams, {
-      state: {
-        key: 'booking',
-      },
+    setSearchParams((prev) => {
+      prev.set('fromDate', slot.from);
+      prev.set('toDate', slot.to);
+      return prev;
     });
   };
 
@@ -234,23 +230,9 @@ function TreatmentPickDatetime({availability}: TreatmentPickDatetimeProps) {
   return (
     <Stack gap="lg">
       <SimpleGrid cols={2}>
-        <Select
+        <MonthSelector
           onChange={onPickDate}
           value={format(new Date(selectedCalendar), 'MMMM').toLowerCase()}
-          data={[
-            {label: 'Januar', value: 'january'},
-            {label: 'Februar', value: 'february'},
-            {label: 'Marts', value: 'march'},
-            {label: 'April', value: 'april'},
-            {label: 'Maj', value: 'may'},
-            {label: 'Juni', value: 'june'},
-            {label: 'Juli', value: 'july'},
-            {label: 'August', value: 'august'},
-            {label: 'September', value: 'september'},
-            {label: 'Oktober', value: 'october'},
-            {label: 'November', value: 'november'},
-            {label: 'December', value: 'december'},
-          ]}
         />
       </SimpleGrid>
       {days && days.length > 0 ? (
@@ -338,4 +320,31 @@ function AvailabilityTime({
       </Text>
     </Button>
   );
+}
+
+function MonthSelector(props: SelectProps) {
+  const currentDate = new Date();
+  const currentMonth = currentDate.getMonth();
+
+  const months = [
+    {label: 'Januar', value: 'january'},
+    {label: 'Februar', value: 'february'},
+    {label: 'Marts', value: 'march'},
+    {label: 'April', value: 'april'},
+    {label: 'Maj', value: 'may'},
+    {label: 'Juni', value: 'june'},
+    {label: 'Juli', value: 'july'},
+    {label: 'August', value: 'august'},
+    {label: 'September', value: 'september'},
+    {label: 'Oktober', value: 'october'},
+    {label: 'November', value: 'november'},
+    {label: 'December', value: 'december'},
+  ];
+
+  const data = months.map((month, index) => ({
+    ...month,
+    disabled: index < currentMonth,
+  }));
+
+  return <Select data={data} {...props} />;
 }

@@ -1,5 +1,5 @@
 import {Button, SimpleGrid, Skeleton, Text, Title} from '@mantine/core';
-import {Await, Link, useLoaderData} from '@remix-run/react';
+import {Await, Link, useLoaderData, useSearchParams} from '@remix-run/react';
 import {defer, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
 import {Suspense} from 'react';
 import {type ProductItemFragment} from 'storefrontapi.generated';
@@ -52,6 +52,9 @@ export async function loader({params, request, context}: LoaderFunctionArgs) {
 
 export default function ArtistTreatments() {
   const {products, services} = useLoaderData<typeof loader>();
+  const [searchParams] = useSearchParams();
+
+  const haveSelectedProducts = searchParams.getAll('productIds').length > 0;
 
   return (
     <>
@@ -94,10 +97,10 @@ export default function ArtistTreatments() {
           <Button
             variant="default"
             component={Link}
-            to={`../pick-datetime${location.search}`}
+            to={`../pick-datetime?${searchParams.toString()}`}
             relative="route"
           >
-            Nej tak
+            {haveSelectedProducts ? 'Ja tak' : 'Nej tak'}
           </Button>
         </TreatmentStepper>
       </ArtistShell.Footer>
