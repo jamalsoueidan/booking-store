@@ -222,7 +222,6 @@ export * from './userAvailabilitySingle';
 export * from './userAvailabilitySingleAllOf';
 export * from './userAvailabilitySlot';
 export * from './userAvailabilitySlotProductsItem';
-export * from './userAvailabilitySlotProductsItemPrice';
 export * from './userGetResponse';
 export * from './userImages';
 export * from './userImagesProfile';

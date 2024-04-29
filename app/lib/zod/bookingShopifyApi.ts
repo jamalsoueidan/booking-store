@@ -3208,7 +3208,7 @@ export const userAvailabilityGenerateParams = zod.object({
 export const userAvailabilityGenerateBody = zod.object({
   "fromDate": zod.string().optional(),
   "productIds": zod.array(zod.string()),
-  "optionIds": zod.record(zod.string(), zod.string()).optional(),
+  "optionIds": zod.record(zod.string(), zod.record(zod.string(), zod.string())).optional(),
   "shippingId": zod.string().optional()
 })
 
@@ -3268,10 +3268,7 @@ export const userAvailabilityGenerateResponse = zod.object({
   "from": zod.string(),
   "to": zod.string(),
   "products": zod.array( zod.object({
-  "price":  zod.object({
-  "amount": zod.string(),
-  "currencyCode": zod.string()
-}),
+  "parentId": zod.number().optional(),
   "productId": zod.number(),
   "variantId": zod.number(),
   "from": zod.string(),
@@ -3296,7 +3293,7 @@ export const userAvailabilityGetParams = zod.object({
 export const userAvailabilityGetBody = zod.object({
   "fromDate": zod.string(),
   "toDate": zod.string(),
-  "optionIds": zod.record(zod.string(), zod.string()).optional(),
+  "optionIds": zod.record(zod.string(), zod.record(zod.string(), zod.string())).optional(),
   "productIds": zod.array(zod.string()),
   "shippingId": zod.string().optional()
 })
@@ -3357,10 +3354,7 @@ export const userAvailabilityGetResponse = zod.object({
   "from": zod.string(),
   "to": zod.string(),
   "products": zod.array( zod.object({
-  "price":  zod.object({
-  "amount": zod.string(),
-  "currencyCode": zod.string()
-}),
+  "parentId": zod.number().optional(),
   "productId": zod.number(),
   "variantId": zod.number(),
   "from": zod.string(),

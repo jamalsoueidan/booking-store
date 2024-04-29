@@ -2620,16 +2620,8 @@ components:
           items:
             type: object
             properties:
-              price:
-                type: object
-                properties:
-                  amount:
-                    type: string
-                  currencyCode:
-                    type: string
-                required:
-                  - amount
-                  - currencyCode
+              parentId:
+                type: number
               productId:
                 type: number
               variantId:
@@ -2643,7 +2635,6 @@ components:
               duration:
                 type: number
             required:
-              - price
               - productId
               - variantId
               - from
@@ -2694,7 +2685,9 @@ components:
         optionIds:
           type: object
           additionalProperties:
-            type: string
+            type: object
+            additionalProperties:
+              type: string
         productIds:
           type: array
           items:
@@ -2741,7 +2734,9 @@ components:
         optionIds:
           type: object
           additionalProperties:
-            type: string
+            type: object
+            additionalProperties:
+              type: string
         shippingId:
           type: string
       required:

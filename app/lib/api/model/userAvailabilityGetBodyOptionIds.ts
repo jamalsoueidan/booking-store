@@ -5,4 +5,6 @@
  * OpenAPI spec version: 1.0.0
  */
 
-export type UserAvailabilityGetBodyOptionIds = {[key: string]: string};
+export type UserAvailabilityGetBodyOptionIds = {
+  [key: string]: {[key: string]: string};
+};
