@@ -26,6 +26,7 @@ import type {
   CustomerProductBaseOptionsItem,
   CustomerProductBaseOptionsItemVariantsItem,
 } from '~/lib/api/model';
+import {durationToTime} from '~/lib/duration';
 import {matchesGid} from '~/lib/matches-gid';
 import type {loader as rootLoader} from './artist_.$username.treatment.$productHandle';
 
@@ -139,8 +140,7 @@ export async function loader({params, request, context}: LoaderFunctionArgs) {
     ArtistTreatmentIndexQuery,
     {
       variables: {
-        query:
-          productIds.length > 0 ? productIds.join(' OR ') : '---nothing---',
+        query: productIds.length > 0 ? productIds.join(' OR ') : 'tag:"-"',
         country: storefront.i18n.country,
         language: storefront.i18n.language,
       },
@@ -242,17 +242,19 @@ export default function ProductDescription() {
                 );
               },
             )}
-            <Divider />
-            Total pris:{' '}
-            <Money
-              as="span"
-              data={{
-                __typename: 'MoneyV2',
-                amount: totalPrice.toString(),
-                currencyCode: 'DKK',
-              }}
-            />
-            Total tid: {totalTime} min
+            <Divider mb="md" />
+            <Text>
+              Total pris:{' '}
+              <Money
+                as="span"
+                data={{
+                  __typename: 'MoneyV2',
+                  amount: totalPrice.toString(),
+                  currencyCode: 'DKK',
+                }}
+              />
+            </Text>
+            Total tid: {durationToTime(totalTime ?? 0)}
           </>
         ) : null}
       </ArtistShell.Main>

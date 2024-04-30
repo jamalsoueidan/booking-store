@@ -118,8 +118,9 @@ export function ArtistProduct({product, services}: ArtistProductProps) {
               <>
                 {artistService?.options && artistService.options.length > 0
                   ? 'FRA'
-                  : ''}{' '}
-                <Money data={artistService?.price as any} />
+                  : null}
+                &#160;
+                <Money as="span" data={artistService?.price as any} />
               </>
             ) : null}
           </Button>
