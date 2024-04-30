@@ -33,7 +33,7 @@ import type {
   UserAvailabilityMulti,
   UserAvailabilitySlot,
 } from '~/lib/api/model';
-import {parseOptionsQueryParameters} from './artist_.$username.treatment.$productHandle._index';
+import {parseOptionsFromQuery} from '~/lib/parseOptionsQueryParameters';
 
 export function shouldRevalidate({
   currentUrl,
@@ -65,7 +65,6 @@ export async function loader({params, request, context}: LoaderFunctionArgs) {
   const calendar = searchParams.get('calendar') || new Date().toJSON();
   const locationId = searchParams.get('locationId') as string | undefined;
   const shippingId = searchParams.get('shippingId') as string | undefined;
-  const optionIds = searchParams.getAll('options');
 
   if (!username || !productHandle || !locationId) {
     throw new Response('Expected artist handle to be defined', {status: 400});
@@ -86,7 +85,7 @@ export async function loader({params, request, context}: LoaderFunctionArgs) {
       productIds: [parseGid(product.id).id, ...productIds],
       fromDate: calendar.substring(0, 10),
       shippingId: shippingId ? shippingId : undefined, //stringify ignore undefined values but not NULL
-      optionIds: parseOptionsQueryParameters(url.search),
+      optionIds: parseOptionsFromQuery(url.searchParams),
     },
   );
 

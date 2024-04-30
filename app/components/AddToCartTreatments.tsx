@@ -5,13 +5,13 @@ import {type CartLineInput} from '@shopify/hydrogen/storefront-api-types';
 import {IconShoppingCart} from '@tabler/icons-react';
 import {format} from 'date-fns';
 import da from 'date-fns/locale/da';
-import {type ArtistServicesProductsQuery} from 'storefrontapi.generated';
+import type {ArtistTreatmentCompletedQuery} from 'storefrontapi.generated';
 import type {CustomerLocation, UserAvailabilitySingle} from '~/lib/api/model';
 import {durationToTime} from '~/lib/duration';
 
 type AddToCartTreatmentProps = {
   availability: UserAvailabilitySingle;
-  products: ArtistServicesProductsQuery['products'];
+  products: ArtistTreatmentCompletedQuery['products'];
   location: CustomerLocation;
   groupId: string;
 };
