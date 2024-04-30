@@ -22,6 +22,12 @@
   }
 }
 
+.checkbox {
+  position: absolute;
+  right: 5px;
+  top: 5px;
+}
+
 .body {
   display: flex;
   flex-direction: column;

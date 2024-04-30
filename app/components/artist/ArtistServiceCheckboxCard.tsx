@@ -46,18 +46,12 @@ export function ArtistServiceCheckboxCard({
     >
       <div className={classes.body}>{children}</div>
 
-      <span style={style}>
-        <Checkbox
-          checked={isChecked}
-          name={name}
-          value={value}
-          onChange={() => {}}
-          tabIndex={-1}
-          styles={{
-            input: {cursor: 'pointer'},
-          }}
-        />
-      </span>
+      <Checkbox
+        checked={isChecked}
+        tabIndex={-1}
+        classNames={{root: classes.checkbox}}
+        disabled
+      />
     </UnstyledButton>
   );
 }
