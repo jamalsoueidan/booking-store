@@ -43,7 +43,7 @@ export const ArtistTreatmentIndexFragment = `#graphql
   }
 ` as const;
 
-export const ArtistTreatmentIndexQuery = `#graphql
+export const ArtistTreatmentIndex = `#graphql
   ${ArtistTreatmentIndexFragment}
 
   query ArtistTreatmentIndex(

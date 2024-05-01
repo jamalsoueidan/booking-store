@@ -12,7 +12,13 @@ import {
   Title,
   rem,
 } from '@mantine/core';
-import {Await, Link, useLoaderData, useSearchParams} from '@remix-run/react';
+import {
+  Await,
+  Link,
+  Outlet,
+  useLoaderData,
+  useSearchParams,
+} from '@remix-run/react';
 import {defer, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
 import {Suspense} from 'react';
 import {type ProductItemFragment} from 'storefrontapi.generated';
@@ -103,6 +109,7 @@ export default function ArtistTreatments() {
             }}
           </Await>
         </Suspense>
+        <Outlet />
       </ArtistShell.Main>
       <ArtistShell.Footer>
         <TreatmentStepper
@@ -130,21 +137,19 @@ type RenderArtistProductsProps = {
 };
 
 function RenderArtistProducts({products, services}: RenderArtistProductsProps) {
-  const restProductsMarkup = products.map((product) => (
-    <ArtistServiceProduct
-      key={product.id}
-      product={product}
-      services={services}
-    />
-  ));
-
   return (
     <>
       <Title order={4} mb="sm" fw={600} size="md">
         Vælg gerne flere behandlinger:
       </Title>
       <SimpleGrid cols={1} spacing="lg">
-        {restProductsMarkup}
+        {products.map((product) => (
+          <ArtistServiceProduct
+            key={product.id}
+            product={product}
+            services={services}
+          />
+        ))}
       </SimpleGrid>
     </>
   );
@@ -153,39 +158,40 @@ function RenderArtistProducts({products, services}: RenderArtistProductsProps) {
 type ArtistServiceProductProps = {
   product: ProductItemFragment;
   services: CustomerProductBase[];
-  defaultChecked?: boolean;
 };
 
-function ArtistServiceProduct({
-  product,
-  services,
-  defaultChecked,
-}: ArtistServiceProductProps) {
-  const [, setSearchParams] = useSearchParams();
+function ArtistServiceProduct({product, services}: ArtistServiceProductProps) {
+  const [searchParams, setSearchParams] = useSearchParams();
 
-  const onChange = (checked: boolean) => {
+  const artistService = services.find(({productId}) => {
+    return productId.toString() === parseGid(product.id).id;
+  });
+  const productID = parseGid(product.id).id;
+  const isChecked = searchParams.getAll('productIds').includes(productID);
+
+  const onClick = () => {
     setSearchParams((prev) => {
       const existingItems = prev.getAll('productIds');
-      const itemIndex = existingItems.indexOf(parseGid(product.id).id);
-
-      if (checked && itemIndex === -1) {
-        prev.append('productIds', parseGid(product.id).id);
-      }
-
-      if (!checked) {
-        const updatedItems = existingItems.filter(
-          (item) => item !== parseGid(product.id).id,
-        );
+      if (existingItems.includes(productID)) {
         prev.delete('productIds');
-        updatedItems.forEach((item) => prev.append('productIds', item));
+        existingItems.forEach((item) => {
+          if (item !== productID) {
+            prev.append('productIds', item);
+          }
+        });
+      } else {
+        prev.append('productIds', productID);
       }
       return prev;
     });
   };
 
-  const artistService = services.find(({productId}) => {
-    return productId.toString() === parseGid(product.id).id;
-  });
+  const onClickOptions = () => {
+    setSearchParams((prev) => {
+      prev.append('modal', artistService?.productHandle || '');
+      return prev;
+    });
+  };
 
   const leftSection = (
     <Text c="dimmed" size="xs" tt="uppercase" fw={700}>
@@ -201,9 +207,13 @@ function ArtistServiceProduct({
 
   return (
     <ArtistServiceCheckboxCard
-      value={artistService!.productId.toString()}
-      defaultChecked={defaultChecked}
-      onChange={onChange}
+      value={artistService!.productId}
+      onClick={
+        artistService?.options && artistService.options.length > 0
+          ? onClickOptions
+          : onClick
+      }
+      isChecked={isChecked}
       name="productIds"
     >
       <Flex>

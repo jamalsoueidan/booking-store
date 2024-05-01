@@ -10,6 +10,10 @@ import {PRODUCT_SELECTED_OPTIONS_QUERY} from '~/data/queries';
 import {UserProvider} from '~/hooks/use-user';
 import {getBookingShopifyApi} from '~/lib/api/bookingShopifyApi';
 
+export function shouldRevalidate() {
+  return false;
+}
+
 export const meta: MetaFunction<typeof loader> = ({data}) => {
   return [{title: `BySisters | ${data?.product.title ?? ''}`}];
 };
