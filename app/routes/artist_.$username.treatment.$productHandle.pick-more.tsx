@@ -166,6 +166,7 @@ function ArtistServiceProduct({product, services}: ArtistServiceProductProps) {
   const artistService = services.find(({productId}) => {
     return productId.toString() === parseGid(product.id).id;
   });
+
   const productID = parseGid(product.id).id;
   const isChecked = searchParams.getAll('productIds').includes(productID);
 

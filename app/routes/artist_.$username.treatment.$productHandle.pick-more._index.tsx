@@ -1,4 +1,4 @@
-import {Button, Divider, Modal, Text} from '@mantine/core';
+import {Button, Divider, Modal, Stack, Text} from '@mantine/core';
 import {
   type ShouldRevalidateFunctionArgs,
   useLoaderData,
@@ -136,13 +136,6 @@ function ArtistTreatmentPickMoreRenderModal({
   const [searchParams, setSearchParams] = useSearchParams();
   const opened = !!searchParams.get('modal');
 
-  const close = () => {
-    setSearchParams((prev) => {
-      prev.delete('modal');
-      return prev;
-    });
-  };
-
   const totalPrice = useMemo(() => {
     return selectedVariants.reduce(
       (total, variant) => total + parseInt(variant.price.amount || ''),
@@ -155,6 +148,48 @@ function ArtistTreatmentPickMoreRenderModal({
       return total + option.duration;
     }, userProduct?.duration);
   }, [selectedOptions, userProduct]);
+
+  const productID = parseGid(product.id).id;
+
+  const close = () => {
+    setSearchParams((prev) => {
+      //remove from productIds
+      const existingItems = prev.getAll('productIds');
+      prev.delete('productIds');
+      existingItems.forEach((item) => {
+        if (item !== productID) {
+          prev.append('productIds', item);
+        }
+      });
+
+      //remove options
+      userProduct.options.forEach((p) => {
+        prev.delete(`options[${userProduct.productId}][${p.productId}]`);
+      });
+
+      //close modal
+      prev.delete('modal');
+      return prev;
+    });
+  };
+
+  const onClick = () => {
+    setSearchParams((prev) => {
+      const existingItems = prev.getAll('productIds');
+      if (existingItems.includes(productID)) {
+        prev.delete('productIds');
+        existingItems.forEach((item) => {
+          if (item !== productID) {
+            prev.append('productIds', item);
+          }
+        });
+      } else {
+        prev.append('productIds', productID);
+      }
+      prev.delete('modal'); // close modal
+      return prev;
+    });
+  };
 
   return (
     <Modal opened={opened} onClose={close} title="Valg muligheder">
@@ -192,9 +227,10 @@ function ArtistTreatmentPickMoreRenderModal({
         />
       </Text>
       Total tid: {durationToTime(totalTime ?? 0)}
-      <div>
-        <Button>Tilføj ydelse</Button>
-      </div>
+      <Stack>
+        <Button onClick={onClick}>Tilføj ydelse</Button>
+        <Button onClick={close}>Fjern ydelse</Button>
+      </Stack>
     </Modal>
   );
 }
