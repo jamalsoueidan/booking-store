@@ -661,7 +661,7 @@ export const getBookingShopifyApi = () => {
   ) => {
     return queryClient<CustomerProductOptionsAddResponse>(
       {
-        url: `/customer/${customerId}/products/${productId}/options`,
+        url: `/customer/${customerId}/product/${productId}/options`,
         method: 'POST',
         headers: {'Content-Type': 'application/json'},
         data: customerProductOptionsAddBody,

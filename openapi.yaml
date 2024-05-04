@@ -4258,7 +4258,7 @@ paths:
         '404':
           $ref: '#/components/responses/NotFoundResponse'
       security: []
-  '/customer/{customerId}/products/{productId}/options':
+  '/customer/{customerId}/product/{productId}/options':
     post:
       parameters:
         - name: customerId

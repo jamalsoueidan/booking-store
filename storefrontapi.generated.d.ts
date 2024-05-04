@@ -1864,6 +1864,7 @@ export type ProductTagOptionsFragment = Pick<
 export type SearchForProductByTagsQueryVariables = StorefrontAPI.Exact<{
   country?: StorefrontAPI.InputMaybe<StorefrontAPI.CountryCode>;
   language?: StorefrontAPI.InputMaybe<StorefrontAPI.LanguageCode>;
+  query: StorefrontAPI.Scalars['String']['input'];
 }>;
 
 export type SearchForProductByTagsQuery = {
@@ -2927,7 +2928,7 @@ interface GeneratedQueryTypes {
     return: ArtistTreatmentIndexQuery;
     variables: ArtistTreatmentIndexQueryVariables;
   };
-  '#graphql\n  #graphql\n  fragment MoneyProductItem on MoneyV2 {\n    amount\n    currencyCode\n  }\n\n  fragment ProductTagOptions on Product {\n    id\n    handle\n    title\n    options {\n      name\n      values\n    }\n    variants(first: 5) {\n      nodes {\n        id\n        price {\n          ...MoneyProductItem\n        }\n        title\n      }\n    }\n  }\n\n  query SearchForProductByTags(\n    $country: CountryCode\n    $language: LanguageCode\n  ) @inContext(country: $country, language: $language) {\n    products(first: 10, query: "tag:\'options\'") {\n      nodes {\n        ...ProductTagOptions\n      }\n    }\n  }\n': {
+  '#graphql\n  #graphql\n  fragment MoneyProductItem on MoneyV2 {\n    amount\n    currencyCode\n  }\n\n  fragment ProductTagOptions on Product {\n    id\n    handle\n    title\n    options {\n      name\n      values\n    }\n    variants(first: 5) {\n      nodes {\n        id\n        price {\n          ...MoneyProductItem\n        }\n        title\n      }\n    }\n  }\n\n  query SearchForProductByTags(\n    $country: CountryCode\n    $language: LanguageCode\n    $query: String!\n  ) @inContext(country: $country, language: $language) {\n    products(first: 10, query: $query) {\n      nodes {\n        ...ProductTagOptions\n      }\n    }\n  }\n': {
     return: SearchForProductByTagsQuery;
     variables: SearchForProductByTagsQueryVariables;
   };
