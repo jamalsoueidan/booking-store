@@ -4,8 +4,9 @@
  * Booking Shopify Api
  * OpenAPI spec version: 1.0.0
  */
+import type {CustomerProductBaseOptionsItemVariantsItemDuration} from './customerProductBaseOptionsItemVariantsItemDuration';
 
 export type CustomerProductBaseOptionsItemVariantsItem = {
-  duration: number;
+  duration: CustomerProductBaseOptionsItemVariantsItemDuration;
   variantId: number;
 };

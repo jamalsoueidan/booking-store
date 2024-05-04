@@ -7,7 +7,7 @@
 import type {UserAvailabilityGenerateBodyOptionIds} from './userAvailabilityGenerateBodyOptionIds';
 
 export interface UserAvailabilityGenerateBody {
-  fromDate?: string;
+  fromDate: string;
   optionIds?: UserAvailabilityGenerateBodyOptionIds;
   productIds: string[];
   shippingId?: string;

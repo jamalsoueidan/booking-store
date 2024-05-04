@@ -235,7 +235,15 @@ components:
                     variantId:
                       type: number
                     duration:
-                      type: number
+                      type: object
+                      properties:
+                        value:
+                          type: number
+                        metafieldId:
+                          type: number
+                      required:
+                        - value
+                        - metafieldId
                   required:
                     - variantId
                     - duration
@@ -378,8 +386,6 @@ components:
     CustomerProductUpdateBody:
       type: object
       properties:
-        scheduleId:
-          type: string
         variantId:
           type: number
         selectedOptions:
@@ -424,8 +430,6 @@ components:
           $ref: '#/components/schemas/CustomerProductLocations'
         description:
           type: string
-      required:
-        - scheduleId
     CustomerProductAddResponse:
       type: object
       properties:
@@ -574,6 +578,60 @@ components:
         - selectedOptions
         - price
         - compareAtPrice
+    CustomerProductOptionsUpdateResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: true
+        payload:
+          $ref: '#/components/schemas/CustomerProductList'
+      required:
+        - success
+        - payload
+    CustomerProductOptionsUpdateBody:
+      type: array
+      items:
+        type: object
+        properties:
+          id:
+            type: string
+          price:
+            type: string
+          duration:
+            type: string
+    CustomerProductOptionsAddResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: true
+        payload:
+          $ref: '#/components/schemas/CustomerProductList'
+      required:
+        - success
+        - payload
+    CustomerProductOptionsAddBody:
+      type: object
+      properties:
+        cloneId:
+          type: string
+        title:
+          type: string
+      required:
+        - cloneId
+        - title
+    CustomerProductOptionsDestroyResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: true
+        payload:
+          $ref: '#/components/schemas/CustomerProductDestroyResponse/properties/payload'
+      required:
+        - success
+        - payload
     CustomerScheduleDestroy:
       type: object
       properties:
@@ -2695,10 +2753,9 @@ components:
         shippingId:
           type: string
       required:
-        - startDate
-        - productIds
         - fromDate
         - toDate
+        - productIds
     UserAvailabilityGeResponse:
       type: object
       properties:
@@ -2740,7 +2797,7 @@ components:
         shippingId:
           type: string
       required:
-        - startDate
+        - fromDate
         - productIds
     UserAvailabilityGenerateResponse:
       type: object
@@ -4192,6 +4249,129 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/CustomerProductCreateVariantResponse'
+        '400':
+          $ref: '#/components/responses/BadResponse'
+        '401':
+          $ref: '#/components/responses/UnauthorizedResponse'
+        '403':
+          $ref: '#/components/responses/ForbiddenResponse'
+        '404':
+          $ref: '#/components/responses/NotFoundResponse'
+      security: []
+  '/customer/{customerId}/products/{productId}/options':
+    post:
+      parameters:
+        - name: customerId
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: productId
+          in: path
+          required: true
+          schema:
+            type: string
+      tags:
+        - CustomerProductOptions
+      operationId: customerProductOptionsAdd
+      summary: POST Add product option to product
+      description: This endpoint add product option to product
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CustomerProductOptionsAddBody'
+      responses:
+        '200':
+          description: Response with product option payload
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CustomerProductOptionsAddResponse'
+        '400':
+          $ref: '#/components/responses/BadResponse'
+        '401':
+          $ref: '#/components/responses/UnauthorizedResponse'
+        '403':
+          $ref: '#/components/responses/ForbiddenResponse'
+        '404':
+          $ref: '#/components/responses/NotFoundResponse'
+      security: []
+  '/customer/{customerId}/product/{productId}/options/{optionProductId}':
+    put:
+      parameters:
+        - name: customerId
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: productId
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: optionProductId
+          in: path
+          required: true
+          schema:
+            type: string
+      tags:
+        - CustomerProductOptions
+      operationId: customerProductOptionsUpdate
+      summary: PUT Update product option in product
+      description: This endpoint update product option that exist in product
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CustomerProductOptionsUpdateBody'
+      responses:
+        '200':
+          description: Response with schedule product payload
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CustomerProductOptionsUpdateResponse'
+        '400':
+          $ref: '#/components/responses/BadResponse'
+        '401':
+          $ref: '#/components/responses/UnauthorizedResponse'
+        '403':
+          $ref: '#/components/responses/ForbiddenResponse'
+        '404':
+          $ref: '#/components/responses/NotFoundResponse'
+      security: []
+    delete:
+      parameters:
+        - name: customerId
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: productId
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: optionProductId
+          in: path
+          required: true
+          schema:
+            type: string
+      tags:
+        - CustomerProductOptions
+      operationId: customerProductOptionsDestroy
+      summary: DEL destroy product option
+      description: This endpoint remove product option from product for schedule
+      responses:
+        '200':
+          description: Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CustomerProductOptionsDestroyResponse'
         '400':
           $ref: '#/components/responses/BadResponse'
         '401':

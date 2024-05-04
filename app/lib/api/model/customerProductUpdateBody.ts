@@ -20,7 +20,6 @@ export interface CustomerProductUpdateBody {
   locations?: CustomerProductLocations;
   noticePeriod?: CustomerProductNoticePeriod;
   price?: CustomerProductUpdateBodyPrice;
-  scheduleId: string;
   selectedOptions?: CustomerProductUpdateBodySelectedOptions;
   variantId?: number;
 }
