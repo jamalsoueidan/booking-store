@@ -223,7 +223,7 @@ components:
         options:
           type: array
           items:
-            $ref: '#/components/schemas/CustomerProductOptionsAddResponse/properties/payload'
+            $ref: '#/components/schemas/CustomerProductOptionsList/items'
         productHandle:
           type: string
         productId:
@@ -559,7 +559,7 @@ components:
           type: boolean
           example: true
         payload:
-          $ref: '#/components/schemas/CustomerProductOptionsAddResponse/properties/payload'
+          $ref: '#/components/schemas/CustomerProductOptionsList/items'
       required:
         - success
         - payload
@@ -574,6 +574,56 @@ components:
             type: string
           duration:
             type: string
+    CustomerProductOptionsList:
+      type: array
+      items:
+        type: object
+        properties:
+          productId:
+            type: number
+          title:
+            type: string
+          variants:
+            type: array
+            items:
+              type: object
+              properties:
+                variantId:
+                  type: number
+                title:
+                  type: string
+                price:
+                  type: string
+                duration:
+                  type: object
+                  properties:
+                    value:
+                      type: number
+                    metafieldId:
+                      type: number
+                  required:
+                    - value
+                    - metafieldId
+              required:
+                - variantId
+                - duration
+                - title
+                - price
+        required:
+          - productId
+          - variants
+          - title
+    CustomerProductOptionsListResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: true
+        payload:
+          $ref: '#/components/schemas/CustomerProductOptionsList'
+      required:
+        - success
+        - payload
     CustomerProductOptionsAddResponse:
       type: object
       properties:
@@ -581,42 +631,7 @@ components:
           type: boolean
           example: true
         payload:
-          type: object
-          properties:
-            productId:
-              type: number
-            title:
-              type: string
-            variants:
-              type: array
-              items:
-                type: object
-                properties:
-                  variantId:
-                    type: number
-                  title:
-                    type: string
-                  price:
-                    type: string
-                  duration:
-                    type: object
-                    properties:
-                      value:
-                        type: number
-                      metafieldId:
-                        type: number
-                    required:
-                      - value
-                      - metafieldId
-                required:
-                  - variantId
-                  - duration
-                  - title
-                  - price
-          required:
-            - productId
-            - variants
-            - title
+          $ref: '#/components/schemas/CustomerProductOptionsList/items'
       required:
         - success
         - payload
@@ -639,7 +654,7 @@ components:
         payload:
           type: array
           items:
-            $ref: '#/components/schemas/CustomerProductOptionsAddResponse/properties/payload'
+            $ref: '#/components/schemas/CustomerProductOptionsList/items'
       required:
         - success
         - payload
@@ -4332,18 +4347,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  success:
-                    type: boolean
-                    example: true
-                  payload:
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/CustomerProductOptionsAddResponse/properties/payload'
-                required:
-                  - success
-                  - payload
+                $ref: '#/components/schemas/CustomerProductOptionsListResponse'
         '400':
           $ref: '#/components/responses/BadResponse'
         '401':

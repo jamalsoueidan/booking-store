@@ -51,7 +51,7 @@ import type {
   CustomerProductOptionsAddBody,
   CustomerProductOptionsAddResponse,
   CustomerProductOptionsDestroyResponse,
-  CustomerProductOptionsList200,
+  CustomerProductOptionsListResponse,
   CustomerProductOptionsUpdateBody,
   CustomerProductOptionsUpdateResponse,
   CustomerProductUpdateBody,
@@ -680,7 +680,7 @@ export const getBookingShopifyApi = () => {
     productId: string,
     options?: SecondParameter<typeof queryClient>,
   ) => {
-    return queryClient<CustomerProductOptionsList200>(
+    return queryClient<CustomerProductOptionsListResponse>(
       {
         url: `/customer/${customerId}/product/${productId}/options`,
         method: 'GET',
