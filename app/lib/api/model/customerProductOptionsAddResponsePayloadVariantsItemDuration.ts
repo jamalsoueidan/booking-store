@@ -5,6 +5,7 @@
  * OpenAPI spec version: 1.0.0
  */
 
-export type CustomerProductOptionsUpdateResponsePayload = {
-  deletedProductId: string;
+export type CustomerProductOptionsAddResponsePayloadVariantsItemDuration = {
+  metafieldId: number;
+  value: number;
 };

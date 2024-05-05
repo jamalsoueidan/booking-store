@@ -7,6 +7,6 @@
 import type {Payload} from './payload';
 
 export interface CustomerProductOptionsDestroyResponse {
-  payload: Payload;
+  payload: Payload[];
   success: boolean;
 }

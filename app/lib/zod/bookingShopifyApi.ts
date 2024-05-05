@@ -1213,8 +1213,11 @@ export const customerLocationGetProductsResponse = zod.object({
   "payload": zod.array( zod.object({
   "options": zod.array( zod.object({
   "productId": zod.number(),
+  "title": zod.string(),
   "variants": zod.array( zod.object({
   "variantId": zod.number(),
+  "title": zod.string(),
+  "price": zod.string(),
   "duration":  zod.object({
   "value": zod.number(),
   "metafieldId": zod.number()
@@ -2103,8 +2106,11 @@ export const customerProductsListResponse = zod.object({
   "payload": zod.array( zod.object({
   "options": zod.array( zod.object({
   "productId": zod.number(),
+  "title": zod.string(),
   "variants": zod.array( zod.object({
   "variantId": zod.number(),
+  "title": zod.string(),
+  "price": zod.string(),
   "duration":  zod.object({
   "value": zod.number(),
   "metafieldId": zod.number()
@@ -2178,8 +2184,11 @@ export const customerProductGetResponse = zod.object({
   "payload":  zod.object({
   "options": zod.array( zod.object({
   "productId": zod.number(),
+  "title": zod.string(),
   "variants": zod.array( zod.object({
   "variantId": zod.number(),
+  "title": zod.string(),
+  "price": zod.string(),
   "duration":  zod.object({
   "value": zod.number(),
   "metafieldId": zod.number()
@@ -2271,8 +2280,11 @@ export const customerProductUpdateResponse = zod.object({
   "payload":  zod.object({
   "options": zod.array( zod.object({
   "productId": zod.number(),
+  "title": zod.string(),
   "variants": zod.array( zod.object({
   "variantId": zod.number(),
+  "title": zod.string(),
+  "price": zod.string(),
   "duration":  zod.object({
   "value": zod.number(),
   "metafieldId": zod.number()
@@ -2374,8 +2386,11 @@ export const customerProductAddResponse = zod.object({
   "payload":  zod.object({
   "options": zod.array( zod.object({
   "productId": zod.number(),
+  "title": zod.string(),
   "variants": zod.array( zod.object({
   "variantId": zod.number(),
+  "title": zod.string(),
+  "price": zod.string(),
   "duration":  zod.object({
   "value": zod.number(),
   "metafieldId": zod.number()
@@ -2471,19 +2486,17 @@ export const customerProductOptionsAddBody = zod.object({
 export const customerProductOptionsAddResponse = zod.object({
   "success": zod.boolean(),
   "payload":  zod.object({
-  "id": zod.string(),
+  "productId": zod.number(),
   "title": zod.string(),
-  "variants":  zod.object({
-  "nodes": zod.array( zod.object({
-  "id": zod.string(),
+  "variants": zod.array( zod.object({
+  "variantId": zod.number(),
   "title": zod.string(),
   "price": zod.string(),
   "duration":  zod.object({
-  "id": zod.string(),
-  "value": zod.string()
+  "value": zod.number(),
+  "metafieldId": zod.number()
 })
 }))
-})
 })
 })
 
@@ -2501,8 +2514,11 @@ export const customerProductOptionsListResponse = zod.object({
   "success": zod.boolean(),
   "payload": zod.array( zod.object({
   "productId": zod.number(),
+  "title": zod.string(),
   "variants": zod.array( zod.object({
   "variantId": zod.number(),
+  "title": zod.string(),
+  "price": zod.string(),
   "duration":  zod.object({
   "value": zod.number(),
   "metafieldId": zod.number()
@@ -2532,7 +2548,17 @@ export const customerProductOptionsUpdateBody = zod.array(customerProductOptions
 export const customerProductOptionsUpdateResponse = zod.object({
   "success": zod.boolean(),
   "payload":  zod.object({
-  "deletedProductId": zod.string()
+  "productId": zod.number(),
+  "title": zod.string(),
+  "variants": zod.array( zod.object({
+  "variantId": zod.number(),
+  "title": zod.string(),
+  "price": zod.string(),
+  "duration":  zod.object({
+  "value": zod.number(),
+  "metafieldId": zod.number()
+})
+}))
 })
 })
 
@@ -2549,11 +2575,19 @@ export const customerProductOptionsDestroyParams = zod.object({
 
 export const customerProductOptionsDestroyResponse = zod.object({
   "success": zod.boolean(),
-  "payload":  zod.object({
-  "matchedCount": zod.number(),
-  "modifiedCount": zod.number(),
-  "upsertedCount": zod.number()
+  "payload": zod.array( zod.object({
+  "productId": zod.number(),
+  "title": zod.string(),
+  "variants": zod.array( zod.object({
+  "variantId": zod.number(),
+  "title": zod.string(),
+  "price": zod.string(),
+  "duration":  zod.object({
+  "value": zod.number(),
+  "metafieldId": zod.number()
 })
+}))
+}))
 })
 
 
@@ -2606,8 +2640,11 @@ export const customerScheduleCreateResponse = zod.object({
   "products": zod.array( zod.object({
   "options": zod.array( zod.object({
   "productId": zod.number(),
+  "title": zod.string(),
   "variants": zod.array( zod.object({
   "variantId": zod.number(),
+  "title": zod.string(),
+  "price": zod.string(),
   "duration":  zod.object({
   "value": zod.number(),
   "metafieldId": zod.number()
@@ -2675,8 +2712,11 @@ export const customerScheduleListResponse = zod.object({
   "products": zod.array( zod.object({
   "options": zod.array( zod.object({
   "productId": zod.number(),
+  "title": zod.string(),
   "variants": zod.array( zod.object({
   "variantId": zod.number(),
+  "title": zod.string(),
+  "price": zod.string(),
   "duration":  zod.object({
   "value": zod.number(),
   "metafieldId": zod.number()
@@ -2745,8 +2785,11 @@ export const customerScheduleGetResponse = zod.object({
   "products": zod.array( zod.object({
   "options": zod.array( zod.object({
   "productId": zod.number(),
+  "title": zod.string(),
   "variants": zod.array( zod.object({
   "variantId": zod.number(),
+  "title": zod.string(),
+  "price": zod.string(),
   "duration":  zod.object({
   "value": zod.number(),
   "metafieldId": zod.number()
@@ -2819,8 +2862,11 @@ export const customerScheduleUpdateResponse = zod.object({
   "products": zod.array( zod.object({
   "options": zod.array( zod.object({
   "productId": zod.number(),
+  "title": zod.string(),
   "variants": zod.array( zod.object({
   "variantId": zod.number(),
+  "title": zod.string(),
+  "price": zod.string(),
   "duration":  zod.object({
   "value": zod.number(),
   "metafieldId": zod.number()
@@ -2917,8 +2963,11 @@ export const customerScheduleSlotUpdateResponse = zod.object({
   "products": zod.array( zod.object({
   "options": zod.array( zod.object({
   "productId": zod.number(),
+  "title": zod.string(),
   "variants": zod.array( zod.object({
   "variantId": zod.number(),
+  "title": zod.string(),
+  "price": zod.string(),
   "duration":  zod.object({
   "value": zod.number(),
   "metafieldId": zod.number()
@@ -3610,8 +3659,11 @@ export const userProductsListByScheduleResponse = zod.object({
   "payload": zod.array( zod.object({
   "options": zod.array( zod.object({
   "productId": zod.number(),
+  "title": zod.string(),
   "variants": zod.array( zod.object({
   "variantId": zod.number(),
+  "title": zod.string(),
+  "price": zod.string(),
   "duration":  zod.object({
   "value": zod.number(),
   "metafieldId": zod.number()
@@ -3671,8 +3723,11 @@ export const userProductGetResponse = zod.object({
   "payload":  zod.object({
   "options": zod.array( zod.object({
   "productId": zod.number(),
+  "title": zod.string(),
   "variants": zod.array( zod.object({
   "variantId": zod.number(),
+  "title": zod.string(),
+  "price": zod.string(),
   "duration":  zod.object({
   "value": zod.number(),
   "metafieldId": zod.number()
@@ -3736,8 +3791,11 @@ export const userProductsGetProductsResponse = zod.object({
   "payload": zod.array( zod.object({
   "options": zod.array( zod.object({
   "productId": zod.number(),
+  "title": zod.string(),
   "variants": zod.array( zod.object({
   "variantId": zod.number(),
+  "title": zod.string(),
+  "price": zod.string(),
   "duration":  zod.object({
   "value": zod.number(),
   "metafieldId": zod.number()
@@ -3789,8 +3847,11 @@ export const userProductsListByLocationResponse = zod.object({
   "payload": zod.array( zod.object({
   "options": zod.array( zod.object({
   "productId": zod.number(),
+  "title": zod.string(),
   "variants": zod.array( zod.object({
   "variantId": zod.number(),
+  "title": zod.string(),
+  "price": zod.string(),
   "duration":  zod.object({
   "value": zod.number(),
   "metafieldId": zod.number()
@@ -3872,8 +3933,11 @@ export const userScheduleGetByProductResponse = zod.object({
   "product":  zod.object({
   "options": zod.array( zod.object({
   "productId": zod.number(),
+  "title": zod.string(),
   "variants": zod.array( zod.object({
   "variantId": zod.number(),
+  "title": zod.string(),
+  "price": zod.string(),
   "duration":  zod.object({
   "value": zod.number(),
   "metafieldId": zod.number()
@@ -3977,8 +4041,11 @@ export const userScheduleGetByLocationResponse = zod.object({
   "products": zod.array( zod.object({
   "options": zod.array( zod.object({
   "productId": zod.number(),
+  "title": zod.string(),
   "variants": zod.array( zod.object({
   "variantId": zod.number(),
+  "title": zod.string(),
+  "price": zod.string(),
   "duration":  zod.object({
   "value": zod.number(),
   "metafieldId": zod.number()

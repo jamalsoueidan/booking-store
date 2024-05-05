@@ -4,9 +4,9 @@
  * Booking Shopify Api
  * OpenAPI spec version: 1.0.0
  */
-import type {Items} from './items';
+import type {Payload} from './payload';
 
 export type CustomerProductOptionsList200 = {
-  payload: Items[];
+  payload: Payload[];
   success: boolean;
 };

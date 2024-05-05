@@ -223,33 +223,7 @@ components:
         options:
           type: array
           items:
-            type: object
-            properties:
-              productId:
-                type: number
-              variants:
-                type: array
-                items:
-                  type: object
-                  properties:
-                    variantId:
-                      type: number
-                    duration:
-                      type: object
-                      properties:
-                        value:
-                          type: number
-                        metafieldId:
-                          type: number
-                      required:
-                        - value
-                        - metafieldId
-                  required:
-                    - variantId
-                    - duration
-            required:
-              - productId
-              - variants
+            $ref: '#/components/schemas/CustomerProductOptionsAddResponse/properties/payload'
         productHandle:
           type: string
         productId:
@@ -578,48 +552,6 @@ components:
         - selectedOptions
         - price
         - compareAtPrice
-    CustomerProductOption:
-      type: object
-      properties:
-        id:
-          type: string
-        title:
-          type: string
-        variants:
-          type: object
-          properties:
-            nodes:
-              type: array
-              items:
-                type: object
-                properties:
-                  id:
-                    type: string
-                  title:
-                    type: string
-                  price:
-                    type: string
-                  duration:
-                    type: object
-                    properties:
-                      id:
-                        type: string
-                      value:
-                        type: string
-                    required:
-                      - id
-                      - value
-                required:
-                  - id
-                  - title
-                  - price
-                  - duration
-          required:
-            - nodes
-      required:
-        - id
-        - title
-        - variants
     CustomerProductOptionsUpdateResponse:
       type: object
       properties:
@@ -627,12 +559,7 @@ components:
           type: boolean
           example: true
         payload:
-          type: object
-          properties:
-            deletedProductId:
-              type: string
-          required:
-            - deletedProductId
+          $ref: '#/components/schemas/CustomerProductOptionsAddResponse/properties/payload'
       required:
         - success
         - payload
@@ -654,7 +581,42 @@ components:
           type: boolean
           example: true
         payload:
-          $ref: '#/components/schemas/CustomerProductOption'
+          type: object
+          properties:
+            productId:
+              type: number
+            title:
+              type: string
+            variants:
+              type: array
+              items:
+                type: object
+                properties:
+                  variantId:
+                    type: number
+                  title:
+                    type: string
+                  price:
+                    type: string
+                  duration:
+                    type: object
+                    properties:
+                      value:
+                        type: number
+                      metafieldId:
+                        type: number
+                    required:
+                      - value
+                      - metafieldId
+                required:
+                  - variantId
+                  - duration
+                  - title
+                  - price
+          required:
+            - productId
+            - variants
+            - title
       required:
         - success
         - payload
@@ -675,7 +637,9 @@ components:
           type: boolean
           example: true
         payload:
-          $ref: '#/components/schemas/CustomerProductDestroyResponse/properties/payload'
+          type: array
+          items:
+            $ref: '#/components/schemas/CustomerProductOptionsAddResponse/properties/payload'
       required:
         - success
         - payload
@@ -4376,7 +4340,7 @@ paths:
                   payload:
                     type: array
                     items:
-                      $ref: '#/components/schemas/CustomerProductBase/properties/options/items'
+                      $ref: '#/components/schemas/CustomerProductOptionsAddResponse/properties/payload'
                 required:
                   - success
                   - payload
