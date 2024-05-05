@@ -2471,52 +2471,20 @@ export const customerProductOptionsAddBody = zod.object({
 export const customerProductOptionsAddResponse = zod.object({
   "success": zod.boolean(),
   "payload":  zod.object({
-  "options": zod.array( zod.object({
-  "productId": zod.number(),
-  "variants": zod.array( zod.object({
-  "variantId": zod.number(),
+  "id": zod.string().optional(),
+  "title": zod.string().optional(),
+  "variants":  zod.object({
+  "nodes": zod.array( zod.object({
+  "id": zod.string().optional(),
+  "title": zod.string().optional(),
+  "price": zod.string().optional(),
   "duration":  zod.object({
-  "value": zod.number(),
-  "metafieldId": zod.number()
+  "id": zod.string().optional(),
+  "value": zod.string().optional()
+}).optional()
+})).optional()
+}).optional()
 })
-}))
-})),
-  "productHandle": zod.string().optional(),
-  "productId": zod.number(),
-  "variantId": zod.number(),
-  "description": zod.string().optional(),
-  "selectedOptions":  zod.object({
-  "name": zod.string(),
-  "value": zod.string()
-}),
-  "price":  zod.object({
-  "amount": zod.string(),
-  "currencyCode": zod.string()
-}),
-  "compareAtPrice":  zod.object({
-  "amount": zod.string(),
-  "currencyCode": zod.string()
-}).optional(),
-  "duration": zod.number(),
-  "breakTime": zod.number(),
-  "noticePeriod":  zod.object({
-  "value": zod.number(),
-  "unit": zod.enum(['hours', 'days', 'weeks'])
-}),
-  "bookingPeriod":  zod.object({
-  "value": zod.number(),
-  "unit": zod.enum(['weeks', 'months'])
-})
-}).and( zod.object({
-  "locations": zod.array( zod.object({
-  "location": zod.string(),
-  "locationType": zod.enum(['origin', 'destination']),
-  "originType": zod.enum(['home', 'commercial'])
-}))
-})).and( zod.object({
-  "scheduleId": zod.string(),
-  "scheduleName": zod.string()
-}))
 })
 
 
@@ -2540,52 +2508,8 @@ export const customerProductOptionsUpdateBody = zod.array(customerProductOptions
 export const customerProductOptionsUpdateResponse = zod.object({
   "success": zod.boolean(),
   "payload":  zod.object({
-  "options": zod.array( zod.object({
-  "productId": zod.number(),
-  "variants": zod.array( zod.object({
-  "variantId": zod.number(),
-  "duration":  zod.object({
-  "value": zod.number(),
-  "metafieldId": zod.number()
+  "deletedProductId": zod.string()
 })
-}))
-})),
-  "productHandle": zod.string().optional(),
-  "productId": zod.number(),
-  "variantId": zod.number(),
-  "description": zod.string().optional(),
-  "selectedOptions":  zod.object({
-  "name": zod.string(),
-  "value": zod.string()
-}),
-  "price":  zod.object({
-  "amount": zod.string(),
-  "currencyCode": zod.string()
-}),
-  "compareAtPrice":  zod.object({
-  "amount": zod.string(),
-  "currencyCode": zod.string()
-}).optional(),
-  "duration": zod.number(),
-  "breakTime": zod.number(),
-  "noticePeriod":  zod.object({
-  "value": zod.number(),
-  "unit": zod.enum(['hours', 'days', 'weeks'])
-}),
-  "bookingPeriod":  zod.object({
-  "value": zod.number(),
-  "unit": zod.enum(['weeks', 'months'])
-})
-}).and( zod.object({
-  "locations": zod.array( zod.object({
-  "location": zod.string(),
-  "locationType": zod.enum(['origin', 'destination']),
-  "originType": zod.enum(['home', 'commercial'])
-}))
-})).and( zod.object({
-  "scheduleId": zod.string(),
-  "scheduleName": zod.string()
-}))
 })
 
 

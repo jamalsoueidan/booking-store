@@ -4,9 +4,9 @@
  * Booking Shopify Api
  * OpenAPI spec version: 1.0.0
  */
-import type {CustomerProductList} from './customerProductList';
+import type {CustomerProductOptionsUpdateResponsePayload} from './customerProductOptionsUpdateResponsePayload';
 
 export interface CustomerProductOptionsUpdateResponse {
-  payload: CustomerProductList;
+  payload: CustomerProductOptionsUpdateResponsePayload;
   success: boolean;
 }
