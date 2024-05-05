@@ -51,6 +51,7 @@ import type {
   CustomerProductOptionsAddBody,
   CustomerProductOptionsAddResponse,
   CustomerProductOptionsDestroyResponse,
+  CustomerProductOptionsList200,
   CustomerProductOptionsUpdateBody,
   CustomerProductOptionsUpdateResponse,
   CustomerProductUpdateBody,
@@ -665,6 +666,24 @@ export const getBookingShopifyApi = () => {
         method: 'POST',
         headers: {'Content-Type': 'application/json'},
         data: customerProductOptionsAddBody,
+      },
+      options,
+    );
+  };
+
+  /**
+   * This endpoint get product options for product
+   * @summary GET Get product options for product
+   */
+  const customerProductOptionsList = (
+    customerId: string,
+    productId: string,
+    options?: SecondParameter<typeof queryClient>,
+  ) => {
+    return queryClient<CustomerProductOptionsList200>(
+      {
+        url: `/customer/${customerId}/product/${productId}/options`,
+        method: 'GET',
       },
       options,
     );
@@ -1311,6 +1330,7 @@ export const getBookingShopifyApi = () => {
     customerProductAdd,
     customerProductCreateVariant,
     customerProductOptionsAdd,
+    customerProductOptionsList,
     customerProductOptionsUpdate,
     customerProductOptionsDestroy,
     customerUploadResourceURL,
@@ -1538,6 +1558,13 @@ export type CustomerProductOptionsAddResult = NonNullable<
   Awaited<
     ReturnType<
       ReturnType<typeof getBookingShopifyApi>['customerProductOptionsAdd']
+    >
+  >
+>;
+export type CustomerProductOptionsListResult = NonNullable<
+  Awaited<
+    ReturnType<
+      ReturnType<typeof getBookingShopifyApi>['customerProductOptionsList']
     >
   >
 >;

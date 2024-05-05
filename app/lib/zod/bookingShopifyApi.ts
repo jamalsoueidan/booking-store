@@ -2489,6 +2489,30 @@ export const customerProductOptionsAddResponse = zod.object({
 
 
 /**
+ * This endpoint get product options for product
+ * @summary GET Get product options for product
+ */
+export const customerProductOptionsListParams = zod.object({
+  "customerId": zod.string(),
+  "productId": zod.string()
+})
+
+export const customerProductOptionsListResponse = zod.object({
+  "success": zod.boolean(),
+  "payload": zod.array( zod.object({
+  "productId": zod.number(),
+  "variants": zod.array( zod.object({
+  "variantId": zod.number(),
+  "duration":  zod.object({
+  "value": zod.number(),
+  "metafieldId": zod.number()
+})
+}))
+}))
+})
+
+
+/**
  * This endpoint update product option that exist in product
  * @summary PUT Update product option in product
  */

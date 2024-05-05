@@ -1730,6 +1730,44 @@ export type ProductValidateHandlerQuery = {
   >;
 };
 
+export type ServicesOptionsTagProductFragment = Pick<
+  StorefrontAPI.Product,
+  'id' | 'handle' | 'title'
+> & {
+  options: Array<Pick<StorefrontAPI.ProductOption, 'name' | 'values'>>;
+  variants: {
+    nodes: Array<
+      Pick<StorefrontAPI.ProductVariant, 'id' | 'title'> & {
+        price: Pick<StorefrontAPI.MoneyV2, 'amount' | 'currencyCode'>;
+      }
+    >;
+  };
+};
+
+export type ServicesOptionsTagOptionsQueryQueryVariables = StorefrontAPI.Exact<{
+  country?: StorefrontAPI.InputMaybe<StorefrontAPI.CountryCode>;
+  language?: StorefrontAPI.InputMaybe<StorefrontAPI.LanguageCode>;
+  query: StorefrontAPI.Scalars['String']['input'];
+  first?: StorefrontAPI.InputMaybe<StorefrontAPI.Scalars['Int']['input']>;
+}>;
+
+export type ServicesOptionsTagOptionsQueryQuery = {
+  products: {
+    nodes: Array<
+      Pick<StorefrontAPI.Product, 'id' | 'handle' | 'title'> & {
+        options: Array<Pick<StorefrontAPI.ProductOption, 'name' | 'values'>>;
+        variants: {
+          nodes: Array<
+            Pick<StorefrontAPI.ProductVariant, 'id' | 'title'> & {
+              price: Pick<StorefrontAPI.MoneyV2, 'amount' | 'currencyCode'>;
+            }
+          >;
+        };
+      }
+    >;
+  };
+};
+
 export type ArtistTreatmentCompletedProductFragment = Pick<
   StorefrontAPI.Product,
   'id' | 'title' | 'description'
@@ -1839,43 +1877,6 @@ export type ArtistTreatmentIndexQuery = {
               selectedOptions: Array<
                 Pick<StorefrontAPI.SelectedOption, 'name' | 'value'>
               >;
-            }
-          >;
-        };
-      }
-    >;
-  };
-};
-
-export type ProductTagOptionsFragment = Pick<
-  StorefrontAPI.Product,
-  'id' | 'handle' | 'title'
-> & {
-  options: Array<Pick<StorefrontAPI.ProductOption, 'name' | 'values'>>;
-  variants: {
-    nodes: Array<
-      Pick<StorefrontAPI.ProductVariant, 'id' | 'title'> & {
-        price: Pick<StorefrontAPI.MoneyV2, 'amount' | 'currencyCode'>;
-      }
-    >;
-  };
-};
-
-export type SearchForProductByTagsQueryVariables = StorefrontAPI.Exact<{
-  country?: StorefrontAPI.InputMaybe<StorefrontAPI.CountryCode>;
-  language?: StorefrontAPI.InputMaybe<StorefrontAPI.LanguageCode>;
-  query: StorefrontAPI.Scalars['String']['input'];
-}>;
-
-export type SearchForProductByTagsQuery = {
-  products: {
-    nodes: Array<
-      Pick<StorefrontAPI.Product, 'id' | 'handle' | 'title'> & {
-        options: Array<Pick<StorefrontAPI.ProductOption, 'name' | 'values'>>;
-        variants: {
-          nodes: Array<
-            Pick<StorefrontAPI.ProductVariant, 'id' | 'title'> & {
-              price: Pick<StorefrontAPI.MoneyV2, 'amount' | 'currencyCode'>;
             }
           >;
         };
@@ -2920,6 +2921,10 @@ interface GeneratedQueryTypes {
     return: ProductValidateHandlerQuery;
     variables: ProductValidateHandlerQueryVariables;
   };
+  '#graphql\n  #graphql\n  fragment MoneyProductItem on MoneyV2 {\n    amount\n    currencyCode\n  }\n\n  fragment ServicesOptionsTagProduct on Product {\n    id\n    handle\n    title\n    options {\n      name\n      values\n    }\n    variants(first: 5) {\n      nodes {\n        id\n        title\n        price {\n          ...MoneyProductItem\n        }\n      }\n    }\n  }\n\n  query ServicesOptionsTagOptionsQuery(\n    $country: CountryCode\n    $language: LanguageCode\n    $query: String!\n    $first: Int\n  ) @inContext(country: $country, language: $language) {\n    products(first: $first, query: $query) {\n      nodes {\n        ...ServicesOptionsTagProduct\n      }\n    }\n  }\n': {
+    return: ServicesOptionsTagOptionsQueryQuery;
+    variables: ServicesOptionsTagOptionsQueryQueryVariables;
+  };
   '#graphql\n  #graphql\n  fragment ArtistTreatmentCompletedProduct on Product {\n    id\n    title\n    description\n    variants(first: 5) {\n      nodes {\n        id\n        title\n        compareAtPrice {\n          amount\n          currencyCode\n        }\n        price {\n          amount\n          currencyCode\n        }\n      }\n    }\n  }\n\n  query ArtistTreatmentCompleted(\n    $country: CountryCode\n    $language: LanguageCode\n    $first: Int\n    $query: String\n  ) @inContext(country: $country, language: $language) {\n    products(first: $first, sortKey: TITLE, query: $query) {\n      nodes {\n        ...ArtistTreatmentCompletedProduct\n      }\n    }\n  }\n': {
     return: ArtistTreatmentCompletedQuery;
     variables: ArtistTreatmentCompletedQueryVariables;
@@ -2927,10 +2932,6 @@ interface GeneratedQueryTypes {
   '#graphql\n  #graphql\n  #graphql\n  fragment ArtistTreatmentIndexVariant on ProductVariant {\n    id\n    title\n    image {\n      id\n      url\n      altText\n      width\n      height\n    }\n    price {\n      amount\n      currencyCode\n    }\n    compareAtPrice {\n      amount\n      currencyCode\n    }\n    selectedOptions {\n      name\n      value\n    }\n  }\n\n\n  fragment ArtistTreatmentIndexProduct on Product {\n    id\n    title\n    handle\n    options {\n      name\n      values\n    }\n    variants(first: 5) {\n      nodes {\n        ...ArtistTreatmentIndexVariant\n      }\n    }\n  }\n\n\n  query ArtistTreatmentIndex(\n    $country: CountryCode\n    $language: LanguageCode\n    $query: String!\n  ) @inContext(country: $country, language: $language) {\n    products(first: 10, query: $query) {\n      nodes {\n        ...ArtistTreatmentIndexProduct\n      }\n    }\n  }\n': {
     return: ArtistTreatmentIndexQuery;
     variables: ArtistTreatmentIndexQueryVariables;
-  };
-  '#graphql\n  #graphql\n  fragment MoneyProductItem on MoneyV2 {\n    amount\n    currencyCode\n  }\n\n  fragment ProductTagOptions on Product {\n    id\n    handle\n    title\n    options {\n      name\n      values\n    }\n    variants(first: 5) {\n      nodes {\n        id\n        price {\n          ...MoneyProductItem\n        }\n        title\n      }\n    }\n  }\n\n  query SearchForProductByTags(\n    $country: CountryCode\n    $language: LanguageCode\n    $query: String!\n  ) @inContext(country: $country, language: $language) {\n    products(first: 10, query: $query) {\n      nodes {\n        ...ProductTagOptions\n      }\n    }\n  }\n': {
-    return: SearchForProductByTagsQuery;
-    variables: SearchForProductByTagsQueryVariables;
   };
   '#graphql\n  #graphql\n  fragment ProductCreateVariant on ProductVariant {\n    id\n    title\n    compareAtPrice {\n      amount\n      currencyCode\n    }\n    price {\n      amount\n      currencyCode\n    }\n    product {\n      title\n      handle\n    }\n    selectedOptions {\n      name\n      value\n    }\n  }\n\n  query ProductCreateVariantId(\n    $country: CountryCode\n    $Id: ID!\n    $language: LanguageCode\n    $selectedOptions: [SelectedOptionInput!]!\n  ) @inContext(country: $country, language: $language) {\n    product(id: $Id) {\n      ...on Product {\n        selectedVariant: variantBySelectedOptions(selectedOptions: $selectedOptions) {\n          ...ProductCreateVariant\n        }\n      }\n    }\n  }\n': {
     return: ProductCreateVariantIdQuery;

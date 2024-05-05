@@ -145,6 +145,7 @@ export * from './customerProductOptionVariantsNodesItemDuration';
 export * from './customerProductOptionsAddBody';
 export * from './customerProductOptionsAddResponse';
 export * from './customerProductOptionsDestroyResponse';
+export * from './customerProductOptionsList200';
 export * from './customerProductOptionsUpdateBody';
 export * from './customerProductOptionsUpdateBodyItem';
 export * from './customerProductOptionsUpdateResponse';

@@ -4345,6 +4345,50 @@ paths:
         '404':
           $ref: '#/components/responses/NotFoundResponse'
       security: []
+    get:
+      parameters:
+        - name: customerId
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: productId
+          in: path
+          required: true
+          schema:
+            type: string
+      tags:
+        - CustomerProductOptions
+      operationId: customerProductOptionsList
+      summary: GET Get product options for product
+      description: This endpoint get product options for product
+      responses:
+        '200':
+          description: Response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  payload:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/CustomerProductBase/properties/options/items'
+                required:
+                  - success
+                  - payload
+        '400':
+          $ref: '#/components/responses/BadResponse'
+        '401':
+          $ref: '#/components/responses/UnauthorizedResponse'
+        '403':
+          $ref: '#/components/responses/ForbiddenResponse'
+        '404':
+          $ref: '#/components/responses/NotFoundResponse'
+      security: []
   '/customer/{customerId}/product/{productId}/options/{optionProductId}':
     put:
       parameters:

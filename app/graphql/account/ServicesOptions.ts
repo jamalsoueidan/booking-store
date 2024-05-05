@@ -1,10 +1,10 @@
-export const PRODUCT_TAG_OPTIONS_FRAGMENT = `#graphql
+export const SERVICES_OPTIONS_TAG_FRAGMENT = `#graphql
   fragment MoneyProductItem on MoneyV2 {
     amount
     currencyCode
   }
 
-  fragment ProductTagOptions on Product {
+  fragment ServicesOptionsTagProduct on Product {
     id
     handle
     title
@@ -15,25 +15,26 @@ export const PRODUCT_TAG_OPTIONS_FRAGMENT = `#graphql
     variants(first: 5) {
       nodes {
         id
+        title
         price {
           ...MoneyProductItem
         }
-        title
       }
     }
   }
 ` as const;
 
-export const PRODUCT_TAG_OPTIONS_QUERY = `#graphql
-  ${PRODUCT_TAG_OPTIONS_FRAGMENT}
-  query SearchForProductByTags(
+export const ServicesOptionsTagOptions = `#graphql
+  ${SERVICES_OPTIONS_TAG_FRAGMENT}
+  query ServicesOptionsTagOptionsQuery(
     $country: CountryCode
     $language: LanguageCode
     $query: String!
+    $first: Int
   ) @inContext(country: $country, language: $language) {
-    products(first: 10, query: $query) {
+    products(first: $first, query: $query) {
       nodes {
-        ...ProductTagOptions
+        ...ServicesOptionsTagProduct
       }
     }
   }
