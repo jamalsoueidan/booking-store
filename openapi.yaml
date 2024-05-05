@@ -578,6 +578,34 @@ components:
         - selectedOptions
         - price
         - compareAtPrice
+    CustomerProductOption:
+      type: object
+      properties:
+        id:
+          type: string
+        title:
+          type: string
+        variants:
+          type: object
+          properties:
+            nodes:
+              type: array
+              items:
+                type: object
+                properties:
+                  id:
+                    type: string
+                  title:
+                    type: string
+                  price:
+                    type: string
+                  duration:
+                    type: object
+                    properties:
+                      id:
+                        type: string
+                      value:
+                        type: string
     CustomerProductOptionsUpdateResponse:
       type: object
       properties:
@@ -585,7 +613,12 @@ components:
           type: boolean
           example: true
         payload:
-          $ref: '#/components/schemas/CustomerProductList'
+          type: object
+          properties:
+            deletedProductId:
+              type: string
+          required:
+            - deletedProductId
       required:
         - success
         - payload
@@ -607,7 +640,7 @@ components:
           type: boolean
           example: true
         payload:
-          $ref: '#/components/schemas/CustomerProductList'
+          $ref: '#/components/schemas/CustomerProductOption'
       required:
         - success
         - payload
