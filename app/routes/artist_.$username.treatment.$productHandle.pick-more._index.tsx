@@ -17,7 +17,7 @@ import {
   usePickedVariantsToCalculateTotalPrice,
 } from '~/components/OptionSelector';
 import {PRODUCT_SELECTED_OPTIONS_QUERY} from '~/data/queries';
-import {ArtistTreatmentIndex} from '~/graphql/storefront/ArtistTreatmentIndex';
+import {ArtistTreatmentIndex} from '~/graphql/artist/ArtistTreatmentIndex';
 
 import {getBookingShopifyApi} from '~/lib/api/bookingShopifyApi';
 import type {CustomerProductList} from '~/lib/api/model';
@@ -140,7 +140,7 @@ function ArtistTreatmentPickMoreRenderModal({
 
   const totalTime = useMemo(() => {
     return selectedOptions?.reduce((total, option) => {
-      return total + option.duration;
+      return total + option.duration.value;
     }, userProduct?.duration);
   }, [selectedOptions, userProduct]);
 

@@ -11,7 +11,8 @@ import {ArtistShell} from '~/components/ArtistShell';
 import {TreatmentArtistCardComplete} from '~/components/treatment/TreatmentArtistCardComplete';
 import {TreatmentStepper} from '~/components/TreatmentStepper';
 import {PRODUCT_SELECTED_OPTIONS_QUERY} from '~/data/queries';
-import {ArtistTreatmentCompletedQuery} from '~/graphql/storefront/ArtistTreatmentCompleted';
+import {ArtistTreatmentCompletedQuery} from '~/graphql/artist/ArtistTreatmentCompleted';
+
 import {getBookingShopifyApi} from '~/lib/api/bookingShopifyApi';
 import {durationToTime} from '~/lib/duration';
 import {matchesGid} from '~/lib/matches-gid';
