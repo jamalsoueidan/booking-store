@@ -6,6 +6,6 @@
  */
 
 export type CustomerProductOptionVariantsNodesItemDuration = {
-  id?: string;
-  value?: string;
+  id: string;
+  value: string;
 };

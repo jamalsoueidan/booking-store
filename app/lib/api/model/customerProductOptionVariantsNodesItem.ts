@@ -7,8 +7,8 @@
 import type {CustomerProductOptionVariantsNodesItemDuration} from './customerProductOptionVariantsNodesItemDuration';
 
 export type CustomerProductOptionVariantsNodesItem = {
-  duration?: CustomerProductOptionVariantsNodesItemDuration;
-  id?: string;
-  price?: string;
-  title?: string;
+  duration: CustomerProductOptionVariantsNodesItemDuration;
+  id: string;
+  price: string;
+  title: string;
 };

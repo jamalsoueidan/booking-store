@@ -2471,19 +2471,19 @@ export const customerProductOptionsAddBody = zod.object({
 export const customerProductOptionsAddResponse = zod.object({
   "success": zod.boolean(),
   "payload":  zod.object({
-  "id": zod.string().optional(),
-  "title": zod.string().optional(),
+  "id": zod.string(),
+  "title": zod.string(),
   "variants":  zod.object({
   "nodes": zod.array( zod.object({
-  "id": zod.string().optional(),
-  "title": zod.string().optional(),
-  "price": zod.string().optional(),
+  "id": zod.string(),
+  "title": zod.string(),
+  "price": zod.string(),
   "duration":  zod.object({
-  "id": zod.string().optional(),
-  "value": zod.string().optional()
-}).optional()
-})).optional()
-}).optional()
+  "id": zod.string(),
+  "value": zod.string()
+})
+}))
+})
 })
 })
 

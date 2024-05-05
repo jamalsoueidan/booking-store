@@ -7,7 +7,7 @@
 import type {CustomerProductOptionVariants} from './customerProductOptionVariants';
 
 export interface CustomerProductOption {
-  id?: string;
-  title?: string;
-  variants?: CustomerProductOptionVariants;
+  id: string;
+  title: string;
+  variants: CustomerProductOptionVariants;
 }

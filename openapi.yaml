@@ -606,6 +606,20 @@ components:
                         type: string
                       value:
                         type: string
+                    required:
+                      - id
+                      - value
+                required:
+                  - id
+                  - title
+                  - price
+                  - duration
+          required:
+            - nodes
+      required:
+        - id
+        - title
+        - variants
     CustomerProductOptionsUpdateResponse:
       type: object
       properties:

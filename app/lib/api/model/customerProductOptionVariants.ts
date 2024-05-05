@@ -7,5 +7,5 @@
 import type {CustomerProductOptionVariantsNodesItem} from './customerProductOptionVariantsNodesItem';
 
 export type CustomerProductOptionVariants = {
-  nodes?: CustomerProductOptionVariantsNodesItem[];
+  nodes: CustomerProductOptionVariantsNodesItem[];
 };
