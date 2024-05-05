@@ -71,7 +71,7 @@ export const action = async ({
     );
 
     await context.storefront.cache?.delete(
-      `${baseURL}/customer/${customerId}/schedule/${submission.value.scheduleId}`,
+      `${baseURL}/customer/${customerId}/product/${productId}`,
     );
 
     return redirectWithSuccess('.', {
@@ -125,6 +125,7 @@ export async function loader({context, params}: LoaderFunctionArgs) {
 export default function EditAddress() {
   const {locations, schedules, defaultValue} = useLoaderData<typeof loader>();
   const lastResult = useActionData<typeof action>();
+
   const [form, fields] = useForm({
     lastResult,
     defaultValue,

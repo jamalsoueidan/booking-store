@@ -1,89 +1,141 @@
-import {Form, useActionData, useLoaderData} from '@remix-run/react';
+import {
+  Form,
+  Link,
+  Outlet,
+  useLoaderData,
+  useNavigate,
+  useOutlet,
+  useOutletContext,
+} from '@remix-run/react';
 import {
   json,
+  redirect,
   type ActionFunctionArgs,
   type LoaderFunctionArgs,
+  type SerializeFrom,
 } from '@shopify/remix-oxygen';
-
 import {getCustomer} from '~/lib/get-customer';
-import {customerLocationCreateBody} from '~/lib/zod/bookingShopifyApi';
+import {type loader as rootLoader} from './account.services.$productId';
 
-import {getFormProps, useForm} from '@conform-to/react';
-import {parseWithZod} from '@conform-to/zod';
-import {Flex, Select, Stack, Text} from '@mantine/core';
-import {redirectWithSuccess} from 'remix-toast';
-import {SubmitButton} from '~/components/form/SubmitButton';
+import {Accordion, Anchor, Button, Flex, Modal, Title} from '@mantine/core';
 import {PRODUCT_TAG_OPTIONS_QUERY} from '~/graphql/storefront/ProductTagOptions';
+import {getBookingShopifyApi} from '~/lib/api/bookingShopifyApi';
 
-const schema = customerLocationCreateBody;
-
-export const action = async ({request, context}: ActionFunctionArgs) => {
+export const action = async ({
+  request,
+  context,
+  params,
+}: ActionFunctionArgs) => {
   const customerId = await getCustomer({context});
-
   const formData = await request.formData();
-  const submission = parseWithZod(formData, {schema});
+  const {productId} = params;
+  const intent = String(formData.get('intent'));
+  const optionProductId = String(formData.get('optionProductId'));
 
-  if (submission.status !== 'success') {
-    return submission.reply();
+  if (!productId) {
+    throw new Error('Missing productHandle param, check route filename');
   }
 
-  try {
-    return redirectWithSuccess('.', {
-      message: 'Lokation er nu oprettet!',
-    });
-  } catch (error) {
-    return submission.reply();
+  if (intent === 'destroy') {
+    await getBookingShopifyApi().customerProductOptionsDestroy(
+      customerId,
+      productId,
+      optionProductId,
+    );
   }
+
+  await new Promise((resolve) => setTimeout(resolve, 1500));
+
+  return redirect(`/account/services/${productId}/options`);
 };
 
 export async function loader({context}: LoaderFunctionArgs) {
-  await context.customerAccount.handleAuthStatus();
-
+  const customerId = await getCustomer({context});
   const {storefront} = context;
 
-  const {products} = await storefront.query(PRODUCT_TAG_OPTIONS_QUERY);
+  const {products: options} = await storefront.query(
+    PRODUCT_TAG_OPTIONS_QUERY,
+    {
+      variables: {
+        query: `tag:user AND tag:customer-${customerId} AND NOT id:${Math.ceil(
+          Math.random() * 1000,
+        )}`,
+      },
+      cache: storefront.CacheNone(),
+    },
+  );
 
-  return json({products, defaultValue: {}});
+  return json({options});
 }
 
 export default function Component() {
-  const lastResult = useActionData<typeof action>();
-  const {products, defaultValue} = useLoaderData<typeof loader>();
+  const {options} = useLoaderData<typeof loader>();
+  const {selectedProduct} =
+    useOutletContext<SerializeFrom<typeof rootLoader>>();
+  const inOutlet = !!useOutlet();
+  const navigate = useNavigate();
 
-  const [form, fields] = useForm({
-    lastResult,
-    defaultValue,
-    onValidate({formData}) {
-      return parseWithZod(formData, {
-        schema,
-      });
-    },
-    shouldValidate: 'onBlur',
-    shouldRevalidate: 'onInput',
-  });
+  const closeModal = () => {
+    navigate(-1);
+  };
 
   return (
-    <Form method="POST" {...getFormProps(form)}>
-      <Stack>
-        <Flex direction="column" gap="md">
-          <Stack gap="0" style={{flex: 1}}>
-            <Text fw="bold">Valg muligheder:</Text>
-            <Text>
-              Hvilken valg mulighed vil du tilføje til den her ydelse??
-            </Text>
-          </Stack>
-          <div style={{flex: 1}}>
-            <Select
-              data={products.nodes.map((p) => ({value: p.id, label: p.title}))}
-              placeholder="-"
-              allowDeselect={false}
-              data-testid="options-select"
-            />
-          </div>
-        </Flex>
+    <>
+      <Anchor component={Link} to="add">
+        Tilføj valg mulighed
+      </Anchor>
 
-        <SubmitButton>Tilføj</SubmitButton>
-      </Stack>
-    </Form>
+      {options.nodes.length > 0 ? (
+        <>
+          <Accordion variant="contained">
+            {options.nodes.map((option) => (
+              <Accordion.Item value={option.id} key={option.id}>
+                <Accordion.Control>{option.title}</Accordion.Control>
+                <Accordion.Panel>
+                  <Form method="post">
+                    <input
+                      type="hidden"
+                      name="optionProductId"
+                      value={option.id}
+                    />
+                    <Flex gap="sm">
+                      <Button
+                        type="submit"
+                        name="intent"
+                        value="update"
+                        variant="filled"
+                      >
+                        Opdatere
+                      </Button>
+                      <Button
+                        type="submit"
+                        name="intent"
+                        value="destroy"
+                        variant="filled"
+                        color="red"
+                      >
+                        Slet
+                      </Button>
+                    </Flex>
+                  </Form>
+                </Accordion.Panel>
+              </Accordion.Item>
+            ))}
+          </Accordion>
+        </>
+      ) : (
+        <Title order={3}>
+          Der er ikke tilføjet valg muligheder til dette produkt
+        </Title>
+      )}
+
+      <Modal
+        title="Vælg en valg-mulighed"
+        opened={inOutlet}
+        onClose={closeModal}
+      >
+        <Outlet context={{selectedProduct}} />
+      </Modal>
+    </>
   );
 }

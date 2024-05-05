@@ -99,7 +99,7 @@ export default function ProductDescription() {
 
   const totalTime = useMemo(() => {
     return selectedOptions.reduce((total, option) => {
-      return total + option.duration;
+      return total + option.duration.value;
     }, userProduct.duration);
   }, [selectedOptions, userProduct.duration]);
 

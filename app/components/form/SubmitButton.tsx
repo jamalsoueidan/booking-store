@@ -1,11 +1,16 @@
 import {Button, type ButtonProps} from '@mantine/core';
 import {useNavigation} from '@remix-run/react';
-import {useEffect, useRef, useState, type PropsWithChildren} from 'react';
+import {
+  useEffect,
+  useRef,
+  useState,
+  type ButtonHTMLAttributes,
+  type PropsWithChildren,
+} from 'react';
 
-export const SubmitButton: React.FC<PropsWithChildren & ButtonProps> = ({
-  children,
-  ...props
-}) => {
+export const SubmitButton: React.FC<
+  PropsWithChildren<ButtonProps & ButtonHTMLAttributes<HTMLButtonElement>>
+> = ({children, ...props}) => {
   const navigation = useNavigation();
   const [action, setAction] = useState('');
   const buttonRef = useRef<HTMLButtonElement>(null);

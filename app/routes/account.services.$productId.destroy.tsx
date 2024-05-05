@@ -18,6 +18,10 @@ export const action: ActionFunction = async ({context, params}) => {
     `${baseURL}/customer/${customerId}/products`,
   );
 
+  await context.storefront.cache?.delete(
+    `${baseURL}/customer/${customerId}/product/${productId}`,
+  );
+
   return redirectWithSuccess('/account/services', {
     message: 'Ydelsen er nu slettet!',
   });

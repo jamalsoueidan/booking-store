@@ -20,10 +20,7 @@ import {PRODUCT_SELECTED_OPTIONS_QUERY} from '~/data/queries';
 import {ArtistTreatmentIndex} from '~/graphql/storefront/ArtistTreatmentIndex';
 
 import {getBookingShopifyApi} from '~/lib/api/bookingShopifyApi';
-import type {
-  CustomerProductBaseOptionsItem,
-  CustomerProductList,
-} from '~/lib/api/model';
+import type {CustomerProductList} from '~/lib/api/model';
 import {durationToTime} from '~/lib/duration';
 import {matchesGid} from '~/lib/matches-gid';
 
@@ -95,7 +92,6 @@ export async function loader({params, request, context}: LoaderFunctionArgs) {
   return json({
     product,
     allProductOptionsWithVariants, // to render all variants
-    allUserProductOptions: userProduct.options, //to get all durations
     userProduct,
   });
 }
@@ -113,16 +109,15 @@ export default function ArtistTreatmentPickMoreIndex() {
 type ArtistTreatmentPickMoreRenderModalProps = {
   product: any;
   allProductOptionsWithVariants: ArtistTreatmentIndexQuery['products'];
-  allUserProductOptions: CustomerProductBaseOptionsItem[];
   userProduct: CustomerProductList;
 };
 
 function ArtistTreatmentPickMoreRenderModal({
   product,
   allProductOptionsWithVariants,
-  allUserProductOptions,
   userProduct,
 }: ArtistTreatmentPickMoreRenderModalProps) {
+  const allUserProductOptions = userProduct.options;
   const selectedVariants = usePickedVariantsToCalculateTotalPrice({
     parentId: userProduct.productId,
     allProductOptionsWithVariants: allProductOptionsWithVariants.nodes,

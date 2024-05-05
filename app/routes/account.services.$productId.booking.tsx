@@ -52,7 +52,7 @@ export const action = async ({
     );
 
     await context.storefront.cache?.delete(
-      `${baseURL}/customer/${customerId}/schedule/${submission.value.scheduleId}`,
+      `${baseURL}/customer/${customerId}/product/${productId}`,
     );
 
     return redirectWithSuccess('.', {
@@ -85,8 +85,8 @@ export async function loader({context, params}: LoaderFunctionArgs) {
 
 export default function EditAddress() {
   const {defaultValue} = useLoaderData<typeof loader>();
-
   const lastResult = useActionData<typeof action>();
+
   const [form, fields] = useForm({
     lastResult,
     defaultValue,
@@ -103,8 +103,6 @@ export default function EditAddress() {
     <FormProvider context={form.context}>
       <Form method="post" {...getFormProps(form)}>
         <FlexInnerForm>
-          <input {...getInputProps(fields.scheduleId, {type: 'hidden'})} />
-
           <Flex direction={{base: 'column', md: 'row'}} gap="md">
             <Stack gap="0" style={{flex: 1}}>
               <Text fw="bold">Behandlingstid</Text>

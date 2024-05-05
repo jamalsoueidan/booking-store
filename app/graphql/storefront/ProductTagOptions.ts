@@ -12,7 +12,7 @@ export const PRODUCT_TAG_OPTIONS_FRAGMENT = `#graphql
       name
       values
     }
-    variants(first: 10) {
+    variants(first: 5) {
       nodes {
         id
         price {
@@ -29,8 +29,9 @@ export const PRODUCT_TAG_OPTIONS_QUERY = `#graphql
   query SearchForProductByTags(
     $country: CountryCode
     $language: LanguageCode
+    $query: String!
   ) @inContext(country: $country, language: $language) {
-    products(first: 10, query: "tag:'options'") {
+    products(first: 10, query: $query) {
       nodes {
         ...ProductTagOptions
       }

@@ -124,7 +124,7 @@ export function ProductOption({
       variant={value !== parseGid(variant.id).id ? 'outline' : 'transparent'}
     >
       {variant.title} +<Money as="span" data={variant.price} withoutCurrency />
-      &nbsp; DKK - {userVariant.duration} min
+      &nbsp; DKK - {userVariant.duration.value} min
     </Button>
   );
 }
