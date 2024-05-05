@@ -21,7 +21,8 @@ import {
   usePickedVariantsToCalculateTotalPrice,
 } from '~/components/OptionSelector';
 import {TreatmentStepper} from '~/components/TreatmentStepper';
-import {ArtistTreatmentIndex} from '~/graphql/storefront/ArtistTreatmentIndex';
+
+import {ArtistTreatmentIndex} from '~/graphql/artist/ArtistTreatmentIndex';
 import {getBookingShopifyApi} from '~/lib/api/bookingShopifyApi';
 import {durationToTime} from '~/lib/duration';
 import {matchesGid} from '~/lib/matches-gid';
