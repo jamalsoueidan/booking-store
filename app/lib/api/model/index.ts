@@ -144,7 +144,7 @@ export * from './customerProductOptionsListItemVariantsItem';
 export * from './customerProductOptionsListItemVariantsItemDuration';
 export * from './customerProductOptionsListResponse';
 export * from './customerProductOptionsUpdateBody';
-export * from './customerProductOptionsUpdateBodyItem';
+export * from './customerProductOptionsUpdateBodyVariantsItem';
 export * from './customerProductOptionsUpdateResponse';
 export * from './customerProductSelectedOptions';
 export * from './customerProductUpdateBody';

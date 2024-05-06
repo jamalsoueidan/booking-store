@@ -564,16 +564,25 @@ components:
         - success
         - payload
     CustomerProductOptionsUpdateBody:
-      type: array
-      items:
-        type: object
-        properties:
-          id:
-            type: string
-          price:
-            type: string
-          duration:
-            type: string
+      type: object
+      properties:
+        variants:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+              price:
+                type: string
+              duration:
+                type: string
+            required:
+              - id
+              - price
+              - duration
+      required:
+        - variants
     CustomerProductOptionsList:
       type: array
       items:

@@ -5,8 +5,8 @@
  * OpenAPI spec version: 1.0.0
  */
 
-export type CustomerProductOptionsUpdateBodyItem = {
-  duration?: string;
-  id?: string;
-  price?: string;
+export type CustomerProductOptionsUpdateBodyVariantsItem = {
+  duration: string;
+  id: string;
+  price: string;
 };

@@ -2538,12 +2538,13 @@ export const customerProductOptionsUpdateParams = zod.object({
   "optionProductId": zod.string()
 })
 
-export const customerProductOptionsUpdateBodyItem = zod.object({
-  "id": zod.string().optional(),
-  "price": zod.string().optional(),
-  "duration": zod.string().optional()
+export const customerProductOptionsUpdateBody = zod.object({
+  "variants": zod.array( zod.object({
+  "id": zod.string(),
+  "price": zod.string(),
+  "duration": zod.string()
+}))
 })
-export const customerProductOptionsUpdateBody = zod.array(customerProductOptionsUpdateBodyItem)
 
 export const customerProductOptionsUpdateResponse = zod.object({
   "success": zod.boolean(),

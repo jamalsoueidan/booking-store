@@ -4,7 +4,8 @@
  * Booking Shopify Api
  * OpenAPI spec version: 1.0.0
  */
-import type {CustomerProductOptionsUpdateBodyItem} from './customerProductOptionsUpdateBodyItem';
+import type {CustomerProductOptionsUpdateBodyVariantsItem} from './customerProductOptionsUpdateBodyVariantsItem';
 
-export type CustomerProductOptionsUpdateBody =
-  CustomerProductOptionsUpdateBodyItem[];
+export interface CustomerProductOptionsUpdateBody {
+  variants: CustomerProductOptionsUpdateBodyVariantsItem[];
+}
