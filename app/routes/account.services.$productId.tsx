@@ -46,13 +46,13 @@ export default function EditAddress() {
           to={`/account/services/${parseGid(selectedProduct.id).id}`}
           data-testid="basic-button"
         >
-          Produkt detaljer
-        </AccountButton>
-        <AccountButton to={'booking'} data-testid="booking-button">
-          Bookingkonfiguration
+          Detaljer
         </AccountButton>
         <AccountButton to={'options'} data-testid="booking-button">
-          Valg muligheder
+          Varianter
+        </AccountButton>
+        <AccountButton to={'configuration'} data-testid="booking-button">
+          Konfiguration
         </AccountButton>
         <Form
           method="post"
