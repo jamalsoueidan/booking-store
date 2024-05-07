@@ -1768,6 +1768,23 @@ export type ServicesOptionsTagOptionsQueryQuery = {
   };
 };
 
+export type ArtistTreatmentProductFragment = Pick<
+  StorefrontAPI.Product,
+  'id' | 'title' | 'handle'
+>;
+
+export type ArtistTreatmentQueryVariables = StorefrontAPI.Exact<{
+  productHandle: StorefrontAPI.Scalars['String']['input'];
+  country?: StorefrontAPI.InputMaybe<StorefrontAPI.CountryCode>;
+  language?: StorefrontAPI.InputMaybe<StorefrontAPI.LanguageCode>;
+}>;
+
+export type ArtistTreatmentQuery = {
+  product?: StorefrontAPI.Maybe<
+    Pick<StorefrontAPI.Product, 'id' | 'title' | 'handle'>
+  >;
+};
+
 export type ArtistTreatmentCompletedProductFragment = Pick<
   StorefrontAPI.Product,
   'id' | 'title' | 'description'
@@ -1822,6 +1839,7 @@ export type ArtistTreatmentIndexVariantFragment = Pick<
     Pick<StorefrontAPI.MoneyV2, 'amount' | 'currencyCode'>
   >;
   selectedOptions: Array<Pick<StorefrontAPI.SelectedOption, 'name' | 'value'>>;
+  duration?: StorefrontAPI.Maybe<Pick<StorefrontAPI.Metafield, 'id' | 'value'>>;
 };
 
 export type ArtistTreatmentIndexProductFragment = Pick<
@@ -1844,6 +1862,9 @@ export type ArtistTreatmentIndexProductFragment = Pick<
         >;
         selectedOptions: Array<
           Pick<StorefrontAPI.SelectedOption, 'name' | 'value'>
+        >;
+        duration?: StorefrontAPI.Maybe<
+          Pick<StorefrontAPI.Metafield, 'id' | 'value'>
         >;
       }
     >;
@@ -1876,6 +1897,9 @@ export type ArtistTreatmentIndexQuery = {
               >;
               selectedOptions: Array<
                 Pick<StorefrontAPI.SelectedOption, 'name' | 'value'>
+              >;
+              duration?: StorefrontAPI.Maybe<
+                Pick<StorefrontAPI.Metafield, 'id' | 'value'>
               >;
             }
           >;
@@ -2925,11 +2949,15 @@ interface GeneratedQueryTypes {
     return: ServicesOptionsTagOptionsQueryQuery;
     variables: ServicesOptionsTagOptionsQueryQueryVariables;
   };
+  '#graphql\n#graphql\n  fragment ArtistTreatmentProduct on Product {\n    id\n    title\n    handle\n  }\n\n  query ArtistTreatment(\n    $productHandle: String!\n    $country: CountryCode\n    $language: LanguageCode\n  ) @inContext(country: $country, language: $language) {\n    product(handle: $productHandle) {\n      ...ArtistTreatmentProduct\n    }\n  }\n': {
+    return: ArtistTreatmentQuery;
+    variables: ArtistTreatmentQueryVariables;
+  };
   '#graphql\n  #graphql\n  fragment ArtistTreatmentCompletedProduct on Product {\n    id\n    title\n    description\n    variants(first: 5) {\n      nodes {\n        id\n        title\n        compareAtPrice {\n          amount\n          currencyCode\n        }\n        price {\n          amount\n          currencyCode\n        }\n      }\n    }\n  }\n\n  query ArtistTreatmentCompleted(\n    $country: CountryCode\n    $language: LanguageCode\n    $first: Int\n    $query: String\n  ) @inContext(country: $country, language: $language) {\n    products(first: $first, sortKey: TITLE, query: $query) {\n      nodes {\n        ...ArtistTreatmentCompletedProduct\n      }\n    }\n  }\n': {
     return: ArtistTreatmentCompletedQuery;
     variables: ArtistTreatmentCompletedQueryVariables;
   };
-  '#graphql\n  #graphql\n  #graphql\n  fragment ArtistTreatmentIndexVariant on ProductVariant {\n    id\n    title\n    image {\n      id\n      url\n      altText\n      width\n      height\n    }\n    price {\n      amount\n      currencyCode\n    }\n    compareAtPrice {\n      amount\n      currencyCode\n    }\n    selectedOptions {\n      name\n      value\n    }\n  }\n\n\n  fragment ArtistTreatmentIndexProduct on Product {\n    id\n    title\n    handle\n    options {\n      name\n      values\n    }\n    variants(first: 5) {\n      nodes {\n        ...ArtistTreatmentIndexVariant\n      }\n    }\n  }\n\n\n  query ArtistTreatmentIndex(\n    $country: CountryCode\n    $language: LanguageCode\n    $query: String!\n  ) @inContext(country: $country, language: $language) {\n    products(first: 10, query: $query) {\n      nodes {\n        ...ArtistTreatmentIndexProduct\n      }\n    }\n  }\n': {
+  '#graphql\n  #graphql\n  #graphql\n  fragment ArtistTreatmentIndexVariant on ProductVariant {\n    id\n    title\n    image {\n      id\n      url\n      altText\n      width\n      height\n    }\n    price {\n      amount\n      currencyCode\n    }\n    compareAtPrice {\n      amount\n      currencyCode\n    }\n    selectedOptions {\n      name\n      value\n    }\n    duration: metafield(key: "duration", namespace: "booking") {\n      id\n      value\n    }\n  }\n\n\n  fragment ArtistTreatmentIndexProduct on Product {\n    id\n    title\n    handle\n    options {\n      name\n      values\n    }\n    variants(first: 5) {\n      nodes {\n        ...ArtistTreatmentIndexVariant\n      }\n    }\n  }\n\n\n  query ArtistTreatmentIndex(\n    $country: CountryCode\n    $language: LanguageCode\n    $query: String!\n  ) @inContext(country: $country, language: $language) {\n    products(first: 10, query: $query) {\n      nodes {\n        ...ArtistTreatmentIndexProduct\n      }\n    }\n  }\n': {
     return: ArtistTreatmentIndexQuery;
     variables: ArtistTreatmentIndexQueryVariables;
   };
