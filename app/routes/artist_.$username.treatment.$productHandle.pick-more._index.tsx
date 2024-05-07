@@ -6,23 +6,20 @@ import {
 } from '@remix-run/react';
 import {json, type LoaderFunctionArgs} from '@remix-run/server-runtime';
 import {Money, parseGid} from '@shopify/hydrogen';
-import {useMemo} from 'react';
 import {type ArtistTreatmentIndexQuery} from 'storefrontapi.generated';
 
 import {
   OptionSelector,
   ProductOption,
   redirectToOptions,
-  usePickedOptionsToCalculateDuration,
-  usePickedVariantsToCalculateTotalPrice,
+  useCalculateDurationAndPrice,
 } from '~/components/OptionSelector';
-import {PRODUCT_SELECTED_OPTIONS_QUERY} from '~/data/queries';
+import {ArtistTreatment} from '~/graphql/artist/ArtistTreatment';
 import {ArtistTreatmentIndex} from '~/graphql/artist/ArtistTreatmentIndex';
-
 import {getBookingShopifyApi} from '~/lib/api/bookingShopifyApi';
+
 import type {CustomerProductList} from '~/lib/api/model';
 import {durationToTime} from '~/lib/duration';
-import {matchesGid} from '~/lib/matches-gid';
 
 export function shouldRevalidate({
   currentUrl,
@@ -41,6 +38,7 @@ export function shouldRevalidate({
 }
 
 export async function loader({params, request, context}: LoaderFunctionArgs) {
+  const {storefront} = context;
   const url = new URL(request.url);
   const searchParams = new URLSearchParams(url.search);
 
@@ -48,7 +46,7 @@ export async function loader({params, request, context}: LoaderFunctionArgs) {
   const {username} = params;
 
   if (!productHandle || !username) {
-    return json(null);
+    return json(null); // don't throw, this is index file
   }
 
   const {payload: userProduct} = await getBookingShopifyApi().userProductGet(
@@ -56,26 +54,24 @@ export async function loader({params, request, context}: LoaderFunctionArgs) {
     productHandle,
   );
 
-  const {product} = await context.storefront.query(
-    PRODUCT_SELECTED_OPTIONS_QUERY,
-    {
-      variables: {
-        productHandle,
-        selectedOptions: userProduct.selectedOptions,
-      },
+  const {product} = await storefront.query(ArtistTreatment, {
+    variables: {
+      productHandle,
+      country: storefront.i18n.country,
+      language: storefront.i18n.language,
     },
-  );
+  });
 
   if (!product) {
-    return json(null);
+    throw new Response('product cant be found', {
+      status: 404,
+    });
   }
-
-  const productIds = userProduct.options?.map((p) => p.productId) || [];
 
   const {products: allProductOptionsWithVariants} =
     await context.storefront.query(ArtistTreatmentIndex, {
       variables: {
-        query: productIds.length > 0 ? productIds.join(' OR ') : 'tag:"-"',
+        query: `tag:'product-${productHandle}' AND tag:'user-${username}'`,
         country: context.storefront.i18n.country,
         language: context.storefront.i18n.language,
       },
@@ -83,7 +79,7 @@ export async function loader({params, request, context}: LoaderFunctionArgs) {
 
   if (allProductOptionsWithVariants.nodes.length > 0) {
     redirectToOptions({
-      parentId: userProduct.productId,
+      parentId: parseGid(product?.id).id,
       allProductOptionsWithVariants: allProductOptionsWithVariants.nodes,
       request,
     });
@@ -117,32 +113,15 @@ function ArtistTreatmentPickMoreRenderModal({
   allProductOptionsWithVariants,
   userProduct,
 }: ArtistTreatmentPickMoreRenderModalProps) {
-  const allUserProductOptions = userProduct.options;
-  const selectedVariants = usePickedVariantsToCalculateTotalPrice({
-    parentId: userProduct.productId,
+  const {totalDuration, totalPrice} = useCalculateDurationAndPrice({
+    parentId: product.id,
     allProductOptionsWithVariants: allProductOptionsWithVariants.nodes,
-  });
-
-  const selectedOptions = usePickedOptionsToCalculateDuration({
-    parentId: userProduct.productId,
-    userProductsOptions: userProduct.options,
+    currentPrice: parseInt(userProduct.price.amount || '0'),
+    currentDuration: userProduct?.duration,
   });
 
   const [searchParams, setSearchParams] = useSearchParams();
   const opened = !!searchParams.get('modal');
-
-  const totalPrice = useMemo(() => {
-    return selectedVariants.reduce(
-      (total, variant) => total + parseInt(variant.price.amount || ''),
-      parseInt(product?.selectedVariant?.price.amount || '0'),
-    );
-  }, [product?.selectedVariant?.price.amount, selectedVariants]);
-
-  const totalTime = useMemo(() => {
-    return selectedOptions?.reduce((total, option) => {
-      return total + option.duration.value;
-    }, userProduct?.duration);
-  }, [selectedOptions, userProduct]);
 
   const productID = parseGid(product.id).id;
 
@@ -189,19 +168,11 @@ function ArtistTreatmentPickMoreRenderModal({
   return (
     <Modal opened={opened} onClose={close} title="Valg muligheder">
       {allProductOptionsWithVariants.nodes.map((productOptionWithVariants) => {
-        const userProductOptions = allUserProductOptions.find((up) =>
-          matchesGid(productOptionWithVariants.id, up.productId),
-        );
-        if (!userProductOptions) {
-          return <>Error: option not found</>;
-        }
-
         return (
           <OptionSelector
             key={productOptionWithVariants.id}
             parentId={parseGid(product?.id).id}
             productOptionWithVariants={productOptionWithVariants}
-            userProductOptions={userProductOptions}
           >
             {(props) => {
               return <ProductOption {...props} />;
@@ -221,7 +192,7 @@ function ArtistTreatmentPickMoreRenderModal({
           }}
         />
       </Text>
-      Total tid: {durationToTime(totalTime ?? 0)}
+      Total tid: {durationToTime(totalDuration ?? 0)}
       <Stack>
         <Button onClick={onClick}>Tilføj ydelse</Button>
         <Button onClick={close}>Fjern ydelse</Button>

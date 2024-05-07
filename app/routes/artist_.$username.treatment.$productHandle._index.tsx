@@ -11,47 +11,53 @@ import {
   type SerializeFrom,
 } from '@remix-run/server-runtime';
 import {Money, parseGid} from '@shopify/hydrogen';
-import {useMemo} from 'react';
 import {ArtistShell} from '~/components/ArtistShell';
 import {
   OptionSelector,
   ProductOption,
   redirectToOptions,
-  usePickedOptionsToCalculateDuration,
-  usePickedVariantsToCalculateTotalPrice,
+  useCalculateDurationAndPrice,
 } from '~/components/OptionSelector';
 import {TreatmentStepper} from '~/components/TreatmentStepper';
 
+import {ArtistTreatment} from '~/graphql/artist/ArtistTreatment';
 import {ArtistTreatmentIndex} from '~/graphql/artist/ArtistTreatmentIndex';
-import {getBookingShopifyApi} from '~/lib/api/bookingShopifyApi';
 import {durationToTime} from '~/lib/duration';
-import {matchesGid} from '~/lib/matches-gid';
 import type {loader as rootLoader} from './artist_.$username.treatment.$productHandle';
+
+export function shouldRevalidate() {
+  return false;
+}
 
 export async function loader({params, request, context}: LoaderFunctionArgs) {
   const {username, productHandle} = params;
   const {storefront} = context;
 
   if (!productHandle || !username) {
-    throw new Response('Expected product handle to be defined', {status: 404});
+    throw new Response('Expected product and username handle to be defined', {
+      status: 404,
+    });
   }
 
-  const {payload: userProduct} = await getBookingShopifyApi().userProductGet(
-    username,
-    productHandle,
-  );
+  const {product} = await storefront.query(ArtistTreatment, {
+    variables: {
+      productHandle,
+      country: storefront.i18n.country,
+      language: storefront.i18n.language,
+    },
+  });
 
-  if (!productHandle || !userProduct.selectedOptions) {
-    throw new Error('productHandle and selectedOptions must be provided');
+  if (!product) {
+    throw new Response('product cant be found', {
+      status: 404,
+    });
   }
-
-  const productIds = userProduct.options?.map((p) => p.productId) || [];
 
   const {products: allProductOptionsWithVariants} = await storefront.query(
     ArtistTreatmentIndex,
     {
       variables: {
-        query: productIds.length > 0 ? productIds.join(' OR ') : 'tag:"-"',
+        query: `tag:'product-${productHandle}' AND tag:'user-${username}'`,
         country: storefront.i18n.country,
         language: storefront.i18n.language,
       },
@@ -60,15 +66,14 @@ export async function loader({params, request, context}: LoaderFunctionArgs) {
 
   if (allProductOptionsWithVariants.nodes.length > 0) {
     redirectToOptions({
-      parentId: userProduct.productId,
+      parentId: parseGid(product?.id).id,
       allProductOptionsWithVariants: allProductOptionsWithVariants.nodes,
       request,
     });
   }
 
   return json({
-    allProductOptionsWithVariants, // to render all variants
-    allUserProductOptions: userProduct.options, //to get all durations
+    allProductOptionsWithVariants,
   });
 }
 
@@ -77,32 +82,14 @@ export default function ProductDescription() {
 
   const {product, userProduct} =
     useOutletContext<SerializeFrom<typeof rootLoader>>();
-  const {descriptionHtml} = product;
-  const {allProductOptionsWithVariants, allUserProductOptions} =
-    useLoaderData<typeof loader>();
+  const {allProductOptionsWithVariants} = useLoaderData<typeof loader>();
 
-  const selectedVariants = usePickedVariantsToCalculateTotalPrice({
-    parentId: userProduct.productId,
+  const {totalDuration, totalPrice} = useCalculateDurationAndPrice({
+    parentId: product.id,
     allProductOptionsWithVariants: allProductOptionsWithVariants.nodes,
+    currentPrice: parseInt(product.selectedVariant?.price.amount || '0'),
+    currentDuration: userProduct.duration,
   });
-
-  const selectedOptions = usePickedOptionsToCalculateDuration({
-    parentId: userProduct.productId,
-    userProductsOptions: userProduct.options,
-  });
-
-  const totalPrice = useMemo(() => {
-    return selectedVariants.reduce(
-      (total, variant) => total + parseInt(variant.price.amount || ''),
-      parseInt(product.selectedVariant?.price.amount || '0'),
-    );
-  }, [product.selectedVariant?.price.amount, selectedVariants]);
-
-  const totalTime = useMemo(() => {
-    return selectedOptions.reduce((total, option) => {
-      return total + option.duration.value;
-    }, userProduct.duration);
-  }, [selectedOptions, userProduct.duration]);
 
   return (
     <>
@@ -111,26 +98,18 @@ export default function ProductDescription() {
           size="lg"
           c="dimmed"
           fw={400}
-          dangerouslySetInnerHTML={{__html: descriptionHtml}}
+          dangerouslySetInnerHTML={{__html: product.descriptionHtml}}
         ></Text>
         <Divider />
-        {allProductOptionsWithVariants ? (
+        {allProductOptionsWithVariants.nodes.length > 0 ? (
           <>
             {allProductOptionsWithVariants.nodes.map(
               (productOptionWithVariants) => {
-                const userProductOptions = allUserProductOptions.find((up) =>
-                  matchesGid(productOptionWithVariants.id, up.productId),
-                );
-                if (!userProductOptions) {
-                  return <>Error: option not found</>;
-                }
-
                 return (
                   <OptionSelector
                     key={productOptionWithVariants.id}
                     parentId={parseGid(product.id).id}
                     productOptionWithVariants={productOptionWithVariants}
-                    userProductOptions={userProductOptions}
                   >
                     {(props) => {
                       return <ProductOption {...props} />;
@@ -151,7 +130,7 @@ export default function ProductDescription() {
                 }}
               />
             </Text>
-            Total tid: {durationToTime(totalTime ?? 0)}
+            Total tid: {durationToTime(totalDuration ?? 0)}
           </>
         ) : null}
       </ArtistShell.Main>

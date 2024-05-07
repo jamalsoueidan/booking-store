@@ -1,19 +1,14 @@
 import {Button, Flex, Title} from '@mantine/core';
 import {redirect, useSearchParams} from '@remix-run/react';
 import {Money, parseGid} from '@shopify/hydrogen';
-import React from 'react';
+import React, {useMemo} from 'react';
 import type {
   ArtistTreatmentIndexProductFragment,
   ArtistTreatmentIndexVariantFragment,
 } from 'storefrontapi.generated';
-import type {
-  CustomerProductBaseOptionsItem,
-  CustomerProductBaseOptionsItemVariantsItem,
-} from '~/lib/api/model';
-import {matchesGid} from '~/lib/matches-gid';
 
 export type RedirectToOptionsProps = {
-  parentId: number;
+  parentId: string;
   allProductOptionsWithVariants: ArtistTreatmentIndexProductFragment[];
   request: Request;
 };
@@ -50,46 +45,34 @@ export function redirectToOptions({
 
 export type OptionSelectorProps = {
   parentId: string;
-  userProductOptions: CustomerProductBaseOptionsItem;
   productOptionWithVariants: ArtistTreatmentIndexProductFragment;
   children: (props: OptionSelectorChildrenProp) => React.ReactElement;
 };
 
 export type OptionSelectorChildrenProp = {
   parentId: string;
-  productOptionWithVariants: ArtistTreatmentIndexProductFragment;
+  productId: string;
   variant: ArtistTreatmentIndexVariantFragment;
-  userVariant: CustomerProductBaseOptionsItemVariantsItem;
 };
 
 export function OptionSelector({
   parentId,
   productOptionWithVariants,
-  userProductOptions,
   children,
 }: OptionSelectorProps) {
-  const optionsMarkup =
-    productOptionWithVariants &&
-    productOptionWithVariants.variants.nodes.map((variant) => {
-      const userVariant = userProductOptions.variants.find((v) =>
-        matchesGid(variant.id, v.variantId),
-      );
-
-      if (!userVariant) {
-        return <>Error: variant not found</>;
-      }
-
+  const optionsMarkup = productOptionWithVariants.variants.nodes.map(
+    (variant) => {
       return (
         <Flex key={variant.id}>
           {children({
             parentId,
-            productOptionWithVariants,
+            productId: parseGid(productOptionWithVariants.id).id,
             variant,
-            userVariant,
           })}
         </Flex>
       );
-    });
+    },
+  );
 
   return (
     <Flex direction="column" gap="xs" py="sm">
@@ -103,12 +86,10 @@ export function OptionSelector({
 
 export function ProductOption({
   parentId,
-  productOptionWithVariants,
+  productId,
   variant,
-  userVariant,
 }: OptionSelectorChildrenProp) {
   const [searchParams, setSearchParams] = useSearchParams();
-  const productId = parseGid(productOptionWithVariants.id).id;
   const value = searchParams.get(`options[${parentId}][${productId}]`);
 
   const updateSearchParams = () => {
@@ -124,57 +105,52 @@ export function ProductOption({
       variant={value !== parseGid(variant.id).id ? 'outline' : 'transparent'}
     >
       {variant.title} +<Money as="span" data={variant.price} withoutCurrency />
-      &nbsp; DKK - {userVariant.duration.value} min
+      &nbsp; DKK - {variant.duration?.value} min
     </Button>
   );
 }
 
-export function usePickedVariantsToCalculateTotalPrice({
+export function useCalculateDurationAndPrice({
   parentId,
   allProductOptionsWithVariants,
+  currentPrice,
+  currentDuration,
 }: {
-  parentId: number;
+  parentId: string;
   allProductOptionsWithVariants: ArtistTreatmentIndexProductFragment[];
+  currentPrice?: number;
+  currentDuration?: number;
 }) {
   const [searchParams] = useSearchParams();
 
-  const variants = allProductOptionsWithVariants.map((product) => {
-    const value = searchParams.get(
-      `options[${parentId}][${parseGid(product.id).id}]`,
-    );
-    const pickedVariant = product.variants.nodes.find(
-      (variant) => parseGid(variant.id).id === value,
-    );
-    if (!pickedVariant) {
-      throw new Response('PickedVarients - Variant not found', {status: 404});
-    }
-    return pickedVariant;
-  });
+  const pickedVariants = useMemo(() => {
+    return allProductOptionsWithVariants.map((product) => {
+      const value = searchParams.get(
+        `options[${parseGid(parentId).id}][${parseGid(product.id).id}]`,
+      );
+      const pickedVariant = product.variants.nodes.find(
+        (variant) => parseGid(variant.id).id === value,
+      );
+      if (!pickedVariant) {
+        throw new Response('PickedVarients - Variant not found', {status: 404});
+      }
+      return pickedVariant;
+    });
+  }, [allProductOptionsWithVariants, parentId, searchParams]);
 
-  return variants;
-}
-
-export function usePickedOptionsToCalculateDuration({
-  parentId,
-  userProductsOptions,
-}: {
-  parentId: number;
-  userProductsOptions: CustomerProductBaseOptionsItem[];
-}) {
-  const [searchParams] = useSearchParams();
-
-  const variants = userProductsOptions.map((product) => {
-    const value = searchParams.get(
-      `options[${parentId}][${product.productId}]`,
+  const [totalDuration, totalPrice] = useMemo(() => {
+    const totalPrice = pickedVariants.reduce(
+      (total, variant) => total + parseInt(variant.price.amount || ''),
+      currentPrice || 0,
     );
-    const pickedVariant = product.variants.find(
-      ({variantId}) => variantId.toString() === value,
-    );
-    if (!pickedVariant) {
-      throw new Response('PickedOptions - Variant not found', {status: 404});
-    }
-    return pickedVariant;
-  });
 
-  return variants;
+    const totalDuration = pickedVariants.reduce(
+      (total, variant) => total + parseInt(variant.duration?.value || ''),
+      currentDuration || 0,
+    );
+
+    return [totalDuration, totalPrice];
+  }, [currentDuration, currentPrice, pickedVariants]);
+
+  return {pickedVariants, totalDuration, totalPrice};
 }

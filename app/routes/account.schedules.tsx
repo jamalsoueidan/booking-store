@@ -7,7 +7,6 @@ import {
   ThemeIcon,
   Title,
 } from '@mantine/core';
-import {useDisclosure} from '@mantine/hooks';
 import {
   Link,
   Outlet,
@@ -19,7 +18,6 @@ import {
 } from '@remix-run/react';
 import {json, redirect, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
 import {IconMoodSad, IconPlus} from '@tabler/icons-react';
-import {useEffect} from 'react';
 import MobileModal from '~/components/MobileModal';
 import {AccountButton} from '~/components/account/AccountButton';
 import {AccountContent} from '~/components/account/AccountContent';
@@ -57,8 +55,11 @@ export default function AccountSchedulesIndex() {
   const loaderData = useLoaderData<typeof loader>();
   const navigate = useNavigate();
   const location = useLocation();
-  const [opened, {open, close}] = useDisclosure(false);
   const params = useParams();
+
+  const closeModal = () => {
+    navigate('#');
+  };
 
   const selectScheduleMarkup =
     loaderData.length > 1 ? (
@@ -84,18 +85,6 @@ export default function AccountSchedulesIndex() {
         <Divider my="xl" />
       </>
     ) : null;
-
-  const closeModal = () => {
-    navigate('#');
-  };
-
-  useEffect(() => {
-    if (location.hash === '#create') {
-      open();
-    } else {
-      close();
-    }
-  }, [close, location.hash, open]);
 
   return (
     <>
@@ -134,7 +123,7 @@ export default function AccountSchedulesIndex() {
         <Outlet key={new Date().toJSON()} />
 
         <MobileModal
-          opened={opened}
+          opened={location.hash === '#create'}
           onClose={closeModal}
           title="Opret vagtplan"
         >

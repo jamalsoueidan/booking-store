@@ -2,8 +2,8 @@ import {
   Link,
   useFetcher,
   useLoaderData,
+  useLocation,
   useNavigate,
-  useOutlet,
   useOutletContext,
 } from '@remix-run/react';
 import {
@@ -72,7 +72,7 @@ export default function Component() {
   const {systemOptions, userOptions} = useLoaderData<typeof loader>();
   const {selectedProduct} =
     useOutletContext<SerializeFrom<typeof rootLoader>>();
-  const opened = !!useOutlet();
+  const location = useLocation();
   const navigate = useNavigate();
 
   const close = () => {
@@ -126,7 +126,7 @@ export default function Component() {
         </>
       )}
 
-      <Modal opened={opened} onClose={close}>
+      <Modal opened={location.hash === '#create'} onClose={close}>
         <OptionAddModal
           systemOptions={systemOptions}
           selectedProduct={selectedProduct}
@@ -285,7 +285,12 @@ function DestroyButton({optionProductId}: {optionProductId: number}) {
   };
 
   return (
-    <Button variant="filled" color="red" onClick={destroy}>
+    <Button
+      variant="filled"
+      color="red"
+      onClick={destroy}
+      loading={fetcher.state !== 'idle'}
+    >
       Slet
     </Button>
   );

@@ -21,6 +21,10 @@ export const ArtistTreatmentIndexVariantFragment = `#graphql
       name
       value
     }
+    duration: metafield(key: "duration", namespace: "booking") {
+      id
+      value
+    }
   }
 ` as const;
 
