@@ -1,12 +1,6 @@
 import {Button, Flex, Skeleton, Title} from '@mantine/core';
 import {useDisclosure} from '@mantine/hooks';
-import {
-  Await,
-  Link,
-  useLoaderData,
-  useLocation,
-  useSearchParams,
-} from '@remix-run/react';
+import {Await, Link, useLoaderData, useSearchParams} from '@remix-run/react';
 import {defer, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
 import {Suspense} from 'react';
 import {ArtistShell} from '~/components/ArtistShell';
@@ -24,7 +18,7 @@ export function shouldRevalidate() {
   return false;
 }
 
-export async function loader({request, params, context}: LoaderFunctionArgs) {
+export async function loader({params}: LoaderFunctionArgs) {
   const {productHandle, username} = params;
 
   if (!username || !productHandle) {
@@ -43,8 +37,7 @@ export async function loader({request, params, context}: LoaderFunctionArgs) {
 
 export default function ArtistTreatmentPickLocation() {
   const {schedule} = useLoaderData<typeof loader>();
-  const location = useLocation();
-  const searchParams = new URLSearchParams(location.search);
+  const [searchParams] = useSearchParams();
   const isDisabled =
     !searchParams.has('locationId') || searchParams.get('locationId') === '';
 
@@ -73,7 +66,7 @@ export default function ArtistTreatmentPickLocation() {
           <Button
             variant="default"
             component={Link}
-            to={`../pick-more${location.search}`}
+            to={`../pick-more?${searchParams.toString()}`}
             disabled={isDisabled}
           >
             Næste
@@ -93,21 +86,25 @@ function ArtistLocationPicker({
   const [searchParams, setSearchParams] = useSearchParams();
 
   const setShippingId = (value: string | undefined) => {
-    const newSearchParams = new URLSearchParams(searchParams);
-    if (value) {
-      newSearchParams.set('shippingId', value);
+    if (!value) {
+      return;
     }
-    setSearchParams(newSearchParams);
+    setSearchParams((prev) => {
+      prev.set('shippingId', value);
+      return prev;
+    });
   };
 
   const setLocationId = (value: CustomerLocation | undefined) => {
-    const newSearchParams = new URLSearchParams(searchParams);
-    newSearchParams.delete('locationId');
-    newSearchParams.delete('shippingId');
-    if (value) {
-      newSearchParams.set('locationId', value._id);
+    if (!value) {
+      return;
     }
-    setSearchParams(newSearchParams);
+    setSearchParams((prev) => {
+      prev.delete('locationId');
+      prev.delete('shippingId');
+      prev.set('locationId', value._id);
+      return prev;
+    });
   };
 
   const locationId = searchParams.get('locationId');

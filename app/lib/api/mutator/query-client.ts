@@ -100,6 +100,8 @@ export const queryClient = async <T>(
       `${baseURL}${url.replace(/gid:\/\/shopify\/[A-Za-z]+\//, '')}` +
         paramsToQueryString(params),
     );
+
+    console.log(JSON.stringify(data, null, 2));
     const response = await fetch(
       `${baseURL}${url.replace(/gid:\/\/shopify\/[A-Za-z]+\//, '')}` +
         paramsToQueryString(params),

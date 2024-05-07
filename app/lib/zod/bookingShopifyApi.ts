@@ -1211,6 +1211,19 @@ export const customerLocationGetProductsParams = zod.object({
 export const customerLocationGetProductsResponse = zod.object({
   "success": zod.boolean(),
   "payload": zod.array( zod.object({
+  "options": zod.array( zod.object({
+  "productId": zod.number(),
+  "title": zod.string(),
+  "variants": zod.array( zod.object({
+  "variantId": zod.number(),
+  "title": zod.string(),
+  "price": zod.string(),
+  "duration":  zod.object({
+  "value": zod.number(),
+  "metafieldId": zod.number()
+})
+}))
+})),
   "productHandle": zod.string().optional(),
   "productId": zod.number(),
   "variantId": zod.number(),
@@ -2091,6 +2104,19 @@ export const customerProductsListParams = zod.object({
 export const customerProductsListResponse = zod.object({
   "success": zod.boolean(),
   "payload": zod.array( zod.object({
+  "options": zod.array( zod.object({
+  "productId": zod.number(),
+  "title": zod.string(),
+  "variants": zod.array( zod.object({
+  "variantId": zod.number(),
+  "title": zod.string(),
+  "price": zod.string(),
+  "duration":  zod.object({
+  "value": zod.number(),
+  "metafieldId": zod.number()
+})
+}))
+})),
   "productHandle": zod.string().optional(),
   "productId": zod.number(),
   "variantId": zod.number(),
@@ -2156,6 +2182,19 @@ export const customerProductGetParams = zod.object({
 export const customerProductGetResponse = zod.object({
   "success": zod.boolean(),
   "payload":  zod.object({
+  "options": zod.array( zod.object({
+  "productId": zod.number(),
+  "title": zod.string(),
+  "variants": zod.array( zod.object({
+  "variantId": zod.number(),
+  "title": zod.string(),
+  "price": zod.string(),
+  "duration":  zod.object({
+  "value": zod.number(),
+  "metafieldId": zod.number()
+})
+}))
+})),
   "productHandle": zod.string().optional(),
   "productId": zod.number(),
   "variantId": zod.number(),
@@ -2205,7 +2244,6 @@ export const customerProductUpdateParams = zod.object({
 })
 
 export const customerProductUpdateBody = zod.object({
-  "scheduleId": zod.string(),
   "variantId": zod.number().optional(),
   "selectedOptions":  zod.object({
   "name": zod.string(),
@@ -2240,6 +2278,19 @@ export const customerProductUpdateBody = zod.object({
 export const customerProductUpdateResponse = zod.object({
   "success": zod.boolean(),
   "payload":  zod.object({
+  "options": zod.array( zod.object({
+  "productId": zod.number(),
+  "title": zod.string(),
+  "variants": zod.array( zod.object({
+  "variantId": zod.number(),
+  "title": zod.string(),
+  "price": zod.string(),
+  "duration":  zod.object({
+  "value": zod.number(),
+  "metafieldId": zod.number()
+})
+}))
+})),
   "productHandle": zod.string().optional(),
   "productId": zod.number(),
   "variantId": zod.number(),
@@ -2333,6 +2384,19 @@ export const customerProductAddBody = zod.object({
 export const customerProductAddResponse = zod.object({
   "success": zod.boolean(),
   "payload":  zod.object({
+  "options": zod.array( zod.object({
+  "productId": zod.number(),
+  "title": zod.string(),
+  "variants": zod.array( zod.object({
+  "variantId": zod.number(),
+  "title": zod.string(),
+  "price": zod.string(),
+  "duration":  zod.object({
+  "value": zod.number(),
+  "metafieldId": zod.number()
+})
+}))
+})),
   "productHandle": zod.string().optional(),
   "productId": zod.number(),
   "variantId": zod.number(),
@@ -2406,6 +2470,129 @@ export const customerProductCreateVariantResponse = zod.object({
 
 
 /**
+ * This endpoint add product option to product
+ * @summary POST Add product option to product
+ */
+export const customerProductOptionsAddParams = zod.object({
+  "customerId": zod.string(),
+  "productId": zod.string()
+})
+
+export const customerProductOptionsAddBody = zod.object({
+  "cloneId": zod.string(),
+  "title": zod.string()
+})
+
+export const customerProductOptionsAddResponse = zod.object({
+  "success": zod.boolean(),
+  "payload":  zod.object({
+  "productId": zod.number(),
+  "title": zod.string(),
+  "variants": zod.array( zod.object({
+  "variantId": zod.number(),
+  "title": zod.string(),
+  "price": zod.string(),
+  "duration":  zod.object({
+  "value": zod.number(),
+  "metafieldId": zod.number()
+})
+}))
+})
+})
+
+
+/**
+ * This endpoint get product options for product
+ * @summary GET Get product options for product
+ */
+export const customerProductOptionsListParams = zod.object({
+  "customerId": zod.string(),
+  "productId": zod.string()
+})
+
+export const customerProductOptionsListResponse = zod.object({
+  "success": zod.boolean(),
+  "payload": zod.array( zod.object({
+  "productId": zod.number(),
+  "title": zod.string(),
+  "variants": zod.array( zod.object({
+  "variantId": zod.number(),
+  "title": zod.string(),
+  "price": zod.string(),
+  "duration":  zod.object({
+  "value": zod.number(),
+  "metafieldId": zod.number()
+})
+}))
+}))
+})
+
+
+/**
+ * This endpoint update product option that exist in product
+ * @summary PUT Update product option in product
+ */
+export const customerProductOptionsUpdateParams = zod.object({
+  "customerId": zod.string(),
+  "productId": zod.string(),
+  "optionProductId": zod.string()
+})
+
+export const customerProductOptionsUpdateBody = zod.object({
+  "variants": zod.array( zod.object({
+  "id": zod.string(),
+  "price": zod.string(),
+  "duration": zod.string()
+}))
+})
+
+export const customerProductOptionsUpdateResponse = zod.object({
+  "success": zod.boolean(),
+  "payload":  zod.object({
+  "productId": zod.number(),
+  "title": zod.string(),
+  "variants": zod.array( zod.object({
+  "variantId": zod.number(),
+  "title": zod.string(),
+  "price": zod.string(),
+  "duration":  zod.object({
+  "value": zod.number(),
+  "metafieldId": zod.number()
+})
+}))
+})
+})
+
+
+/**
+ * This endpoint remove product option from product for schedule
+ * @summary DEL destroy product option
+ */
+export const customerProductOptionsDestroyParams = zod.object({
+  "customerId": zod.string(),
+  "productId": zod.string(),
+  "optionProductId": zod.string()
+})
+
+export const customerProductOptionsDestroyResponse = zod.object({
+  "success": zod.boolean(),
+  "payload": zod.array( zod.object({
+  "productId": zod.number(),
+  "title": zod.string(),
+  "variants": zod.array( zod.object({
+  "variantId": zod.number(),
+  "title": zod.string(),
+  "price": zod.string(),
+  "duration":  zod.object({
+  "value": zod.number(),
+  "metafieldId": zod.number()
+})
+}))
+}))
+})
+
+
+/**
  * This endpoint gets customer upload resource url, so customer can upload image
  * @summary GET Get customer upload resource url
  */
@@ -2452,6 +2639,19 @@ export const customerScheduleCreateResponse = zod.object({
 }))
 })),
   "products": zod.array( zod.object({
+  "options": zod.array( zod.object({
+  "productId": zod.number(),
+  "title": zod.string(),
+  "variants": zod.array( zod.object({
+  "variantId": zod.number(),
+  "title": zod.string(),
+  "price": zod.string(),
+  "duration":  zod.object({
+  "value": zod.number(),
+  "metafieldId": zod.number()
+})
+}))
+})),
   "productHandle": zod.string().optional(),
   "productId": zod.number(),
   "variantId": zod.number(),
@@ -2511,6 +2711,19 @@ export const customerScheduleListResponse = zod.object({
 }))
 })),
   "products": zod.array( zod.object({
+  "options": zod.array( zod.object({
+  "productId": zod.number(),
+  "title": zod.string(),
+  "variants": zod.array( zod.object({
+  "variantId": zod.number(),
+  "title": zod.string(),
+  "price": zod.string(),
+  "duration":  zod.object({
+  "value": zod.number(),
+  "metafieldId": zod.number()
+})
+}))
+})),
   "productHandle": zod.string().optional(),
   "productId": zod.number(),
   "variantId": zod.number(),
@@ -2571,6 +2784,19 @@ export const customerScheduleGetResponse = zod.object({
 }))
 })),
   "products": zod.array( zod.object({
+  "options": zod.array( zod.object({
+  "productId": zod.number(),
+  "title": zod.string(),
+  "variants": zod.array( zod.object({
+  "variantId": zod.number(),
+  "title": zod.string(),
+  "price": zod.string(),
+  "duration":  zod.object({
+  "value": zod.number(),
+  "metafieldId": zod.number()
+})
+}))
+})),
   "productHandle": zod.string().optional(),
   "productId": zod.number(),
   "variantId": zod.number(),
@@ -2635,6 +2861,19 @@ export const customerScheduleUpdateResponse = zod.object({
 }))
 })),
   "products": zod.array( zod.object({
+  "options": zod.array( zod.object({
+  "productId": zod.number(),
+  "title": zod.string(),
+  "variants": zod.array( zod.object({
+  "variantId": zod.number(),
+  "title": zod.string(),
+  "price": zod.string(),
+  "duration":  zod.object({
+  "value": zod.number(),
+  "metafieldId": zod.number()
+})
+}))
+})),
   "productHandle": zod.string().optional(),
   "productId": zod.number(),
   "variantId": zod.number(),
@@ -2723,6 +2962,19 @@ export const customerScheduleSlotUpdateResponse = zod.object({
 }))
 })),
   "products": zod.array( zod.object({
+  "options": zod.array( zod.object({
+  "productId": zod.number(),
+  "title": zod.string(),
+  "variants": zod.array( zod.object({
+  "variantId": zod.number(),
+  "title": zod.string(),
+  "price": zod.string(),
+  "duration":  zod.object({
+  "value": zod.number(),
+  "metafieldId": zod.number()
+})
+}))
+})),
   "productHandle": zod.string().optional(),
   "productId": zod.number(),
   "variantId": zod.number(),
@@ -3136,8 +3388,9 @@ export const userAvailabilityGenerateParams = zod.object({
 })
 
 export const userAvailabilityGenerateBody = zod.object({
-  "fromDate": zod.string().optional(),
+  "fromDate": zod.string(),
   "productIds": zod.array(zod.string()),
+  "optionIds": zod.record(zod.string(), zod.record(zod.string(), zod.string())).optional(),
   "shippingId": zod.string().optional()
 })
 
@@ -3197,10 +3450,7 @@ export const userAvailabilityGenerateResponse = zod.object({
   "from": zod.string(),
   "to": zod.string(),
   "products": zod.array( zod.object({
-  "price":  zod.object({
-  "amount": zod.string(),
-  "currencyCode": zod.string()
-}),
+  "parentId": zod.number().optional(),
   "productId": zod.number(),
   "variantId": zod.number(),
   "from": zod.string(),
@@ -3225,6 +3475,7 @@ export const userAvailabilityGetParams = zod.object({
 export const userAvailabilityGetBody = zod.object({
   "fromDate": zod.string(),
   "toDate": zod.string(),
+  "optionIds": zod.record(zod.string(), zod.record(zod.string(), zod.string())).optional(),
   "productIds": zod.array(zod.string()),
   "shippingId": zod.string().optional()
 })
@@ -3285,10 +3536,7 @@ export const userAvailabilityGetResponse = zod.object({
   "from": zod.string(),
   "to": zod.string(),
   "products": zod.array( zod.object({
-  "price":  zod.object({
-  "amount": zod.string(),
-  "currencyCode": zod.string()
-}),
+  "parentId": zod.number().optional(),
   "productId": zod.number(),
   "variantId": zod.number(),
   "from": zod.string(),
@@ -3410,6 +3658,19 @@ export const userProductsListByScheduleQueryParams = zod.object({
 export const userProductsListByScheduleResponse = zod.object({
   "success": zod.boolean(),
   "payload": zod.array( zod.object({
+  "options": zod.array( zod.object({
+  "productId": zod.number(),
+  "title": zod.string(),
+  "variants": zod.array( zod.object({
+  "variantId": zod.number(),
+  "title": zod.string(),
+  "price": zod.string(),
+  "duration":  zod.object({
+  "value": zod.number(),
+  "metafieldId": zod.number()
+})
+}))
+})),
   "productHandle": zod.string().optional(),
   "productId": zod.number(),
   "variantId": zod.number(),
@@ -3461,6 +3722,19 @@ export const userProductGetParams = zod.object({
 export const userProductGetResponse = zod.object({
   "success": zod.boolean(),
   "payload":  zod.object({
+  "options": zod.array( zod.object({
+  "productId": zod.number(),
+  "title": zod.string(),
+  "variants": zod.array( zod.object({
+  "variantId": zod.number(),
+  "title": zod.string(),
+  "price": zod.string(),
+  "duration":  zod.object({
+  "value": zod.number(),
+  "metafieldId": zod.number()
+})
+}))
+})),
   "productHandle": zod.string().optional(),
   "productId": zod.number(),
   "variantId": zod.number(),
@@ -3516,6 +3790,19 @@ export const userProductsGetProductsBody = zod.object({
 export const userProductsGetProductsResponse = zod.object({
   "success": zod.boolean(),
   "payload": zod.array( zod.object({
+  "options": zod.array( zod.object({
+  "productId": zod.number(),
+  "title": zod.string(),
+  "variants": zod.array( zod.object({
+  "variantId": zod.number(),
+  "title": zod.string(),
+  "price": zod.string(),
+  "duration":  zod.object({
+  "value": zod.number(),
+  "metafieldId": zod.number()
+})
+}))
+})),
   "productHandle": zod.string().optional(),
   "productId": zod.number(),
   "variantId": zod.number(),
@@ -3559,6 +3846,19 @@ export const userProductsListByLocationParams = zod.object({
 export const userProductsListByLocationResponse = zod.object({
   "success": zod.boolean(),
   "payload": zod.array( zod.object({
+  "options": zod.array( zod.object({
+  "productId": zod.number(),
+  "title": zod.string(),
+  "variants": zod.array( zod.object({
+  "variantId": zod.number(),
+  "title": zod.string(),
+  "price": zod.string(),
+  "duration":  zod.object({
+  "value": zod.number(),
+  "metafieldId": zod.number()
+})
+}))
+})),
   "productHandle": zod.string().optional(),
   "productId": zod.number(),
   "variantId": zod.number(),
@@ -3632,6 +3932,19 @@ export const userScheduleGetByProductResponse = zod.object({
 })))
 }).and( zod.object({
   "product":  zod.object({
+  "options": zod.array( zod.object({
+  "productId": zod.number(),
+  "title": zod.string(),
+  "variants": zod.array( zod.object({
+  "variantId": zod.number(),
+  "title": zod.string(),
+  "price": zod.string(),
+  "duration":  zod.object({
+  "value": zod.number(),
+  "metafieldId": zod.number()
+})
+}))
+})),
   "productHandle": zod.string().optional(),
   "productId": zod.number(),
   "variantId": zod.number(),
@@ -3727,6 +4040,19 @@ export const userScheduleGetByLocationResponse = zod.object({
 })))
 }).and( zod.object({
   "products": zod.array( zod.object({
+  "options": zod.array( zod.object({
+  "productId": zod.number(),
+  "title": zod.string(),
+  "variants": zod.array( zod.object({
+  "variantId": zod.number(),
+  "title": zod.string(),
+  "price": zod.string(),
+  "duration":  zod.object({
+  "value": zod.number(),
+  "metafieldId": zod.number()
+})
+}))
+})),
   "productHandle": zod.string().optional(),
   "productId": zod.number(),
   "variantId": zod.number(),

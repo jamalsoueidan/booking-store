@@ -1,10 +1,10 @@
 import {parseGid, type Storefront} from '@shopify/hydrogen';
 
 import {getBookingShopifyApi} from '~/lib/api/bookingShopifyApi';
-import {type CustomerProductUpsertBody} from '~/lib/api/model';
+import {type CustomerProductAddBody} from '~/lib/api/model';
 
 export type ActionReturnType = Pick<
-  CustomerProductUpsertBody,
+  CustomerProductAddBody,
   'price' | 'compareAtPrice' | 'selectedOptions' | 'productHandle' | 'variantId'
 >;
 

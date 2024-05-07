@@ -4,9 +4,11 @@
  * Booking Shopify Api
  * OpenAPI spec version: 1.0.0
  */
+import type {UserAvailabilityGetBodyOptionIds} from './userAvailabilityGetBodyOptionIds';
 
 export interface UserAvailabilityGetBody {
   fromDate: string;
+  optionIds?: UserAvailabilityGetBodyOptionIds;
   productIds: string[];
   shippingId?: string;
   toDate: string;

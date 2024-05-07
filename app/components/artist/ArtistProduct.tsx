@@ -35,8 +35,6 @@ export function ArtistProduct({product, services}: ArtistProductProps) {
     p.title.includes('treatments'),
   );
 
-  console.log(artistService?.locations);
-
   return (
     <Card
       key={product.handle}
@@ -117,7 +115,13 @@ export function ArtistProduct({product, services}: ArtistProductProps) {
             data-testid={`service-button-${artistService?.productId}`}
           >
             {artistService?.price ? (
-              <Money data={artistService?.price as any} />
+              <>
+                {artistService?.options && artistService.options.length > 0
+                  ? 'FRA'
+                  : null}
+                &#160;
+                <Money as="span" data={artistService?.price as any} />
+              </>
             ) : null}
           </Button>
         </Group>

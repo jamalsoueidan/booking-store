@@ -11,9 +11,12 @@ import {ArtistShell} from '~/components/ArtistShell';
 import {TreatmentArtistCardComplete} from '~/components/treatment/TreatmentArtistCardComplete';
 import {TreatmentStepper} from '~/components/TreatmentStepper';
 import {PRODUCT_SELECTED_OPTIONS_QUERY} from '~/data/queries';
+import {ArtistTreatmentCompletedQuery} from '~/graphql/artist/ArtistTreatmentCompleted';
+
 import {getBookingShopifyApi} from '~/lib/api/bookingShopifyApi';
 import {durationToTime} from '~/lib/duration';
-import {ALL_PRODUCTS_QUERY} from './artist.$username._index';
+import {matchesGid} from '~/lib/matches-gid';
+import {parseOptionsFromQuery} from '~/lib/parseOptionsQueryParameters';
 
 export const loader = async ({
   request,
@@ -59,16 +62,24 @@ export const loader = async ({
         fromDate, //: '2023-11-26T05:15:00.000Z',
         toDate, //: '2023-11-26T08:05:00.000Z',
         shippingId: shippingId ? shippingId : undefined,
+        optionIds: parseOptionsFromQuery(url.searchParams),
       });
 
-    const {products} = await context.storefront.query(ALL_PRODUCTS_QUERY, {
-      variables: {
-        first: joinProductIds.length,
-        query: joinProductIds.join(' OR '),
-        country: context.storefront.i18n.country,
-        language: context.storefront.i18n.language,
+    const availabilityProducts = availability.slot.products.map(
+      (p) => p.productId,
+    );
+
+    const {products} = await context.storefront.query(
+      ArtistTreatmentCompletedQuery,
+      {
+        variables: {
+          first: availabilityProducts.length,
+          query: availabilityProducts.join(' OR '),
+          country: context.storefront.i18n.country,
+          language: context.storefront.i18n.language,
+        },
       },
-    });
+    );
 
     const groupId = uuidv4();
 
@@ -87,28 +98,34 @@ export const loader = async ({
 export default function ArtistTreatmentsBooking() {
   const data = useLoaderData<typeof loader>();
 
-  const productMarkup = data.products.nodes.map((product) => {
-    const slotProduct = data.availability.slot.products.find(
-      (p) => p.productId.toString() === parseGid(product.id).id,
+  const productMarkup = data.availability.slot.products.map((slotProduct) => {
+    // to get duration
+    const shopifyProduct = data.products.nodes.find((p) =>
+      matchesGid(p.id, slotProduct.productId),
+    );
+
+    // to get variant price
+    const pickedVariant = shopifyProduct?.variants.nodes.find((varant) =>
+      matchesGid(varant.id, slotProduct.variantId || ''),
     );
 
     return (
-      <div key={product.handle}>
+      <div key={shopifyProduct?.id}>
         <Text fz="md" fw={500}>
-          {product.title}
+          {shopifyProduct?.title}
         </Text>
         <Text fz="md" c="dimmed" fw={500} lineClamp={1}>
-          {product.description}
+          {shopifyProduct?.description}
         </Text>
         <Flex align="center" gap="lg">
           <Text fz="xs" c="dimmed" tt="uppercase" fw={500}>
             {durationToTime(slotProduct?.duration ?? 0)}
           </Text>
-          {slotProduct?.price && (
+          {pickedVariant ? (
             <Text fz="xs" c="dimmed" fw={500}>
-              <Money data={slotProduct?.price as any} as="span" />
+              <Money data={pickedVariant?.price} as="span" />
             </Text>
-          )}
+          ) : null}
         </Flex>
       </div>
     );

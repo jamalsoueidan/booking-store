@@ -17,7 +17,7 @@ export function CartMain({layout, cart}: CartMainProps) {
   const withDiscount =
     cart &&
     Boolean(cart?.discountCodes?.filter((code) => code.applicable)?.length);
-  const className = `cart-main ${withDiscount ? 'with-discount' : ''}`;
+  const className = ''; //`cart-main ${withDiscount ? 'with-discount' : ''}`;
 
   return (
     <div className={className}>

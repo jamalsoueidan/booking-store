@@ -16,7 +16,7 @@ export class PlaywrightLocationPage extends PlaywrightAdminPage {
     const locations = await this.page.locator('[data-testid^="location-item"]');
     const location = locations.locator(`text=${name}`);
     await location.click();
-    await this.page.waitForURL('**/edit');
+    await this.page.waitForURL('/account/locations/**');
   }
 
   async verifyCreateButtonVisibleOnEmptyPage() {
@@ -62,7 +62,7 @@ export class PlaywrightLocationPage extends PlaywrightAdminPage {
       `[data-testid="name-title"]:has-text("${name}")`,
     );
     await location.click();
-    await this.page.waitForURL('**/edit');
+    await this.page.waitForURL('/account/locations/**');
     await this.page.locator('[data-testid^="delete-button"]').click();
     await this.page.waitForURL('/account/locations');
   }

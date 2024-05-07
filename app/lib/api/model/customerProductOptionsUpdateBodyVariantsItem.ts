@@ -5,7 +5,8 @@
  * OpenAPI spec version: 1.0.0
  */
 
-export type UserAvailabilitySlotProductsItemPrice = {
-  amount: string;
-  currencyCode: string;
+export type CustomerProductOptionsUpdateBodyVariantsItem = {
+  duration: string;
+  id: string;
+  price: string;
 };

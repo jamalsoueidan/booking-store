@@ -20,10 +20,10 @@ import {AccountTitle} from '~/components/account/AccountTitle';
 import {isEqualGid} from '~/data/isEqualGid';
 import {CUSTOMER_ORDER_QUERY} from '~/graphql/customer-account/CustomerOrderQuery';
 import {getBookingShopifyApi} from '~/lib/api/bookingShopifyApi';
-import {
+import type {
   CustomerOrder,
+  CustomerOrderGetResponse,
   CustomerOrderLineItem,
-  type CustomerOrderGetResponse,
 } from '~/lib/api/model';
 import {getCustomer} from '~/lib/get-customer';
 

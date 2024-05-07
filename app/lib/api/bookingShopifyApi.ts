@@ -48,6 +48,12 @@ import type {
   CustomerProductGetResponse,
   CustomerProductListIdsResponse,
   CustomerProductListResponse,
+  CustomerProductOptionsAddBody,
+  CustomerProductOptionsAddResponse,
+  CustomerProductOptionsDestroyResponse,
+  CustomerProductOptionsListResponse,
+  CustomerProductOptionsUpdateBody,
+  CustomerProductOptionsUpdateResponse,
   CustomerProductUpdateBody,
   CustomerProductUpdateResponse,
   CustomerScheduleCreateBody,
@@ -639,6 +645,86 @@ export const getBookingShopifyApi = () => {
         method: 'POST',
         headers: {'Content-Type': 'application/json'},
         data: customerProductCreateVariantBody,
+      },
+      options,
+    );
+  };
+
+  /**
+   * This endpoint add product option to product
+   * @summary POST Add product option to product
+   */
+  const customerProductOptionsAdd = (
+    customerId: string,
+    productId: string,
+    customerProductOptionsAddBody: BodyType<CustomerProductOptionsAddBody>,
+    options?: SecondParameter<typeof queryClient>,
+  ) => {
+    return queryClient<CustomerProductOptionsAddResponse>(
+      {
+        url: `/customer/${customerId}/product/${productId}/options`,
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        data: customerProductOptionsAddBody,
+      },
+      options,
+    );
+  };
+
+  /**
+   * This endpoint get product options for product
+   * @summary GET Get product options for product
+   */
+  const customerProductOptionsList = (
+    customerId: string,
+    productId: string,
+    options?: SecondParameter<typeof queryClient>,
+  ) => {
+    return queryClient<CustomerProductOptionsListResponse>(
+      {
+        url: `/customer/${customerId}/product/${productId}/options`,
+        method: 'GET',
+      },
+      options,
+    );
+  };
+
+  /**
+   * This endpoint update product option that exist in product
+   * @summary PUT Update product option in product
+   */
+  const customerProductOptionsUpdate = (
+    customerId: string,
+    productId: string,
+    optionProductId: string,
+    customerProductOptionsUpdateBody: BodyType<CustomerProductOptionsUpdateBody>,
+    options?: SecondParameter<typeof queryClient>,
+  ) => {
+    return queryClient<CustomerProductOptionsUpdateResponse>(
+      {
+        url: `/customer/${customerId}/product/${productId}/options/${optionProductId}`,
+        method: 'PUT',
+        headers: {'Content-Type': 'application/json'},
+        data: customerProductOptionsUpdateBody,
+      },
+      options,
+    );
+  };
+
+  /**
+   * This endpoint remove product option from product for schedule
+   * @summary DEL destroy product option
+   */
+  const customerProductOptionsDestroy = (
+    customerId: string,
+    productId: string,
+    optionProductId: string,
+    options?: SecondParameter<typeof queryClient>,
+  ) => {
+    return queryClient<CustomerProductOptionsDestroyResponse>(
+      {
+        url: `/customer/${customerId}/product/${productId}/options/${optionProductId}`,
+        method: 'DELETE',
       },
       options,
     );
@@ -1243,6 +1329,10 @@ export const getBookingShopifyApi = () => {
     customerProductDestroy,
     customerProductAdd,
     customerProductCreateVariant,
+    customerProductOptionsAdd,
+    customerProductOptionsList,
+    customerProductOptionsUpdate,
+    customerProductOptionsDestroy,
     customerUploadResourceURL,
     customerScheduleCreate,
     customerScheduleList,
@@ -1461,6 +1551,34 @@ export type CustomerProductCreateVariantResult = NonNullable<
   Awaited<
     ReturnType<
       ReturnType<typeof getBookingShopifyApi>['customerProductCreateVariant']
+    >
+  >
+>;
+export type CustomerProductOptionsAddResult = NonNullable<
+  Awaited<
+    ReturnType<
+      ReturnType<typeof getBookingShopifyApi>['customerProductOptionsAdd']
+    >
+  >
+>;
+export type CustomerProductOptionsListResult = NonNullable<
+  Awaited<
+    ReturnType<
+      ReturnType<typeof getBookingShopifyApi>['customerProductOptionsList']
+    >
+  >
+>;
+export type CustomerProductOptionsUpdateResult = NonNullable<
+  Awaited<
+    ReturnType<
+      ReturnType<typeof getBookingShopifyApi>['customerProductOptionsUpdate']
+    >
+  >
+>;
+export type CustomerProductOptionsDestroyResult = NonNullable<
+  Awaited<
+    ReturnType<
+      ReturnType<typeof getBookingShopifyApi>['customerProductOptionsDestroy']
     >
   >
 >;

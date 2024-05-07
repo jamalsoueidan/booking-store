@@ -2,47 +2,21 @@ import {Link, Outlet, useLoaderData, type MetaFunction} from '@remix-run/react';
 import {json, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
 
 import {AspectRatio, Avatar, Button, Flex, Title} from '@mantine/core';
-import {Image, type Storefront} from '@shopify/hydrogen';
+import {Image} from '@shopify/hydrogen';
 import {IconArrowLeft} from '@tabler/icons-react';
-import {type ProductVariantFragment} from 'storefrontapi.generated';
+import type {ProductVariantFragment} from 'storefrontapi.generated';
 import {ArtistShell} from '~/components/ArtistShell';
 import {PRODUCT_SELECTED_OPTIONS_QUERY} from '~/data/queries';
 import {UserProvider} from '~/hooks/use-user';
 import {getBookingShopifyApi} from '~/lib/api/bookingShopifyApi';
 
-export const meta: MetaFunction<typeof loader> = ({data}) => {
-  return [{title: `BySisters | ${data?.product.title ?? ''}`}];
-};
-
 export function shouldRevalidate() {
   return false;
 }
 
-async function getProduct({
-  storefront,
-  username,
-  productHandle,
-}: {
-  storefront: Storefront<I18nLocale>;
-  username: string;
-  productHandle: string;
-}) {
-  const {payload: userProduct} = await getBookingShopifyApi().userProductGet(
-    username,
-    productHandle,
-  );
-
-  if (!productHandle || !userProduct.selectedOptions) {
-    throw new Error('productHandle and selectedOptions must be provided');
-  }
-
-  return storefront.query(PRODUCT_SELECTED_OPTIONS_QUERY, {
-    variables: {
-      productHandle,
-      selectedOptions: userProduct.selectedOptions,
-    },
-  });
-}
+export const meta: MetaFunction<typeof loader> = ({data}) => {
+  return [{title: `BySisters | ${data?.product.title ?? ''}`}];
+};
 
 export async function loader({params, request, context}: LoaderFunctionArgs) {
   const {username, productHandle} = params;
@@ -54,7 +28,21 @@ export async function loader({params, request, context}: LoaderFunctionArgs) {
 
   const {payload: artist} = await getBookingShopifyApi().userGet(username);
 
-  const {product} = await getProduct({storefront, username, productHandle});
+  const {payload: userProduct} = await getBookingShopifyApi().userProductGet(
+    username,
+    productHandle,
+  );
+
+  if (!productHandle || !userProduct.selectedOptions) {
+    throw new Error('productHandle and selectedOptions must be provided');
+  }
+
+  const {product} = await storefront.query(PRODUCT_SELECTED_OPTIONS_QUERY, {
+    variables: {
+      productHandle,
+      selectedOptions: userProduct.selectedOptions,
+    },
+  });
 
   if (!product) {
     throw new Response('Product handle is wrong', {
@@ -62,11 +50,11 @@ export async function loader({params, request, context}: LoaderFunctionArgs) {
     });
   }
 
-  return json({product, artist});
+  return json({product, artist, userProduct});
 }
 
 export default function Product() {
-  const {product, artist} = useLoaderData<typeof loader>();
+  const {product, artist, userProduct} = useLoaderData<typeof loader>();
 
   return (
     <UserProvider user={artist}>
@@ -104,7 +92,7 @@ export default function Product() {
           </Flex>
         </ArtistShell.Header>
 
-        <Outlet context={{product}} />
+        <Outlet context={{product, userProduct}} />
       </ArtistShell>
     </UserProvider>
   );
