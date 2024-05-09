@@ -78,7 +78,7 @@ export async function loader(args: LoaderFunctionArgs) {
   const artists = await getBookingShopifyApi().usersSearch(
     {},
     {
-      limit: '5',
+      limit: '6',
       sortOrder: 'desc',
     },
   );
