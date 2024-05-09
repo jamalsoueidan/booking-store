@@ -1,4 +1,4 @@
-<h1 align="center">Beauty Proffesional Store</h1>
+<h1 align="center">Beauty Platform</h1>
 
 <p align="center">
   <img src="https://github.com/jamalsoueidan/booking-store/blob/main/screens/artist.png?raw=true" width="600"/>
