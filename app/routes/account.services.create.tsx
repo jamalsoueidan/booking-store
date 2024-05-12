@@ -12,7 +12,6 @@ import {
   type ActionFunctionArgs,
   type LoaderFunctionArgs,
 } from '@shopify/remix-oxygen';
-import {z} from 'zod';
 
 import {useInputControl, type FieldMetadata} from '@conform-to/react';
 import {
@@ -40,32 +39,18 @@ import {getBookingShopifyApi} from '~/lib/api/bookingShopifyApi';
 
 import {CacheLong, parseGid} from '@shopify/hydrogen';
 import {redirectWithSuccess} from 'remix-toast';
+import {type z} from 'zod';
 import {AccountContent} from '~/components/account/AccountContent';
 import {AccountTitle} from '~/components/account/AccountTitle';
 import {NumericInput} from '~/components/form/NumericInput';
 import {FlexInnerForm} from '~/components/tiny/FlexInnerForm';
 import {baseURL} from '~/lib/api/mutator/query-client';
 import {parseTE} from '~/lib/clean';
-import {createOrFindProductVariant} from '~/lib/create-or-find-variant';
 import {getCustomer} from '~/lib/get-customer';
 import {customerProductAddBody} from '~/lib/zod/bookingShopifyApi';
 import {COLLECTIONS_QUERY} from './categories';
 
-const schema = customerProductAddBody
-  .omit({
-    variantId: true,
-    selectedOptions: true,
-    price: true,
-    compareAtPrice: true,
-    productHandle: true,
-  })
-  .extend({
-    scheduleId: z.string().min(1),
-    price: z.number(),
-    compareAtPrice: z.number(),
-  });
-
-type DefaultValues = z.infer<typeof schema>;
+const schema = customerProductAddBody;
 
 export const action = async ({request, context}: ActionFunctionArgs) => {
   const customerId = await getCustomer({context});
@@ -79,29 +64,18 @@ export const action = async ({request, context}: ActionFunctionArgs) => {
   }
 
   try {
-    const variant = await createOrFindProductVariant({
-      productId: submission.value.productId,
-      price: submission.value.price,
-      compareAtPrice: submission.value.compareAtPrice,
-      storefront: context.storefront,
-    });
-
-    await getBookingShopifyApi().customerProductAdd(customerId, {
-      ...submission.value,
-      ...variant,
-      compareAtPrice: variant.compareAtPrice,
-    });
+    const {payload: product} = await getBookingShopifyApi().customerProductAdd(
+      customerId,
+      submission.value,
+    );
 
     await context.storefront.cache?.delete(
       `${baseURL}/customer/${customerId}/products`,
     );
 
-    return redirectWithSuccess(
-      `/account/services/${submission.value.productId}`,
-      {
-        message: 'Ydelsen er nu oprettet!',
-      },
-    );
+    return redirectWithSuccess(`/account/services/${product.productId}`, {
+      message: 'Ydelsen er nu oprettet!',
+    });
   } catch (error) {
     return submission.reply();
   }
@@ -133,8 +107,14 @@ export async function loader({context}: LoaderFunctionArgs) {
     collections,
     defaultValue: {
       scheduleId: schedules[0]._id,
-      compareAtPrice: 0,
-      price: 0,
+      compareAtPrice: {
+        amount: '0',
+        currencyCode: 'DKK',
+      },
+      price: {
+        amount: '0',
+        currencyCode: 'DKK',
+      },
       locations: [
         {
           location: findDefaultLocation?._id,
@@ -142,7 +122,7 @@ export async function loader({context}: LoaderFunctionArgs) {
           originType: findDefaultLocation?.originType,
         },
       ],
-    } as DefaultValues,
+    } as z.infer<typeof schema>,
   });
 }
 
@@ -156,6 +136,11 @@ export default function AccountServicesCreate() {
     lastResult,
     defaultValue,
     onValidate({formData}) {
+      console.log(
+        parseWithZod(formData, {
+          schema,
+        }),
+      );
       return parseWithZod(formData, {
         schema,
       });
@@ -164,10 +149,14 @@ export default function AccountServicesCreate() {
     shouldRevalidate: 'onInput',
   });
 
+  console.log(defaultValue);
+
   const selectSchedules = schedules.map((schedule) => ({
     value: schedule._id,
     label: schedule.name,
   }));
+
+  const collection = collections.nodes.find((c) => c.id === collectionId);
 
   return (
     <>
@@ -206,7 +195,7 @@ export default function AccountServicesCreate() {
                   <SelectSearchable
                     placeholder="-"
                     collectionId={collectionId}
-                    field={fields.productId}
+                    field={fields.parentId}
                   />
                 </div>
               </Flex>
@@ -340,6 +329,7 @@ export function SelectSearchable({
 
   return (
     <>
+      <input type="hidden" value={title} name="title" />
       <Combobox
         onOptionSubmit={(optionValue) => {
           const node = fetcher.data?.find(

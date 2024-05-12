@@ -6,20 +6,13 @@ import {
   Flex,
   Grid,
   Group,
-  Image,
   rem,
   Text,
   ThemeIcon,
   Title,
 } from '@mantine/core';
 import {Link, useLoaderData, useOutletContext} from '@remix-run/react';
-import {
-  CacheLong,
-  Money,
-  parseGid,
-  Image as ShopifyImage,
-} from '@shopify/hydrogen';
-import {type ProductConnection} from '@shopify/hydrogen/storefront-api-types';
+import {Money} from '@shopify/hydrogen';
 import {json, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
 import {IconEye, IconMoodSad, IconPlus} from '@tabler/icons-react';
 import {AccountButton} from '~/components/account/AccountButton';
@@ -28,38 +21,19 @@ import {AccountTitle} from '~/components/account/AccountTitle';
 import {getBookingShopifyApi} from '~/lib/api/bookingShopifyApi';
 import {durationToTime} from '~/lib/duration';
 import {getCustomer} from '~/lib/get-customer';
-import {ALL_PRODUCTS_QUERY} from './artist.$username._index';
 
 export async function loader({context}: LoaderFunctionArgs) {
-  const {storefront} = context;
   const customerId = await getCustomer({context});
   const response = await getBookingShopifyApi().customerProductsList(
     customerId,
     context,
   );
 
-  const productIds = response.payload.map(({productId}) => productId);
-
-  const data = await context.storefront.query<{
-    products: ProductConnection;
-  }>(ALL_PRODUCTS_QUERY, {
-    variables: {
-      first: productIds.length,
-      query: productIds.length > 0 ? productIds.join(' OR ') : 'id=-',
-      country: storefront.i18n.country,
-      language: storefront.i18n.language,
-    },
-    cache: CacheLong(),
-  });
-
-  return json({
-    storeProducts: data.products,
-    customerProducts: response.payload,
-  });
+  return json(response.payload);
 }
 
 export default function AccountServicesIndex() {
-  const {storeProducts, customerProducts} = useLoaderData<typeof loader>();
+  const products = useLoaderData<typeof loader>();
   const {user} = useOutletContext<any>();
 
   return (
@@ -75,7 +49,7 @@ export default function AccountServicesIndex() {
       </AccountTitle>
 
       <AccountContent>
-        {storeProducts.nodes.length === 0 ? (
+        {products.length === 0 ? (
           <Flex
             gap="lg"
             direction="column"
@@ -100,34 +74,22 @@ export default function AccountServicesIndex() {
           </Flex>
         ) : (
           <Grid align="stretch">
-            {storeProducts.nodes.map((product) => {
-              const customerProduct = customerProducts.find(({productId}) => {
-                return productId.toString() === parseGid(product.id).id;
-              });
-
+            {products.map((product) => {
               return (
-                <Grid.Col key={product.id} span={{base: 12, md: 6, lg: 4}}>
+                <Grid.Col
+                  key={product.productId}
+                  span={{base: 12, md: 6, lg: 4}}
+                >
                   <Card
                     padding="sm"
                     radius="md"
                     h="100%"
                     withBorder
                     component={Link}
-                    to={`${parseGid(product.id).id}`}
+                    to={`${product.productId}`}
                   >
                     <Flex justify="space-between">
                       <Group gap="sm" align="flex-start">
-                        {product.featuredImage && (
-                          <Image
-                            component={ShopifyImage}
-                            data={product.featuredImage}
-                            h="auto"
-                            loading="lazy"
-                            style={{width: '32px'}}
-                            radius="md"
-                          />
-                        )}
-
                         <Title
                           order={3}
                           fw="600"
@@ -141,7 +103,7 @@ export default function AccountServicesIndex() {
                         variant="default"
                         aria-label="See live"
                         component={Link}
-                        to={`/artist/${user.username}/treatment/${product.handle}`}
+                        to={`/artist/${user.username}/treatment/${product.productHandle}`}
                         target="_blank"
                         onClick={(event) => event.stopPropagation()}
                       >
@@ -158,27 +120,25 @@ export default function AccountServicesIndex() {
 
                     <Flex gap="xl">
                       <div style={{flex: 1}}>
-                        <Text size="sm">Navn</Text>
+                        <Text size="sm">Vagtplan</Text>
                         <Text fw={600} size="sm">
-                          {customerProduct?.scheduleName}
+                          {product.scheduleName}
                         </Text>
                       </div>
                       <div style={{flex: 1}}>
                         <Text size="sm">Tid</Text>
                         <Text fw={600} size="sm">
-                          {durationToTime(customerProduct?.duration ?? 0)}
+                          {durationToTime(product.duration ?? 0)}
                         </Text>
                       </div>
                       <div style={{flex: 1}}>
                         <Text size="sm">Pris</Text>
                         <Text fw={600} size="sm">
-                          {customerProduct?.price && (
-                            <Money
-                              withoutTrailingZeros
-                              data={customerProduct?.price as any}
-                              as="span"
-                            />
-                          )}
+                          <Money
+                            withoutTrailingZeros
+                            data={product?.price as any}
+                            as="span"
+                          />
                         </Text>
                       </div>
                     </Flex>

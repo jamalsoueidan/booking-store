@@ -70,8 +70,7 @@ export async function loader({context, params}: LoaderFunctionArgs) {
 
 export default function Component() {
   const {systemOptions, userOptions} = useLoaderData<typeof loader>();
-  const {selectedProduct} =
-    useOutletContext<SerializeFrom<typeof rootLoader>>();
+  const {product} = useOutletContext<SerializeFrom<typeof rootLoader>>();
   const location = useLocation();
   const navigate = useNavigate();
 
@@ -129,7 +128,7 @@ export default function Component() {
       <Modal opened={location.hash === '#create'} onClose={close}>
         <OptionAddModal
           systemOptions={systemOptions}
-          selectedProduct={selectedProduct}
+          selectedProduct={product}
           close={close}
         />
       </Modal>
@@ -209,7 +208,7 @@ function OptionForm({option}: {option: CustomerProductOptionsListItem}) {
 }
 
 type OptionAddModalProps = {
-  selectedProduct: SerializeFrom<typeof rootLoader>['selectedProduct'];
+  selectedProduct: SerializeFrom<typeof rootLoader>['product'];
   systemOptions: SerializeFrom<typeof loader>['systemOptions'];
   close: () => void;
 };

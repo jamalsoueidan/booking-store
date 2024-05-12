@@ -1,49 +1,37 @@
 import {Button} from '@mantine/core';
 import {Form, Outlet, useLoaderData} from '@remix-run/react';
-import {CacheLong, parseGid} from '@shopify/hydrogen';
 import {json, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
 import {AccountButton} from '~/components/account/AccountButton';
 import {AccountContent} from '~/components/account/AccountContent';
 import {AccountTitle} from '~/components/account/AccountTitle';
-import {PRODUCT_QUERY_ID} from '~/data/queries';
+import {getBookingShopifyApi} from '~/lib/api/bookingShopifyApi';
+import {getCustomer} from '~/lib/get-customer';
 
 export async function loader({context, params}: LoaderFunctionArgs) {
-  await context.customerAccount.handleAuthStatus();
+  const customerId = await getCustomer({context});
 
   const {productId} = params;
   if (!productId) {
-    throw new Error('Missing productHandle param, check route filename');
+    throw new Error('Missing productId param, check route filename');
   }
 
-  const data = await context.storefront.query(PRODUCT_QUERY_ID, {
-    variables: {
-      Id: `gid://shopify/Product/${productId}`,
-      country: context.storefront.i18n.country,
-      language: context.storefront.i18n.language,
-    },
-    cache: CacheLong(),
-  });
+  const {payload: product} = await getBookingShopifyApi().customerProductGet(
+    customerId,
+    productId,
+    context,
+  );
 
-  if (!data?.product?.id) {
-    throw new Response('product', {status: 404});
-  }
-
-  return json({
-    selectedProduct: data.product,
-  });
+  return json({product});
 }
 
 export default function EditAddress() {
-  const {selectedProduct} = useLoaderData<typeof loader>();
+  const {product} = useLoaderData<typeof loader>();
 
   return (
     <>
-      <AccountTitle
-        linkBack="/account/services"
-        heading={selectedProduct.title}
-      >
+      <AccountTitle linkBack="/account/services" heading={product.title}>
         <AccountButton
-          to={`/account/services/${parseGid(selectedProduct.id).id}`}
+          to={`/account/services/${product.productId}`}
           data-testid="basic-button"
         >
           Detaljer
@@ -56,9 +44,7 @@ export default function EditAddress() {
         </AccountButton>
         <Form
           method="post"
-          action={`/account/services/${
-            parseGid(selectedProduct.id).id
-          }/destroy`}
+          action={`/account/services/${product.productId}/destroy`}
           style={{display: 'inline-block'}}
         >
           <Button
@@ -75,7 +61,7 @@ export default function EditAddress() {
       </AccountTitle>
 
       <AccountContent>
-        <Outlet context={{selectedProduct}} />
+        <Outlet context={{product}} />
       </AccountContent>
     </>
   );
