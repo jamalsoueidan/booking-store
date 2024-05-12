@@ -32,14 +32,17 @@ export const meta: MetaFunction<typeof loader> = ({data}) => {
   return [{title: `BySisters | ${data?.user.fullname ?? ''}`}];
 };
 
-export async function loader({params}: LoaderFunctionArgs) {
+export async function loader({params, context}: LoaderFunctionArgs) {
   const {username} = params;
 
   if (!username) {
     throw new Error('Invalid request method');
   }
 
-  const {payload: user} = await getBookingShopifyApi().userGet(username);
+  const {payload: user} = await getBookingShopifyApi().userGet(
+    username,
+    context,
+  );
 
   return json({
     user,

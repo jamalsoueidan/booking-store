@@ -220,6 +220,8 @@ components:
     CustomerProductBase:
       type: object
       properties:
+        title:
+          type: string
         options:
           type: array
           items:
@@ -232,8 +234,6 @@ components:
           type: number
         description:
           type: string
-        selectedOptions:
-          $ref: '#/components/schemas/CustomerProductSelectedOptions'
         price:
           type: object
           properties:
@@ -267,7 +267,7 @@ components:
         - productId
         - duration
         - price
-        - selectedOptions
+        - compareAtPrice
         - breakTime
         - noticePeriod
         - bookingPeriod
@@ -298,16 +298,6 @@ components:
       enum:
         - weeks
         - months
-    CustomerProductSelectedOptions:
-      type: object
-      properties:
-        name:
-          type: string
-        value:
-          type: string
-      required:
-        - name
-        - value
     CustomerProductNoticePeriod:
       type: object
       properties:
@@ -360,18 +350,6 @@ components:
     CustomerProductUpdateBody:
       type: object
       properties:
-        variantId:
-          type: number
-        selectedOptions:
-          type: object
-          properties:
-            name:
-              type: string
-            value:
-              type: string
-          required:
-            - name
-            - value
         price:
           type: object
           properties:
@@ -379,9 +357,6 @@ components:
               type: string
             currencyCode:
               type: string
-          required:
-            - amount
-            - currencyCode
         compareAtPrice:
           type: object
           properties:
@@ -389,9 +364,6 @@ components:
               type: string
             currencyCode:
               type: string
-          required:
-            - amount
-            - currencyCode
         duration:
           type: number
         breakTime:
@@ -402,6 +374,8 @@ components:
           $ref: '#/components/schemas/CustomerProductBookingPeriod'
         locations:
           $ref: '#/components/schemas/CustomerProductLocations'
+        title:
+          type: string
         description:
           type: string
     CustomerProductAddResponse:
@@ -418,24 +392,14 @@ components:
     CustomerProductAddBody:
       type: object
       properties:
+        parentId:
+          type: string
+        title:
+          type: string
+        locations:
+          $ref: '#/components/schemas/CustomerProductLocations'
         scheduleId:
           type: string
-        productId:
-          type: string
-        productHandle:
-          type: string
-        variantId:
-          type: number
-        selectedOptions:
-          type: object
-          properties:
-            name:
-              type: string
-            value:
-              type: string
-          required:
-            - name
-            - value
         price:
           type: object
           properties:
@@ -443,9 +407,6 @@ components:
               type: string
             currencyCode:
               type: string
-          required:
-            - amount
-            - currencyCode
         compareAtPrice:
           type: object
           properties:
@@ -453,19 +414,13 @@ components:
               type: string
             currencyCode:
               type: string
-          required:
-            - amount
-            - currencyCode
-        locations:
-          $ref: '#/components/schemas/CustomerProductLocations'
       required:
-        - productId
+        - parentId
+        - title
         - scheduleId
-        - productHandle
-        - variantId
-        - price
-        - selectedOptions
         - locations
+        - price
+        - compareAtPrice
     CustomerProductDestroyResponse:
       type: object
       properties:
@@ -499,59 +454,6 @@ components:
       required:
         - success
         - payload
-    CustomerProductCreateVariantResponse:
-      type: object
-      properties:
-        success:
-          type: boolean
-          example: true
-        payload:
-          $ref: '#/components/schemas/CustomerProductCreateVariant'
-      required:
-        - success
-        - payload
-    CustomerProductCreateVariantBody:
-      type: object
-      properties:
-        price:
-          type: number
-        compareAtPrice:
-          type: number
-      required:
-        - price
-        - compareAtPrice
-    CustomerProductCreateVariant:
-      type: object
-      properties:
-        product:
-          type: object
-          properties:
-            id:
-              type: number
-            handle:
-              type: string
-          required:
-            - id
-            - handle
-        id:
-          type: number
-        title:
-          type: string
-        selectedOptions:
-          type: array
-          items:
-            $ref: '#/components/schemas/CustomerProductSelectedOptions'
-        price:
-          type: string
-        compareAtPrice:
-          type: string
-      required:
-        - product
-        - id
-        - title
-        - selectedOptions
-        - price
-        - compareAtPrice
     CustomerProductOptionsUpdateResponse:
       type: object
       properties:
@@ -4229,7 +4131,7 @@ paths:
       tags:
         - CustomerProduct
       operationId: customerProductAdd
-      summary: PUT Add product to schedule
+      summary: POST Add product to schedule
       description: This endpoint add product that does not exist in schedule
       requestBody:
         required: true
@@ -4244,46 +4146,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/CustomerProductAddResponse'
-        '400':
-          $ref: '#/components/responses/BadResponse'
-        '401':
-          $ref: '#/components/responses/UnauthorizedResponse'
-        '403':
-          $ref: '#/components/responses/ForbiddenResponse'
-        '404':
-          $ref: '#/components/responses/NotFoundResponse'
-      security: []
-  '/customer/{customerId}/product/{productId}/create-variant':
-    post:
-      parameters:
-        - name: customerId
-          in: path
-          required: true
-          schema:
-            type: string
-        - name: productId
-          in: path
-          required: true
-          schema:
-            type: string
-      tags:
-        - CustomerProduct
-      operationId: customerProductCreateVariant
-      summary: POST create product variant
-      description: This endpoint create product variant
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/CustomerProductCreateVariantBody'
-      responses:
-        '200':
-          description: Response with product variant payload
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/CustomerProductCreateVariantResponse'
         '400':
           $ref: '#/components/responses/BadResponse'
         '401':
