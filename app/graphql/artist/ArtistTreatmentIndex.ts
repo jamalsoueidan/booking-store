@@ -39,6 +39,10 @@ export const ArtistTreatmentIndexFragment = `#graphql
       name
       values
     }
+    parentId: metafield(key: "parentId", namespace: "booking") {
+      id
+      value
+    }
     variants(first: 5) {
       nodes {
         ...ArtistTreatmentIndexVariant

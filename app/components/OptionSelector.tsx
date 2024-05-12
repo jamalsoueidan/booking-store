@@ -8,20 +8,20 @@ import type {
 } from 'storefrontapi.generated';
 
 export type RedirectToOptionsProps = {
-  parentId: string;
-  allProductOptionsWithVariants: ArtistTreatmentIndexProductFragment[];
+  productOptions: ArtistTreatmentIndexProductFragment[];
   request: Request;
 };
 
 export function redirectToOptions({
-  parentId,
-  allProductOptionsWithVariants,
+  productOptions,
   request,
 }: RedirectToOptionsProps) {
+  const parentId = parseGid(productOptions[0].parentId?.value).id;
+
   const url = new URL(request.url);
   const searchParams = new URLSearchParams(url.search);
 
-  const requiredParams = allProductOptionsWithVariants.map((product) => {
+  const requiredParams = productOptions.map((product) => {
     const productId = parseGid(product.id).id;
     const firstVariant = product.variants.nodes[0];
     return {value: parseGid(firstVariant.id).id, name: productId};
@@ -44,8 +44,7 @@ export function redirectToOptions({
 }
 
 export type OptionSelectorProps = {
-  parentId: string;
-  productOptionWithVariants: ArtistTreatmentIndexProductFragment;
+  productWithVariants: ArtistTreatmentIndexProductFragment;
   children: (props: OptionSelectorChildrenProp) => React.ReactElement;
 };
 
@@ -56,27 +55,25 @@ export type OptionSelectorChildrenProp = {
 };
 
 export function OptionSelector({
-  parentId,
-  productOptionWithVariants,
+  productWithVariants,
   children,
 }: OptionSelectorProps) {
-  const optionsMarkup = productOptionWithVariants.variants.nodes.map(
-    (variant) => {
-      return (
-        <Flex key={variant.id}>
-          {children({
-            parentId,
-            productId: parseGid(productOptionWithVariants.id).id,
-            variant,
-          })}
-        </Flex>
-      );
-    },
-  );
+  const parentId = parseGid(productWithVariants.parentId?.value).id;
+  const optionsMarkup = productWithVariants.variants.nodes.map((variant) => {
+    return (
+      <Flex key={variant.id}>
+        {children({
+          parentId,
+          productId: parseGid(productWithVariants.id).id,
+          variant,
+        })}
+      </Flex>
+    );
+  });
 
   return (
     <Flex direction="column" gap="xs" py="sm">
-      <Title order={2}>{productOptionWithVariants.title}</Title>
+      <Title order={2}>{productWithVariants.title}</Title>
       <Flex direction="column" gap="xs">
         {optionsMarkup}
       </Flex>
@@ -112,19 +109,19 @@ export function ProductOption({
 
 export function useCalculateDurationAndPrice({
   parentId,
-  allProductOptionsWithVariants,
+  productOptions,
   currentPrice,
   currentDuration,
 }: {
   parentId: string;
-  allProductOptionsWithVariants: ArtistTreatmentIndexProductFragment[];
+  productOptions: ArtistTreatmentIndexProductFragment[];
   currentPrice?: number;
   currentDuration?: number;
 }) {
   const [searchParams] = useSearchParams();
 
   const pickedVariants = useMemo(() => {
-    return allProductOptionsWithVariants.map((product) => {
+    return productOptions.map((product) => {
       const value = searchParams.get(
         `options[${parseGid(parentId).id}][${parseGid(product.id).id}]`,
       );
@@ -136,7 +133,7 @@ export function useCalculateDurationAndPrice({
       }
       return pickedVariant;
     });
-  }, [allProductOptionsWithVariants, parentId, searchParams]);
+  }, [productOptions, parentId, searchParams]);
 
   const [totalDuration, totalPrice] = useMemo(() => {
     const totalPrice = pickedVariants.reduce(

@@ -3,36 +3,26 @@ import {NumberInput, type NumberInputProps} from '@mantine/core';
 import {useRef} from 'react';
 
 type NumericInputProps = {
-  field: FieldMetadata<number>;
+  field: FieldMetadata<{amount?: string; currencyCode?: string} | undefined>;
 } & NumberInputProps;
 
 export function NumericInput({field, ...props}: NumericInputProps) {
   const inputRef = useRef<HTMLDivElement>(null);
-  const control = useInputControl(field);
+  const price = field.getFieldset();
+  const control = useInputControl(price.amount);
 
-  return (
-    <>
-      <input
-        name={field.name}
-        defaultValue={field.initialValue}
-        tabIndex={-1}
-        onFocus={() => inputRef.current?.focus()}
-        className="hidden-input"
-      />
-
-      {!props.hidden ? (
-        <NumberInput
-          ref={inputRef}
-          defaultValue={parseInt(field.initialValue || '0')}
-          onChange={(value: string | number) => {
-            control.change(value as any);
-          }}
-          onBlur={control.blur}
-          allowNegative={false}
-          allowDecimal={false}
-          {...props}
-        />
-      ) : null}
-    </>
+  return !props.hidden ? (
+    <NumberInput
+      ref={inputRef}
+      defaultValue={parseInt(price.amount.initialValue || '0')}
+      onChange={(value: string | number) => {
+        control.change(value.toString());
+      }}
+      allowNegative={false}
+      allowDecimal={false}
+      {...props}
+    />
+  ) : (
+    <></>
   );
 }
