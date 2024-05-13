@@ -207,7 +207,7 @@ export default function AccountSchedules() {
 
 const slotSchema = schema.shape.slots.element;
 const intervalsSchema = slotSchema.shape.intervals;
-const defaultValue = {from: '07:00', to: '14:00'};
+const defaultValue = {from: '08:00', to: '14:00'};
 
 type SlotInputProps = {
   field: FieldMetadata<z.infer<typeof slotSchema>>;

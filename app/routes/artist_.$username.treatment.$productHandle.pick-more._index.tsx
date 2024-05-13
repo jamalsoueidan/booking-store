@@ -1,12 +1,15 @@
 import {Button, Divider, Modal, Stack, Text} from '@mantine/core';
 import {
-  type ShouldRevalidateFunctionArgs,
   useLoaderData,
   useSearchParams,
+  type ShouldRevalidateFunctionArgs,
 } from '@remix-run/react';
 import {json, type LoaderFunctionArgs} from '@remix-run/server-runtime';
 import {Money, parseGid} from '@shopify/hydrogen';
-import {type ArtistTreatmentIndexQuery} from 'storefrontapi.generated';
+import type {
+  ArtistTreatmentIndexQuery,
+  ArtistTreatmentProductFragment,
+} from 'storefrontapi.generated';
 
 import {
   OptionSelector,
@@ -16,9 +19,7 @@ import {
 } from '~/components/OptionSelector';
 import {ArtistTreatment} from '~/graphql/artist/ArtistTreatment';
 import {ArtistTreatmentIndex} from '~/graphql/artist/ArtistTreatmentIndex';
-import {getBookingShopifyApi} from '~/lib/api/bookingShopifyApi';
 
-import type {CustomerProductList} from '~/lib/api/model';
 import {durationToTime} from '~/lib/duration';
 
 export function shouldRevalidate({
@@ -46,13 +47,8 @@ export async function loader({params, request, context}: LoaderFunctionArgs) {
   const {username} = params;
 
   if (!productHandle || !username) {
-    return json(null); // don't throw, this is index file
+    return json(null); // don't throw, this is for index file
   }
-
-  const {payload: userProduct} = await getBookingShopifyApi().userProductGet(
-    username,
-    productHandle,
-  );
 
   const {product} = await storefront.query(ArtistTreatment, {
     variables: {
@@ -68,27 +64,27 @@ export async function loader({params, request, context}: LoaderFunctionArgs) {
     });
   }
 
-  const {products: allProductOptionsWithVariants} =
-    await context.storefront.query(ArtistTreatmentIndex, {
+  const {products: productOptions} = await storefront.query(
+    ArtistTreatmentIndex,
+    {
       variables: {
-        query: `tag:'product-${productHandle}' AND tag:'user-${username}'`,
-        country: context.storefront.i18n.country,
-        language: context.storefront.i18n.language,
+        query: `tag:'parent-${productHandle}' AND tag:'options'`,
+        country: storefront.i18n.country,
+        language: storefront.i18n.language,
       },
-    });
+    },
+  );
 
-  if (allProductOptionsWithVariants.nodes.length > 0) {
+  if (productOptions.nodes.length > 0) {
     redirectToOptions({
-      parentId: parseGid(product?.id).id,
-      allProductOptionsWithVariants: allProductOptionsWithVariants.nodes,
+      productOptions: productOptions.nodes,
       request,
     });
   }
 
   return json({
     product,
-    allProductOptionsWithVariants, // to render all variants
-    userProduct,
+    productOptions,
   });
 }
 
@@ -103,21 +99,19 @@ export default function ArtistTreatmentPickMoreIndex() {
 }
 
 type ArtistTreatmentPickMoreRenderModalProps = {
-  product: any;
-  allProductOptionsWithVariants: ArtistTreatmentIndexQuery['products'];
-  userProduct: CustomerProductList;
+  product: ArtistTreatmentProductFragment;
+  productOptions: ArtistTreatmentIndexQuery['products'];
 };
 
 function ArtistTreatmentPickMoreRenderModal({
   product,
-  allProductOptionsWithVariants,
-  userProduct,
+  productOptions,
 }: ArtistTreatmentPickMoreRenderModalProps) {
   const {totalDuration, totalPrice} = useCalculateDurationAndPrice({
     parentId: product.id,
-    allProductOptionsWithVariants: allProductOptionsWithVariants.nodes,
-    currentPrice: parseInt(userProduct.price.amount || '0'),
-    currentDuration: userProduct?.duration,
+    productOptions: productOptions.nodes,
+    currentPrice: parseInt(product.variants.nodes[0].price.amount || '0'),
+    currentDuration: parseInt(product.duration?.value || '0'),
   });
 
   const [searchParams, setSearchParams] = useSearchParams();
@@ -137,8 +131,8 @@ function ArtistTreatmentPickMoreRenderModal({
       });
 
       //remove options
-      userProduct.options.forEach((p) => {
-        prev.delete(`options[${userProduct.productId}][${p.productId}]`);
+      productOptions.nodes.forEach((p) => {
+        prev.delete(`options[${parseGid(product.id).id}][${parseGid(p.id)}]`);
       });
 
       //close modal
@@ -167,12 +161,11 @@ function ArtistTreatmentPickMoreRenderModal({
 
   return (
     <Modal opened={opened} onClose={close} title="Valg muligheder">
-      {allProductOptionsWithVariants.nodes.map((productOptionWithVariants) => {
+      {productOptions.nodes.map((productWithVariants) => {
         return (
           <OptionSelector
-            key={productOptionWithVariants.id}
-            parentId={parseGid(product?.id).id}
-            productOptionWithVariants={productOptionWithVariants}
+            key={product.id}
+            productWithVariants={productWithVariants}
           >
             {(props) => {
               return <ProductOption {...props} />;

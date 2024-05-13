@@ -26,7 +26,7 @@ export const action = async ({
       productId,
       {
         cloneId: optionProductId,
-        title: `${title} - (${productTitle})`,
+        title: `${productTitle}: ${title}`,
       },
     );
 

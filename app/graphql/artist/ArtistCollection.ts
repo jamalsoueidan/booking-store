@@ -2,12 +2,24 @@ import {ArtistTreatmentFragment} from './ArtistTreatment';
 
 export const ArtistCollectionFragment = `#graphql
   ${ArtistTreatmentFragment}
+  fragment ArtistCollectionFilters on Filter {
+    label
+    values {
+      label
+      input
+      count
+    }
+  }
+
   fragment ArtistCollection on Collection {
     id
     title
     products(first: 10, filters: $filters) {
       nodes {
         ...ArtistTreatmentProduct
+      }
+      filters {
+        ...ArtistCollectionFilters
       }
     }
   }

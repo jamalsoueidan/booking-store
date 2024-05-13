@@ -8,10 +8,10 @@ import {
   ActionIcon,
   Alert,
   AppShell,
+  Avatar,
   Box,
   Button,
   Group,
-  Image,
   rem,
   ScrollArea,
   Stack,
@@ -39,10 +39,7 @@ export async function loader({params, context}: LoaderFunctionArgs) {
     throw new Error('Invalid request method');
   }
 
-  const {payload: user} = await getBookingShopifyApi().userGet(
-    username,
-    context,
-  );
+  const {payload: user} = await getBookingShopifyApi().userGet(username);
 
   return json({
     user,
@@ -63,12 +60,12 @@ export default function UserIndex() {
       >
         <AppShell.Header p="md" bg={`${user.theme?.color || 'pink'}.6`}>
           <Group h="100%">
-            <Image
-              src={user.images?.profile?.url}
-              fallbackSrc={`https://placehold.co/300x300?text=${user.username}`}
-              radius="100%"
-              w="auto"
-              h="100%"
+            <Avatar
+              src={
+                user.images?.profile?.url ||
+                `https://placehold.co/300x300?text=${user.username}`
+              }
+              size="86"
             />
             <div>
               <Title order={1}>{user.fullname}</Title>
@@ -93,12 +90,12 @@ export default function UserIndex() {
         <AppShell.Navbar bg={`${user.theme?.color || 'pink'}.6`}>
           <AppShell.Section grow p={rem(48)} component={ScrollArea}>
             <Stack gap="lg">
-              <Image
-                src={user.images?.profile?.url}
-                fallbackSrc={`https://placehold.co/300x300?text=${user.username}`}
-                radius="100%"
-                w="50%"
-                h="auto"
+              <Avatar
+                src={
+                  user.images?.profile?.url ||
+                  `https://placehold.co/300x300?text=${user.username}`
+                }
+                size="300"
               />
 
               <Title order={1}>{user.fullname}</Title>

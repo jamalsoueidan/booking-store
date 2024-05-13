@@ -1768,6 +1768,13 @@ export type ServicesOptionsTagOptionsQueryQuery = {
   };
 };
 
+export type ArtistCollectionFiltersFragment = Pick<
+  StorefrontAPI.Filter,
+  'label'
+> & {
+  values: Array<Pick<StorefrontAPI.FilterValue, 'label' | 'input' | 'count'>>;
+};
+
 export type ArtistCollectionFragment = Pick<
   StorefrontAPI.Collection,
   'id' | 'title'
@@ -1821,6 +1828,13 @@ export type ArtistCollectionFragment = Pick<
         >;
         breaktime?: StorefrontAPI.Maybe<
           Pick<StorefrontAPI.Metafield, 'id' | 'value'>
+        >;
+      }
+    >;
+    filters: Array<
+      Pick<StorefrontAPI.Filter, 'label'> & {
+        values: Array<
+          Pick<StorefrontAPI.FilterValue, 'label' | 'input' | 'count'>
         >;
       }
     >;
@@ -1888,6 +1902,13 @@ export type ArtistCollectionQuery = {
             >;
             breaktime?: StorefrontAPI.Maybe<
               Pick<StorefrontAPI.Metafield, 'id' | 'value'>
+            >;
+          }
+        >;
+        filters: Array<
+          Pick<StorefrontAPI.Filter, 'label'> & {
+            values: Array<
+              Pick<StorefrontAPI.FilterValue, 'label' | 'input' | 'count'>
             >;
           }
         >;
@@ -3108,7 +3129,7 @@ interface GeneratedQueryTypes {
     return: ServicesOptionsTagOptionsQueryQuery;
     variables: ServicesOptionsTagOptionsQueryQueryVariables;
   };
-  '#graphql\n#graphql\n  #graphql\n  fragment ArtistTreatmentProduct on Product {\n    id\n    title\n    descriptionHtml\n    productType\n    handle\n    featuredImage {\n      id\n      altText\n      url(transform: { maxHeight: 250, maxWidth: 250, crop: CENTER })\n      width\n      height\n    }\n    variants(first: 1) {\n      nodes {\n        compareAtPrice {\n          amount\n          currencyCode\n        }\n        price {\n          amount\n          currencyCode\n        }\n      }\n    }\n    parentId: metafield(key: "parentId", namespace: "booking") {\n      id\n      value\n    }\n    options: metafield(key: "options", namespace: "booking") {\n      id\n      value\n    }\n    scheduleId: metafield(key: "scheduleId", namespace: "booking") {\n      id\n      value\n    }\n    locations: metafield(key: "locations", namespace: "booking") {\n      id\n      value\n    }\n    bookingPeriodValue: metafield(key: "booking_period_value", namespace: "booking") {\n      id\n      value\n    }\n    bookingPeriodUnit: metafield(key: "booking_period_unit", namespace: "booking") {\n      id\n      value\n    }\n    noticePeriodValue: metafield(key: "notice_period_value", namespace: "booking") {\n      id\n      value\n    }\n    noticePeriodUnit: metafield(key: "notice_period_unit", namespace: "booking") {\n      id\n      value\n    }\n    duration: metafield(key: "duration", namespace: "booking") {\n      id\n      value\n    }\n    breaktime: metafield(key: "breaktime", namespace: "booking") {\n      id\n      value\n    }\n  }\n\n  fragment ArtistCollection on Collection {\n    id\n    title\n    products(first: 10, filters: $filters) {\n      nodes {\n        ...ArtistTreatmentProduct\n      }\n    }\n  }\n\n  query ArtistCollection(\n    $handle: String!\n    $country: CountryCode\n    $language: LanguageCode\n    $filters: [ProductFilter!] = {}\n  ) @inContext(country: $country, language: $language) {\n    collection(handle: $handle) {\n      ...ArtistCollection\n    }\n  }\n': {
+  '#graphql\n#graphql\n  #graphql\n  fragment ArtistTreatmentProduct on Product {\n    id\n    title\n    descriptionHtml\n    productType\n    handle\n    featuredImage {\n      id\n      altText\n      url(transform: { maxHeight: 250, maxWidth: 250, crop: CENTER })\n      width\n      height\n    }\n    variants(first: 1) {\n      nodes {\n        compareAtPrice {\n          amount\n          currencyCode\n        }\n        price {\n          amount\n          currencyCode\n        }\n      }\n    }\n    parentId: metafield(key: "parentId", namespace: "booking") {\n      id\n      value\n    }\n    options: metafield(key: "options", namespace: "booking") {\n      id\n      value\n    }\n    scheduleId: metafield(key: "scheduleId", namespace: "booking") {\n      id\n      value\n    }\n    locations: metafield(key: "locations", namespace: "booking") {\n      id\n      value\n    }\n    bookingPeriodValue: metafield(key: "booking_period_value", namespace: "booking") {\n      id\n      value\n    }\n    bookingPeriodUnit: metafield(key: "booking_period_unit", namespace: "booking") {\n      id\n      value\n    }\n    noticePeriodValue: metafield(key: "notice_period_value", namespace: "booking") {\n      id\n      value\n    }\n    noticePeriodUnit: metafield(key: "notice_period_unit", namespace: "booking") {\n      id\n      value\n    }\n    duration: metafield(key: "duration", namespace: "booking") {\n      id\n      value\n    }\n    breaktime: metafield(key: "breaktime", namespace: "booking") {\n      id\n      value\n    }\n  }\n\n  fragment ArtistCollectionFilters on Filter {\n    label\n    values {\n      label\n      input\n      count\n    }\n  }\n\n  fragment ArtistCollection on Collection {\n    id\n    title\n    products(first: 10, filters: $filters) {\n      nodes {\n        ...ArtistTreatmentProduct\n      }\n      filters {\n        ...ArtistCollectionFilters\n      }\n    }\n  }\n\n  query ArtistCollection(\n    $handle: String!\n    $country: CountryCode\n    $language: LanguageCode\n    $filters: [ProductFilter!] = {}\n  ) @inContext(country: $country, language: $language) {\n    collection(handle: $handle) {\n      ...ArtistCollection\n    }\n  }\n': {
     return: ArtistCollectionQuery;
     variables: ArtistCollectionQueryVariables;
   };

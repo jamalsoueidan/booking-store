@@ -1,16 +1,6 @@
-import {
-  Badge,
-  Button,
-  Card,
-  Flex,
-  Group,
-  Stack,
-  Text,
-  Title,
-  rem,
-} from '@mantine/core';
+import {Badge, Card, Flex, Group, Stack, Text, Title, rem} from '@mantine/core';
 import {Link} from '@remix-run/react';
-import {Money, parseGid} from '@shopify/hydrogen';
+import {parseGid} from '@shopify/hydrogen';
 import {IconCalendar} from '@tabler/icons-react';
 import {type ArtistTreatmentProductFragment} from 'storefrontapi.generated';
 import {useUser} from '~/hooks/use-user';
@@ -18,6 +8,7 @@ import {type CustomerLocationBase} from '~/lib/api/model';
 import {durationToTime} from '~/lib/duration';
 import {LocationIcon} from '../LocationIcon';
 import classes from './ArtistProduct.module.css';
+import {PriceBadge} from './PriceBadge';
 
 export type ArtistProductProps = {
   product: ArtistTreatmentProductFragment;
@@ -96,17 +87,10 @@ export function ArtistProduct({product}: ArtistProductProps) {
             </Text>
           </Flex>
 
-          <Button
-            variant="outline"
-            size="xs"
-            color="black"
-            radius="xl"
-            data-testid={`service-button-${productId}`}
-          >
-            {product.options ? `FRA` : null}
-            &nbsp;
-            <Money as="span" data={product.variants.nodes[0].price} />
-          </Button>
+          <PriceBadge
+            compareAtPrice={product.variants.nodes[0].compareAtPrice}
+            price={product.variants.nodes[0].price}
+          />
         </Group>
       </Flex>
     </Card>
