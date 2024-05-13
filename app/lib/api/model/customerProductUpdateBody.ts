@@ -16,6 +16,8 @@ export interface CustomerProductUpdateBody {
   compareAtPrice?: CustomerProductUpdateBodyCompareAtPrice;
   description?: string;
   duration?: number;
+  hideFromCombine?: string;
+  hideFromProfile?: string;
   locations?: CustomerProductLocations;
   noticePeriod?: CustomerProductNoticePeriod;
   price?: CustomerProductUpdateBodyPrice;

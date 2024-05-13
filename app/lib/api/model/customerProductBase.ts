@@ -16,6 +16,8 @@ export interface CustomerProductBase {
   compareAtPrice: CustomerProductBaseCompareAtPrice;
   description?: string;
   duration: number;
+  hideFromCombine: boolean;
+  hideFromProfile: boolean;
   noticePeriod: CustomerProductNoticePeriod;
   options: Items[];
   price: CustomerProductBasePrice;

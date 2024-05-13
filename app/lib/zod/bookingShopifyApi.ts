@@ -1229,6 +1229,8 @@ export const customerLocationGetProductsResponse = zod.object({
   "productId": zod.number(),
   "variantId": zod.number(),
   "description": zod.string().optional(),
+  "hideFromProfile": zod.boolean(),
+  "hideFromCombine": zod.boolean(),
   "price": zod.object({
   "amount": zod.string(),
   "currencyCode": zod.string()
@@ -2119,6 +2121,8 @@ export const customerProductsListResponse = zod.object({
   "productId": zod.number(),
   "variantId": zod.number(),
   "description": zod.string().optional(),
+  "hideFromProfile": zod.boolean(),
+  "hideFromCombine": zod.boolean(),
   "price": zod.object({
   "amount": zod.string(),
   "currencyCode": zod.string()
@@ -2194,6 +2198,8 @@ export const customerProductGetResponse = zod.object({
   "productId": zod.number(),
   "variantId": zod.number(),
   "description": zod.string().optional(),
+  "hideFromProfile": zod.boolean(),
+  "hideFromCombine": zod.boolean(),
   "price": zod.object({
   "amount": zod.string(),
   "currencyCode": zod.string()
@@ -2235,6 +2241,8 @@ export const customerProductUpdateParams = zod.object({
 })
 
 export const customerProductUpdateBody = zod.object({
+  "hideFromProfile": zod.string().optional(),
+  "hideFromCombine": zod.string().optional(),
   "price": zod.object({
   "amount": zod.string().optional(),
   "currencyCode": zod.string().optional()
@@ -2283,6 +2291,8 @@ export const customerProductUpdateResponse = zod.object({
   "productId": zod.number(),
   "variantId": zod.number(),
   "description": zod.string().optional(),
+  "hideFromProfile": zod.boolean(),
+  "hideFromCombine": zod.boolean(),
   "price": zod.object({
   "amount": zod.string(),
   "currencyCode": zod.string()
@@ -2350,6 +2360,8 @@ export const customerProductAddBody = zod.object({
   "originType": zod.enum(['home', 'commercial'])
 })),
   "scheduleId": zod.string(),
+  "hideFromProfile": zod.string(),
+  "hideFromCombine": zod.string(),
   "price": zod.object({
   "amount": zod.string().optional(),
   "currencyCode": zod.string().optional()
@@ -2381,6 +2393,8 @@ export const customerProductAddResponse = zod.object({
   "productId": zod.number(),
   "variantId": zod.number(),
   "description": zod.string().optional(),
+  "hideFromProfile": zod.boolean(),
+  "hideFromCombine": zod.boolean(),
   "price": zod.object({
   "amount": zod.string(),
   "currencyCode": zod.string()
@@ -2600,6 +2614,8 @@ export const customerScheduleCreateResponse = zod.object({
   "productId": zod.number(),
   "variantId": zod.number(),
   "description": zod.string().optional(),
+  "hideFromProfile": zod.boolean(),
+  "hideFromCombine": zod.boolean(),
   "price": zod.object({
   "amount": zod.string(),
   "currencyCode": zod.string()
@@ -2669,6 +2685,8 @@ export const customerScheduleListResponse = zod.object({
   "productId": zod.number(),
   "variantId": zod.number(),
   "description": zod.string().optional(),
+  "hideFromProfile": zod.boolean(),
+  "hideFromCombine": zod.boolean(),
   "price": zod.object({
   "amount": zod.string(),
   "currencyCode": zod.string()
@@ -2739,6 +2757,8 @@ export const customerScheduleGetResponse = zod.object({
   "productId": zod.number(),
   "variantId": zod.number(),
   "description": zod.string().optional(),
+  "hideFromProfile": zod.boolean(),
+  "hideFromCombine": zod.boolean(),
   "price": zod.object({
   "amount": zod.string(),
   "currencyCode": zod.string()
@@ -2813,6 +2833,8 @@ export const customerScheduleUpdateResponse = zod.object({
   "productId": zod.number(),
   "variantId": zod.number(),
   "description": zod.string().optional(),
+  "hideFromProfile": zod.boolean(),
+  "hideFromCombine": zod.boolean(),
   "price": zod.object({
   "amount": zod.string(),
   "currencyCode": zod.string()
@@ -2911,6 +2933,8 @@ export const customerScheduleSlotUpdateResponse = zod.object({
   "productId": zod.number(),
   "variantId": zod.number(),
   "description": zod.string().optional(),
+  "hideFromProfile": zod.boolean(),
+  "hideFromCombine": zod.boolean(),
   "price": zod.object({
   "amount": zod.string(),
   "currencyCode": zod.string()
@@ -3604,6 +3628,8 @@ export const userProductsListByScheduleResponse = zod.object({
   "productId": zod.number(),
   "variantId": zod.number(),
   "description": zod.string().optional(),
+  "hideFromProfile": zod.boolean(),
+  "hideFromCombine": zod.boolean(),
   "price": zod.object({
   "amount": zod.string(),
   "currencyCode": zod.string()
@@ -3665,6 +3691,8 @@ export const userProductGetResponse = zod.object({
   "productId": zod.number(),
   "variantId": zod.number(),
   "description": zod.string().optional(),
+  "hideFromProfile": zod.boolean(),
+  "hideFromCombine": zod.boolean(),
   "price": zod.object({
   "amount": zod.string(),
   "currencyCode": zod.string()
@@ -3730,6 +3758,8 @@ export const userProductsGetProductsResponse = zod.object({
   "productId": zod.number(),
   "variantId": zod.number(),
   "description": zod.string().optional(),
+  "hideFromProfile": zod.boolean(),
+  "hideFromCombine": zod.boolean(),
   "price": zod.object({
   "amount": zod.string(),
   "currencyCode": zod.string()
@@ -3783,6 +3813,8 @@ export const userProductsListByLocationResponse = zod.object({
   "productId": zod.number(),
   "variantId": zod.number(),
   "description": zod.string().optional(),
+  "hideFromProfile": zod.boolean(),
+  "hideFromCombine": zod.boolean(),
   "price": zod.object({
   "amount": zod.string(),
   "currencyCode": zod.string()
@@ -3866,6 +3898,8 @@ export const userScheduleGetByProductResponse = zod.object({
   "productId": zod.number(),
   "variantId": zod.number(),
   "description": zod.string().optional(),
+  "hideFromProfile": zod.boolean(),
+  "hideFromCombine": zod.boolean(),
   "price": zod.object({
   "amount": zod.string(),
   "currencyCode": zod.string()
@@ -3971,6 +4005,8 @@ export const userScheduleGetByLocationResponse = zod.object({
   "productId": zod.number(),
   "variantId": zod.number(),
   "description": zod.string().optional(),
+  "hideFromProfile": zod.boolean(),
+  "hideFromCombine": zod.boolean(),
   "price": zod.object({
   "amount": zod.string(),
   "currencyCode": zod.string()

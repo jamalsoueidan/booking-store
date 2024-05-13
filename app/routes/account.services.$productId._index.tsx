@@ -1,6 +1,11 @@
-import {FormProvider, getFormProps, useForm} from '@conform-to/react';
+import {
+  FormProvider,
+  getFormProps,
+  useForm,
+  useInputControl,
+} from '@conform-to/react';
 import {parseWithZod} from '@conform-to/zod';
-import {Divider, Flex, Stack, Text, Title} from '@mantine/core';
+import {Divider, Flex, Stack, Switch, Text, Title} from '@mantine/core';
 import {Form, useActionData, useLoaderData} from '@remix-run/react';
 import {
   json,
@@ -71,11 +76,6 @@ export async function loader({context, params}: LoaderFunctionArgs) {
     throw new Error('Missing productId param');
   }
 
-  const schedules = await getBookingShopifyApi().customerScheduleList(
-    customerId,
-    context,
-  );
-
   const locations = await getBookingShopifyApi().customerLocationList(
     customerId,
     context,
@@ -89,14 +89,17 @@ export async function loader({context, params}: LoaderFunctionArgs) {
     );
 
   return json({
-    defaultValue,
+    defaultValue: {
+      ...defaultValue,
+      hideFromCombine: defaultValue.hideFromCombine.toString(),
+      hideFromProfile: defaultValue.hideFromProfile.toString(),
+    },
     locations: locations.payload,
-    schedules: schedules.payload,
   });
 }
 
 export default function EditAddress() {
-  const {locations, schedules, defaultValue} = useLoaderData<typeof loader>();
+  const {locations, defaultValue} = useLoaderData<typeof loader>();
   const lastResult = useActionData<typeof action>();
 
   const [form, fields] = useForm({
@@ -111,15 +114,43 @@ export default function EditAddress() {
     shouldRevalidate: 'onInput',
   });
 
-  const selectSchedules = schedules.map((schedule) => ({
-    value: schedule._id,
-    label: schedule.name,
-  }));
+  const hideFromProfile = useInputControl(fields.hideFromProfile);
+  const hideFromCombine = useInputControl(fields.hideFromCombine);
 
   return (
     <FormProvider context={form.context}>
       <Form method="post" {...getFormProps(form)}>
         <FlexInnerForm>
+          <Title order={3}>Synlighed</Title>
+          <Flex direction={{base: 'column', md: 'row'}} gap="md">
+            <Stack gap="0" style={{flex: 1}}>
+              <Text fw="bold">Skjul:</Text>
+              <Text>Skjul fra evt. profil siden eller kombinere siden?</Text>
+            </Stack>
+            <Stack style={{flex: 1}}>
+              <Switch
+                label="Skjul fra 'profil' siden"
+                defaultChecked={fields.hideFromProfile.initialValue === 'true'}
+                onChange={(event) => {
+                  hideFromProfile.change(
+                    event.currentTarget.checked.toString(),
+                  );
+                }}
+              />
+              <Switch
+                label="Skjul fra 'køb flere' siden"
+                defaultChecked={fields.hideFromCombine.initialValue === 'true'}
+                onChange={(event) => {
+                  hideFromCombine.change(
+                    event.currentTarget.checked.toString(),
+                  );
+                }}
+              />
+            </Stack>
+          </Flex>
+
+          <Divider />
+
           <Title order={3}>Pris</Title>
           <Flex direction={{base: 'column', md: 'row'}} gap="md">
             <Stack gap="0" style={{flex: 1}}>

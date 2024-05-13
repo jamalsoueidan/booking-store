@@ -234,6 +234,10 @@ components:
           type: number
         description:
           type: string
+        hideFromProfile:
+          type: boolean
+        hideFromCombine:
+          type: boolean
         price:
           type: object
           properties:
@@ -272,6 +276,8 @@ components:
         - noticePeriod
         - bookingPeriod
         - options
+        - hideFromCombine
+        - hideFromProfile
     CustomerProduct:
       type: object
       allOf:
@@ -350,6 +356,10 @@ components:
     CustomerProductUpdateBody:
       type: object
       properties:
+        hideFromProfile:
+          type: string
+        hideFromCombine:
+          type: string
         price:
           type: object
           properties:
@@ -400,6 +410,10 @@ components:
           $ref: '#/components/schemas/CustomerProductLocations'
         scheduleId:
           type: string
+        hideFromProfile:
+          type: string
+        hideFromCombine:
+          type: string
         price:
           type: object
           properties:
@@ -419,6 +433,8 @@ components:
         - title
         - scheduleId
         - locations
+        - hideFromProfile
+        - hideFromCombine
         - price
         - compareAtPrice
     CustomerProductDestroyResponse:

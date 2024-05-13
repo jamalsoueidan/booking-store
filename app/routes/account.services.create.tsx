@@ -23,6 +23,7 @@ import {
   ScrollArea,
   Select,
   Stack,
+  Switch,
   Text,
   TextInput,
   Title,
@@ -106,6 +107,8 @@ export async function loader({context}: LoaderFunctionArgs) {
     schedules,
     collections,
     defaultValue: {
+      hideFromCombine: 'false',
+      hideFromProfile: 'false',
       scheduleId: schedules[0]._id,
       compareAtPrice: {
         amount: '0',
@@ -131,6 +134,7 @@ export default function AccountServicesCreate() {
     useLoaderData<typeof loader>();
   const lastResult = useActionData<typeof action>();
   const [collectionId, setCollectionId] = useState<string | null>(null);
+  const [title, setTitle] = useState<string>('');
 
   const [form, fields] = useForm({
     lastResult,
@@ -149,14 +153,13 @@ export default function AccountServicesCreate() {
     shouldRevalidate: 'onInput',
   });
 
-  console.log(defaultValue);
-
   const selectSchedules = schedules.map((schedule) => ({
     value: schedule._id,
     label: schedule.name,
   }));
 
-  const collection = collections.nodes.find((c) => c.id === collectionId);
+  const hideFromProfile = useInputControl(fields.hideFromProfile);
+  const hideFromCombine = useInputControl(fields.hideFromCombine);
 
   return (
     <>
@@ -193,6 +196,7 @@ export default function AccountServicesCreate() {
                 </Stack>
                 <div style={{flex: 1}}>
                   <SelectSearchable
+                    onChange={setTitle}
                     placeholder="-"
                     collectionId={collectionId}
                     field={fields.parentId}
@@ -201,6 +205,53 @@ export default function AccountServicesCreate() {
               </Flex>
 
               <Divider />
+
+              <Title order={3}>Title & Beskrivelse</Title>
+
+              <Flex direction={{base: 'column', md: 'row'}} gap="md">
+                <Stack gap="0" style={{flex: 1}}>
+                  <Text fw="bold">Title:</Text>
+                  <Text>Ændre title på ydelsen?</Text>
+                </Stack>
+                <div style={{flex: 1}}>
+                  <TextInput
+                    value={title}
+                    disabled={title === ''}
+                    name={fields.title.name}
+                    onChange={(event: any) => setTitle(event.target.value)}
+                  />
+                </div>
+              </Flex>
+
+              <Flex direction={{base: 'column', md: 'row'}} gap="md">
+                <Stack gap="0" style={{flex: 1}}>
+                  <Text fw="bold">Skjul:</Text>
+                  <Text>
+                    Skjul fra evt. profil siden eller kombinere siden?
+                  </Text>
+                </Stack>
+                <Stack style={{flex: 1}}>
+                  <Switch
+                    label="Skjul fra 'profil' siden"
+                    onChange={(event) => {
+                      hideFromProfile.change(
+                        event.currentTarget.checked.toString(),
+                      );
+                    }}
+                  />
+                  <Switch
+                    label="Skjul fra 'køb flere' siden"
+                    onChange={(event) => {
+                      hideFromCombine.change(
+                        event.currentTarget.checked.toString(),
+                      );
+                    }}
+                  />
+                </Stack>
+              </Flex>
+
+              <Divider />
+
               <Title order={3}>Pris</Title>
               <Flex direction={{base: 'column', md: 'row'}} gap="md">
                 <Stack gap="0" style={{flex: 1}}>
@@ -258,14 +309,18 @@ export default function AccountServicesCreate() {
                   <Text fw="bold">Vagtplan for denne ydelse:</Text>
                   <Text>Tilknyt denne ydelse med en vagtplan</Text>
                 </Stack>
-                <Select
-                  style={{flex: 1}}
-                  data={selectSchedules}
-                  {...getSelectProps(fields.scheduleId)}
-                  allowDeselect={false}
-                  defaultValue={fields.scheduleId.initialValue}
-                  data-testid="schedules-select"
-                />
+                <Stack gap="0" style={{flex: 1}}>
+                  <Select
+                    data={selectSchedules}
+                    {...getSelectProps(fields.scheduleId)}
+                    allowDeselect={false}
+                    defaultValue={fields.scheduleId.initialValue}
+                    data-testid="schedules-select"
+                  />
+                  <Text fz="xs" c="dimmed">
+                    Kan ikke ændres senere!
+                  </Text>
+                </Stack>
               </Flex>
               <SubmitButton>Tilføj ny ydelse</SubmitButton>
             </FlexInnerForm>
@@ -280,12 +335,14 @@ export type SelectSearchableProps = {
   placeholder?: string;
   field: FieldMetadata<string>;
   collectionId?: string | null;
+  onChange: (value: string) => void;
 };
 
 export function SelectSearchable({
   placeholder,
   field,
   collectionId,
+  onChange,
 }: SelectSearchableProps) {
   const combobox = useCombobox({
     onDropdownClose: () => combobox.resetSelectedOption(),
@@ -309,6 +366,7 @@ export function SelectSearchable({
 
   useEffect(() => {
     setTitle('');
+    onChange('');
     control.change('');
     if (collectionId) {
       fetchOptions('');
@@ -329,13 +387,13 @@ export function SelectSearchable({
 
   return (
     <>
-      <input type="hidden" value={title} name="title" />
       <Combobox
         onOptionSubmit={(optionValue) => {
           const node = fetcher.data?.find(
             (item) => parseGid(item.id).id === optionValue,
           );
           if (node?.title) {
+            onChange(node?.title);
             setTitle(node?.title);
           }
           control.change(optionValue);
