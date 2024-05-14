@@ -12,7 +12,6 @@ import {
   type ActionFunctionArgs,
   type LoaderFunctionArgs,
 } from '@shopify/remix-oxygen';
-import {z} from 'zod';
 
 import {useInputControl, type FieldMetadata} from '@conform-to/react';
 import {
@@ -24,6 +23,7 @@ import {
   ScrollArea,
   Select,
   Stack,
+  Switch,
   Text,
   TextInput,
   Title,
@@ -38,34 +38,19 @@ import type {loader as accountApiProductsLoader} from '~/routes/account.api.prod
 
 import {getBookingShopifyApi} from '~/lib/api/bookingShopifyApi';
 
-import {CacheLong, parseGid} from '@shopify/hydrogen';
+import {parseGid} from '@shopify/hydrogen';
 import {redirectWithSuccess} from 'remix-toast';
+import {type z} from 'zod';
 import {AccountContent} from '~/components/account/AccountContent';
 import {AccountTitle} from '~/components/account/AccountTitle';
 import {NumericInput} from '~/components/form/NumericInput';
 import {FlexInnerForm} from '~/components/tiny/FlexInnerForm';
+import {Categories} from '~/graphql/categories/Categories';
 import {baseURL} from '~/lib/api/mutator/query-client';
-import {parseTE} from '~/lib/clean';
-import {createOrFindProductVariant} from '~/lib/create-or-find-variant';
 import {getCustomer} from '~/lib/get-customer';
 import {customerProductAddBody} from '~/lib/zod/bookingShopifyApi';
-import {COLLECTIONS_QUERY} from './categories';
 
-const schema = customerProductAddBody
-  .omit({
-    variantId: true,
-    selectedOptions: true,
-    price: true,
-    compareAtPrice: true,
-    productHandle: true,
-  })
-  .extend({
-    scheduleId: z.string().min(1),
-    price: z.number(),
-    compareAtPrice: z.number(),
-  });
-
-type DefaultValues = z.infer<typeof schema>;
+const schema = customerProductAddBody;
 
 export const action = async ({request, context}: ActionFunctionArgs) => {
   const customerId = await getCustomer({context});
@@ -79,29 +64,18 @@ export const action = async ({request, context}: ActionFunctionArgs) => {
   }
 
   try {
-    const variant = await createOrFindProductVariant({
-      productId: submission.value.productId,
-      price: submission.value.price,
-      compareAtPrice: submission.value.compareAtPrice,
-      storefront: context.storefront,
-    });
-
-    await getBookingShopifyApi().customerProductAdd(customerId, {
-      ...submission.value,
-      ...variant,
-      compareAtPrice: variant.compareAtPrice,
-    });
+    const {payload: product} = await getBookingShopifyApi().customerProductAdd(
+      customerId,
+      submission.value,
+    );
 
     await context.storefront.cache?.delete(
       `${baseURL}/customer/${customerId}/products`,
     );
 
-    return redirectWithSuccess(
-      `/account/services/${submission.value.productId}`,
-      {
-        message: 'Ydelsen er nu oprettet!',
-      },
-    );
+    return redirectWithSuccess(`/account/services/${product.productId}`, {
+      message: 'Ydelsen er nu oprettet!',
+    });
   } catch (error) {
     return submission.reply();
   }
@@ -110,10 +84,7 @@ export const action = async ({request, context}: ActionFunctionArgs) => {
 export async function loader({context}: LoaderFunctionArgs) {
   const customerId = await getCustomer({context});
 
-  const {collections} = await context.storefront.query(COLLECTIONS_QUERY, {
-    variables: {first: 20, endCursor: null},
-    cache: CacheLong(),
-  });
+  const {collection} = await context.storefront.query(Categories);
 
   const {payload: schedules} =
     await getBookingShopifyApi().customerScheduleList(customerId, context);
@@ -130,11 +101,19 @@ export async function loader({context}: LoaderFunctionArgs) {
   return json({
     locations,
     schedules,
-    collections,
+    collection,
     defaultValue: {
+      hideFromCombine: 'false',
+      hideFromProfile: 'false',
       scheduleId: schedules[0]._id,
-      compareAtPrice: 0,
-      price: 0,
+      compareAtPrice: {
+        amount: '0',
+        currencyCode: 'DKK',
+      },
+      price: {
+        amount: '0',
+        currencyCode: 'DKK',
+      },
       locations: [
         {
           location: findDefaultLocation?._id,
@@ -142,15 +121,16 @@ export async function loader({context}: LoaderFunctionArgs) {
           originType: findDefaultLocation?.originType,
         },
       ],
-    } as DefaultValues,
+    } as z.infer<typeof schema>,
   });
 }
 
 export default function AccountServicesCreate() {
-  const {locations, defaultValue, schedules, collections} =
+  const {locations, defaultValue, schedules, collection} =
     useLoaderData<typeof loader>();
   const lastResult = useActionData<typeof action>();
   const [collectionId, setCollectionId] = useState<string | null>(null);
+  const [title, setTitle] = useState<string>('');
 
   const [form, fields] = useForm({
     lastResult,
@@ -169,6 +149,9 @@ export default function AccountServicesCreate() {
     label: schedule.name,
   }));
 
+  const hideFromProfile = useInputControl(fields.hideFromProfile);
+  const hideFromCombine = useInputControl(fields.hideFromCombine);
+
   return (
     <>
       <AccountTitle linkBack="/account/services" heading="Opret en ydelse" />
@@ -186,9 +169,9 @@ export default function AccountServicesCreate() {
                 <div style={{flex: 1}}>
                   <Select
                     onChange={setCollectionId}
-                    data={collections.nodes.map((c) => ({
+                    data={collection?.children?.references?.nodes.map((c) => ({
                       value: parseGid(c.id).id,
-                      label: parseTE(c.title),
+                      label: c.title,
                     }))}
                     placeholder="-"
                     allowDeselect={false}
@@ -204,14 +187,62 @@ export default function AccountServicesCreate() {
                 </Stack>
                 <div style={{flex: 1}}>
                   <SelectSearchable
+                    onChange={setTitle}
                     placeholder="-"
                     collectionId={collectionId}
-                    field={fields.productId}
+                    field={fields.parentId}
                   />
                 </div>
               </Flex>
 
               <Divider />
+
+              <Title order={3}>Title & Beskrivelse</Title>
+
+              <Flex direction={{base: 'column', md: 'row'}} gap="md">
+                <Stack gap="0" style={{flex: 1}}>
+                  <Text fw="bold">Title:</Text>
+                  <Text>Ændre title på ydelsen?</Text>
+                </Stack>
+                <div style={{flex: 1}}>
+                  <TextInput
+                    value={title}
+                    disabled={title === ''}
+                    name={fields.title.name}
+                    onChange={(event: any) => setTitle(event.target.value)}
+                  />
+                </div>
+              </Flex>
+
+              <Flex direction={{base: 'column', md: 'row'}} gap="md">
+                <Stack gap="0" style={{flex: 1}}>
+                  <Text fw="bold">Skjul:</Text>
+                  <Text>
+                    Skjul fra evt. profil siden eller kombinere siden?
+                  </Text>
+                </Stack>
+                <Stack style={{flex: 1}}>
+                  <Switch
+                    label="Skjul fra 'profil' siden"
+                    onChange={(event) => {
+                      hideFromProfile.change(
+                        event.currentTarget.checked.toString(),
+                      );
+                    }}
+                  />
+                  <Switch
+                    label="Skjul fra 'køb flere' siden"
+                    onChange={(event) => {
+                      hideFromCombine.change(
+                        event.currentTarget.checked.toString(),
+                      );
+                    }}
+                  />
+                </Stack>
+              </Flex>
+
+              <Divider />
+
               <Title order={3}>Pris</Title>
               <Flex direction={{base: 'column', md: 'row'}} gap="md">
                 <Stack gap="0" style={{flex: 1}}>
@@ -269,14 +300,18 @@ export default function AccountServicesCreate() {
                   <Text fw="bold">Vagtplan for denne ydelse:</Text>
                   <Text>Tilknyt denne ydelse med en vagtplan</Text>
                 </Stack>
-                <Select
-                  style={{flex: 1}}
-                  data={selectSchedules}
-                  {...getSelectProps(fields.scheduleId)}
-                  allowDeselect={false}
-                  defaultValue={fields.scheduleId.initialValue}
-                  data-testid="schedules-select"
-                />
+                <Stack gap="0" style={{flex: 1}}>
+                  <Select
+                    data={selectSchedules}
+                    {...getSelectProps(fields.scheduleId)}
+                    allowDeselect={false}
+                    defaultValue={fields.scheduleId.initialValue}
+                    data-testid="schedules-select"
+                  />
+                  <Text fz="xs" c="dimmed">
+                    Kan ikke ændres senere!
+                  </Text>
+                </Stack>
               </Flex>
               <SubmitButton>Tilføj ny ydelse</SubmitButton>
             </FlexInnerForm>
@@ -291,12 +326,14 @@ export type SelectSearchableProps = {
   placeholder?: string;
   field: FieldMetadata<string>;
   collectionId?: string | null;
+  onChange: (value: string) => void;
 };
 
 export function SelectSearchable({
   placeholder,
   field,
   collectionId,
+  onChange,
 }: SelectSearchableProps) {
   const combobox = useCombobox({
     onDropdownClose: () => combobox.resetSelectedOption(),
@@ -320,6 +357,7 @@ export function SelectSearchable({
 
   useEffect(() => {
     setTitle('');
+    onChange('');
     control.change('');
     if (collectionId) {
       fetchOptions('');
@@ -346,6 +384,7 @@ export function SelectSearchable({
             (item) => parseGid(item.id).id === optionValue,
           );
           if (node?.title) {
+            onChange(node?.title);
             setTitle(node?.title);
           }
           control.change(optionValue);

@@ -6,7 +6,7 @@ import {Image} from '@shopify/hydrogen';
 import {IconArrowLeft} from '@tabler/icons-react';
 import type {ProductVariantFragment} from 'storefrontapi.generated';
 import {ArtistShell} from '~/components/ArtistShell';
-import {PRODUCT_SELECTED_OPTIONS_QUERY} from '~/data/queries';
+import {ArtistTreatment} from '~/graphql/artist/ArtistTreatment';
 import {UserProvider} from '~/hooks/use-user';
 import {getBookingShopifyApi} from '~/lib/api/bookingShopifyApi';
 
@@ -18,7 +18,7 @@ export const meta: MetaFunction<typeof loader> = ({data}) => {
   return [{title: `BySisters | ${data?.product.title ?? ''}`}];
 };
 
-export async function loader({params, request, context}: LoaderFunctionArgs) {
+export async function loader({params, context}: LoaderFunctionArgs) {
   const {username, productHandle} = params;
   const {storefront} = context;
 
@@ -26,21 +26,14 @@ export async function loader({params, request, context}: LoaderFunctionArgs) {
     throw new Response('Expected product handle to be defined', {status: 404});
   }
 
-  const {payload: artist} = await getBookingShopifyApi().userGet(username);
-
-  const {payload: userProduct} = await getBookingShopifyApi().userProductGet(
+  const {payload: user} = await getBookingShopifyApi().userGet(
     username,
-    productHandle,
+    context,
   );
 
-  if (!productHandle || !userProduct.selectedOptions) {
-    throw new Error('productHandle and selectedOptions must be provided');
-  }
-
-  const {product} = await storefront.query(PRODUCT_SELECTED_OPTIONS_QUERY, {
+  const {product} = await storefront.query(ArtistTreatment, {
     variables: {
       productHandle,
-      selectedOptions: userProduct.selectedOptions,
     },
   });
 
@@ -50,14 +43,14 @@ export async function loader({params, request, context}: LoaderFunctionArgs) {
     });
   }
 
-  return json({product, artist, userProduct});
+  return json({product, user});
 }
 
 export default function Product() {
-  const {product, artist, userProduct} = useLoaderData<typeof loader>();
+  const {product, user} = useLoaderData<typeof loader>();
 
   return (
-    <UserProvider user={artist}>
+    <UserProvider user={user}>
       <ArtistShell>
         <ArtistShell.Header>
           <Flex
@@ -70,7 +63,7 @@ export default function Product() {
               p="0"
               variant="transparent"
               component={Link}
-              to={`/artist/${artist.username}`}
+              to={`/artist/${user.username}`}
               c="black"
               leftSection={
                 <IconArrowLeft
@@ -79,10 +72,10 @@ export default function Product() {
                 />
               }
               rightSection={
-                <Avatar src={artist.images?.profile?.url} size="md" />
+                <Avatar src={user.images?.profile?.url} size="md" />
               }
             >
-              {artist.fullname}
+              {user.fullname}
             </Button>
             <Flex justify="space-between" align="center" w="100%">
               <Title order={1} fw="500" fz={{base: 24, sm: 36}}>
@@ -92,7 +85,7 @@ export default function Product() {
           </Flex>
         </ArtistShell.Header>
 
-        <Outlet context={{product, userProduct}} />
+        <Outlet context={{product, user}} />
       </ArtistShell>
     </UserProvider>
   );

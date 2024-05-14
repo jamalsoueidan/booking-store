@@ -44,7 +44,6 @@ import {
   loader as loaderProfessions,
   type Profession,
 } from './api.users.professions';
-import {COLLECTIONS_QUERY} from './categories';
 
 export function shouldRevalidate() {
   return false;
@@ -83,10 +82,6 @@ export async function loader(args: LoaderFunctionArgs) {
     },
   );
 
-  const collections = await context.storefront.query(COLLECTIONS_QUERY, {
-    variables: {first: 10},
-  });
-
   const components = await context.storefront.query(METAFIELD_QUERY, {
     variables: {
       handle: 'index',
@@ -98,7 +93,6 @@ export async function loader(args: LoaderFunctionArgs) {
     {
       recommendedTreatmentsProductsUsers,
       recommendedTreatments,
-      collections,
       artists,
       components,
       professions,

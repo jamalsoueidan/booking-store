@@ -1,12 +1,11 @@
 import {
   FormProvider,
   getFormProps,
-  getInputProps,
-  getSelectProps,
   useForm,
+  useInputControl,
 } from '@conform-to/react';
 import {parseWithZod} from '@conform-to/zod';
-import {Divider, Flex, Select, Stack, Text, Title} from '@mantine/core';
+import {Divider, Flex, Stack, Switch, Text, Title} from '@mantine/core';
 import {Form, useActionData, useLoaderData} from '@remix-run/react';
 import {
   json,
@@ -14,21 +13,16 @@ import {
   type LoaderFunctionArgs,
 } from '@shopify/remix-oxygen';
 import {redirectWithSuccess} from 'remix-toast';
-import {z} from 'zod';
 import {NumericInput} from '~/components/form/NumericInput';
 import {SubmitButton} from '~/components/form/SubmitButton';
 import {SwitchGroupLocations} from '~/components/form/SwitchGroupLocations';
 import {FlexInnerForm} from '~/components/tiny/FlexInnerForm';
 import {getBookingShopifyApi} from '~/lib/api/bookingShopifyApi';
 import {baseURL} from '~/lib/api/mutator/query-client';
-import {createOrFindProductVariant} from '~/lib/create-or-find-variant';
 import {getCustomer} from '~/lib/get-customer';
 import {customerProductUpdateBody} from '~/lib/zod/bookingShopifyApi';
 
-const schema = customerProductUpdateBody.extend({
-  price: z.number(),
-  compareAtPrice: z.number(),
-});
+const schema = customerProductUpdateBody;
 
 export const action = async ({
   request,
@@ -52,19 +46,11 @@ export const action = async ({
   }
 
   try {
-    const values = submission.value;
-    const variant = await createOrFindProductVariant({
+    await getBookingShopifyApi().customerProductUpdate(
+      customerId,
       productId,
-      price: values.price,
-      compareAtPrice: values.compareAtPrice,
-      storefront: context.storefront,
-    });
-
-    await getBookingShopifyApi().customerProductUpdate(customerId, productId, {
-      ...values,
-      ...variant,
-      compareAtPrice: variant.compareAtPrice,
-    });
+      submission.value,
+    );
 
     await context.storefront.cache?.delete(
       `${baseURL}/customer/${customerId}/products`,
@@ -87,20 +73,15 @@ export async function loader({context, params}: LoaderFunctionArgs) {
 
   const {productId} = params;
   if (!productId) {
-    throw new Error('Missing productHandle param, check route filename');
+    throw new Error('Missing productId param');
   }
-
-  const schedules = await getBookingShopifyApi().customerScheduleList(
-    customerId,
-    context,
-  );
 
   const locations = await getBookingShopifyApi().customerLocationList(
     customerId,
     context,
   );
 
-  const {payload: customerProduct} =
+  const {payload: defaultValue} =
     await getBookingShopifyApi().customerProductGet(
       customerId,
       productId,
@@ -109,21 +90,16 @@ export async function loader({context, params}: LoaderFunctionArgs) {
 
   return json({
     defaultValue: {
-      ...customerProduct,
-      price: parseInt(customerProduct.price.amount),
-      compareAtPrice: customerProduct.compareAtPrice?.amount
-        ? parseInt(customerProduct.compareAtPrice?.amount)
-        : 0,
-      variantId: customerProduct.variantId.toString(),
-      productId: customerProduct.productId.toString(),
+      ...defaultValue,
+      hideFromCombine: defaultValue.hideFromCombine.toString(),
+      hideFromProfile: defaultValue.hideFromProfile.toString(),
     },
     locations: locations.payload,
-    schedules: schedules.payload,
   });
 }
 
 export default function EditAddress() {
-  const {locations, schedules, defaultValue} = useLoaderData<typeof loader>();
+  const {locations, defaultValue} = useLoaderData<typeof loader>();
   const lastResult = useActionData<typeof action>();
 
   const [form, fields] = useForm({
@@ -138,16 +114,42 @@ export default function EditAddress() {
     shouldRevalidate: 'onInput',
   });
 
-  const selectSchedules = schedules.map((schedule) => ({
-    value: schedule._id,
-    label: schedule.name,
-  }));
+  const hideFromProfile = useInputControl(fields.hideFromProfile);
+  const hideFromCombine = useInputControl(fields.hideFromCombine);
 
   return (
     <FormProvider context={form.context}>
       <Form method="post" {...getFormProps(form)}>
         <FlexInnerForm>
-          <input {...getInputProps(fields.productId, {type: 'hidden'})} />
+          <Title order={3}>Synlighed</Title>
+          <Flex direction={{base: 'column', md: 'row'}} gap="md">
+            <Stack gap="0" style={{flex: 1}}>
+              <Text fw="bold">Skjul:</Text>
+              <Text>Skjul fra evt. profil siden eller kombinere siden?</Text>
+            </Stack>
+            <Stack style={{flex: 1}}>
+              <Switch
+                label="Skjul fra 'profil' siden"
+                defaultChecked={fields.hideFromProfile.initialValue === 'true'}
+                onChange={(event) => {
+                  hideFromProfile.change(
+                    event.currentTarget.checked.toString(),
+                  );
+                }}
+              />
+              <Switch
+                label="Skjul fra 'køb flere' siden"
+                defaultChecked={fields.hideFromCombine.initialValue === 'true'}
+                onChange={(event) => {
+                  hideFromCombine.change(
+                    event.currentTarget.checked.toString(),
+                  );
+                }}
+              />
+            </Stack>
+          </Flex>
+
+          <Divider />
 
           <Title order={3}>Pris</Title>
           <Flex direction={{base: 'column', md: 'row'}} gap="md">
@@ -198,23 +200,7 @@ export default function EditAddress() {
               data={locations}
             />
           </Flex>
-
           <Divider />
-          <Title order={3}>Vagtplan</Title>
-          <Flex direction={{base: 'column', md: 'row'}} gap="md">
-            <Stack gap="0" style={{flex: 1}}>
-              <Text fw="bold">Vagtplan for denne ydelse:</Text>
-              <Text>Tilknyt denne ydelse med en vagtplan</Text>
-            </Stack>
-            <Select
-              style={{flex: 1}}
-              data={selectSchedules}
-              {...getSelectProps(fields.scheduleId)}
-              allowDeselect={false}
-              defaultValue={fields.scheduleId.initialValue}
-              data-testid="schedules-select"
-            />
-          </Flex>
 
           <SubmitButton>Gem ændringer</SubmitButton>
         </FlexInnerForm>

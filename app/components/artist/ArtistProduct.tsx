@@ -1,39 +1,26 @@
-import {
-  Badge,
-  Button,
-  Card,
-  Flex,
-  Group,
-  Stack,
-  Text,
-  Title,
-  rem,
-} from '@mantine/core';
+import {Badge, Card, Flex, Group, Stack, Text, Title, rem} from '@mantine/core';
 import {Link} from '@remix-run/react';
-import {Money, parseGid} from '@shopify/hydrogen';
+import {parseGid} from '@shopify/hydrogen';
 import {IconCalendar} from '@tabler/icons-react';
-import {type ArtistServicesProductsQuery} from 'storefrontapi.generated';
+import {type ArtistTreatmentProductFragment} from 'storefrontapi.generated';
 import {useUser} from '~/hooks/use-user';
-import type {CustomerProductList} from '~/lib/api/model';
-import {parseTE} from '~/lib/clean';
+import {type CustomerLocationBase} from '~/lib/api/model';
 import {durationToTime} from '~/lib/duration';
 import {LocationIcon} from '../LocationIcon';
 import classes from './ArtistProduct.module.css';
+import {PriceBadge} from './PriceBadge';
 
 export type ArtistProductProps = {
-  product: ArtistServicesProductsQuery['products']['nodes'][number];
-  services: CustomerProductList[];
+  product: ArtistTreatmentProductFragment;
 };
 
-export function ArtistProduct({product, services}: ArtistProductProps) {
+export function ArtistProduct({product}: ArtistProductProps) {
   const user = useUser();
-  const artistService = services.find(
-    ({productId}) => productId.toString() === parseGid(product.id).id,
-  );
 
-  const collection = product.collections.nodes.find((p) =>
-    p.title.includes('treatments'),
-  );
+  const productId = parseGid(product?.id).id;
+  const locations: Array<
+    Pick<CustomerLocationBase, 'locationType' | 'originType'>
+  > = JSON.parse(product.locations?.value || '') as any;
 
   return (
     <Card
@@ -45,18 +32,19 @@ export function ArtistProduct({product, services}: ArtistProductProps) {
       radius="xl"
       px="md"
       py="lg"
-      data-testid={`service-item-${artistService?.productId}`}
+      data-testid={`service-item-${productId}`}
       to={`treatment/${product.handle}`}
     >
       <Flex direction="column" gap={rem(48)} h="100%">
         <Stack gap="6px" style={{flex: 1}}>
           <Flex justify="space-between">
             <Badge c={`${user.theme.color}.6`} color={`${user.theme.color}.1`}>
-              {artistService?.scheduleName}
+              {product.productType}
             </Badge>
             <Flex gap="4px">
-              {artistService?.locations.map((location) => (
-                <LocationIcon key={location.location} location={location} />
+              {locations.map((location, index) => (
+                // eslint-disable-next-line react/no-array-index-key
+                <LocationIcon key={index} location={location} />
               ))}
             </Flex>
           </Flex>
@@ -65,16 +53,20 @@ export function ArtistProduct({product, services}: ArtistProductProps) {
             size={rem(24)}
             fw={600}
             lts=".5px"
-            data-testid={`service-title-${artistService?.productId}`}
+            data-testid={`service-title-${productId}`}
           >
             {product.title}
           </Title>
 
-          <Text c="dimmed" size="md" fw={400} lineClamp={3}>
-            {artistService?.description ||
-              product.description ||
-              'ingen beskrivelse'}
-          </Text>
+          <Text
+            c="dimmed"
+            size="md"
+            fw={400}
+            lineClamp={3}
+            dangerouslySetInnerHTML={{
+              __html: product?.descriptionHtml || 'ingen beskrivelse',
+            }}
+          ></Text>
         </Stack>
 
         <Group
@@ -85,45 +77,20 @@ export function ArtistProduct({product, services}: ArtistProductProps) {
           py="sm"
           style={{borderRadius: '25px'}}
         >
-          <Flex gap="4px">
+          <Flex gap="4px" align="center">
             <IconCalendar
-              style={{width: rem(44), height: rem(44)}}
+              style={{width: rem(32), height: rem(32)}}
               stroke="1"
             />
-            <Flex direction="column">
-              <Text
-                fw="bold"
-                data-testid={`service-duration-text-${artistService?.productId}`}
-              >
-                {durationToTime(artistService?.duration ?? 0)}
-              </Text>
-              <Text
-                c="dimmed"
-                fz="xs"
-                data-testid={`service-collection-text-${artistService?.productId}`}
-              >
-                {parseTE(collection?.title || '')}
-              </Text>
-            </Flex>
+            <Text fw="bold" data-testid={`service-duration-text-${productId}`}>
+              {durationToTime(product.duration?.value || 0)}
+            </Text>
           </Flex>
 
-          <Button
-            variant="outline"
-            size="xs"
-            color="black"
-            radius="xl"
-            data-testid={`service-button-${artistService?.productId}`}
-          >
-            {artistService?.price ? (
-              <>
-                {artistService?.options && artistService.options.length > 0
-                  ? 'FRA'
-                  : null}
-                &#160;
-                <Money as="span" data={artistService?.price as any} />
-              </>
-            ) : null}
-          </Button>
+          <PriceBadge
+            compareAtPrice={product.variants.nodes[0].compareAtPrice}
+            price={product.variants.nodes[0].price}
+          />
         </Group>
       </Flex>
     </Card>

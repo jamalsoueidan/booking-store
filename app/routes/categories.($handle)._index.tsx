@@ -13,14 +13,11 @@ import {TreatmentCard} from '~/components/treatment/TreatmentCard';
 import {PRODUCT_ITEM_FRAGMENT} from '~/data/fragments';
 import {getBookingShopifyApi} from '~/lib/api/bookingShopifyApi';
 import type {ProductsGetUsersImage} from '~/lib/api/model';
-import {parseTE} from '~/lib/clean';
 
 export const meta: MetaFunction<typeof loader> = ({data}) => {
   return [
     {
-      title: `BySisters | ${
-        parseTE(data?.collection.title || '') ?? ''
-      } Kollektion`,
+      title: `BySisters | ${data?.collection.title ?? ''}`,
     },
   ];
 };
