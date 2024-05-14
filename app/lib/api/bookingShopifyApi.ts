@@ -116,7 +116,7 @@ type SecondParameter<T extends (...args: any) => any> = Parameters<T>[1];
 export const getBookingShopifyApi = () => {
   /**
    * This endpoint creates new user
-   * @summary PUT Create user
+   * @summary POST Create user
    */
   const customerCreate = (
     customerCreateBody: BodyType<CustomerCreateBody>,

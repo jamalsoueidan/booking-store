@@ -11,6 +11,7 @@ import type {UserTheme} from './userTheme';
 export interface User {
   aboutMe: string;
   active: boolean;
+  collectionMetaobjectId: string;
   customerId: number;
   email: string;
   fullname: string;
@@ -24,6 +25,7 @@ export interface User {
   speaks: string[];
   specialties: string[];
   theme: UserTheme;
+  userMetaobjectId: string;
   username: string;
   yearsExperience: string;
 }

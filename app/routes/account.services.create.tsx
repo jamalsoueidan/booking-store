@@ -45,7 +45,8 @@ import {AccountContent} from '~/components/account/AccountContent';
 import {AccountTitle} from '~/components/account/AccountTitle';
 import {NumericInput} from '~/components/form/NumericInput';
 import {FlexInnerForm} from '~/components/tiny/FlexInnerForm';
-import {Categories} from '~/graphql/categories/Categories';
+
+import {Categories} from '~/graphql/storefront/Categories';
 import {baseURL} from '~/lib/api/mutator/query-client';
 import {getCustomer} from '~/lib/get-customer';
 import {customerProductAddBody} from '~/lib/zod/bookingShopifyApi';
