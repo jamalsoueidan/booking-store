@@ -38,18 +38,17 @@ import type {loader as accountApiProductsLoader} from '~/routes/account.api.prod
 
 import {getBookingShopifyApi} from '~/lib/api/bookingShopifyApi';
 
-import {CacheLong, parseGid} from '@shopify/hydrogen';
+import {parseGid} from '@shopify/hydrogen';
 import {redirectWithSuccess} from 'remix-toast';
 import {type z} from 'zod';
 import {AccountContent} from '~/components/account/AccountContent';
 import {AccountTitle} from '~/components/account/AccountTitle';
 import {NumericInput} from '~/components/form/NumericInput';
 import {FlexInnerForm} from '~/components/tiny/FlexInnerForm';
+import {Categories} from '~/graphql/categories/Categories';
 import {baseURL} from '~/lib/api/mutator/query-client';
-import {parseTE} from '~/lib/clean';
 import {getCustomer} from '~/lib/get-customer';
 import {customerProductAddBody} from '~/lib/zod/bookingShopifyApi';
-import {COLLECTIONS_QUERY} from './categories';
 
 const schema = customerProductAddBody;
 
@@ -85,10 +84,7 @@ export const action = async ({request, context}: ActionFunctionArgs) => {
 export async function loader({context}: LoaderFunctionArgs) {
   const customerId = await getCustomer({context});
 
-  const {collections} = await context.storefront.query(COLLECTIONS_QUERY, {
-    variables: {first: 20, endCursor: null},
-    cache: CacheLong(),
-  });
+  const {collection} = await context.storefront.query(Categories);
 
   const {payload: schedules} =
     await getBookingShopifyApi().customerScheduleList(customerId, context);
@@ -105,7 +101,7 @@ export async function loader({context}: LoaderFunctionArgs) {
   return json({
     locations,
     schedules,
-    collections,
+    collection,
     defaultValue: {
       hideFromCombine: 'false',
       hideFromProfile: 'false',
@@ -130,7 +126,7 @@ export async function loader({context}: LoaderFunctionArgs) {
 }
 
 export default function AccountServicesCreate() {
-  const {locations, defaultValue, schedules, collections} =
+  const {locations, defaultValue, schedules, collection} =
     useLoaderData<typeof loader>();
   const lastResult = useActionData<typeof action>();
   const [collectionId, setCollectionId] = useState<string | null>(null);
@@ -140,11 +136,6 @@ export default function AccountServicesCreate() {
     lastResult,
     defaultValue,
     onValidate({formData}) {
-      console.log(
-        parseWithZod(formData, {
-          schema,
-        }),
-      );
       return parseWithZod(formData, {
         schema,
       });
@@ -178,9 +169,9 @@ export default function AccountServicesCreate() {
                 <div style={{flex: 1}}>
                   <Select
                     onChange={setCollectionId}
-                    data={collections.nodes.map((c) => ({
+                    data={collection?.children?.references?.nodes.map((c) => ({
                       value: parseGid(c.id).id,
-                      label: parseTE(c.title),
+                      label: c.title,
                     }))}
                     placeholder="-"
                     allowDeselect={false}
