@@ -2143,6 +2143,91 @@ export type ArtistTreatmentIndexQuery = {
   };
 };
 
+export type CategoriesCollectionFragment = Pick<
+  StorefrontAPI.Collection,
+  'id' | 'title' | 'handle' | 'description'
+> & {
+  image?: StorefrontAPI.Maybe<
+    Pick<StorefrontAPI.Image, 'id' | 'url' | 'altText' | 'width' | 'height'>
+  >;
+  icon?: StorefrontAPI.Maybe<Pick<StorefrontAPI.Metafield, 'type' | 'value'>>;
+  color?: StorefrontAPI.Maybe<Pick<StorefrontAPI.Metafield, 'type' | 'value'>>;
+  children?: StorefrontAPI.Maybe<
+    Pick<StorefrontAPI.Metafield, 'id' | 'type'> & {
+      references?: StorefrontAPI.Maybe<{
+        nodes: Array<
+          Pick<
+            StorefrontAPI.Collection,
+            'id' | 'title' | 'handle' | 'description'
+          > & {
+            image?: StorefrontAPI.Maybe<
+              Pick<
+                StorefrontAPI.Image,
+                'id' | 'url' | 'altText' | 'width' | 'height'
+              >
+            >;
+            icon?: StorefrontAPI.Maybe<
+              Pick<StorefrontAPI.Metafield, 'type' | 'value'>
+            >;
+            color?: StorefrontAPI.Maybe<
+              Pick<StorefrontAPI.Metafield, 'type' | 'value'>
+            >;
+          }
+        >;
+      }>;
+    }
+  >;
+};
+
+export type CategoriesCollectionQueryVariables = StorefrontAPI.Exact<{
+  country?: StorefrontAPI.InputMaybe<StorefrontAPI.CountryCode>;
+  language?: StorefrontAPI.InputMaybe<StorefrontAPI.LanguageCode>;
+}>;
+
+export type CategoriesCollectionQuery = {
+  collection?: StorefrontAPI.Maybe<
+    Pick<
+      StorefrontAPI.Collection,
+      'id' | 'title' | 'handle' | 'description'
+    > & {
+      image?: StorefrontAPI.Maybe<
+        Pick<StorefrontAPI.Image, 'id' | 'url' | 'altText' | 'width' | 'height'>
+      >;
+      icon?: StorefrontAPI.Maybe<
+        Pick<StorefrontAPI.Metafield, 'type' | 'value'>
+      >;
+      color?: StorefrontAPI.Maybe<
+        Pick<StorefrontAPI.Metafield, 'type' | 'value'>
+      >;
+      children?: StorefrontAPI.Maybe<
+        Pick<StorefrontAPI.Metafield, 'id' | 'type'> & {
+          references?: StorefrontAPI.Maybe<{
+            nodes: Array<
+              Pick<
+                StorefrontAPI.Collection,
+                'id' | 'title' | 'handle' | 'description'
+              > & {
+                image?: StorefrontAPI.Maybe<
+                  Pick<
+                    StorefrontAPI.Image,
+                    'id' | 'url' | 'altText' | 'width' | 'height'
+                  >
+                >;
+                icon?: StorefrontAPI.Maybe<
+                  Pick<StorefrontAPI.Metafield, 'type' | 'value'>
+                >;
+                color?: StorefrontAPI.Maybe<
+                  Pick<StorefrontAPI.Metafield, 'type' | 'value'>
+                >;
+              }
+            >;
+          }>;
+        }
+      >;
+    }
+  >;
+};
+
 export type ProductCreateVariantFragment = Pick<
   StorefrontAPI.ProductVariant,
   'id' | 'title'
@@ -2841,47 +2926,6 @@ export type CollectionQuery = {
   >;
 };
 
-export type StoreTreatmentQueryVariables = StorefrontAPI.Exact<{
-  country?: StorefrontAPI.InputMaybe<StorefrontAPI.CountryCode>;
-  endCursor?: StorefrontAPI.InputMaybe<
-    StorefrontAPI.Scalars['String']['input']
-  >;
-  first?: StorefrontAPI.InputMaybe<StorefrontAPI.Scalars['Int']['input']>;
-  language?: StorefrontAPI.InputMaybe<StorefrontAPI.LanguageCode>;
-  last?: StorefrontAPI.InputMaybe<StorefrontAPI.Scalars['Int']['input']>;
-  startCursor?: StorefrontAPI.InputMaybe<
-    StorefrontAPI.Scalars['String']['input']
-  >;
-}>;
-
-export type StoreTreatmentQuery = {
-  collections: {
-    nodes: Array<
-      Pick<
-        StorefrontAPI.Collection,
-        'id' | 'title' | 'handle' | 'description'
-      > & {
-        image?: StorefrontAPI.Maybe<
-          Pick<
-            StorefrontAPI.Image,
-            'id' | 'url' | 'altText' | 'width' | 'height'
-          >
-        >;
-        icon?: StorefrontAPI.Maybe<
-          Pick<StorefrontAPI.Metafield, 'type' | 'value'>
-        >;
-        color?: StorefrontAPI.Maybe<
-          Pick<StorefrontAPI.Metafield, 'type' | 'value'>
-        >;
-      }
-    >;
-    pageInfo: Pick<
-      StorefrontAPI.PageInfo,
-      'hasNextPage' | 'hasPreviousPage' | 'startCursor' | 'endCursor'
-    >;
-  };
-};
-
 export type StoreCollectionsQueryVariables = StorefrontAPI.Exact<{
   country?: StorefrontAPI.InputMaybe<StorefrontAPI.CountryCode>;
   endCursor?: StorefrontAPI.InputMaybe<
@@ -3145,6 +3189,10 @@ interface GeneratedQueryTypes {
     return: ArtistTreatmentIndexQuery;
     variables: ArtistTreatmentIndexQueryVariables;
   };
+  '#graphql\n  #graphql\n  fragment CategoriesCollection on Collection {\n    id\n    title\n    handle\n    description\n    image {\n      id\n      url\n      altText\n      width\n      height\n    }\n    icon:  metafield(namespace:"custom",  key: "icon") {\n      type\n      value\n    }\n    color:  metafield(namespace:"custom",  key: "color") {\n      type\n      value\n    }\n    children: metafield(key: "children", namespace: "booking") {\n      id\n      type\n      references(first: 20) {\n        nodes {\n          ... on Collection {\n            id\n            title\n            handle\n            description\n            image {\n              id\n              url\n              altText\n              width\n              height\n            }\n            icon:  metafield(namespace:"custom",  key: "icon") {\n              type\n              value\n            }\n            color:  metafield(namespace:"custom",  key: "color") {\n              type\n              value\n            }\n          }\n        }\n      }\n    }\n  }\n\n  query CategoriesCollection(\n    $country: CountryCode\n    $language: LanguageCode\n  ) @inContext(country: $country, language: $language) {\n    collection(handle: "alle-behandlinger") {\n      ...CategoriesCollection\n    }\n  }\n': {
+    return: CategoriesCollectionQuery;
+    variables: CategoriesCollectionQueryVariables;
+  };
   '#graphql\n  #graphql\n  fragment ProductCreateVariant on ProductVariant {\n    id\n    title\n    compareAtPrice {\n      amount\n      currencyCode\n    }\n    price {\n      amount\n      currencyCode\n    }\n    product {\n      title\n      handle\n    }\n    selectedOptions {\n      name\n      value\n    }\n  }\n\n  query ProductCreateVariantId(\n    $country: CountryCode\n    $Id: ID!\n    $language: LanguageCode\n    $selectedOptions: [SelectedOptionInput!]!\n  ) @inContext(country: $country, language: $language) {\n    product(id: $Id) {\n      ...on Product {\n        selectedVariant: variantBySelectedOptions(selectedOptions: $selectedOptions) {\n          ...ProductCreateVariant\n        }\n      }\n    }\n  }\n': {
     return: ProductCreateVariantIdQuery;
     variables: ProductCreateVariantIdQueryVariables;
@@ -3196,10 +3244,6 @@ interface GeneratedQueryTypes {
   '#graphql\n  #graphql\n  #graphql\n  fragment ProductCollection on Collection {\n    title\n    handle\n    icon:  metafield(namespace:"custom",  key: "icon") {\n      type\n      value\n    }\n  }\n\n  fragment MoneyProductItem on MoneyV2 {\n    amount\n    currencyCode\n  }\n\n  fragment ProductItem on Product {\n    id\n    title\n    description\n    handle\n    publishedAt\n    featuredImage {\n      id\n      altText\n      url(transform: { maxHeight: 250, maxWidth: 250, crop: CENTER })\n      width\n      height\n    }\n    priceRange {\n      minVariantPrice {\n        ...MoneyProductItem\n      }\n      maxVariantPrice {\n        ...MoneyProductItem\n      }\n    }\n    variants(first: 1) {\n      nodes {\n        id\n        selectedOptions {\n          name\n          value\n        }\n        price {\n          amount\n          currencyCode\n        }\n      }\n    }\n    collections(first:2) {\n      nodes {\n        ...ProductCollection\n      }\n    }\n  }\n\n  query Collection(\n    $handle: String!\n    $country: CountryCode\n    $language: LanguageCode\n    $first: Int\n    $last: Int\n    $startCursor: String\n    $endCursor: String\n  ) @inContext(country: $country, language: $language) {\n    collection(handle: $handle) {\n      id\n      handle\n      title\n      description\n      products(\n        first: $first,\n        last: $last,\n        before: $startCursor,\n        after: $endCursor,\n        sortKey: TITLE\n      ) {\n        nodes {\n          ...ProductItem\n        }\n        pageInfo {\n          hasPreviousPage\n          hasNextPage\n          endCursor\n          startCursor\n        }\n      }\n    }\n  }\n': {
     return: CollectionQuery;
     variables: CollectionQueryVariables;
-  };
-  '#graphql\n  #graphql\n  fragment Collection on Collection {\n    id\n    title\n    handle\n    description\n    image {\n      id\n      url\n      altText\n      width\n      height\n    }\n    icon:  metafield(namespace:"custom",  key: "icon") {\n      type\n      value\n    }\n    color:  metafield(namespace:"custom",  key: "color") {\n      type\n      value\n    }\n  }\n\n  query StoreTreatment(\n    $country: CountryCode\n    $endCursor: String\n    $first: Int\n    $language: LanguageCode\n    $last: Int\n    $startCursor: String\n  ) @inContext(country: $country, language: $language) {\n    collections(\n      first: $first,\n      last: $last,\n      before: $startCursor,\n      sortKey: TITLE,\n      after: $endCursor,\n      query: "title:treatments:*"\n    ) {\n      nodes {\n        ...Collection\n      }\n      pageInfo {\n        hasNextPage\n        hasPreviousPage\n        startCursor\n        endCursor\n      }\n    }\n  }\n': {
-    return: StoreTreatmentQuery;
-    variables: StoreTreatmentQueryVariables;
   };
   '#graphql\n  #graphql\n  fragment Collection on Collection {\n    id\n    title\n    handle\n    description\n    image {\n      id\n      url\n      altText\n      width\n      height\n    }\n    icon:  metafield(namespace:"custom",  key: "icon") {\n      type\n      value\n    }\n    color:  metafield(namespace:"custom",  key: "color") {\n      type\n      value\n    }\n  }\n\n  query StoreCollections(\n    $country: CountryCode\n    $endCursor: String\n    $first: Int\n    $language: LanguageCode\n    $last: Int\n    $startCursor: String\n  ) @inContext(country: $country, language: $language) {\n    collections(\n      first: $first,\n      last: $last,\n      before: $startCursor,\n      after: $endCursor,\n      query: "title:products:*",\n      sortKey: TITLE\n    ) {\n      nodes {\n        ...Collection\n      }\n      pageInfo {\n        hasNextPage\n        hasPreviousPage\n        startCursor\n        endCursor\n      }\n    }\n  }\n': {
     return: StoreCollectionsQuery;

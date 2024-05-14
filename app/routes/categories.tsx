@@ -1,22 +1,18 @@
-import {Button, Container, Flex, NativeSelect} from '@mantine/core';
+import {Button, Container, Flex} from '@mantine/core';
 import {
   Link,
   NavLink,
   Outlet,
   useLoaderData,
-  useNavigate,
   useParams,
 } from '@remix-run/react';
 import {json, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
-import {useState} from 'react';
 import {VisualTeaser} from '~/components/blocks/VisualTeaser';
-import {COLLECTION_ITEM_FRAGMENT, METAFIELD_QUERY} from '~/data/fragments';
-import {parseTE} from '~/lib/clean';
+import {METAFIELD_QUERY} from '~/data/fragments';
+import {Categories} from '~/graphql/categories/Categories';
 
 export async function loader({context, request}: LoaderFunctionArgs) {
-  const {collections} = await context.storefront.query(COLLECTIONS_QUERY, {
-    variables: {first: 20, endCursor: null},
-  });
+  const {collection} = await context.storefront.query(Categories);
 
   const {metaobject: visualTeaser} = await context.storefront.query(
     METAFIELD_QUERY,
@@ -29,7 +25,7 @@ export async function loader({context, request}: LoaderFunctionArgs) {
   );
 
   return json(
-    {collections, visualTeaser},
+    {collection, visualTeaser},
     {
       headers: {
         'Cache-Control': 'public, s-maxage=3600, stale-while-revalidate=3600',
@@ -40,47 +36,12 @@ export async function loader({context, request}: LoaderFunctionArgs) {
 
 export default function Collections() {
   const params = useParams();
-  const {collections, visualTeaser} = useLoaderData<typeof loader>();
-  const selectedCollection = collections.nodes.find(
-    (c) => c.handle === params.handle,
-  );
-
-  const [value, setValue] = useState(
-    selectedCollection
-      ? parseTE(selectedCollection.title)
-      : 'Alle behandlinger',
-  );
-
-  const navigate = useNavigate();
-  const gotoCategoryPage = (value: string) => {
-    const selectedCollection = collections.nodes.find(
-      (c) => parseTE(c.title) === value,
-    );
-
-    if (selectedCollection) {
-      navigate(selectedCollection.handle);
-      setValue(parseTE(selectedCollection.title));
-    } else {
-      navigate('alle-behandlinger');
-      setValue('Alle behandlinger');
-    }
-  };
+  const {collection, visualTeaser} = useLoaderData<typeof loader>();
 
   return (
     <>
       <VisualTeaser component={visualTeaser} />
       <Container size="xl">
-        <Flex hiddenFrom="sm">
-          <NativeSelect
-            size="xl"
-            value={value}
-            onChange={(event) => gotoCategoryPage(event.currentTarget.value)}
-            data={['Alle behandlinger'].concat(
-              collections.nodes.map((collection) => parseTE(collection.title)),
-            )}
-            w="100%"
-          />
-        </Flex>
         <Flex justify="center" gap="lg" visibleFrom="sm">
           <Button
             variant="filled"
@@ -102,7 +63,7 @@ export default function Collections() {
             Alle behandlinger
           </Button>
 
-          {collections.nodes.map((collection) => (
+          {collection?.children?.references?.nodes.map((collection) => (
             <NavLink
               key={collection.id}
               to={`/categories/${collection.handle}`}
@@ -115,7 +76,7 @@ export default function Collections() {
                   radius="xl"
                   size="lg"
                 >
-                  {parseTE(collection.title)}
+                  {collection.title}
                 </Button>
               )}
             </NavLink>
@@ -127,34 +88,3 @@ export default function Collections() {
     </>
   );
 }
-
-export const COLLECTIONS_QUERY = `#graphql
-  ${COLLECTION_ITEM_FRAGMENT}
-  query StoreTreatment(
-    $country: CountryCode
-    $endCursor: String
-    $first: Int
-    $language: LanguageCode
-    $last: Int
-    $startCursor: String
-  ) @inContext(country: $country, language: $language) {
-    collections(
-      first: $first,
-      last: $last,
-      before: $startCursor,
-      sortKey: TITLE,
-      after: $endCursor,
-      query: "title:treatments:*"
-    ) {
-      nodes {
-        ...Collection
-      }
-      pageInfo {
-        hasNextPage
-        hasPreviousPage
-        startCursor
-        endCursor
-      }
-    }
-  }
-` as const;
