@@ -10,7 +10,7 @@ import {
 
 /**
  * This endpoint creates new user
- * @summary PUT Create user
+ * @summary POST Create user
  */
 export const customerCreateBodyUsernameRegExp = new RegExp('^[a-zA-Z0-9-_]+$');
 
@@ -39,6 +39,8 @@ export const customerCreateBody = zod.object({
 export const customerCreateResponse = zod.object({
   "success": zod.boolean(),
   "payload": zod.object({
+  "collectionMetaobjectId": zod.string(),
+  "userMetaobjectId": zod.string(),
   "customerId": zod.number(),
   "fullname": zod.string(),
   "email": zod.string().email(),
@@ -106,6 +108,8 @@ export const customerUpdateBody = zod.object({
 export const customerUpdateResponse = zod.object({
   "success": zod.boolean(),
   "payload": zod.object({
+  "collectionMetaobjectId": zod.string(),
+  "userMetaobjectId": zod.string(),
   "customerId": zod.number(),
   "fullname": zod.string(),
   "email": zod.string().email(),
@@ -151,6 +155,8 @@ export const customerGetParams = zod.object({
 export const customerGetResponse = zod.object({
   "success": zod.boolean(),
   "payload": zod.object({
+  "collectionMetaobjectId": zod.string(),
+  "userMetaobjectId": zod.string(),
   "customerId": zod.number(),
   "fullname": zod.string(),
   "email": zod.string().email(),
@@ -1120,6 +1126,8 @@ export const customerLocationRemoveParams = zod.object({
 export const customerLocationRemoveResponse = zod.object({
   "success": zod.boolean(),
   "payload": zod.object({
+  "collectionMetaobjectId": zod.string(),
+  "userMetaobjectId": zod.string(),
   "customerId": zod.number(),
   "fullname": zod.string(),
   "email": zod.string().email(),
@@ -1271,6 +1279,8 @@ export const customerLocationSetDefaultParams = zod.object({
 export const customerLocationSetDefaultResponse = zod.object({
   "success": zod.boolean(),
   "payload": zod.object({
+  "collectionMetaobjectId": zod.string(),
+  "userMetaobjectId": zod.string(),
   "customerId": zod.number(),
   "fullname": zod.string(),
   "email": zod.string().email(),
@@ -3545,6 +3555,8 @@ export const userGetParams = zod.object({
 export const userGetResponse = zod.object({
   "success": zod.boolean(),
   "payload": zod.object({
+  "collectionMetaobjectId": zod.string(),
+  "userMetaobjectId": zod.string(),
   "customerId": zod.number(),
   "fullname": zod.string(),
   "email": zod.string().email(),
@@ -4166,6 +4178,8 @@ export const usersSearchResponse = zod.object({
   "payload": zod.object({
   "nextCursor": zod.string().optional(),
   "results": zod.array(zod.object({
+  "collectionMetaobjectId": zod.string(),
+  "userMetaobjectId": zod.string(),
   "customerId": zod.number(),
   "fullname": zod.string(),
   "email": zod.string().email(),

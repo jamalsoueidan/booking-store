@@ -2174,6 +2174,10 @@ components:
     User:
       type: object
       properties:
+        collectionMetaobjectId:
+          type: string
+        userMetaobjectId:
+          type: string
         customerId:
           type: number
         fullname:
@@ -2242,6 +2246,8 @@ components:
         isBusiness:
           type: boolean
       required:
+        - collectionMetaobjectId
+        - userMetaobjectId
         - customerId
         - fullname
         - username
@@ -3104,7 +3110,7 @@ paths:
       tags:
         - Customer
       operationId: customerCreate
-      summary: PUT Create user
+      summary: POST Create user
       description: This endpoint creates new user
       requestBody:
         required: true
