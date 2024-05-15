@@ -1,5 +1,6 @@
 export const ArtistUserFragment = `#graphql
   fragment ArtistUser on Metaobject {
+    id #for key={id}
     fields {
       value
       key

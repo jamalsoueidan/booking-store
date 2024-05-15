@@ -22,17 +22,6 @@ export const COLLECTION_ITEM_FRAGMENT = `#graphql
   }
 ` as const;
 
-export const PRODUCT_COLLECTION_FRAGMENT = `#graphql
-  fragment ProductCollection on Collection {
-    title
-    handle
-    icon:  metafield(namespace:"custom",  key: "icon") {
-      type
-      value
-    }
-  }
-` as const;
-
 export const PRODUCT_SIMPLE_FRAGMENT = `#graphql
   fragment ProductSimple on Product {
     id

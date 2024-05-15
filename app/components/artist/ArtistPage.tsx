@@ -12,7 +12,7 @@ export default function ArtistPage({children}: {children: React.ReactNode}) {
       <div
         className={classes.innerFlex}
         style={{
-          backgroundColor: `var(--mantine-color-${user.theme.color}-6)`,
+          backgroundColor: `var(--mantine-color-${user.theme}-6)`,
         }}
       >
         <div className={classes.sticky}>{children}</div>

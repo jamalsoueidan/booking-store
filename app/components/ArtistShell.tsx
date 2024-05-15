@@ -30,8 +30,8 @@ const ArtistShell = ({children}: {children: React.ReactNode}) => {
       }}
     >
       {children}
-      <AppShell.Navbar bg={`${user.theme.color}.6`}></AppShell.Navbar>
-      <AppShell.Aside bg={`${user.theme.color}.6`}></AppShell.Aside>
+      <AppShell.Navbar bg={`${user.theme}.6`}></AppShell.Navbar>
+      <AppShell.Aside bg={`${user.theme}.6`}></AppShell.Aside>
     </AppShell>
   );
 };
@@ -49,12 +49,12 @@ const Header = ({children}: {children: React.ReactNode}) => {
   const user = useUser();
   return (
     <AppShell.Header>
-      <Group h="100%" w="inherit" align="flex-end" bg={`${user.theme.color}.6`}>
+      <Group h="100%" w="inherit" align="flex-end" bg={`${user.theme}.6`}>
         <Flex
           h={{base: mobileHeaderHeight, sm: `desktopHeaderHeight}px`}}
           w="100%"
           px={{base: 'md', sm: 'xl'}}
-          bg={`${user.theme.color}.1`}
+          bg={`${user.theme}.1`}
           align="center"
           style={
             isMobile
