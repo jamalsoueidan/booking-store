@@ -4,7 +4,7 @@ import coreStyles from '@mantine/core/styles.css?url';
 import {ModalsProvider} from '@mantine/modals';
 import {NavigationProgress, nprogress} from '@mantine/nprogress';
 import nprogressStyles from '@mantine/nprogress/styles.css?url';
-import tiptapStyles from '@mantine/tiptap/styles.css?url';
+
 import {
   isRouteErrorResponse,
   Links,
@@ -62,7 +62,6 @@ export function links() {
     {rel: 'stylesheet', href: carouselStyles},
     {rel: 'stylesheet', href: coreStyles},
     {rel: 'stylesheet', href: nprogressStyles},
-    {rel: 'stylesheet', href: tiptapStyles},
     {
       rel: 'preconnect',
       href: 'https://cdn.shopify.com',
