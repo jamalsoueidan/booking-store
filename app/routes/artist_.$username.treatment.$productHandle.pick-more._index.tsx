@@ -7,7 +7,7 @@ import {
 import {json, type LoaderFunctionArgs} from '@remix-run/server-runtime';
 import {Money, parseGid} from '@shopify/hydrogen';
 import type {
-  ArtistTreatmentIndexQuery,
+  ArtistTreatmentOptionsQuery,
   ArtistTreatmentProductFragment,
 } from 'storefrontapi.generated';
 
@@ -18,7 +18,7 @@ import {
   useCalculateDurationAndPrice,
 } from '~/components/OptionSelector';
 import {ArtistTreatment} from '~/graphql/artist/ArtistTreatment';
-import {ArtistTreatmentIndex} from '~/graphql/artist/ArtistTreatmentIndex';
+import {ArtistTreatmentOptions} from '~/graphql/artist/ArtistTreatmentOptions';
 
 import {durationToTime} from '~/lib/duration';
 
@@ -65,7 +65,7 @@ export async function loader({params, request, context}: LoaderFunctionArgs) {
   }
 
   const {products: productOptions} = await storefront.query(
-    ArtistTreatmentIndex,
+    ArtistTreatmentOptions,
     {
       variables: {
         query: `tag:'parent-${productHandle}' AND tag:'options'`,
@@ -100,7 +100,7 @@ export default function ArtistTreatmentPickMoreIndex() {
 
 type ArtistTreatmentPickMoreRenderModalProps = {
   product: ArtistTreatmentProductFragment;
-  productOptions: ArtistTreatmentIndexQuery['products'];
+  productOptions: ArtistTreatmentOptionsQuery['products'];
 };
 
 function ArtistTreatmentPickMoreRenderModal({

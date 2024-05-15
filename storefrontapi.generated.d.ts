@@ -2057,7 +2057,7 @@ export type ArtistTreatmentCompletedQuery = {
   };
 };
 
-export type ArtistTreatmentIndexVariantFragment = Pick<
+export type ArtistTreatmentOptionsVariantFragment = Pick<
   StorefrontAPI.ProductVariant,
   'id' | 'title'
 > & {
@@ -2072,7 +2072,7 @@ export type ArtistTreatmentIndexVariantFragment = Pick<
   duration?: StorefrontAPI.Maybe<Pick<StorefrontAPI.Metafield, 'id' | 'value'>>;
 };
 
-export type ArtistTreatmentIndexProductFragment = Pick<
+export type ArtistTreatmentOptionsFragment = Pick<
   StorefrontAPI.Product,
   'id' | 'title' | 'handle'
 > & {
@@ -2102,13 +2102,13 @@ export type ArtistTreatmentIndexProductFragment = Pick<
   };
 };
 
-export type ArtistTreatmentIndexQueryVariables = StorefrontAPI.Exact<{
+export type ArtistTreatmentOptionsQueryVariables = StorefrontAPI.Exact<{
   country?: StorefrontAPI.InputMaybe<StorefrontAPI.CountryCode>;
   language?: StorefrontAPI.InputMaybe<StorefrontAPI.LanguageCode>;
   query: StorefrontAPI.Scalars['String']['input'];
 }>;
 
-export type ArtistTreatmentIndexQuery = {
+export type ArtistTreatmentOptionsQuery = {
   products: {
     nodes: Array<
       Pick<StorefrontAPI.Product, 'id' | 'title' | 'handle'> & {
@@ -3449,9 +3449,9 @@ interface GeneratedQueryTypes {
     return: ArtistTreatmentCompletedQuery;
     variables: ArtistTreatmentCompletedQueryVariables;
   };
-  '#graphql\n  #graphql\n  #graphql\n  fragment ArtistTreatmentIndexVariant on ProductVariant {\n    id\n    title\n    image {\n      id\n      url\n      altText\n      width\n      height\n    }\n    price {\n      amount\n      currencyCode\n    }\n    compareAtPrice {\n      amount\n      currencyCode\n    }\n    selectedOptions {\n      name\n      value\n    }\n    duration: metafield(key: "duration", namespace: "booking") {\n      id\n      value\n    }\n  }\n\n\n  fragment ArtistTreatmentIndexProduct on Product {\n    id\n    title\n    handle\n    options {\n      name\n      values\n    }\n    parentId: metafield(key: "parentId", namespace: "booking") {\n      id\n      value\n    }\n    variants(first: 5) {\n      nodes {\n        ...ArtistTreatmentIndexVariant\n      }\n    }\n  }\n\n\n  query ArtistTreatmentIndex(\n    $country: CountryCode\n    $language: LanguageCode\n    $query: String!\n  ) @inContext(country: $country, language: $language) {\n    products(first: 10, query: $query) {\n      nodes {\n        ...ArtistTreatmentIndexProduct\n      }\n    }\n  }\n': {
-    return: ArtistTreatmentIndexQuery;
-    variables: ArtistTreatmentIndexQueryVariables;
+  '#graphql\n  #graphql\n  #graphql\n  fragment ArtistTreatmentOptionsVariant on ProductVariant {\n    id\n    title\n    image {\n      id\n      url\n      altText\n      width\n      height\n    }\n    price {\n      amount\n      currencyCode\n    }\n    compareAtPrice {\n      amount\n      currencyCode\n    }\n    selectedOptions {\n      name\n      value\n    }\n    duration: metafield(key: "duration", namespace: "booking") {\n      id\n      value\n    }\n  }\n\n\n  fragment ArtistTreatmentOptions on Product {\n    id\n    title\n    handle\n    options {\n      name\n      values\n    }\n    parentId: metafield(key: "parentId", namespace: "booking") {\n      id\n      value\n    }\n    variants(first: 5) {\n      nodes {\n        ...ArtistTreatmentOptionsVariant\n      }\n    }\n  }\n\n\n  query ArtistTreatmentOptions(\n    $country: CountryCode\n    $language: LanguageCode\n    $query: String!\n  ) @inContext(country: $country, language: $language) {\n    products(first: 10, query: $query) {\n      nodes {\n        ...ArtistTreatmentOptions\n      }\n    }\n  }\n': {
+    return: ArtistTreatmentOptionsQuery;
+    variables: ArtistTreatmentOptionsQueryVariables;
   };
   '#graphql\n  #graphql\n  fragment ArtistUser on Metaobject {\n    id #for key={id}\n    fields {\n      value\n      key\n      reference {\n        ... on MediaImage {\n          image {\n            width\n            height\n            url(transform: {})\n          }\n        }\n      }\n    }\n  }\n\n  query ArtistUser(\n    $username: String!\n    $country: CountryCode\n    $language: LanguageCode\n  ) @inContext(country: $country, language: $language) {\n    metaobject(handle: {handle: $username, type: "user"}) {\n      ...ArtistUser\n    }\n  }\n': {
     return: ArtistUserQuery;
@@ -3465,7 +3465,7 @@ interface GeneratedQueryTypes {
     return: FrontendTreatmentsQuery;
     variables: FrontendTreatmentsQueryVariables;
   };
-  '#graphql\n  #graphql\n  fragment ArtistUser on Metaobject {\n    id #for key={id}\n    fields {\n      value\n      key\n      reference {\n        ... on MediaImage {\n          image {\n            width\n            height\n            url(transform: {})\n          }\n        }\n      }\n    }\n  }\n\n  query FrontUsers(\n    $country: CountryCode\n    $language: LanguageCode\n  ) @inContext(country: $country, language: $language) {\n    metaobjects(type: "user", first: 20) {\n      nodes {\n        ...ArtistUser\n      }\n    }\n  }\n': {
+  '#graphql\n  #graphql\n  fragment ArtistUser on Metaobject {\n    id #for key={id}\n    fields {\n      value\n      key\n      reference {\n        ... on MediaImage {\n          image {\n            width\n            height\n            url(transform: {})\n          }\n        }\n      }\n    }\n  }\n\n  query FrontUsers(\n    $country: CountryCode\n    $language: LanguageCode\n  ) @inContext(country: $country, language: $language) {\n    metaobjects(type: "user", first: 20) { #we have increased to 20 incase some users is active=false, we cannot filtre on metaobjects\n      nodes {\n        ...ArtistUser\n      }\n    }\n  }\n': {
     return: FrontUsersQuery;
     variables: FrontUsersQueryVariables;
   };

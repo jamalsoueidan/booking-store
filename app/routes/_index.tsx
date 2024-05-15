@@ -73,7 +73,7 @@ export async function loader(args: LoaderFunctionArgs) {
   const {metaobjects} = await storefront.query(FrontendUsers);
 
   const users = metaobjects.nodes.filter(
-    (f) => f.fields.find((f) => f.key === 'active')?.value === 'True',
+    (f) => f.fields.find((f) => f.key === 'active')?.value === 'true',
   );
 
   const components = await context.storefront.query(METAFIELD_QUERY, {

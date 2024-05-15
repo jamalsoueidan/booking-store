@@ -1,5 +1,5 @@
-export const ArtistTreatmentIndexVariantFragment = `#graphql
-  fragment ArtistTreatmentIndexVariant on ProductVariant {
+export const ArtistTreatmentOptionsVariantFragment = `#graphql
+  fragment ArtistTreatmentOptionsVariant on ProductVariant {
     id
     title
     image {
@@ -28,10 +28,10 @@ export const ArtistTreatmentIndexVariantFragment = `#graphql
   }
 ` as const;
 
-export const ArtistTreatmentIndexFragment = `#graphql
-  ${ArtistTreatmentIndexVariantFragment}
+export const ArtistTreatmentOptionsFragment = `#graphql
+  ${ArtistTreatmentOptionsVariantFragment}
 
-  fragment ArtistTreatmentIndexProduct on Product {
+  fragment ArtistTreatmentOptions on Product {
     id
     title
     handle
@@ -45,23 +45,23 @@ export const ArtistTreatmentIndexFragment = `#graphql
     }
     variants(first: 5) {
       nodes {
-        ...ArtistTreatmentIndexVariant
+        ...ArtistTreatmentOptionsVariant
       }
     }
   }
 ` as const;
 
-export const ArtistTreatmentIndex = `#graphql
-  ${ArtistTreatmentIndexFragment}
+export const ArtistTreatmentOptions = `#graphql
+  ${ArtistTreatmentOptionsFragment}
 
-  query ArtistTreatmentIndex(
+  query ArtistTreatmentOptions(
     $country: CountryCode
     $language: LanguageCode
     $query: String!
   ) @inContext(country: $country, language: $language) {
     products(first: 10, query: $query) {
       nodes {
-        ...ArtistTreatmentIndexProduct
+        ...ArtistTreatmentOptions
       }
     }
   }

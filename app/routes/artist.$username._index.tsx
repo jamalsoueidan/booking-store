@@ -21,7 +21,9 @@ export async function loader({request, params, context}: LoaderFunctionArgs) {
   const {username} = params;
 
   if (!username) {
-    throw new Error('Invalid request method');
+    throw new Response('username handler not defined', {
+      status: 404,
+    });
   }
 
   const {searchParams} = new URL(request.url);
