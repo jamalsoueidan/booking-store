@@ -97,7 +97,7 @@ function ArtistSchedulesMenu({
         size="lg"
         radius="lg"
         variant={location.search === '' ? 'filled' : 'light'}
-        color={location.search === '' ? 'black' : user.theme.color}
+        color={location.search === '' ? 'black' : user.theme}
         component={Link}
         to="?"
         data-testid="schedule-button-all"
@@ -114,7 +114,7 @@ function ArtistSchedulesMenu({
                 key={v.label}
                 radius="lg"
                 variant={query.includes(v.label) ? 'filled' : 'light'}
-                color={query.includes(v.label) ? 'black' : user.theme.color}
+                color={query.includes(v.label) ? 'black' : user.theme}
                 component={Link}
                 to={`?type=${v.label}`}
                 data-testid={`schedule-button-${f.label.toLowerCase()}`}

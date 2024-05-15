@@ -21,25 +21,37 @@ import {
 import {useMediaQuery} from '@mantine/hooks';
 import {Link, Outlet, useLoaderData} from '@remix-run/react';
 import {IconInfoCircle, IconLogout} from '@tabler/icons-react';
+import {ArtistUser} from '~/graphql/artist/ArtistUser';
 import {UserProvider} from '~/hooks/use-user';
-import {getBookingShopifyApi} from '~/lib/api/bookingShopifyApi';
+import {useUserMetaobject} from '~/hooks/useUserMetaobject';
 
 export function shouldRevalidate() {
   return false;
 }
 
 export const meta: MetaFunction<typeof loader> = ({data}) => {
-  return [{title: `BySisters | ${data?.user.fullname ?? ''}`}];
+  return [
+    {
+      title: `BySisters | ${
+        data?.user?.fields.find((k) => k.key === 'fullname')?.value ?? ''
+      }`,
+    },
+  ];
 };
 
 export async function loader({params, context}: LoaderFunctionArgs) {
+  const {storefront} = context;
   const {username} = params;
 
   if (!username) {
     throw new Error('Invalid request method');
   }
 
-  const {payload: user} = await getBookingShopifyApi().userGet(username);
+  const {metaobject: user} = await storefront.query(ArtistUser, {
+    variables: {
+      username,
+    },
+  });
 
   return json({
     user,
@@ -50,6 +62,9 @@ export default function UserIndex() {
   const {user} = useLoaderData<typeof loader>();
   const isMobile = useMediaQuery('(max-width: 48em)');
 
+  const {username, fullname, active, shortDescription, image, theme} =
+    useUserMetaobject(user);
+
   return (
     <UserProvider user={user}>
       <AppShell
@@ -58,19 +73,19 @@ export default function UserIndex() {
         navbar={{width: '30%', breakpoint: 'sm', collapsed: {mobile: isMobile}}}
         padding="md"
       >
-        <AppShell.Header p="md" bg={`${user.theme?.color || 'pink'}.6`}>
+        <AppShell.Header p="md" bg={`${theme || 'pink'}.6`}>
           <Group h="100%">
             <Avatar
               src={
-                user.images?.profile?.url ||
-                `https://placehold.co/300x300?text=${user.username}`
+                image.image?.url ||
+                `https://placehold.co/300x300?text=${username}`
               }
               size="86"
             />
             <div>
-              <Title order={1}>{user.fullname}</Title>
+              <Title order={1}>{fullname}</Title>
               <Text fz="md">
-                {user.shortDescription} <br />
+                {shortDescription} <br />
               </Text>
             </div>
           </Group>
@@ -87,20 +102,20 @@ export default function UserIndex() {
             </ActionIcon>
           </div>
         </AppShell.Header>
-        <AppShell.Navbar bg={`${user.theme?.color || 'pink'}.6`}>
+        <AppShell.Navbar bg={`${theme || 'pink'}.6`}>
           <AppShell.Section grow p={rem(48)} component={ScrollArea}>
             <Stack gap="lg">
               <Avatar
                 src={
-                  user.images?.profile?.url ||
-                  `https://placehold.co/300x300?text=${user.username}`
+                  image.image?.url ||
+                  `https://placehold.co/300x300?text=${username}`
                 }
                 size="300"
               />
 
-              <Title order={1}>{user.fullname}</Title>
+              <Title order={1}>{fullname}</Title>
               <Text fz="lg">
-                {user.shortDescription} <br />
+                {shortDescription} <br />
               </Text>
             </Stack>
           </AppShell.Section>
@@ -120,10 +135,10 @@ export default function UserIndex() {
         </AppShell.Navbar>
         <AppShell.Main bg="gray.1">
           <Box p={{base: '0', sm: rem(48)}}>
-            {!user.active ? (
+            {!active ? (
               <Alert
                 variant="light"
-                color="red"
+                color={theme}
                 title="Din konto er inaktiv"
                 icon={<IconInfoCircle />}
                 mb="xl"

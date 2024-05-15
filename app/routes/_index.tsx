@@ -318,7 +318,7 @@ const RECOMMENDED_TREATMENT_QUERY = `#graphql
   ${PRODUCT_ITEM_FRAGMENT}
   query RecommendedTreatments ($country: CountryCode, $language: LanguageCode)
     @inContext(country: $country, language: $language) {
-    products(first: 12, sortKey: RELEVANCE, reverse: true, query: "tag:treatments") {
+    products(first: 12, sortKey: RELEVANCE, reverse: true, query: "tag:treatments AND tag:system") {
       nodes {
         ...ProductItem
       }

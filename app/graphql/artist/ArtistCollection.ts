@@ -14,7 +14,7 @@ export const ArtistCollectionFragment = `#graphql
   fragment ArtistCollection on Collection {
     id
     title
-    products(first: 10, filters: $filters) {
+    products(first: 20, sortKey: TITLE, filters: $filters) {
       nodes {
         ...ArtistTreatmentProduct
       }
