@@ -20,7 +20,7 @@ import {
 } from '~/components/OptionSelector';
 import {TreatmentStepper} from '~/components/TreatmentStepper';
 
-import {ArtistTreatmentIndex} from '~/graphql/artist/ArtistTreatmentIndex';
+import {ArtistTreatmentOptions} from '~/graphql/artist/ArtistTreatmentOptions';
 import {durationToTime} from '~/lib/duration';
 import type {loader as rootLoader} from './artist_.$username.treatment.$productHandle';
 
@@ -39,7 +39,7 @@ export async function loader({params, request, context}: LoaderFunctionArgs) {
   }
 
   const {products: productOptions} = await storefront.query(
-    ArtistTreatmentIndex,
+    ArtistTreatmentOptions,
     {
       variables: {
         query: `tag:'parent-${productHandle}' AND tag:'options'`,

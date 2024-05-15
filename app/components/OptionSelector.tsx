@@ -3,12 +3,12 @@ import {redirect, useSearchParams} from '@remix-run/react';
 import {Money, parseGid} from '@shopify/hydrogen';
 import React, {useMemo} from 'react';
 import type {
-  ArtistTreatmentIndexProductFragment,
-  ArtistTreatmentIndexVariantFragment,
+  ArtistTreatmentOptionsFragment,
+  ArtistTreatmentOptionsVariantFragment,
 } from 'storefrontapi.generated';
 
 export type RedirectToOptionsProps = {
-  productOptions: ArtistTreatmentIndexProductFragment[];
+  productOptions: ArtistTreatmentOptionsFragment[];
   request: Request;
 };
 
@@ -44,14 +44,14 @@ export function redirectToOptions({
 }
 
 export type OptionSelectorProps = {
-  productWithVariants: ArtistTreatmentIndexProductFragment;
+  productWithVariants: ArtistTreatmentOptionsFragment;
   children: (props: OptionSelectorChildrenProp) => React.ReactElement;
 };
 
 export type OptionSelectorChildrenProp = {
   parentId: string;
   productId: string;
-  variant: ArtistTreatmentIndexVariantFragment;
+  variant: ArtistTreatmentOptionsVariantFragment;
 };
 
 export function OptionSelector({
@@ -73,7 +73,7 @@ export function OptionSelector({
 
   return (
     <Flex direction="column" gap="xs" py="sm">
-      <Title order={2}>{productWithVariants.title}</Title>
+      <Title order={3}>{productWithVariants.options[0].name}</Title>
       <Flex direction="column" gap="xs">
         {optionsMarkup}
       </Flex>
@@ -114,7 +114,7 @@ export function useCalculateDurationAndPrice({
   currentDuration,
 }: {
   parentId: string;
-  productOptions: ArtistTreatmentIndexProductFragment[];
+  productOptions: ArtistTreatmentOptionsFragment[];
   currentPrice?: number;
   currentDuration?: number;
 }) {
