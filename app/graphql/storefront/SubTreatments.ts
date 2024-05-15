@@ -1,24 +1,14 @@
+import {ArtistUserFragment} from '../artist/ArtistUser';
+
 export const SubTreatmentsFragment = `#graphql
+  ${ArtistUserFragment}
+
   fragment SubTreatmentsProduct on Product {
     id
     handle
     user: metafield(key: "user", namespace: "booking") {
       reference {
-        ... on Metaobject {
-          fields {
-            key
-            value
-            reference {
-              ... on MediaImage {
-                image {
-                  width
-                  height
-                  url(transform: {})
-                }
-              }
-            }
-          }
-        }
+        ...ArtistUser
       }
     }
     variants(first: 1) {
@@ -44,7 +34,7 @@ ${SubTreatmentsFragment}
     $country: CountryCode
     $language: LanguageCode
   ) @inContext(country: $country, language: $language) {
-    products(first: 10, query: $query) {
+    products(first: 10, sortKey: TITLE, query: $query) {
       nodes {
         ...SubTreatmentsProduct
       }

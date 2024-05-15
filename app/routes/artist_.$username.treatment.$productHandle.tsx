@@ -7,8 +7,9 @@ import {IconArrowLeft} from '@tabler/icons-react';
 import type {ProductVariantFragment} from 'storefrontapi.generated';
 import {ArtistShell} from '~/components/ArtistShell';
 import {ArtistTreatment} from '~/graphql/artist/ArtistTreatment';
+import {ArtistUser} from '~/graphql/artist/ArtistUser';
 import {UserProvider} from '~/hooks/use-user';
-import {getBookingShopifyApi} from '~/lib/api/bookingShopifyApi';
+import {useUserMetaobject} from '~/hooks/useUserMetaobject';
 
 export function shouldRevalidate() {
   return false;
@@ -26,10 +27,11 @@ export async function loader({params, context}: LoaderFunctionArgs) {
     throw new Response('Expected product handle to be defined', {status: 404});
   }
 
-  const {payload: user} = await getBookingShopifyApi().userGet(
-    username,
-    context,
-  );
+  const {metaobject: user} = await storefront.query(ArtistUser, {
+    variables: {
+      username,
+    },
+  });
 
   const {product} = await storefront.query(ArtistTreatment, {
     variables: {
@@ -49,6 +51,9 @@ export async function loader({params, context}: LoaderFunctionArgs) {
 export default function Product() {
   const {product, user} = useLoaderData<typeof loader>();
 
+  const {username, fullname, active, shortDescription, image, theme} =
+    useUserMetaobject(user);
+
   return (
     <UserProvider user={user}>
       <ArtistShell>
@@ -63,7 +68,7 @@ export default function Product() {
               p="0"
               variant="transparent"
               component={Link}
-              to={`/artist/${user.username}`}
+              to={`/artist/${username}`}
               c="black"
               leftSection={
                 <IconArrowLeft
@@ -71,11 +76,9 @@ export default function Product() {
                   stroke={1.5}
                 />
               }
-              rightSection={
-                <Avatar src={user.images?.profile?.url} size="md" />
-              }
+              rightSection={<Avatar src={image.image?.url} size="md" />}
             >
-              {user.fullname}
+              {fullname}
             </Button>
             <Flex justify="space-between" align="center" w="100%">
               <Title order={1} fw="500" fz={{base: 24, sm: 36}}>

@@ -23,6 +23,7 @@ import {type SubTreatmentsProductFragment} from 'storefrontapi.generated';
 import {PriceBadge} from '~/components/artist/PriceBadge';
 import {SubTreatments} from '~/graphql/storefront/SubTreatments';
 import {Treatment} from '~/graphql/storefront/Treatment';
+import {useUserMetaobject} from '~/hooks/useUserMetaobject';
 
 export const meta: MetaFunction<typeof loader> = ({data}) => {
   return [{title: `BySisters | ${data?.product.title ?? ''}`}];
@@ -131,22 +132,9 @@ function TreatmentProductUser({
 }: {
   product: SubTreatmentsProductFragment;
 }) {
-  const username =
-    product.user?.reference?.fields.find((p) => p.key === 'username')?.value ||
-    '';
-
-  const fullname =
-    product.user?.reference?.fields.find((p) => p.key === 'fullname')?.value ||
-    '';
-
-  const image = product.user?.reference?.fields.find((p) => p.key === 'image')
-    ?.reference || {
-    image: {
-      width: 150,
-      height: 150,
-      url: `https://placehold.co/300x300?text=${username}`,
-    },
-  };
+  const {username, fullname, image} = useUserMetaobject(
+    product.user?.reference,
+  );
 
   const variant = product.variants.nodes[0];
 

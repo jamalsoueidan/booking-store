@@ -38,7 +38,7 @@ export function ArtistProduct({product}: ArtistProductProps) {
       <Flex direction="column" gap={rem(48)} h="100%">
         <Stack gap="6px" style={{flex: 1}}>
           <Flex justify="space-between">
-            <Badge c={`${user.theme.color}.6`} color={`${user.theme.color}.1`}>
+            <Badge c={`${user.theme}.6`} color={`${user.theme}.1`}>
               {product.productType}
             </Badge>
             <Flex gap="4px">
