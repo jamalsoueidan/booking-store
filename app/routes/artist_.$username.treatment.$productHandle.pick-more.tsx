@@ -1,4 +1,5 @@
 import {
+  Anchor,
   Box,
   Button,
   Divider,
@@ -78,7 +79,8 @@ export async function loader({params, request, context}: LoaderFunctionArgs) {
     });
   }
 
-  const products = collection.products;
+  // remove the product that are currently getting booked from the combine treatments.
+  const products = collection.products.nodes.filter((p) => p.id !== product.id);
 
   return json({
     products,
@@ -94,13 +96,23 @@ export default function ArtistTreatments() {
   return (
     <>
       <ArtistShell.Main>
-        {products.nodes?.length > 0 ? (
-          <RenderArtistProducts products={products.nodes} />
+        {products?.length > 0 ? (
+          <RenderArtistProducts products={products} />
         ) : (
-          <Text c="dimmed">
-            Ingen yderligere behandlinger tilgængelige. <br />
-            <strong>Tryk næste!</strong>
-          </Text>
+          <>
+            <Title order={4} fw="400">
+              Den behandling, du har valgt, kan ikke kombineres med andre
+              behandlinger. Tryk på{' '}
+              <Anchor
+                component={Link}
+                to={`../pick-datetime?${searchParams.toString()}`}
+                relative="route"
+              >
+                Næste
+              </Anchor>{' '}
+              for at fortsætte med din booking.
+            </Title>
+          </>
         )}
 
         <Outlet />
@@ -117,7 +129,11 @@ export default function ArtistTreatments() {
             to={`../pick-datetime?${searchParams.toString()}`}
             relative="route"
           >
-            {haveSelectedProducts ? 'Ja tak' : 'Nej tak'}
+            {products?.length > 0
+              ? haveSelectedProducts
+                ? 'Ja tak'
+                : 'Nej tak'
+              : 'Næste'}
           </Button>
         </TreatmentStepper>
       </ArtistShell.Footer>

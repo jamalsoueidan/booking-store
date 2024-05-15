@@ -3465,7 +3465,7 @@ interface GeneratedQueryTypes {
     return: FrontendTreatmentsQuery;
     variables: FrontendTreatmentsQueryVariables;
   };
-  '#graphql\n  #graphql\n  fragment ArtistUser on Metaobject {\n    id #for key={id}\n    fields {\n      value\n      key\n      reference {\n        ... on MediaImage {\n          image {\n            width\n            height\n            url(transform: {})\n          }\n        }\n      }\n    }\n  }\n\n  query FrontUsers(\n    $country: CountryCode\n    $language: LanguageCode\n  ) @inContext(country: $country, language: $language) {\n    metaobjects(type: "user", first: 20) {\n      nodes {\n        ...ArtistUser\n      }\n    }\n  }\n': {
+  '#graphql\n  #graphql\n  fragment ArtistUser on Metaobject {\n    id #for key={id}\n    fields {\n      value\n      key\n      reference {\n        ... on MediaImage {\n          image {\n            width\n            height\n            url(transform: {})\n          }\n        }\n      }\n    }\n  }\n\n  query FrontUsers(\n    $country: CountryCode\n    $language: LanguageCode\n  ) @inContext(country: $country, language: $language) {\n    metaobjects(type: "user", first: 20) { #we have increased to 20 incase some users is active=false, we cannot filtre on metaobjects\n      nodes {\n        ...ArtistUser\n      }\n    }\n  }\n': {
     return: FrontUsersQuery;
     variables: FrontUsersQueryVariables;
   };
