@@ -46,7 +46,7 @@ export const ProfessionSentenceTranslations: Record<string, string> = {
   brow_technician: 'Opnå de perfekte bryn med en [bryntekniker]',
 };
 
-export async function loader({request, context}: LoaderFunctionArgs) {
+export async function loader({context}: LoaderFunctionArgs) {
   const {payload: professions} =
     await getBookingShopifyApi().usersProfessions();
 

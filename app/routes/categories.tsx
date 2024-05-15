@@ -24,14 +24,7 @@ export async function loader({context, request}: LoaderFunctionArgs) {
     },
   );
 
-  return json(
-    {collection, visualTeaser},
-    {
-      headers: {
-        'Cache-Control': 'public, s-maxage=3600, stale-while-revalidate=3600',
-      },
-    },
-  );
+  return json({collection, visualTeaser});
 }
 
 export default function Collections() {

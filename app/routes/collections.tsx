@@ -4,7 +4,6 @@ import {json, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
 import {useState} from 'react';
 import {VisualTeaser} from '~/components/blocks/VisualTeaser';
 import {COLLECTION_ITEM_FRAGMENT, METAFIELD_QUERY} from '~/data/fragments';
-import {parseCT} from '~/lib/clean';
 
 export async function loader({context, request}: LoaderFunctionArgs) {
   const {collections} = await context.storefront.query(COLLECTIONS_QUERY, {
@@ -39,20 +38,16 @@ export default function Collections() {
   );
 
   const [value, setValue] = useState(
-    selectedCollection
-      ? parseCT(selectedCollection.title)
-      : 'Alle behandlinger',
+    selectedCollection ? selectedCollection.title : 'Alle behandlinger',
   );
 
   const navigate = useNavigate();
   const gotoCategoryPage = (value: string) => {
-    const selectedCollection = collections.nodes.find(
-      (c) => parseCT(c.title) === value,
-    );
+    const selectedCollection = collections.nodes.find((c) => c.title === value);
 
     if (selectedCollection) {
       navigate(selectedCollection.handle);
-      setValue(parseCT(selectedCollection.title));
+      setValue(selectedCollection.title);
     } else {
       navigate('alle-produkter');
       setValue('Alle produkter');
@@ -73,7 +68,7 @@ export default function Collections() {
             value={value}
             onChange={(event) => gotoCategoryPage(event.currentTarget.value)}
             data={['Alle produkter'].concat(
-              collections.nodes.map((collection) => parseCT(collection.title)),
+              collections.nodes.map((collection) => collection.title),
             )}
           />
           <NativeSelect

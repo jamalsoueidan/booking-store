@@ -3,7 +3,6 @@ import {Link} from '@remix-run/react';
 
 import {type ProductCollectionFragment} from 'storefrontapi.generated';
 import {useUser} from '~/hooks/use-user';
-import {parseTE} from '~/lib/clean';
 
 export function BadgeCollection({
   collection,
@@ -18,8 +17,8 @@ export function BadgeCollection({
   }
 
   const markup = (
-    <Badge size="lg" radius="md" variant="light" color={user.theme.color}>
-      {parseTE(collection.title)}
+    <Badge size="lg" radius="md" variant="light" color={user.theme}>
+      {collection.title}
     </Badge>
   );
 

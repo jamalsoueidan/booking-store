@@ -1,3 +1,4 @@
+import {CART_QUERY_FRAGMENT} from '~/lib/fragments';
 // Virtual entry point for the app
 import {
   cartGetIdDefault,
@@ -14,7 +15,7 @@ import {
 } from '@shopify/remix-oxygen';
 // @ts-ignore
 import * as remixBuild from 'virtual:remix/server-build';
-import {CART_QUERY_FRAGMENT} from '~/lib/fragments';
+
 import {AppSession} from '~/lib/session';
 
 /**

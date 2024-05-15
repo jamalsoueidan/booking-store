@@ -1,4 +1,3 @@
-import {Carousel} from '@mantine/carousel';
 import {
   Box,
   Button,
@@ -13,32 +12,30 @@ import {
   useMantineTheme,
 } from '@mantine/core';
 import {Link, useLoaderData, type MetaFunction} from '@remix-run/react';
-import {parseGid} from '@shopify/hydrogen';
 import {json, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
 import Autoplay from 'embla-carousel-autoplay';
-import {useRef} from 'react';
 import type {
+  ArtistUserFragment,
+  FrontendTreatmentsProductFragment,
   PageComponentMetaobjectFragment,
   PageFragment,
-  RecommendedTreatmentsQuery,
 } from 'storefrontapi.generated';
-import {TreatmentCard} from '~/components/treatment/TreatmentCard';
 
 import {IconArrowRight, IconMoodWink, IconSearch} from '@tabler/icons-react';
-import {Slider} from '~/components/Slider';
-import {METAFIELD_QUERY, PRODUCT_ITEM_FRAGMENT} from '~/data/fragments';
-import {getBookingShopifyApi} from '~/lib/api/bookingShopifyApi';
-import type {
-  ProductsGetUsersImageResponse,
-  UsersSearchResponse,
-} from '~/lib/api/model';
+import {METAFIELD_QUERY} from '~/data/fragments';
 
+import {Carousel} from '@mantine/carousel';
 import {useMediaQuery} from '@mantine/hooks';
+import {useRef} from 'react';
 import {ArtistCard} from '~/components/ArtistCard';
 import {useField} from '~/components/blocks/utils';
 import {ProfessionButton} from '~/components/ProfessionButton';
+import {Slider} from '~/components/Slider';
 import {H1} from '~/components/titles/H1';
 import {H2} from '~/components/titles/H2';
+import {TreatmentCard} from '~/components/treatment/TreatmentCard';
+import {FrontendTreatments} from '~/graphql/storefront/FrontendTreatments';
+import {FrontendUsers} from '~/graphql/storefront/FrontendUsers';
 import {useComponents} from '~/lib/use-components';
 import {
   loader as loaderProfessions,
@@ -63,23 +60,20 @@ export async function loader(args: LoaderFunctionArgs) {
   const {storefront} = context;
 
   const {products: recommendedTreatments} = await storefront.query(
-    RECOMMENDED_TREATMENT_QUERY,
+    FrontendTreatments,
+    {
+      variables: {
+        query: 'tag:treatments AND tag:system',
+      },
+    },
   );
-
-  const recommendedTreatmentsProductsUsers =
-    await getBookingShopifyApi().productsGetUsersImage({
-      productIds:
-        recommendedTreatments?.nodes.map((p) => parseGid(p.id).id) || [],
-    });
 
   const professions = await loaderProfessions(args).then((r) => r.json());
 
-  const artists = await getBookingShopifyApi().usersSearch(
-    {},
-    {
-      limit: '6',
-      sortOrder: 'desc',
-    },
+  const {metaobjects} = await storefront.query(FrontendUsers);
+
+  const users = metaobjects.nodes.filter(
+    (f) => f.fields.find((f) => f.key === 'active')?.value === 'True',
   );
 
   const components = await context.storefront.query(METAFIELD_QUERY, {
@@ -91,9 +85,8 @@ export async function loader(args: LoaderFunctionArgs) {
 
   return json(
     {
-      recommendedTreatmentsProductsUsers,
       recommendedTreatments,
-      artists,
+      users,
       components,
       professions,
     },
@@ -155,12 +148,8 @@ export default function Homepage() {
         </Container>
       </Box>
 
-      <FeaturedArtists artists={data.artists} professions={data.professions} />
-      <RecommendedTreatments
-        products={data.recommendedTreatments}
-        productsUsers={data.recommendedTreatmentsProductsUsers}
-      />
-
+      <FeaturedArtists users={data.users} professions={data.professions} />
+      <RecommendedTreatments products={data.recommendedTreatments.nodes} />
       <DynamicComponents components={data.components.metaobject} />
     </>
   );
@@ -178,15 +167,15 @@ function DynamicComponents({
 }
 
 function FeaturedArtists({
-  artists,
+  users,
   professions,
 }: {
-  artists: UsersSearchResponse;
+  users: ArtistUserFragment[];
   professions?: Array<Profession>;
 }) {
   const theme = useMantineTheme();
   const isMobile = useMediaQuery('(max-width: 62em)');
-  if (!artists) return null;
+  if (!users) return null;
 
   return (
     <Box
@@ -216,8 +205,8 @@ function FeaturedArtists({
           </ScrollArea>
 
           <SimpleGrid cols={{base: 2, sm: 3, md: 5}} spacing="xl">
-            {artists.payload.results.map((artist) => (
-              <ArtistCard key={artist.customerId} artist={artist} />
+            {users.map((user) => (
+              <ArtistCard key={user.id} artist={user} />
             ))}
           </SimpleGrid>
           <Flex justify="center">
@@ -247,10 +236,8 @@ function FeaturedArtists({
 
 function RecommendedTreatments({
   products,
-  productsUsers,
 }: {
-  products: RecommendedTreatmentsQuery['products'];
-  productsUsers: ProductsGetUsersImageResponse;
+  products: FrontendTreatmentsProductFragment[];
 }) {
   const theme = useMantineTheme();
   const AUTOPLAY_DELAY = useRef(Autoplay({delay: 2000}));
@@ -271,18 +258,10 @@ function RecommendedTreatments({
             plugins={[AUTOPLAY_DELAY.current]}
             slideSize={{base: '100%', md: '20%'}}
           >
-            {products.nodes.map((product) => {
-              const productUsers = productsUsers.payload.find(
-                (p) => p.productId.toString() === parseGid(product.id).id,
-              );
-
+            {products.map((product) => {
               return (
                 <Carousel.Slide key={product.id}>
-                  <TreatmentCard
-                    product={product}
-                    productUsers={productUsers}
-                    loading="lazy"
-                  />
+                  <TreatmentCard product={product} />
                 </Carousel.Slide>
               );
             })}
@@ -313,15 +292,3 @@ function RecommendedTreatments({
     </Box>
   );
 }
-
-const RECOMMENDED_TREATMENT_QUERY = `#graphql
-  ${PRODUCT_ITEM_FRAGMENT}
-  query RecommendedTreatments ($country: CountryCode, $language: LanguageCode)
-    @inContext(country: $country, language: $language) {
-    products(first: 12, sortKey: RELEVANCE, reverse: true, query: "tag:treatments AND tag:system") {
-      nodes {
-        ...ProductItem
-      }
-    }
-  }
-` as const;

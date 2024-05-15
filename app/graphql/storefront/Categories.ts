@@ -11,14 +11,6 @@ export const CategoriesFragment = `#graphql
       width
       height
     }
-    icon:  metafield(namespace:"custom",  key: "icon") {
-      type
-      value
-    }
-    color:  metafield(namespace:"custom",  key: "color") {
-      type
-      value
-    }
     children: metafield(key: "children", namespace: "booking") {
       id
       type
@@ -35,14 +27,6 @@ export const CategoriesFragment = `#graphql
               altText
               width
               height
-            }
-            icon:  metafield(namespace:"custom",  key: "icon") {
-              type
-              value
-            }
-            color:  metafield(namespace:"custom",  key: "color") {
-              type
-              value
             }
           }
         }

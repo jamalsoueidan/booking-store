@@ -14,7 +14,6 @@ import type {
   PageComponentCollectionFragment,
   PageComponentFragment,
 } from 'storefrontapi.generated';
-import {parseTE} from '~/lib/clean';
 import {H2} from '../titles/H2';
 import {Wrapper} from '../Wrapper';
 import {useField} from './utils';
@@ -46,9 +45,7 @@ export function ImageGridWithHeader({
           spacing={{base: 'lg', sm: rem(50)}}
         >
           {items?.map((item) => {
-            const title = `https://placehold.co/400x600?text=${parseTE(
-              item.title,
-            )}`;
+            const title = `https://placehold.co/400x600?text=${item.title}`;
 
             return (
               <Anchor
@@ -73,7 +70,7 @@ export function ImageGridWithHeader({
                     fw="500"
                     style={{textDecoration: 'none'}}
                   >
-                    {parseTE(item.title)}
+                    {item.title}
                   </Title>
                 </Stack>
               </Anchor>
