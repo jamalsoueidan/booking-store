@@ -19,10 +19,9 @@ import {getBookingShopifyApi} from '~/lib/api/bookingShopifyApi';
 import {
   FormProvider,
   getFormProps,
-  getInputProps,
-  getSelectProps,
   useField,
   useForm,
+  useInputControl,
   type FieldMetadata,
 } from '@conform-to/react';
 import {parseWithZod} from '@conform-to/zod';
@@ -40,6 +39,7 @@ import {
 import {useMediaQuery} from '@mantine/hooks';
 import {IconEdit, IconMinus, IconPlus, IconX} from '@tabler/icons-react';
 import {addMinutes, format, set} from 'date-fns';
+import {useMemo} from 'react';
 import {redirectWithSuccess} from 'remix-toast';
 import {SubmitButton} from '~/components/form/SubmitButton';
 import MobileModal from '~/components/MobileModal';
@@ -79,14 +79,14 @@ export const action = async ({
   );
 
   try {
-    const response = await getBookingShopifyApi().customerScheduleSlotUpdate(
+    await getBookingShopifyApi().customerScheduleSlotUpdate(
       customerId,
       scheduleHandle,
       {slots},
     );
 
     await context.storefront.cache?.delete(
-      `${baseURL}/customer/${customerId}/schedules/${scheduleHandle}`,
+      `${baseURL}/customer/${customerId}/schedule/${scheduleHandle}`,
     );
 
     return redirectWithSuccess('.', {
@@ -229,10 +229,11 @@ function SlotInput({field}: SlotInputProps) {
     }
   };
 
+  const dayInput = useInputControl(day);
+
   return (
     <Table.Tr>
       <Table.Td valign="top">
-        <input {...getInputProps(day, {type: 'hidden'})} />
         <Checkbox
           checked={intervalsList.length > 0}
           onChange={onChange}
@@ -284,26 +285,29 @@ function IntervalInput({field, day}: IntervalInputProps) {
   const isMobile = useMediaQuery('(max-width: 48em)');
   const {from, to} = field.getFieldset();
 
+  const fromInput = useInputControl(from);
+  const toInput = useInputControl(to);
+
+  const data = useMemo(() => generateTimeSlots(4, 20, 30), []);
+
   return (
     <Flex gap={{base: 'xs', sm: 'md'}}>
       <Select
         size={isMobile ? 'xs' : 'md'}
         placeholder="Fra"
-        data={generateTimeSlots(4, 20, 30)}
-        {...getSelectProps(from)}
+        data={data}
         defaultValue={field.initialValue?.from}
+        onChange={(value: string | null) => fromInput.change(value!)}
         error={from.errors}
-        withCheckIcon={false}
         data-testid={`${day}-from-select`}
       />
       <Select
         size={isMobile ? 'xs' : 'md'}
         placeholder="Til"
-        {...getSelectProps(to)}
         defaultValue={field.initialValue?.to}
-        data={generateTimeSlots(4, 20, 30)}
+        onChange={(value: string | null) => toInput.change(value!)}
+        data={data}
         error={to.errors}
-        withCheckIcon={false}
         data-testid={`${day}-to-select`}
       />
     </Flex>

@@ -15,7 +15,9 @@ export const SubmitButton: React.FC<
   const [action, setAction] = useState('');
   const buttonRef = useRef<HTMLButtonElement>(null);
   const isSubmitting =
-    navigation.state !== 'idle' && action === navigation.location?.pathname;
+    navigation.state !== 'idle' &&
+    action === navigation.location?.pathname &&
+    navigation.formMethod === 'POST';
 
   useEffect(() => {
     const form = buttonRef.current ? buttonRef.current.closest('form') : null;

@@ -44,11 +44,8 @@ export async function loader({context, request}: LoaderFunctionArgs) {
   if (url.pathname === '/account/schedules' && response.payload.length > 0) {
     return redirect(response.payload[0]._id);
   }
-  return json(response.payload, {
-    headers: {
-      'Cache-Control': 'no-cache, no-store, must-revalidate',
-    },
-  });
+
+  return json(response.payload);
 }
 
 export default function AccountSchedulesIndex() {
@@ -120,7 +117,7 @@ export default function AccountSchedulesIndex() {
           selectScheduleMarkup
         )}
 
-        <Outlet key={new Date().toJSON()} />
+        <Outlet key={params.scheduleHandle} />
 
         <MobileModal
           opened={location.hash === '#create'}

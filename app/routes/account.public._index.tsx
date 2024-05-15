@@ -14,6 +14,7 @@ import {
   useInputControl,
 } from '@conform-to/react';
 import {parseWithZod} from '@conform-to/zod';
+import tiptapStyles from '@mantine/tiptap/styles.css?url';
 import {redirectWithSuccess} from 'remix-toast';
 import {MultiTags} from '~/components/form/MultiTags';
 import {RadioGroup} from '~/components/form/RadioGroup';
@@ -24,6 +25,10 @@ import {getCustomer} from '~/lib/get-customer';
 import {customerUpdateBody} from '~/lib/zod/bookingShopifyApi';
 
 const schema = customerUpdateBody;
+
+export function links() {
+  return [{rel: 'stylesheet', href: tiptapStyles}];
+}
 
 export const action = async ({request, context}: ActionFunctionArgs) => {
   const customerId = await getCustomer({context});
