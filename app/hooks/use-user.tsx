@@ -1,17 +1,15 @@
 import React from 'react';
-import {type ArtistUserFragment} from 'storefrontapi.generated';
+import {type UserFragment} from 'storefrontapi.generated';
 import {useUserMetaobject} from './useUserMetaobject';
 
-const UserContext = React.createContext<ArtistUserFragment | null | undefined>(
-  null,
-);
+const UserContext = React.createContext<UserFragment | null | undefined>(null);
 
 export const UserProvider = ({
   children,
   user,
 }: {
   children: React.ReactNode;
-  user?: ArtistUserFragment | null;
+  user?: UserFragment | null;
 }) => {
   return <UserContext.Provider value={user}>{children}</UserContext.Provider>;
 };

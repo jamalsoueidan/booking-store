@@ -1,7 +1,7 @@
-import {ArtistUserFragment} from '../artist/ArtistUser';
+import {UserFragment} from '../metafields/user';
 
 export const FrontendTreatmentsFragment = `#graphql
-  ${ArtistUserFragment}
+  ${UserFragment}
 
   fragment FrontendTreatmentsProduct on Product {
     id
@@ -27,7 +27,7 @@ export const FrontendTreatmentsFragment = `#graphql
             nodes {
               user: metafield(key: "user", namespace: "booking") {
                 reference {
-                  ...ArtistUser
+                  ...User
                 }
               }
             }

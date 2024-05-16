@@ -1,7 +1,11 @@
 import {Anchor, Card, Divider, Flex, Group, Stack, Text} from '@mantine/core';
-import {useLoaderData} from '@remix-run/react';
+import {useLoaderData, useOutletContext} from '@remix-run/react';
 import {Money, parseGid} from '@shopify/hydrogen';
-import {json, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
+import {
+  json,
+  type LoaderFunctionArgs,
+  type SerializeFrom,
+} from '@shopify/remix-oxygen';
 import {IconClockHour3, IconGps, IconHotelService} from '@tabler/icons-react';
 import {format} from 'date-fns';
 import da from 'date-fns/locale/da';
@@ -12,6 +16,7 @@ import {TreatmentArtistCardComplete} from '~/components/treatment/TreatmentArtis
 import {TreatmentStepper} from '~/components/TreatmentStepper';
 import {PRODUCT_SELECTED_OPTIONS_QUERY} from '~/data/queries';
 import {ArtistTreatmentCompletedQuery} from '~/graphql/artist/ArtistTreatmentCompleted';
+import type {loader as rootLoader} from './artist_.$username.treatment.$productHandle';
 
 import {getBookingShopifyApi} from '~/lib/api/bookingShopifyApi';
 import {durationToTime} from '~/lib/duration';
@@ -54,8 +59,6 @@ export const loader = async ({
       locationId,
     );
 
-    const {payload: user} = await getBookingShopifyApi().userGet(username);
-
     const {payload: availability} =
       await getBookingShopifyApi().userAvailabilityGet(username, locationId, {
         productIds: joinProductIds,
@@ -85,7 +88,6 @@ export const loader = async ({
 
     return json({
       location,
-      user,
       products,
       availability,
       groupId,
@@ -97,6 +99,7 @@ export const loader = async ({
 
 export default function ArtistTreatmentsBooking() {
   const data = useLoaderData<typeof loader>();
+  const {user} = useOutletContext<SerializeFrom<typeof rootLoader>>();
 
   const productMarkup = data.availability.slot.products.map((slotProduct) => {
     // to get duration
@@ -134,7 +137,7 @@ export default function ArtistTreatmentsBooking() {
   return (
     <>
       <ArtistShell.Main>
-        <TreatmentArtistCardComplete artist={data.user} />
+        <TreatmentArtistCardComplete user={user} />
 
         <Card.Section py="md">
           <Divider />

@@ -1,14 +1,14 @@
-import {ArtistUserFragment} from '../artist/ArtistUser';
+import {UserFragment} from '../metafields/user';
 
 export const SubTreatmentsFragment = `#graphql
-  ${ArtistUserFragment}
+  ${UserFragment}
 
   fragment SubTreatmentsProduct on Product {
     id
     handle
     user: metafield(key: "user", namespace: "booking") {
       reference {
-        ...ArtistUser
+        ...User
       }
     }
     variants(first: 1) {

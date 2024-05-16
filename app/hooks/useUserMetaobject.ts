@@ -1,6 +1,6 @@
-import {type ArtistUserFragment} from 'storefrontapi.generated';
+import {type UserFragment} from 'storefrontapi.generated';
 
-export const useUserMetaobject = (reference?: ArtistUserFragment | null) => {
+export const useUserMetaobject = (reference?: UserFragment | null) => {
   const username =
     reference?.fields.find((p) => p.key === 'username')?.value || '';
 

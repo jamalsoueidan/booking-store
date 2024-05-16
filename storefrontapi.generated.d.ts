@@ -2143,18 +2143,6 @@ export type ArtistTreatmentOptionsQuery = {
   };
 };
 
-export type ArtistUserFragment = Pick<StorefrontAPI.Metaobject, 'id'> & {
-  fields: Array<
-    Pick<StorefrontAPI.MetaobjectField, 'value' | 'key'> & {
-      reference?: StorefrontAPI.Maybe<{
-        image?: StorefrontAPI.Maybe<
-          Pick<StorefrontAPI.Image, 'width' | 'height' | 'url'>
-        >;
-      }>;
-    }
-  >;
-};
-
 export type ArtistUserQueryVariables = StorefrontAPI.Exact<{
   username: StorefrontAPI.Scalars['String']['input'];
   country?: StorefrontAPI.InputMaybe<StorefrontAPI.CountryCode>;
@@ -2173,6 +2161,18 @@ export type ArtistUserQuery = {
           }>;
         }
       >;
+    }
+  >;
+};
+
+export type UserFragment = Pick<StorefrontAPI.Metaobject, 'id'> & {
+  fields: Array<
+    Pick<StorefrontAPI.MetaobjectField, 'value' | 'key'> & {
+      reference?: StorefrontAPI.Maybe<{
+        image?: StorefrontAPI.Maybe<
+          Pick<StorefrontAPI.Image, 'width' | 'height' | 'url'>
+        >;
+      }>;
     }
   >;
 };
@@ -3453,7 +3453,7 @@ interface GeneratedQueryTypes {
     return: ArtistTreatmentOptionsQuery;
     variables: ArtistTreatmentOptionsQueryVariables;
   };
-  '#graphql\n  #graphql\n  fragment ArtistUser on Metaobject {\n    id #for key={id}\n    fields {\n      value\n      key\n      reference {\n        ... on MediaImage {\n          image {\n            width\n            height\n            url(transform: {})\n          }\n        }\n      }\n    }\n  }\n\n  query ArtistUser(\n    $username: String!\n    $country: CountryCode\n    $language: LanguageCode\n  ) @inContext(country: $country, language: $language) {\n    metaobject(handle: {handle: $username, type: "user"}) {\n      ...ArtistUser\n    }\n  }\n': {
+  '#graphql\n  #graphql\n  fragment User on Metaobject {\n    id #for key={id}\n    fields {\n      value\n      key\n      reference {\n        ... on MediaImage {\n          image {\n            width\n            height\n            url(transform: {})\n          }\n        }\n      }\n    }\n  }\n\n  query ArtistUser(\n    $username: String!\n    $country: CountryCode\n    $language: LanguageCode\n  ) @inContext(country: $country, language: $language) {\n    metaobject(handle: {handle: $username, type: "user"}) {\n      ...User\n    }\n  }\n': {
     return: ArtistUserQuery;
     variables: ArtistUserQueryVariables;
   };
@@ -3461,15 +3461,15 @@ interface GeneratedQueryTypes {
     return: CategoriesCollectionQuery;
     variables: CategoriesCollectionQueryVariables;
   };
-  '#graphql\n  #graphql\n  #graphql\n  fragment ArtistUser on Metaobject {\n    id #for key={id}\n    fields {\n      value\n      key\n      reference {\n        ... on MediaImage {\n          image {\n            width\n            height\n            url(transform: {})\n          }\n        }\n      }\n    }\n  }\n\n\n  fragment FrontendTreatmentsProduct on Product {\n    id\n    title\n    handle\n    description\n    featuredImage {\n      height\n      width\n      url(transform: { maxHeight: 250, maxWidth: 250, crop: CENTER })\n    }\n    collection: metafield(key: "collection", namespace: "system") {\n      reference {\n        ... on Collection {\n          products(first: 5, sortKey: RELEVANCE, filters: {productMetafield: {namespace: "booking", key: "hide_from_profile", value: "false"}}) {\n            filters {\n              id\n              label\n              values {\n                count\n              }\n            }\n            nodes {\n              user: metafield(key: "user", namespace: "booking") {\n                reference {\n                  ...ArtistUser\n                }\n              }\n            }\n          }\n        }\n      }\n    }\n  }\n\n  query FrontendTreatments(\n    $query: String!\n    $country: CountryCode\n    $language: LanguageCode\n  ) @inContext(country: $country, language: $language) {\n    products(first: 10, sortKey: RELEVANCE, query: $query) {\n      nodes {\n        ...FrontendTreatmentsProduct\n      }\n    }\n  }\n': {
+  '#graphql\n  #graphql\n  #graphql\n  fragment User on Metaobject {\n    id #for key={id}\n    fields {\n      value\n      key\n      reference {\n        ... on MediaImage {\n          image {\n            width\n            height\n            url(transform: {})\n          }\n        }\n      }\n    }\n  }\n\n\n  fragment FrontendTreatmentsProduct on Product {\n    id\n    title\n    handle\n    description\n    featuredImage {\n      height\n      width\n      url(transform: { maxHeight: 250, maxWidth: 250, crop: CENTER })\n    }\n    collection: metafield(key: "collection", namespace: "system") {\n      reference {\n        ... on Collection {\n          products(first: 5, sortKey: RELEVANCE, filters: {productMetafield: {namespace: "booking", key: "hide_from_profile", value: "false"}}) {\n            filters {\n              id\n              label\n              values {\n                count\n              }\n            }\n            nodes {\n              user: metafield(key: "user", namespace: "booking") {\n                reference {\n                  ...User\n                }\n              }\n            }\n          }\n        }\n      }\n    }\n  }\n\n  query FrontendTreatments(\n    $query: String!\n    $country: CountryCode\n    $language: LanguageCode\n  ) @inContext(country: $country, language: $language) {\n    products(first: 10, sortKey: RELEVANCE, query: $query) {\n      nodes {\n        ...FrontendTreatmentsProduct\n      }\n    }\n  }\n': {
     return: FrontendTreatmentsQuery;
     variables: FrontendTreatmentsQueryVariables;
   };
-  '#graphql\n  #graphql\n  fragment ArtistUser on Metaobject {\n    id #for key={id}\n    fields {\n      value\n      key\n      reference {\n        ... on MediaImage {\n          image {\n            width\n            height\n            url(transform: {})\n          }\n        }\n      }\n    }\n  }\n\n  query FrontUsers(\n    $country: CountryCode\n    $language: LanguageCode\n  ) @inContext(country: $country, language: $language) {\n    metaobjects(type: "user", first: 20) { #we have increased to 20 incase some users is active=false, we cannot filtre on metaobjects\n      nodes {\n        ...ArtistUser\n      }\n    }\n  }\n': {
+  '#graphql\n  #graphql\n  fragment User on Metaobject {\n    id #for key={id}\n    fields {\n      value\n      key\n      reference {\n        ... on MediaImage {\n          image {\n            width\n            height\n            url(transform: {})\n          }\n        }\n      }\n    }\n  }\n\n  query FrontUsers(\n    $country: CountryCode\n    $language: LanguageCode\n  ) @inContext(country: $country, language: $language) {\n    metaobjects(type: "user", first: 20) { #we have increased to 20 incase some users is active=false, we cannot filtre on metaobjects\n      nodes {\n        ...User\n      }\n    }\n  }\n': {
     return: FrontUsersQuery;
     variables: FrontUsersQueryVariables;
   };
-  '#graphql\n#graphql\n  #graphql\n  fragment ArtistUser on Metaobject {\n    id #for key={id}\n    fields {\n      value\n      key\n      reference {\n        ... on MediaImage {\n          image {\n            width\n            height\n            url(transform: {})\n          }\n        }\n      }\n    }\n  }\n\n\n  fragment SubTreatmentsProduct on Product {\n    id\n    handle\n    user: metafield(key: "user", namespace: "booking") {\n      reference {\n        ...ArtistUser\n      }\n    }\n    variants(first: 1) {\n      nodes {\n        id\n        compareAtPrice {\n          amount\n          currencyCode\n        }\n        price {\n          amount\n          currencyCode\n        }\n      }\n    }\n  }\n\n  query SubTreatment(\n    $query: String!\n    $country: CountryCode\n    $language: LanguageCode\n  ) @inContext(country: $country, language: $language) {\n    products(first: 10, sortKey: TITLE, query: $query) {\n      nodes {\n        ...SubTreatmentsProduct\n      }\n    }\n  }\n': {
+  '#graphql\n#graphql\n  #graphql\n  fragment User on Metaobject {\n    id #for key={id}\n    fields {\n      value\n      key\n      reference {\n        ... on MediaImage {\n          image {\n            width\n            height\n            url(transform: {})\n          }\n        }\n      }\n    }\n  }\n\n\n  fragment SubTreatmentsProduct on Product {\n    id\n    handle\n    user: metafield(key: "user", namespace: "booking") {\n      reference {\n        ...User\n      }\n    }\n    variants(first: 1) {\n      nodes {\n        id\n        compareAtPrice {\n          amount\n          currencyCode\n        }\n        price {\n          amount\n          currencyCode\n        }\n      }\n    }\n  }\n\n  query SubTreatment(\n    $query: String!\n    $country: CountryCode\n    $language: LanguageCode\n  ) @inContext(country: $country, language: $language) {\n    products(first: 10, sortKey: TITLE, query: $query) {\n      nodes {\n        ...SubTreatmentsProduct\n      }\n    }\n  }\n': {
     return: SubTreatmentQuery;
     variables: SubTreatmentQueryVariables;
   };
@@ -3521,7 +3521,7 @@ interface GeneratedQueryTypes {
     return: BlogsQuery;
     variables: BlogsQueryVariables;
   };
-  '#graphql\n  #graphql\n  #graphql\n  fragment ArtistUser on Metaobject {\n    id #for key={id}\n    fields {\n      value\n      key\n      reference {\n        ... on MediaImage {\n          image {\n            width\n            height\n            url(transform: {})\n          }\n        }\n      }\n    }\n  }\n\n\n  fragment FrontendTreatmentsProduct on Product {\n    id\n    title\n    handle\n    description\n    featuredImage {\n      height\n      width\n      url(transform: { maxHeight: 250, maxWidth: 250, crop: CENTER })\n    }\n    collection: metafield(key: "collection", namespace: "system") {\n      reference {\n        ... on Collection {\n          products(first: 5, sortKey: RELEVANCE, filters: {productMetafield: {namespace: "booking", key: "hide_from_profile", value: "false"}}) {\n            filters {\n              id\n              label\n              values {\n                count\n              }\n            }\n            nodes {\n              user: metafield(key: "user", namespace: "booking") {\n                reference {\n                  ...ArtistUser\n                }\n              }\n            }\n          }\n        }\n      }\n    }\n  }\n\n  query Collectionss(\n    $handle: String!\n    $country: CountryCode\n    $language: LanguageCode\n    $first: Int\n    $last: Int\n    $startCursor: String\n    $endCursor: String\n  ) @inContext(country: $country, language: $language) {\n    collection(handle: $handle) {\n      id\n      handle\n      title\n      description\n      products(\n        first: $first,\n        last: $last,\n        before: $startCursor,\n        after: $endCursor,\n        sortKey: TITLE\n      ) {\n        nodes {\n          ...FrontendTreatmentsProduct\n        }\n        pageInfo {\n          hasPreviousPage\n          hasNextPage\n          endCursor\n          startCursor\n        }\n      }\n    }\n  }\n': {
+  '#graphql\n  #graphql\n  #graphql\n  fragment User on Metaobject {\n    id #for key={id}\n    fields {\n      value\n      key\n      reference {\n        ... on MediaImage {\n          image {\n            width\n            height\n            url(transform: {})\n          }\n        }\n      }\n    }\n  }\n\n\n  fragment FrontendTreatmentsProduct on Product {\n    id\n    title\n    handle\n    description\n    featuredImage {\n      height\n      width\n      url(transform: { maxHeight: 250, maxWidth: 250, crop: CENTER })\n    }\n    collection: metafield(key: "collection", namespace: "system") {\n      reference {\n        ... on Collection {\n          products(first: 5, sortKey: RELEVANCE, filters: {productMetafield: {namespace: "booking", key: "hide_from_profile", value: "false"}}) {\n            filters {\n              id\n              label\n              values {\n                count\n              }\n            }\n            nodes {\n              user: metafield(key: "user", namespace: "booking") {\n                reference {\n                  ...User\n                }\n              }\n            }\n          }\n        }\n      }\n    }\n  }\n\n  query Collectionss(\n    $handle: String!\n    $country: CountryCode\n    $language: LanguageCode\n    $first: Int\n    $last: Int\n    $startCursor: String\n    $endCursor: String\n  ) @inContext(country: $country, language: $language) {\n    collection(handle: $handle) {\n      id\n      handle\n      title\n      description\n      products(\n        first: $first,\n        last: $last,\n        before: $startCursor,\n        after: $endCursor,\n        sortKey: TITLE\n      ) {\n        nodes {\n          ...FrontendTreatmentsProduct\n        }\n        pageInfo {\n          hasPreviousPage\n          hasNextPage\n          endCursor\n          startCursor\n        }\n      }\n    }\n  }\n': {
     return: CollectionssQuery;
     variables: CollectionssQueryVariables;
   };

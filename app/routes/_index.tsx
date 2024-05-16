@@ -15,10 +15,10 @@ import {Link, useLoaderData, type MetaFunction} from '@remix-run/react';
 import {json, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
 import Autoplay from 'embla-carousel-autoplay';
 import type {
-  ArtistUserFragment,
   FrontendTreatmentsProductFragment,
   PageComponentMetaobjectFragment,
   PageFragment,
+  UserFragment,
 } from 'storefrontapi.generated';
 
 import {IconArrowRight, IconMoodWink, IconSearch} from '@tabler/icons-react';
@@ -170,7 +170,7 @@ function FeaturedArtists({
   users,
   professions,
 }: {
-  users: ArtistUserFragment[];
+  users: UserFragment[];
   professions?: Array<Profession>;
 }) {
   const theme = useMantineTheme();

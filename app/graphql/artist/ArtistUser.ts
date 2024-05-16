@@ -1,31 +1,14 @@
-export const ArtistUserFragment = `#graphql
-  fragment ArtistUser on Metaobject {
-    id #for key={id}
-    fields {
-      value
-      key
-      reference {
-        ... on MediaImage {
-          image {
-            width
-            height
-            url(transform: {})
-          }
-        }
-      }
-    }
-  }
-` as const;
+import {UserFragment} from '../metafields/user';
 
 export const ArtistUser = `#graphql
-  ${ArtistUserFragment}
+  ${UserFragment}
   query ArtistUser(
     $username: String!
     $country: CountryCode
     $language: LanguageCode
   ) @inContext(country: $country, language: $language) {
     metaobject(handle: {handle: $username, type: "user"}) {
-      ...ArtistUser
+      ...User
     }
   }
 ` as const;

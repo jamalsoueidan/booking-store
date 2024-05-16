@@ -12,8 +12,8 @@ import {
 } from '@mantine/core';
 import {Link} from '@remix-run/react';
 import type {
-  ArtistUserFragment,
   FrontendTreatmentsProductFragment,
+  UserFragment,
 } from 'storefrontapi.generated';
 import {useUserMetaobject} from '~/hooks/useUserMetaobject';
 
@@ -101,7 +101,7 @@ function Users({
   );
 }
 
-const AvatarUser = ({user}: {user?: ArtistUserFragment | null}) => {
+const AvatarUser = ({user}: {user?: UserFragment | null}) => {
   const {image} = useUserMetaobject(user);
   return <Avatar src={image.image?.url} radius="lg" size="sm" />;
 };
