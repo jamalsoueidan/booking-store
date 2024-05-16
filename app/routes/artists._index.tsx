@@ -4,9 +4,12 @@ import {
   Container,
   Flex,
   getGradient,
+  Image,
   rem,
   SimpleGrid,
   Stack,
+  Text,
+  UnstyledButton,
   useMantineTheme,
 } from '@mantine/core';
 import {Link, useLoaderData} from '@remix-run/react';
@@ -16,10 +19,11 @@ import {
   type MetaFunction,
 } from '@shopify/remix-oxygen';
 import {IconArrowRight} from '@tabler/icons-react';
-import {ArtistCard} from '~/components/ArtistCard';
 import {H2} from '~/components/titles/H2';
 import {METAFIELD_QUERY} from '~/data/fragments';
 import {getBookingShopifyApi} from '~/lib/api/bookingShopifyApi';
+import {User, UserTop} from '~/lib/api/model';
+import {modifyImageUrl} from '~/lib/image';
 import {
   ProfessionSentenceTranslations,
   ProfessionTranslations,
@@ -31,13 +35,14 @@ export const meta: MetaFunction = () => {
   return [{title: `BySisters | Find Skønhedseksperter`}];
 };
 
-export const loader = async (args: LoaderFunctionArgs) => {
-  const {context} = args;
-
-  const {payload: users} = await getBookingShopifyApi().usersTop({
-    limit: LIMIT,
-    page: '1',
-  });
+export const loader = async ({context}: LoaderFunctionArgs) => {
+  const {payload: users} = await getBookingShopifyApi().usersTop(
+    {
+      limit: LIMIT,
+      page: '1',
+    },
+    context,
+  );
 
   const {metaobject: components} = await context.storefront.query(
     METAFIELD_QUERY,
@@ -49,14 +54,7 @@ export const loader = async (args: LoaderFunctionArgs) => {
     },
   );
 
-  return json(
-    {users, components},
-    {
-      headers: {
-        'Cache-Control': 'public, s-maxage=3600, stale-while-revalidate=3600',
-      },
-    },
-  );
+  return json({users, components});
 };
 
 export default function ArtistsIndex() {
@@ -80,7 +78,7 @@ export default function ArtistsIndex() {
           </H2>
           <SimpleGrid spacing="lg" cols={{base: 2, sm: 3, md: 4, lg: 5}}>
             {user.users?.map((user) => (
-              <ArtistCard artist={user} key={user.customerId} />
+              <UserCard user={user} key={user.customerId} />
             ))}
           </SimpleGrid>
           <Flex justify="center">
@@ -113,3 +111,32 @@ export default function ArtistsIndex() {
 
   return <>{professions}</>;
 }
+
+export const UserCard = ({user}: {user: UserTop | User}) => {
+  return (
+    <UnstyledButton
+      component={Link}
+      to={`/artist/${user.username}`}
+      style={{borderRadius: '5%', border: '1px solid #f4f4f4'}}
+    >
+      <Image
+        sizes="(min-width: 45em) 50vw, 100vw"
+        src={modifyImageUrl(user.images.profile?.url, '250x250')}
+        style={{
+          borderTopLeftRadius: '5%',
+          borderTopRightRadius: '5%',
+        }}
+        fallbackSrc="https://placehold.co/400x600?text=Ekspert"
+        loading="lazy"
+      />
+      <Box p="xs" pb="xs" pt="6px">
+        <Text fz="lg" fw={500} c="black">
+          {user.fullname}
+        </Text>
+        <Text fz="sm" c="#666">
+          {user.shortDescription}
+        </Text>
+      </Box>
+    </UnstyledButton>
+  );
+};

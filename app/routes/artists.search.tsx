@@ -19,7 +19,6 @@ import {json, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
 import {IconSearch} from '@tabler/icons-react';
 import {useEffect, useState} from 'react';
 import InfiniteScroll from 'react-infinite-scroll-component';
-import {ArtistCard} from '~/components/ArtistCard';
 import {H2} from '~/components/titles/H2';
 import {METAFIELD_QUERY} from '~/data/fragments';
 import {getBookingShopifyApi} from '~/lib/api/bookingShopifyApi';
@@ -28,6 +27,7 @@ import {
   ProfessionSentenceTranslations,
   ProfessionTranslations,
 } from './api.users.professions';
+import {UserCard} from './artists._index';
 
 const LIMIT = '20';
 
@@ -194,7 +194,7 @@ export const UserList = ({initialData, initialCursor}: UserListProps) => {
     >
       <SimpleGrid spacing="lg" cols={{base: 2, sm: 3, md: 4, lg: 5}}>
         {data?.map((user) => {
-          return <ArtistCard artist={user} key={user.username} />;
+          return <UserCard user={user} key={user.username} />;
         })}
       </SimpleGrid>
     </InfiniteScroll>
