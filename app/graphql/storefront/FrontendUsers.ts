@@ -1,4 +1,4 @@
-import {UserFragment} from '../metafields/user';
+import {UserFragment} from '../fragments/User';
 
 export const FrontendUsers = `#graphql
   ${UserFragment}

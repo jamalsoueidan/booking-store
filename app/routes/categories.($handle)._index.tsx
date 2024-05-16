@@ -8,7 +8,7 @@ import {
 import {json, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
 import {TreatmentCard} from '~/components/treatment/TreatmentCard';
 import {Wrapper} from '~/components/Wrapper';
-import {FrontendTreatmentsFragment} from '~/graphql/storefront/FrontendTreatments';
+import {TreatmentCollectionFragment} from '~/graphql/fragments/TreatmentCollection';
 
 export const meta: MetaFunction<typeof loader> = ({data}) => {
   return [
@@ -38,14 +38,7 @@ export async function loader({request, params, context}: LoaderFunctionArgs) {
     });
   }
 
-  return json(
-    {collection},
-    {
-      headers: {
-        'Cache-Control': 'public, s-maxage=3600, stale-while-revalidate=3600',
-      },
-    },
-  );
+  return json({collection});
 }
 
 export default function Collection() {
@@ -97,7 +90,7 @@ export default function Collection() {
 }
 
 const COLLECTION_QUERY = `#graphql
-  ${FrontendTreatmentsFragment}
+  ${TreatmentCollectionFragment}
   query Collectionss(
     $handle: String!
     $country: CountryCode
@@ -120,7 +113,7 @@ const COLLECTION_QUERY = `#graphql
         sortKey: TITLE
       ) {
         nodes {
-          ...FrontendTreatmentsProduct
+          ...TreatmentCollection
         }
         pageInfo {
           hasPreviousPage

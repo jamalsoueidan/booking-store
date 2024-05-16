@@ -12,7 +12,7 @@ import {
 } from '@mantine/core';
 import {Link} from '@remix-run/react';
 import type {
-  FrontendTreatmentsProductFragment,
+  TreatmentCollectionFragment,
   UserFragment,
 } from 'storefrontapi.generated';
 import {useUserMetaobject} from '~/hooks/useUserMetaobject';
@@ -20,7 +20,7 @@ import {useUserMetaobject} from '~/hooks/useUserMetaobject';
 export function TreatmentCard({
   product,
 }: {
-  product: FrontendTreatmentsProductFragment;
+  product: TreatmentCollectionFragment;
 }) {
   return (
     <Card
@@ -68,7 +68,7 @@ export function TreatmentCard({
 function Users({
   collection,
 }: {
-  collection: FrontendTreatmentsProductFragment['collection'];
+  collection: TreatmentCollectionFragment['collection'];
 }) {
   if (!collection) {
     return (

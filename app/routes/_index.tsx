@@ -14,12 +14,6 @@ import {
 import {Link, useLoaderData, type MetaFunction} from '@remix-run/react';
 import {json, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
 import Autoplay from 'embla-carousel-autoplay';
-import type {
-  FrontendTreatmentsProductFragment,
-  PageComponentMetaobjectFragment,
-  PageFragment,
-  UserFragment,
-} from 'storefrontapi.generated';
 
 import {IconArrowRight, IconMoodWink, IconSearch} from '@tabler/icons-react';
 import {METAFIELD_QUERY} from '~/data/fragments';
@@ -27,6 +21,12 @@ import {METAFIELD_QUERY} from '~/data/fragments';
 import {Carousel} from '@mantine/carousel';
 import {useMediaQuery} from '@mantine/hooks';
 import {useRef} from 'react';
+import {
+  TreatmentCollectionFragment,
+  type PageComponentMetaobjectFragment,
+  type PageFragment,
+  type UserFragment,
+} from 'storefrontapi.generated';
 import {ArtistCard} from '~/components/ArtistCard';
 import {useField} from '~/components/blocks/utils';
 import {ProfessionButton} from '~/components/ProfessionButton';
@@ -237,7 +237,7 @@ function FeaturedArtists({
 function RecommendedTreatments({
   products,
 }: {
-  products: FrontendTreatmentsProductFragment[];
+  products: TreatmentCollectionFragment[];
 }) {
   const theme = useMantineTheme();
   const AUTOPLAY_DELAY = useRef(Autoplay({delay: 2000}));
