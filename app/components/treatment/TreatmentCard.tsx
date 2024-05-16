@@ -83,10 +83,12 @@ function Users({
   const availability = collection.reference?.products.filters.find(
     (p) => p.id === 'filter.v.availability',
   );
+
   const highestCount = availability?.values.reduce(
     (max, obj) => Math.max(max, obj.count),
     0,
   );
+
   const users = collection.reference?.products.nodes.map((p) => p.user);
 
   return (

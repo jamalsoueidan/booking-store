@@ -34,7 +34,7 @@ export const TreatmentCollectionFragment = `#graphql
     collection: metafield(key: "collection", namespace: "system") {
       reference {
         ... on Collection {
-          products(first: 5, sortKey: RELEVANCE, filters: {productMetafield: {namespace: "booking", key: "hide_from_profile", value: "false"}}) {
+          products(first: 5, sortKey: RELEVANCE, filters: [{productMetafield: {namespace: "booking", key: "hide_from_profile", value: "false"}}, {productMetafield: {namespace: "system", key: "active",value: "true"}}]) {
             filters {
               id
               label

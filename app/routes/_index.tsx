@@ -21,11 +21,11 @@ import {METAFIELD_QUERY} from '~/data/fragments';
 import {Carousel} from '@mantine/carousel';
 import {useMediaQuery} from '@mantine/hooks';
 import {useRef} from 'react';
-import {
+import type {
+  PageComponentMetaobjectFragment,
+  PageFragment,
   TreatmentCollectionFragment,
-  type PageComponentMetaobjectFragment,
-  type PageFragment,
-  type UserFragment,
+  UserFragment,
 } from 'storefrontapi.generated';
 import {ArtistCard} from '~/components/ArtistCard';
 import {useField} from '~/components/blocks/utils';
