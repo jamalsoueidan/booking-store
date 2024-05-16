@@ -12,15 +12,15 @@ import {
 } from '@mantine/core';
 import {Link} from '@remix-run/react';
 import type {
-  ArtistUserFragment,
-  FrontendTreatmentsProductFragment,
+  TreatmentCollectionFragment,
+  UserFragment,
 } from 'storefrontapi.generated';
 import {useUserMetaobject} from '~/hooks/useUserMetaobject';
 
 export function TreatmentCard({
   product,
 }: {
-  product: FrontendTreatmentsProductFragment;
+  product: TreatmentCollectionFragment;
 }) {
   return (
     <Card
@@ -68,7 +68,7 @@ export function TreatmentCard({
 function Users({
   collection,
 }: {
-  collection: FrontendTreatmentsProductFragment['collection'];
+  collection: TreatmentCollectionFragment['collection'];
 }) {
   if (!collection) {
     return (
@@ -83,10 +83,12 @@ function Users({
   const availability = collection.reference?.products.filters.find(
     (p) => p.id === 'filter.v.availability',
   );
+
   const highestCount = availability?.values.reduce(
     (max, obj) => Math.max(max, obj.count),
     0,
   );
+
   const users = collection.reference?.products.nodes.map((p) => p.user);
 
   return (
@@ -101,7 +103,7 @@ function Users({
   );
 }
 
-const AvatarUser = ({user}: {user?: ArtistUserFragment | null}) => {
+const AvatarUser = ({user}: {user?: UserFragment | null}) => {
   const {image} = useUserMetaobject(user);
   return <Avatar src={image.image?.url} radius="lg" size="sm" />;
 };

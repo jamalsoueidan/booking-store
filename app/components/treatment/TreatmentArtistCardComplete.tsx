@@ -1,18 +1,27 @@
 import {Avatar, Group, Text} from '@mantine/core';
-import type {User} from '~/lib/api/model';
+import {type UserFragment} from 'storefrontapi.generated';
+import {useUserMetaobject} from '~/hooks/useUserMetaobject';
 
-export const TreatmentArtistCardComplete = ({artist}: {artist: User}) => (
-  <div>
-    <Group wrap="nowrap" gap="xs">
-      <div style={{flex: 1}}>
-        <Text size="md" c="dimmed" fw="500">
-          Du mødes med:
-        </Text>
-        <Text size="xl" fw="bold">
-          {artist.fullname}
-        </Text>
-      </div>
-      <Avatar src={artist.images?.profile?.url} radius={0} size={64} />
-    </Group>
-  </div>
-);
+export const TreatmentArtistCardComplete = ({
+  user,
+}: {
+  user?: UserFragment | undefined | null;
+}) => {
+  const {fullname, image} = useUserMetaobject(user);
+
+  return (
+    <div>
+      <Group wrap="nowrap" gap="xs">
+        <div style={{flex: 1}}>
+          <Text size="md" c="dimmed" fw="500">
+            Du mødes med:
+          </Text>
+          <Text size="xl" fw="bold">
+            {fullname}
+          </Text>
+        </div>
+        <Avatar src={image.image?.url} radius={0} size={64} />
+      </Group>
+    </div>
+  );
+};

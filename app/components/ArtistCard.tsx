@@ -1,12 +1,12 @@
 import {Box, Image, Text, UnstyledButton} from '@mantine/core';
 import {Link} from '@remix-run/react';
 import {Image as ShopifyImage} from '@shopify/hydrogen';
-import {type ArtistUserFragment} from 'storefrontapi.generated';
+import {type UserFragment} from 'storefrontapi.generated';
 import {useUserMetaobject} from '~/hooks/useUserMetaobject';
 import {modifyImageUrl} from '~/lib/image';
 import classes from './ArtistCard.module.css';
 
-export const ArtistCard = ({artist}: {artist: ArtistUserFragment}) => {
+export const ArtistCard = ({artist}: {artist: UserFragment}) => {
   const {username, fullname, shortDescription, image} =
     useUserMetaobject(artist);
 

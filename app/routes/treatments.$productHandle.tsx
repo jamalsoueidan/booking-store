@@ -5,7 +5,7 @@ import {
 } from '@shopify/remix-oxygen';
 
 import {Link, useLoaderData} from '@remix-run/react';
-import {UNSTABLE_Analytics as Analytics, parseGid} from '@shopify/hydrogen';
+import {UNSTABLE_Analytics as Analytics} from '@shopify/hydrogen';
 
 import {
   AspectRatio,
@@ -19,10 +19,10 @@ import {
   Text,
   Title,
 } from '@mantine/core';
-import {type SubTreatmentsProductFragment} from 'storefrontapi.generated';
+
+import {type TreatmentUserFragment} from 'storefrontapi.generated';
 import {PriceBadge} from '~/components/artist/PriceBadge';
-import {SubTreatments} from '~/graphql/storefront/SubTreatments';
-import {Treatment} from '~/graphql/storefront/Treatment';
+import {TreatmentCollectionFragment} from '~/graphql/fragments/TreatmentCollection';
 import {useUserMetaobject} from '~/hooks/useUserMetaobject';
 
 export const meta: MetaFunction<typeof loader> = ({data}) => {
@@ -43,21 +43,15 @@ export async function loader({params, context}: LoaderFunctionArgs) {
     },
   });
 
-  if (!product?.id) {
+  if (!product) {
     throw new Response(null, {status: 404});
   }
 
-  const {products} = await storefront.query(SubTreatments, {
-    variables: {
-      query: `tag:"parentid-${parseGid(product.id).id}"`,
-    },
-  });
-
-  return json({product, products});
+  return json({product});
 }
 
 export default function Product() {
-  const {product, products} = useLoaderData<typeof loader>();
+  const {product} = useLoaderData<typeof loader>();
 
   return (
     <>
@@ -82,11 +76,16 @@ export default function Product() {
           <Stack gap="md">
             <div>
               <Text mb={rem(2)}>Skønhedsekspert</Text>
-              {products.nodes.length > 0 ? (
+              {product.collection?.reference?.products ? (
                 <SimpleGrid cols={{base: 2, sm: 3}}>
-                  {products.nodes.map((product) => (
-                    <TreatmentProductUser key={product.id} product={product} />
-                  ))}
+                  {product.collection.reference.products.nodes.map(
+                    (product) => (
+                      <TreatmentProductUser
+                        key={product.id}
+                        product={product}
+                      />
+                    ),
+                  )}
                 </SimpleGrid>
               ) : (
                 <Text fw="500">
@@ -127,11 +126,7 @@ function ProductImage({image}: {image: any}) {
   );
 }
 
-function TreatmentProductUser({
-  product,
-}: {
-  product: SubTreatmentsProductFragment;
-}) {
+function TreatmentProductUser({product}: {product: TreatmentUserFragment}) {
   const {username, fullname, image} = useUserMetaobject(
     product.user?.reference,
   );
@@ -146,7 +141,7 @@ function TreatmentProductUser({
     >
       <Stack gap="3" justify="center" align="center">
         <AspectRatio ratio={1 / 1}>
-          <Image src={image.image?.url!} loading="eager" />
+          <Image src={image.image?.url!} loading="eager" mah={160} />
         </AspectRatio>
         <Text tt="uppercase" c="dimmed" fw={700} size="md">
           {fullname}
@@ -165,3 +160,17 @@ function TreatmentProductUser({
     </Card>
   );
 }
+
+export const Treatment = `#graphql
+  ${TreatmentCollectionFragment}
+
+  query Treatment(
+    $productHandle: String!
+    $country: CountryCode
+    $language: LanguageCode
+  ) @inContext(country: $country, language: $language) {
+    product(handle: $productHandle) {
+      ...TreatmentCollection
+    }
+  }
+` as const;

@@ -51,8 +51,7 @@ export async function loader({params, context}: LoaderFunctionArgs) {
 export default function Product() {
   const {product, user} = useLoaderData<typeof loader>();
 
-  const {username, fullname, active, shortDescription, image, theme} =
-    useUserMetaobject(user);
+  const {username, fullname, image} = useUserMetaobject(user);
 
   return (
     <UserProvider user={user}>
