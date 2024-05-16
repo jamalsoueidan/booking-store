@@ -1,7 +1,7 @@
-import {UserFragment} from '../fragments/User';
+import {USER_FRAGMENT} from '../fragments/User';
 
 export const ArtistUser = `#graphql
-  ${UserFragment}
+  ${USER_FRAGMENT}
   query ArtistUser(
     $username: String!
     $country: CountryCode

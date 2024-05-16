@@ -22,7 +22,7 @@ import {
 
 import {type TreatmentUserFragment} from 'storefrontapi.generated';
 import {PriceBadge} from '~/components/artist/PriceBadge';
-import {TreatmentCollectionFragment} from '~/graphql/fragments/TreatmentCollection';
+import {TREATMENT_COLLECTION_FRAGMENT} from '~/graphql/fragments/TreatmentCollection';
 import {useUserMetaobject} from '~/hooks/useUserMetaobject';
 
 export const meta: MetaFunction<typeof loader> = ({data}) => {
@@ -162,7 +162,7 @@ function TreatmentProductUser({product}: {product: TreatmentUserFragment}) {
 }
 
 export const Treatment = `#graphql
-  ${TreatmentCollectionFragment}
+  ${TREATMENT_COLLECTION_FRAGMENT}
 
   query Treatment(
     $productHandle: String!

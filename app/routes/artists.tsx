@@ -76,19 +76,12 @@ export const loader = async (args: LoaderFunctionArgs) => {
     },
   );
 
-  return json(
-    {
-      components,
-      visualTeaser,
-      professions,
-      filters,
-    },
-    {
-      headers: {
-        'Cache-Control': 'public, s-maxage=3600, stale-while-revalidate=3600',
-      },
-    },
-  );
+  return json({
+    components,
+    visualTeaser,
+    professions,
+    filters,
+  });
 };
 
 export default function Artists() {

@@ -34,8 +34,8 @@ import {Slider} from '~/components/Slider';
 import {H1} from '~/components/titles/H1';
 import {H2} from '~/components/titles/H2';
 import {TreatmentCard} from '~/components/treatment/TreatmentCard';
-import {FrontendTreatments} from '~/graphql/storefront/FrontendTreatments';
-import {FrontendUsers} from '~/graphql/storefront/FrontendUsers';
+import {TREATMENT_COLLECTION_FRAGMENT} from '~/graphql/fragments/TreatmentCollection';
+import {USER_FRAGMENT} from '~/graphql/fragments/User';
 import {useComponents} from '~/lib/use-components';
 import {
   loader as loaderProfessions,
@@ -60,7 +60,7 @@ export async function loader(args: LoaderFunctionArgs) {
   const {storefront} = context;
 
   const {products: recommendedTreatments} = await storefront.query(
-    FrontendTreatments,
+    RECOMMENDED_TREATMENTS_QUERY,
     {
       variables: {
         query: 'tag:treatments AND tag:system',
@@ -70,7 +70,7 @@ export async function loader(args: LoaderFunctionArgs) {
 
   const professions = await loaderProfessions(args).then((r) => r.json());
 
-  const {metaobjects} = await storefront.query(FrontendUsers);
+  const {metaobjects} = await storefront.query(USERS_QUERY);
 
   const users = metaobjects.nodes.filter(
     (f) => f.fields.find((f) => f.key === 'active')?.value === 'true',
@@ -83,19 +83,12 @@ export async function loader(args: LoaderFunctionArgs) {
     },
   });
 
-  return json(
-    {
-      recommendedTreatments,
-      users,
-      components,
-      professions,
-    },
-    {
-      headers: {
-        'Cache-Control': 'public, s-maxage=3600, stale-while-revalidate=7200',
-      },
-    },
-  );
+  return json({
+    recommendedTreatments,
+    users,
+    components,
+    professions,
+  });
 }
 
 export default function Homepage() {
@@ -292,3 +285,32 @@ function RecommendedTreatments({
     </Box>
   );
 }
+
+export const RECOMMENDED_TREATMENTS_QUERY = `#graphql
+  ${TREATMENT_COLLECTION_FRAGMENT}
+  query RecommendedTreatments(
+    $query: String!
+    $country: CountryCode
+    $language: LanguageCode
+  ) @inContext(country: $country, language: $language) {
+    products(first: 10, sortKey: RELEVANCE, query: $query) {
+      nodes {
+        ...TreatmentCollection
+      }
+    }
+  }
+` as const;
+
+export const USERS_QUERY = `#graphql
+  ${USER_FRAGMENT}
+  query FrontUsers(
+    $country: CountryCode
+    $language: LanguageCode
+  ) @inContext(country: $country, language: $language) {
+    metaobjects(type: "user", first: 20) { #we have increased to 20 incase some users is active=false, we cannot filtre on metaobjects
+      nodes {
+        ...User
+      }
+    }
+  }
+` as const;

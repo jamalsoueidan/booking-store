@@ -1,4 +1,4 @@
-export const UserFragment = `#graphql
+export const USER_FRAGMENT = `#graphql
   fragment User on Metaobject {
     id #for key={id}
     fields {

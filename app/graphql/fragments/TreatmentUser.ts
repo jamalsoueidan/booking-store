@@ -1,7 +1,7 @@
-import {UserFragment} from './User';
+import {USER_FRAGMENT} from './User';
 
-export const TreatmentUserFragment = `#graphql
-  ${UserFragment}
+export const TREATMENT_USER_FRAGMENT = `#graphql
+  ${USER_FRAGMENT}
 
   fragment TreatmentUser on Product {
     id

@@ -1,7 +1,7 @@
-import {TreatmentUserFragment} from '../fragments/TreatmentUser';
+import {TREATMENT_USER_FRAGMENT} from '../fragments/TreatmentUser';
 
-export const TreatmentCollectionFragment = `#graphql
-  ${TreatmentUserFragment}
+export const TREATMENT_COLLECTION_FRAGMENT = `#graphql
+  ${TREATMENT_USER_FRAGMENT}
 
   fragment TreatmentCollection on Product {
     id

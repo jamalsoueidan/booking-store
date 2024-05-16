@@ -8,7 +8,7 @@ import {
 import {json, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
 import {TreatmentCard} from '~/components/treatment/TreatmentCard';
 import {Wrapper} from '~/components/Wrapper';
-import {TreatmentCollectionFragment} from '~/graphql/fragments/TreatmentCollection';
+import {TREATMENT_COLLECTION_FRAGMENT} from '~/graphql/fragments/TreatmentCollection';
 
 export const meta: MetaFunction<typeof loader> = ({data}) => {
   return [
@@ -90,7 +90,7 @@ export default function Collection() {
 }
 
 const COLLECTION_QUERY = `#graphql
-  ${TreatmentCollectionFragment}
+  ${TREATMENT_COLLECTION_FRAGMENT}
   query Collectionss(
     $handle: String!
     $country: CountryCode
