@@ -14,7 +14,8 @@ export interface CustomerProductBase {
   bookingPeriod: CustomerProductBookingPeriod;
   breakTime: number;
   compareAtPrice: CustomerProductBaseCompareAtPrice;
-  description?: string;
+  description: string;
+  descriptionHtml: string;
   duration: number;
   hideFromCombine: boolean;
   hideFromProfile: boolean;

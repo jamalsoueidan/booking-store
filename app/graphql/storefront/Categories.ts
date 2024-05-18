@@ -1,5 +1,5 @@
-export const CategoriesFragment = `#graphql
-  fragment CategoriesCollection on Collection {
+export const CATEGORIES_FRAGMENT = `#graphql
+  fragment Category on Collection {
     id
     title
     handle
@@ -35,14 +35,14 @@ export const CategoriesFragment = `#graphql
   }
 ` as const;
 
-export const Categories = `#graphql
-  ${CategoriesFragment}
-  query CategoriesCollection(
+export const CATEGORIES = `#graphql
+  ${CATEGORIES_FRAGMENT}
+  query Categories(
     $country: CountryCode
     $language: LanguageCode
   ) @inContext(country: $country, language: $language) {
     collection(handle: "alle-behandlinger") {
-      ...CategoriesCollection
+      ...Category
     }
   }
 ` as const;

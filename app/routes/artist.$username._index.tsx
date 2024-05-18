@@ -6,6 +6,7 @@ import {
   SimpleGrid,
   Skeleton,
   Stack,
+  Text,
   Title,
   rem,
 } from '@mantine/core';
@@ -13,7 +14,6 @@ import {Await, Link, useLoaderData} from '@remix-run/react';
 import {Suspense} from 'react';
 import {type ArtistCollectionFiltersFragment} from 'storefrontapi.generated';
 import {ArtistProduct} from '~/components/artist/ArtistProduct';
-import {TextViewer} from '~/components/richtext/TextViewer';
 import {ArtistCollection} from '~/graphql/artist/ArtistCollection';
 import {useUser} from '~/hooks/use-user';
 
@@ -75,7 +75,7 @@ export default function ArtistIndex() {
             {user.aboutMe ? (
               <Stack gap="xs" mt="xl">
                 <Title size={rem(28)}>Om mig</Title>
-                <TextViewer content={user.aboutMe} />
+                <Text dangerouslySetInnerHTML={{__html: user.aboutMe}}></Text>
               </Stack>
             ) : null}
           </Flex>

@@ -226,14 +226,16 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/CustomerProductOptionsList/items'
+        description:
+          type: string
+        descriptionHtml:
+          type: string
         productHandle:
           type: string
         productId:
           type: number
         variantId:
           type: number
-        description:
-          type: string
         hideFromProfile:
           type: boolean
         hideFromCombine:
@@ -278,6 +280,8 @@ components:
         - options
         - hideFromCombine
         - hideFromProfile
+        - description
+        - descriptionHtml
     CustomerProduct:
       type: object
       allOf:
@@ -388,6 +392,8 @@ components:
           type: string
         description:
           type: string
+        descriptionHtml:
+          type: string
     CustomerProductAddResponse:
       type: object
       properties:
@@ -405,6 +411,10 @@ components:
         parentId:
           type: string
         title:
+          type: string
+        description:
+          type: string
+        descriptionHtml:
           type: string
         locations:
           $ref: '#/components/schemas/CustomerProductLocations'
@@ -431,6 +441,8 @@ components:
       required:
         - parentId
         - title
+        - description
+        - descriptionHtml
         - scheduleId
         - locations
         - hideFromProfile
@@ -1802,6 +1814,8 @@ components:
           type: array
           items:
             type: string
+        aboutMeHtml:
+          type: string
         aboutMe:
           type: string
         shortDescription:
@@ -1833,6 +1847,7 @@ components:
         - professions
         - specialties
         - aboutMe
+        - aboutMeHtml
         - shortDescription
         - gender
         - social
@@ -1870,6 +1885,8 @@ components:
           items:
             type: string
         aboutMe:
+          type: string
+        aboutMeHtml:
           type: string
         shortDescription:
           type: string
@@ -2202,6 +2219,8 @@ components:
             type: string
         aboutMe:
           type: string
+        aboutMeHtml:
+          type: string
         shortDescription:
           type: string
         gender:
@@ -2257,6 +2276,7 @@ components:
         - professions
         - specialties
         - aboutMe
+        - aboutMeHtml
         - shortDescription
         - gender
         - social

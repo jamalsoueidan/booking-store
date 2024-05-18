@@ -19,16 +19,11 @@ import {
   Title,
 } from '@mantine/core';
 import {useMediaQuery} from '@mantine/hooks';
-import tiptapStyles from '@mantine/tiptap/styles.css?url';
 import {Link, Outlet, useLoaderData} from '@remix-run/react';
 import {IconInfoCircle, IconLogout} from '@tabler/icons-react';
 import {ArtistUser} from '~/graphql/artist/ArtistUser';
 import {UserProvider} from '~/hooks/use-user';
 import {useUserMetaobject} from '~/hooks/useUserMetaobject';
-
-export function links() {
-  return [{rel: 'stylesheet', href: tiptapStyles}];
-}
 
 export function shouldRevalidate() {
   return false;

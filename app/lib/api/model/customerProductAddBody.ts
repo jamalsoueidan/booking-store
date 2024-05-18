@@ -10,6 +10,8 @@ import type {CustomerProductAddBodyPrice} from './customerProductAddBodyPrice';
 
 export interface CustomerProductAddBody {
   compareAtPrice: CustomerProductAddBodyCompareAtPrice;
+  description: string;
+  descriptionHtml: string;
   hideFromCombine: string;
   hideFromProfile: string;
   locations: CustomerProductLocations;

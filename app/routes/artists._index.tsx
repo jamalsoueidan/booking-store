@@ -22,7 +22,7 @@ import {IconArrowRight} from '@tabler/icons-react';
 import {H2} from '~/components/titles/H2';
 import {METAFIELD_QUERY} from '~/data/fragments';
 import {getBookingShopifyApi} from '~/lib/api/bookingShopifyApi';
-import {User, UserTop} from '~/lib/api/model';
+import type {User, UserTop} from '~/lib/api/model';
 import {modifyImageUrl} from '~/lib/image';
 import {
   ProfessionSentenceTranslations,

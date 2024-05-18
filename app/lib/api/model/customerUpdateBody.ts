@@ -9,6 +9,7 @@ import type {CustomerUpdateBodyTheme} from './customerUpdateBodyTheme';
 
 export interface CustomerUpdateBody {
   aboutMe?: string;
+  aboutMeHtml?: string;
   email?: string;
   fullname?: string;
   gender?: string;

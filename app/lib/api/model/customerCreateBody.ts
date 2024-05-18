@@ -8,6 +8,7 @@ import type {CustomerCreateBodySocial} from './customerCreateBodySocial';
 
 export interface CustomerCreateBody {
   aboutMe: string;
+  aboutMeHtml: string;
   customerId: number;
   email: string;
   fullname: string;

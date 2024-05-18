@@ -24,6 +24,7 @@ export const customerCreateBody = zod.object({
   "yearsExperience": zod.string(),
   "professions": zod.array(zod.string()),
   "specialties": zod.array(zod.string()),
+  "aboutMeHtml": zod.string(),
   "aboutMe": zod.string(),
   "shortDescription": zod.string(),
   "gender": zod.string(),
@@ -50,6 +51,7 @@ export const customerCreateResponse = zod.object({
   "professions": zod.array(zod.string()),
   "specialties": zod.array(zod.string()),
   "aboutMe": zod.string(),
+  "aboutMeHtml": zod.string(),
   "shortDescription": zod.string(),
   "gender": zod.string(),
   "social": zod.object({
@@ -91,6 +93,7 @@ export const customerUpdateBody = zod.object({
   "professions": zod.array(zod.string()).optional(),
   "specialties": zod.array(zod.string()).optional(),
   "aboutMe": zod.string().optional(),
+  "aboutMeHtml": zod.string().optional(),
   "shortDescription": zod.string().optional(),
   "gender": zod.string().optional(),
   "social": zod.object({
@@ -119,6 +122,7 @@ export const customerUpdateResponse = zod.object({
   "professions": zod.array(zod.string()),
   "specialties": zod.array(zod.string()),
   "aboutMe": zod.string(),
+  "aboutMeHtml": zod.string(),
   "shortDescription": zod.string(),
   "gender": zod.string(),
   "social": zod.object({
@@ -166,6 +170,7 @@ export const customerGetResponse = zod.object({
   "professions": zod.array(zod.string()),
   "specialties": zod.array(zod.string()),
   "aboutMe": zod.string(),
+  "aboutMeHtml": zod.string(),
   "shortDescription": zod.string(),
   "gender": zod.string(),
   "social": zod.object({
@@ -1137,6 +1142,7 @@ export const customerLocationRemoveResponse = zod.object({
   "professions": zod.array(zod.string()),
   "specialties": zod.array(zod.string()),
   "aboutMe": zod.string(),
+  "aboutMeHtml": zod.string(),
   "shortDescription": zod.string(),
   "gender": zod.string(),
   "social": zod.object({
@@ -1233,10 +1239,11 @@ export const customerLocationGetProductsResponse = zod.object({
 })
 }))
 })),
+  "description": zod.string(),
+  "descriptionHtml": zod.string(),
   "productHandle": zod.string().optional(),
   "productId": zod.number(),
   "variantId": zod.number(),
-  "description": zod.string().optional(),
   "hideFromProfile": zod.boolean(),
   "hideFromCombine": zod.boolean(),
   "price": zod.object({
@@ -1290,6 +1297,7 @@ export const customerLocationSetDefaultResponse = zod.object({
   "professions": zod.array(zod.string()),
   "specialties": zod.array(zod.string()),
   "aboutMe": zod.string(),
+  "aboutMeHtml": zod.string(),
   "shortDescription": zod.string(),
   "gender": zod.string(),
   "social": zod.object({
@@ -2127,10 +2135,11 @@ export const customerProductsListResponse = zod.object({
 })
 }))
 })),
+  "description": zod.string(),
+  "descriptionHtml": zod.string(),
   "productHandle": zod.string().optional(),
   "productId": zod.number(),
   "variantId": zod.number(),
-  "description": zod.string().optional(),
   "hideFromProfile": zod.boolean(),
   "hideFromCombine": zod.boolean(),
   "price": zod.object({
@@ -2204,10 +2213,11 @@ export const customerProductGetResponse = zod.object({
 })
 }))
 })),
+  "description": zod.string(),
+  "descriptionHtml": zod.string(),
   "productHandle": zod.string().optional(),
   "productId": zod.number(),
   "variantId": zod.number(),
-  "description": zod.string().optional(),
   "hideFromProfile": zod.boolean(),
   "hideFromCombine": zod.boolean(),
   "price": zod.object({
@@ -2277,7 +2287,8 @@ export const customerProductUpdateBody = zod.object({
   "originType": zod.enum(['home', 'commercial'])
 })).optional(),
   "title": zod.string().optional(),
-  "description": zod.string().optional()
+  "description": zod.string().optional(),
+  "descriptionHtml": zod.string().optional()
 })
 
 export const customerProductUpdateResponse = zod.object({
@@ -2297,10 +2308,11 @@ export const customerProductUpdateResponse = zod.object({
 })
 }))
 })),
+  "description": zod.string(),
+  "descriptionHtml": zod.string(),
   "productHandle": zod.string().optional(),
   "productId": zod.number(),
   "variantId": zod.number(),
-  "description": zod.string().optional(),
   "hideFromProfile": zod.boolean(),
   "hideFromCombine": zod.boolean(),
   "price": zod.object({
@@ -2364,6 +2376,8 @@ export const customerProductAddParams = zod.object({
 export const customerProductAddBody = zod.object({
   "parentId": zod.string(),
   "title": zod.string(),
+  "description": zod.string(),
+  "descriptionHtml": zod.string(),
   "locations": zod.array(zod.object({
   "location": zod.string(),
   "locationType": zod.enum(['origin', 'destination']),
@@ -2399,10 +2413,11 @@ export const customerProductAddResponse = zod.object({
 })
 }))
 })),
+  "description": zod.string(),
+  "descriptionHtml": zod.string(),
   "productHandle": zod.string().optional(),
   "productId": zod.number(),
   "variantId": zod.number(),
-  "description": zod.string().optional(),
   "hideFromProfile": zod.boolean(),
   "hideFromCombine": zod.boolean(),
   "price": zod.object({
@@ -2620,10 +2635,11 @@ export const customerScheduleCreateResponse = zod.object({
 })
 }))
 })),
+  "description": zod.string(),
+  "descriptionHtml": zod.string(),
   "productHandle": zod.string().optional(),
   "productId": zod.number(),
   "variantId": zod.number(),
-  "description": zod.string().optional(),
   "hideFromProfile": zod.boolean(),
   "hideFromCombine": zod.boolean(),
   "price": zod.object({
@@ -2691,10 +2707,11 @@ export const customerScheduleListResponse = zod.object({
 })
 }))
 })),
+  "description": zod.string(),
+  "descriptionHtml": zod.string(),
   "productHandle": zod.string().optional(),
   "productId": zod.number(),
   "variantId": zod.number(),
-  "description": zod.string().optional(),
   "hideFromProfile": zod.boolean(),
   "hideFromCombine": zod.boolean(),
   "price": zod.object({
@@ -2763,10 +2780,11 @@ export const customerScheduleGetResponse = zod.object({
 })
 }))
 })),
+  "description": zod.string(),
+  "descriptionHtml": zod.string(),
   "productHandle": zod.string().optional(),
   "productId": zod.number(),
   "variantId": zod.number(),
-  "description": zod.string().optional(),
   "hideFromProfile": zod.boolean(),
   "hideFromCombine": zod.boolean(),
   "price": zod.object({
@@ -2839,10 +2857,11 @@ export const customerScheduleUpdateResponse = zod.object({
 })
 }))
 })),
+  "description": zod.string(),
+  "descriptionHtml": zod.string(),
   "productHandle": zod.string().optional(),
   "productId": zod.number(),
   "variantId": zod.number(),
-  "description": zod.string().optional(),
   "hideFromProfile": zod.boolean(),
   "hideFromCombine": zod.boolean(),
   "price": zod.object({
@@ -2939,10 +2958,11 @@ export const customerScheduleSlotUpdateResponse = zod.object({
 })
 }))
 })),
+  "description": zod.string(),
+  "descriptionHtml": zod.string(),
   "productHandle": zod.string().optional(),
   "productId": zod.number(),
   "variantId": zod.number(),
-  "description": zod.string().optional(),
   "hideFromProfile": zod.boolean(),
   "hideFromCombine": zod.boolean(),
   "price": zod.object({
@@ -3566,6 +3586,7 @@ export const userGetResponse = zod.object({
   "professions": zod.array(zod.string()),
   "specialties": zod.array(zod.string()),
   "aboutMe": zod.string(),
+  "aboutMeHtml": zod.string(),
   "shortDescription": zod.string(),
   "gender": zod.string(),
   "social": zod.object({
@@ -3636,10 +3657,11 @@ export const userProductsListByScheduleResponse = zod.object({
 })
 }))
 })),
+  "description": zod.string(),
+  "descriptionHtml": zod.string(),
   "productHandle": zod.string().optional(),
   "productId": zod.number(),
   "variantId": zod.number(),
-  "description": zod.string().optional(),
   "hideFromProfile": zod.boolean(),
   "hideFromCombine": zod.boolean(),
   "price": zod.object({
@@ -3699,10 +3721,11 @@ export const userProductGetResponse = zod.object({
 })
 }))
 })),
+  "description": zod.string(),
+  "descriptionHtml": zod.string(),
   "productHandle": zod.string().optional(),
   "productId": zod.number(),
   "variantId": zod.number(),
-  "description": zod.string().optional(),
   "hideFromProfile": zod.boolean(),
   "hideFromCombine": zod.boolean(),
   "price": zod.object({
@@ -3766,10 +3789,11 @@ export const userProductsGetProductsResponse = zod.object({
 })
 }))
 })),
+  "description": zod.string(),
+  "descriptionHtml": zod.string(),
   "productHandle": zod.string().optional(),
   "productId": zod.number(),
   "variantId": zod.number(),
-  "description": zod.string().optional(),
   "hideFromProfile": zod.boolean(),
   "hideFromCombine": zod.boolean(),
   "price": zod.object({
@@ -3821,10 +3845,11 @@ export const userProductsListByLocationResponse = zod.object({
 })
 }))
 })),
+  "description": zod.string(),
+  "descriptionHtml": zod.string(),
   "productHandle": zod.string().optional(),
   "productId": zod.number(),
   "variantId": zod.number(),
-  "description": zod.string().optional(),
   "hideFromProfile": zod.boolean(),
   "hideFromCombine": zod.boolean(),
   "price": zod.object({
@@ -3906,10 +3931,11 @@ export const userScheduleGetByProductResponse = zod.object({
 })
 }))
 })),
+  "description": zod.string(),
+  "descriptionHtml": zod.string(),
   "productHandle": zod.string().optional(),
   "productId": zod.number(),
   "variantId": zod.number(),
-  "description": zod.string().optional(),
   "hideFromProfile": zod.boolean(),
   "hideFromCombine": zod.boolean(),
   "price": zod.object({
@@ -4013,10 +4039,11 @@ export const userScheduleGetByLocationResponse = zod.object({
 })
 }))
 })),
+  "description": zod.string(),
+  "descriptionHtml": zod.string(),
   "productHandle": zod.string().optional(),
   "productId": zod.number(),
   "variantId": zod.number(),
-  "description": zod.string().optional(),
   "hideFromProfile": zod.boolean(),
   "hideFromCombine": zod.boolean(),
   "price": zod.object({
@@ -4189,6 +4216,7 @@ export const usersSearchResponse = zod.object({
   "professions": zod.array(zod.string()),
   "specialties": zod.array(zod.string()),
   "aboutMe": zod.string(),
+  "aboutMeHtml": zod.string(),
   "shortDescription": zod.string(),
   "gender": zod.string(),
   "social": zod.object({

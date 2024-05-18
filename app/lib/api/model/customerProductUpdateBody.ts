@@ -15,6 +15,7 @@ export interface CustomerProductUpdateBody {
   breakTime?: number;
   compareAtPrice?: CustomerProductUpdateBodyCompareAtPrice;
   description?: string;
+  descriptionHtml?: string;
   duration?: number;
   hideFromCombine?: string;
   hideFromProfile?: string;
