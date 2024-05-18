@@ -10,6 +10,7 @@ import type {UserTheme} from './userTheme';
 
 export interface User {
   aboutMe: string;
+  aboutMeHtml: string;
   active: boolean;
   collectionMetaobjectId: string;
   customerId: number;

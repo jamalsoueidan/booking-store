@@ -34,6 +34,6 @@ export const useUserMetaobject = (reference?: UserFragment | null) => {
     theme,
     active,
     shortDescription,
-    aboutMe: aboutMe.replace(/\\"/g, '"'),
+    aboutMe,
   };
 };

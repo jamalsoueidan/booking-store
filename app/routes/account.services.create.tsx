@@ -3,55 +3,51 @@ import {
   getFormProps,
   getSelectProps,
   useForm,
+  useInputControl,
 } from '@conform-to/react';
 import {parseWithZod} from '@conform-to/zod';
 
-import {Form, useActionData, useFetcher, useLoaderData} from '@remix-run/react';
 import {
-  json,
-  type ActionFunctionArgs,
-  type LoaderFunctionArgs,
-} from '@shopify/remix-oxygen';
-
-import {useInputControl, type FieldMetadata} from '@conform-to/react';
-import {
-  Combobox,
+  ActionIcon,
+  Autocomplete,
   Divider,
   Flex,
-  Highlight,
-  Loader,
-  ScrollArea,
   Select,
   Stack,
   Switch,
   Text,
   TextInput,
   Title,
-  useCombobox,
 } from '@mantine/core';
-import {redirect, type SerializeFrom} from '@remix-run/server-runtime';
+import {Form, useActionData, useLoaderData} from '@remix-run/react';
+import {redirect} from '@remix-run/server-runtime';
+import {
+  json,
+  type ActionFunctionArgs,
+  type LoaderFunctionArgs,
+} from '@shopify/remix-oxygen';
 
-import {useCallback, useEffect, useRef, useState} from 'react';
+import {useMemo, useState} from 'react';
 import {SubmitButton} from '~/components/form/SubmitButton';
 import {SwitchGroupLocations} from '~/components/form/SwitchGroupLocations';
-import type {loader as accountApiProductsLoader} from '~/routes/account.api.products';
 
 import {getBookingShopifyApi} from '~/lib/api/bookingShopifyApi';
 
 import {parseGid} from '@shopify/hydrogen';
+import {IconX} from '@tabler/icons-react';
 import {redirectWithSuccess} from 'remix-toast';
 import {type z} from 'zod';
 import {AccountContent} from '~/components/account/AccountContent';
 import {AccountTitle} from '~/components/account/AccountTitle';
 import {NumericInput} from '~/components/form/NumericInput';
+import {TextEditor} from '~/components/richtext/TextEditor';
 import {FlexInnerForm} from '~/components/tiny/FlexInnerForm';
-
-import {Categories} from '~/graphql/storefront/Categories';
 import {baseURL} from '~/lib/api/mutator/query-client';
+import {convertHTML} from '~/lib/convertHTML';
 import {getCustomer} from '~/lib/get-customer';
 import {customerProductAddBody} from '~/lib/zod/bookingShopifyApi';
 
-const schema = customerProductAddBody;
+const schema = customerProductAddBody.omit({descriptionHtml: true});
 
 export const action = async ({request, context}: ActionFunctionArgs) => {
   const customerId = await getCustomer({context});
@@ -67,7 +63,10 @@ export const action = async ({request, context}: ActionFunctionArgs) => {
   try {
     const {payload: product} = await getBookingShopifyApi().customerProductAdd(
       customerId,
-      submission.value,
+      {
+        ...submission.value,
+        descriptionHtml: convertHTML(submission.value.description || ''),
+      },
     );
 
     await context.storefront.cache?.delete(
@@ -85,7 +84,7 @@ export const action = async ({request, context}: ActionFunctionArgs) => {
 export async function loader({context}: LoaderFunctionArgs) {
   const customerId = await getCustomer({context});
 
-  const {collection} = await context.storefront.query(Categories);
+  const {collection} = await context.storefront.query(COLLECTION);
 
   const {payload: schedules} =
     await getBookingShopifyApi().customerScheduleList(customerId, context);
@@ -131,7 +130,6 @@ export default function AccountServicesCreate() {
     useLoaderData<typeof loader>();
   const lastResult = useActionData<typeof action>();
   const [collectionId, setCollectionId] = useState<string | null>(null);
-  const [title, setTitle] = useState<string>('');
 
   const [form, fields] = useForm({
     lastResult,
@@ -152,6 +150,38 @@ export default function AccountServicesCreate() {
 
   const hideFromProfile = useInputControl(fields.hideFromProfile);
   const hideFromCombine = useInputControl(fields.hideFromCombine);
+  const titleInput = useInputControl(fields.title);
+  const descriptionInput = useInputControl(fields.description);
+
+  const collections = useMemo(
+    () =>
+      collection?.children?.references?.nodes.map((c) => ({
+        value: c.id,
+        label: c.title,
+      })) || [],
+    [collection?.children?.references?.nodes],
+  );
+
+  const selectedCollection = useMemo(
+    () =>
+      collection?.children?.references?.nodes.find(
+        (c) => c.id === collectionId,
+      ),
+    [collection?.children?.references?.nodes, collectionId],
+  );
+
+  const products = useMemo(
+    () => selectedCollection?.products.nodes.map((p) => p.title),
+    [selectedCollection?.products.nodes],
+  );
+
+  const selectedProduct = useMemo(
+    () =>
+      selectedCollection?.products.nodes.find(
+        (p) => p.title === titleInput.value,
+      ),
+    [selectedCollection?.products.nodes, titleInput.value],
+  );
 
   return (
     <>
@@ -169,11 +199,11 @@ export default function AccountServicesCreate() {
                 </Stack>
                 <div style={{flex: 1}}>
                   <Select
-                    onChange={setCollectionId}
-                    data={collection?.children?.references?.nodes.map((c) => ({
-                      value: parseGid(c.id).id,
-                      label: c.title,
-                    }))}
+                    onChange={(value: string | null) => {
+                      setCollectionId(value);
+                      titleInput.change('');
+                    }}
+                    data={collections}
                     placeholder="-"
                     allowDeselect={false}
                     data-testid="category-select"
@@ -187,11 +217,30 @@ export default function AccountServicesCreate() {
                   <Text>Vælg ydelse inden for den valgte kategori</Text>
                 </Stack>
                 <div style={{flex: 1}}>
-                  <SelectSearchable
-                    onChange={setTitle}
-                    placeholder="-"
-                    collectionId={collectionId}
-                    field={fields.parentId}
+                  <Autocomplete
+                    onChange={titleInput.change}
+                    value={titleInput.value}
+                    disabled={!collectionId}
+                    data={products}
+                    rightSection={
+                      titleInput.value && titleInput.value.length > 0 ? (
+                        <ActionIcon
+                          variant="transparent"
+                          color="gray"
+                          aria-label="Settings"
+                          onClick={() => {
+                            titleInput.change('');
+                          }}
+                        >
+                          <IconX />
+                        </ActionIcon>
+                      ) : null
+                    }
+                  />
+                  <input
+                    type="hidden"
+                    name={fields.parentId.name}
+                    value={parseGid(selectedProduct?.id).id}
                   />
                 </div>
               </Flex>
@@ -203,14 +252,28 @@ export default function AccountServicesCreate() {
               <Flex direction={{base: 'column', md: 'row'}} gap="md">
                 <Stack gap="0" style={{flex: 1}}>
                   <Text fw="bold">Title:</Text>
-                  <Text>Ændre title på ydelsen?</Text>
+                  <Text>Title på ydelsen</Text>
                 </Stack>
                 <div style={{flex: 1}}>
                   <TextInput
-                    value={title}
-                    disabled={title === ''}
+                    defaultValue={titleInput.value}
+                    disabled={!titleInput.value}
                     name={fields.title.name}
-                    onChange={(event: any) => setTitle(event.target.value)}
+                  />
+                </div>
+              </Flex>
+
+              <Flex direction={{base: 'column', md: 'row'}} gap="md">
+                <Stack gap="0" style={{flex: 1}}>
+                  <Text fw="bold">Beskrivelse:</Text>
+                  <Text>Beskrive af ydelse</Text>
+                </Stack>
+                <div style={{flex: 1}}>
+                  <TextEditor
+                    content={selectedProduct?.descriptionHtml}
+                    onUpdate={({editor}) => {
+                      descriptionInput.change(JSON.stringify(editor.getJSON()));
+                    }}
                   />
                 </div>
               </Flex>
@@ -219,7 +282,7 @@ export default function AccountServicesCreate() {
                 <Stack gap="0" style={{flex: 1}}>
                   <Text fw="bold">Skjul:</Text>
                   <Text>
-                    Skjul fra evt. profil siden eller kombinere siden?
+                    Skjul ydelsen fra evt. profil eller kombinere siden?
                   </Text>
                 </Stack>
                 <Stack style={{flex: 1}}>
@@ -265,7 +328,7 @@ export default function AccountServicesCreate() {
               <Flex direction={{base: 'column', md: 'row'}} gap="md">
                 <Stack gap="0" style={{flex: 1}}>
                   <Text fw="bold">Før-pris:</Text>
-                  <Text>Hvad har prisen været tidligere?</Text>
+                  <Text>Hvad har prisen været tidligere.</Text>
                 </Stack>
                 <div style={{flex: 1}}>
                   <NumericInput
@@ -323,125 +386,38 @@ export default function AccountServicesCreate() {
   );
 }
 
-export type SelectSearchableProps = {
-  placeholder?: string;
-  field: FieldMetadata<string>;
-  collectionId?: string | null;
-  onChange: (value: string) => void;
-};
-
-export function SelectSearchable({
-  placeholder,
-  field,
-  collectionId,
-  onChange,
-}: SelectSearchableProps) {
-  const combobox = useCombobox({
-    onDropdownClose: () => combobox.resetSelectedOption(),
-  });
-
-  const textInput = useRef<HTMLInputElement>(null);
-  const control = useInputControl(field);
-
-  const fetcher =
-    useFetcher<Awaited<SerializeFrom<typeof accountApiProductsLoader>>>();
-  const [title, setTitle] = useState('');
-
-  const fetchOptions = useCallback(
-    (keyword: string) => {
-      fetcher.load(
-        `/account/api/products?keyword=${keyword}&collectionId=${collectionId}`,
-      );
-    },
-    [collectionId, fetcher],
-  );
-
-  useEffect(() => {
-    setTitle('');
-    onChange('');
-    control.change('');
-    if (collectionId) {
-      fetchOptions('');
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [collectionId, setTitle, control.change]);
-
-  const options = fetcher.data?.map((item) => (
-    <Combobox.Option value={parseGid(item.id).id} key={item.id}>
-      <Highlight
-        highlight={parseGid(item.id).id === field.value ? item.title : ''}
-        size="sm"
-      >
-        {item.title}
-      </Highlight>
-    </Combobox.Option>
-  ));
-
-  return (
-    <>
-      <Combobox
-        onOptionSubmit={(optionValue) => {
-          const node = fetcher.data?.find(
-            (item) => parseGid(item.id).id === optionValue,
-          );
-          if (node?.title) {
-            onChange(node?.title);
-            setTitle(node?.title);
-          }
-          control.change(optionValue);
-          combobox.closeDropdown();
-          textInput.current?.blur();
-        }}
-        withinPortal={false}
-        store={combobox}
-      >
-        <Combobox.Target>
-          <TextInput
-            ref={textInput}
-            placeholder={placeholder}
-            disabled={!collectionId}
-            value={title}
-            onChange={(event) => {
-              setTitle(event.currentTarget.value);
-              fetchOptions(event.currentTarget.value);
-              control.change('');
-              combobox.resetSelectedOption();
-              combobox.openDropdown();
-            }}
-            onClick={() => {
-              combobox.openDropdown();
-            }}
-            onFocus={() => {
-              combobox.openDropdown();
-              if (!fetcher.data) {
-                fetchOptions(title);
+export const CATEGORIES_FRAGMENT = `#graphql
+  fragment CategoryStorefront on Collection {
+    id
+    title
+    children: metafield(key: "children", namespace: "booking") {
+      references(first: 20) {
+        nodes {
+          ... on Collection {
+            id
+            title
+            products(first: 30) {
+              nodes {
+                id
+                title
+                descriptionHtml
               }
-            }}
-            onBlur={() => {
-              combobox.closeDropdown();
-            }}
-            rightSection={fetcher.state === 'loading' && <Loader size={18} />}
-            data-testid="product-select"
-          />
-        </Combobox.Target>
+            }
+          }
+        }
+      }
+    }
+  }
+` as const;
 
-        <Combobox.Dropdown hidden={fetcher.data === null}>
-          <Combobox.Options>
-            <ScrollArea.Autosize mah={200} type="scroll">
-              {!fetcher.data || fetcher.data?.length === 0 ? (
-                <Combobox.Empty>Ingen produkt med dette navn</Combobox.Empty>
-              ) : (
-                options
-              )}
-            </ScrollArea.Autosize>
-          </Combobox.Options>
-          <Combobox.Footer>
-            <Text fz="xs" c="dimmed">
-              Kontakt os, for at tilføje manglende behandlinger.
-            </Text>
-          </Combobox.Footer>
-        </Combobox.Dropdown>
-      </Combobox>
-    </>
-  );
-}
+export const COLLECTION = `#graphql
+  ${CATEGORIES_FRAGMENT}
+  query CategoriesStorefront(
+    $country: CountryCode
+    $language: LanguageCode
+  ) @inContext(country: $country, language: $language) {
+    collection(handle: "alle-behandlinger") {
+      ...CategoryStorefront
+    }
+  }
+` as const;

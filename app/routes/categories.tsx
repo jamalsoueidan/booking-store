@@ -9,10 +9,10 @@ import {
 import {json, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
 import {VisualTeaser} from '~/components/blocks/VisualTeaser';
 import {METAFIELD_QUERY} from '~/data/fragments';
-import {Categories} from '~/graphql/storefront/Categories';
+import {CATEGORIES} from '~/graphql/storefront/Categories';
 
-export async function loader({context, request}: LoaderFunctionArgs) {
-  const {collection} = await context.storefront.query(Categories);
+export async function loader({context}: LoaderFunctionArgs) {
+  const {collection} = await context.storefront.query(CATEGORIES);
 
   const {metaobject: visualTeaser} = await context.storefront.query(
     METAFIELD_QUERY,

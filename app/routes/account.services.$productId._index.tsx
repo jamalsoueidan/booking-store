@@ -5,7 +5,15 @@ import {
   useInputControl,
 } from '@conform-to/react';
 import {parseWithZod} from '@conform-to/zod';
-import {Divider, Flex, Stack, Switch, Text, Title} from '@mantine/core';
+import {
+  Divider,
+  Flex,
+  Stack,
+  Switch,
+  Text,
+  TextInput,
+  Title,
+} from '@mantine/core';
 import {Form, useActionData, useLoaderData} from '@remix-run/react';
 import {
   json,
@@ -16,9 +24,11 @@ import {redirectWithSuccess} from 'remix-toast';
 import {NumericInput} from '~/components/form/NumericInput';
 import {SubmitButton} from '~/components/form/SubmitButton';
 import {SwitchGroupLocations} from '~/components/form/SwitchGroupLocations';
+import {TextEditor} from '~/components/richtext/TextEditor';
 import {FlexInnerForm} from '~/components/tiny/FlexInnerForm';
 import {getBookingShopifyApi} from '~/lib/api/bookingShopifyApi';
 import {baseURL} from '~/lib/api/mutator/query-client';
+import {convertHTML} from '~/lib/convertHTML';
 import {getCustomer} from '~/lib/get-customer';
 import {customerProductUpdateBody} from '~/lib/zod/bookingShopifyApi';
 
@@ -46,11 +56,10 @@ export const action = async ({
   }
 
   try {
-    await getBookingShopifyApi().customerProductUpdate(
-      customerId,
-      productId,
-      submission.value,
-    );
+    await getBookingShopifyApi().customerProductUpdate(customerId, productId, {
+      ...submission.value,
+      descriptionHtml: convertHTML(submission.value.description),
+    });
 
     await context.storefront.cache?.delete(
       `${baseURL}/customer/${customerId}/products`,
@@ -116,12 +125,48 @@ export default function EditAddress() {
 
   const hideFromProfile = useInputControl(fields.hideFromProfile);
   const hideFromCombine = useInputControl(fields.hideFromCombine);
+  const titleInput = useInputControl(fields.title);
+  const descriptionInput = useInputControl(fields.description);
 
   return (
     <FormProvider context={form.context}>
       <Form method="post" {...getFormProps(form)}>
         <FlexInnerForm>
-          <Title order={3}>Synlighed</Title>
+          <Title order={3}>Title & Beskrivelse</Title>
+
+          <Flex direction={{base: 'column', md: 'row'}} gap="md">
+            <Stack gap="0" style={{flex: 1}}>
+              <Text fw="bold">Title:</Text>
+              <Text>Title på ydelsen</Text>
+            </Stack>
+            <div style={{flex: 1}}>
+              <TextInput
+                defaultValue={titleInput.value}
+                disabled={!titleInput.value}
+                name={fields.title.name}
+              />
+            </div>
+          </Flex>
+
+          <Flex direction={{base: 'column', md: 'row'}} gap="md">
+            <Stack gap="0" style={{flex: 1}}>
+              <Text fw="bold">Beskrivelse:</Text>
+              <Text>Beskrive af ydelse</Text>
+            </Stack>
+            <div style={{flex: 1}}>
+              <TextEditor
+                content={
+                  defaultValue.descriptionHtml
+                    ? (JSON.parse(defaultValue.description) as any)
+                    : ''
+                }
+                onUpdate={({editor}) => {
+                  descriptionInput.change(JSON.stringify(editor.getJSON()));
+                }}
+              />
+            </div>
+          </Flex>
+
           <Flex direction={{base: 'column', md: 'row'}} gap="md">
             <Stack gap="0" style={{flex: 1}}>
               <Text fw="bold">Skjul:</Text>

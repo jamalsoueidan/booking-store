@@ -1,5 +1,6 @@
 import {AppShell, Flex, Text, UnstyledButton} from '@mantine/core';
 import {useDisclosure, useMediaQuery} from '@mantine/hooks';
+import tiptapStyles from '@mantine/tiptap/styles.css?url';
 import {
   Link,
   Outlet,
@@ -31,6 +32,9 @@ import {CUSTOMER_DETAILS_QUERY} from '~/graphql/customer-account/CustomerDetails
 import {getBookingShopifyApi} from '~/lib/api/bookingShopifyApi';
 import {type User} from '~/lib/api/model';
 
+export function links() {
+  return [{rel: 'stylesheet', href: tiptapStyles}];
+}
 export type AccountOutlet = {
   customer: CustomerFragment;
   user?: User | null;

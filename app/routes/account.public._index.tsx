@@ -14,21 +14,18 @@ import {
   useInputControl,
 } from '@conform-to/react';
 import {parseWithZod} from '@conform-to/zod';
-import tiptapStyles from '@mantine/tiptap/styles.css?url';
+
 import {redirectWithSuccess} from 'remix-toast';
 import {MultiTags} from '~/components/form/MultiTags';
 import {RadioGroup} from '~/components/form/RadioGroup';
 import {SubmitButton} from '~/components/form/SubmitButton';
 import {TextEditor} from '~/components/richtext/TextEditor';
 import {getBookingShopifyApi} from '~/lib/api/bookingShopifyApi';
+import {convertHTML} from '~/lib/convertHTML';
 import {getCustomer} from '~/lib/get-customer';
 import {customerUpdateBody} from '~/lib/zod/bookingShopifyApi';
 
 const schema = customerUpdateBody;
-
-export function links() {
-  return [{rel: 'stylesheet', href: tiptapStyles}];
-}
 
 export const action = async ({request, context}: ActionFunctionArgs) => {
   const customerId = await getCustomer({context});
@@ -41,7 +38,10 @@ export const action = async ({request, context}: ActionFunctionArgs) => {
   }
 
   try {
-    await getBookingShopifyApi().customerUpdate(customerId, submission.value);
+    await getBookingShopifyApi().customerUpdate(customerId, {
+      ...submission.value,
+      aboutMeHtml: convertHTML(submission.value.aboutMe),
+    });
 
     return redirectWithSuccess('/account/public', {
       message: 'Profil er opdateret!',
@@ -153,7 +153,9 @@ export default function AccountBusiness() {
               Fortæl om dig selv og din erfaring:
             </Text>
             <TextEditor
-              content={aboutMe.initialValue}
+              content={
+                user.aboutMeHtml ? (JSON.parse(user.aboutMe) as any) : ''
+              }
               onUpdate={({editor}) => {
                 control.change(JSON.stringify(editor.getJSON()) as any);
               }}
