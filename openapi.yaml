@@ -330,6 +330,8 @@ components:
       items:
         type: object
         properties:
+          metafieldId:
+            type: string
           location:
             type: string
           locationType:
@@ -343,6 +345,7 @@ components:
               - home
               - commercial
         required:
+          - metafieldId
           - location
           - locationType
           - originType
@@ -1916,6 +1919,8 @@ components:
     CustomerLocationBase:
       type: object
       properties:
+        metafieldId:
+          type: string
         locationType:
           type: string
           enum:
@@ -1933,12 +1938,19 @@ components:
           type: string
         fullAddress:
           type: string
+        city:
+          type: string
+        country:
+          type: string
       required:
+        - metafieldId
         - locationType
         - originType
         - customerId
         - name
         - fullAddress
+        - city
+        - country
     CustomerLocation:
       type: object
       allOf:

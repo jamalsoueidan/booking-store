@@ -31,6 +31,7 @@ export function SwitchGroupLocations({
             )
             .filter(Boolean) // This removes any undefined or null values that were not found in the data array
             .map((newLocation) => ({
+              metafieldId: newLocation.metafieldId,
               location: newLocation._id,
               locationType: newLocation.locationType,
               originType: newLocation.originType,
@@ -65,6 +66,11 @@ export function SwitchGroupLocations({
 
       {list.map((item, index) => (
         <React.Fragment key={item.id}>
+          <input
+            hidden
+            name={`${field.name}[${index}].metafieldId`}
+            defaultValue={item.initialValue?.metafieldId}
+          />
           <input
             hidden
             name={`${field.name}[${index}].location`}

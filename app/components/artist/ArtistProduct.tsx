@@ -4,7 +4,7 @@ import {parseGid} from '@shopify/hydrogen';
 import {IconCalendar} from '@tabler/icons-react';
 import {type ArtistTreatmentProductFragment} from 'storefrontapi.generated';
 import {useUser} from '~/hooks/use-user';
-import {type CustomerLocationBase} from '~/lib/api/model';
+import {convertLocations} from '~/lib/convertLocations';
 import {durationToTime} from '~/lib/duration';
 import {LocationIcon} from '../LocationIcon';
 import classes from './ArtistProduct.module.css';
@@ -18,9 +18,7 @@ export function ArtistProduct({product}: ArtistProductProps) {
   const user = useUser();
 
   const productId = parseGid(product?.id).id;
-  const locations: Array<
-    Pick<CustomerLocationBase, 'locationType' | 'originType'>
-  > = JSON.parse(product.locations?.value || '') as any;
+  const locations = convertLocations(product.locations?.references?.nodes);
 
   return (
     <Card

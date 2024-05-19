@@ -10,5 +10,6 @@ import type {CustomerProductLocationsItemOriginType} from './customerProductLoca
 export type CustomerProductLocationsItem = {
   location: string;
   locationType: CustomerProductLocationsItemLocationType;
+  metafieldId: string;
   originType: CustomerProductLocationsItemOriginType;
 };

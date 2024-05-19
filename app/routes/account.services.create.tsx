@@ -116,6 +116,7 @@ export async function loader({context}: LoaderFunctionArgs) {
       },
       locations: [
         {
+          metafieldId: findDefaultLocation?.metafieldId,
           location: findDefaultLocation?._id,
           locationType: findDefaultLocation?.locationType,
           originType: findDefaultLocation?.originType,
@@ -135,6 +136,11 @@ export default function AccountServicesCreate() {
     lastResult,
     defaultValue,
     onValidate({formData}) {
+      console.log(
+        parseWithZod(formData, {
+          schema,
+        }),
+      );
       return parseWithZod(formData, {
         schema,
       });

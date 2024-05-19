@@ -8,9 +8,12 @@ import type {CustomerLocationBaseLocationType} from './customerLocationBaseLocat
 import type {CustomerLocationBaseOriginType} from './customerLocationBaseOriginType';
 
 export interface CustomerLocationBase {
+  city: string;
+  country: string;
   customerId: string;
   fullAddress: string;
   locationType: CustomerLocationBaseLocationType;
+  metafieldId: string;
   name: string;
   originType: CustomerLocationBaseOriginType;
 }

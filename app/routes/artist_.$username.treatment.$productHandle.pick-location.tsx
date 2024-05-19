@@ -1,62 +1,30 @@
-import {Button, Flex, Skeleton, Title} from '@mantine/core';
+import {Button, Flex, Title} from '@mantine/core';
 import {useDisclosure} from '@mantine/hooks';
-import {Await, Link, useLoaderData, useSearchParams} from '@remix-run/react';
-import {defer, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
-import {Suspense} from 'react';
+import {Link, useOutletContext, useSearchParams} from '@remix-run/react';
+import {type SerializeFrom} from '@remix-run/server-runtime';
 import {ArtistShell} from '~/components/ArtistShell';
 import {LocationModal} from '~/components/LocationModal';
 import {TreatmentStepper} from '~/components/TreatmentStepper';
 import {AristLocationRadioCard} from '~/components/artist/ArtistLocationRadioCard';
-import {getBookingShopifyApi} from '~/lib/api/bookingShopifyApi';
 import {
   CustomerLocationBaseLocationType,
   type CustomerLocation,
-  type UserScheduleGetByProductIdResponsePayload,
 } from '~/lib/api/model';
-
-export function shouldRevalidate() {
-  return false;
-}
-
-export async function loader({params}: LoaderFunctionArgs) {
-  const {productHandle, username} = params;
-
-  if (!username || !productHandle) {
-    throw new Response('Expected username handle to be defined', {status: 400});
-  }
-
-  const schedule = getBookingShopifyApi().userScheduleGetByProduct(
-    username,
-    productHandle,
-  );
-
-  return defer({
-    schedule,
-  });
-}
+import {convertLocations} from '~/lib/convertLocations';
+import type {loader as rootLoader} from './artist_.$username.treatment.$productHandle';
 
 export default function ArtistTreatmentPickLocation() {
-  const {schedule} = useLoaderData<typeof loader>();
+  const {product} = useOutletContext<SerializeFrom<typeof rootLoader>>();
   const [searchParams] = useSearchParams();
   const isDisabled =
     !searchParams.has('locationId') || searchParams.get('locationId') === '';
 
+  const locations = convertLocations(product.locations?.references?.nodes);
+
   return (
     <>
       <ArtistShell.Main>
-        <Suspense
-          fallback={
-            <div>
-              <Skeleton height={50} mb="xl" />
-              <Skeleton height={50} mb="xl" />
-              <Skeleton height={50} mb="xl" />
-            </div>
-          }
-        >
-          <Await resolve={schedule}>
-            {({payload}) => <ArtistLocationPicker schedule={payload} />}
-          </Await>
-        </Suspense>
+        <ArtistLocationPicker locations={locations} />
       </ArtistShell.Main>
       <ArtistShell.Footer>
         <TreatmentStepper currentStep={1} totalSteps={3} pageTitle="Lokation">
@@ -77,11 +45,7 @@ export default function ArtistTreatmentPickLocation() {
   );
 }
 
-function ArtistLocationPicker({
-  schedule,
-}: {
-  schedule: UserScheduleGetByProductIdResponsePayload;
-}) {
+function ArtistLocationPicker({locations}: {locations: CustomerLocation[]}) {
   const [opened, {open, close}] = useDisclosure(false);
   const [searchParams, setSearchParams] = useSearchParams();
 
@@ -109,7 +73,7 @@ function ArtistLocationPicker({
 
   const locationId = searchParams.get('locationId');
 
-  const selectedLocation = schedule.locations.find((l) => l._id === locationId);
+  const selectedLocation = locations.find((l) => l._id === locationId);
 
   const onChange = (location: CustomerLocation) => () => {
     setLocationId(location);
@@ -130,7 +94,7 @@ function ArtistLocationPicker({
     close();
   };
 
-  const markup = schedule.locations.map((location) => {
+  const markup = locations.map((location) => {
     return (
       <AristLocationRadioCard
         key={location._id}

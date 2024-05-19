@@ -1,4 +1,7 @@
+import {LOCATION_FRAGMENT} from '../fragments/Location';
+
 export const ArtistTreatmentFragment = `#graphql
+  ${LOCATION_FRAGMENT}
   fragment ArtistTreatmentProduct on Product {
     id
     title
@@ -37,8 +40,11 @@ export const ArtistTreatmentFragment = `#graphql
       value
     }
     locations: metafield(key: "locations", namespace: "booking") {
-      id
-      value
+      references(first: 10) {
+        nodes {
+          ...Location
+        }
+      }
     }
     bookingPeriodValue: metafield(key: "booking_period_value", namespace: "booking") {
       id
