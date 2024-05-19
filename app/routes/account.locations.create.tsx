@@ -23,23 +23,6 @@ import {baseURL} from '~/lib/api/mutator/query-client';
 
 const schema = customerLocationCreateBody;
 
-export async function loader({context}: LoaderFunctionArgs) {
-  await context.customerAccount.handleAuthStatus();
-
-  return json({
-    name: '',
-    locationType: 'origin',
-    fullAddress: '',
-    originType: 'commercial',
-    distanceHourlyRate: 500,
-    fixedRatePerKm: 20,
-    distanceForFree: 4,
-    minDriveDistance: 0,
-    maxDriveDistance: 300,
-    startFee: 0,
-  });
-}
-
 export const action = async ({request, context}: ActionFunctionArgs) => {
   const customerId = await getCustomer({context});
 
@@ -68,6 +51,23 @@ export const action = async ({request, context}: ActionFunctionArgs) => {
   }
 };
 
+export async function loader({context}: LoaderFunctionArgs) {
+  await context.customerAccount.handleAuthStatus();
+
+  return json({
+    name: '',
+    locationType: 'origin',
+    fullAddress: '',
+    originType: 'commercial',
+    distanceHourlyRate: '500',
+    fixedRatePerKm: '20',
+    distanceForFree: '4',
+    minDriveDistance: '0',
+    maxDriveDistance: '300',
+    startFee: 0,
+  });
+}
+
 export default function Component() {
   const lastResult = useActionData<typeof action>();
   const defaultValue = useLoaderData<typeof loader>();
@@ -76,6 +76,11 @@ export default function Component() {
     lastResult,
     defaultValue,
     onValidate({formData}) {
+      console.log(
+        parseWithZod(formData, {
+          schema,
+        }),
+      );
       return parseWithZod(formData, {
         schema,
       });
@@ -111,8 +116,9 @@ export default function Component() {
             <TextInput
               label="Navn"
               placeholder="BySisters"
-              {...getInputProps(fields.name, {type: 'text'})}
               data-testid="name-input"
+              {...getInputProps(fields.name, {type: 'text'})}
+              error={fields.name.errors}
             />
 
             <AddressAutocompleteInput
@@ -122,8 +128,9 @@ export default function Component() {
                   : 'Hvor skal kunden køre hen til?'
               }
               placeholder="Sigridsvej 45, 8220 Brabrand"
-              {...getInputProps(fields.fullAddress, {type: 'text'})}
               data-testid="address-input"
+              error={fields.fullAddress.errors}
+              {...getInputProps(fields.fullAddress, {type: 'text'})}
             />
 
             {fields.locationType.value === 'destination' ? (
@@ -148,7 +155,7 @@ export default function Component() {
             <NumericInput
               field={fields.startFee}
               label="Udgifter for turen"
-              suffix=" kr"
+              rightSection="kr"
               hidden={fields.locationType.value !== 'destination'}
               data-testid="start-fee-input"
             />
@@ -156,7 +163,7 @@ export default function Component() {
             <NumericInput
               field={fields.distanceHourlyRate}
               label="Timepris for kørsel"
-              suffix=" kr"
+              rightSection="kr"
               hidden={fields.locationType.value !== 'destination'}
               data-testid="hourly-rate-input"
             />
@@ -164,7 +171,7 @@ export default function Component() {
             <NumericInput
               field={fields.fixedRatePerKm}
               label="Pris pr. kilometer"
-              suffix=" kr"
+              rightSection="kr"
               hidden={fields.locationType.value !== 'destination'}
               data-testid="fixed-rate-input"
             />

@@ -13,28 +13,19 @@ import {
  * @summary POST Create user
  */
 export const customerCreateBodyUsernameRegExp = new RegExp('^[a-zA-Z0-9-_]+$');
+export const customerCreateBodyShortDescriptionMin = 3;
 
 
 export const customerCreateBody = zod.object({
   "customerId": zod.number(),
   "fullname": zod.string(),
-  "email": zod.string().email(),
-  "phone": zod.string(),
   "username": zod.string().regex(customerCreateBodyUsernameRegExp),
-  "yearsExperience": zod.string(),
-  "professions": zod.array(zod.string()),
-  "specialties": zod.array(zod.string()),
+  "professions": zod.array(zod.string()).min(1),
   "aboutMeHtml": zod.string(),
   "aboutMe": zod.string(),
-  "shortDescription": zod.string(),
+  "shortDescription": zod.string().min(customerCreateBodyShortDescriptionMin),
   "gender": zod.string(),
-  "social": zod.object({
-  "youtube": zod.string().optional(),
-  "x": zod.string().optional(),
-  "instagram": zod.string().optional(),
-  "facebook": zod.string().optional()
-}),
-  "speaks": zod.array(zod.string())
+  "speaks": zod.array(zod.string()).min(1)
 })
 
 export const customerCreateResponse = zod.object({

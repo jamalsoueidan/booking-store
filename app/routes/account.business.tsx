@@ -4,6 +4,7 @@ import {
   getInputProps,
   getTextareaProps,
   useForm,
+  useInputControl,
 } from '@conform-to/react';
 import {Stack, Text, TextInput, Textarea, Tooltip, rem} from '@mantine/core';
 import {Form, useActionData, useFetcher, useLoaderData} from '@remix-run/react';
@@ -24,20 +25,17 @@ import {AccountContent} from '~/components/account/AccountContent';
 import {AccountTitle} from '~/components/account/AccountTitle';
 import {MultiTags} from '~/components/form/MultiTags';
 import {RadioGroup} from '~/components/form/RadioGroup';
+import {TextEditor} from '~/components/richtext/TextEditor';
 import {CUSTOMER_DETAILS_QUERY} from '~/graphql/customer-account/CustomerDetailsQuery';
 import {getBookingShopifyApi} from '~/lib/api/bookingShopifyApi';
 import {type UserUsernameTakenResponsePayload} from '~/lib/api/model';
+import {convertHTML} from '~/lib/convertHTML';
 import {customerCreateBody} from '~/lib/zod/bookingShopifyApi';
 
 export const schema = customerCreateBody.omit({
   fullname: true,
   customerId: true,
-  phone: true,
-  email: true,
-  aboutMe: true,
-  specialties: true,
-  social: true,
-  yearsExperience: true,
+  aboutMeHtml: true,
 });
 
 export async function action({request, context}: ActionFunctionArgs) {
@@ -62,18 +60,8 @@ export async function action({request, context}: ActionFunctionArgs) {
     await getBookingShopifyApi().customerCreate({
       ...submission.value,
       customerId: parseInt(parseGid(data.customer.id).id),
-      phone: '',
-      email: '',
       fullname: `${data.customer.firstName} ${data.customer.lastName}`,
-      aboutMe: '',
-      yearsExperience: '1',
-      social: {
-        facebook: '',
-        instagram: '',
-        x: '',
-        youtube: '',
-      },
-      specialties: [],
+      aboutMeHtml: convertHTML(submission.value.aboutMe),
     });
 
     return redirectWithSuccess('/account/dashboard?business=true', {
@@ -127,9 +115,10 @@ export async function loader({context, params}: LoaderFunctionArgs) {
           ),
       shortDescription: '',
       professions: [],
-      speaks: [],
+      speaks: ['danish'],
       yearsExperience: '1',
       gender: 'woman',
+      aboutMe: '',
     } as z.infer<typeof schema>,
   });
 }
@@ -138,24 +127,28 @@ export default function AccountBusiness() {
   const lastResult = useActionData<typeof action>();
   const {professionOptions, defaultValue} = useLoaderData<typeof loader>();
 
-  const [form, {username, shortDescription, gender, speaks, professions}] =
-    useForm({
-      lastResult,
-      defaultValue,
-      onValidate({formData}) {
-        return parseWithZod(formData, {
-          schema,
-        });
-      },
-      shouldValidate: 'onSubmit',
-      shouldRevalidate: 'onInput',
-    });
+  const [
+    form,
+    {aboutMe, username, shortDescription, gender, speaks, professions},
+  ] = useForm({
+    lastResult,
+    defaultValue,
+    onValidate({formData}) {
+      return parseWithZod(formData, {
+        schema,
+      });
+    },
+    shouldValidate: 'onSubmit',
+    shouldRevalidate: 'onInput',
+  });
 
   const fetcher = useFetcher<UserUsernameTakenResponsePayload>();
 
   const onChangeUsername = (event: React.ChangeEvent<HTMLInputElement>) => {
     fetcher.load(`/api/usernameTaken?username=${event.target.value}`);
   };
+
+  const control = useInputControl(aboutMe);
 
   return (
     <>
@@ -220,6 +213,7 @@ export default function AccountBusiness() {
                 label="Professioner"
                 placeholder="Vælg professioner"
                 data-testid="professions-input"
+                error={professions.errors && 'Udfyld venligst'}
               />
 
               <MultiTags
@@ -231,6 +225,7 @@ export default function AccountBusiness() {
                 label="Hvilken sprog taler du"
                 placeholder="Vælge sprog"
                 data-testid="speaks-input"
+                error={speaks.errors && 'Udfyld venligst'}
               />
 
               <Textarea
@@ -239,6 +234,15 @@ export default function AccountBusiness() {
                 error={shortDescription.errors && 'Udfyld venligst'}
                 minRows={10}
                 data-testid="short-description-input"
+              />
+
+              <Text size="sm" mb={rem(2)} fw={500}>
+                Fortæl om dig selv og din erfaring:
+              </Text>
+              <TextEditor
+                onUpdate={({editor}) => {
+                  control.change(JSON.stringify(editor.getJSON()) as any);
+                }}
               />
 
               <div>

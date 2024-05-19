@@ -39,7 +39,7 @@ import {redirectWithSuccess} from 'remix-toast';
 import {type z} from 'zod';
 import {AccountContent} from '~/components/account/AccountContent';
 import {AccountTitle} from '~/components/account/AccountTitle';
-import {NumericInput} from '~/components/form/NumericInput';
+import {AmountInput} from '~/components/form/AmountInput';
 import {TextEditor} from '~/components/richtext/TextEditor';
 import {FlexInnerForm} from '~/components/tiny/FlexInnerForm';
 import {baseURL} from '~/lib/api/mutator/query-client';
@@ -314,7 +314,7 @@ export default function AccountServicesCreate() {
                   <Text>Den pris, kunden skal betale.</Text>
                 </Stack>
                 <div style={{flex: 1}}>
-                  <NumericInput
+                  <AmountInput
                     field={fields.price}
                     required
                     hideControls={true}
@@ -331,7 +331,7 @@ export default function AccountServicesCreate() {
                   <Text>Hvad har prisen været tidligere.</Text>
                 </Stack>
                 <div style={{flex: 1}}>
-                  <NumericInput
+                  <AmountInput
                     field={fields.compareAtPrice}
                     hideControls={true}
                     rightSection="DKK"

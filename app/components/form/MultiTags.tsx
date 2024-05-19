@@ -8,7 +8,7 @@ export type MultiTagsProps = {
 } & MultiSelectProps;
 
 export const MultiTags: React.FC<MultiTagsProps> = ({field, ...props}) => {
-  const [form, fields] = useField(field.name);
+  const [, fields] = useField(field.name);
   const list = field.getFieldList();
   const defaultValue = list.map((item) => item.initialValue) as string[];
 

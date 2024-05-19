@@ -21,7 +21,7 @@ import {
   type LoaderFunctionArgs,
 } from '@shopify/remix-oxygen';
 import {redirectWithSuccess} from 'remix-toast';
-import {NumericInput} from '~/components/form/NumericInput';
+import {AmountInput} from '~/components/form/AmountInput';
 import {SubmitButton} from '~/components/form/SubmitButton';
 import {SwitchGroupLocations} from '~/components/form/SwitchGroupLocations';
 import {TextEditor} from '~/components/richtext/TextEditor';
@@ -203,7 +203,7 @@ export default function EditAddress() {
               <Text>Den pris, kunden skal betale.</Text>
             </Stack>
             <div style={{flex: 1}}>
-              <NumericInput
+              <AmountInput
                 field={fields.price}
                 required
                 hideControls={true}
@@ -220,7 +220,7 @@ export default function EditAddress() {
               <Text>Hvad har prisen været tidligere?</Text>
             </Stack>
             <div style={{flex: 1}}>
-              <NumericInput
+              <AmountInput
                 field={fields.compareAtPrice}
                 hideControls={true}
                 rightSection="DKK"

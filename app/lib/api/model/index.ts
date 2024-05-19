@@ -46,7 +46,6 @@ export * from './customerBookingGetByGroupIdResponse';
 export * from './customerBookingRangeParams';
 export * from './customerBookingRangeResponse';
 export * from './customerCreateBody';
-export * from './customerCreateBodySocial';
 export * from './customerCreateResponse';
 export * from './customerGetResponse';
 export * from './customerIsBusinessResponse';
