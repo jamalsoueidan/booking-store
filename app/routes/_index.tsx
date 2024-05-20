@@ -118,8 +118,9 @@ export default function Homepage() {
                 color="orange"
                 component={Link}
                 to="/artists"
-                size="lg"
+                size="xl"
                 radius="md"
+                fw="bold"
                 rightSection={<IconSearch />}
               >
                 Find en skønhedsekspert
@@ -127,14 +128,15 @@ export default function Homepage() {
 
               <Button
                 variant="outline"
-                color="#8a60f6"
+                color="pink"
                 component={Link}
-                to="/pages/start-din-skoenhedskarriere"
-                size="lg"
+                to="/categories"
+                size="xl"
+                fw="bold"
                 radius="md"
                 rightSection={<IconMoodWink />}
               >
-                Start din skønhedskarriere
+                Vis behandlinger
               </Button>
             </Flex>
           </Stack>

@@ -46,6 +46,7 @@ export async function loader({request, params, context}: LoaderFunctionArgs) {
       country: context.storefront.i18n.country,
       language: context.storefront.i18n.language,
     },
+    cache: context.storefront.CacheShort(),
   });
 
   return defer({
