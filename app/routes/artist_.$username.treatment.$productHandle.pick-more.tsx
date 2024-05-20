@@ -13,16 +13,15 @@ import {
 } from '@mantine/core';
 import {Link, Outlet, useLoaderData, useSearchParams} from '@remix-run/react';
 import {json, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
-import {type ArtistTreatmentProductFragment} from 'storefrontapi.generated';
 
 import {Image as ShopifyImage, parseGid} from '@shopify/hydrogen';
 
+import {type TreatmentProductFragment} from 'storefrontapi.generated';
 import {ArtistServiceCheckboxCard} from '~/components/artist/ArtistServiceCheckboxCard';
 import {PriceBadge} from '~/components/artist/PriceBadge';
 import {ArtistShell} from '~/components/ArtistShell';
 import {TreatmentStepper} from '~/components/TreatmentStepper';
-import {ArtistCollection} from '~/graphql/artist/ArtistCollection';
-import {ArtistTreatment} from '~/graphql/artist/ArtistTreatment';
+import {GET_USER_PRODUCTS} from '~/graphql/queries/GetUserProducts';
 import {durationToTime} from '~/lib/duration';
 
 export function shouldRevalidate() {
@@ -39,7 +38,7 @@ export async function loader({params, request, context}: LoaderFunctionArgs) {
     throw new Error('Expected product handle to be defined');
   }
 
-  const {product} = await storefront.query(ArtistTreatment, {
+  const {product} = await storefront.query(GET_PRODUCT_SCHEDULE_ID, {
     variables: {
       productHandle,
       country: storefront.i18n.country,
@@ -53,7 +52,7 @@ export async function loader({params, request, context}: LoaderFunctionArgs) {
     });
   }
 
-  const {collection} = await context.storefront.query(ArtistCollection, {
+  const {collection} = await context.storefront.query(GET_USER_PRODUCTS, {
     variables: {
       handle: username,
       filters: [
@@ -141,11 +140,11 @@ export default function ArtistTreatments() {
   );
 }
 
-type RenderArtistProductsProps = {
-  products: ArtistTreatmentProductFragment[];
-};
-
-function RenderArtistProducts({products}: RenderArtistProductsProps) {
+function RenderArtistProducts({
+  products,
+}: {
+  products: TreatmentProductFragment[];
+}) {
   return (
     <>
       <Title order={4} mb="sm" fw={600} size="md">
@@ -160,11 +159,7 @@ function RenderArtistProducts({products}: RenderArtistProductsProps) {
   );
 }
 
-type ArtistServiceProductProps = {
-  product: ArtistTreatmentProductFragment;
-};
-
-function ArtistServiceProduct({product}: ArtistServiceProductProps) {
+function ArtistServiceProduct({product}: {product: TreatmentProductFragment}) {
   const [searchParams, setSearchParams] = useSearchParams();
 
   const productID = parseGid(product.id).id;
@@ -261,3 +256,18 @@ function ArtistServiceProduct({product}: ArtistServiceProductProps) {
     </ArtistServiceCheckboxCard>
   );
 }
+
+export const GET_PRODUCT_SCHEDULE_ID = `#graphql
+  query GetProductScheduleId(
+    $productHandle: String!
+    $country: CountryCode
+    $language: LanguageCode
+  ) @inContext(country: $country, language: $language) {
+    product(handle: $productHandle) {
+      id
+      scheduleId: metafield(key: "scheduleId", namespace: "booking") {
+        value
+      }
+    }
+  }
+` as const;

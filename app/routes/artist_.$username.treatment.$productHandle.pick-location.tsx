@@ -28,7 +28,11 @@ export default function ArtistTreatmentPickLocation() {
       </ArtistShell.Main>
       <ArtistShell.Footer>
         <TreatmentStepper currentStep={1} totalSteps={3} pageTitle="Lokation">
-          <Button variant="default" component={Link} to="../">
+          <Button
+            variant="default"
+            component={Link}
+            to={`../?${searchParams.toString()}`}
+          >
             Tilbage
           </Button>
           <Button

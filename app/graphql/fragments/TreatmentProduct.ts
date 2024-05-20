@@ -1,8 +1,8 @@
 import {LOCATION_FRAGMENT} from '../fragments/Location';
 
-export const ArtistTreatmentFragment = `#graphql
+export const TREATMENT_PRODUCT = `#graphql
   ${LOCATION_FRAGMENT}
-  fragment ArtistTreatmentProduct on Product {
+  fragment TreatmentProduct on Product {
     id
     title
     descriptionHtml
@@ -69,19 +69,6 @@ export const ArtistTreatmentFragment = `#graphql
     breaktime: metafield(key: "breaktime", namespace: "booking") {
       id
       value
-    }
-  }
-` as const;
-
-export const ArtistTreatment = `#graphql
-${ArtistTreatmentFragment}
-  query ArtistTreatment(
-    $productHandle: String!
-    $country: CountryCode
-    $language: LanguageCode
-  ) @inContext(country: $country, language: $language) {
-    product(handle: $productHandle) {
-      ...ArtistTreatmentProduct
     }
   }
 ` as const;

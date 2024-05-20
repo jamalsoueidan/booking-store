@@ -21,7 +21,7 @@ import {
 import {useMediaQuery} from '@mantine/hooks';
 import {Link, Outlet, useLoaderData} from '@remix-run/react';
 import {IconInfoCircle, IconLogout} from '@tabler/icons-react';
-import {ArtistUser} from '~/graphql/artist/ArtistUser';
+import {USER_METAOBJECT_QUERY} from '~/graphql/fragments/UserMetaobject';
 import {UserProvider} from '~/hooks/use-user';
 import {useUserMetaobject} from '~/hooks/useUserMetaobject';
 
@@ -47,7 +47,7 @@ export async function loader({params, context}: LoaderFunctionArgs) {
     throw new Error('Invalid request method');
   }
 
-  const {metaobject: user} = await storefront.query(ArtistUser, {
+  const {metaobject: user} = await storefront.query(USER_METAOBJECT_QUERY, {
     variables: {
       username,
     },

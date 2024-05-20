@@ -15,7 +15,6 @@ import {ArtistShell} from '~/components/ArtistShell';
 import {TreatmentArtistCardComplete} from '~/components/treatment/TreatmentArtistCardComplete';
 import {TreatmentStepper} from '~/components/TreatmentStepper';
 import {PRODUCT_SELECTED_OPTIONS_QUERY} from '~/data/queries';
-import {ArtistTreatmentCompletedQuery} from '~/graphql/artist/ArtistTreatmentCompleted';
 import type {loader as rootLoader} from './artist_.$username.treatment.$productHandle';
 
 import {getBookingShopifyApi} from '~/lib/api/bookingShopifyApi';
@@ -73,7 +72,7 @@ export const loader = async ({
     );
 
     const {products} = await context.storefront.query(
-      ArtistTreatmentCompletedQuery,
+      GET_TREATMENT_PRODUCTS_IN_CART,
       {
         variables: {
           first: availabilityProducts.length,
@@ -219,3 +218,41 @@ export default function ArtistTreatmentsBooking() {
     </>
   );
 }
+
+export const CART_PRODUCTS = `#graphql
+  fragment CartProducts on Product {
+    id
+    title
+    description
+    variants(first: 5) {
+      nodes {
+        id
+        title
+        compareAtPrice {
+          amount
+          currencyCode
+        }
+        price {
+          amount
+          currencyCode
+        }
+      }
+    }
+  }
+` as const;
+
+export const GET_TREATMENT_PRODUCTS_IN_CART = `#graphql
+  ${CART_PRODUCTS}
+  query getTreatmentProductsInCart(
+    $country: CountryCode
+    $language: LanguageCode
+    $first: Int
+    $query: String
+  ) @inContext(country: $country, language: $language) {
+    products(first: $first, sortKey: TITLE, query: $query) {
+      nodes {
+        ...CartProducts
+      }
+    }
+  }
+` as const;

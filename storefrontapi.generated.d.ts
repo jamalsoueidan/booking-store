@@ -1768,433 +1768,6 @@ export type ServicesOptionsTagOptionsQueryQuery = {
   };
 };
 
-export type ArtistCollectionFiltersFragment = Pick<
-  StorefrontAPI.Filter,
-  'label'
-> & {
-  values: Array<Pick<StorefrontAPI.FilterValue, 'label' | 'input' | 'count'>>;
-};
-
-export type ArtistCollectionFragment = Pick<
-  StorefrontAPI.Collection,
-  'id' | 'title'
-> & {
-  products: {
-    nodes: Array<
-      Pick<
-        StorefrontAPI.Product,
-        'id' | 'title' | 'descriptionHtml' | 'productType' | 'handle'
-      > & {
-        featuredImage?: StorefrontAPI.Maybe<
-          Pick<
-            StorefrontAPI.Image,
-            'id' | 'altText' | 'url' | 'width' | 'height'
-          >
-        >;
-        variants: {
-          nodes: Array<{
-            compareAtPrice?: StorefrontAPI.Maybe<
-              Pick<StorefrontAPI.MoneyV2, 'amount' | 'currencyCode'>
-            >;
-            price: Pick<StorefrontAPI.MoneyV2, 'amount' | 'currencyCode'>;
-          }>;
-        };
-        parentId?: StorefrontAPI.Maybe<
-          Pick<StorefrontAPI.Metafield, 'id' | 'value'>
-        >;
-        options?: StorefrontAPI.Maybe<
-          Pick<StorefrontAPI.Metafield, 'id' | 'value'>
-        >;
-        scheduleId?: StorefrontAPI.Maybe<
-          Pick<StorefrontAPI.Metafield, 'id' | 'value'>
-        >;
-        locations?: StorefrontAPI.Maybe<{
-          references?: StorefrontAPI.Maybe<{
-            nodes: Array<
-              Pick<StorefrontAPI.Metaobject, 'id' | 'handle'> & {
-                fields: Array<
-                  Pick<StorefrontAPI.MetaobjectField, 'value' | 'key'>
-                >;
-              }
-            >;
-          }>;
-        }>;
-        bookingPeriodValue?: StorefrontAPI.Maybe<
-          Pick<StorefrontAPI.Metafield, 'id' | 'value'>
-        >;
-        bookingPeriodUnit?: StorefrontAPI.Maybe<
-          Pick<StorefrontAPI.Metafield, 'id' | 'value'>
-        >;
-        noticePeriodValue?: StorefrontAPI.Maybe<
-          Pick<StorefrontAPI.Metafield, 'id' | 'value'>
-        >;
-        noticePeriodUnit?: StorefrontAPI.Maybe<
-          Pick<StorefrontAPI.Metafield, 'id' | 'value'>
-        >;
-        duration?: StorefrontAPI.Maybe<
-          Pick<StorefrontAPI.Metafield, 'id' | 'value'>
-        >;
-        breaktime?: StorefrontAPI.Maybe<
-          Pick<StorefrontAPI.Metafield, 'id' | 'value'>
-        >;
-      }
-    >;
-    filters: Array<
-      Pick<StorefrontAPI.Filter, 'label'> & {
-        values: Array<
-          Pick<StorefrontAPI.FilterValue, 'label' | 'input' | 'count'>
-        >;
-      }
-    >;
-  };
-};
-
-export type ArtistCollectionQueryVariables = StorefrontAPI.Exact<{
-  handle: StorefrontAPI.Scalars['String']['input'];
-  country?: StorefrontAPI.InputMaybe<StorefrontAPI.CountryCode>;
-  language?: StorefrontAPI.InputMaybe<StorefrontAPI.LanguageCode>;
-  filters?: StorefrontAPI.InputMaybe<
-    Array<StorefrontAPI.ProductFilter> | StorefrontAPI.ProductFilter
-  >;
-}>;
-
-export type ArtistCollectionQuery = {
-  collection?: StorefrontAPI.Maybe<
-    Pick<StorefrontAPI.Collection, 'id' | 'title'> & {
-      products: {
-        nodes: Array<
-          Pick<
-            StorefrontAPI.Product,
-            'id' | 'title' | 'descriptionHtml' | 'productType' | 'handle'
-          > & {
-            featuredImage?: StorefrontAPI.Maybe<
-              Pick<
-                StorefrontAPI.Image,
-                'id' | 'altText' | 'url' | 'width' | 'height'
-              >
-            >;
-            variants: {
-              nodes: Array<{
-                compareAtPrice?: StorefrontAPI.Maybe<
-                  Pick<StorefrontAPI.MoneyV2, 'amount' | 'currencyCode'>
-                >;
-                price: Pick<StorefrontAPI.MoneyV2, 'amount' | 'currencyCode'>;
-              }>;
-            };
-            parentId?: StorefrontAPI.Maybe<
-              Pick<StorefrontAPI.Metafield, 'id' | 'value'>
-            >;
-            options?: StorefrontAPI.Maybe<
-              Pick<StorefrontAPI.Metafield, 'id' | 'value'>
-            >;
-            scheduleId?: StorefrontAPI.Maybe<
-              Pick<StorefrontAPI.Metafield, 'id' | 'value'>
-            >;
-            locations?: StorefrontAPI.Maybe<{
-              references?: StorefrontAPI.Maybe<{
-                nodes: Array<
-                  Pick<StorefrontAPI.Metaobject, 'id' | 'handle'> & {
-                    fields: Array<
-                      Pick<StorefrontAPI.MetaobjectField, 'value' | 'key'>
-                    >;
-                  }
-                >;
-              }>;
-            }>;
-            bookingPeriodValue?: StorefrontAPI.Maybe<
-              Pick<StorefrontAPI.Metafield, 'id' | 'value'>
-            >;
-            bookingPeriodUnit?: StorefrontAPI.Maybe<
-              Pick<StorefrontAPI.Metafield, 'id' | 'value'>
-            >;
-            noticePeriodValue?: StorefrontAPI.Maybe<
-              Pick<StorefrontAPI.Metafield, 'id' | 'value'>
-            >;
-            noticePeriodUnit?: StorefrontAPI.Maybe<
-              Pick<StorefrontAPI.Metafield, 'id' | 'value'>
-            >;
-            duration?: StorefrontAPI.Maybe<
-              Pick<StorefrontAPI.Metafield, 'id' | 'value'>
-            >;
-            breaktime?: StorefrontAPI.Maybe<
-              Pick<StorefrontAPI.Metafield, 'id' | 'value'>
-            >;
-          }
-        >;
-        filters: Array<
-          Pick<StorefrontAPI.Filter, 'label'> & {
-            values: Array<
-              Pick<StorefrontAPI.FilterValue, 'label' | 'input' | 'count'>
-            >;
-          }
-        >;
-      };
-    }
-  >;
-};
-
-export type ArtistTreatmentProductFragment = Pick<
-  StorefrontAPI.Product,
-  'id' | 'title' | 'descriptionHtml' | 'productType' | 'handle'
-> & {
-  featuredImage?: StorefrontAPI.Maybe<
-    Pick<StorefrontAPI.Image, 'id' | 'altText' | 'url' | 'width' | 'height'>
-  >;
-  variants: {
-    nodes: Array<{
-      compareAtPrice?: StorefrontAPI.Maybe<
-        Pick<StorefrontAPI.MoneyV2, 'amount' | 'currencyCode'>
-      >;
-      price: Pick<StorefrontAPI.MoneyV2, 'amount' | 'currencyCode'>;
-    }>;
-  };
-  parentId?: StorefrontAPI.Maybe<Pick<StorefrontAPI.Metafield, 'id' | 'value'>>;
-  options?: StorefrontAPI.Maybe<Pick<StorefrontAPI.Metafield, 'id' | 'value'>>;
-  scheduleId?: StorefrontAPI.Maybe<
-    Pick<StorefrontAPI.Metafield, 'id' | 'value'>
-  >;
-  locations?: StorefrontAPI.Maybe<{
-    references?: StorefrontAPI.Maybe<{
-      nodes: Array<
-        Pick<StorefrontAPI.Metaobject, 'id' | 'handle'> & {
-          fields: Array<Pick<StorefrontAPI.MetaobjectField, 'value' | 'key'>>;
-        }
-      >;
-    }>;
-  }>;
-  bookingPeriodValue?: StorefrontAPI.Maybe<
-    Pick<StorefrontAPI.Metafield, 'id' | 'value'>
-  >;
-  bookingPeriodUnit?: StorefrontAPI.Maybe<
-    Pick<StorefrontAPI.Metafield, 'id' | 'value'>
-  >;
-  noticePeriodValue?: StorefrontAPI.Maybe<
-    Pick<StorefrontAPI.Metafield, 'id' | 'value'>
-  >;
-  noticePeriodUnit?: StorefrontAPI.Maybe<
-    Pick<StorefrontAPI.Metafield, 'id' | 'value'>
-  >;
-  duration?: StorefrontAPI.Maybe<Pick<StorefrontAPI.Metafield, 'id' | 'value'>>;
-  breaktime?: StorefrontAPI.Maybe<
-    Pick<StorefrontAPI.Metafield, 'id' | 'value'>
-  >;
-};
-
-export type ArtistTreatmentQueryVariables = StorefrontAPI.Exact<{
-  productHandle: StorefrontAPI.Scalars['String']['input'];
-  country?: StorefrontAPI.InputMaybe<StorefrontAPI.CountryCode>;
-  language?: StorefrontAPI.InputMaybe<StorefrontAPI.LanguageCode>;
-}>;
-
-export type ArtistTreatmentQuery = {
-  product?: StorefrontAPI.Maybe<
-    Pick<
-      StorefrontAPI.Product,
-      'id' | 'title' | 'descriptionHtml' | 'productType' | 'handle'
-    > & {
-      featuredImage?: StorefrontAPI.Maybe<
-        Pick<StorefrontAPI.Image, 'id' | 'altText' | 'url' | 'width' | 'height'>
-      >;
-      variants: {
-        nodes: Array<{
-          compareAtPrice?: StorefrontAPI.Maybe<
-            Pick<StorefrontAPI.MoneyV2, 'amount' | 'currencyCode'>
-          >;
-          price: Pick<StorefrontAPI.MoneyV2, 'amount' | 'currencyCode'>;
-        }>;
-      };
-      parentId?: StorefrontAPI.Maybe<
-        Pick<StorefrontAPI.Metafield, 'id' | 'value'>
-      >;
-      options?: StorefrontAPI.Maybe<
-        Pick<StorefrontAPI.Metafield, 'id' | 'value'>
-      >;
-      scheduleId?: StorefrontAPI.Maybe<
-        Pick<StorefrontAPI.Metafield, 'id' | 'value'>
-      >;
-      locations?: StorefrontAPI.Maybe<{
-        references?: StorefrontAPI.Maybe<{
-          nodes: Array<
-            Pick<StorefrontAPI.Metaobject, 'id' | 'handle'> & {
-              fields: Array<
-                Pick<StorefrontAPI.MetaobjectField, 'value' | 'key'>
-              >;
-            }
-          >;
-        }>;
-      }>;
-      bookingPeriodValue?: StorefrontAPI.Maybe<
-        Pick<StorefrontAPI.Metafield, 'id' | 'value'>
-      >;
-      bookingPeriodUnit?: StorefrontAPI.Maybe<
-        Pick<StorefrontAPI.Metafield, 'id' | 'value'>
-      >;
-      noticePeriodValue?: StorefrontAPI.Maybe<
-        Pick<StorefrontAPI.Metafield, 'id' | 'value'>
-      >;
-      noticePeriodUnit?: StorefrontAPI.Maybe<
-        Pick<StorefrontAPI.Metafield, 'id' | 'value'>
-      >;
-      duration?: StorefrontAPI.Maybe<
-        Pick<StorefrontAPI.Metafield, 'id' | 'value'>
-      >;
-      breaktime?: StorefrontAPI.Maybe<
-        Pick<StorefrontAPI.Metafield, 'id' | 'value'>
-      >;
-    }
-  >;
-};
-
-export type ArtistTreatmentCompletedProductFragment = Pick<
-  StorefrontAPI.Product,
-  'id' | 'title' | 'description'
-> & {
-  variants: {
-    nodes: Array<
-      Pick<StorefrontAPI.ProductVariant, 'id' | 'title'> & {
-        compareAtPrice?: StorefrontAPI.Maybe<
-          Pick<StorefrontAPI.MoneyV2, 'amount' | 'currencyCode'>
-        >;
-        price: Pick<StorefrontAPI.MoneyV2, 'amount' | 'currencyCode'>;
-      }
-    >;
-  };
-};
-
-export type ArtistTreatmentCompletedQueryVariables = StorefrontAPI.Exact<{
-  country?: StorefrontAPI.InputMaybe<StorefrontAPI.CountryCode>;
-  language?: StorefrontAPI.InputMaybe<StorefrontAPI.LanguageCode>;
-  first?: StorefrontAPI.InputMaybe<StorefrontAPI.Scalars['Int']['input']>;
-  query?: StorefrontAPI.InputMaybe<StorefrontAPI.Scalars['String']['input']>;
-}>;
-
-export type ArtistTreatmentCompletedQuery = {
-  products: {
-    nodes: Array<
-      Pick<StorefrontAPI.Product, 'id' | 'title' | 'description'> & {
-        variants: {
-          nodes: Array<
-            Pick<StorefrontAPI.ProductVariant, 'id' | 'title'> & {
-              compareAtPrice?: StorefrontAPI.Maybe<
-                Pick<StorefrontAPI.MoneyV2, 'amount' | 'currencyCode'>
-              >;
-              price: Pick<StorefrontAPI.MoneyV2, 'amount' | 'currencyCode'>;
-            }
-          >;
-        };
-      }
-    >;
-  };
-};
-
-export type ArtistTreatmentOptionsVariantFragment = Pick<
-  StorefrontAPI.ProductVariant,
-  'id' | 'title'
-> & {
-  image?: StorefrontAPI.Maybe<
-    Pick<StorefrontAPI.Image, 'id' | 'url' | 'altText' | 'width' | 'height'>
-  >;
-  price: Pick<StorefrontAPI.MoneyV2, 'amount' | 'currencyCode'>;
-  compareAtPrice?: StorefrontAPI.Maybe<
-    Pick<StorefrontAPI.MoneyV2, 'amount' | 'currencyCode'>
-  >;
-  selectedOptions: Array<Pick<StorefrontAPI.SelectedOption, 'name' | 'value'>>;
-  duration?: StorefrontAPI.Maybe<Pick<StorefrontAPI.Metafield, 'id' | 'value'>>;
-};
-
-export type ArtistTreatmentOptionsFragment = Pick<
-  StorefrontAPI.Product,
-  'id' | 'title' | 'handle'
-> & {
-  options: Array<Pick<StorefrontAPI.ProductOption, 'name' | 'values'>>;
-  parentId?: StorefrontAPI.Maybe<Pick<StorefrontAPI.Metafield, 'id' | 'value'>>;
-  variants: {
-    nodes: Array<
-      Pick<StorefrontAPI.ProductVariant, 'id' | 'title'> & {
-        image?: StorefrontAPI.Maybe<
-          Pick<
-            StorefrontAPI.Image,
-            'id' | 'url' | 'altText' | 'width' | 'height'
-          >
-        >;
-        price: Pick<StorefrontAPI.MoneyV2, 'amount' | 'currencyCode'>;
-        compareAtPrice?: StorefrontAPI.Maybe<
-          Pick<StorefrontAPI.MoneyV2, 'amount' | 'currencyCode'>
-        >;
-        selectedOptions: Array<
-          Pick<StorefrontAPI.SelectedOption, 'name' | 'value'>
-        >;
-        duration?: StorefrontAPI.Maybe<
-          Pick<StorefrontAPI.Metafield, 'id' | 'value'>
-        >;
-      }
-    >;
-  };
-};
-
-export type ArtistTreatmentOptionsQueryVariables = StorefrontAPI.Exact<{
-  country?: StorefrontAPI.InputMaybe<StorefrontAPI.CountryCode>;
-  language?: StorefrontAPI.InputMaybe<StorefrontAPI.LanguageCode>;
-  query: StorefrontAPI.Scalars['String']['input'];
-}>;
-
-export type ArtistTreatmentOptionsQuery = {
-  products: {
-    nodes: Array<
-      Pick<StorefrontAPI.Product, 'id' | 'title' | 'handle'> & {
-        options: Array<Pick<StorefrontAPI.ProductOption, 'name' | 'values'>>;
-        parentId?: StorefrontAPI.Maybe<
-          Pick<StorefrontAPI.Metafield, 'id' | 'value'>
-        >;
-        variants: {
-          nodes: Array<
-            Pick<StorefrontAPI.ProductVariant, 'id' | 'title'> & {
-              image?: StorefrontAPI.Maybe<
-                Pick<
-                  StorefrontAPI.Image,
-                  'id' | 'url' | 'altText' | 'width' | 'height'
-                >
-              >;
-              price: Pick<StorefrontAPI.MoneyV2, 'amount' | 'currencyCode'>;
-              compareAtPrice?: StorefrontAPI.Maybe<
-                Pick<StorefrontAPI.MoneyV2, 'amount' | 'currencyCode'>
-              >;
-              selectedOptions: Array<
-                Pick<StorefrontAPI.SelectedOption, 'name' | 'value'>
-              >;
-              duration?: StorefrontAPI.Maybe<
-                Pick<StorefrontAPI.Metafield, 'id' | 'value'>
-              >;
-            }
-          >;
-        };
-      }
-    >;
-  };
-};
-
-export type ArtistUserQueryVariables = StorefrontAPI.Exact<{
-  username: StorefrontAPI.Scalars['String']['input'];
-  country?: StorefrontAPI.InputMaybe<StorefrontAPI.CountryCode>;
-  language?: StorefrontAPI.InputMaybe<StorefrontAPI.LanguageCode>;
-}>;
-
-export type ArtistUserQuery = {
-  metaobject?: StorefrontAPI.Maybe<
-    Pick<StorefrontAPI.Metaobject, 'id'> & {
-      fields: Array<
-        Pick<StorefrontAPI.MetaobjectField, 'value' | 'key'> & {
-          reference?: StorefrontAPI.Maybe<{
-            image?: StorefrontAPI.Maybe<
-              Pick<StorefrontAPI.Image, 'width' | 'height' | 'url'>
-            >;
-          }>;
-        }
-      >;
-    }
-  >;
-};
-
 export type LocationFragment = Pick<
   StorefrontAPI.Metaobject,
   'id' | 'handle'
@@ -2279,6 +1852,96 @@ export type TreatmentCollectionFragment = Pick<
   }>;
 };
 
+export type TreatmentOptionVariantFragment = Pick<
+  StorefrontAPI.ProductVariant,
+  'id' | 'title'
+> & {
+  image?: StorefrontAPI.Maybe<
+    Pick<StorefrontAPI.Image, 'id' | 'url' | 'altText' | 'width' | 'height'>
+  >;
+  price: Pick<StorefrontAPI.MoneyV2, 'amount' | 'currencyCode'>;
+  compareAtPrice?: StorefrontAPI.Maybe<
+    Pick<StorefrontAPI.MoneyV2, 'amount' | 'currencyCode'>
+  >;
+  selectedOptions: Array<Pick<StorefrontAPI.SelectedOption, 'name' | 'value'>>;
+  duration?: StorefrontAPI.Maybe<Pick<StorefrontAPI.Metafield, 'value'>>;
+};
+
+export type TreatmentOptionFragment = Pick<
+  StorefrontAPI.Product,
+  'id' | 'title' | 'handle'
+> & {
+  options: Array<Pick<StorefrontAPI.ProductOption, 'name' | 'values'>>;
+  parentId?: StorefrontAPI.Maybe<Pick<StorefrontAPI.Metafield, 'value'>>;
+  variants: {
+    nodes: Array<
+      Pick<StorefrontAPI.ProductVariant, 'id' | 'title'> & {
+        image?: StorefrontAPI.Maybe<
+          Pick<
+            StorefrontAPI.Image,
+            'id' | 'url' | 'altText' | 'width' | 'height'
+          >
+        >;
+        price: Pick<StorefrontAPI.MoneyV2, 'amount' | 'currencyCode'>;
+        compareAtPrice?: StorefrontAPI.Maybe<
+          Pick<StorefrontAPI.MoneyV2, 'amount' | 'currencyCode'>
+        >;
+        selectedOptions: Array<
+          Pick<StorefrontAPI.SelectedOption, 'name' | 'value'>
+        >;
+        duration?: StorefrontAPI.Maybe<Pick<StorefrontAPI.Metafield, 'value'>>;
+      }
+    >;
+  };
+};
+
+export type TreatmentProductFragment = Pick<
+  StorefrontAPI.Product,
+  'id' | 'title' | 'descriptionHtml' | 'productType' | 'handle'
+> & {
+  featuredImage?: StorefrontAPI.Maybe<
+    Pick<StorefrontAPI.Image, 'id' | 'altText' | 'url' | 'width' | 'height'>
+  >;
+  variants: {
+    nodes: Array<{
+      compareAtPrice?: StorefrontAPI.Maybe<
+        Pick<StorefrontAPI.MoneyV2, 'amount' | 'currencyCode'>
+      >;
+      price: Pick<StorefrontAPI.MoneyV2, 'amount' | 'currencyCode'>;
+    }>;
+  };
+  parentId?: StorefrontAPI.Maybe<Pick<StorefrontAPI.Metafield, 'id' | 'value'>>;
+  options?: StorefrontAPI.Maybe<Pick<StorefrontAPI.Metafield, 'id' | 'value'>>;
+  scheduleId?: StorefrontAPI.Maybe<
+    Pick<StorefrontAPI.Metafield, 'id' | 'value'>
+  >;
+  locations?: StorefrontAPI.Maybe<{
+    references?: StorefrontAPI.Maybe<{
+      nodes: Array<
+        Pick<StorefrontAPI.Metaobject, 'id' | 'handle'> & {
+          fields: Array<Pick<StorefrontAPI.MetaobjectField, 'value' | 'key'>>;
+        }
+      >;
+    }>;
+  }>;
+  bookingPeriodValue?: StorefrontAPI.Maybe<
+    Pick<StorefrontAPI.Metafield, 'id' | 'value'>
+  >;
+  bookingPeriodUnit?: StorefrontAPI.Maybe<
+    Pick<StorefrontAPI.Metafield, 'id' | 'value'>
+  >;
+  noticePeriodValue?: StorefrontAPI.Maybe<
+    Pick<StorefrontAPI.Metafield, 'id' | 'value'>
+  >;
+  noticePeriodUnit?: StorefrontAPI.Maybe<
+    Pick<StorefrontAPI.Metafield, 'id' | 'value'>
+  >;
+  duration?: StorefrontAPI.Maybe<Pick<StorefrontAPI.Metafield, 'id' | 'value'>>;
+  breaktime?: StorefrontAPI.Maybe<
+    Pick<StorefrontAPI.Metafield, 'id' | 'value'>
+  >;
+};
+
 export type TreatmentUserFragment = Pick<
   StorefrontAPI.Product,
   'id' | 'title' | 'descriptionHtml' | 'productType' | 'handle' | 'vendor'
@@ -2321,6 +1984,193 @@ export type UserFragment = Pick<StorefrontAPI.Metaobject, 'id'> & {
           Pick<StorefrontAPI.Image, 'width' | 'height' | 'url'>
         >;
       }>;
+    }
+  >;
+};
+
+export type UserCollectionProductsFiltersFragment = Pick<
+  StorefrontAPI.Filter,
+  'label'
+> & {
+  values: Array<Pick<StorefrontAPI.FilterValue, 'label' | 'input' | 'count'>>;
+};
+
+export type UserCollectionWithProductsFragment = Pick<
+  StorefrontAPI.Collection,
+  'id' | 'title'
+> & {
+  products: {
+    nodes: Array<
+      Pick<
+        StorefrontAPI.Product,
+        'id' | 'title' | 'descriptionHtml' | 'productType' | 'handle'
+      > & {
+        featuredImage?: StorefrontAPI.Maybe<
+          Pick<
+            StorefrontAPI.Image,
+            'id' | 'altText' | 'url' | 'width' | 'height'
+          >
+        >;
+        variants: {
+          nodes: Array<{
+            compareAtPrice?: StorefrontAPI.Maybe<
+              Pick<StorefrontAPI.MoneyV2, 'amount' | 'currencyCode'>
+            >;
+            price: Pick<StorefrontAPI.MoneyV2, 'amount' | 'currencyCode'>;
+          }>;
+        };
+        parentId?: StorefrontAPI.Maybe<
+          Pick<StorefrontAPI.Metafield, 'id' | 'value'>
+        >;
+        options?: StorefrontAPI.Maybe<
+          Pick<StorefrontAPI.Metafield, 'id' | 'value'>
+        >;
+        scheduleId?: StorefrontAPI.Maybe<
+          Pick<StorefrontAPI.Metafield, 'id' | 'value'>
+        >;
+        locations?: StorefrontAPI.Maybe<{
+          references?: StorefrontAPI.Maybe<{
+            nodes: Array<
+              Pick<StorefrontAPI.Metaobject, 'id' | 'handle'> & {
+                fields: Array<
+                  Pick<StorefrontAPI.MetaobjectField, 'value' | 'key'>
+                >;
+              }
+            >;
+          }>;
+        }>;
+        bookingPeriodValue?: StorefrontAPI.Maybe<
+          Pick<StorefrontAPI.Metafield, 'id' | 'value'>
+        >;
+        bookingPeriodUnit?: StorefrontAPI.Maybe<
+          Pick<StorefrontAPI.Metafield, 'id' | 'value'>
+        >;
+        noticePeriodValue?: StorefrontAPI.Maybe<
+          Pick<StorefrontAPI.Metafield, 'id' | 'value'>
+        >;
+        noticePeriodUnit?: StorefrontAPI.Maybe<
+          Pick<StorefrontAPI.Metafield, 'id' | 'value'>
+        >;
+        duration?: StorefrontAPI.Maybe<
+          Pick<StorefrontAPI.Metafield, 'id' | 'value'>
+        >;
+        breaktime?: StorefrontAPI.Maybe<
+          Pick<StorefrontAPI.Metafield, 'id' | 'value'>
+        >;
+      }
+    >;
+    filters: Array<
+      Pick<StorefrontAPI.Filter, 'label'> & {
+        values: Array<
+          Pick<StorefrontAPI.FilterValue, 'label' | 'input' | 'count'>
+        >;
+      }
+    >;
+  };
+};
+
+export type ArtistUserQueryVariables = StorefrontAPI.Exact<{
+  username: StorefrontAPI.Scalars['String']['input'];
+  country?: StorefrontAPI.InputMaybe<StorefrontAPI.CountryCode>;
+  language?: StorefrontAPI.InputMaybe<StorefrontAPI.LanguageCode>;
+}>;
+
+export type ArtistUserQuery = {
+  metaobject?: StorefrontAPI.Maybe<
+    Pick<StorefrontAPI.Metaobject, 'id'> & {
+      fields: Array<
+        Pick<StorefrontAPI.MetaobjectField, 'value' | 'key'> & {
+          reference?: StorefrontAPI.Maybe<{
+            image?: StorefrontAPI.Maybe<
+              Pick<StorefrontAPI.Image, 'width' | 'height' | 'url'>
+            >;
+          }>;
+        }
+      >;
+    }
+  >;
+};
+
+export type GetUserProductsQueryVariables = StorefrontAPI.Exact<{
+  handle: StorefrontAPI.Scalars['String']['input'];
+  country?: StorefrontAPI.InputMaybe<StorefrontAPI.CountryCode>;
+  language?: StorefrontAPI.InputMaybe<StorefrontAPI.LanguageCode>;
+  filters?: StorefrontAPI.InputMaybe<
+    Array<StorefrontAPI.ProductFilter> | StorefrontAPI.ProductFilter
+  >;
+}>;
+
+export type GetUserProductsQuery = {
+  collection?: StorefrontAPI.Maybe<
+    Pick<StorefrontAPI.Collection, 'id' | 'title'> & {
+      products: {
+        nodes: Array<
+          Pick<
+            StorefrontAPI.Product,
+            'id' | 'title' | 'descriptionHtml' | 'productType' | 'handle'
+          > & {
+            featuredImage?: StorefrontAPI.Maybe<
+              Pick<
+                StorefrontAPI.Image,
+                'id' | 'altText' | 'url' | 'width' | 'height'
+              >
+            >;
+            variants: {
+              nodes: Array<{
+                compareAtPrice?: StorefrontAPI.Maybe<
+                  Pick<StorefrontAPI.MoneyV2, 'amount' | 'currencyCode'>
+                >;
+                price: Pick<StorefrontAPI.MoneyV2, 'amount' | 'currencyCode'>;
+              }>;
+            };
+            parentId?: StorefrontAPI.Maybe<
+              Pick<StorefrontAPI.Metafield, 'id' | 'value'>
+            >;
+            options?: StorefrontAPI.Maybe<
+              Pick<StorefrontAPI.Metafield, 'id' | 'value'>
+            >;
+            scheduleId?: StorefrontAPI.Maybe<
+              Pick<StorefrontAPI.Metafield, 'id' | 'value'>
+            >;
+            locations?: StorefrontAPI.Maybe<{
+              references?: StorefrontAPI.Maybe<{
+                nodes: Array<
+                  Pick<StorefrontAPI.Metaobject, 'id' | 'handle'> & {
+                    fields: Array<
+                      Pick<StorefrontAPI.MetaobjectField, 'value' | 'key'>
+                    >;
+                  }
+                >;
+              }>;
+            }>;
+            bookingPeriodValue?: StorefrontAPI.Maybe<
+              Pick<StorefrontAPI.Metafield, 'id' | 'value'>
+            >;
+            bookingPeriodUnit?: StorefrontAPI.Maybe<
+              Pick<StorefrontAPI.Metafield, 'id' | 'value'>
+            >;
+            noticePeriodValue?: StorefrontAPI.Maybe<
+              Pick<StorefrontAPI.Metafield, 'id' | 'value'>
+            >;
+            noticePeriodUnit?: StorefrontAPI.Maybe<
+              Pick<StorefrontAPI.Metafield, 'id' | 'value'>
+            >;
+            duration?: StorefrontAPI.Maybe<
+              Pick<StorefrontAPI.Metafield, 'id' | 'value'>
+            >;
+            breaktime?: StorefrontAPI.Maybe<
+              Pick<StorefrontAPI.Metafield, 'id' | 'value'>
+            >;
+          }
+        >;
+        filters: Array<
+          Pick<StorefrontAPI.Filter, 'label'> & {
+            values: Array<
+              Pick<StorefrontAPI.FilterValue, 'label' | 'input' | 'count'>
+            >;
+          }
+        >;
+      };
     }
   >;
 };
@@ -3025,6 +2875,243 @@ export type PredictiveSearchQuery = {
   }>;
 };
 
+export type CartProductsFragment = Pick<
+  StorefrontAPI.Product,
+  'id' | 'title' | 'description'
+> & {
+  variants: {
+    nodes: Array<
+      Pick<StorefrontAPI.ProductVariant, 'id' | 'title'> & {
+        compareAtPrice?: StorefrontAPI.Maybe<
+          Pick<StorefrontAPI.MoneyV2, 'amount' | 'currencyCode'>
+        >;
+        price: Pick<StorefrontAPI.MoneyV2, 'amount' | 'currencyCode'>;
+      }
+    >;
+  };
+};
+
+export type GetTreatmentProductsInCartQueryVariables = StorefrontAPI.Exact<{
+  country?: StorefrontAPI.InputMaybe<StorefrontAPI.CountryCode>;
+  language?: StorefrontAPI.InputMaybe<StorefrontAPI.LanguageCode>;
+  first?: StorefrontAPI.InputMaybe<StorefrontAPI.Scalars['Int']['input']>;
+  query?: StorefrontAPI.InputMaybe<StorefrontAPI.Scalars['String']['input']>;
+}>;
+
+export type GetTreatmentProductsInCartQuery = {
+  products: {
+    nodes: Array<
+      Pick<StorefrontAPI.Product, 'id' | 'title' | 'description'> & {
+        variants: {
+          nodes: Array<
+            Pick<StorefrontAPI.ProductVariant, 'id' | 'title'> & {
+              compareAtPrice?: StorefrontAPI.Maybe<
+                Pick<StorefrontAPI.MoneyV2, 'amount' | 'currencyCode'>
+              >;
+              price: Pick<StorefrontAPI.MoneyV2, 'amount' | 'currencyCode'>;
+            }
+          >;
+        };
+      }
+    >;
+  };
+};
+
+export type GetProductScheduleIdQueryVariables = StorefrontAPI.Exact<{
+  productHandle: StorefrontAPI.Scalars['String']['input'];
+  country?: StorefrontAPI.InputMaybe<StorefrontAPI.CountryCode>;
+  language?: StorefrontAPI.InputMaybe<StorefrontAPI.LanguageCode>;
+}>;
+
+export type GetProductScheduleIdQuery = {
+  product?: StorefrontAPI.Maybe<
+    Pick<StorefrontAPI.Product, 'id'> & {
+      scheduleId?: StorefrontAPI.Maybe<Pick<StorefrontAPI.Metafield, 'value'>>;
+    }
+  >;
+};
+
+export type TreatmentProductWithOptionsFragment = Pick<
+  StorefrontAPI.Product,
+  'id' | 'title' | 'descriptionHtml' | 'productType' | 'handle'
+> & {
+  featuredImage?: StorefrontAPI.Maybe<
+    Pick<StorefrontAPI.Image, 'id' | 'altText' | 'url' | 'width' | 'height'>
+  >;
+  variants: {
+    nodes: Array<{
+      compareAtPrice?: StorefrontAPI.Maybe<
+        Pick<StorefrontAPI.MoneyV2, 'amount' | 'currencyCode'>
+      >;
+      price: Pick<StorefrontAPI.MoneyV2, 'amount' | 'currencyCode'>;
+    }>;
+  };
+  parentId?: StorefrontAPI.Maybe<Pick<StorefrontAPI.Metafield, 'id' | 'value'>>;
+  options?: StorefrontAPI.Maybe<{
+    references?: StorefrontAPI.Maybe<{
+      nodes: Array<
+        Pick<StorefrontAPI.Product, 'id' | 'title' | 'handle'> & {
+          options: Array<Pick<StorefrontAPI.ProductOption, 'name' | 'values'>>;
+          parentId?: StorefrontAPI.Maybe<
+            Pick<StorefrontAPI.Metafield, 'value'>
+          >;
+          variants: {
+            nodes: Array<
+              Pick<StorefrontAPI.ProductVariant, 'id' | 'title'> & {
+                image?: StorefrontAPI.Maybe<
+                  Pick<
+                    StorefrontAPI.Image,
+                    'id' | 'url' | 'altText' | 'width' | 'height'
+                  >
+                >;
+                price: Pick<StorefrontAPI.MoneyV2, 'amount' | 'currencyCode'>;
+                compareAtPrice?: StorefrontAPI.Maybe<
+                  Pick<StorefrontAPI.MoneyV2, 'amount' | 'currencyCode'>
+                >;
+                selectedOptions: Array<
+                  Pick<StorefrontAPI.SelectedOption, 'name' | 'value'>
+                >;
+                duration?: StorefrontAPI.Maybe<
+                  Pick<StorefrontAPI.Metafield, 'value'>
+                >;
+              }
+            >;
+          };
+        }
+      >;
+    }>;
+  }>;
+  scheduleId?: StorefrontAPI.Maybe<
+    Pick<StorefrontAPI.Metafield, 'id' | 'value'>
+  >;
+  locations?: StorefrontAPI.Maybe<{
+    references?: StorefrontAPI.Maybe<{
+      nodes: Array<
+        Pick<StorefrontAPI.Metaobject, 'id' | 'handle'> & {
+          fields: Array<Pick<StorefrontAPI.MetaobjectField, 'value' | 'key'>>;
+        }
+      >;
+    }>;
+  }>;
+  bookingPeriodValue?: StorefrontAPI.Maybe<
+    Pick<StorefrontAPI.Metafield, 'id' | 'value'>
+  >;
+  bookingPeriodUnit?: StorefrontAPI.Maybe<
+    Pick<StorefrontAPI.Metafield, 'id' | 'value'>
+  >;
+  noticePeriodValue?: StorefrontAPI.Maybe<
+    Pick<StorefrontAPI.Metafield, 'id' | 'value'>
+  >;
+  noticePeriodUnit?: StorefrontAPI.Maybe<
+    Pick<StorefrontAPI.Metafield, 'id' | 'value'>
+  >;
+  duration?: StorefrontAPI.Maybe<Pick<StorefrontAPI.Metafield, 'id' | 'value'>>;
+  breaktime?: StorefrontAPI.Maybe<
+    Pick<StorefrontAPI.Metafield, 'id' | 'value'>
+  >;
+};
+
+export type ArtistOptionsQueryVariables = StorefrontAPI.Exact<{
+  productHandle: StorefrontAPI.Scalars['String']['input'];
+  country?: StorefrontAPI.InputMaybe<StorefrontAPI.CountryCode>;
+  language?: StorefrontAPI.InputMaybe<StorefrontAPI.LanguageCode>;
+}>;
+
+export type ArtistOptionsQuery = {
+  product?: StorefrontAPI.Maybe<
+    Pick<
+      StorefrontAPI.Product,
+      'id' | 'title' | 'descriptionHtml' | 'productType' | 'handle'
+    > & {
+      featuredImage?: StorefrontAPI.Maybe<
+        Pick<StorefrontAPI.Image, 'id' | 'altText' | 'url' | 'width' | 'height'>
+      >;
+      variants: {
+        nodes: Array<{
+          compareAtPrice?: StorefrontAPI.Maybe<
+            Pick<StorefrontAPI.MoneyV2, 'amount' | 'currencyCode'>
+          >;
+          price: Pick<StorefrontAPI.MoneyV2, 'amount' | 'currencyCode'>;
+        }>;
+      };
+      parentId?: StorefrontAPI.Maybe<
+        Pick<StorefrontAPI.Metafield, 'id' | 'value'>
+      >;
+      options?: StorefrontAPI.Maybe<{
+        references?: StorefrontAPI.Maybe<{
+          nodes: Array<
+            Pick<StorefrontAPI.Product, 'id' | 'title' | 'handle'> & {
+              options: Array<
+                Pick<StorefrontAPI.ProductOption, 'name' | 'values'>
+              >;
+              parentId?: StorefrontAPI.Maybe<
+                Pick<StorefrontAPI.Metafield, 'value'>
+              >;
+              variants: {
+                nodes: Array<
+                  Pick<StorefrontAPI.ProductVariant, 'id' | 'title'> & {
+                    image?: StorefrontAPI.Maybe<
+                      Pick<
+                        StorefrontAPI.Image,
+                        'id' | 'url' | 'altText' | 'width' | 'height'
+                      >
+                    >;
+                    price: Pick<
+                      StorefrontAPI.MoneyV2,
+                      'amount' | 'currencyCode'
+                    >;
+                    compareAtPrice?: StorefrontAPI.Maybe<
+                      Pick<StorefrontAPI.MoneyV2, 'amount' | 'currencyCode'>
+                    >;
+                    selectedOptions: Array<
+                      Pick<StorefrontAPI.SelectedOption, 'name' | 'value'>
+                    >;
+                    duration?: StorefrontAPI.Maybe<
+                      Pick<StorefrontAPI.Metafield, 'value'>
+                    >;
+                  }
+                >;
+              };
+            }
+          >;
+        }>;
+      }>;
+      scheduleId?: StorefrontAPI.Maybe<
+        Pick<StorefrontAPI.Metafield, 'id' | 'value'>
+      >;
+      locations?: StorefrontAPI.Maybe<{
+        references?: StorefrontAPI.Maybe<{
+          nodes: Array<
+            Pick<StorefrontAPI.Metaobject, 'id' | 'handle'> & {
+              fields: Array<
+                Pick<StorefrontAPI.MetaobjectField, 'value' | 'key'>
+              >;
+            }
+          >;
+        }>;
+      }>;
+      bookingPeriodValue?: StorefrontAPI.Maybe<
+        Pick<StorefrontAPI.Metafield, 'id' | 'value'>
+      >;
+      bookingPeriodUnit?: StorefrontAPI.Maybe<
+        Pick<StorefrontAPI.Metafield, 'id' | 'value'>
+      >;
+      noticePeriodValue?: StorefrontAPI.Maybe<
+        Pick<StorefrontAPI.Metafield, 'id' | 'value'>
+      >;
+      noticePeriodUnit?: StorefrontAPI.Maybe<
+        Pick<StorefrontAPI.Metafield, 'id' | 'value'>
+      >;
+      duration?: StorefrontAPI.Maybe<
+        Pick<StorefrontAPI.Metafield, 'id' | 'value'>
+      >;
+      breaktime?: StorefrontAPI.Maybe<
+        Pick<StorefrontAPI.Metafield, 'id' | 'value'>
+      >;
+    }
+  >;
+};
+
 export type ArticleQueryVariables = StorefrontAPI.Exact<{
   articleHandle: StorefrontAPI.Scalars['String']['input'];
   blogHandle: StorefrontAPI.Scalars['String']['input'];
@@ -3676,25 +3763,13 @@ interface GeneratedQueryTypes {
     return: ServicesOptionsTagOptionsQueryQuery;
     variables: ServicesOptionsTagOptionsQueryQueryVariables;
   };
-  '#graphql\n#graphql\n  #graphql\n  #graphql\n  fragment Location on Metaobject {\n    id\n    handle\n    fields {\n      value\n      key\n    }\n  }\n\n  fragment ArtistTreatmentProduct on Product {\n    id\n    title\n    descriptionHtml\n    productType\n    handle\n    featuredImage {\n      id\n      altText\n      url(transform: { maxHeight: 250, maxWidth: 250, crop: CENTER })\n      width\n      height\n    }\n    variants(first: 1) {\n      nodes {\n        compareAtPrice {\n          amount\n          currencyCode\n        }\n        price {\n          amount\n          currencyCode\n        }\n      }\n    }\n    parentId: metafield(key: "parentId", namespace: "booking") {\n      id\n      value\n    }\n    options: metafield(key: "options", namespace: "booking") {\n      id\n      value\n    }\n    scheduleId: metafield(key: "scheduleId", namespace: "booking") {\n      id\n      value\n    }\n    locations: metafield(key: "locations", namespace: "booking") {\n      references(first: 10) {\n        nodes {\n          ...Location\n        }\n      }\n    }\n    bookingPeriodValue: metafield(key: "booking_period_value", namespace: "booking") {\n      id\n      value\n    }\n    bookingPeriodUnit: metafield(key: "booking_period_unit", namespace: "booking") {\n      id\n      value\n    }\n    noticePeriodValue: metafield(key: "notice_period_value", namespace: "booking") {\n      id\n      value\n    }\n    noticePeriodUnit: metafield(key: "notice_period_unit", namespace: "booking") {\n      id\n      value\n    }\n    duration: metafield(key: "duration", namespace: "booking") {\n      id\n      value\n    }\n    breaktime: metafield(key: "breaktime", namespace: "booking") {\n      id\n      value\n    }\n  }\n\n  fragment ArtistCollectionFilters on Filter {\n    label\n    values {\n      label\n      input\n      count\n    }\n  }\n\n  fragment ArtistCollection on Collection {\n    id\n    title\n    products(first: 20, sortKey: TITLE, filters: $filters) {\n      nodes {\n        ...ArtistTreatmentProduct\n      }\n      filters {\n        ...ArtistCollectionFilters\n      }\n    }\n  }\n\n  query ArtistCollection(\n    $handle: String!\n    $country: CountryCode\n    $language: LanguageCode\n    $filters: [ProductFilter!] = {}\n  ) @inContext(country: $country, language: $language) {\n    collection(handle: $handle) {\n      ...ArtistCollection\n    }\n  }\n': {
-    return: ArtistCollectionQuery;
-    variables: ArtistCollectionQueryVariables;
-  };
-  '#graphql\n#graphql\n  #graphql\n  fragment Location on Metaobject {\n    id\n    handle\n    fields {\n      value\n      key\n    }\n  }\n\n  fragment ArtistTreatmentProduct on Product {\n    id\n    title\n    descriptionHtml\n    productType\n    handle\n    featuredImage {\n      id\n      altText\n      url(transform: { maxHeight: 250, maxWidth: 250, crop: CENTER })\n      width\n      height\n    }\n    variants(first: 1) {\n      nodes {\n        compareAtPrice {\n          amount\n          currencyCode\n        }\n        price {\n          amount\n          currencyCode\n        }\n      }\n    }\n    parentId: metafield(key: "parentId", namespace: "booking") {\n      id\n      value\n    }\n    options: metafield(key: "options", namespace: "booking") {\n      id\n      value\n    }\n    scheduleId: metafield(key: "scheduleId", namespace: "booking") {\n      id\n      value\n    }\n    locations: metafield(key: "locations", namespace: "booking") {\n      references(first: 10) {\n        nodes {\n          ...Location\n        }\n      }\n    }\n    bookingPeriodValue: metafield(key: "booking_period_value", namespace: "booking") {\n      id\n      value\n    }\n    bookingPeriodUnit: metafield(key: "booking_period_unit", namespace: "booking") {\n      id\n      value\n    }\n    noticePeriodValue: metafield(key: "notice_period_value", namespace: "booking") {\n      id\n      value\n    }\n    noticePeriodUnit: metafield(key: "notice_period_unit", namespace: "booking") {\n      id\n      value\n    }\n    duration: metafield(key: "duration", namespace: "booking") {\n      id\n      value\n    }\n    breaktime: metafield(key: "breaktime", namespace: "booking") {\n      id\n      value\n    }\n  }\n\n  query ArtistTreatment(\n    $productHandle: String!\n    $country: CountryCode\n    $language: LanguageCode\n  ) @inContext(country: $country, language: $language) {\n    product(handle: $productHandle) {\n      ...ArtistTreatmentProduct\n    }\n  }\n': {
-    return: ArtistTreatmentQuery;
-    variables: ArtistTreatmentQueryVariables;
-  };
-  '#graphql\n  #graphql\n  fragment ArtistTreatmentCompletedProduct on Product {\n    id\n    title\n    description\n    variants(first: 5) {\n      nodes {\n        id\n        title\n        compareAtPrice {\n          amount\n          currencyCode\n        }\n        price {\n          amount\n          currencyCode\n        }\n      }\n    }\n  }\n\n  query ArtistTreatmentCompleted(\n    $country: CountryCode\n    $language: LanguageCode\n    $first: Int\n    $query: String\n  ) @inContext(country: $country, language: $language) {\n    products(first: $first, sortKey: TITLE, query: $query) {\n      nodes {\n        ...ArtistTreatmentCompletedProduct\n      }\n    }\n  }\n': {
-    return: ArtistTreatmentCompletedQuery;
-    variables: ArtistTreatmentCompletedQueryVariables;
-  };
-  '#graphql\n  #graphql\n  #graphql\n  fragment ArtistTreatmentOptionsVariant on ProductVariant {\n    id\n    title\n    image {\n      id\n      url\n      altText\n      width\n      height\n    }\n    price {\n      amount\n      currencyCode\n    }\n    compareAtPrice {\n      amount\n      currencyCode\n    }\n    selectedOptions {\n      name\n      value\n    }\n    duration: metafield(key: "duration", namespace: "booking") {\n      id\n      value\n    }\n  }\n\n\n  fragment ArtistTreatmentOptions on Product {\n    id\n    title\n    handle\n    options {\n      name\n      values\n    }\n    parentId: metafield(key: "parentId", namespace: "booking") {\n      id\n      value\n    }\n    variants(first: 5) {\n      nodes {\n        ...ArtistTreatmentOptionsVariant\n      }\n    }\n  }\n\n\n  query ArtistTreatmentOptions(\n    $country: CountryCode\n    $language: LanguageCode\n    $query: String!\n  ) @inContext(country: $country, language: $language) {\n    products(first: 10, query: $query) {\n      nodes {\n        ...ArtistTreatmentOptions\n      }\n    }\n  }\n': {
-    return: ArtistTreatmentOptionsQuery;
-    variables: ArtistTreatmentOptionsQueryVariables;
-  };
   '#graphql\n  #graphql\n  fragment User on Metaobject {\n    id #for key={id}\n    fields {\n      value\n      key\n      reference {\n        ... on MediaImage {\n          image {\n            width\n            height\n            url(transform: {})\n          }\n        }\n      }\n    }\n  }\n\n  query ArtistUser(\n    $username: String!\n    $country: CountryCode\n    $language: LanguageCode\n  ) @inContext(country: $country, language: $language) {\n    metaobject(handle: {handle: $username, type: "user"}) {\n      ...User\n    }\n  }\n': {
     return: ArtistUserQuery;
     variables: ArtistUserQueryVariables;
+  };
+  '#graphql\n  #graphql\n  #graphql\n  #graphql\n  fragment Location on Metaobject {\n    id\n    handle\n    fields {\n      value\n      key\n    }\n  }\n\n  fragment TreatmentProduct on Product {\n    id\n    title\n    descriptionHtml\n    productType\n    handle\n    featuredImage {\n      id\n      altText\n      url(transform: { maxHeight: 250, maxWidth: 250, crop: CENTER })\n      width\n      height\n    }\n    variants(first: 1) {\n      nodes {\n        compareAtPrice {\n          amount\n          currencyCode\n        }\n        price {\n          amount\n          currencyCode\n        }\n      }\n    }\n    parentId: metafield(key: "parentId", namespace: "booking") {\n      id\n      value\n    }\n    options: metafield(key: "options", namespace: "booking") {\n      id\n      value\n    }\n    scheduleId: metafield(key: "scheduleId", namespace: "booking") {\n      id\n      value\n    }\n    locations: metafield(key: "locations", namespace: "booking") {\n      references(first: 10) {\n        nodes {\n          ...Location\n        }\n      }\n    }\n    bookingPeriodValue: metafield(key: "booking_period_value", namespace: "booking") {\n      id\n      value\n    }\n    bookingPeriodUnit: metafield(key: "booking_period_unit", namespace: "booking") {\n      id\n      value\n    }\n    noticePeriodValue: metafield(key: "notice_period_value", namespace: "booking") {\n      id\n      value\n    }\n    noticePeriodUnit: metafield(key: "notice_period_unit", namespace: "booking") {\n      id\n      value\n    }\n    duration: metafield(key: "duration", namespace: "booking") {\n      id\n      value\n    }\n    breaktime: metafield(key: "breaktime", namespace: "booking") {\n      id\n      value\n    }\n  }\n\n\n  fragment UserCollectionProductsFilters on Filter {\n    label\n    values {\n      label\n      input\n      count\n    }\n  }\n\n  fragment UserCollectionWithProducts on Collection {\n    id\n    title\n    products(first: 20, sortKey: TITLE, filters: $filters) {\n      nodes {\n        ...TreatmentProduct\n      }\n      filters {\n        ...UserCollectionProductsFilters\n      }\n    }\n  }\n\n\n  query GetUserProducts(\n    $handle: String!\n    $country: CountryCode\n    $language: LanguageCode\n    $filters: [ProductFilter!] = {}\n  ) @inContext(country: $country, language: $language) {\n    collection(handle: $handle) {\n      ...UserCollectionWithProducts\n    }\n  }\n': {
+    return: GetUserProductsQuery;
+    variables: GetUserProductsQueryVariables;
   };
   '#graphql\n  #graphql\n  fragment CategoryStorefront on Collection {\n    id\n    title\n    children: metafield(key: "children", namespace: "booking") {\n      references(first: 20) {\n        nodes {\n          ... on Collection {\n            id\n            title\n            products(first: 30) {\n              nodes {\n                id\n                title\n                descriptionHtml\n              }\n            }\n          }\n        }\n      }\n    }\n  }\n\n  query Categories(\n    $country: CountryCode\n    $language: LanguageCode\n  ) @inContext(country: $country, language: $language) {\n    collection(handle: "alle-behandlinger") {\n      ...Category\n    }\n  }\n': {
     return: CategoriesQuery;
@@ -3743,6 +3818,18 @@ interface GeneratedQueryTypes {
   '#graphql\n  fragment PredictiveArticle on Article {\n    __typename\n    id\n    title\n    handle\n    image {\n      url\n      altText\n      width\n      height\n    }\n    trackingParameters\n  }\n  fragment PredictiveCollection on Collection {\n    __typename\n    id\n    title\n    handle\n    image {\n      url\n      altText\n      width\n      height\n    }\n    trackingParameters\n  }\n  fragment PredictivePage on Page {\n    __typename\n    id\n    title\n    handle\n    trackingParameters\n  }\n  fragment PredictiveProduct on Product {\n    __typename\n    id\n    title\n    handle\n    trackingParameters\n    variants(first: 1) {\n      nodes {\n        id\n        image {\n          url\n          altText\n          width\n          height\n        }\n        price {\n          amount\n          currencyCode\n        }\n      }\n    }\n  }\n  fragment PredictiveQuery on SearchQuerySuggestion {\n    __typename\n    text\n    styledText\n    trackingParameters\n  }\n  query predictiveSearch(\n    $country: CountryCode\n    $language: LanguageCode\n    $limit: Int!\n    $limitScope: PredictiveSearchLimitScope!\n    $searchTerm: String!\n    $types: [PredictiveSearchType!]\n  ) @inContext(country: $country, language: $language) {\n    predictiveSearch(\n      limit: $limit,\n      limitScope: $limitScope,\n      query: $searchTerm,\n      types: $types,\n    ) {\n      articles {\n        ...PredictiveArticle\n      }\n      collections {\n        ...PredictiveCollection\n      }\n      pages {\n        ...PredictivePage\n      }\n      products {\n        ...PredictiveProduct\n      }\n      queries {\n        ...PredictiveQuery\n      }\n    }\n  }\n': {
     return: PredictiveSearchQuery;
     variables: PredictiveSearchQueryVariables;
+  };
+  '#graphql\n  #graphql\n  fragment CartProducts on Product {\n    id\n    title\n    description\n    variants(first: 5) {\n      nodes {\n        id\n        title\n        compareAtPrice {\n          amount\n          currencyCode\n        }\n        price {\n          amount\n          currencyCode\n        }\n      }\n    }\n  }\n\n  query getTreatmentProductsInCart(\n    $country: CountryCode\n    $language: LanguageCode\n    $first: Int\n    $query: String\n  ) @inContext(country: $country, language: $language) {\n    products(first: $first, sortKey: TITLE, query: $query) {\n      nodes {\n        ...CartProducts\n      }\n    }\n  }\n': {
+    return: GetTreatmentProductsInCartQuery;
+    variables: GetTreatmentProductsInCartQueryVariables;
+  };
+  '#graphql\n  query GetProductScheduleId(\n    $productHandle: String!\n    $country: CountryCode\n    $language: LanguageCode\n  ) @inContext(country: $country, language: $language) {\n    product(handle: $productHandle) {\n      id\n      scheduleId: metafield(key: "scheduleId", namespace: "booking") {\n        value\n      }\n    }\n  }\n': {
+    return: GetProductScheduleIdQuery;
+    variables: GetProductScheduleIdQueryVariables;
+  };
+  '#graphql\n  #graphql\n  #graphql\n  #graphql\n  fragment TreatmentOptionVariant on ProductVariant {\n    id\n    title\n    image {\n      id\n      url\n      altText\n      width\n      height\n    }\n    price {\n      amount\n      currencyCode\n    }\n    compareAtPrice {\n      amount\n      currencyCode\n    }\n    selectedOptions {\n      name\n      value\n    }\n    duration: metafield(key: "duration", namespace: "booking") {\n      value\n    }\n  }\n\n\n  fragment TreatmentOption on Product {\n    id\n    title\n    handle\n    options {\n      name\n      values\n    }\n    parentId: metafield(key: "parentId", namespace: "booking") {\n      value\n    }\n    variants(first: 5) {\n      nodes {\n        ...TreatmentOptionVariant\n      }\n    }\n  }\n\n  #graphql\n  fragment Location on Metaobject {\n    id\n    handle\n    fields {\n      value\n      key\n    }\n  }\n\n\n  fragment TreatmentProductWithOptions on Product {\n    id\n    title\n    descriptionHtml\n    productType\n    handle\n    featuredImage {\n      id\n      altText\n      url(transform: { maxHeight: 250, maxWidth: 250, crop: CENTER })\n      width\n      height\n    }\n    variants(first: 1) {\n      nodes {\n        compareAtPrice {\n          amount\n          currencyCode\n        }\n        price {\n          amount\n          currencyCode\n        }\n      }\n    }\n    parentId: metafield(key: "parentId", namespace: "booking") {\n      id\n      value\n    }\n    options: metafield(key: "options", namespace: "booking") {\n      references(first: 10) {\n        nodes {\n          ...TreatmentOption\n        }\n      }\n    }\n    scheduleId: metafield(key: "scheduleId", namespace: "booking") {\n      id\n      value\n    }\n    locations: metafield(key: "locations", namespace: "booking") {\n      references(first: 10) {\n        nodes {\n          ...Location\n        }\n      }\n    }\n    bookingPeriodValue: metafield(key: "booking_period_value", namespace: "booking") {\n      id\n      value\n    }\n    bookingPeriodUnit: metafield(key: "booking_period_unit", namespace: "booking") {\n      id\n      value\n    }\n    noticePeriodValue: metafield(key: "notice_period_value", namespace: "booking") {\n      id\n      value\n    }\n    noticePeriodUnit: metafield(key: "notice_period_unit", namespace: "booking") {\n      id\n      value\n    }\n    duration: metafield(key: "duration", namespace: "booking") {\n      id\n      value\n    }\n    breaktime: metafield(key: "breaktime", namespace: "booking") {\n      id\n      value\n    }\n  }\n\n  query ArtistOptions(\n    $productHandle: String!\n    $country: CountryCode\n    $language: LanguageCode\n  ) @inContext(country: $country, language: $language) {\n    product(handle: $productHandle) {\n      ...TreatmentProductWithOptions\n    }\n  }\n': {
+    return: ArtistOptionsQuery;
+    variables: ArtistOptionsQueryVariables;
   };
   '#graphql\n  query Article(\n    $articleHandle: String!\n    $blogHandle: String!\n    $country: CountryCode\n    $language: LanguageCode\n  ) @inContext(language: $language, country: $country) {\n    blog(handle: $blogHandle) {\n      articleByHandle(handle: $articleHandle) {\n        title\n        contentHtml\n        publishedAt\n        author: authorV2 {\n          name\n        }\n        image {\n          id\n          altText\n          url\n          width\n          height\n        }\n        seo {\n          description\n          title\n        }\n      }\n    }\n  }\n': {
     return: ArticleQuery;
