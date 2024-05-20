@@ -34,7 +34,6 @@ import {useEffect, useState} from 'react';
 import {useForm} from '@conform-to/react';
 import {parseWithZod} from '@conform-to/zod';
 import {IconMoodSad, IconPlus} from '@tabler/icons-react';
-import {ServicesOptionsTagOptions} from '~/graphql/account/ServicesOptions';
 import {getBookingShopifyApi} from '~/lib/api/bookingShopifyApi';
 import {type CustomerProductOptionsListItem} from '~/lib/api/model';
 import {customerProductOptionsUpdateBody} from '~/lib/zod/bookingShopifyApi';
@@ -49,7 +48,7 @@ export async function loader({context, params}: LoaderFunctionArgs) {
   }
 
   const {products: systemOptions} = await storefront.query(
-    ServicesOptionsTagOptions,
+    SERVICES_OPTIONS_TAG_OPTIONS_QUERY,
     {
       variables: {
         first: 5,
@@ -294,3 +293,45 @@ function DestroyButton({optionProductId}: {optionProductId: number}) {
     </Button>
   );
 }
+
+export const SERVICES_OPTIONS_TAG_FRAGMENT = `#graphql
+  fragment MoneyProductItem on MoneyV2 {
+    amount
+    currencyCode
+  }
+
+  fragment ServicesOptionsTagProduct on Product {
+    id
+    handle
+    title
+    options {
+      name
+      values
+    }
+    variants(first: 5) {
+      nodes {
+        id
+        title
+        price {
+          ...MoneyProductItem
+        }
+      }
+    }
+  }
+` as const;
+
+export const SERVICES_OPTIONS_TAG_OPTIONS_QUERY = `#graphql
+  ${SERVICES_OPTIONS_TAG_FRAGMENT}
+  query ServicesOptionsTagOptionsQuery(
+    $country: CountryCode
+    $language: LanguageCode
+    $query: String!
+    $first: Int
+  ) @inContext(country: $country, language: $language) {
+    products(first: $first, query: $query) {
+      nodes {
+        ...ServicesOptionsTagProduct
+      }
+    }
+  }
+` as const;

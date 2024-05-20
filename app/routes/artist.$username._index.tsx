@@ -12,9 +12,9 @@ import {
 } from '@mantine/core';
 import {Await, Link, useLoaderData} from '@remix-run/react';
 import {Suspense} from 'react';
-import {type ArtistCollectionFiltersFragment} from 'storefrontapi.generated';
+import {type UserCollectionProductsFiltersFragment} from 'storefrontapi.generated';
 import {ArtistProduct} from '~/components/artist/ArtistProduct';
-import {ArtistCollection} from '~/graphql/artist/ArtistCollection';
+import {GET_USER_PRODUCTS} from '~/graphql/queries/GetUserProducts';
 import {useUser} from '~/hooks/use-user';
 
 export async function loader({request, params, context}: LoaderFunctionArgs) {
@@ -29,7 +29,7 @@ export async function loader({request, params, context}: LoaderFunctionArgs) {
   const {searchParams} = new URL(request.url);
   const type = searchParams.get('type');
 
-  const collection = context.storefront.query(ArtistCollection, {
+  const collection = context.storefront.query(GET_USER_PRODUCTS, {
     variables: {
       handle: username,
       filters: [
@@ -88,7 +88,7 @@ export default function ArtistIndex() {
 function ArtistSchedulesMenu({
   filters,
 }: {
-  filters: ArtistCollectionFiltersFragment[];
+  filters: UserCollectionProductsFiltersFragment[];
 }) {
   const user = useUser();
   const query = decodeURI(location.search);

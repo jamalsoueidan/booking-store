@@ -1,6 +1,6 @@
-import {USER_FRAGMENT} from '../fragments/User';
+import {USER_FRAGMENT} from './User';
 
-export const ArtistUser = `#graphql
+export const USER_METAOBJECT_QUERY = `#graphql
   ${USER_FRAGMENT}
   query ArtistUser(
     $username: String!

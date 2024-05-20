@@ -6,10 +6,7 @@ import {
 } from '@remix-run/react';
 import {json, type LoaderFunctionArgs} from '@remix-run/server-runtime';
 import {Money, parseGid} from '@shopify/hydrogen';
-import type {
-  ArtistTreatmentOptionsQuery,
-  ArtistTreatmentProductFragment,
-} from 'storefrontapi.generated';
+import type {TreatmentProductWithOptionsFragment} from 'storefrontapi.generated';
 
 import {
   OptionSelector,
@@ -17,10 +14,9 @@ import {
   redirectToOptions,
   useCalculateDurationAndPrice,
 } from '~/components/OptionSelector';
-import {ArtistTreatment} from '~/graphql/artist/ArtistTreatment';
-import {ArtistTreatmentOptions} from '~/graphql/artist/ArtistTreatmentOptions';
 
 import {durationToTime} from '~/lib/duration';
+import {GET_PRODUCT_WITH_OPTIONS} from './artist_.$username.treatment.$productHandle';
 
 export function shouldRevalidate({
   currentUrl,
@@ -50,41 +46,27 @@ export async function loader({params, request, context}: LoaderFunctionArgs) {
     return json(null); // don't throw, this is for index file
   }
 
-  const {product} = await storefront.query(ArtistTreatment, {
+  const {product} = await storefront.query(GET_PRODUCT_WITH_OPTIONS, {
     variables: {
       productHandle,
-      country: storefront.i18n.country,
-      language: storefront.i18n.language,
     },
   });
 
   if (!product) {
-    throw new Response('product cant be found', {
+    throw new Response('Product handle is wrong', {
       status: 404,
     });
   }
 
-  const {products: productOptions} = await storefront.query(
-    ArtistTreatmentOptions,
-    {
-      variables: {
-        query: `tag:'parent-${productHandle}' AND tag:'options'`,
-        country: storefront.i18n.country,
-        language: storefront.i18n.language,
-      },
-    },
-  );
-
-  if (productOptions.nodes.length > 0) {
+  if (product?.options?.references?.nodes) {
     redirectToOptions({
-      productOptions: productOptions.nodes,
+      productOptions: product?.options?.references?.nodes,
       request,
     });
   }
 
   return json({
     product,
-    productOptions,
   });
 }
 
@@ -95,21 +77,18 @@ export default function ArtistTreatmentPickMoreIndex() {
     return <></>;
   }
 
-  return <ArtistTreatmentPickMoreRenderModal {...data} />;
+  return <ArtistTreatmentPickMoreRenderModal product={data.product} />;
 }
-
-type ArtistTreatmentPickMoreRenderModalProps = {
-  product: ArtistTreatmentProductFragment;
-  productOptions: ArtistTreatmentOptionsQuery['products'];
-};
 
 function ArtistTreatmentPickMoreRenderModal({
   product,
-  productOptions,
-}: ArtistTreatmentPickMoreRenderModalProps) {
+}: {
+  product: TreatmentProductWithOptionsFragment;
+}) {
+  const productOptions = product.options?.references?.nodes;
   const {totalDuration, totalPrice} = useCalculateDurationAndPrice({
     parentId: product.id,
-    productOptions: productOptions.nodes,
+    productOptions,
     currentPrice: parseInt(product.variants.nodes[0].price.amount || '0'),
     currentDuration: parseInt(product.duration?.value || '0'),
   });
@@ -131,7 +110,7 @@ function ArtistTreatmentPickMoreRenderModal({
       });
 
       //remove options
-      productOptions.nodes.forEach((p) => {
+      productOptions?.forEach((p) => {
         prev.delete(`options[${parseGid(product.id).id}][${parseGid(p.id)}]`);
       });
 
@@ -161,7 +140,7 @@ function ArtistTreatmentPickMoreRenderModal({
 
   return (
     <Modal opened={opened} onClose={close} title="Valg muligheder">
-      {productOptions.nodes.map((productWithVariants) => {
+      {productOptions?.map((productWithVariants) => {
         return (
           <OptionSelector
             key={product.id}
@@ -180,7 +159,7 @@ function ArtistTreatmentPickMoreRenderModal({
           as="span"
           data={{
             __typename: 'MoneyV2',
-            amount: totalPrice.toString(),
+            amount: totalPrice?.toString(),
             currencyCode: 'DKK',
           }}
         />

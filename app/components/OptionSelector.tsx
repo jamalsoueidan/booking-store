@@ -3,12 +3,12 @@ import {redirect, useSearchParams} from '@remix-run/react';
 import {Money, parseGid} from '@shopify/hydrogen';
 import React, {useMemo} from 'react';
 import type {
-  ArtistTreatmentOptionsFragment,
-  ArtistTreatmentOptionsVariantFragment,
+  TreatmentOptionFragment,
+  TreatmentOptionVariantFragment,
 } from 'storefrontapi.generated';
 
 export type RedirectToOptionsProps = {
-  productOptions: ArtistTreatmentOptionsFragment[];
+  productOptions: TreatmentOptionFragment[];
   request: Request;
 };
 
@@ -44,14 +44,14 @@ export function redirectToOptions({
 }
 
 export type OptionSelectorProps = {
-  productWithVariants: ArtistTreatmentOptionsFragment;
+  productWithVariants: TreatmentOptionFragment;
   children: (props: OptionSelectorChildrenProp) => React.ReactElement;
 };
 
 export type OptionSelectorChildrenProp = {
   parentId: string;
   productId: string;
-  variant: ArtistTreatmentOptionsVariantFragment;
+  variant: TreatmentOptionVariantFragment;
 };
 
 export function OptionSelector({
@@ -114,14 +114,14 @@ export function useCalculateDurationAndPrice({
   currentDuration,
 }: {
   parentId: string;
-  productOptions: ArtistTreatmentOptionsFragment[];
+  productOptions?: TreatmentOptionFragment[];
   currentPrice?: number;
   currentDuration?: number;
 }) {
   const [searchParams] = useSearchParams();
 
   const pickedVariants = useMemo(() => {
-    return productOptions.map((product) => {
+    return productOptions?.map((product) => {
       const value = searchParams.get(
         `options[${parseGid(parentId).id}][${parseGid(product.id).id}]`,
       );
@@ -136,12 +136,12 @@ export function useCalculateDurationAndPrice({
   }, [productOptions, parentId, searchParams]);
 
   const [totalDuration, totalPrice] = useMemo(() => {
-    const totalPrice = pickedVariants.reduce(
+    const totalPrice = pickedVariants?.reduce(
       (total, variant) => total + parseInt(variant.price.amount || ''),
       currentPrice || 0,
     );
 
-    const totalDuration = pickedVariants.reduce(
+    const totalDuration = pickedVariants?.reduce(
       (total, variant) => total + parseInt(variant.duration?.value || ''),
       currentDuration || 0,
     );
