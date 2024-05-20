@@ -2462,13 +2462,19 @@ components:
               locationType:
                 type: string
                 enum:
-                  - ORIGIN
-                  - DESTINATION
+                  - origin
+                  - destination
+              originType:
+                type: string
+                enum:
+                  - home
+                  - commercial
               count:
                 type: integer
             required:
               - city
               - locationType
+              - originType
               - count
         availableDays:
           type: array
@@ -2541,9 +2547,12 @@ components:
               type: string
             locationType:
               type: string
+            originType:
+              type: string
           required:
             - city
             - locationType
+            - originType
         days:
           type: array
           items:

@@ -4,29 +4,79 @@ import type {CustomerLocationBase} from '~/lib/api/model';
 
 export function LocationIcon({
   location,
+  withTooltip = true,
   ...props
 }: {
   location: Pick<CustomerLocationBase, 'locationType' | 'originType'>;
+  withTooltip?: boolean;
 } & CheckIconProps) {
   if (location.locationType === 'destination') {
     return (
-      <Tooltip label="Kører til dig">
+      <ConditionalTooltip label="Kører til dig" withTooltip={withTooltip}>
         <IconCar {...props} />
-      </Tooltip>
+      </ConditionalTooltip>
     );
   }
 
   if (location.originType === 'home') {
     return (
-      <Tooltip label="Salon">
+      <ConditionalTooltip label="Salon" withTooltip={withTooltip}>
         <IconHome {...props} />
-      </Tooltip>
+      </ConditionalTooltip>
     );
   }
 
   return (
-    <Tooltip label="Hjemme">
+    <ConditionalTooltip label="Hjemme" withTooltip={withTooltip}>
       <IconBuilding {...props} />
-    </Tooltip>
+    </ConditionalTooltip>
+  );
+}
+
+export function LocationIconTooltip({
+  location,
+  children,
+}: {
+  location: Pick<CustomerLocationBase, 'locationType' | 'originType'>;
+  children: React.ReactNode;
+}) {
+  if (location.locationType === 'destination') {
+    return (
+      <ConditionalTooltip label="Kører til din lokation" withTooltip={true}>
+        {children}
+      </ConditionalTooltip>
+    );
+  }
+
+  if (location.originType === 'home') {
+    return (
+      <ConditionalTooltip label="Salon" withTooltip={true}>
+        {children}
+      </ConditionalTooltip>
+    );
+  }
+
+  return (
+    <ConditionalTooltip label="Hjemme" withTooltip={true}>
+      {children}
+    </ConditionalTooltip>
+  );
+}
+
+type ConditionalTooltipProps = {
+  label: string;
+  withTooltip?: boolean;
+  children: React.ReactNode;
+};
+
+function ConditionalTooltip({
+  label,
+  withTooltip = true,
+  children,
+}: ConditionalTooltipProps) {
+  return withTooltip ? (
+    <Tooltip label={label}>{children}</Tooltip>
+  ) : (
+    <>{children}</>
   );
 }

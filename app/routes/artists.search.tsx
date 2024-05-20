@@ -42,6 +42,7 @@ export const loader = async (args: LoaderFunctionArgs) => {
   const days = searchParams.getAll('days') || undefined;
   const location = searchParams.get('location') || undefined;
   const locationType = searchParams.get('locationType') || undefined;
+  const originType = searchParams.get('originType') || undefined;
 
   const {payload: users} = await getBookingShopifyApi().usersSearch(
     {
@@ -49,8 +50,8 @@ export const loader = async (args: LoaderFunctionArgs) => {
       specialties: speciality.length > 0 ? speciality.join(',') : undefined,
       keyword,
       days,
-      ...(location && locationType
-        ? {location: {city: location, locationType}}
+      ...(location && locationType && originType
+        ? {location: {city: location, locationType, originType}}
         : {location: undefined}),
     },
     {
@@ -68,14 +69,7 @@ export const loader = async (args: LoaderFunctionArgs) => {
     },
   );
 
-  return json(
-    {users, components},
-    {
-      headers: {
-        'Cache-Control': 'public, s-maxage=3600, stale-while-revalidate=3600',
-      },
-    },
-  );
+  return json({users, components});
 };
 
 export default function ArtistsIndex() {

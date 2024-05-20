@@ -255,6 +255,7 @@ export * from './usersFiltersPayload';
 export * from './usersFiltersPayloadAvailableDaysItem';
 export * from './usersFiltersPayloadLocationsItem';
 export * from './usersFiltersPayloadLocationsItemLocationType';
+export * from './usersFiltersPayloadLocationsItemOriginType';
 export * from './usersFiltersPayloadProductDetailsItem';
 export * from './usersFiltersPayloadSpecialtiesItem';
 export * from './usersFiltersResponse';

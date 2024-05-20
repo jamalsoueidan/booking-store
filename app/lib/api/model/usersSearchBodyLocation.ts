@@ -8,4 +8,5 @@
 export type UsersSearchBodyLocation = {
   city: string;
   locationType: string;
+  originType: string;
 };

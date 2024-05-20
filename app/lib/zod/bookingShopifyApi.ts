@@ -4230,7 +4230,8 @@ export const usersFiltersResponse = zod.object({
   "payload": zod.object({
   "locations": zod.array(zod.object({
   "city": zod.string(),
-  "locationType": zod.enum(['ORIGIN', 'DESTINATION']),
+  "locationType": zod.enum(['origin', 'destination']),
+  "originType": zod.enum(['home', 'commercial']),
   "count": zod.number()
 })),
   "availableDays": zod.array(zod.object({
@@ -4266,7 +4267,8 @@ export const usersSearchBody = zod.object({
   "specialties": zod.string().optional(),
   "location": zod.object({
   "city": zod.string(),
-  "locationType": zod.string()
+  "locationType": zod.string(),
+  "originType": zod.string()
 }).optional(),
   "days": zod.array(zod.string()).optional()
 })

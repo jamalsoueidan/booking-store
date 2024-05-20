@@ -13,6 +13,7 @@ import {
   useMantineTheme,
 } from '@mantine/core';
 import {Link, useLoaderData} from '@remix-run/react';
+import {Image as ShopifyImage} from '@shopify/hydrogen';
 import {
   json,
   type LoaderFunctionArgs,
@@ -28,7 +29,6 @@ import {
   ProfessionSentenceTranslations,
   ProfessionTranslations,
 } from './api.users.professions';
-
 const LIMIT = '20';
 
 export const meta: MetaFunction = () => {
@@ -120,7 +120,9 @@ export const UserCard = ({user}: {user: UserTop | User}) => {
       style={{borderRadius: '5%', border: '1px solid #f4f4f4'}}
     >
       <Image
+        component={ShopifyImage}
         sizes="(min-width: 45em) 50vw, 100vw"
+        aspectRatio="2/5"
         src={modifyImageUrl(user.images.profile?.url, '250x250')}
         style={{
           borderTopLeftRadius: '5%',

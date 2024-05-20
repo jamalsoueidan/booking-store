@@ -22,13 +22,12 @@ import {
 import {json, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
 import {
   IconAdjustmentsHorizontal,
-  IconCar,
   IconCheck,
-  IconHome,
   IconSearch,
 } from '@tabler/icons-react';
 import {type FormEvent, useState} from 'react';
 import {VisualTeaser} from '~/components/blocks/VisualTeaser';
+import {LocationIcon, LocationIconTooltip} from '~/components/LocationIcon';
 import {ProfessionButton} from '~/components/ProfessionButton';
 import {METAFIELD_QUERY} from '~/data/fragments';
 import {useComponents} from '~/lib/use-components';
@@ -150,9 +149,11 @@ export const SearchInput = () => {
   const [selectedLocations, setSelectedLocations] = useState<{
     location?: string | null;
     locationType?: string | null;
+    originType?: string | null;
   }>({
     location: undefined,
     locationType: undefined,
+    originType: undefined,
   });
 
   const navigate = useNavigate();
@@ -167,9 +168,14 @@ export const SearchInput = () => {
 
     newSearchParams.delete('location');
     newSearchParams.delete('locationType');
-    if (selectedLocations.location && selectedLocations.locationType) {
+    if (
+      selectedLocations.location &&
+      selectedLocations.locationType &&
+      selectedLocations.originType
+    ) {
       newSearchParams.set('location', selectedLocations.location);
       newSearchParams.set('locationType', selectedLocations.locationType);
+      newSearchParams.set('originType', selectedLocations.originType);
     }
 
     newSearchParams.delete('days');
@@ -263,34 +269,39 @@ export const SearchInput = () => {
                 <Stack gap="xs">
                   <Text fw="bold">Filtre på by?</Text>
                   <Flex direction="row" gap="xs" wrap="wrap">
-                    {filters.locations.map(({city, locationType}) => {
+                    {filters.locations.map((location) => {
                       const checked =
-                        selectedLocations.location === city &&
-                        selectedLocations.locationType === locationType;
+                        selectedLocations.location === location.city &&
+                        selectedLocations.locationType ===
+                          location.locationType;
 
                       return (
-                        <Button
-                          variant={checked ? 'outline' : 'default'}
-                          radius="xl"
-                          color={checked ? 'green' : undefined}
-                          key={city + locationType}
-                          onClick={() => {
-                            setSelectedLocations({
-                              location: city,
-                              locationType,
-                            });
-                          }}
-                          rightSection={
-                            locationType === 'DESTINATION' ? (
-                              <IconCar />
-                            ) : (
-                              <IconHome />
-                            )
-                          }
-                          leftSection={checked ? <IconCheck /> : null}
+                        <LocationIconTooltip
+                          key={location.city + location.locationType}
+                          location={location}
                         >
-                          {city}
-                        </Button>
+                          <Button
+                            variant={checked ? 'outline' : 'default'}
+                            radius="xl"
+                            color={checked ? 'green' : undefined}
+                            onClick={() => {
+                              setSelectedLocations({
+                                location: location.city,
+                                locationType: location.locationType,
+                                originType: location.originType,
+                              });
+                            }}
+                            rightSection={
+                              <LocationIcon
+                                location={location}
+                                withTooltip={false}
+                              />
+                            }
+                            leftSection={checked ? <IconCheck /> : null}
+                          >
+                            {location.city}
+                          </Button>
+                        </LocationIconTooltip>
                       );
                     })}
                   </Flex>

@@ -13,7 +13,7 @@ import {
 import {Link, useLoaderData} from '@remix-run/react';
 
 import {json, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
-import {IconCar, IconMoodSad, IconPlus} from '@tabler/icons-react';
+import {IconMoodSad, IconPlus} from '@tabler/icons-react';
 
 import {AccountButton} from '~/components/account/AccountButton';
 import {AccountContent} from '~/components/account/AccountContent';
@@ -96,7 +96,10 @@ export const AccountLocation = ({data}: AccountLocationProps) => {
     data.locationType === 'destination' ? (
       <div style={{position: 'relative'}}>
         <div style={{position: 'absolute', top: 0, right: 0}}>
-          <IconCar style={{width: rem(32), height: rem(32)}} />
+          <LocationIcon
+            location={data}
+            style={{width: rem(32), height: rem(32)}}
+          />
         </div>
         <Stack>
           <div>

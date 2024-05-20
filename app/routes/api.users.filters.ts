@@ -91,16 +91,9 @@ export async function loader({params}: LoaderFunctionArgs) {
       );
     });
 
-  const locations = payload.locations
-    .map((location) => {
-      const {city, locationType, count} = location;
-      return {
-        city,
-        locationType,
-        count,
-      };
-    })
-    .sort((a, b) => a?.city?.localeCompare(b?.city));
+  const locations = payload.locations.sort((a, b) =>
+    a?.city?.localeCompare(b?.city),
+  );
 
   return json({specialties, availableDays, locations});
 }
