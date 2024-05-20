@@ -1,4 +1,5 @@
 import {
+  ActionIcon,
   AppShell,
   Burger,
   Button,
@@ -27,6 +28,7 @@ import {unstable_useAnalytics as useAnalytics} from '@shopify/hydrogen';
 import {
   IconChevronRight,
   IconDashboard,
+  IconKey,
   IconLogin,
   IconShoppingCartPlus,
 } from '@tabler/icons-react';
@@ -144,36 +146,47 @@ export function LayoutWrapper({children}: {children: ReactNode}) {
         >
           <Suspense>
             <Await resolve={data.isLoggedIn}>
-              {(isLoggedIn) => (
-                <Button
-                  variant="outline"
-                  size="compact-md"
-                  color="black"
-                  component={Link}
-                  to="/account"
-                  data-testid="login-button"
-                  rightSection={isLoggedIn ? <IconDashboard /> : <IconLogin />}
-                >
-                  {isLoggedIn ? 'Dashboard' : 'Log ind'}
-                </Button>
-              )}
+              {(isLoggedIn) =>
+                isLoggedIn ? (
+                  <ActionIcon
+                    variant="outline"
+                    size="lg"
+                    color="black"
+                    component={Link}
+                    to="/account"
+                    data-testid="login-button"
+                  >
+                    <IconKey />
+                  </ActionIcon>
+                ) : (
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    color="black"
+                    component={Link}
+                    to="/account"
+                    data-testid="login-button"
+                  >
+                    Log ind
+                  </Button>
+                )
+              }
             </Await>
           </Suspense>
           <Suspense>
             <Await resolve={data.cart}>
               {(cart) =>
                 cart?.totalQuantity && cart?.totalQuantity > 0 ? (
-                  <Button
+                  <ActionIcon
                     variant="outline"
-                    size="compact-md"
+                    size="lg"
                     color="black"
                     component={Link}
                     to="/cart"
                     data-testid="cart-button"
-                    rightSection={<IconShoppingCartPlus />}
                   >
-                    Indkøbskurv {cart.totalQuantity}
-                  </Button>
+                    <IconShoppingCartPlus />
+                  </ActionIcon>
                 ) : null
               }
             </Await>
