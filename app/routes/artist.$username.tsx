@@ -51,6 +51,7 @@ export async function loader({params, context}: LoaderFunctionArgs) {
     variables: {
       username,
     },
+    cache: context.storefront.CacheShort(),
   });
 
   return json({
