@@ -1,10 +1,8 @@
-import {AppShell, Card, Flex, Group} from '@mantine/core';
+import {AppShell, Card, Flex, Group, rem, Stepper} from '@mantine/core';
 import {useDisclosure, useMediaQuery} from '@mantine/hooks';
+import {useLocation} from '@remix-run/react';
 import React from 'react';
 import {useUser} from '~/hooks/use-user';
-
-const desktopHeaderHeight = 140;
-const mobileHeaderHeight = 100;
 
 const ArtistShell = ({children}: {children: React.ReactNode}) => {
   const user = useUser();
@@ -16,7 +14,7 @@ const ArtistShell = ({children}: {children: React.ReactNode}) => {
       padding="0"
       withBorder={false}
       layout="alt"
-      header={{height: {base: 100, sm: 200}}}
+      header={{height: {base: 180, sm: 200}}}
       footer={{height: 65}}
       navbar={{
         width: {base: 100, md: 250, lg: 300, xl: 450},
@@ -47,15 +45,81 @@ const Footer = ({children}: {children: React.ReactNode}) => {
 const Header = ({children}: {children: React.ReactNode}) => {
   const isMobile = useMediaQuery('(max-width: 48em)');
   const user = useUser();
+  const location = useLocation();
+  let active = 1;
+
+  if (location.pathname.includes('pick-location')) {
+    active = 2;
+  }
+  if (location.pathname.includes('pick-more')) {
+    active = 3;
+  }
+  if (location.pathname.includes('pick-datetime')) {
+    active = 4;
+  }
+
   return (
     <AppShell.Header>
-      <Group h="100%" w="inherit" align="flex-end" bg={`${user.theme}.6`}>
+      <Group
+        h="100%"
+        w="inherit"
+        align="flex-end"
+        bg={`${user.theme}.6`}
+        gap="0"
+      >
+        <Stepper
+          w="100%"
+          active={active}
+          bg="pink"
+          styles={{
+            stepBody: {
+              marginInlineStart: 'unset',
+              color: '#fff',
+            },
+
+            step: {
+              display: 'flex',
+              flexDirection: 'column',
+              marginTop: rem(4),
+              marginLeft: rem(6),
+              marginRight: rem(6),
+              marginBottom: rem(12),
+              gap: '4px',
+            },
+
+            stepIcon: {
+              transform: 'scale(.7)',
+            },
+
+            separator: {
+              borderTop: '1px solid #FFF',
+              height: '1px',
+            },
+          }}
+        >
+          <Stepper.Step
+            color={`${user.theme}.1`}
+            label="Info"
+            iconSize={0}
+          ></Stepper.Step>
+          <Stepper.Step
+            color={`${user.theme}.1`}
+            label="Lokation"
+          ></Stepper.Step>
+          <Stepper.Step
+            color={`${user.theme}.1`}
+            label="Tilvalg"
+          ></Stepper.Step>
+          <Stepper.Step color={`${user.theme}.1`} label="Tid"></Stepper.Step>
+        </Stepper>
         <Flex
-          h={{base: mobileHeaderHeight, sm: `desktopHeaderHeight}px`}}
+          h={'100px'}
           w="100%"
           px={{base: 'md', sm: 'xl'}}
           bg={`${user.theme}.1`}
           align="center"
+          justify="center"
+          direction="column"
           style={
             isMobile
               ? {}

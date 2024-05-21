@@ -10,6 +10,7 @@ import {
   Title,
   rem,
 } from '@mantine/core';
+import '@mantine/tiptap/styles.css';
 import {Await, Link, useLoaderData} from '@remix-run/react';
 import {Suspense} from 'react';
 import {type UserCollectionProductsFiltersFragment} from 'storefrontapi.generated';

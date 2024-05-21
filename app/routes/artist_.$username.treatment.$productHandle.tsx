@@ -85,7 +85,7 @@ export default function Product() {
                   stroke={1.5}
                 />
               }
-              rightSection={<Avatar src={image.image?.url} size="md" />}
+              rightSection={<Avatar src={image.image?.url} size="sm" />}
             >
               {fullname}
             </Button>

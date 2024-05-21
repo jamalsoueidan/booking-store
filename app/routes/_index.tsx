@@ -65,12 +65,15 @@ export async function loader(args: LoaderFunctionArgs) {
       variables: {
         query: 'tag:treatments AND tag:system',
       },
+      cache: context.storefront.CacheShort(),
     },
   );
 
   const professions = await loaderProfessions(args).then((r) => r.json());
 
-  const {metaobjects} = await storefront.query(USERS_QUERY);
+  const {metaobjects} = await storefront.query(USERS_QUERY, {
+    cache: context.storefront.CacheShort(),
+  });
 
   const users = metaobjects.nodes.filter(
     (f) => f.fields.find((f) => f.key === 'active')?.value === 'true',
@@ -81,6 +84,7 @@ export async function loader(args: LoaderFunctionArgs) {
       handle: 'index',
       type: 'components',
     },
+    cache: context.storefront.CacheShort(),
   });
 
   return json({
