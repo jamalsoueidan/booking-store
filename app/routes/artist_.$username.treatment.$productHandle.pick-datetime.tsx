@@ -225,7 +225,7 @@ function TreatmentPickDatetime({availability}: TreatmentPickDatetimeProps) {
   return (
     <Stack gap="lg">
       <Flex direction="column" justify="center">
-        <Title order={4} fw={600} fz={{base: 'h1'}} ta="center">
+        <Title order={2} fw={600} fz={{base: 'h2'}} ta="center">
           Tidsbestilling
         </Title>
 

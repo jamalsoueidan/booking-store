@@ -96,7 +96,7 @@ export default function ArtistTreatments() {
     <>
       <ArtistShell.Main>
         <Flex direction="column" justify="center" mb="lg">
-          <Title order={4} fw={600} fz={{base: 'h1'}} ta="center">
+          <Title order={2} fw={600} fz={{base: 'h2'}} ta="center">
             Tilvalg
           </Title>
 
