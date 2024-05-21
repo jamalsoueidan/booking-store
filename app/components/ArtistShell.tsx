@@ -14,7 +14,7 @@ const ArtistShell = ({children}: {children: React.ReactNode}) => {
       padding="0"
       withBorder={false}
       layout="alt"
-      header={{height: {base: 180, sm: 200}}}
+      header={{height: {base: 110, sm: 200}}}
       footer={{height: 65}}
       navbar={{
         width: {base: 100, md: 250, lg: 300, xl: 450},
@@ -66,15 +66,10 @@ const Header = ({children}: {children: React.ReactNode}) => {
 
   return (
     <AppShell.Header>
-      <Group
-        h="100%"
-        w="inherit"
-        align="flex-end"
-        bg={`${user.theme}.6`}
-        gap="0"
-      >
+      <Group w="inherit" align="flex-end" bg={`${user.theme}.6`} gap="0">
         <Stepper
           w="100%"
+          my={{base: '0', sm: 'xl'}}
           active={active}
           bg={`${user.theme}.6`}
           styles={{
@@ -86,12 +81,10 @@ const Header = ({children}: {children: React.ReactNode}) => {
             step: {
               display: 'flex',
               flexDirection: 'column',
-              marginTop: rem(4),
               marginLeft: rem(6),
               marginRight: rem(6),
-              marginBottom: rem(12),
               gap: '4px',
-              transform: 'scale(.7)',
+              transform: isMobile ? 'scale(.7)' : '',
             },
 
             stepIcon: {},
@@ -122,7 +115,7 @@ const Header = ({children}: {children: React.ReactNode}) => {
           ></Stepper.Step>
         </Stepper>
         <Flex
-          h={'100px'}
+          mih={isMobile ? '50px' : '80px'}
           w="100%"
           px={{base: 'md', sm: 'xl'}}
           bg={`${user.theme}.1`}

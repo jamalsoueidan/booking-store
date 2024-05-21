@@ -20,14 +20,14 @@ export function LocationIcon({
 
   if (location.originType === 'home') {
     return (
-      <ConditionalTooltip label="Salon" withTooltip={withTooltip}>
+      <ConditionalTooltip label="Hjemme" withTooltip={withTooltip}>
         <IconHome {...props} />
       </ConditionalTooltip>
     );
   }
 
   return (
-    <ConditionalTooltip label="Hjemme" withTooltip={withTooltip}>
+    <ConditionalTooltip label="Salon" withTooltip={withTooltip}>
       <IconBuilding {...props} />
     </ConditionalTooltip>
   );
@@ -50,14 +50,14 @@ export function LocationIconTooltip({
 
   if (location.originType === 'home') {
     return (
-      <ConditionalTooltip label="Salon" withTooltip={true}>
+      <ConditionalTooltip label="Hjemme" withTooltip={true}>
         {children}
       </ConditionalTooltip>
     );
   }
 
   return (
-    <ConditionalTooltip label="Hjemme" withTooltip={true}>
+    <ConditionalTooltip label="Salon" withTooltip={true}>
       {children}
     </ConditionalTooltip>
   );

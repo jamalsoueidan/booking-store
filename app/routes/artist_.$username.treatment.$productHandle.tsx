@@ -1,9 +1,8 @@
 import {Link, Outlet, useLoaderData, type MetaFunction} from '@remix-run/react';
 import {json, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
 
-import {AspectRatio, Avatar, Button, Flex, Title} from '@mantine/core';
+import {AspectRatio, Avatar, Button, Flex, rem, Title} from '@mantine/core';
 import {Image} from '@shopify/hydrogen';
-import {IconArrowLeft} from '@tabler/icons-react';
 import type {ProductVariantFragment} from 'storefrontapi.generated';
 import {ArtistShell} from '~/components/ArtistShell';
 import {redirectToOptions} from '~/components/OptionSelector';
@@ -67,33 +66,20 @@ export default function Product() {
     <UserProvider user={user}>
       <ArtistShell>
         <ArtistShell.Header>
-          <Flex
-            direction="column"
-            gap={{base: 'xs', sm: '0'}}
-            w="100%"
-            align="flex-start"
-          >
+          <Flex w="100%" direction="row" justify="space-between">
+            <Title order={1} fw="500" fz={{base: 24, sm: 36}} lh={rem(34)}>
+              {product.title}
+            </Title>
             <Button
               p="0"
               variant="transparent"
               component={Link}
               to={`/artist/${username}`}
               c="black"
-              leftSection={
-                <IconArrowLeft
-                  style={{width: '24px', height: '24px'}}
-                  stroke={1.5}
-                />
-              }
               rightSection={<Avatar src={image.image?.url} size="sm" />}
             >
               {fullname}
             </Button>
-            <Flex justify="space-between" align="center" w="100%">
-              <Title order={1} fw="500" fz={{base: 24, sm: 36}}>
-                {product.title}
-              </Title>
-            </Flex>
           </Flex>
         </ArtistShell.Header>
 
