@@ -98,7 +98,7 @@ const Header = ({children}: {children: React.ReactNode}) => {
         >
           <Stepper.Step
             color={`${user.theme}.6`}
-            label="Info"
+            label="Produkt"
             iconSize={0}
           ></Stepper.Step>
           <Stepper.Step

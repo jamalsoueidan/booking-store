@@ -132,11 +132,7 @@ export default function ArtistTreatmentPickDatetime() {
         </Suspense>
       </ArtistShell.Main>
       <ArtistShell.Footer>
-        <TreatmentStepper
-          currentStep={4}
-          totalSteps={4}
-          pageTitle="Tidsbestilling"
-        >
+        <TreatmentStepper>
           <Button
             variant="default"
             component={Link}
@@ -228,6 +224,16 @@ function TreatmentPickDatetime({availability}: TreatmentPickDatetimeProps) {
 
   return (
     <Stack gap="lg">
+      <Flex direction="column" justify="center">
+        <Title order={4} fw={600} fz={{base: 'h1'}} ta="center">
+          Tidsbestilling
+        </Title>
+
+        <Text c="dimmed" ta="center">
+          Vælge dato og tid hvornår du vil lave behandling
+        </Text>
+      </Flex>
+
       <SimpleGrid cols={2}>
         <MonthSelector
           onChange={onPickDate}

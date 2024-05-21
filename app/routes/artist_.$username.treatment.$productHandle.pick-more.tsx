@@ -95,6 +95,16 @@ export default function ArtistTreatments() {
   return (
     <>
       <ArtistShell.Main>
+        <Flex direction="column" justify="center" mb="lg">
+          <Title order={4} fw={600} fz={{base: 'h1'}} ta="center">
+            Tilvalg
+          </Title>
+
+          <Text c="dimmed" ta="center">
+            Du har mulighed for at kombinere behandling med andre og eventuel
+            spar penge!
+          </Text>
+        </Flex>
         {products?.length > 0 ? (
           <RenderArtistProducts products={products} />
         ) : (
@@ -117,7 +127,7 @@ export default function ArtistTreatments() {
         <Outlet />
       </ArtistShell.Main>
       <ArtistShell.Footer>
-        <TreatmentStepper currentStep={3} totalSteps={4} pageTitle="Tilvalg">
+        <TreatmentStepper>
           <Button
             variant="default"
             component={Link}
@@ -142,16 +152,11 @@ function RenderArtistProducts({
   products: TreatmentProductFragment[];
 }) {
   return (
-    <>
-      <Title order={4} mb="sm" fw={600} size="md">
-        Vælg gerne flere behandlinger:
-      </Title>
-      <SimpleGrid cols={1} spacing="lg">
-        {products.map((product) => (
-          <ArtistServiceProduct key={product.id} product={product} />
-        ))}
-      </SimpleGrid>
-    </>
+    <SimpleGrid cols={1} spacing="lg">
+      {products.map((product) => (
+        <ArtistServiceProduct key={product.id} product={product} />
+      ))}
+    </SimpleGrid>
   );
 }
 

@@ -1,9 +1,8 @@
-import {Group, Image, Radio, Stack, Text, UnstyledButton} from '@mantine/core';
+import {Flex, Radio, rem, Stack, Text, UnstyledButton} from '@mantine/core';
 import {useUncontrolled} from '@mantine/hooks';
 import {type CustomerLocation} from '~/lib/api/model';
+import {LocationIcon} from '../LocationIcon';
 import classes from './ArtistLocationRadioCard.module.css';
-import estimate from '/estimate.svg';
-import precision from '/precision.svg';
 
 interface AristLocationRadioCardProps {
   checked?: boolean;
@@ -41,38 +40,32 @@ export function AristLocationRadioCard({
       data-checked={isChecked || undefined}
       className={classes.button}
     >
-      <Group gap="md" w="100%">
-        {location.locationType === 'destination' ? (
-          <Image src={estimate} height="80" />
-        ) : (
-          <Image src={precision} height="80" />
-        )}
-        <Stack gap="xs" style={{flex: 1}}>
-          <Text tt="uppercase" c="dimmed" fw={600} fz="xl">
-            {location.locationType === 'destination' ? (
-              <>Kører ud til din adresse</>
-            ) : null}
-            {location.locationType !== 'destination' ? (
-              <>
-                {location.originType === 'home'
-                  ? 'Hjemme hos skønhedseksperten'
-                  : 'I Salonen'}
-              </>
-            ) : null}
+      <Flex
+        gap={{base: 'xs', sm: 'md'}}
+        w="100%"
+        justify="center"
+        align="center"
+      >
+        <LocationIcon
+          location={location}
+          style={{width: rem(60), height: rem(60), strokeWidth: rem(1)}}
+        />
+        <Stack gap="0" style={{flex: 1}}>
+          <Text tt="uppercase" fw={600} fz={{base: 'md', sm: 'xl'}}>
+            {location.name}
           </Text>
           <Text c="black" fw={500} fz="xs" lineClamp={1}>
-            {location.name}, {location.fullAddress}
+            {location.fullAddress}
           </Text>
         </Stack>
-      </Group>
-
-      <Radio
-        checked={isChecked}
-        value={value}
-        color="gray"
-        onChange={() => {}}
-        tabIndex={-1}
-      />
+        <Radio
+          checked={isChecked}
+          value={value}
+          color="gray"
+          onChange={() => {}}
+          tabIndex={-1}
+        />
+      </Flex>
     </UnstyledButton>
   );
 }

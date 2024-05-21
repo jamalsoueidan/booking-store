@@ -1,4 +1,4 @@
-import {Button, Flex, Title} from '@mantine/core';
+import {Button, Flex, Text, Title} from '@mantine/core';
 import {useDisclosure} from '@mantine/hooks';
 import {Link, useOutletContext, useSearchParams} from '@remix-run/react';
 import {type SerializeFrom} from '@remix-run/server-runtime';
@@ -27,7 +27,7 @@ export default function ArtistTreatmentPickLocation() {
         <ArtistLocationPicker locations={locations} />
       </ArtistShell.Main>
       <ArtistShell.Footer>
-        <TreatmentStepper currentStep={2} totalSteps={4} pageTitle="Lokation">
+        <TreatmentStepper>
           <Button
             variant="default"
             component={Link}
@@ -112,9 +112,15 @@ function ArtistLocationPicker({locations}: {locations: CustomerLocation[]}) {
 
   return (
     <>
-      <Title order={4} mb="sm" fw={600} size="md">
-        Vælg behandlingslokation:
-      </Title>
+      <Flex direction="column" justify="center" mb="lg">
+        <Title order={4} fw={600} fz={{base: 'h1'}} ta="center">
+          Lokation
+        </Title>
+
+        <Text c="dimmed" ta="center">
+          Vælg behandlingslokation hvor du vil lave behandlingen.
+        </Text>
+      </Flex>
 
       <Flex gap="lg" direction="column">
         {markup}

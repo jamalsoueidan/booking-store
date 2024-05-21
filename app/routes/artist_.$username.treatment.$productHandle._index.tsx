@@ -1,4 +1,4 @@
-import {Button, Divider, Text} from '@mantine/core';
+import {Button, Divider, Flex, Text, Title} from '@mantine/core';
 import {Link, useOutletContext, useSearchParams} from '@remix-run/react';
 import {type SerializeFrom} from '@remix-run/server-runtime';
 import {Money} from '@shopify/hydrogen';
@@ -30,15 +30,24 @@ export default function ProductDescription() {
   return (
     <>
       <ArtistShell.Main>
+        <Flex direction="column" justify="center">
+          <Title order={4} fw={600} fz={{base: 'h1'}} ta="center">
+            Produkt
+          </Title>
+
+          <Text c="dimmed" ta="center">
+            Produkt beskrivelse samt ekstra valg
+          </Text>
+        </Flex>
         <Text
           size="lg"
           c="dimmed"
           fw={400}
           dangerouslySetInnerHTML={{__html: product.descriptionHtml}}
         ></Text>
-        <Divider />
         {productOptions ? (
           <>
+            <Divider />
             {productOptions.map((productWithVariants) => {
               return (
                 <OptionSelector
@@ -68,7 +77,7 @@ export default function ProductDescription() {
         ) : null}
       </ArtistShell.Main>
       <ArtistShell.Footer>
-        <TreatmentStepper currentStep={1} totalSteps={4} pageTitle="Info">
+        <TreatmentStepper>
           <Button
             variant="default"
             component={Link}

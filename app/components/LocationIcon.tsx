@@ -12,7 +12,10 @@ export function LocationIcon({
 } & CheckIconProps) {
   if (location.locationType === 'destination') {
     return (
-      <ConditionalTooltip label="Kører til dig" withTooltip={withTooltip}>
+      <ConditionalTooltip
+        label="Kører ud dig din adresse"
+        withTooltip={withTooltip}
+      >
         <IconCar {...props} />
       </ConditionalTooltip>
     );
@@ -20,14 +23,14 @@ export function LocationIcon({
 
   if (location.originType === 'home') {
     return (
-      <ConditionalTooltip label="Hjemme" withTooltip={withTooltip}>
+      <ConditionalTooltip label="I Hjem" withTooltip={withTooltip}>
         <IconHome {...props} />
       </ConditionalTooltip>
     );
   }
 
   return (
-    <ConditionalTooltip label="Salon" withTooltip={withTooltip}>
+    <ConditionalTooltip label="I Salon" withTooltip={withTooltip}>
       <IconBuilding {...props} />
     </ConditionalTooltip>
   );
