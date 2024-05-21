@@ -1,4 +1,4 @@
-import {Button, Flex, Title} from '@mantine/core';
+import {Button, Flex, Radio, rem, Text, Title} from '@mantine/core';
 import {redirect, useSearchParams} from '@remix-run/react';
 import {Money, parseGid} from '@shopify/hydrogen';
 import React, {useMemo} from 'react';
@@ -99,10 +99,31 @@ export function ProductOption({
   return (
     <Button
       onClick={updateSearchParams}
-      variant={value !== parseGid(variant.id).id ? 'outline' : 'transparent'}
+      variant="outline"
+      radius="md"
+      mih={rem(65)}
+      styles={{
+        root: {
+          border:
+            value === parseGid(variant.id).id
+              ? '2px solid var(--mantine-color-blue-outline)'
+              : '1px solid var(--mantine-color-gray-outline)',
+        },
+      }}
+      color={value === parseGid(variant.id).id ? 'blue' : 'gray'}
     >
-      {variant.title} +<Money as="span" data={variant.price} withoutCurrency />
-      &nbsp; DKK - {variant.duration?.value} min
+      <Flex direction="row" justify="center" align="center" gap="md">
+        <Radio checked={value === parseGid(variant.id).id} />
+        <Flex direction="column" justify="flex-start">
+          <Text c="black" fw="600" ta="left">
+            {variant.title}
+          </Text>
+          <Text c="gray" fz="sm" ta="left">
+            <Money as="span" data={variant.price} />, {variant.duration?.value}{' '}
+            min
+          </Text>
+        </Flex>
+      </Flex>
     </Button>
   );
 }

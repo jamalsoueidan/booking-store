@@ -31,12 +31,12 @@ export default function ProductDescription() {
     <>
       <ArtistShell.Main>
         <Flex direction="column" justify="center">
-          <Title order={4} fw={600} fz={{base: 'h1'}} ta="center">
+          <Title order={2} fw={600} fz={{base: 'h2'}} ta="center">
             Produkt
           </Title>
 
           <Text c="dimmed" ta="center">
-            Produkt beskrivelse samt ekstra valg
+            Produkt beskrivelse {productOptions ? 'samt ekstra valg' : ''}
           </Text>
         </Flex>
         <Text
@@ -60,7 +60,7 @@ export default function ProductDescription() {
                 </OptionSelector>
               );
             })}
-            <Divider mb="md" />
+            <Divider my="sm" />
             <Text>
               Total pris:{' '}
               <Money
