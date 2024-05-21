@@ -249,7 +249,9 @@ function TreatmentPickDatetime({availability}: TreatmentPickDatetimeProps) {
             h="auto"
             w="100%"
             type={isMobile ? 'always' : 'auto'}
-            pb="lg"
+            pb="xs"
+            scrollbars="x"
+            offsetScrollbars="x"
           >
             <Flex gap="sm">{days}</Flex>
           </ScrollArea>
