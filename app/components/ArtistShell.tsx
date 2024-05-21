@@ -46,15 +46,21 @@ const Header = ({children}: {children: React.ReactNode}) => {
   const isMobile = useMediaQuery('(max-width: 48em)');
   const user = useUser();
   const location = useLocation();
-  let active = 1;
+  let active = 0;
 
   if (location.pathname.includes('pick-location')) {
+    active = 1;
+  }
+
+  if (location.pathname.includes('pick-more')) {
     active = 2;
   }
-  if (location.pathname.includes('pick-more')) {
+
+  if (location.pathname.includes('pick-datetime')) {
     active = 3;
   }
-  if (location.pathname.includes('pick-datetime')) {
+
+  if (location.pathname.includes('completed')) {
     active = 4;
   }
 
@@ -70,7 +76,7 @@ const Header = ({children}: {children: React.ReactNode}) => {
         <Stepper
           w="100%"
           active={active}
-          bg="pink"
+          bg={`${user.theme}.6`}
           styles={{
             stepBody: {
               marginInlineStart: 'unset',
@@ -98,19 +104,19 @@ const Header = ({children}: {children: React.ReactNode}) => {
           }}
         >
           <Stepper.Step
-            color={`${user.theme}.1`}
+            color={`${user.theme}.6`}
             label="Info"
             iconSize={0}
           ></Stepper.Step>
           <Stepper.Step
-            color={`${user.theme}.1`}
+            color={`${user.theme}.6`}
             label="Lokation"
           ></Stepper.Step>
           <Stepper.Step
-            color={`${user.theme}.1`}
+            color={`${user.theme}.6`}
             label="Tilvalg"
           ></Stepper.Step>
-          <Stepper.Step color={`${user.theme}.1`} label="Tid"></Stepper.Step>
+          <Stepper.Step color={`${user.theme}.6`} label="Tid"></Stepper.Step>
         </Stepper>
         <Flex
           h={'100px'}
