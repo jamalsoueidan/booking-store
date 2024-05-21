@@ -91,15 +91,15 @@ const Header = ({children}: {children: React.ReactNode}) => {
               marginRight: rem(6),
               marginBottom: rem(12),
               gap: '4px',
-            },
-
-            stepIcon: {
               transform: 'scale(.7)',
             },
+
+            stepIcon: {},
 
             separator: {
               borderTop: '1px solid #FFF',
               height: '1px',
+              marginInlineStart: 'unset',
             },
           }}
         >
@@ -116,7 +116,10 @@ const Header = ({children}: {children: React.ReactNode}) => {
             color={`${user.theme}.6`}
             label="Tilvalg"
           ></Stepper.Step>
-          <Stepper.Step color={`${user.theme}.6`} label="Tid"></Stepper.Step>
+          <Stepper.Step
+            color={`${user.theme}.6`}
+            label="Tidsbestilling"
+          ></Stepper.Step>
         </Stepper>
         <Flex
           h={'100px'}

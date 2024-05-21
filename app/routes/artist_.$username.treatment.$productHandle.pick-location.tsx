@@ -27,7 +27,7 @@ export default function ArtistTreatmentPickLocation() {
         <ArtistLocationPicker locations={locations} />
       </ArtistShell.Main>
       <ArtistShell.Footer>
-        <TreatmentStepper currentStep={1} totalSteps={3} pageTitle="Lokation">
+        <TreatmentStepper currentStep={2} totalSteps={4} pageTitle="Lokation">
           <Button
             variant="default"
             component={Link}

@@ -117,11 +117,7 @@ export default function ArtistTreatments() {
         <Outlet />
       </ArtistShell.Main>
       <ArtistShell.Footer>
-        <TreatmentStepper
-          currentStep={2}
-          totalSteps={3}
-          pageTitle="Behandlinger"
-        >
+        <TreatmentStepper currentStep={3} totalSteps={4} pageTitle="Tilvalg">
           <Button
             variant="default"
             component={Link}

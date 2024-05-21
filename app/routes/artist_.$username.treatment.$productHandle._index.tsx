@@ -68,7 +68,7 @@ export default function ProductDescription() {
         ) : null}
       </ArtistShell.Main>
       <ArtistShell.Footer>
-        <TreatmentStepper>
+        <TreatmentStepper currentStep={1} totalSteps={4} pageTitle="Info">
           <Button
             variant="default"
             component={Link}

@@ -133,8 +133,8 @@ export default function ArtistTreatmentPickDatetime() {
       </ArtistShell.Main>
       <ArtistShell.Footer>
         <TreatmentStepper
-          currentStep={3}
-          totalSteps={3}
+          currentStep={4}
+          totalSteps={4}
           pageTitle="Tidsbestilling"
         >
           <Button
