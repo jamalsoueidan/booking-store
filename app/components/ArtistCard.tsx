@@ -33,7 +33,7 @@ export const ArtistCard = ({artist}: {artist: UserFragment}) => {
         <Text fz="lg" fw={500} c="black">
           {fullname}
         </Text>
-        <Text fz="sm" c="#666">
+        <Text fz="sm" c="#666" lineClamp={2}>
           {shortDescription}
         </Text>
       </Box>

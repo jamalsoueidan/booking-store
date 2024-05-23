@@ -1,20 +1,21 @@
-import {Button} from '@mantine/core';
+import {Button, Flex} from '@mantine/core';
 import {type FetcherWithComponents} from '@remix-run/react';
 import {CartForm, parseGid} from '@shopify/hydrogen';
 import {type CartLineInput} from '@shopify/hydrogen/storefront-api-types';
-import {IconShoppingCart} from '@tabler/icons-react';
+import {IconPaywall, IconShoppingCart} from '@tabler/icons-react';
 import {format} from 'date-fns';
 import da from 'date-fns/locale/da';
-import type {ArtistTreatmentCompletedQuery} from 'storefrontapi.generated';
+import {type CartProductsFragment} from 'storefrontapi.generated';
 import type {CustomerLocation, UserAvailabilitySingle} from '~/lib/api/model';
 import {durationToTime} from '~/lib/duration';
 import {matchesGid} from '~/lib/matches-gid';
 
 type AddToCartTreatmentProps = {
   availability: UserAvailabilitySingle;
-  products: ArtistTreatmentCompletedQuery['products'];
+  products: CartProductsFragment[];
   location: CustomerLocation;
   groupId: string;
+  redirectTo?: string;
 };
 
 export function AddToCartTreatment({
@@ -22,14 +23,14 @@ export function AddToCartTreatment({
   products,
   location,
   groupId,
+  redirectTo,
 }: AddToCartTreatmentProps) {
-  const lines: Array<CartLineInput> = products.nodes
-    .filter((product) => {
-      const slotProductExists = availability.slot.products.some(
+  const lines: Array<CartLineInput> = products
+    .filter((product) =>
+      availability.slot.products.some(
         (p) => p.productId.toString() === parseGid(product.id).id,
-      );
-      return slotProductExists;
-    })
+      ),
+    )
     .map((product) => {
       const slotProduct = availability.slot.products.find(
         (p) => p.productId.toString() === parseGid(product.id).id,
@@ -83,20 +84,21 @@ export function AddToCartTreatment({
       };
 
       if (slotProduct.parentId) {
-        const parentProduct = products.nodes.find((p) =>
+        input.attributes.push({
+          key: '_parentId',
+          value: slotProduct.parentId.toString(),
+        });
+
+        const parentProduct = products.find((p) =>
           matchesGid(p.id, slotProduct.parentId!),
         );
 
-        input.attributes.push(
-          {
-            key: '_parentId',
-            value: slotProduct.parentId.toString(),
-          },
-          {
+        if (parentProduct?.title) {
+          input.attributes.push({
             key: 'Til: ',
-            value: parentProduct?.title || 'unknown',
-          },
-        );
+            value: parentProduct?.title,
+          });
+        }
       }
 
       if (availability.shipping) {
@@ -115,7 +117,14 @@ export function AddToCartTreatment({
       return input;
     });
 
-  return <AddToCartButton lines={lines}>Tilføj indkøbskurv</AddToCartButton>;
+  return (
+    <Flex justify="flex-end" gap="md">
+      <AddToCartButton lines={lines}>Tilføj til indkøbskurv</AddToCartButton>
+      <AddToCartButton lines={lines} redirectTo={redirectTo}>
+        Gå til betaling
+      </AddToCartButton>
+    </Flex>
+  );
 }
 
 export function AddToCartButton({
@@ -124,19 +133,25 @@ export function AddToCartButton({
   disabled,
   lines,
   onClick,
+  redirectTo,
 }: {
   analytics?: unknown;
   children: React.ReactNode;
   disabled?: boolean;
   lines: CartLineInput[];
   onClick?: () => void;
+  redirectTo?: string;
 }) {
   return (
     <CartForm route="/cart" inputs={{lines}} action={CartForm.ACTIONS.LinesAdd}>
       {(fetcher: FetcherWithComponents<any>) => {
         return (
           <>
-            <input type="hidden" name="redirectTo" defaultValue="" />
+            <input
+              type="hidden"
+              name="redirectTo"
+              defaultValue={redirectTo || ''}
+            />
             <input
               name="analytics"
               type="hidden"
@@ -146,7 +161,7 @@ export function AddToCartButton({
               variant="default"
               type="submit"
               onClick={onClick}
-              leftSection={<IconShoppingCart />}
+              leftSection={redirectTo ? <IconPaywall /> : <IconShoppingCart />}
               disabled={disabled ?? fetcher.state !== 'idle'}
             >
               {children}

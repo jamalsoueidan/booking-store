@@ -46,22 +46,22 @@ const Header = ({children}: {children: React.ReactNode}) => {
   const isMobile = useMediaQuery('(max-width: 48em)');
   const user = useUser();
   const location = useLocation();
-  let active = 0;
+  let active = 1;
 
   if (location.pathname.includes('pick-location')) {
-    active = 1;
-  }
-
-  if (location.pathname.includes('pick-more')) {
     active = 2;
   }
 
-  if (location.pathname.includes('pick-datetime')) {
+  if (location.pathname.includes('pick-more')) {
     active = 3;
   }
 
-  if (location.pathname.includes('completed')) {
+  if (location.pathname.includes('pick-datetime')) {
     active = 4;
+  }
+
+  if (location.pathname.includes('completed')) {
+    active = 5;
   }
 
   return (
