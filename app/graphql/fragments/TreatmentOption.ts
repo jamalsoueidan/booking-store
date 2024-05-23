@@ -4,7 +4,7 @@ export const TREATMENT_OPTION_VARIANT_FRAGMENT = `#graphql
     title
     image {
       id
-      url
+      url(transform: { maxHeight: 100, maxWidth: 100, crop: CENTER })
       altText
       width
       height
@@ -38,13 +38,16 @@ export const TREATMENT_OPTION_FRAGMENT = `#graphql
       name
       values
     }
-    parentId: metafield(key: "parentId", namespace: "booking") {
-      value
-    }
     variants(first: 5) {
       nodes {
         ...TreatmentOptionVariant
       }
+    }
+    parentId: metafield(key: "parentId", namespace: "booking") {
+      value
+    }
+    required: metafield(key: "required", namespace: "system") {
+      value
     }
   }
 ` as const;

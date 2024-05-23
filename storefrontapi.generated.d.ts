@@ -1834,7 +1834,6 @@ export type TreatmentOptionFragment = Pick<
   'id' | 'title' | 'handle'
 > & {
   options: Array<Pick<StorefrontAPI.ProductOption, 'name' | 'values'>>;
-  parentId?: StorefrontAPI.Maybe<Pick<StorefrontAPI.Metafield, 'value'>>;
   variants: {
     nodes: Array<
       Pick<StorefrontAPI.ProductVariant, 'id' | 'title'> & {
@@ -1855,6 +1854,8 @@ export type TreatmentOptionFragment = Pick<
       }
     >;
   };
+  parentId?: StorefrontAPI.Maybe<Pick<StorefrontAPI.Metafield, 'value'>>;
+  required?: StorefrontAPI.Maybe<Pick<StorefrontAPI.Metafield, 'value'>>;
 };
 
 export type TreatmentProductFragment = Pick<
@@ -2886,9 +2887,15 @@ export type CartProductsFragment = Pick<
           Pick<StorefrontAPI.MoneyV2, 'amount' | 'currencyCode'>
         >;
         price: Pick<StorefrontAPI.MoneyV2, 'amount' | 'currencyCode'>;
+        duration?: StorefrontAPI.Maybe<
+          Pick<StorefrontAPI.Metafield, 'id' | 'value'>
+        >;
       }
     >;
   };
+  type?: StorefrontAPI.Maybe<Pick<StorefrontAPI.Metafield, 'value'>>;
+  required?: StorefrontAPI.Maybe<Pick<StorefrontAPI.Metafield, 'value'>>;
+  duration?: StorefrontAPI.Maybe<Pick<StorefrontAPI.Metafield, 'id' | 'value'>>;
 };
 
 export type GetTreatmentProductsInCartQueryVariables = StorefrontAPI.Exact<{
@@ -2909,9 +2916,17 @@ export type GetTreatmentProductsInCartQuery = {
                 Pick<StorefrontAPI.MoneyV2, 'amount' | 'currencyCode'>
               >;
               price: Pick<StorefrontAPI.MoneyV2, 'amount' | 'currencyCode'>;
+              duration?: StorefrontAPI.Maybe<
+                Pick<StorefrontAPI.Metafield, 'id' | 'value'>
+              >;
             }
           >;
         };
+        type?: StorefrontAPI.Maybe<Pick<StorefrontAPI.Metafield, 'value'>>;
+        required?: StorefrontAPI.Maybe<Pick<StorefrontAPI.Metafield, 'value'>>;
+        duration?: StorefrontAPI.Maybe<
+          Pick<StorefrontAPI.Metafield, 'id' | 'value'>
+        >;
       }
     >;
   };
@@ -2933,7 +2948,7 @@ export type GetProductScheduleIdQuery = {
 
 export type TreatmentProductWithOptionsFragment = Pick<
   StorefrontAPI.Product,
-  'id' | 'title' | 'descriptionHtml' | 'productType' | 'handle'
+  'id' | 'title' | 'description' | 'descriptionHtml' | 'productType' | 'handle'
 > & {
   featuredImage?: StorefrontAPI.Maybe<
     Pick<StorefrontAPI.Image, 'id' | 'altText' | 'url' | 'width' | 'height'>
@@ -2952,9 +2967,6 @@ export type TreatmentProductWithOptionsFragment = Pick<
       nodes: Array<
         Pick<StorefrontAPI.Product, 'id' | 'title' | 'handle'> & {
           options: Array<Pick<StorefrontAPI.ProductOption, 'name' | 'values'>>;
-          parentId?: StorefrontAPI.Maybe<
-            Pick<StorefrontAPI.Metafield, 'value'>
-          >;
           variants: {
             nodes: Array<
               Pick<StorefrontAPI.ProductVariant, 'id' | 'title'> & {
@@ -2977,6 +2989,12 @@ export type TreatmentProductWithOptionsFragment = Pick<
               }
             >;
           };
+          parentId?: StorefrontAPI.Maybe<
+            Pick<StorefrontAPI.Metafield, 'value'>
+          >;
+          required?: StorefrontAPI.Maybe<
+            Pick<StorefrontAPI.Metafield, 'value'>
+          >;
         }
       >;
     }>;
@@ -3021,7 +3039,12 @@ export type ArtistOptionsQuery = {
   product?: StorefrontAPI.Maybe<
     Pick<
       StorefrontAPI.Product,
-      'id' | 'title' | 'descriptionHtml' | 'productType' | 'handle'
+      | 'id'
+      | 'title'
+      | 'description'
+      | 'descriptionHtml'
+      | 'productType'
+      | 'handle'
     > & {
       featuredImage?: StorefrontAPI.Maybe<
         Pick<StorefrontAPI.Image, 'id' | 'altText' | 'url' | 'width' | 'height'>
@@ -3043,9 +3066,6 @@ export type ArtistOptionsQuery = {
             Pick<StorefrontAPI.Product, 'id' | 'title' | 'handle'> & {
               options: Array<
                 Pick<StorefrontAPI.ProductOption, 'name' | 'values'>
-              >;
-              parentId?: StorefrontAPI.Maybe<
-                Pick<StorefrontAPI.Metafield, 'value'>
               >;
               variants: {
                 nodes: Array<
@@ -3072,6 +3092,12 @@ export type ArtistOptionsQuery = {
                   }
                 >;
               };
+              parentId?: StorefrontAPI.Maybe<
+                Pick<StorefrontAPI.Metafield, 'value'>
+              >;
+              required?: StorefrontAPI.Maybe<
+                Pick<StorefrontAPI.Metafield, 'value'>
+              >;
             }
           >;
         }>;
@@ -3819,7 +3845,7 @@ interface GeneratedQueryTypes {
     return: PredictiveSearchQuery;
     variables: PredictiveSearchQueryVariables;
   };
-  '#graphql\n  #graphql\n  fragment CartProducts on Product {\n    id\n    title\n    description\n    variants(first: 5) {\n      nodes {\n        id\n        title\n        compareAtPrice {\n          amount\n          currencyCode\n        }\n        price {\n          amount\n          currencyCode\n        }\n      }\n    }\n  }\n\n  query getTreatmentProductsInCart(\n    $country: CountryCode\n    $language: LanguageCode\n    $first: Int\n    $query: String\n  ) @inContext(country: $country, language: $language) {\n    products(first: $first, sortKey: TITLE, query: $query) {\n      nodes {\n        ...CartProducts\n      }\n    }\n  }\n': {
+  '#graphql\n  #graphql\n  fragment CartProducts on Product {\n    id\n    title\n    description\n    variants(first: 1) {\n      nodes {\n        id\n        title\n        compareAtPrice {\n          amount\n          currencyCode\n        }\n        price {\n          amount\n          currencyCode\n        }\n        duration: metafield(key: "duration", namespace: "booking") {\n          id\n          value\n        }\n      }\n    }\n    type: metafield(key: "type", namespace: "system") {\n      value\n    }\n    required: metafield(key: "required", namespace: "system") {\n      value\n    }\n    duration: metafield(key: "duration", namespace: "booking") {\n      id\n      value\n    }\n  }\n\n  query getTreatmentProductsInCart(\n    $country: CountryCode\n    $language: LanguageCode\n    $first: Int\n    $query: String\n  ) @inContext(country: $country, language: $language) {\n    products(first: $first, query: $query) {\n      nodes {\n        ...CartProducts\n      }\n    }\n  }\n': {
     return: GetTreatmentProductsInCartQuery;
     variables: GetTreatmentProductsInCartQueryVariables;
   };
@@ -3827,7 +3853,7 @@ interface GeneratedQueryTypes {
     return: GetProductScheduleIdQuery;
     variables: GetProductScheduleIdQueryVariables;
   };
-  '#graphql\n  #graphql\n  #graphql\n  #graphql\n  fragment TreatmentOptionVariant on ProductVariant {\n    id\n    title\n    image {\n      id\n      url\n      altText\n      width\n      height\n    }\n    price {\n      amount\n      currencyCode\n    }\n    compareAtPrice {\n      amount\n      currencyCode\n    }\n    selectedOptions {\n      name\n      value\n    }\n    duration: metafield(key: "duration", namespace: "booking") {\n      value\n    }\n  }\n\n\n  fragment TreatmentOption on Product {\n    id\n    title\n    handle\n    options {\n      name\n      values\n    }\n    parentId: metafield(key: "parentId", namespace: "booking") {\n      value\n    }\n    variants(first: 5) {\n      nodes {\n        ...TreatmentOptionVariant\n      }\n    }\n  }\n\n  #graphql\n  fragment Location on Metaobject {\n    id\n    handle\n    fields {\n      value\n      key\n    }\n  }\n\n\n  fragment TreatmentProductWithOptions on Product {\n    id\n    title\n    descriptionHtml\n    productType\n    handle\n    featuredImage {\n      id\n      altText\n      url(transform: { maxHeight: 250, maxWidth: 250, crop: CENTER })\n      width\n      height\n    }\n    variants(first: 1) {\n      nodes {\n        compareAtPrice {\n          amount\n          currencyCode\n        }\n        price {\n          amount\n          currencyCode\n        }\n      }\n    }\n    parentId: metafield(key: "parentId", namespace: "booking") {\n      id\n      value\n    }\n    options: metafield(key: "options", namespace: "booking") {\n      references(first: 10) {\n        nodes {\n          ...TreatmentOption\n        }\n      }\n    }\n    scheduleId: metafield(key: "scheduleId", namespace: "booking") {\n      id\n      value\n    }\n    locations: metafield(key: "locations", namespace: "booking") {\n      references(first: 10) {\n        nodes {\n          ...Location\n        }\n      }\n    }\n    bookingPeriodValue: metafield(key: "booking_period_value", namespace: "booking") {\n      id\n      value\n    }\n    bookingPeriodUnit: metafield(key: "booking_period_unit", namespace: "booking") {\n      id\n      value\n    }\n    noticePeriodValue: metafield(key: "notice_period_value", namespace: "booking") {\n      id\n      value\n    }\n    noticePeriodUnit: metafield(key: "notice_period_unit", namespace: "booking") {\n      id\n      value\n    }\n    duration: metafield(key: "duration", namespace: "booking") {\n      id\n      value\n    }\n    breaktime: metafield(key: "breaktime", namespace: "booking") {\n      id\n      value\n    }\n  }\n\n  query ArtistOptions(\n    $productHandle: String!\n    $country: CountryCode\n    $language: LanguageCode\n  ) @inContext(country: $country, language: $language) {\n    product(handle: $productHandle) {\n      ...TreatmentProductWithOptions\n    }\n  }\n': {
+  '#graphql\n  #graphql\n  #graphql\n  #graphql\n  fragment TreatmentOptionVariant on ProductVariant {\n    id\n    title\n    image {\n      id\n      url(transform: { maxHeight: 100, maxWidth: 100, crop: CENTER })\n      altText\n      width\n      height\n    }\n    price {\n      amount\n      currencyCode\n    }\n    compareAtPrice {\n      amount\n      currencyCode\n    }\n    selectedOptions {\n      name\n      value\n    }\n    duration: metafield(key: "duration", namespace: "booking") {\n      value\n    }\n  }\n\n\n  fragment TreatmentOption on Product {\n    id\n    title\n    handle\n    options {\n      name\n      values\n    }\n    variants(first: 5) {\n      nodes {\n        ...TreatmentOptionVariant\n      }\n    }\n    parentId: metafield(key: "parentId", namespace: "booking") {\n      value\n    }\n    required: metafield(key: "required", namespace: "system") {\n      value\n    }\n  }\n\n  #graphql\n  fragment Location on Metaobject {\n    id\n    handle\n    fields {\n      value\n      key\n    }\n  }\n\n\n  fragment TreatmentProductWithOptions on Product {\n    id\n    title\n    description\n    descriptionHtml\n    productType\n    handle\n    featuredImage {\n      id\n      altText\n      url(transform: { maxHeight: 250, maxWidth: 250, crop: CENTER })\n      width\n      height\n    }\n    variants(first: 1) {\n      nodes {\n        compareAtPrice {\n          amount\n          currencyCode\n        }\n        price {\n          amount\n          currencyCode\n        }\n      }\n    }\n    parentId: metafield(key: "parentId", namespace: "booking") {\n      id\n      value\n    }\n    options: metafield(key: "options", namespace: "booking") {\n      references(first: 10) {\n        nodes {\n          ...TreatmentOption\n        }\n      }\n    }\n    scheduleId: metafield(key: "scheduleId", namespace: "booking") {\n      id\n      value\n    }\n    locations: metafield(key: "locations", namespace: "booking") {\n      references(first: 10) {\n        nodes {\n          ...Location\n        }\n      }\n    }\n    bookingPeriodValue: metafield(key: "booking_period_value", namespace: "booking") {\n      id\n      value\n    }\n    bookingPeriodUnit: metafield(key: "booking_period_unit", namespace: "booking") {\n      id\n      value\n    }\n    noticePeriodValue: metafield(key: "notice_period_value", namespace: "booking") {\n      id\n      value\n    }\n    noticePeriodUnit: metafield(key: "notice_period_unit", namespace: "booking") {\n      id\n      value\n    }\n    duration: metafield(key: "duration", namespace: "booking") {\n      id\n      value\n    }\n    breaktime: metafield(key: "breaktime", namespace: "booking") {\n      id\n      value\n    }\n  }\n\n  query ArtistOptions(\n    $productHandle: String!\n    $country: CountryCode\n    $language: LanguageCode\n  ) @inContext(country: $country, language: $language) {\n    product(handle: $productHandle) {\n      ...TreatmentProductWithOptions\n    }\n  }\n': {
     return: ArtistOptionsQuery;
     variables: ArtistOptionsQueryVariables;
   };
