@@ -30,7 +30,7 @@ export default function ProductDescription() {
   return (
     <>
       <ArtistShell.Main>
-        <Flex direction="column" justify="center">
+        <Flex direction="column" justify="center" mb="lg">
           <Title order={2} fw={600} fz={{base: 'h2'}} ta="center">
             Produkt
           </Title>
@@ -39,15 +39,12 @@ export default function ProductDescription() {
             Produkt beskrivelse {productOptions ? 'samt ekstra valg' : ''}
           </Text>
         </Flex>
-        <Text
-          size="lg"
-          c="dimmed"
-          fw={400}
-          dangerouslySetInnerHTML={{__html: product.descriptionHtml}}
-        ></Text>
+        <Text c="dimmed" fw={400}>
+          {product.description}
+        </Text>
         {productOptions ? (
           <>
-            <Divider />
+            <Divider mt="lg" mb="sm" />
             {productOptions.map((productWithVariants) => {
               return (
                 <OptionSelector

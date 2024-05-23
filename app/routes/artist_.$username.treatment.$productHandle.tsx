@@ -117,6 +117,7 @@ export const TREATMENT_PRODUCT_WITH_OPTIONS_FRAGMENT = `#graphql
   fragment TreatmentProductWithOptions on Product {
     id
     title
+    description
     descriptionHtml
     productType
     handle

@@ -32,6 +32,9 @@ export async function action({request, context}: ActionFunctionArgs) {
   let result: CartQueryDataReturn;
 
   switch (action) {
+    case CartForm.ACTIONS.Create:
+      result = await cart.create(inputs.input);
+      break;
     case CartForm.ACTIONS.LinesAdd:
       result = await cart.addLines(inputs.lines);
       break;
@@ -67,15 +70,20 @@ export async function action({request, context}: ActionFunctionArgs) {
 
   const cartId = result.cart.id;
   const headers = cart.setCartId(result.cart.id);
+  headers.append('Set-Cookie', await context.session.commit());
+
   const {cart: cartResult, errors} = result;
 
   const redirectTo = formData.get('redirectTo') ?? null;
   if (typeof redirectTo === 'string') {
     status = 303;
-    headers.set('Location', redirectTo);
+    if (redirectTo === 'cart') {
+      const check = await cart.get();
+      headers.set('Location', check?.checkoutUrl || '');
+    } else {
+      headers.set('Location', redirectTo);
+    }
   }
-
-  headers.append('Set-Cookie', await context.session.commit());
 
   return json(
     {

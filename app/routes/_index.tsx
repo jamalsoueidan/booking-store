@@ -83,6 +83,8 @@ export async function loader(args: LoaderFunctionArgs) {
     variables: {
       handle: 'index',
       type: 'components',
+      country: context.storefront.i18n.country,
+      language: context.storefront.i18n.language,
     },
     cache: context.storefront.CacheLong(),
   });

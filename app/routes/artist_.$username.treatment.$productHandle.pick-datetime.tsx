@@ -136,6 +136,13 @@ export default function ArtistTreatmentPickDatetime() {
           <Button
             variant="default"
             component={Link}
+            to={`../pick-more${location.search}`}
+          >
+            Tilbage
+          </Button>
+          <Button
+            variant="default"
+            component={Link}
             to={`../completed${location.search}`}
             disabled={isDisabled}
           >

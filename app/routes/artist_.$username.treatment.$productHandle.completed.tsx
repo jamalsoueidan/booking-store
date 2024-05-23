@@ -13,13 +13,11 @@ import {v4 as uuidv4} from 'uuid';
 import {AddToCartTreatment} from '~/components/AddToCartTreatments';
 import {ArtistShell} from '~/components/ArtistShell';
 import {TreatmentArtistCardComplete} from '~/components/treatment/TreatmentArtistCardComplete';
-import {TreatmentStepper} from '~/components/TreatmentStepper';
 import {PRODUCT_SELECTED_OPTIONS_QUERY} from '~/data/queries';
 import type {loader as rootLoader} from './artist_.$username.treatment.$productHandle';
 
 import {getBookingShopifyApi} from '~/lib/api/bookingShopifyApi';
 import {durationToTime} from '~/lib/duration';
-import {matchesGid} from '~/lib/matches-gid';
 import {parseOptionsFromQuery} from '~/lib/parseOptionsQueryParameters';
 
 export const loader = async ({
@@ -76,7 +74,7 @@ export const loader = async ({
       {
         variables: {
           first: availabilityProducts.length,
-          query: availabilityProducts.join(' OR '),
+          query: `id:${availabilityProducts.join(' OR id:')}`,
           country: context.storefront.i18n.country,
           language: context.storefront.i18n.language,
         },
@@ -100,34 +98,26 @@ export default function ArtistTreatmentsBooking() {
   const data = useLoaderData<typeof loader>();
   const {user} = useOutletContext<SerializeFrom<typeof rootLoader>>();
 
-  const productMarkup = data.availability.slot.products.map((slotProduct) => {
-    // to get duration
-    const shopifyProduct = data.products.nodes.find((p) =>
-      matchesGid(p.id, slotProduct.productId),
-    );
-
-    // to get variant price
-    const pickedVariant = shopifyProduct?.variants.nodes.find((varant) =>
-      matchesGid(varant.id, slotProduct.variantId || ''),
-    );
+  const productMarkup = data.products.nodes.map((product) => {
+    const pickedVariant = product.variants.nodes[0];
 
     return (
-      <div key={shopifyProduct?.id}>
+      <div key={product.id}>
         <Text fz="md" fw={500}>
-          {shopifyProduct?.title}
+          {product.title}
         </Text>
         <Text fz="md" c="dimmed" fw={500} lineClamp={1}>
-          {shopifyProduct?.description}
+          {product.description}
         </Text>
         <Flex align="center" gap="lg">
           <Text fz="xs" c="dimmed" tt="uppercase" fw={500}>
-            {durationToTime(slotProduct?.duration ?? 0)}
+            {durationToTime(
+              product.duration?.value || pickedVariant.duration?.value || 0,
+            )}
           </Text>
-          {pickedVariant ? (
-            <Text fz="xs" c="dimmed" fw={500}>
-              <Money data={pickedVariant?.price} as="span" />
-            </Text>
-          ) : null}
+          <Text fz="xs" c="dimmed" fw={500}>
+            <Money data={pickedVariant.price} as="span" />
+          </Text>
         </Flex>
       </div>
     );
@@ -206,14 +196,13 @@ export default function ArtistTreatmentsBooking() {
         <Stack gap="xs">{productMarkup}</Stack>
       </ArtistShell.Main>
       <ArtistShell.Footer>
-        <TreatmentStepper>
-          <AddToCartTreatment
-            products={data.products}
-            availability={data.availability}
-            location={data.location}
-            groupId={data.groupId}
-          />
-        </TreatmentStepper>
+        <AddToCartTreatment
+          products={data.products.nodes}
+          availability={data.availability}
+          location={data.location}
+          groupId={data.groupId}
+          redirectTo="cart"
+        />
       </ArtistShell.Footer>
     </>
   );
@@ -224,7 +213,7 @@ export const CART_PRODUCTS = `#graphql
     id
     title
     description
-    variants(first: 5) {
+    variants(first: 1) {
       nodes {
         id
         title
@@ -236,7 +225,21 @@ export const CART_PRODUCTS = `#graphql
           amount
           currencyCode
         }
+        duration: metafield(key: "duration", namespace: "booking") {
+          id
+          value
+        }
       }
+    }
+    type: metafield(key: "type", namespace: "system") {
+      value
+    }
+    required: metafield(key: "required", namespace: "system") {
+      value
+    }
+    duration: metafield(key: "duration", namespace: "booking") {
+      id
+      value
     }
   }
 ` as const;
@@ -249,7 +252,7 @@ export const GET_TREATMENT_PRODUCTS_IN_CART = `#graphql
     $first: Int
     $query: String
   ) @inContext(country: $country, language: $language) {
-    products(first: $first, sortKey: TITLE, query: $query) {
+    products(first: $first, query: $query) {
       nodes {
         ...CartProducts
       }

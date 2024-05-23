@@ -64,13 +64,14 @@ function ArtistLocationPicker({locations}: {locations: CustomerLocation[]}) {
   };
 
   const setLocationId = (value: CustomerLocation | undefined) => {
-    if (!value) {
-      return;
-    }
     setSearchParams((prev) => {
       prev.delete('locationId');
       prev.delete('shippingId');
-      prev.set('locationId', value._id);
+      if (value) {
+        prev.set('locationId', value?._id);
+      } else {
+        prev.delete('locationId');
+      }
       return prev;
     });
   };

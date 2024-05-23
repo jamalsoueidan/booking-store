@@ -100,18 +100,16 @@ export default function ArtistTreatments() {
             Tilvalg
           </Title>
 
-          <Text c="dimmed" ta="center">
-            Du har mulighed for at kombinere behandling med andre og eventuel
-            spar penge!
-          </Text>
-        </Flex>
-        {products?.length > 0 ? (
-          <RenderArtistProducts products={products} />
-        ) : (
-          <>
-            <Title order={4} fw="400">
+          {products?.length > 0 ? (
+            <Text c="dimmed" ta="center">
+              Du har mulighed for at kombinere behandling med andre og eventuel
+              spar penge!
+            </Text>
+          ) : (
+            <Text c="dimmed" ta="center">
               Den behandling, du har valgt, kan ikke kombineres med andre
-              behandlinger. Tryk på{' '}
+              behandlinger.
+              <br /> Tryk på{' '}
               <Anchor
                 component={Link}
                 to={`../pick-datetime?${searchParams.toString()}`}
@@ -120,14 +118,24 @@ export default function ArtistTreatments() {
                 Næste
               </Anchor>{' '}
               for at fortsætte med din booking.
-            </Title>
-          </>
-        )}
+            </Text>
+          )}
+        </Flex>
+        {products?.length > 0 ? (
+          <RenderArtistProducts products={products} />
+        ) : null}
 
         <Outlet />
       </ArtistShell.Main>
       <ArtistShell.Footer>
         <TreatmentStepper>
+          <Button
+            variant="default"
+            component={Link}
+            to={`../pick-location?${searchParams.toString()}`}
+          >
+            Tilbage
+          </Button>
           <Button
             variant="default"
             component={Link}
