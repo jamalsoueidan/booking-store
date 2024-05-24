@@ -88,13 +88,7 @@ export function OptionSelector({
     <Card withBorder>
       <Flex direction={{base: 'column', sm: 'row'}} gap="xs">
         <Flex direction="column" gap="xs" style={{flex: 1}}>
-          <Title order={3}>
-            {productWithVariants.options[0].name} (
-            {productWithVariants.required?.value.toLowerCase() === 'true'
-              ? 'påkrævet'
-              : 'valgfri'}
-            )
-          </Title>
+          <Title order={4}>{productWithVariants.options[0].name}</Title>
           <Text>{productWithVariants.description}</Text>
         </Flex>
         <Flex
@@ -133,23 +127,29 @@ export function ProductOption({
   const value = searchParams.get(`options[${parentId}][${productId}]`);
 
   const updateSearchParams = () => {
-    setSearchParams((prev) => {
-      prev.set(`options[${parentId}][${productId}]`, parseGid(variant.id).id);
-      return prev;
-    });
+    setSearchParams(
+      (prev) => {
+        prev.set(`options[${parentId}][${productId}]`, parseGid(variant.id).id);
+        return prev;
+      },
+      {preventScrollReset: true, replace: true},
+    );
   };
 
   const toggleSearchParams = () => {
     const key = `options[${parentId}][${productId}]`;
     const value = parseGid(variant.id).id;
-    setSearchParams((prev) => {
-      if (prev.get(key)) {
-        prev.delete(key);
-      } else {
-        prev.set(key, value);
-      }
-      return prev;
-    });
+    setSearchParams(
+      (prev) => {
+        if (prev.get(key)) {
+          prev.delete(key);
+        } else {
+          prev.set(key, value);
+        }
+        return prev;
+      },
+      {preventScrollReset: true, replace: true},
+    );
   };
 
   if (!required) {

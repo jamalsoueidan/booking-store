@@ -39,7 +39,7 @@ export default function ProductDescription() {
     <>
       <ArtistShell.Main>
         <Flex direction="column" justify="center" mb="lg">
-          <Title order={2} fw={600} fz={{base: 'h2'}} ta="center">
+          <Title order={2} fw={600} fz="h2" ta="center">
             Produkt
           </Title>
 
@@ -52,8 +52,9 @@ export default function ProductDescription() {
         </Text>
         {productOptions ? (
           <>
-            <Divider mt="lg" mb="sm" />
-            <Title>Påkrævet valg</Title>
+            <Title order={3} fw={600} mt="xl" mb="sm" fz="h3" ta="center">
+              Påkrævet valg
+            </Title>
             <Stack gap="md">
               {required?.map((productWithVariants) => {
                 return (
@@ -68,7 +69,9 @@ export default function ProductDescription() {
                 );
               })}
             </Stack>
-            <Title>Vælg valgfrie tilvalg</Title>
+            <Title order={3} fw={600} mt="xl" mb="sm" fz="h3" ta="center">
+              Vælg tilvalg:
+            </Title>
             <Stack gap="md">
               {choices?.map((productWithVariants) => {
                 return (
