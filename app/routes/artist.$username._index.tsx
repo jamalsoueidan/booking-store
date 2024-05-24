@@ -13,7 +13,6 @@ import {
 import '@mantine/tiptap/styles.css';
 import {Await, Link, useLoaderData} from '@remix-run/react';
 import {Suspense} from 'react';
-import {type UserCollectionProductsFiltersFragment} from 'storefrontapi.generated';
 import {ArtistProduct} from '~/components/artist/ArtistProduct';
 import {GET_USER_PRODUCTS} from '~/graphql/queries/GetUserProducts';
 import {useUser} from '~/hooks/use-user';
@@ -66,7 +65,9 @@ export default function ArtistIndex() {
           <Flex direction="column" gap={{base: 'md', sm: 'xl'}}>
             {collection ? (
               <ArtistSchedulesMenu
-                filters={collection.products.filters as any}
+                labels={Array.from(
+                  new Set(collection?.products.nodes.map((p) => p.productType)),
+                )}
               />
             ) : null}
             <SimpleGrid cols={{base: 1, md: 2}} spacing="lg">
@@ -87,11 +88,7 @@ export default function ArtistIndex() {
   );
 }
 
-function ArtistSchedulesMenu({
-  filters,
-}: {
-  filters: UserCollectionProductsFiltersFragment[];
-}) {
+function ArtistSchedulesMenu({labels}: {labels: string[]}) {
   const user = useUser();
   const query = decodeURI(location.search);
 
@@ -113,26 +110,22 @@ function ArtistSchedulesMenu({
       >
         Alle
       </Button>
-      {filters
-        .filter((f) => f.label === 'Produkttype')
-        .map((f) =>
-          f.values.map((v) => {
-            return (
-              <Button
-                size="lg"
-                key={v.label}
-                radius="lg"
-                variant={query.includes(v.label) ? 'filled' : 'light'}
-                color={query.includes(v.label) ? 'black' : user.theme}
-                component={Link}
-                to={`?type=${v.label}`}
-                data-testid={`schedule-button-${f.label.toLowerCase()}`}
-              >
-                {v.label}
-              </Button>
-            );
-          }),
-        )}
+      {labels.map((label) => {
+        return (
+          <Button
+            size="lg"
+            key={label}
+            radius="lg"
+            variant={query.includes(label) ? 'filled' : 'light'}
+            color={query.includes(label) ? 'black' : user.theme}
+            component={Link}
+            to={`?type=${label}`}
+            data-testid={`schedule-button-${label.toLowerCase()}`}
+          >
+            {label}
+          </Button>
+        );
+      })}
     </Flex>
   );
 }
