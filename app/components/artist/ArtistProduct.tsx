@@ -2,7 +2,7 @@ import {Badge, Card, Flex, Group, Stack, Text, Title, rem} from '@mantine/core';
 import {Link} from '@remix-run/react';
 import {parseGid} from '@shopify/hydrogen';
 import {IconCalendar} from '@tabler/icons-react';
-import {type ArtistTreatmentProductFragment} from 'storefrontapi.generated';
+import {type TreatmentProductFragment} from 'storefrontapi.generated';
 import {useUser} from '~/hooks/use-user';
 import {convertLocations} from '~/lib/convertLocations';
 import {durationToTime} from '~/lib/duration';
@@ -10,11 +10,7 @@ import {LocationIcon} from '../LocationIcon';
 import classes from './ArtistProduct.module.css';
 import {PriceBadge} from './PriceBadge';
 
-export type ArtistProductProps = {
-  product: ArtistTreatmentProductFragment;
-};
-
-export function ArtistProduct({product}: ArtistProductProps) {
+export function ArtistProduct({product}: {product: TreatmentProductFragment}) {
   const user = useUser();
 
   const productId = parseGid(product?.id).id;
@@ -28,12 +24,10 @@ export function ArtistProduct({product}: ArtistProductProps) {
       className={classes.card}
       component={Link}
       radius="xl"
-      px="md"
-      py="lg"
       data-testid={`service-item-${productId}`}
       to={`treatment/${product.handle}`}
     >
-      <Flex direction="column" gap={rem(48)} h="100%">
+      <Flex direction="column" gap="md" h="100%">
         <Stack gap="6px" style={{flex: 1}}>
           <Flex justify="space-between">
             <Badge c={`${user.theme}.6`} color={`${user.theme}.1`}>

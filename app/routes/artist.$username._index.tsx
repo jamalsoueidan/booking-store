@@ -96,7 +96,12 @@ function ArtistSchedulesMenu({
   const query = decodeURI(location.search);
 
   return (
-    <Flex gap={{base: 'sm', sm: 'lg'}} justify="center" align="center">
+    <Flex
+      gap={{base: 'sm', sm: 'lg'}}
+      justify="center"
+      align="center"
+      wrap="wrap"
+    >
       <Button
         size="lg"
         radius="lg"

@@ -11,7 +11,7 @@ import {
   Avatar,
   Box,
   Button,
-  Group,
+  Flex,
   rem,
   ScrollArea,
   Stack,
@@ -75,7 +75,7 @@ export default function UserIndex() {
         padding="md"
       >
         <AppShell.Header p="md" bg={`${theme || 'pink'}.6`}>
-          <Group h="100%">
+          <Flex h="100%" gap="md" justify="center" align="center">
             <Avatar
               src={
                 image.image?.url ||
@@ -83,13 +83,15 @@ export default function UserIndex() {
               }
               size="86"
             />
-            <div>
-              <Title order={1}>{fullname}</Title>
-              <Text fz="md">
-                {shortDescription} <br />
+            <div style={{flex: 1}}>
+              <Title order={1} fz="xl">
+                {fullname}
+              </Title>
+              <Text fz="md" lineClamp={2}>
+                {shortDescription}
               </Text>
             </div>
-          </Group>
+          </Flex>
           <div style={{position: 'fixed', top: 10, right: 10}}>
             <ActionIcon
               variant="outline"

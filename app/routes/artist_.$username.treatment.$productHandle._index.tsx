@@ -27,6 +27,14 @@ export default function ProductDescription() {
     currentDuration: parseInt(product.duration?.value || '0'),
   });
 
+  const required = productOptions?.filter(
+    (p) => p.required?.value.toLowerCase() === 'true',
+  );
+
+  const choices = productOptions?.filter(
+    (p) => p.required?.value.toLowerCase() !== 'true',
+  );
+
   return (
     <>
       <ArtistShell.Main>
@@ -45,8 +53,24 @@ export default function ProductDescription() {
         {productOptions ? (
           <>
             <Divider mt="lg" mb="sm" />
+            <Title>Påkrævet valg</Title>
             <Stack gap="md">
-              {productOptions.map((productWithVariants) => {
+              {required?.map((productWithVariants) => {
+                return (
+                  <OptionSelector
+                    key={productWithVariants.id}
+                    productWithVariants={productWithVariants}
+                  >
+                    {(props) => {
+                      return <ProductOption {...props} />;
+                    }}
+                  </OptionSelector>
+                );
+              })}
+            </Stack>
+            <Title>Vælg valgfrie tilvalg</Title>
+            <Stack gap="md">
+              {choices?.map((productWithVariants) => {
                 return (
                   <OptionSelector
                     key={productWithVariants.id}
