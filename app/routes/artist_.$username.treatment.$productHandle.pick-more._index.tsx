@@ -51,6 +51,7 @@ export async function loader({params, request, context}: LoaderFunctionArgs) {
     variables: {
       productHandle,
     },
+    cache: context.storefront.CacheShort(),
   });
 
   if (!product) {
@@ -98,46 +99,45 @@ function ArtistTreatmentPickMoreRenderModal({
   const [searchParams, setSearchParams] = useSearchParams();
   const opened = !!searchParams.get('modal');
 
-  const productID = parseGid(product.id).id;
+  const productId = parseGid(product.id).id;
 
   const close = () => {
-    setSearchParams((prev) => {
-      //remove from productIds
-      const existingItems = prev.getAll('productIds');
-      prev.delete('productIds');
-      existingItems.forEach((item) => {
-        if (item !== productID) {
-          prev.append('productIds', item);
-        }
-      });
-
-      //remove options
-      productOptions?.forEach((p) => {
-        prev.delete(`options[${parseGid(product.id).id}][${parseGid(p.id)}]`);
-      });
-
-      //close modal
-      prev.delete('modal');
-      return prev;
-    });
-  };
-
-  const onClick = () => {
-    setSearchParams((prev) => {
-      const existingItems = prev.getAll('productIds');
-      if (existingItems.includes(productID)) {
+    setSearchParams(
+      (prev) => {
+        //remove from productIds
+        const existingItems = prev.getAll('productIds');
         prev.delete('productIds');
         existingItems.forEach((item) => {
-          if (item !== productID) {
+          if (item !== productId) {
             prev.append('productIds', item);
           }
         });
-      } else {
-        prev.append('productIds', productID);
-      }
-      prev.delete('modal'); // close modal
-      return prev;
-    });
+
+        //remove options
+        productOptions?.forEach((p) => {
+          prev.delete(`options[${productId}][${parseGid(p.id).id}]`);
+        });
+
+        //close modal
+        prev.delete('modal');
+        return prev;
+      },
+      {preventScrollReset: true, replace: true},
+    );
+  };
+
+  const onClick = () => {
+    setSearchParams(
+      (prev) => {
+        const existingItems = prev.getAll('productIds');
+        if (!existingItems.includes(productId)) {
+          prev.append('productIds', productId);
+        }
+        prev.delete('modal'); // close modal
+        return prev;
+      },
+      {preventScrollReset: true, replace: true},
+    );
   };
 
   const required = productOptions?.filter(

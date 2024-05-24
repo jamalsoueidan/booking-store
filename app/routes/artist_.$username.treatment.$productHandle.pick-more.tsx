@@ -20,7 +20,7 @@ import {
 } from '@remix-run/react';
 import {json, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
 
-import {Image as ShopifyImage, parseGid} from '@shopify/hydrogen';
+import {parseGid} from '@shopify/hydrogen';
 
 import {useMemo} from 'react';
 import {type PickMoreTreatmentProductFragment} from 'storefrontapi.generated';
@@ -79,6 +79,7 @@ export async function loader({params, request, context}: LoaderFunctionArgs) {
       country: context.storefront.i18n.country,
       language: context.storefront.i18n.language,
     },
+    cache: context.storefront.CacheShort(),
   });
 
   if (!collection?.products) {
@@ -151,8 +152,6 @@ export default function ArtistTreatments() {
     },
     {price: 0, duration: 0},
   );
-
-  console.log(totalPrice, moreSummary.price);
 
   return (
     <>
@@ -293,9 +292,9 @@ function ArtistServiceProduct({
       <Flex>
         {product.featuredImage && (
           <Image
-            component={ShopifyImage}
-            data={product.featuredImage}
+            src={product.featuredImage.url}
             h="auto"
+            w="25%"
             loading="lazy"
             visibleFrom="sm"
           />

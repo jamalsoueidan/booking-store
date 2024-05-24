@@ -244,13 +244,13 @@ export function useCalculateDurationAndPrice({
       pickedVariants?.reduce(
         (total, variant) => total + parseInt(variant?.price.amount || ''),
         currentPrice || 0,
-      ) || 0;
+      ) || currentPrice;
 
     const totalDuration =
       pickedVariants?.reduce(
         (total, variant) => total + parseInt(variant?.duration?.value || ''),
         currentDuration || 0,
-      ) || 0;
+      ) || currentDuration;
 
     return [totalDuration, totalPrice];
   }, [currentDuration, currentPrice, pickedVariants]);

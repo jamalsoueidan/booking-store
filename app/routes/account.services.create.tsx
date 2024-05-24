@@ -136,11 +136,6 @@ export default function AccountServicesCreate() {
     lastResult,
     defaultValue,
     onValidate({formData}) {
-      console.log(
-        parseWithZod(formData, {
-          schema,
-        }),
-      );
       return parseWithZod(formData, {
         schema,
       });

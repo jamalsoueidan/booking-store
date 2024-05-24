@@ -72,6 +72,7 @@ export async function loader({params, request, context}: LoaderFunctionArgs) {
 
   const {product} = await storefront.query(PRODUCT_VALIDATE_HANDLER_QUERY, {
     variables: {productHandle},
+    cache: context.storefront.CacheShort(),
   });
 
   if (!product?.id) {
@@ -136,13 +137,6 @@ export default function ArtistTreatmentPickDatetime() {
           <Button
             variant="default"
             component={Link}
-            to={`../pick-more${location.search}`}
-          >
-            Tilbage
-          </Button>
-          <Button
-            variant="default"
-            component={Link}
             to={`../completed${location.search}`}
             disabled={isDisabled}
           >
@@ -171,13 +165,16 @@ function TreatmentPickDatetime({availability}: TreatmentPickDatetimeProps) {
         seconds: 0,
       });
 
-      setSearchParams((prev) => {
-        prev.delete('date');
-        prev.delete('fromDate');
-        prev.delete('toDate');
-        prev.set('calendar', startOfMonthDate.toJSON());
-        return prev;
-      });
+      setSearchParams(
+        (prev) => {
+          prev.delete('date');
+          prev.delete('fromDate');
+          prev.delete('toDate');
+          prev.set('calendar', startOfMonthDate.toJSON());
+          return prev;
+        },
+        {preventScrollReset: true, replace: true},
+      );
     }
   };
 
@@ -189,20 +186,26 @@ function TreatmentPickDatetime({availability}: TreatmentPickDatetimeProps) {
     : new Date().toJSON();
 
   const onChangeDate = (availability: UserAvailability) => () => {
-    setSearchParams((prev) => {
-      prev.set('date', availability.date);
-      prev.delete('fromDate');
-      prev.delete('toDate');
-      return prev;
-    });
+    setSearchParams(
+      (prev) => {
+        prev.set('date', availability.date);
+        prev.delete('fromDate');
+        prev.delete('toDate');
+        return prev;
+      },
+      {preventScrollReset: true, replace: true},
+    );
   };
 
   const onChangeSlot = (slot: UserAvailabilitySlot) => () => {
-    setSearchParams((prev) => {
-      prev.set('fromDate', slot.from);
-      prev.set('toDate', slot.to);
-      return prev;
-    });
+    setSearchParams(
+      (prev) => {
+        prev.set('fromDate', slot.from);
+        prev.set('toDate', slot.to);
+        return prev;
+      },
+      {preventScrollReset: true, replace: true},
+    );
   };
 
   const selectedDate = searchParams.get('date');
