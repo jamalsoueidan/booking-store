@@ -14,7 +14,7 @@ export const TreatmentArtistCardComplete = ({
       <Group wrap="nowrap" gap="xs">
         <div style={{flex: 1}}>
           <Text size="md" c="dimmed" fw="500">
-            Du mødes med:
+            Du bliver behandlet af:
           </Text>
           <Text size="xl" fw="bold">
             {fullname}

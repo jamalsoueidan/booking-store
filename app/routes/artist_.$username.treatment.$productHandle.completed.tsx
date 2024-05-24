@@ -6,7 +6,7 @@ import {
   type LoaderFunctionArgs,
   type SerializeFrom,
 } from '@shopify/remix-oxygen';
-import {IconClockHour3, IconGps, IconHotelService} from '@tabler/icons-react';
+import {IconClockHour3, IconHotelService} from '@tabler/icons-react';
 import {format} from 'date-fns';
 import da from 'date-fns/locale/da';
 import {v4 as uuidv4} from 'uuid';
@@ -16,6 +16,7 @@ import {TreatmentArtistCardComplete} from '~/components/treatment/TreatmentArtis
 import {PRODUCT_SELECTED_OPTIONS_QUERY} from '~/data/queries';
 import type {loader as rootLoader} from './artist_.$username.treatment.$productHandle';
 
+import {LocationIcon} from '~/components/LocationIcon';
 import {getBookingShopifyApi} from '~/lib/api/bookingShopifyApi';
 import {durationToTime} from '~/lib/duration';
 import {parseOptionsFromQuery} from '~/lib/parseOptionsQueryParameters';
@@ -136,7 +137,7 @@ export default function ArtistTreatmentsBooking() {
         </Card.Section>
 
         <Group mb="xs" gap="xs">
-          <IconGps />
+          <LocationIcon location={data.location} />
           <Text fz="lg" fw="bold">
             Location
           </Text>

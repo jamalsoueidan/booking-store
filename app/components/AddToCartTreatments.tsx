@@ -119,7 +119,7 @@ export function AddToCartTreatment({
 
   return (
     <Flex justify="flex-end" gap="md">
-      <AddToCartButton lines={lines}>Tilføj til indkøbskurv</AddToCartButton>
+      <AddToCartButton lines={lines}>Tilføj indkøbskurv</AddToCartButton>
       <AddToCartButton lines={lines} redirectTo={redirectTo}>
         Gå til betaling
       </AddToCartButton>
