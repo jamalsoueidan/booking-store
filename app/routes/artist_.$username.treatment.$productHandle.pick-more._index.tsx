@@ -199,6 +199,7 @@ function ArtistTreatmentPickMoreRenderModal({
         totalPrice={totalPrice}
         totalDuration={totalDuration}
         mt="lg"
+        withBackButton={false}
       >
         <Button variant="filled" color="red" onClick={close}>
           Fjern ydelse
