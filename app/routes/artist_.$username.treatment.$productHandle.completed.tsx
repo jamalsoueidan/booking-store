@@ -255,7 +255,7 @@ export const GET_TREATMENT_PRODUCTS_IN_CART = `#graphql
     $first: Int
     $query: String
   ) @inContext(country: $country, language: $language) {
-    products(first: $first, query: $query) {
+    products(first: $first, query: $query, sortKey: TITLE) {
       nodes {
         ...CartProducts
       }
