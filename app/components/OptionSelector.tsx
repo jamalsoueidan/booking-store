@@ -1,13 +1,4 @@
-import {
-  Button,
-  Checkbox,
-  Flex,
-  Image,
-  Radio,
-  rem,
-  Text,
-  Title,
-} from '@mantine/core';
+import {Button, Card, Flex, Image, Radio, Text, Title} from '@mantine/core';
 import {redirect, useSearchParams} from '@remix-run/react';
 import {Money, parseGid} from '@shopify/hydrogen';
 import React, {useMemo} from 'react';
@@ -70,13 +61,21 @@ export function OptionSelector({
   productWithVariants,
   children,
 }: OptionSelectorProps) {
+  const [searchParams] = useSearchParams();
+
   const parentId = parseGid(productWithVariants.parentId?.value).id;
+  const productId = parseGid(productWithVariants.id).id;
+  const variantId = searchParams.get(`options[${parentId}][${productId}]`);
+  const selectedVariant = productWithVariants.variants.nodes.find(
+    (p) => parseGid(p.id).id === variantId,
+  );
+
   const optionsMarkup = productWithVariants.variants.nodes.map((variant) => {
     return (
       <Flex key={variant.id}>
         {children({
           parentId,
-          productId: parseGid(productWithVariants.id).id,
+          productId,
           required:
             productWithVariants.required?.value.toLowerCase() === 'true',
           variant,
@@ -86,22 +85,41 @@ export function OptionSelector({
   });
 
   return (
-    <Flex direction="column" gap="xs" py="sm">
-      <Title order={3}>
-        {productWithVariants.options[0].name} (
-        {productWithVariants.required?.value.toLowerCase() === 'true'
-          ? 'påkrævet'
-          : 'valgfri'}
-        )
-      </Title>
-      <Flex
-        direction={{base: 'column', sm: 'row'}}
-        gap="xs"
-        wrap={{base: 'nowrap', sm: 'wrap'}}
-      >
-        {optionsMarkup}
+    <Card withBorder>
+      <Flex direction={{base: 'column', sm: 'row'}} gap="xs">
+        <Flex direction="column" gap="xs" style={{flex: 1}}>
+          <Title order={3}>
+            {productWithVariants.options[0].name} (
+            {productWithVariants.required?.value.toLowerCase() === 'true'
+              ? 'påkrævet'
+              : 'valgfri'}
+            )
+          </Title>
+          <Text>{productWithVariants.description}</Text>
+        </Flex>
+        <Flex
+          direction="column"
+          justify="center"
+          align="center"
+          gap="md"
+          style={{flex: 1}}
+        >
+          <div>
+            <Text fw="bold" ta="center">
+              {selectedVariant ? (
+                <Money as="span" data={selectedVariant.price} />
+              ) : null}
+            </Text>
+            <Text c="dimmed" ta="center">
+              {selectedVariant?.title}
+            </Text>
+          </div>
+          <Flex gap="xs" wrap={{base: 'nowrap', sm: 'wrap'}}>
+            {optionsMarkup}
+          </Flex>
+        </Flex>
       </Flex>
-    </Flex>
+    </Card>
   );
 }
 
@@ -140,39 +158,20 @@ export function ProductOption({
         onClick={toggleSearchParams}
         variant="outline"
         radius="md"
-        h="auto"
-        px="sm"
-        py={rem(6)}
+        size="xl"
+        px="xs"
         styles={{
           root: {
             flex: 1,
             border:
               value === parseGid(variant.id).id
-                ? '2px solid var(--mantine-color-blue-outline)'
+                ? '4px solid var(--mantine-color-blue-outline)'
                 : '1px solid var(--mantine-color-gray-outline)',
           },
         }}
-        color={value === parseGid(variant.id).id ? 'blue' : 'gray'}
+        c="black"
       >
-        <Flex direction="row" justify="center" align="center" gap="md">
-          {variant.image?.url ? (
-            <Image src={variant.image.url} mah={rem(50)} />
-          ) : (
-            <Checkbox
-              checked={value === parseGid(variant.id).id}
-              onChange={() => {}}
-            />
-          )}
-          <Flex direction="column" justify="flex-start">
-            <Text c="black" fw="600" ta="left">
-              {variant.title}
-            </Text>
-            <Text c="gray" fz="sm" ta="left">
-              +{variant.duration?.value} min,{' '}
-              <Money as="span" data={variant.price} />
-            </Text>
-          </Flex>
-        </Flex>
+        {value === parseGid(variant.id).id ? 'Fjern' : 'Tilføj'}
       </Button>
     );
   }
@@ -181,39 +180,27 @@ export function ProductOption({
       onClick={updateSearchParams}
       variant="outline"
       radius="md"
-      h="auto"
-      px="sm"
-      py={rem(6)}
+      size="xl"
+      px="xs"
       styles={{
         root: {
           flex: 1,
           border:
             value === parseGid(variant.id).id
-              ? '2px solid var(--mantine-color-blue-outline)'
+              ? '4px solid var(--mantine-color-blue-outline)'
               : '1px solid var(--mantine-color-gray-outline)',
         },
       }}
       color={value === parseGid(variant.id).id ? 'blue' : 'gray'}
     >
-      <Flex direction="row" justify="center" align="center" gap="md">
-        {variant.image?.url ? (
-          <Image src={variant.image.url} mah={rem(50)} />
-        ) : (
-          <Radio
-            checked={value === parseGid(variant.id).id}
-            onChange={() => {}}
-          />
-        )}
-        <Flex direction="column" justify="flex-start">
-          <Text c="black" fw="600" ta="left">
-            {variant.title}
-          </Text>
-          <Text c="gray" fz="sm" ta="left">
-            +{variant.duration?.value} min,{' '}
-            <Money as="span" data={variant.price} />
-          </Text>
-        </Flex>
-      </Flex>
+      {variant.image?.url ? (
+        <Image src={variant.image.url} height="100%" />
+      ) : (
+        <Radio
+          checked={value === parseGid(variant.id).id}
+          onChange={() => {}}
+        />
+      )}
     </Button>
   );
 }

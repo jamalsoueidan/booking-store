@@ -34,6 +34,7 @@ export const TREATMENT_OPTION_FRAGMENT = `#graphql
     id
     title
     handle
+    description
     options {
       name
       values

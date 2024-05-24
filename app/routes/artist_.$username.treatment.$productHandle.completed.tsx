@@ -106,6 +106,9 @@ export default function ArtistTreatmentsBooking() {
         <Text fz="md" fw={500}>
           {product.title}
         </Text>
+        {product.type?.value === 'option' ? (
+          <Text>{pickedVariant.title}</Text>
+        ) : null}
         <Text fz="md" c="dimmed" fw={500} lineClamp={1}>
           {product.description}
         </Text>

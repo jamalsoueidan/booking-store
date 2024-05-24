@@ -1,4 +1,4 @@
-import {Button, Divider, Flex, Text, Title} from '@mantine/core';
+import {Button, Divider, Flex, Stack, Text, Title} from '@mantine/core';
 import {Link, useOutletContext, useSearchParams} from '@remix-run/react';
 import {type SerializeFrom} from '@remix-run/server-runtime';
 import {Money} from '@shopify/hydrogen';
@@ -45,18 +45,20 @@ export default function ProductDescription() {
         {productOptions ? (
           <>
             <Divider mt="lg" mb="sm" />
-            {productOptions.map((productWithVariants) => {
-              return (
-                <OptionSelector
-                  key={productWithVariants.id}
-                  productWithVariants={productWithVariants}
-                >
-                  {(props) => {
-                    return <ProductOption {...props} />;
-                  }}
-                </OptionSelector>
-              );
-            })}
+            <Stack gap="md">
+              {productOptions.map((productWithVariants) => {
+                return (
+                  <OptionSelector
+                    key={productWithVariants.id}
+                    productWithVariants={productWithVariants}
+                  >
+                    {(props) => {
+                      return <ProductOption {...props} />;
+                    }}
+                  </OptionSelector>
+                );
+              })}
+            </Stack>
             <Divider my="sm" />
             <Text>
               Total pris:{' '}
