@@ -54,7 +54,7 @@ export async function loader({context, params}: LoaderFunctionArgs) {
         first: 5,
         query: "(tag:'system') AND (tag:'options')",
       },
-      cache: storefront.CacheLong(),
+      cache: storefront.CacheShort(),
     },
   );
 
