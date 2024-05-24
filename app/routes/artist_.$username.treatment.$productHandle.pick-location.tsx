@@ -1,7 +1,6 @@
 import {Button, Flex, Text, Title} from '@mantine/core';
 import {useDisclosure} from '@mantine/hooks';
 import {Link, useOutletContext, useSearchParams} from '@remix-run/react';
-import {type SerializeFrom} from '@remix-run/server-runtime';
 import {ArtistShell} from '~/components/ArtistShell';
 import {LocationModal} from '~/components/LocationModal';
 import {TreatmentStepper} from '~/components/TreatmentStepper';
@@ -11,10 +10,10 @@ import {
   type CustomerLocation,
 } from '~/lib/api/model';
 import {convertLocations} from '~/lib/convertLocations';
-import type {loader as rootLoader} from './artist_.$username.treatment.$productHandle';
+import type {OutletLoader} from './artist_.$username.treatment.$productHandle';
 
 export default function ArtistTreatmentPickLocation() {
-  const {product} = useOutletContext<SerializeFrom<typeof rootLoader>>();
+  const {product, totalPrice, totalDuration} = useOutletContext<OutletLoader>();
   const [searchParams] = useSearchParams();
   const isDisabled =
     !searchParams.has('locationId') || searchParams.get('locationId') === '';
@@ -27,14 +26,7 @@ export default function ArtistTreatmentPickLocation() {
         <ArtistLocationPicker locations={locations} />
       </ArtistShell.Main>
       <ArtistShell.Footer>
-        <TreatmentStepper>
-          <Button
-            variant="default"
-            component={Link}
-            to={`../?${searchParams.toString()}`}
-          >
-            Tilbage
-          </Button>
+        <TreatmentStepper totalPrice={totalPrice} totalDuration={totalDuration}>
           <Button
             variant="default"
             component={Link}
@@ -57,23 +49,29 @@ function ArtistLocationPicker({locations}: {locations: CustomerLocation[]}) {
     if (!value) {
       return;
     }
-    setSearchParams((prev) => {
-      prev.set('shippingId', value);
-      return prev;
-    });
+    setSearchParams(
+      (prev) => {
+        prev.set('shippingId', value);
+        return prev;
+      },
+      {preventScrollReset: true, replace: true},
+    );
   };
 
   const setLocationId = (value: CustomerLocation | undefined) => {
-    setSearchParams((prev) => {
-      prev.delete('locationId');
-      prev.delete('shippingId');
-      if (value) {
-        prev.set('locationId', value?._id);
-      } else {
+    setSearchParams(
+      (prev) => {
         prev.delete('locationId');
-      }
-      return prev;
-    });
+        prev.delete('shippingId');
+        if (value) {
+          prev.set('locationId', value?._id);
+        } else {
+          prev.delete('locationId');
+        }
+        return prev;
+      },
+      {preventScrollReset: true, replace: true},
+    );
   };
 
   const locationId = searchParams.get('locationId');

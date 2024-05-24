@@ -11,18 +11,27 @@ import {
   Title,
   rem,
 } from '@mantine/core';
-import {Link, Outlet, useLoaderData, useSearchParams} from '@remix-run/react';
+import {
+  Link,
+  Outlet,
+  useLoaderData,
+  useOutletContext,
+  useSearchParams,
+} from '@remix-run/react';
 import {json, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
 
 import {Image as ShopifyImage, parseGid} from '@shopify/hydrogen';
 
-import {type TreatmentProductFragment} from 'storefrontapi.generated';
+import {useMemo} from 'react';
+import {type PickMoreTreatmentProductFragment} from 'storefrontapi.generated';
 import {ArtistServiceCheckboxCard} from '~/components/artist/ArtistServiceCheckboxCard';
 import {PriceBadge} from '~/components/artist/PriceBadge';
 import {ArtistShell} from '~/components/ArtistShell';
 import {TreatmentStepper} from '~/components/TreatmentStepper';
-import {GET_USER_PRODUCTS} from '~/graphql/queries/GetUserProducts';
+import {TREATMENT_OPTION_FRAGMENT} from '~/graphql/fragments/TreatmentOption';
 import {durationToTime} from '~/lib/duration';
+import {parseOptionsFromQuery} from '~/lib/parseOptionsQueryParameters';
+import {type OutletLoader} from './artist_.$username.treatment.$productHandle';
 
 export function shouldRevalidate() {
   return false;
@@ -52,18 +61,18 @@ export async function loader({params, request, context}: LoaderFunctionArgs) {
     });
   }
 
-  const {collection} = await context.storefront.query(GET_USER_PRODUCTS, {
+  const {collection} = await context.storefront.query(PICK_MORE_PRODUCTS, {
     variables: {
       handle: username,
       filters: [
         {tag: 'treatments'},
         {tag: `locationid-${locationId}`},
-        {tag: `scheduleid-${product.scheduleId?.value}`},
+        {tag: `scheduleid-${product.scheduleId?.reference?.handle}`},
         {
           productMetafield: {
             namespace: 'booking',
             key: 'hide_from_combine',
-            value: 'false',
+            value: 'False',
           },
         },
       ],
@@ -89,8 +98,61 @@ export async function loader({params, request, context}: LoaderFunctionArgs) {
 export default function ArtistTreatments() {
   const {products} = useLoaderData<typeof loader>();
   const [searchParams] = useSearchParams();
+  const {totalPrice, totalDuration} = useOutletContext<OutletLoader>();
+  const selectedProductsIds = searchParams.getAll('productIds');
 
-  const haveSelectedProducts = searchParams.getAll('productIds').length > 0;
+  const selectedProducts = useMemo(
+    () =>
+      products.filter((p) =>
+        selectedProductsIds.some((sp) => sp === parseGid(p.id).id),
+      ),
+    [products, selectedProductsIds],
+  );
+
+  const optionsFromQuery: Record<string, Record<string, string>> = useMemo(
+    () => parseOptionsFromQuery(searchParams),
+    [searchParams],
+  );
+
+  const moreSummary = selectedProducts.reduce(
+    (summary, product) => {
+      const productId = parseGid(product.id).id;
+      const productOptions = optionsFromQuery[productId];
+      const productPrice = parseInt(product.variants.nodes[0].price.amount);
+      const productDuration = parseInt(product.duration?.value || '');
+
+      const variantSummary = product.options?.references?.nodes
+        .filter((p) => productOptions[parseGid(p.id).id])
+        .reduce(
+          (summary, product) => {
+            const productId = parseGid(product.id).id;
+            const variantId = productOptions[productId];
+            const variant = product.variants.nodes.find(
+              (p) => parseGid(p.id).id === variantId,
+            );
+
+            const variantPrice = parseInt(variant?.price.amount || '');
+            const variantDuration = parseInt(variant?.duration?.value || '');
+            return {
+              price: summary.price + variantPrice,
+              duration: summary.duration + variantDuration,
+            };
+          },
+          {
+            price: 0,
+            duration: 0,
+          },
+        ) || {price: 0, duration: 0};
+
+      return {
+        price: summary.price + productPrice + variantSummary.price,
+        duration: summary.duration + productDuration + variantSummary.duration,
+      };
+    },
+    {price: 0, duration: 0},
+  );
+
+  console.log(totalPrice, moreSummary.price);
 
   return (
     <>
@@ -128,22 +190,19 @@ export default function ArtistTreatments() {
         <Outlet />
       </ArtistShell.Main>
       <ArtistShell.Footer>
-        <TreatmentStepper>
-          <Button
-            variant="default"
-            component={Link}
-            to={`../pick-location?${searchParams.toString()}`}
-          >
-            Tilbage
-          </Button>
+        <TreatmentStepper
+          totalPrice={totalPrice + moreSummary.price}
+          totalDuration={totalDuration + moreSummary.duration}
+        >
           <Button
             variant="default"
             component={Link}
             to={`../pick-datetime?${searchParams.toString()}`}
             relative="route"
+            prefetch="intent"
           >
             {products?.length > 0
-              ? haveSelectedProducts
+              ? selectedProductsIds.length > 0
                 ? 'Ja tak'
                 : 'Nej tak'
               : 'Næste'}
@@ -157,7 +216,7 @@ export default function ArtistTreatments() {
 function RenderArtistProducts({
   products,
 }: {
-  products: TreatmentProductFragment[];
+  products: PickMoreTreatmentProductFragment[];
 }) {
   return (
     <SimpleGrid cols={1} spacing="lg">
@@ -168,34 +227,44 @@ function RenderArtistProducts({
   );
 }
 
-function ArtistServiceProduct({product}: {product: TreatmentProductFragment}) {
+function ArtistServiceProduct({
+  product,
+}: {
+  product: PickMoreTreatmentProductFragment;
+}) {
   const [searchParams, setSearchParams] = useSearchParams();
 
   const productID = parseGid(product.id).id;
   const isChecked = searchParams.getAll('productIds').includes(productID);
 
   const onClick = () => {
-    setSearchParams((prev) => {
-      const existingItems = prev.getAll('productIds');
-      if (existingItems.includes(productID)) {
-        prev.delete('productIds');
-        existingItems.forEach((item) => {
-          if (item !== productID) {
-            prev.append('productIds', item);
-          }
-        });
-      } else {
-        prev.append('productIds', productID);
-      }
-      return prev;
-    });
+    setSearchParams(
+      (prev) => {
+        const existingItems = prev.getAll('productIds');
+        if (existingItems.includes(productID)) {
+          prev.delete('productIds');
+          existingItems.forEach((item) => {
+            if (item !== productID) {
+              prev.append('productIds', item);
+            }
+          });
+        } else {
+          prev.append('productIds', productID);
+        }
+        return prev;
+      },
+      {preventScrollReset: true, replace: true},
+    );
   };
 
   const onClickOptions = () => {
-    setSearchParams((prev) => {
-      prev.append('modal', product.handle || '');
-      return prev;
-    });
+    setSearchParams(
+      (prev) => {
+        prev.append('modal', product.handle || '');
+        return prev;
+      },
+      {preventScrollReset: true, replace: true},
+    );
   };
 
   const leftSection = (
@@ -275,7 +344,72 @@ export const GET_PRODUCT_SCHEDULE_ID = `#graphql
     product(handle: $productHandle) {
       id
       scheduleId: metafield(key: "scheduleId", namespace: "booking") {
-        value
+        reference {
+          ... on Metaobject {
+            handle
+          }
+        }
+      }
+    }
+  }
+` as const;
+
+export const PICK_MORE_TREATMENT_PRODUCT = `#graphql
+  ${TREATMENT_OPTION_FRAGMENT}
+  fragment PickMoreTreatmentProduct on Product {
+    id
+    title
+    descriptionHtml
+    productType
+    handle
+    featuredImage {
+      id
+      altText
+      url(transform: { maxHeight: 250, maxWidth: 250, crop: CENTER })
+      width
+      height
+    }
+    variants(first: 1) {
+      nodes {
+        compareAtPrice {
+          amount
+          currencyCode
+        }
+        price {
+          amount
+          currencyCode
+        }
+      }
+    }
+    options: metafield(key: "options", namespace: "booking") {
+      value
+      references(first: 10) {
+        nodes {
+          ...TreatmentOption
+        }
+      }
+    }
+    duration: metafield(key: "duration", namespace: "booking") {
+      id
+      value
+    }
+  }
+` as const;
+
+export const PICK_MORE_PRODUCTS = `#graphql
+  ${PICK_MORE_TREATMENT_PRODUCT}
+
+  query PickMoreProducts(
+    $handle: String!
+    $country: CountryCode
+    $language: LanguageCode
+    $filters: [ProductFilter!] = {}
+  ) @inContext(country: $country, language: $language) {
+    collection(handle: $handle) {
+      products(first: 20, sortKey: TITLE, filters: $filters) {
+        nodes {
+          ...PickMoreTreatmentProduct
+        }
       }
     }
   }

@@ -1,11 +1,18 @@
 import {Link, Outlet, useLoaderData, type MetaFunction} from '@remix-run/react';
-import {json, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
+import {
+  json,
+  type LoaderFunctionArgs,
+  type SerializeFrom,
+} from '@shopify/remix-oxygen';
 
 import {AspectRatio, Avatar, Button, Flex, rem, Title} from '@mantine/core';
 import {Image} from '@shopify/hydrogen';
 import type {ProductVariantFragment} from 'storefrontapi.generated';
 import {ArtistShell} from '~/components/ArtistShell';
-import {redirectToOptions} from '~/components/OptionSelector';
+import {
+  redirectToOptions,
+  useCalculateDurationAndPrice,
+} from '~/components/OptionSelector';
 import {LOCATION_FRAGMENT} from '~/graphql/fragments/Location';
 import {TREATMENT_OPTION_FRAGMENT} from '~/graphql/fragments/TreatmentOption';
 import {USER_METAOBJECT_QUERY} from '~/graphql/fragments/UserMetaobject';
@@ -16,6 +23,11 @@ import {useUserMetaobject} from '~/hooks/useUserMetaobject';
 export function shouldRevalidate() {
   return false;
 }
+
+export type OutletLoader = SerializeFrom<typeof loader> & {
+  totalDuration: number;
+  totalPrice: number;
+};
 
 export const meta: MetaFunction<typeof loader> = ({data}) => {
   return [{title: `BySisters | ${data?.product.title ?? ''}`}];
@@ -62,6 +74,15 @@ export default function Product() {
 
   const {username, fullname, image} = useUserMetaobject(user);
 
+  const productOptions = product.options?.references?.nodes;
+
+  const {totalDuration, totalPrice} = useCalculateDurationAndPrice({
+    parentId: product.id,
+    productOptions,
+    currentPrice: parseInt(product.variants.nodes[0]?.price.amount || '0'),
+    currentDuration: parseInt(product.duration?.value || '0'),
+  });
+
   return (
     <UserProvider user={user}>
       <ArtistShell>
@@ -83,7 +104,7 @@ export default function Product() {
           </Flex>
         </ArtistShell.Header>
 
-        <Outlet context={{product, user}} />
+        <Outlet context={{product, user, totalDuration, totalPrice}} />
       </ArtistShell>
     </UserProvider>
   );
@@ -162,27 +183,7 @@ export const TREATMENT_PRODUCT_WITH_OPTIONS_FRAGMENT = `#graphql
         }
       }
     }
-    bookingPeriodValue: metafield(key: "booking_period_value", namespace: "booking") {
-      id
-      value
-    }
-    bookingPeriodUnit: metafield(key: "booking_period_unit", namespace: "booking") {
-      id
-      value
-    }
-    noticePeriodValue: metafield(key: "notice_period_value", namespace: "booking") {
-      id
-      value
-    }
-    noticePeriodUnit: metafield(key: "notice_period_unit", namespace: "booking") {
-      id
-      value
-    }
     duration: metafield(key: "duration", namespace: "booking") {
-      id
-      value
-    }
-    breaktime: metafield(key: "breaktime", namespace: "booking") {
       id
       value
     }

@@ -1,11 +1,11 @@
-import {Button, Divider, Modal, Stack, Text} from '@mantine/core';
+import {Button, Modal, Stack, Title} from '@mantine/core';
 import {
   useLoaderData,
   useSearchParams,
   type ShouldRevalidateFunctionArgs,
 } from '@remix-run/react';
 import {json, type LoaderFunctionArgs} from '@remix-run/server-runtime';
-import {Money, parseGid} from '@shopify/hydrogen';
+import {parseGid} from '@shopify/hydrogen';
 import type {TreatmentProductWithOptionsFragment} from 'storefrontapi.generated';
 
 import {
@@ -15,7 +15,8 @@ import {
   useCalculateDurationAndPrice,
 } from '~/components/OptionSelector';
 
-import {durationToTime} from '~/lib/duration';
+import {useMediaQuery} from '@mantine/hooks';
+import {TreatmentStepper} from '~/components/TreatmentStepper';
 import {GET_PRODUCT_WITH_OPTIONS} from './artist_.$username.treatment.$productHandle';
 
 export function shouldRevalidate({
@@ -85,6 +86,7 @@ function ArtistTreatmentPickMoreRenderModal({
 }: {
   product: TreatmentProductWithOptionsFragment;
 }) {
+  const isMobile = useMediaQuery('(max-width: 62em)');
   const productOptions = product.options?.references?.nodes;
   const {totalDuration, totalPrice} = useCalculateDurationAndPrice({
     parentId: product.id,
@@ -138,37 +140,73 @@ function ArtistTreatmentPickMoreRenderModal({
     });
   };
 
+  const required = productOptions?.filter(
+    (p) => p.required?.value.toLowerCase() === 'true',
+  );
+
+  const choices = productOptions?.filter(
+    (p) => p.required?.value.toLowerCase() !== 'true',
+  );
+
   return (
-    <Modal opened={opened} onClose={close} title="Valg muligheder">
-      {productOptions?.map((productWithVariants) => {
-        return (
-          <OptionSelector
-            key={product.id}
-            productWithVariants={productWithVariants}
-          >
-            {(props) => {
-              return <ProductOption {...props} />;
-            }}
-          </OptionSelector>
-        );
-      })}
-      <Divider mb="md" />
-      <Text>
-        Total pris:{' '}
-        <Money
-          as="span"
-          data={{
-            __typename: 'MoneyV2',
-            amount: totalPrice?.toString(),
-            currencyCode: 'DKK',
-          }}
-        />
-      </Text>
-      Total tid: {durationToTime(totalDuration ?? 0)}
-      <Stack>
-        <Button onClick={onClick}>Tilføj ydelse</Button>
-        <Button onClick={close}>Fjern ydelse</Button>
-      </Stack>
+    <Modal
+      opened={opened}
+      onClose={close}
+      title={product.title}
+      size="xl"
+      fullScreen={isMobile}
+    >
+      {productOptions ? (
+        <>
+          <Title order={3} fw={600} mb="sm" fz="h3" ta="center">
+            Påkrævet valg
+          </Title>
+          <Stack gap="md">
+            {required?.map((productWithVariants) => {
+              return (
+                <OptionSelector
+                  key={productWithVariants.id}
+                  productWithVariants={productWithVariants}
+                >
+                  {(props) => {
+                    return <ProductOption {...props} />;
+                  }}
+                </OptionSelector>
+              );
+            })}
+          </Stack>
+          <Title order={3} fw={600} mt="xl" mb="sm" fz="h3" ta="center">
+            Vælg tilvalg:
+          </Title>
+          <Stack gap="md">
+            {choices?.map((productWithVariants) => {
+              return (
+                <OptionSelector
+                  key={productWithVariants.id}
+                  productWithVariants={productWithVariants}
+                >
+                  {(props) => {
+                    return <ProductOption {...props} />;
+                  }}
+                </OptionSelector>
+              );
+            })}
+          </Stack>
+        </>
+      ) : null}
+
+      <TreatmentStepper
+        totalPrice={totalPrice}
+        totalDuration={totalDuration}
+        mt="lg"
+      >
+        <Button variant="filled" color="red" onClick={close}>
+          Fjern ydelse
+        </Button>
+        <Button variant="filled" onClick={onClick}>
+          Tilføj ydelse
+        </Button>
+      </TreatmentStepper>
     </Modal>
   );
 }

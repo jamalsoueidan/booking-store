@@ -6,6 +6,7 @@ import type {
   TreatmentOptionFragment,
   TreatmentOptionVariantFragment,
 } from 'storefrontapi.generated';
+import {durationToTime} from '~/lib/duration';
 
 export type RedirectToOptionsProps = {
   productOptions: TreatmentOptionFragment[];
@@ -98,16 +99,21 @@ export function OptionSelector({
           gap="md"
           style={{flex: 1}}
         >
-          <div>
-            <Text fw="bold" ta="center">
-              {selectedVariant ? (
-                <Money as="span" data={selectedVariant.price} />
-              ) : null}
-            </Text>
-            <Text c="dimmed" ta="center">
-              {selectedVariant?.title}
-            </Text>
-          </div>
+          {selectedVariant ? (
+            <div>
+              <Flex align="center" gap="xs">
+                <Text fw="bold" ta="center">
+                  <Money as="span" data={selectedVariant.price} />
+                </Text>
+                <Text fz="14" c="dimmed">
+                  {durationToTime(selectedVariant?.duration?.value ?? 0)}
+                </Text>
+              </Flex>
+              <Text c="dimmed" ta="center">
+                {selectedVariant?.title}
+              </Text>
+            </div>
+          ) : null}
           <Flex gap="xs" wrap={{base: 'nowrap', sm: 'wrap'}}>
             {optionsMarkup}
           </Flex>
@@ -234,15 +240,17 @@ export function useCalculateDurationAndPrice({
   }, [productOptions, parentId, searchParams]);
 
   const [totalDuration, totalPrice] = useMemo(() => {
-    const totalPrice = pickedVariants?.reduce(
-      (total, variant) => total + parseInt(variant?.price.amount || ''),
-      currentPrice || 0,
-    );
+    const totalPrice =
+      pickedVariants?.reduce(
+        (total, variant) => total + parseInt(variant?.price.amount || ''),
+        currentPrice || 0,
+      ) || 0;
 
-    const totalDuration = pickedVariants?.reduce(
-      (total, variant) => total + parseInt(variant?.duration?.value || ''),
-      currentDuration || 0,
-    );
+    const totalDuration =
+      pickedVariants?.reduce(
+        (total, variant) => total + parseInt(variant?.duration?.value || ''),
+        currentDuration || 0,
+      ) || 0;
 
     return [totalDuration, totalPrice];
   }, [currentDuration, currentPrice, pickedVariants]);
