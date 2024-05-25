@@ -65,6 +65,7 @@ export async function loader({params, request, context}: LoaderFunctionArgs) {
       variables: {
         productHandle,
       },
+      cache: storefront.CacheLong(),
     },
   );
 
@@ -85,6 +86,7 @@ export async function loader({params, request, context}: LoaderFunctionArgs) {
       handle: product.collection.reference.handle,
       ...paginationVariables,
     },
+    cache: storefront.CacheShort(),
   });
 
   if (!collection) {
