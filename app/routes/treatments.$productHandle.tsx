@@ -19,7 +19,6 @@ import {
   Container,
   Flex,
   Group,
-  Image,
   rem,
   SimpleGrid,
   Stack,
@@ -30,10 +29,8 @@ import {
 import {PriceBadge} from '~/components/artist/PriceBadge';
 import {ProfessionTranslations} from './api.users.professions';
 
-import {useMediaQuery} from '@mantine/hooks';
 import {IconCalendar} from '@tabler/icons-react';
 import type {
-  TreatmentProductFragment,
   TreatmentsForCollectionFragment,
   UserCollectionFragment,
 } from 'storefrontapi.generated';
@@ -83,41 +80,37 @@ export async function loader({params, request, context}: LoaderFunctionArgs) {
 
 export default function Product() {
   const {product, collection} = useLoaderData<typeof loader>();
-  const isMobile = useMediaQuery('(max-width: 62em)');
+
+  console.log(collection?.products.filters);
+
+  const tags = collection?.products.filters.find(
+    (p) => p.id === 'filter.p.tag',
+  );
+  const availability = collection?.products.filters
+    .find((k) => k.id === 'filter.v.availability')
+    ?.values.find((p) => (p.input as any)?.includes('true'));
+
+  const cityCount = tags?.values
+    .filter((p) => p.label.includes('city'))
+    .reduce((total, city) => {
+      return total + city.count;
+    }, 0);
 
   return (
     <Container size="xl">
-      <Flex direction={{base: 'column', sm: 'row'}} mt={rem(100)} gap="xl">
-        <Flex
-          style={{order: isMobile ? 2 : undefined}}
-          flex="1"
-          direction="column"
-          justify="center"
-        >
-          <Group my="xs" justify="space-between">
-            <Title order={1}>{product?.title}</Title>
-          </Group>
+      <Flex direction="column" mt={rem(100)} gap="xs">
+        <Avatar
+          alt={product.featuredImage?.altText || 'Product Image'}
+          src={product.featuredImage?.url}
+          size={rem(150)}
+          style={{border: '3px solid rgba(243, 175, 228, 0.7)'}}
+        />
 
-          <Text
-            size="xl"
-            c="dimmed"
-            fw={400}
-            dangerouslySetInnerHTML={{__html: product.descriptionHtml}}
-          ></Text>
-        </Flex>
-        <Flex
-          style={{order: isMobile ? 1 : undefined}}
-          flex="1"
-          justify="flex-end"
-        >
-          <Image
-            alt={product.featuredImage?.altText || 'Product Image'}
-            src={product.featuredImage?.url}
-            radius="lg"
-            height="auto"
-            width="100%"
-          />
-        </Flex>
+        <Title order={1}>{product?.title}</Title>
+
+        <Text size="xl" c="dimmed" fw={400}>
+          {product.description}
+        </Text>
       </Flex>
 
       <Card
@@ -127,9 +120,22 @@ export default function Product() {
         style={{border: '1px solid rgba(243, 175, 228, 0.25)'}}
         my={rem(50)}
       >
-        <Title order={2} c="gray" fw="400">
-          Alle Skønhedseksperter der tilbyder den ydelse
-        </Title>
+        <Flex gap="xl">
+          <Flex direction="column">
+            <Text tt="uppercase" ta="center" fz="sm" c="gray" fw="400">
+              Skønhedseksperter
+            </Text>
+            <Text ta="center" fw="600">
+              {availability?.count}
+            </Text>
+          </Flex>
+          <Flex direction="column">
+            <Text tt="uppercase" ta="center" fz="sm" c="gray" fw="400">
+              Byer
+            </Text>
+            <Text ta="center">{cityCount}</Text>
+          </Flex>
+        </Flex>
       </Card>
       <Stack gap="lg" my={rem(50)}>
         {collection?.products.nodes ? (
@@ -170,9 +176,10 @@ function TreatmentProductUser({
     return null;
   }
 
-  const variant = product.variants.nodes[0];
   const professions =
     (JSON.parse(user.professions?.value || '[]') as Array<string>) || [];
+
+  console.log(product.user?.reference?.collection?.reference?.products.nodes);
 
   return (
     <Card withBorder p="xl" radius="lg">
@@ -210,7 +217,7 @@ function TreatmentProductUser({
           </div>
         </Flex>
 
-        <SimpleGrid cols={{base: 1, sm: 4}}>
+        <SimpleGrid cols={{base: 1, sm: 2, md: 4}}>
           <ArtistProduct user={user} product={product} />
         </SimpleGrid>
       </Stack>
@@ -223,7 +230,7 @@ export function ArtistProduct({
   product,
 }: {
   user: UserCollectionFragment;
-  product: TreatmentProductFragment;
+  product: TreatmentsForCollectionFragment;
 }) {
   const productId = parseGid(product?.id).id;
   const locations = convertLocations(product.locations?.references?.nodes);
@@ -256,15 +263,9 @@ export function ArtistProduct({
               ))}
             </Flex>
           </Flex>
-          <Text
-            c="dimmed"
-            size="md"
-            fw={400}
-            lineClamp={3}
-            dangerouslySetInnerHTML={{
-              __html: product?.descriptionHtml || 'ingen beskrivelse',
-            }}
-          ></Text>
+          <Text c="dimmed" size="md" fw={400} lineClamp={3}>
+            {product.description}
+          </Text>
         </Stack>
 
         <Group
@@ -299,7 +300,6 @@ const TREATMENT_WITH_COLLECTION_HANDLER_FRAGMENT = `#graphql
   fragment TreatmentWithCollectionHandler on Product {
     id
     title
-    descriptionHtml
     description
     productType
     handle
@@ -377,6 +377,14 @@ const USER_COLLECTION_FRAGMENT = `#graphql
             nodes {
               id
               title
+              description
+              handle
+              vendor
+              productType
+              duration: metafield(key: "duration", namespace: "booking") {
+                id
+                value
+              }
             }
           }
         }
@@ -394,7 +402,6 @@ const TREATMENTS_FOR_COLLECTION = `#graphql
     description
     handle
     vendor
-    descriptionHtml
     productType
     variants(first: 1) {
       nodes {
@@ -410,7 +417,7 @@ const TREATMENTS_FOR_COLLECTION = `#graphql
       }
     }
     locations: metafield(key: "locations", namespace: "booking") {
-      references(first: 10) {
+      references(first: 3) {
         nodes {
           ...Location
         }
@@ -460,7 +467,17 @@ const TREATMENT_COLLECTION = `#graphql
         last: $last,
         before: $startCursor,
         after: $endCursor,
+        filters: [{productMetafield: {namespace: "booking", key: "hide_from_profile", value: "false"}}, {productMetafield: {namespace: "system", key: "active",value: "true"}}]
       ) {
+        filters {
+          id
+          label
+          values {
+            input
+            label
+            count
+          }
+        }
         nodes {
           ...TreatmentsForCollection
         }
