@@ -2138,7 +2138,7 @@ export type GetUserProductsQuery = {
   >;
 };
 
-export type CategoryFragment = Pick<
+export type CategoryWithChildrenFragment = Pick<
   StorefrontAPI.Collection,
   'id' | 'title' | 'handle' | 'description'
 > & {
@@ -2166,12 +2166,12 @@ export type CategoryFragment = Pick<
   >;
 };
 
-export type CategoriesQueryVariables = StorefrontAPI.Exact<{
+export type CategoriesWithChildrenQueryVariables = StorefrontAPI.Exact<{
   country?: StorefrontAPI.InputMaybe<StorefrontAPI.CountryCode>;
   language?: StorefrontAPI.InputMaybe<StorefrontAPI.LanguageCode>;
 }>;
 
-export type CategoriesQuery = {
+export type CategoriesWithChildrenQuery = {
   collection?: StorefrontAPI.Maybe<
     Pick<
       StorefrontAPI.Collection,
@@ -3925,9 +3925,9 @@ interface GeneratedQueryTypes {
     return: GetUserProductsQuery;
     variables: GetUserProductsQueryVariables;
   };
-  '#graphql\n  #graphql\n  fragment CategoryStorefront on Collection {\n    id\n    title\n    children: metafield(key: "children", namespace: "booking") {\n      references(first: 20) {\n        nodes {\n          ... on Collection {\n            id\n            title\n            products(first: 30) {\n              nodes {\n                id\n                title\n                descriptionHtml\n              }\n            }\n          }\n        }\n      }\n    }\n  }\n\n  query Categories(\n    $country: CountryCode\n    $language: LanguageCode\n  ) @inContext(country: $country, language: $language) {\n    collection(handle: "alle-behandlinger") {\n      ...Category\n    }\n  }\n': {
-    return: CategoriesQuery;
-    variables: CategoriesQueryVariables;
+  '#graphql\n  #graphql\n  fragment CategoryWithChildren on Collection {\n    id\n    title\n    handle\n    description\n    image {\n      id\n      url\n      altText\n      width\n      height\n    }\n    children: metafield(key: "children", namespace: "booking") {\n      id\n      type\n      references(first: 20) {\n        nodes {\n          ... on Collection {\n            id\n            title\n            handle\n            description\n            image {\n              id\n              url\n              altText\n              width\n              height\n            }\n          }\n        }\n      }\n    }\n  }\n\n  query CategoriesWithChildren(\n    $country: CountryCode\n    $language: LanguageCode\n  ) @inContext(country: $country, language: $language) {\n    collection(handle: "alle-behandlinger") {\n      ...CategoryWithChildren\n    }\n  }\n': {
+    return: CategoriesWithChildrenQuery;
+    variables: CategoriesWithChildrenQueryVariables;
   };
   '#graphql\n  #graphql\n  fragment ProductCreateVariant on ProductVariant {\n    id\n    title\n    compareAtPrice {\n      amount\n      currencyCode\n    }\n    price {\n      amount\n      currencyCode\n    }\n    product {\n      title\n      handle\n    }\n    selectedOptions {\n      name\n      value\n    }\n  }\n\n  query ProductCreateVariantId(\n    $country: CountryCode\n    $Id: ID!\n    $language: LanguageCode\n    $selectedOptions: [SelectedOptionInput!]!\n  ) @inContext(country: $country, language: $language) {\n    product(id: $Id) {\n      ...on Product {\n        selectedVariant: variantBySelectedOptions(selectedOptions: $selectedOptions) {\n          ...ProductCreateVariant\n        }\n      }\n    }\n  }\n': {
     return: ProductCreateVariantIdQuery;
