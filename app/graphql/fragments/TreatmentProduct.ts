@@ -8,6 +8,7 @@ export const TREATMENT_PRODUCT = `#graphql
     descriptionHtml
     productType
     handle
+    vendor
     featuredImage {
       id
       altText
@@ -17,6 +18,7 @@ export const TREATMENT_PRODUCT = `#graphql
     }
     variants(first: 1) {
       nodes {
+        id
         compareAtPrice {
           amount
           currencyCode
