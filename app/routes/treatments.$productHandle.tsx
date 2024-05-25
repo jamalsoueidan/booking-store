@@ -74,9 +74,15 @@ export async function loader({params, request, context}: LoaderFunctionArgs) {
     });
   }
 
+  if (!product.collection?.reference) {
+    throw new Response(`Product > collection not found`, {
+      status: 404,
+    });
+  }
+
   const {collection} = await storefront.query(TREATMENT_COLLECTION, {
     variables: {
-      handle: product.collection?.reference?.handle || '',
+      handle: product.collection.reference.handle,
       ...paginationVariables,
     },
   });
