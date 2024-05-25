@@ -3851,9 +3851,36 @@ export type UserCollectionFragment = Pick<StorefrontAPI.Metaobject, 'id'> & {
               | 'vendor'
               | 'productType'
             > & {
+              variants: {
+                nodes: Array<
+                  Pick<StorefrontAPI.ProductVariant, 'id'> & {
+                    compareAtPrice?: StorefrontAPI.Maybe<
+                      Pick<StorefrontAPI.MoneyV2, 'amount' | 'currencyCode'>
+                    >;
+                    price: Pick<
+                      StorefrontAPI.MoneyV2,
+                      'amount' | 'currencyCode'
+                    >;
+                  }
+                >;
+              };
               duration?: StorefrontAPI.Maybe<
                 Pick<StorefrontAPI.Metafield, 'id' | 'value'>
               >;
+              locations?: StorefrontAPI.Maybe<{
+                references?: StorefrontAPI.Maybe<{
+                  nodes: Array<
+                    Pick<StorefrontAPI.Metaobject, 'id'> & {
+                      locationType?: StorefrontAPI.Maybe<
+                        Pick<StorefrontAPI.MetaobjectField, 'value'>
+                      >;
+                      originType?: StorefrontAPI.Maybe<
+                        Pick<StorefrontAPI.MetaobjectField, 'value'>
+                      >;
+                    }
+                  >;
+                }>;
+              }>;
             }
           >;
         };
@@ -3879,8 +3906,13 @@ export type TreatmentsForCollectionFragment = Pick<
   locations?: StorefrontAPI.Maybe<{
     references?: StorefrontAPI.Maybe<{
       nodes: Array<
-        Pick<StorefrontAPI.Metaobject, 'id' | 'handle'> & {
-          fields: Array<Pick<StorefrontAPI.MetaobjectField, 'value' | 'key'>>;
+        Pick<StorefrontAPI.Metaobject, 'id'> & {
+          locationType?: StorefrontAPI.Maybe<
+            Pick<StorefrontAPI.MetaobjectField, 'value'>
+          >;
+          originType?: StorefrontAPI.Maybe<
+            Pick<StorefrontAPI.MetaobjectField, 'value'>
+          >;
         }
       >;
     }>;
@@ -3931,9 +3963,39 @@ export type TreatmentsForCollectionFragment = Pick<
                     | 'vendor'
                     | 'productType'
                   > & {
+                    variants: {
+                      nodes: Array<
+                        Pick<StorefrontAPI.ProductVariant, 'id'> & {
+                          compareAtPrice?: StorefrontAPI.Maybe<
+                            Pick<
+                              StorefrontAPI.MoneyV2,
+                              'amount' | 'currencyCode'
+                            >
+                          >;
+                          price: Pick<
+                            StorefrontAPI.MoneyV2,
+                            'amount' | 'currencyCode'
+                          >;
+                        }
+                      >;
+                    };
                     duration?: StorefrontAPI.Maybe<
                       Pick<StorefrontAPI.Metafield, 'id' | 'value'>
                     >;
+                    locations?: StorefrontAPI.Maybe<{
+                      references?: StorefrontAPI.Maybe<{
+                        nodes: Array<
+                          Pick<StorefrontAPI.Metaobject, 'id'> & {
+                            locationType?: StorefrontAPI.Maybe<
+                              Pick<StorefrontAPI.MetaobjectField, 'value'>
+                            >;
+                            originType?: StorefrontAPI.Maybe<
+                              Pick<StorefrontAPI.MetaobjectField, 'value'>
+                            >;
+                          }
+                        >;
+                      }>;
+                    }>;
                   }
                 >;
               };
@@ -4021,9 +4083,12 @@ export type TreatmentCollectionQuery = {
           locations?: StorefrontAPI.Maybe<{
             references?: StorefrontAPI.Maybe<{
               nodes: Array<
-                Pick<StorefrontAPI.Metaobject, 'id' | 'handle'> & {
-                  fields: Array<
-                    Pick<StorefrontAPI.MetaobjectField, 'value' | 'key'>
+                Pick<StorefrontAPI.Metaobject, 'id'> & {
+                  locationType?: StorefrontAPI.Maybe<
+                    Pick<StorefrontAPI.MetaobjectField, 'value'>
+                  >;
+                  originType?: StorefrontAPI.Maybe<
+                    Pick<StorefrontAPI.MetaobjectField, 'value'>
                   >;
                 }
               >;
@@ -4077,9 +4142,45 @@ export type TreatmentCollectionQuery = {
                             | 'vendor'
                             | 'productType'
                           > & {
+                            variants: {
+                              nodes: Array<
+                                Pick<StorefrontAPI.ProductVariant, 'id'> & {
+                                  compareAtPrice?: StorefrontAPI.Maybe<
+                                    Pick<
+                                      StorefrontAPI.MoneyV2,
+                                      'amount' | 'currencyCode'
+                                    >
+                                  >;
+                                  price: Pick<
+                                    StorefrontAPI.MoneyV2,
+                                    'amount' | 'currencyCode'
+                                  >;
+                                }
+                              >;
+                            };
                             duration?: StorefrontAPI.Maybe<
                               Pick<StorefrontAPI.Metafield, 'id' | 'value'>
                             >;
+                            locations?: StorefrontAPI.Maybe<{
+                              references?: StorefrontAPI.Maybe<{
+                                nodes: Array<
+                                  Pick<StorefrontAPI.Metaobject, 'id'> & {
+                                    locationType?: StorefrontAPI.Maybe<
+                                      Pick<
+                                        StorefrontAPI.MetaobjectField,
+                                        'value'
+                                      >
+                                    >;
+                                    originType?: StorefrontAPI.Maybe<
+                                      Pick<
+                                        StorefrontAPI.MetaobjectField,
+                                        'value'
+                                      >
+                                    >;
+                                  }
+                                >;
+                              }>;
+                            }>;
                           }
                         >;
                       };
@@ -4252,7 +4353,7 @@ interface GeneratedQueryTypes {
     return: GetProductWithCollectionHandleQuery;
     variables: GetProductWithCollectionHandleQueryVariables;
   };
-  '#graphql\n  #graphql\n  #graphql\n  fragment UserCollection on Metaobject {\n    id\n    aboutMe: field(key: "about_me") {\n      value\n    }\n    active: field(key: "active") {\n      value\n    }\n    fullname: field(key: "fullname") {\n      value\n    }\n    professions: field(key: "professions") {\n      value\n    }\n    shortDescription: field(key: "short_description") {\n      value\n    }\n    username: field(key: "username") {\n      value\n    }\n    theme: field(key: "theme") {\n      value\n    }\n    image: field(key: "image") {\n      reference {\n        ... on MediaImage {\n          image {\n            width\n            height\n            url(transform: {})\n          }\n        }\n      }\n    }\n    collection: field(key: "collection") {\n      reference {\n        ... on Collection {\n          id\n          products(first: 3, sortKey: BEST_SELLING) {\n            nodes {\n              id\n              title\n              description\n              handle\n              vendor\n              productType\n              duration: metafield(key: "duration", namespace: "booking") {\n                id\n                value\n              }\n            }\n          }\n        }\n      }\n    }\n  }\n\n  #graphql\n  fragment Location on Metaobject {\n    id\n    handle\n    fields {\n      value\n      key\n    }\n  }\n\n  fragment TreatmentsForCollection on Product {\n    id\n    title\n    description\n    handle\n    vendor\n    productType\n    variants(first: 1) {\n      nodes {\n        id\n        compareAtPrice {\n          amount\n          currencyCode\n        }\n        price {\n          amount\n          currencyCode\n        }\n      }\n    }\n    locations: metafield(key: "locations", namespace: "booking") {\n      references(first: 3) {\n        nodes {\n          ...Location\n        }\n      }\n    }\n    duration: metafield(key: "duration", namespace: "booking") {\n      id\n      value\n    }\n    user: metafield(key: "user", namespace: "booking") {\n      reference {\n        ...UserCollection\n      }\n    }\n\n  }\n\n  query TreatmentCollection(\n    $handle: String!\n    $country: CountryCode\n    $language: LanguageCode\n    $first: Int\n    $last: Int\n    $startCursor: String\n    $endCursor: String\n  ) @inContext(country: $country, language: $language) {\n    collection(handle: $handle) {\n      products(\n        first: $first,\n        last: $last,\n        before: $startCursor,\n        after: $endCursor,\n        filters: [{productMetafield: {namespace: "booking", key: "hide_from_profile", value: "false"}}, {productMetafield: {namespace: "system", key: "active",value: "true"}}]\n      ) {\n        filters {\n          id\n          label\n          values {\n            input\n            label\n            count\n          }\n        }\n        nodes {\n          ...TreatmentsForCollection\n        }\n        pageInfo {\n          hasPreviousPage\n          hasNextPage\n          endCursor\n          startCursor\n        }\n      }\n    }\n  }\n': {
+  '#graphql\n  #graphql\n  #graphql\n  fragment UserCollection on Metaobject {\n    id\n    aboutMe: field(key: "about_me") {\n      value\n    }\n    active: field(key: "active") {\n      value\n    }\n    fullname: field(key: "fullname") {\n      value\n    }\n    professions: field(key: "professions") {\n      value\n    }\n    shortDescription: field(key: "short_description") {\n      value\n    }\n    username: field(key: "username") {\n      value\n    }\n    theme: field(key: "theme") {\n      value\n    }\n    image: field(key: "image") {\n      reference {\n        ... on MediaImage {\n          image {\n            width\n            height\n            url(transform: {})\n          }\n        }\n      }\n    }\n    collection: field(key: "collection") {\n      reference {\n        ... on Collection {\n          id\n          products(first: 3, sortKey: BEST_SELLING) {\n            nodes {\n              id\n              title\n              description\n              handle\n              vendor\n              productType\n              variants(first: 1) {\n                nodes {\n                  id\n                  compareAtPrice {\n                    amount\n                    currencyCode\n                  }\n                  price {\n                    amount\n                    currencyCode\n                  }\n                }\n              }\n              duration: metafield(key: "duration", namespace: "booking") {\n                id\n                value\n              }\n              locations: metafield(key: "locations", namespace: "booking") {\n                references(first: 3) {\n                  nodes {\n                    ... on Metaobject {\n                      id\n                      locationType: field(key: "location_type") {\n                        value\n                      }\n                      originType: field(key: "origin_type") {\n                        value\n                      }\n                    }\n                  }\n                }\n              }\n            }\n          }\n        }\n      }\n    }\n  }\n\n  fragment TreatmentsForCollection on Product {\n    id\n    title\n    description\n    handle\n    vendor\n    productType\n    variants(first: 1) {\n      nodes {\n        id\n        compareAtPrice {\n          amount\n          currencyCode\n        }\n        price {\n          amount\n          currencyCode\n        }\n      }\n    }\n    locations: metafield(key: "locations", namespace: "booking") {\n      references(first: 3) {\n        nodes {\n          ... on Metaobject {\n            id\n            locationType: field(key: "location_type") {\n              value\n            }\n            originType: field(key: "origin_type") {\n              value\n            }\n          }\n        }\n      }\n    }\n    duration: metafield(key: "duration", namespace: "booking") {\n      id\n      value\n    }\n    user: metafield(key: "user", namespace: "booking") {\n      reference {\n        ...UserCollection\n      }\n    }\n\n  }\n\n  query TreatmentCollection(\n    $handle: String!\n    $country: CountryCode\n    $language: LanguageCode\n    $first: Int\n    $last: Int\n    $startCursor: String\n    $endCursor: String\n  ) @inContext(country: $country, language: $language) {\n    collection(handle: $handle) {\n      products(\n        first: $first,\n        last: $last,\n        before: $startCursor,\n        after: $endCursor,\n        filters: [{productMetafield: {namespace: "booking", key: "hide_from_profile", value: "false"}}, {productMetafield: {namespace: "system", key: "active",value: "true"}}]\n      ) {\n        filters {\n          id\n          label\n          values {\n            input\n            label\n            count\n          }\n        }\n        nodes {\n          ...TreatmentsForCollection\n        }\n        pageInfo {\n          hasPreviousPage\n          hasNextPage\n          endCursor\n          startCursor\n        }\n      }\n    }\n  }\n': {
     return: TreatmentCollectionQuery;
     variables: TreatmentCollectionQueryVariables;
   };

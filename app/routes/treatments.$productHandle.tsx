@@ -8,6 +8,7 @@ import {Link, useLoaderData} from '@remix-run/react';
 import {
   UNSTABLE_Analytics as Analytics,
   getPaginationVariables,
+  Pagination,
   parseGid,
 } from '@shopify/hydrogen';
 
@@ -16,6 +17,7 @@ import {
   Badge,
   Button,
   Card,
+  CardProps,
   Container,
   Flex,
   Group,
@@ -35,8 +37,10 @@ import type {
   UserCollectionFragment,
 } from 'storefrontapi.generated';
 import {LocationIcon} from '~/components/LocationIcon';
-import {LOCATION_FRAGMENT} from '~/graphql/fragments/Location';
-import {convertLocations} from '~/lib/convertLocations';
+import type {
+  CustomerLocationBaseLocationType,
+  CustomerLocationBaseOriginType,
+} from '~/lib/api/model';
 import {durationToTime} from '~/lib/duration';
 
 export const meta: MetaFunction<typeof loader> = ({data}) => {
@@ -48,7 +52,7 @@ export async function loader({params, request, context}: LoaderFunctionArgs) {
   const {storefront} = context;
 
   const paginationVariables = getPaginationVariables(request, {
-    pageBy: 10,
+    pageBy: 5,
   });
 
   if (!productHandle) {
@@ -65,7 +69,9 @@ export async function loader({params, request, context}: LoaderFunctionArgs) {
   );
 
   if (!product) {
-    throw new Response(null, {status: 404});
+    throw new Response(`Product ${productHandle} not found`, {
+      status: 404,
+    });
   }
 
   const {collection} = await storefront.query(TREATMENT_COLLECTION, {
@@ -75,13 +81,20 @@ export async function loader({params, request, context}: LoaderFunctionArgs) {
     },
   });
 
+  if (!collection) {
+    throw new Response(
+      `Collection ${product.collection?.reference?.handle} not found`,
+      {
+        status: 404,
+      },
+    );
+  }
+
   return json({product, collection});
 }
 
 export default function Product() {
   const {product, collection} = useLoaderData<typeof loader>();
-
-  console.log(collection?.products.filters);
 
   const tags = collection?.products.filters.find(
     (p) => p.id === 'filter.p.tag',
@@ -118,7 +131,7 @@ export default function Product() {
         withBorder
         bg="rgba(243, 175, 228, 0.15)"
         style={{border: '1px solid rgba(243, 175, 228, 0.25)'}}
-        my={rem(50)}
+        mt={rem(50)}
       >
         <Flex gap="xl">
           <Flex direction="column">
@@ -137,15 +150,41 @@ export default function Product() {
           </Flex>
         </Flex>
       </Card>
-      <Stack gap="lg" my={rem(50)}>
-        {collection?.products.nodes ? (
-          collection?.products.nodes.map((product) => (
-            <TreatmentProductUser key={product.id} product={product} />
-          ))
-        ) : (
-          <Text fw="500">Ingen skønhedseksperter til den pågældende pris.</Text>
+
+      <Pagination connection={collection.products}>
+        {({nodes, isLoading, PreviousLink, NextLink}) => (
+          <Stack gap="xl" mb={rem(50)}>
+            <Flex justify="center">
+              <Button
+                variant="default"
+                component={PreviousLink}
+                loading={isLoading}
+                size="xl"
+              >
+                ↑ Hent tidligere
+              </Button>
+            </Flex>
+            <Flex direction="column" gap="lg">
+              {nodes.map((product) => {
+                return (
+                  <TreatmentProductUser key={product.id} product={product} />
+                );
+              })}
+            </Flex>
+            <Flex justify="center">
+              <Button
+                variant="default"
+                component={NextLink}
+                loading={isLoading}
+                size="xl"
+              >
+                Hent flere ↓
+              </Button>
+            </Flex>
+          </Stack>
         )}
-      </Stack>
+      </Pagination>
+
       <Analytics.ProductView
         data={{
           products: [
@@ -178,8 +217,6 @@ function TreatmentProductUser({
 
   const professions =
     (JSON.parse(user.professions?.value || '[]') as Array<string>) || [];
-
-  console.log(product.user?.reference?.collection?.reference?.products.nodes);
 
   return (
     <Card withBorder p="xl" radius="lg">
@@ -217,8 +254,17 @@ function TreatmentProductUser({
           </div>
         </Flex>
 
-        <SimpleGrid cols={{base: 1, sm: 2, md: 4}}>
-          <ArtistProduct user={user} product={product} />
+        <SimpleGrid cols={{base: 1, sm: 2, md: 3}} spacing="xl">
+          <ArtistProduct
+            user={user}
+            product={product}
+            bg="rgba(243, 175, 228, 0.1)"
+          />
+          {product.user?.reference?.collection?.reference?.products.nodes
+            .filter((p) => p.id !== product.id)
+            .map((p) => (
+              <ArtistProduct key={p.id} user={user} product={p} />
+            ))}
         </SimpleGrid>
       </Stack>
     </Card>
@@ -228,12 +274,16 @@ function TreatmentProductUser({
 export function ArtistProduct({
   user,
   product,
+  ...props
 }: {
   user: UserCollectionFragment;
   product: TreatmentsForCollectionFragment;
-}) {
+} & CardProps) {
   const productId = parseGid(product?.id).id;
-  const locations = convertLocations(product.locations?.references?.nodes);
+  const locations = product.locations?.references?.nodes.map((p) => ({
+    locationType: p.locationType?.value as CustomerLocationBaseLocationType,
+    originType: p.originType?.value as CustomerLocationBaseOriginType,
+  }));
 
   return (
     <Card
@@ -241,29 +291,32 @@ export function ArtistProduct({
       withBorder
       component={Link}
       radius="md"
+      p="md"
       data-testid={`service-item-${productId}`}
       to={`/artist/${user.username?.value}/treatment/${product.handle}`}
+      {...props}
     >
       <Flex direction="column" gap="md" h="100%">
-        <Stack gap="6px" style={{flex: 1}}>
+        <Stack gap="sm" style={{flex: 1}}>
           <Flex justify="space-between">
             <Title
               order={2}
-              size={rem(24)}
+              size={rem(20)}
               fw={600}
               lts=".5px"
               data-testid={`service-title-${productId}`}
+              lineClamp={1}
             >
               {product.title}
             </Title>
             <Flex gap="4px">
-              {locations.map((location, index) => (
+              {locations?.map((location, index) => (
                 // eslint-disable-next-line react/no-array-index-key
                 <LocationIcon key={index} location={location} />
               ))}
             </Flex>
           </Flex>
-          <Text c="dimmed" size="md" fw={400} lineClamp={3}>
+          <Text c="dimmed" size="sm" fw={400} lineClamp={3}>
             {product.description}
           </Text>
         </Stack>
@@ -278,10 +331,14 @@ export function ArtistProduct({
         >
           <Flex gap="4px" align="center">
             <IconCalendar
-              style={{width: rem(32), height: rem(32)}}
+              style={{width: rem(18), height: rem(18)}}
               stroke="1"
             />
-            <Text fw="bold" data-testid={`service-duration-text-${productId}`}>
+            <Text
+              fw="bold"
+              fz="xs"
+              data-testid={`service-duration-text-${productId}`}
+            >
               {durationToTime(product.duration?.value || 0)}
             </Text>
           </Flex>
@@ -289,6 +346,8 @@ export function ArtistProduct({
           <PriceBadge
             compareAtPrice={product.variants.nodes[0].compareAtPrice}
             price={product.variants.nodes[0].price}
+            size="sm"
+            py={rem(10)}
           />
         </Group>
       </Flex>
@@ -381,9 +440,37 @@ const USER_COLLECTION_FRAGMENT = `#graphql
               handle
               vendor
               productType
+              variants(first: 1) {
+                nodes {
+                  id
+                  compareAtPrice {
+                    amount
+                    currencyCode
+                  }
+                  price {
+                    amount
+                    currencyCode
+                  }
+                }
+              }
               duration: metafield(key: "duration", namespace: "booking") {
                 id
                 value
+              }
+              locations: metafield(key: "locations", namespace: "booking") {
+                references(first: 3) {
+                  nodes {
+                    ... on Metaobject {
+                      id
+                      locationType: field(key: "location_type") {
+                        value
+                      }
+                      originType: field(key: "origin_type") {
+                        value
+                      }
+                    }
+                  }
+                }
               }
             }
           }
@@ -395,7 +482,6 @@ const USER_COLLECTION_FRAGMENT = `#graphql
 
 const TREATMENTS_FOR_COLLECTION = `#graphql
   ${USER_COLLECTION_FRAGMENT}
-  ${LOCATION_FRAGMENT}
   fragment TreatmentsForCollection on Product {
     id
     title
@@ -419,7 +505,15 @@ const TREATMENTS_FOR_COLLECTION = `#graphql
     locations: metafield(key: "locations", namespace: "booking") {
       references(first: 3) {
         nodes {
-          ...Location
+          ... on Metaobject {
+            id
+            locationType: field(key: "location_type") {
+              value
+            }
+            originType: field(key: "origin_type") {
+              value
+            }
+          }
         }
       }
     }
