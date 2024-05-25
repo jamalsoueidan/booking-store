@@ -17,7 +17,7 @@ import {
   Badge,
   Button,
   Card,
-  CardProps,
+  type CardProps,
   Container,
   Flex,
   Group,
