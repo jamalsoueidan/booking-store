@@ -1,14 +1,30 @@
-import {Button, Flex, SimpleGrid, Stack} from '@mantine/core';
-import {useLoaderData, type MetaFunction} from '@remix-run/react';
+import {
+  AspectRatio,
+  Avatar,
+  Button,
+  Card,
+  Divider,
+  Flex,
+  Group,
+  Image,
+  rem,
+  SimpleGrid,
+  Stack,
+  Text,
+} from '@mantine/core';
+import {Link, useLoaderData, type MetaFunction} from '@remix-run/react';
 import {
   UNSTABLE_Analytics as Analytics,
-  Pagination,
   getPaginationVariables,
+  Pagination,
 } from '@shopify/hydrogen';
 import {json, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
-import {TreatmentCard} from '~/components/treatment/TreatmentCard';
+import type {
+  CategoriesCollectionFilterFragment,
+  CategoriesCollectionFragment,
+  CategoriesCollectionProductFragment,
+} from 'storefrontapi.generated';
 import {Wrapper} from '~/components/Wrapper';
-import {TREATMENT_COLLECTION_FRAGMENT} from '~/graphql/fragments/TreatmentCollection';
 
 export const meta: MetaFunction<typeof loader> = ({data}) => {
   return [
@@ -89,9 +105,179 @@ export default function Collection() {
   );
 }
 
+export function TreatmentCard({
+  product,
+}: {
+  product: CategoriesCollectionFragment;
+}) {
+  return (
+    <Card
+      key={product.handle}
+      withBorder
+      radius="xl"
+      component={Link}
+      bg="transparent"
+      p="0"
+      to={`/treatments/${product.handle}`}
+    >
+      {product.featuredImage && (
+        <AspectRatio ratio={1 / 0.7}>
+          <Image src={product.featuredImage.url} loading="lazy" fit="cover" />
+        </AspectRatio>
+      )}
+      <Text size={rem(20)} fw={500} m="sm" mb="4px" lineClamp={1}>
+        {product.title}
+      </Text>
+      <Flex
+        gap="sm"
+        direction="column"
+        justify="flex-start"
+        style={{flexGrow: 1, position: 'relative'}}
+        mih="38px"
+      >
+        <Text c="dimmed" size="xs" fw={400} lineClamp={2} mx="sm">
+          {product.description || 'ingen beskrivelse'}
+        </Text>
+      </Flex>
+      <Card.Section>
+        <Divider mt="sm" />
+      </Card.Section>
+
+      <Group justify="space-between" m="sm">
+        <Users
+          products={product.collection?.reference?.products.nodes || []}
+          filters={product.collection?.reference?.products.filters || []}
+        />
+        <Button variant="default" size="xs" radius="lg">
+          Se behandling
+        </Button>
+      </Group>
+    </Card>
+  );
+}
+
+function Users({
+  products,
+  filters,
+}: {
+  products: CategoriesCollectionProductFragment[];
+  filters: CategoriesCollectionFilterFragment[];
+}) {
+  if (products.length === 0) {
+    return (
+      <Avatar.Group spacing="xs">
+        <Avatar radius="lg" size="sm">
+          +0
+        </Avatar>
+      </Avatar.Group>
+    );
+  }
+
+  const availability = filters.find((p) => p.id === 'filter.v.availability');
+
+  const highestCount = availability?.values.reduce(
+    (max, obj) => Math.max(max, obj.count),
+    0,
+  );
+
+  const users = products.map((p) => p.user);
+
+  return (
+    <Avatar.Group spacing="xs">
+      {users?.map((user) => (
+        <Avatar
+          key={user?.reference?.id}
+          src={user?.reference?.image?.reference?.image?.url}
+          radius="lg"
+          size="sm"
+        />
+      ))}
+      <Avatar radius="lg" size="sm">
+        +{highestCount}
+      </Avatar>
+    </Avatar.Group>
+  );
+}
+
+export const CATEGORIES_COLLECTION_PRODUCT_USER_FRAGMENT = `#graphql
+  fragment CategoriesCollectionProductUser on Metaobject {
+    id
+    image: field(key: "image") {
+      reference {
+        ... on MediaImage {
+          image {
+            width
+            height
+            url(transform: { maxHeight: 100, maxWidth: 100, crop: CENTER })
+          }
+        }
+      }
+    }
+  }
+` as const;
+
+export const CATEGORIES_COLLECTION_PRODUCT_FRAGMENT = `#graphql
+  ${CATEGORIES_COLLECTION_PRODUCT_USER_FRAGMENT}
+
+  fragment CategoriesCollectionProduct on Product {
+    id
+    user: metafield(key: "user", namespace: "booking") {
+      reference {
+        ...CategoriesCollectionProductUser
+      }
+    }
+  }
+` as const;
+
+export const CATEGORIES_COLLECTION_FILTERS_FRAGMENT = `#graphql
+  fragment CategoriesCollectionFilter on Filter {
+    id
+    label
+    values {
+      count
+    }
+  }
+` as const;
+
+export const CATEGORIES_COLLECTION_FRAGMENT = `#graphql
+  ${CATEGORIES_COLLECTION_PRODUCT_FRAGMENT}
+  ${CATEGORIES_COLLECTION_FILTERS_FRAGMENT}
+
+  fragment CategoriesCollection on Product {
+    id
+    title
+    descriptionHtml
+    description
+    productType
+    handle
+    vendor
+    featuredImage {
+      id
+      altText
+      url(transform: { maxHeight: 250, maxWidth: 250, crop: CENTER })
+      width
+      height
+    }
+    collection: metafield(key: "collection", namespace: "system") {
+      reference {
+        ... on Collection {
+          products(first: 5, sortKey: RELEVANCE, filters: [{productMetafield: {namespace: "booking", key: "hide_from_profile", value: "false"}}, {productMetafield: {namespace: "system", key: "active",value: "true"}}]) {
+            filters {
+              ...CategoriesCollectionFilter
+            }
+            nodes {
+              ...CategoriesCollectionProduct
+            }
+          }
+        }
+      }
+    }
+  }
+` as const;
+
 const COLLECTION_QUERY = `#graphql
-  ${TREATMENT_COLLECTION_FRAGMENT}
-  query Collectionss(
+  ${CATEGORIES_COLLECTION_FRAGMENT}
+  query categoriesCollection(
     $handle: String!
     $country: CountryCode
     $language: LanguageCode
@@ -113,7 +299,7 @@ const COLLECTION_QUERY = `#graphql
         sortKey: TITLE
       ) {
         nodes {
-          ...TreatmentCollection
+          ...CategoriesCollection
         }
         pageInfo {
           hasPreviousPage
