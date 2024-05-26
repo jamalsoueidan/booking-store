@@ -153,7 +153,9 @@ export function Layout({children}: {children: ReactNode}) {
         <MantineProvider>
           <NavigationProgress />
           <ModalsProvider>
-            {!path.includes('/account') && !path.includes('/artist/') ? (
+            {!path.includes('/account') &&
+            !path.includes('/artist/') &&
+            data?.cart ? (
               <Analytics.Provider
                 cart={data.cart}
                 shop={data.shop}

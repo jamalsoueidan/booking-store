@@ -109,13 +109,14 @@ export default function Product() {
   );
   const availability = collection?.products.filters
     .find((k) => k.id === 'filter.v.availability')
-    ?.values.find((p) => (p.input as any)?.includes('true'));
+    ?.values.find((p) => (p.input as any)?.includes('true')) || {count: 0};
 
-  const cityCount = tags?.values
-    .filter((p) => p.label.includes('city'))
-    .reduce((total, city) => {
-      return total + city.count;
-    }, 0);
+  const cityCount =
+    tags?.values
+      .filter((p) => p.label.includes('city'))
+      .reduce((total, city) => {
+        return total + city.count;
+      }, 0) || 0;
 
   return (
     <Container size="xl">
