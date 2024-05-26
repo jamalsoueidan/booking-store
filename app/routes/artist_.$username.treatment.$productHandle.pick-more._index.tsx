@@ -158,40 +158,48 @@ function ArtistTreatmentPickMoreRenderModal({
     >
       {productOptions ? (
         <>
-          <Title order={3} fw={600} mb="sm" fz="h3" ta="center">
-            Påkrævet valg
-          </Title>
-          <Stack gap="md">
-            {required?.map((productWithVariants) => {
-              return (
-                <OptionSelector
-                  key={productWithVariants.id}
-                  productWithVariants={productWithVariants}
-                >
-                  {(props) => {
-                    return <ProductOption {...props} />;
-                  }}
-                </OptionSelector>
-              );
-            })}
-          </Stack>
-          <Title order={3} fw={600} mt="xl" mb="sm" fz="h3" ta="center">
-            Vælg tilvalg:
-          </Title>
-          <Stack gap="md">
-            {choices?.map((productWithVariants) => {
-              return (
-                <OptionSelector
-                  key={productWithVariants.id}
-                  productWithVariants={productWithVariants}
-                >
-                  {(props) => {
-                    return <ProductOption {...props} />;
-                  }}
-                </OptionSelector>
-              );
-            })}
-          </Stack>
+          {required && required.length > 0 ? (
+            <>
+              <Title order={3} fw={600} mb="sm" fz="h3" ta="center">
+                Påkrævet valg
+              </Title>
+              <Stack gap="md">
+                {required?.map((productWithVariants) => {
+                  return (
+                    <OptionSelector
+                      key={productWithVariants.id}
+                      productWithVariants={productWithVariants}
+                    >
+                      {(props) => {
+                        return <ProductOption {...props} />;
+                      }}
+                    </OptionSelector>
+                  );
+                })}
+              </Stack>
+            </>
+          ) : null}
+          {choices && choices.length > 0 ? (
+            <>
+              <Title order={3} fw={600} mt="xl" mb="sm" fz="h3" ta="center">
+                Vælg tilvalg:
+              </Title>
+              <Stack gap="md">
+                {choices?.map((productWithVariants) => {
+                  return (
+                    <OptionSelector
+                      key={productWithVariants.id}
+                      productWithVariants={productWithVariants}
+                    >
+                      {(props) => {
+                        return <ProductOption {...props} />;
+                      }}
+                    </OptionSelector>
+                  );
+                })}
+              </Stack>
+            </>
+          ) : null}
         </>
       ) : null}
 

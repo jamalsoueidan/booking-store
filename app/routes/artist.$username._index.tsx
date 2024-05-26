@@ -93,7 +93,6 @@ function ArtistSchedulesMenu({labels}: {labels: string[]}) {
   const [searchParams] = useSearchParams();
 
   const type = String(searchParams.get('type'));
-  console.log(type);
 
   return (
     <Flex
