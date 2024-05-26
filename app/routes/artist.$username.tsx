@@ -32,9 +32,7 @@ export function shouldRevalidate() {
 export const meta: MetaFunction<typeof loader> = ({data}) => {
   return [
     {
-      title: `BySisters | ${
-        data?.user?.fields.find((k) => k.key === 'fullname')?.value ?? ''
-      }`,
+      title: `BySisters | ${data?.user?.fullname?.value ?? ''}`,
     },
   ];
 };
@@ -76,13 +74,7 @@ export default function UserIndex() {
       >
         <AppShell.Header p="md" bg={`${theme || 'pink'}.6`}>
           <Flex h="100%" gap="md" justify="center" align="center">
-            <Avatar
-              src={
-                image.image?.url ||
-                `https://placehold.co/300x300?text=${username}`
-              }
-              size="86"
-            />
+            <Avatar src={image.url} size="86" />
             <div style={{flex: 1}}>
               <Title order={1} fz="xl">
                 {fullname}
@@ -108,13 +100,7 @@ export default function UserIndex() {
         <AppShell.Navbar bg={`${theme || 'pink'}.6`}>
           <AppShell.Section grow p={rem(48)} component={ScrollArea}>
             <Stack gap="lg">
-              <Avatar
-                src={
-                  image.image?.url ||
-                  `https://placehold.co/300x300?text=${username}`
-                }
-                size="300"
-              />
+              <Avatar src={image.url} size="300" />
 
               <Title order={1}>{fullname}</Title>
               <Text fz="lg">

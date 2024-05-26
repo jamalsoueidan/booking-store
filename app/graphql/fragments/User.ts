@@ -1,15 +1,34 @@
 export const USER_FRAGMENT = `#graphql
   fragment User on Metaobject {
-    id #for key={id}
-    fields {
+    id
+    aboutMe: field(key: "about_me") {
       value
-      key
+    }
+    active: field(key: "active") {
+      value
+    }
+    fullname: field(key: "fullname") {
+      value
+    }
+    professions: field(key: "professions") {
+      value
+    }
+    shortDescription: field(key: "short_description") {
+      value
+    }
+    username: field(key: "username") {
+      value
+    }
+    theme: field(key: "theme") {
+      value
+    }
+    image: field(key: "image") {
       reference {
         ... on MediaImage {
           image {
             width
             height
-            url(transform: {})
+            url(transform: { maxHeight: 250, maxWidth: 250, crop: CENTER })
           }
         }
       }

@@ -22,9 +22,9 @@ import {Carousel} from '@mantine/carousel';
 import {useMediaQuery} from '@mantine/hooks';
 import {useRef} from 'react';
 import type {
+  CategoriesCollectionFragment,
   PageComponentMetaobjectFragment,
   PageFragment,
-  TreatmentCollectionFragment,
   UserFragment,
 } from 'storefrontapi.generated';
 import {ArtistCard} from '~/components/ArtistCard';
@@ -33,14 +33,17 @@ import {ProfessionButton} from '~/components/ProfessionButton';
 import {Slider} from '~/components/Slider';
 import {H1} from '~/components/titles/H1';
 import {H2} from '~/components/titles/H2';
-import {TreatmentCard} from '~/components/treatment/TreatmentCard';
-import {TREATMENT_COLLECTION_FRAGMENT} from '~/graphql/fragments/TreatmentCollection';
+
 import {USER_FRAGMENT} from '~/graphql/fragments/User';
 import {useComponents} from '~/lib/use-components';
 import {
   loader as loaderProfessions,
   type Profession,
 } from './api.users.professions';
+import {
+  CATEGORIES_COLLECTION_FRAGMENT,
+  TreatmentCard,
+} from './categories.($handle)._index';
 
 export function shouldRevalidate() {
   return false;
@@ -75,9 +78,7 @@ export async function loader(args: LoaderFunctionArgs) {
     cache: context.storefront.CacheLong(),
   });
 
-  const users = metaobjects.nodes.filter(
-    (f) => f.fields.find((f) => f.key === 'active')?.value === 'true',
-  );
+  const users = metaobjects.nodes.filter((f) => f.active?.value === 'true');
 
   const components = await context.storefront.query(METAFIELD_QUERY, {
     variables: {
@@ -238,7 +239,7 @@ function FeaturedArtists({
 function RecommendedTreatments({
   products,
 }: {
-  products: TreatmentCollectionFragment[];
+  products: CategoriesCollectionFragment[];
 }) {
   const theme = useMantineTheme();
   const AUTOPLAY_DELAY = useRef(Autoplay({delay: 2000}));
@@ -295,7 +296,7 @@ function RecommendedTreatments({
 }
 
 export const RECOMMENDED_TREATMENTS_QUERY = `#graphql
-  ${TREATMENT_COLLECTION_FRAGMENT}
+  ${CATEGORIES_COLLECTION_FRAGMENT}
   query RecommendedTreatments(
     $query: String!
     $country: CountryCode
@@ -303,7 +304,7 @@ export const RECOMMENDED_TREATMENTS_QUERY = `#graphql
   ) @inContext(country: $country, language: $language) {
     products(first: 10, sortKey: RELEVANCE, query: $query) {
       nodes {
-        ...TreatmentCollection
+        ...CategoriesCollection
       }
     }
   }

@@ -11,7 +11,7 @@ import {
   rem,
 } from '@mantine/core';
 import '@mantine/tiptap/styles.css';
-import {Await, Link, useLoaderData} from '@remix-run/react';
+import {Await, Link, useLoaderData, useSearchParams} from '@remix-run/react';
 import {Suspense} from 'react';
 import {ArtistProduct} from '~/components/artist/ArtistProduct';
 import {GET_USER_PRODUCTS} from '~/graphql/queries/GetUserProducts';
@@ -90,7 +90,10 @@ export default function ArtistIndex() {
 
 function ArtistSchedulesMenu({labels}: {labels: string[]}) {
   const user = useUser();
-  const query = decodeURI(location.search);
+  const [searchParams] = useSearchParams();
+
+  const type = String(searchParams.get('type'));
+  console.log(type);
 
   return (
     <Flex
@@ -102,8 +105,8 @@ function ArtistSchedulesMenu({labels}: {labels: string[]}) {
       <Button
         size="lg"
         radius="lg"
-        variant={location.search === '' ? 'filled' : 'light'}
-        color={location.search === '' ? 'black' : user.theme}
+        variant={type === 'null' ? 'filled' : 'light'}
+        color={type === 'null' ? 'black' : user.theme}
         component={Link}
         to="?"
         data-testid="schedule-button-all"
@@ -116,8 +119,8 @@ function ArtistSchedulesMenu({labels}: {labels: string[]}) {
             size="lg"
             key={label}
             radius="lg"
-            variant={query.includes(label) ? 'filled' : 'light'}
-            color={query.includes(label) ? 'black' : user.theme}
+            variant={type.includes(label) ? 'filled' : 'light'}
+            color={type.includes(label) ? 'black' : user.theme}
             component={Link}
             to={`?type=${label}`}
             data-testid={`schedule-button-${label.toLowerCase()}`}

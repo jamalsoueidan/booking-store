@@ -15,10 +15,8 @@ import {
 } from '~/components/OptionSelector';
 import {LOCATION_FRAGMENT} from '~/graphql/fragments/Location';
 import {TREATMENT_OPTION_FRAGMENT} from '~/graphql/fragments/TreatmentOption';
-import {USER_METAOBJECT_QUERY} from '~/graphql/fragments/UserMetaobject';
 
 import {UserProvider} from '~/hooks/use-user';
-import {useUserMetaobject} from '~/hooks/useUserMetaobject';
 
 export function shouldRevalidate() {
   return false;
@@ -41,12 +39,6 @@ export async function loader({params, request, context}: LoaderFunctionArgs) {
     throw new Response('Expected product handle to be defined', {status: 404});
   }
 
-  const {metaobject: user} = await storefront.query(USER_METAOBJECT_QUERY, {
-    variables: {
-      username,
-    },
-  });
-
   const {product} = await storefront.query(GET_PRODUCT_WITH_OPTIONS, {
     variables: {
       productHandle,
@@ -66,15 +58,14 @@ export async function loader({params, request, context}: LoaderFunctionArgs) {
     });
   }
 
-  return json({product, user});
+  return json({product});
 }
 
 export default function Product() {
-  const {product, user} = useLoaderData<typeof loader>();
-
-  const {username, fullname, image} = useUserMetaobject(user);
+  const {product} = useLoaderData<typeof loader>();
 
   const productOptions = product.options?.references?.nodes;
+  const user = product.user?.reference;
 
   const {totalDuration, totalPrice} = useCalculateDurationAndPrice({
     parentId: product.id,
@@ -95,11 +86,13 @@ export default function Product() {
               p="0"
               variant="transparent"
               component={Link}
-              to={`/artist/${username}`}
+              to={`/artist/${user?.username?.value}`}
               c="black"
-              rightSection={<Avatar src={image.image?.url} size="sm" />}
+              rightSection={
+                <Avatar src={user?.image?.reference?.image?.url} size="sm" />
+              }
             >
-              {fullname}
+              {user?.fullname?.value}
             </Button>
           </Flex>
         </ArtistShell.Header>
@@ -130,9 +123,47 @@ export function ProductImage({
     </AspectRatio>
   );
 }
+const TREATMENT_PRODUCT_USER_FRAGMENT = `#graphql
+  fragment TreatmentProductUser on Metaobject {
+    id
+    aboutMe: field(key: "about_me") {
+      value
+    }
+    active: field(key: "active") {
+      value
+    }
+    fullname: field(key: "fullname") {
+      value
+    }
+    professions: field(key: "professions") {
+      value
+    }
+    shortDescription: field(key: "short_description") {
+      value
+    }
+    username: field(key: "username") {
+      value
+    }
+    theme: field(key: "theme") {
+      value
+    }
+    image: field(key: "image") {
+      reference {
+        ... on MediaImage {
+          image {
+            width
+            height
+            url(transform: { maxHeight: 250, maxWidth: 250, crop: CENTER })
+          }
+        }
+      }
+    }
+  }
+` as const;
 
 export const TREATMENT_PRODUCT_WITH_OPTIONS_FRAGMENT = `#graphql
   ${TREATMENT_OPTION_FRAGMENT}
+  ${TREATMENT_PRODUCT_USER_FRAGMENT}
   ${LOCATION_FRAGMENT}
 
   fragment TreatmentProductWithOptions on Product {
@@ -170,6 +201,11 @@ export const TREATMENT_PRODUCT_WITH_OPTIONS_FRAGMENT = `#graphql
         nodes {
           ...TreatmentOption
         }
+      }
+    }
+    user: metafield(key: "user", namespace: "booking") {
+      reference {
+        ...TreatmentProductUser
       }
     }
     scheduleId: metafield(key: "scheduleId", namespace: "booking") {

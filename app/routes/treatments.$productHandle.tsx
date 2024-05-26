@@ -432,7 +432,7 @@ const USER_COLLECTION_FRAGMENT = `#graphql
           image {
             width
             height
-            url(transform: {})
+            url(transform: { maxHeight: 250, maxWidth: 250, crop: CENTER })
           }
         }
       }
