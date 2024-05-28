@@ -52,9 +52,6 @@ export function AccountSchedulesCreate() {
         schema,
       });
     },
-    onSubmit() {
-      close();
-    },
     shouldValidate: 'onSubmit',
     shouldRevalidate: 'onInput',
   });
