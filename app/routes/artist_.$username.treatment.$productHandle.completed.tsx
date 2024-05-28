@@ -97,7 +97,7 @@ export const loader = async ({
 
 export default function ArtistTreatmentsBooking() {
   const data = useLoaderData<typeof loader>();
-  const {user} = useOutletContext<SerializeFrom<typeof rootLoader>>();
+  const {product} = useOutletContext<SerializeFrom<typeof rootLoader>>();
 
   const productMarkup = data.products.nodes.map((product) => {
     const pickedVariant = product.variants.nodes[0];
@@ -130,7 +130,7 @@ export default function ArtistTreatmentsBooking() {
   return (
     <>
       <ArtistShell.Main>
-        <TreatmentArtistCardComplete user={user} />
+        <TreatmentArtistCardComplete user={product.user?.reference} />
 
         <Card.Section py="md">
           <Divider />

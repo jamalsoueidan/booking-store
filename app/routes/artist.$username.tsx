@@ -61,7 +61,7 @@ export default function UserIndex() {
   const {user} = useLoaderData<typeof loader>();
   const isMobile = useMediaQuery('(max-width: 48em)');
 
-  const {username, fullname, active, shortDescription, image, theme} =
+  const {fullname, active, shortDescription, image, theme} =
     useUserMetaobject(user);
 
   return (

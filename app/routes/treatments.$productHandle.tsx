@@ -51,10 +51,6 @@ export async function loader({params, request, context}: LoaderFunctionArgs) {
   const {productHandle} = params;
   const {storefront} = context;
 
-  const paginationVariables = getPaginationVariables(request, {
-    pageBy: 5,
-  });
-
   if (!productHandle) {
     throw new Error('Expected product handle to be defined');
   }
@@ -80,6 +76,10 @@ export async function loader({params, request, context}: LoaderFunctionArgs) {
       status: 404,
     });
   }
+
+  const paginationVariables = getPaginationVariables(request, {
+    pageBy: 5,
+  });
 
   const {collection} = await storefront.query(TREATMENT_COLLECTION, {
     variables: {
@@ -107,6 +107,7 @@ export default function Product() {
   const tags = collection?.products.filters.find(
     (p) => p.id === 'filter.p.tag',
   );
+
   const availability = collection?.products.filters
     .find((k) => k.id === 'filter.v.availability')
     ?.values.find((p) => (p.input as any)?.includes('true')) || {count: 0};

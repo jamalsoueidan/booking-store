@@ -22,24 +22,21 @@ import {Carousel} from '@mantine/carousel';
 import {useMediaQuery} from '@mantine/hooks';
 import {useRef} from 'react';
 import type {
+  ArticleUserFragment,
   CategoriesCollectionFragment,
   PageComponentMetaobjectFragment,
   PageFragment,
-  UserFragment,
 } from 'storefrontapi.generated';
 import {ArtistCard} from '~/components/ArtistCard';
 import {useField} from '~/components/blocks/utils';
-import {ProfessionButton} from '~/components/ProfessionButton';
 import {Slider} from '~/components/Slider';
 import {H1} from '~/components/titles/H1';
 import {H2} from '~/components/titles/H2';
 
-import {USER_FRAGMENT} from '~/graphql/fragments/User';
+import {ProfessionButton} from '~/components/ProfessionButton';
+import {ARTICLE_USER_FRAGMENT} from '~/graphql/fragments/ArtistUser';
+import {getTags} from '~/lib/tags';
 import {useComponents} from '~/lib/use-components';
-import {
-  loader as loaderProfessions,
-  type Profession,
-} from './api.users.professions';
 import {
   CATEGORIES_COLLECTION_FRAGMENT,
   TreatmentCard,
@@ -62,6 +59,11 @@ export async function loader(args: LoaderFunctionArgs) {
   const {context} = args;
   const {storefront} = context;
 
+  const tags = await getTags(
+    context.env.PUBLIC_STORE_DOMAIN,
+    context.env.PRIVATE_API_ACCESS_TOKEN,
+  );
+
   const {products: recommendedTreatments} = await storefront.query(
     RECOMMENDED_TREATMENTS_QUERY,
     {
@@ -72,13 +74,9 @@ export async function loader(args: LoaderFunctionArgs) {
     },
   );
 
-  const professions = await loaderProfessions(args).then((r) => r.json());
-
-  const {metaobjects} = await storefront.query(USERS_QUERY, {
+  const {data} = await storefront.query(USERS_QUERY, {
     cache: context.storefront.CacheLong(),
   });
-
-  const users = metaobjects.nodes.filter((f) => f.active?.value === 'true');
 
   const components = await context.storefront.query(METAFIELD_QUERY, {
     variables: {
@@ -92,14 +90,15 @@ export async function loader(args: LoaderFunctionArgs) {
 
   return json({
     recommendedTreatments,
-    users,
+    users: data?.users.nodes || [],
     components,
-    professions,
+    tags,
   });
 }
 
 export default function Homepage() {
-  const data = useLoaderData<typeof loader>();
+  const {users, recommendedTreatments, components, tags} =
+    useLoaderData<typeof loader>();
 
   return (
     <>
@@ -150,9 +149,9 @@ export default function Homepage() {
         </Container>
       </Box>
 
-      <FeaturedArtists users={data.users} professions={data.professions} />
-      <RecommendedTreatments products={data.recommendedTreatments.nodes} />
-      <DynamicComponents components={data.components.metaobject} />
+      <FeaturedArtists users={users as any} tags={tags} />
+      <RecommendedTreatments products={recommendedTreatments.nodes} />
+      <DynamicComponents components={components.metaobject} />
     </>
   );
 }
@@ -170,10 +169,10 @@ function DynamicComponents({
 
 function FeaturedArtists({
   users,
-  professions,
+  tags,
 }: {
-  users: UserFragment[];
-  professions?: Array<Profession>;
+  users: ArticleUserFragment[];
+  tags?: Record<string, string[]>;
 }) {
   const theme = useMantineTheme();
   const isMobile = useMediaQuery('(max-width: 62em)');
@@ -190,21 +189,20 @@ function FeaturedArtists({
             Mød vores [talentfulde eksperter]
           </H2>
 
-          <ScrollArea
-            h="auto"
-            w="100%"
-            type={isMobile ? 'always' : 'never'}
-            py={isMobile ? 'md' : undefined}
-          >
-            <Flex justify="center" gap={isMobile ? 'sm' : 'lg'}>
-              {professions?.map((profession) => (
-                <ProfessionButton
-                  key={profession.translation}
-                  profession={profession}
-                />
-              ))}
-            </Flex>
-          </ScrollArea>
+          {tags && tags['profession'] ? (
+            <ScrollArea
+              h="auto"
+              w="100%"
+              type={isMobile ? 'always' : 'never'}
+              py={isMobile ? 'md' : undefined}
+            >
+              <Flex justify="center" gap={isMobile ? 'sm' : 'lg'}>
+                {tags['profession']?.map((profession) => (
+                  <ProfessionButton key={profession} profession={profession} />
+                ))}
+              </Flex>
+            </ScrollArea>
+          ) : null}
 
           <SimpleGrid cols={{base: 2, sm: 3, md: 5}} spacing="xl">
             {users.map((user) => (
@@ -311,14 +309,16 @@ export const RECOMMENDED_TREATMENTS_QUERY = `#graphql
 ` as const;
 
 export const USERS_QUERY = `#graphql
-  ${USER_FRAGMENT}
+  ${ARTICLE_USER_FRAGMENT}
   query FrontUsers(
     $country: CountryCode
     $language: LanguageCode
   ) @inContext(country: $country, language: $language) {
-    metaobjects(type: "user", first: 20) { #we have increased to 20 incase some users is active=false, we cannot filtre on metaobjects
-      nodes {
-        ...User
+    data: blog(id: "gid://shopify/Blog/105364226375") {
+      users: articles(first: 5, sortKey: PUBLISHED_AT, reverse: true) {
+        nodes {
+          ...ArticleUser
+        }
       }
     }
   }
