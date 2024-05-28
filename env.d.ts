@@ -35,6 +35,7 @@ declare global {
    */
   interface Env {
     SESSION_SECRET: string;
+    PRIVATE_API_ACCESS_TOKEN: string;
     PUBLIC_STOREFRONT_API_TOKEN: string;
     PRIVATE_STOREFRONT_API_TOKEN: string;
     PUBLIC_STORE_DOMAIN: string;

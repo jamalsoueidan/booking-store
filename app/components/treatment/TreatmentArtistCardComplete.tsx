@@ -20,7 +20,7 @@ export const TreatmentArtistCardComplete = ({
             {fullname}
           </Text>
         </div>
-        <Avatar src={image.image?.url} radius={0} size={64} />
+        <Avatar src={image.url} radius={0} size={64} />
       </Group>
     </div>
   );

@@ -27,6 +27,7 @@ export const ProfessionURL: Record<string, string> = {
 };
 
 export const ProfessionTranslations: Record<string, string> = {
+  all: 'Alle',
   nail_technician: 'Negletekniker',
   esthetician: 'Kosmetolog',
   hair_stylist: 'Frisør',

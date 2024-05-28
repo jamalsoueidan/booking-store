@@ -1,47 +1,38 @@
 import {Avatar, rem, Space, Title, UnstyledButton} from '@mantine/core';
-import {useMediaQuery} from '@mantine/hooks';
-import {useNavigate, useSearchParams} from '@remix-run/react';
+import {Link, useSearchParams} from '@remix-run/react';
 import {modifyImageUrl} from '~/lib/image';
-import {type Profession} from '~/routes/api.users.professions';
+import {
+  ProfessionTranslations,
+  ProfessionURL,
+} from '~/routes/api.users.professions';
 import classes from './ProfessionButton.module.css';
 
 export const ProfessionButton = ({
   profession,
   reset,
 }: {
-  profession: Profession;
+  profession: string;
   reset?: boolean;
 }) => {
-  const isMobile = useMediaQuery('(max-width: 62em)');
   const [searchParams] = useSearchParams();
-  const navigate = useNavigate(); // Get the navigate function
 
   const professionSearchParams = searchParams.get('profession') || '';
-
-  const navigateTo = () => {
-    if (reset) {
-      navigate(`/artists`);
-    } else {
-      const newSearchParams = new URLSearchParams(searchParams);
-      newSearchParams.set('profession', profession.profession);
-      navigate(`/artists/search?${newSearchParams.toString()}`);
-    }
-  };
 
   return (
     <UnstyledButton
       className={classes.button}
-      onClick={navigateTo}
+      component={Link}
+      to={reset ? '/artists' : `/artists?profession=${profession}`}
       data-checked={
-        professionSearchParams === profession.profession ||
+        professionSearchParams === profession ||
         (reset && !professionSearchParams)
       }
     >
       <Avatar
-        src={modifyImageUrl(profession.url, '200x200')}
-        alt={profession.translation}
+        src={modifyImageUrl(ProfessionURL[profession], '200x200')}
+        alt={ProfessionTranslations[profession]}
         radius="100%"
-        size={isMobile ? rem(90) : rem(100)}
+        size={rem(90)}
       />
       <Space h="xs" />
       <Title
@@ -51,7 +42,7 @@ export const ProfessionButton = ({
         ta="center"
         fz={{base: 'xs', sm: 'md'}}
       >
-        {profession.translation}
+        {ProfessionTranslations[profession]}
       </Title>
     </UnstyledButton>
   );
