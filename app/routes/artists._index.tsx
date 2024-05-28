@@ -172,8 +172,8 @@ export const UserCard = ({article}: {article: ArticleUserFragment}) => {
           'https://placehold.co/400x600?text=Ekspert'
         }
         style={{
-          borderTopLeftRadius: '3%',
-          borderTopRightRadius: '3%',
+          borderTopLeftRadius: '3.2%',
+          borderTopRightRadius: '3.2%',
         }}
       />
 
@@ -182,8 +182,8 @@ export const UserCard = ({article}: {article: ArticleUserFragment}) => {
         c="white"
         style={{
           position: 'absolute',
-          right: 0,
-          top: 0,
+          right: 1,
+          top: 1,
           borderBottomLeftRadius: '15%',
           borderTopRightRadius: '15%',
           padding: '5px',
