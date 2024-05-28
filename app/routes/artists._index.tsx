@@ -49,7 +49,7 @@ export const loader = async ({context, request}: LoaderFunctionArgs) => {
     reverse = true;
   }
 
-  if (sort === 'name') {
+  if (sort === 'title') {
     sortKey = 'TITLE';
   }
 
@@ -62,6 +62,24 @@ export const loader = async ({context, request}: LoaderFunctionArgs) => {
   if (profession) {
     query.push(`tag:profession-${profession}`);
   }
+
+  const gender = searchParams.get('gender');
+  if (gender) {
+    query.push(`tag:gender-${gender}`);
+  }
+
+  const days = searchParams.get('days');
+  if (days) {
+    const d = days.split(',');
+    query.push(`tag:day-${d.join(' OR tag:day-')}`);
+  }
+
+  const lang = searchParams.get('lang');
+  if (lang) {
+    const l = lang.split(',').filter((l) => l.length > 0);
+    query.push(`tag:speak-${l.join(' OR tag:speak-')}`);
+  }
+
   const paginationVariables = getPaginationVariables(request, {
     pageBy: 5,
   });
@@ -70,7 +88,7 @@ export const loader = async ({context, request}: LoaderFunctionArgs) => {
     variables: {
       sortKey,
       reverse,
-      ...(query.length > 0 ? {query: query.join(' OR ')} : {}),
+      ...(query.length > 0 ? {query: query.join(' AND ')} : {}),
       ...paginationVariables,
     },
     cache: context.storefront.CacheShort(),
