@@ -1,8 +1,10 @@
 import {
+  BackgroundImage,
   Badge,
   Button,
   Flex,
   Image,
+  Mark,
   rem,
   SimpleGrid,
   Stack,
@@ -10,11 +12,7 @@ import {
   UnstyledButton,
 } from '@mantine/core';
 import {Link, useLoaderData} from '@remix-run/react';
-import {
-  getPaginationVariables,
-  Pagination,
-  Image as ShopifyImage,
-} from '@shopify/hydrogen';
+import {getPaginationVariables, Pagination} from '@shopify/hydrogen';
 import {type ArticleSortKeys} from '@shopify/hydrogen/storefront-api-types';
 import {
   json,
@@ -24,6 +22,7 @@ import {
 import {type ArticleUserFragment} from 'storefrontapi.generated';
 import {METAFIELD_QUERY} from '~/data/fragments';
 import {ARTICLE_USER_FRAGMENT} from '~/graphql/fragments/ArtistUser';
+import {splitTags} from '~/lib/tags';
 import {ProfessionTranslations} from './api.users.professions';
 
 export const meta: MetaFunction = () => {
@@ -153,24 +152,47 @@ export const UserCard = ({article}: {article: ArticleUserFragment}) => {
     user?.professions?.value || '[]',
   ) as Array<string>;
 
+  const tags = splitTags(article.tags);
+
   return (
     <UnstyledButton
       component={Link}
       to={`/artist/${user?.username?.value}`}
-      style={{borderRadius: '3%', border: '1px solid #ccc'}}
+      style={{
+        borderRadius: '3%',
+        border: '1px solid #ccc',
+        position: 'relative',
+      }}
     >
-      <Image
-        component={ShopifyImage}
-        sizes="(min-width: 45em) 50vw, 100vw"
-        aspectRatio="2/5"
-        src={user?.image?.reference?.image?.url}
+      <BackgroundImage
+        component={Image}
+        mih={rem(300)}
+        src={
+          user?.image?.reference?.image?.url ||
+          'https://placehold.co/400x600?text=Ekspert'
+        }
         style={{
           borderTopLeftRadius: '3%',
           borderTopRightRadius: '3%',
         }}
-        fallbackSrc="https://placehold.co/400x600?text=Ekspert"
-        loading="lazy"
       />
+
+      <Mark
+        color="black"
+        c="white"
+        style={{
+          position: 'absolute',
+          right: 0,
+          top: 0,
+          borderBottomLeftRadius: '15%',
+          borderTopRightRadius: '15%',
+          padding: '5px',
+          opacity: 0.7,
+        }}
+      >
+        {tags['city'][0].toUpperCase()}
+      </Mark>
+
       <Stack p="xs" pb="xs" pt="6px" gap="6px">
         <div>
           <Text fz="md" fw={600} c="black">

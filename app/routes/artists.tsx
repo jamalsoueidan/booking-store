@@ -5,6 +5,8 @@ import {
   Divider,
   Drawer,
   Flex,
+  Group,
+  InputLabel,
   Radio,
   ScrollArea,
   Select,
@@ -18,7 +20,16 @@ import {
   useSearchParams,
 } from '@remix-run/react';
 import {json, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
-import {IconArrowDown, IconFilter} from '@tabler/icons-react';
+import {
+  IconArrowDown,
+  IconArrowsSort,
+  IconFilter,
+  IconFlag,
+  IconGenderFemale,
+  IconNetwork,
+  IconWorld,
+  IconWorldCheck,
+} from '@tabler/icons-react';
 import {VisualTeaser} from '~/components/blocks/VisualTeaser';
 import {ProfessionButton} from '~/components/ProfessionButton';
 import {METAFIELD_QUERY} from '~/data/fragments';
@@ -215,8 +226,11 @@ export default function Artists() {
             label="Skønhedseksperter profession:"
             placeholder="Alle professioner"
             onChange={onChangeProfession}
+            leftSection={<IconNetwork />}
             data={tags['profession'].map((p) => ({
-              label: ProfessionTranslations[p],
+              label: `${ProfessionTranslations[
+                p
+              ][0].toUpperCase()}${ProfessionTranslations[p].substring(1)}`,
               value: p,
             }))}
             clearable
@@ -228,14 +242,19 @@ export default function Artists() {
             label="Vis skønhedseksperter fra byer:"
             placeholder="Alle byer"
             onChange={onChangeCity}
-            data={tags['city']}
+            leftSection={<IconWorld />}
+            data={tags['city'].map((p) => ({
+              label: `${p[0].toUpperCase()}${p.substring(1)}`,
+              value: p,
+            }))}
             clearable
           />
           <Select
             size="md"
             value={sortValue}
             label="Sortere skønhedseksperter efter:"
-            placeholder="#"
+            leftSection={<IconArrowsSort />}
+            placeholder="Vælge sortering"
             onChange={onChangeSort}
             data={[
               {label: 'Navn', value: 'title'},
@@ -245,47 +264,52 @@ export default function Artists() {
             clearable
           />
 
-          <Radio.Group
-            value={genderValue}
-            onChange={onChangeGender}
-            label="Køn"
-            labelProps={{fz: 'md', mb: '3px'}}
-          >
-            <Stack gap="3px">
-              <Radio value={null!} label="Begge" />
-              <Radio value="woman" label="Kvinde" />
-              <Radio value="man" label="Mand" />
-            </Stack>
-          </Radio.Group>
+          <Divider />
+          <div>
+            <Group gap="xs" mb="xs">
+              <IconGenderFemale />
+              <InputLabel size="md">Skønhedsekspert køn?</InputLabel>
+            </Group>
+            <Radio.Group value={genderValue} onChange={onChangeGender}>
+              <Stack gap="3px">
+                <Radio value={null!} label="Begge" />
+                <Radio value="woman" label="Kvinde" />
+                <Radio value="man" label="Mand" />
+              </Stack>
+            </Radio.Group>
+          </div>
 
-          <Checkbox.Group
-            value={daysValue}
-            onChange={onChangeDays}
-            label="Skønhedsekspert arbejdsdage?"
-            labelProps={{fz: 'md', mb: '3px'}}
-          >
-            <Stack gap="3px">
-              <Checkbox value="monday" label="Mandag" />
-              <Checkbox value="tuesday" label="Tirsdag" />
-              <Checkbox value="wednesday" label="Onsdag" />
-              <Checkbox value="thursday" label="Torsdag" />
-              <Checkbox value="friday" label="Fredag" />
-              <Checkbox value="saturday" label="Lørdag" />
-              <Checkbox value="sunday" label="Søndag" />
-            </Stack>
-          </Checkbox.Group>
-
-          <Checkbox.Group
-            value={langValue}
-            onChange={onChangeLang}
-            label="Skønhedseksperten taler?"
-            labelProps={{fz: 'md', mb: '3px'}}
-          >
-            <Stack gap="3px">
-              <Checkbox value="english" label="English" />
-              <Checkbox value="danish" label="Dansk" />
-            </Stack>
-          </Checkbox.Group>
+          <Divider />
+          <div>
+            <Group gap="xs" mb="xs">
+              <IconWorldCheck />
+              <InputLabel size="md">Skønhedsekspert arbejdsdage?</InputLabel>
+            </Group>
+            <Checkbox.Group value={daysValue} onChange={onChangeDays}>
+              <Stack gap="3px">
+                <Checkbox value="monday" label="Mandag" />
+                <Checkbox value="tuesday" label="Tirsdag" />
+                <Checkbox value="wednesday" label="Onsdag" />
+                <Checkbox value="thursday" label="Torsdag" />
+                <Checkbox value="friday" label="Fredag" />
+                <Checkbox value="saturday" label="Lørdag" />
+                <Checkbox value="sunday" label="Søndag" />
+              </Stack>
+            </Checkbox.Group>
+          </div>
+          <Divider />
+          <div>
+            <Group gap="xs" mb="xs">
+              <IconFlag />
+              <InputLabel size="md">Skønhedseksperten taler</InputLabel>
+            </Group>
+            <Checkbox.Group value={langValue} onChange={onChangeLang}>
+              <Stack gap="3px">
+                <Checkbox value="english" label="English" />
+                <Checkbox value="danish" label="Dansk" />
+              </Stack>
+            </Checkbox.Group>
+          </div>
         </Stack>
       </Drawer>
 

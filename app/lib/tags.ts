@@ -12,7 +12,11 @@ export async function getTags(domain: string, accesstoken: string) {
 
   const {tags} = (await response.json()) as {tags: []};
 
-  const categorizedTags = tags.reduce((acc, tag: string) => {
+  return splitTags(tags);
+}
+
+export function splitTags(tags: string[]) {
+  return tags.reduce((acc, tag: string) => {
     const [category, ...rest] = tag.split('-');
     const value = rest.join('-');
 
@@ -24,6 +28,4 @@ export async function getTags(domain: string, accesstoken: string) {
 
     return acc;
   }, {} as Record<string, string[]>);
-
-  return categorizedTags;
 }
