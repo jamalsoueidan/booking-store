@@ -25,17 +25,16 @@ import {getCustomer} from '~/lib/get-customer';
 
 export async function loader({context}: LoaderFunctionArgs) {
   const customerId = await getCustomer({context});
-  const response = await getBookingShopifyApi().customerLocationList(
-    customerId,
-    context,
-  );
+  const {payload: locations} =
+    await getBookingShopifyApi().customerLocationList(customerId, context);
 
-  return json(response.payload);
+  return json({locations});
 }
 
 export default function AccountLocationsIndex() {
-  const loaderData = useLoaderData<typeof loader>();
+  const {locations} = useLoaderData<typeof loader>();
 
+  console.log(locations);
   return (
     <>
       <AccountTitle heading="Lokationer">
@@ -49,7 +48,7 @@ export default function AccountLocationsIndex() {
       </AccountTitle>
 
       <AccountContent>
-        {loaderData.length === 0 ? (
+        {!locations || locations.length === 0 ? (
           <Flex gap="lg" direction="column" justify="center" align="center">
             <ThemeIcon variant="white" size={rem(100)}>
               <IconMoodSad stroke={1} style={{width: '100%', height: '100%'}} />
@@ -69,7 +68,7 @@ export default function AccountLocationsIndex() {
         ) : null}
 
         <SimpleGrid cols={{base: 1, md: 2, lg: 3}} data-testid="locations-grid">
-          {loaderData.map((d) => (
+          {locations?.map((d) => (
             <Card
               key={d._id}
               padding="sm"

@@ -14,7 +14,6 @@ import {
   useLocation,
   useNavigate,
   useParams,
-  type ShouldRevalidateFunction,
 } from '@remix-run/react';
 import {json, redirect, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
 import {IconMoodSad, IconPlus} from '@tabler/icons-react';
@@ -25,13 +24,6 @@ import {AccountTitle} from '~/components/account/AccountTitle';
 import {getBookingShopifyApi} from '~/lib/api/bookingShopifyApi';
 import {getCustomer} from '~/lib/get-customer';
 import {AccountSchedulesCreate} from './account.schedules.create';
-
-export const shouldRevalidate: ShouldRevalidateFunction = ({
-  currentParams,
-  nextParams,
-}) => {
-  return currentParams !== nextParams;
-};
 
 export async function loader({context, request}: LoaderFunctionArgs) {
   const customerId = await getCustomer({context});

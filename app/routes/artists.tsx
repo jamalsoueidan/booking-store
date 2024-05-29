@@ -29,6 +29,7 @@ import {
   IconNetwork,
   IconWorld,
   IconWorldCheck,
+  IconX,
 } from '@tabler/icons-react';
 import {VisualTeaser} from '~/components/blocks/VisualTeaser';
 import {ProfessionButton} from '~/components/ProfessionButton';
@@ -139,7 +140,7 @@ export default function Artists() {
     setSearchParams(
       (prev) => {
         if (value) {
-          prev.set('days', value.join(','));
+          prev.set('days', value.filter((v) => v.length > 0).join(','));
         } else {
           prev.delete('days');
         }
@@ -154,7 +155,7 @@ export default function Artists() {
     setSearchParams(
       (prev) => {
         if (value) {
-          prev.set('lang', value.join(','));
+          prev.set('lang', value.filter((v) => v.length > 0).join(','));
         } else {
           prev.delete('lang');
         }
@@ -179,6 +180,21 @@ export default function Artists() {
     );
   };
 
+  const deleteSearchParams = () => {
+    setSearchParams(
+      (prev) => {
+        prev.delete('city');
+        prev.delete('sort');
+        prev.delete('gender');
+        prev.delete('days');
+        prev.delete('lang');
+        prev.delete('profession');
+        return prev;
+      },
+      {preventScrollReset: true},
+    );
+  };
+
   return (
     <>
       <VisualTeaser component={visualTeaser} />
@@ -193,7 +209,7 @@ export default function Artists() {
               ))}
             </Flex>
           </ScrollArea>
-          <Flex justify="center">
+          <Flex justify="center" gap="md">
             <Button
               variant="outline"
               c="black"
@@ -205,6 +221,18 @@ export default function Artists() {
             >
               Filtre
             </Button>
+            {searchParams.size > 0 ? (
+              <Button
+                variant="outline"
+                c="black"
+                color="gray.3"
+                onClick={deleteSearchParams}
+                size="xl"
+                rightSection={<IconX />}
+              >
+                Nulstil filtre
+              </Button>
+            ) : null}
           </Flex>
           <Outlet />
         </Stack>

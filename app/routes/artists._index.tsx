@@ -36,7 +36,7 @@ export const loader = async ({context, request}: LoaderFunctionArgs) => {
   const searchParams = new URLSearchParams(url.search);
 
   const query = [];
-  let sortKey: ArticleSortKeys = 'PUBLISHED_AT';
+  let sortKey: ArticleSortKeys = 'RELEVANCE';
   let reverse = false;
 
   const sort = searchParams.get('sort');

@@ -315,7 +315,7 @@ export const USERS_QUERY = `#graphql
     $language: LanguageCode
   ) @inContext(country: $country, language: $language) {
     data: blog(id: "gid://shopify/Blog/105364226375") {
-      users: articles(first: 5, sortKey: PUBLISHED_AT, reverse: true) {
+      users: articles(first: 4, sortKey: PUBLISHED_AT, reverse: true) {
         nodes {
           ...ArticleUser
         }
