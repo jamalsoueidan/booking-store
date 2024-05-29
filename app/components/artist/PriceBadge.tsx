@@ -41,11 +41,11 @@ export function PriceBadge({
     <Badge variant="outline" size="lg" color="black" {...props}>
       {compareAtPrice && compareAtPrice?.amount !== '0.0' ? (
         <Text fz={size.compareAtPrice} component="span" td="line-through">
-          <Money as="span" data={compareAtPrice} />
+          <Money as="span" data={compareAtPrice} withoutTrailingZeros />
         </Text>
       ) : null}{' '}
       <Text fz={size.compareAtPrice} fw="bold" component="span">
-        <Money as="span" data={price} />
+        <Money as="span" data={price} withoutTrailingZeros />
       </Text>
     </Badge>
   );

@@ -4,7 +4,7 @@ import {
   type MetaFunction,
 } from '@shopify/remix-oxygen';
 
-import {Link, useLoaderData} from '@remix-run/react';
+import {Link, useLoaderData, useSearchParams} from '@remix-run/react';
 import {
   UNSTABLE_Analytics as Analytics,
   getPaginationVariables,
@@ -17,20 +17,25 @@ import {
   Badge,
   Button,
   Card,
-  type CardProps,
   Container,
   Flex,
   Group,
   rem,
+  Select,
   SimpleGrid,
   Stack,
   Text,
   Title,
+  type CardProps,
 } from '@mantine/core';
 
 import {PriceBadge} from '~/components/artist/PriceBadge';
 import {ProfessionTranslations} from './api.users.professions';
 
+import {
+  ProductFilter,
+  type ProductCollectionSortKeys,
+} from '@shopify/hydrogen/storefront-api-types';
 import {IconCalendar} from '@tabler/icons-react';
 import type {
   TreatmentsForCollectionFragment,
@@ -81,9 +86,47 @@ export async function loader({params, request, context}: LoaderFunctionArgs) {
     pageBy: 5,
   });
 
+  const url = new URL(request.url);
+  const searchParams = new URLSearchParams(url.search);
+
+  let sortKey: ProductCollectionSortKeys = 'RELEVANCE';
+  let reverse = false;
+
+  const sort = searchParams.get('sort');
+  if (sort === 'newest') {
+    sortKey = 'CREATED';
+    reverse = true;
+  } else if (sort === 'cheapest') {
+    sortKey = 'PRICE';
+    reverse = false;
+  } else if (sort === 'expensive') {
+    sortKey = 'PRICE';
+    reverse = true;
+  }
+
+  const filters: ProductFilter[] = [
+    {productMetafield: {namespace: 'system', key: 'default', value: 'true'}},
+    {
+      productMetafield: {
+        namespace: 'booking',
+        key: 'hide_from_profile',
+        value: 'false',
+      },
+    },
+    {productMetafield: {namespace: 'system', key: 'active', value: 'true'}},
+  ];
+
+  const city = searchParams.get('city');
+  if (city) {
+    filters.push({tag: `city-${city}`});
+  }
+
   const {collection} = await storefront.query(TREATMENT_COLLECTION, {
     variables: {
       handle: product.collection.reference.handle,
+      sortKey,
+      reverse,
+      filters,
       ...paginationVariables,
     },
     cache: storefront.CacheShort(),
@@ -103,6 +146,7 @@ export async function loader({params, request, context}: LoaderFunctionArgs) {
 
 export default function Product() {
   const {product, collection} = useLoaderData<typeof loader>();
+  const [searchParams, setSearchParams] = useSearchParams();
 
   const tags = collection?.products.filters.find(
     (p) => p.id === 'filter.p.tag',
@@ -112,12 +156,47 @@ export default function Product() {
     .find((k) => k.id === 'filter.v.availability')
     ?.values.find((p) => (p.input as any)?.includes('true')) || {count: 0};
 
+  const cities = tags?.values
+    .filter((p) => p.label.includes('city'))
+    .map((c) => {
+      const [tag, ...rest] = c.label.split('-');
+      return rest.join('-');
+    });
+
   const cityCount =
     tags?.values
       .filter((p) => p.label.includes('city'))
       .reduce((total, city) => {
         return total + city.count;
       }, 0) || 0;
+
+  const onChangeSort = (value: string | null) => {
+    setSearchParams(
+      (prev) => {
+        if (value) {
+          prev.set('sort', value.toLowerCase());
+        } else {
+          prev.delete('sort');
+        }
+        return prev;
+      },
+      {preventScrollReset: true},
+    );
+  };
+
+  const onChangeCity = (value: string | null) => {
+    setSearchParams(
+      (prev) => {
+        if (value) {
+          prev.set('city', value.toLowerCase());
+        } else {
+          prev.delete('city');
+        }
+        return prev;
+      },
+      {preventScrollReset: true},
+    );
+  };
 
   return (
     <Container size="xl">
@@ -141,22 +220,55 @@ export default function Product() {
         withBorder
         bg="rgba(243, 175, 228, 0.15)"
         style={{border: '1px solid rgba(243, 175, 228, 0.25)'}}
-        mt={rem(50)}
+        mt={rem(15)}
+        mb={rem(60)}
       >
-        <Flex gap="xl">
-          <Flex direction="column">
-            <Text tt="uppercase" ta="center" fz="sm" c="gray" fw="400">
-              Skønhedseksperter
-            </Text>
-            <Text ta="center" fw="600">
-              {availability?.count}
-            </Text>
+        <Flex
+          direction={{base: 'column', sm: 'row'}}
+          justify="space-between"
+          gap="md"
+        >
+          <Flex gap="xl">
+            <Flex direction="column">
+              <Text tt="uppercase" ta="center" fz="sm" c="gray" fw="400">
+                Skønhedseksperter
+              </Text>
+              <Text ta="center" fw="600">
+                {availability?.count}
+              </Text>
+            </Flex>
+            <Flex direction="column">
+              <Text tt="uppercase" ta="center" fz="sm" c="gray" fw="400">
+                Byer
+              </Text>
+              <Text ta="center">{cityCount}</Text>
+            </Flex>
           </Flex>
-          <Flex direction="column">
-            <Text tt="uppercase" ta="center" fz="sm" c="gray" fw="400">
-              Byer
-            </Text>
-            <Text ta="center">{cityCount}</Text>
+
+          <Flex justify="flex-end" gap="md">
+            <Select
+              size="lg"
+              placeholder="Vælge by:"
+              onChange={onChangeCity}
+              clearable
+              data={
+                cities?.map((c) => ({
+                  label: `${c[0].toUpperCase()}${c.substring(1)}`,
+                  value: c,
+                })) || []
+              }
+            />
+            <Select
+              size="lg"
+              placeholder="Sortere efter:"
+              onChange={onChangeSort}
+              clearable
+              data={[
+                {label: 'Nyeste', value: 'newest'},
+                {label: 'Billigst', value: 'cheapest'},
+                {label: 'Dyrest', value: 'expensive'},
+              ]}
+            />
           </Flex>
         </Flex>
       </Card>
@@ -333,11 +445,11 @@ export function ArtistProduct({
 
         <Group
           justify="space-between"
-          bg="gray.1"
+          bg={props.bg ? 'pink.1' : 'gray.1'}
           w="100%"
           px="md"
           py="sm"
-          style={{borderRadius: '25px'}}
+          style={{borderRadius: '5px'}}
         >
           <Flex gap="4px" align="center">
             <IconCalendar
@@ -564,6 +676,9 @@ const TREATMENT_COLLECTION = `#graphql
     $last: Int
     $startCursor: String
     $endCursor: String
+    $filters: [ProductFilter!]!
+    $reverse: Boolean = true
+    $sortKey: ProductCollectionSortKeys = PRICE
   ) @inContext(country: $country, language: $language) {
     collection(handle: $handle) {
       products(
@@ -571,7 +686,9 @@ const TREATMENT_COLLECTION = `#graphql
         last: $last,
         before: $startCursor,
         after: $endCursor,
-        filters: [{productMetafield: {namespace: "system", key: "default", value: "true"}}, {productMetafield: {namespace: "booking", key: "hide_from_profile", value: "false"}}, {productMetafield: {namespace: "system", key: "active",value: "true"}}]
+        filters: $filters,
+        sortKey: $sortKey,
+        reverse: $reverse
       ) {
         filters {
           id
