@@ -261,7 +261,7 @@ export const CATEGORIES_COLLECTION_FRAGMENT = `#graphql
     collection: metafield(key: "collection", namespace: "system") {
       reference {
         ... on Collection {
-          products(first: 5, sortKey: RELEVANCE, filters: [{productMetafield: {namespace: "booking", key: "hide_from_profile", value: "false"}}, {productMetafield: {namespace: "system", key: "active",value: "true"}}]) {
+          products(first: 5, sortKey: RELEVANCE, filters: [{productMetafield: {namespace: "system", key: "default", value: "true"}}, {productMetafield: {namespace: "booking", key: "hide_from_profile", value: "false"}}, {productMetafield: {namespace: "system", key: "active",value: "true"}}]) {
             filters {
               ...CategoriesCollectionFilter
             }

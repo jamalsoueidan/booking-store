@@ -61,28 +61,35 @@ export default function ArtistIndex() {
   return (
     <Suspense fallback={<Skeleton height={8} radius="xl" />}>
       <Await resolve={data.collection}>
-        {({collection}) => (
-          <Flex direction="column" gap={{base: 'md', sm: 'xl'}}>
-            {collection ? (
-              <ArtistSchedulesMenu
-                labels={Array.from(
-                  new Set(collection?.products.nodes.map((p) => p.productType)),
-                )}
-              />
-            ) : null}
-            <SimpleGrid cols={{base: 1, md: 2}} spacing="lg">
-              {collection?.products.nodes.map((product) => (
-                <ArtistProduct key={product.id} product={product} />
-              ))}
-            </SimpleGrid>
-            {user.aboutMe ? (
-              <Stack gap="xs" mt="xl">
-                <Title size={rem(28)}>Om mig</Title>
-                <Text dangerouslySetInnerHTML={{__html: user.aboutMe}}></Text>
-              </Stack>
-            ) : null}
-          </Flex>
-        )}
+        {({collection}) => {
+          const productTypesFilter =
+            collection?.products.filters.find(
+              (filter) => filter.label === 'Produkttype',
+            )?.values || [];
+
+          const productTypes = productTypesFilter
+            .filter((f) => f.count > 0)
+            .map((f) => f.label);
+
+          return (
+            <Flex direction="column" gap={{base: 'md', sm: 'xl'}}>
+              {collection ? (
+                <ArtistSchedulesMenu labels={productTypes} />
+              ) : null}
+              <SimpleGrid cols={{base: 1, md: 2}} spacing="lg">
+                {collection?.products.nodes.map((product) => (
+                  <ArtistProduct key={product.id} product={product} />
+                ))}
+              </SimpleGrid>
+              {user.aboutMe ? (
+                <Stack gap="xs" mt="xl">
+                  <Title size={rem(28)}>Om mig</Title>
+                  <Text dangerouslySetInnerHTML={{__html: user.aboutMe}}></Text>
+                </Stack>
+              ) : null}
+            </Flex>
+          );
+        }}
       </Await>
     </Suspense>
   );
