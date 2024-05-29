@@ -185,7 +185,7 @@ export default function Artists() {
 
       <Container size="xl">
         <Stack gap="xl">
-          <ScrollArea h="auto" type="auto" py={{basee: 'md', sm: undefined}}>
+          <ScrollArea h="auto" type="auto" py={{base: 'md', sm: undefined}}>
             <Flex gap={{base: 'sm', sm: 'lg'}} justify="center">
               <ProfessionButton profession={'all'} reset />
               {tags['profession'].map((profession) => (

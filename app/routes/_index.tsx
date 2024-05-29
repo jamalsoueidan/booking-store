@@ -27,7 +27,6 @@ import type {
   PageComponentMetaobjectFragment,
   PageFragment,
 } from 'storefrontapi.generated';
-import {ArtistCard} from '~/components/ArtistCard';
 import {useField} from '~/components/blocks/utils';
 import {Slider} from '~/components/Slider';
 import {H1} from '~/components/titles/H1';
@@ -37,6 +36,7 @@ import {ProfessionButton} from '~/components/ProfessionButton';
 import {ARTICLE_USER_FRAGMENT} from '~/graphql/fragments/ArtistUser';
 import {getTags} from '~/lib/tags';
 import {useComponents} from '~/lib/use-components';
+import {UserCard} from './artists._index';
 import {
   CATEGORIES_COLLECTION_FRAGMENT,
   TreatmentCard,
@@ -204,9 +204,9 @@ function FeaturedArtists({
             </ScrollArea>
           ) : null}
 
-          <SimpleGrid cols={{base: 2, sm: 3, md: 5}} spacing="xl">
+          <SimpleGrid cols={{base: 2, sm: 3, md: 4}} spacing="xl">
             {users.map((user) => (
-              <ArtistCard key={user.id} artist={user} />
+              <UserCard key={user.id} article={user} />
             ))}
           </SimpleGrid>
           <Flex justify="center">

@@ -15,12 +15,14 @@ import {
 import {
   Avatar,
   Badge,
+  Box,
   Button,
   Card,
   Container,
   Flex,
   Group,
   rem,
+  ScrollArea,
   Select,
   SimpleGrid,
   Stack,
@@ -342,7 +344,7 @@ function TreatmentProductUser({
 
   return (
     <Card withBorder p="xl" radius="lg">
-      <Stack gap="xl">
+      <Stack gap="md">
         <Flex justify="space-between">
           <Flex gap="lg" align="center">
             <Avatar src={user.image?.reference?.image?.url} size={rem(90)} />
@@ -353,7 +355,7 @@ function TreatmentProductUser({
               <Text c="dimmed" lineClamp={1}>
                 {user.shortDescription?.value}
               </Text>
-              <Flex gap="xs" mt={rem(8)}>
+              <Flex gap="xs" mt={rem(8)} wrap="wrap">
                 {professions.map((p) => (
                   <Badge key={p} color="pink.4">
                     {ProfessionTranslations[p]}
@@ -362,7 +364,7 @@ function TreatmentProductUser({
               </Flex>
             </Stack>
           </Flex>
-          <div>
+          <Box visibleFrom="sm">
             <Button
               variant="outline"
               c="black"
@@ -373,21 +375,44 @@ function TreatmentProductUser({
             >
               Vis profil
             </Button>
-          </div>
+          </Box>
         </Flex>
 
-        <SimpleGrid cols={{base: 1, sm: 2, md: 3}} spacing="xl">
-          <ArtistProduct
-            user={user}
-            product={product}
-            bg="rgba(243, 175, 228, 0.1)"
-          />
-          {product.user?.reference?.collection?.reference?.products.nodes
-            .filter((p) => p.id !== product.id)
-            .map((p) => (
-              <ArtistProduct key={p.id} user={user} product={p} />
-            ))}
-        </SimpleGrid>
+        <ScrollArea h="auto" type="auto" offsetScrollbars="x">
+          <SimpleGrid cols={{base: 1, sm: 2, md: 4}}>
+            <ArtistProduct
+              user={user}
+              product={product}
+              bg="rgba(243, 175, 228, 0.1)"
+              style={{flex: 1}}
+            />
+            {product.user?.reference?.collection?.reference?.products.nodes
+              .filter((p) => p.id !== product.id)
+              .map((p) => (
+                <ArtistProduct
+                  key={p.id}
+                  user={user}
+                  product={p}
+                  style={{flex: 1}}
+                  visibleFrom="sm"
+                />
+              ))}
+          </SimpleGrid>
+        </ScrollArea>
+
+        <Box hiddenFrom="sm">
+          <Button
+            variant="outline"
+            c="black"
+            color="gray.3"
+            radius="lg"
+            component={Link}
+            to={`/artist/${user.username?.value}`}
+            w="100%"
+          >
+            Vis profil
+          </Button>
+        </Box>
       </Stack>
     </Card>
   );
@@ -554,7 +579,7 @@ const USER_COLLECTION_FRAGMENT = `#graphql
       reference {
         ... on Collection {
           id
-          products(first: 3, sortKey: BEST_SELLING, filters: [{tag: "treatments"}, {productMetafield: {namespace: "booking",key: "hide_from_profile",value: "false"}}]) {
+          products(first: 4, sortKey: BEST_SELLING, filters: [{tag: "treatments"}, {productMetafield: {namespace: "booking",key: "hide_from_profile",value: "false"}}]) {
             nodes {
               id
               title
