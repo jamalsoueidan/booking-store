@@ -33,12 +33,12 @@ import {getBookingShopifyApi} from '~/lib/api/bookingShopifyApi';
 
 import {parseGid} from '@shopify/hydrogen';
 import {redirectWithSuccess} from 'remix-toast';
-import {type z} from 'zod';
 import {AccountContent} from '~/components/account/AccountContent';
 import {AccountTitle} from '~/components/account/AccountTitle';
 import {AmountInput} from '~/components/form/AmountInput';
 import {TextEditor} from '~/components/richtext/TextEditor';
 import {FlexInnerForm} from '~/components/tiny/FlexInnerForm';
+import {type CustomerProductLocationsItem} from '~/lib/api/model';
 import {baseURL} from '~/lib/api/mutator/query-client';
 import {convertHTML} from '~/lib/convertHTML';
 import {getCustomer} from '~/lib/get-customer';
@@ -93,13 +93,14 @@ export async function loader({context}: LoaderFunctionArgs) {
     return redirect('/account/services');
   }
 
-  const findDefaultLocation = locations[0];
-
   return json({
     locations,
     schedules,
     collection,
     defaultValue: {
+      title: '',
+      parentId: null,
+      description: null,
       hideFromCombine: 'false',
       hideFromProfile: 'false',
       scheduleId: schedules[0]._id,
@@ -111,15 +112,8 @@ export async function loader({context}: LoaderFunctionArgs) {
         amount: '0',
         currencyCode: 'DKK',
       },
-      locations: [
-        {
-          metafieldId: findDefaultLocation?.metafieldId,
-          location: findDefaultLocation?._id,
-          locationType: findDefaultLocation?.locationType,
-          originType: findDefaultLocation?.originType,
-        },
-      ],
-    } as z.infer<typeof schema>,
+      locations: [] as CustomerProductLocationsItem[],
+    },
   });
 }
 
