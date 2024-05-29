@@ -8,8 +8,6 @@ import {
 import {parseWithZod} from '@conform-to/zod';
 
 import {
-  ActionIcon,
-  Autocomplete,
   Divider,
   Flex,
   Select,
@@ -34,7 +32,6 @@ import {SwitchGroupLocations} from '~/components/form/SwitchGroupLocations';
 import {getBookingShopifyApi} from '~/lib/api/bookingShopifyApi';
 
 import {parseGid} from '@shopify/hydrogen';
-import {IconX} from '@tabler/icons-react';
 import {redirectWithSuccess} from 'remix-toast';
 import {type z} from 'zod';
 import {AccountContent} from '~/components/account/AccountContent';
@@ -130,7 +127,7 @@ export default function AccountServicesCreate() {
   const {locations, defaultValue, schedules, collection} =
     useLoaderData<typeof loader>();
   const lastResult = useActionData<typeof action>();
-  const [collectionId, setCollectionId] = useState<string | null>(null);
+  const [descriptionHtml, setDescriptionHtml] = useState<string | null>(null);
 
   const [form, fields] = useForm({
     lastResult,
@@ -153,36 +150,38 @@ export default function AccountServicesCreate() {
   const hideFromCombine = useInputControl(fields.hideFromCombine);
   const titleInput = useInputControl(fields.title);
   const descriptionInput = useInputControl(fields.description);
+  const parentId = useInputControl(fields.parentId);
 
-  const collections = useMemo(
+  const products = useMemo(
     () =>
-      collection?.children?.references?.nodes.map((c) => ({
-        value: c.id,
-        label: c.title,
-      })) || [],
+      collection?.children?.references?.nodes.reduce((products, collection) => {
+        collection.products.nodes.forEach((product) => {
+          products.push({
+            value: product.id,
+            label: `${collection.title}: ${product.title}`,
+          });
+        });
+        return products;
+      }, [] as Array<{value: string; label: string}>),
     [collection?.children?.references?.nodes],
   );
 
-  const selectedCollection = useMemo(
-    () =>
-      collection?.children?.references?.nodes.find(
-        (c) => c.id === collectionId,
-      ),
-    [collection?.children?.references?.nodes, collectionId],
-  );
-
-  const products = useMemo(
-    () => selectedCollection?.products.nodes.map((p) => p.title),
-    [selectedCollection?.products.nodes],
-  );
-
-  const selectedProduct = useMemo(
-    () =>
-      selectedCollection?.products.nodes.find(
-        (p) => p.title === titleInput.value,
-      ),
-    [selectedCollection?.products.nodes, titleInput.value],
-  );
+  const onChangeProduct = (value: string | null) => {
+    if (!value) {
+      titleInput.change(undefined);
+      setDescriptionHtml(null);
+      return;
+    }
+    parentId.change(parseGid(value).id);
+    collection?.children?.references?.nodes.some((c) => {
+      const product = c.products.nodes.find((p) => p.id === value);
+      if (product) {
+        titleInput.change(product.title);
+        setDescriptionHtml(product.descriptionHtml);
+      }
+      return product !== undefined;
+    });
+  };
 
   return (
     <>
@@ -200,48 +199,10 @@ export default function AccountServicesCreate() {
                 </Stack>
                 <div style={{flex: 1}}>
                   <Select
-                    onChange={(value: string | null) => {
-                      setCollectionId(value);
-                      titleInput.change('');
-                    }}
-                    data={collections}
-                    placeholder="-"
-                    allowDeselect={false}
-                    data-testid="category-select"
-                  />
-                </div>
-              </Flex>
-
-              <Flex direction={{base: 'column', md: 'row'}} gap="md">
-                <Stack gap="0" style={{flex: 1}}>
-                  <Text fw="bold">Ydelse:</Text>
-                  <Text>Vælg ydelse inden for den valgte kategori</Text>
-                </Stack>
-                <div style={{flex: 1}}>
-                  <Autocomplete
-                    onChange={titleInput.change}
-                    value={titleInput.value}
-                    disabled={!collectionId}
                     data={products}
-                    rightSection={
-                      titleInput.value && titleInput.value.length > 0 ? (
-                        <ActionIcon
-                          variant="transparent"
-                          color="gray"
-                          aria-label="Settings"
-                          onClick={() => {
-                            titleInput.change('');
-                          }}
-                        >
-                          <IconX />
-                        </ActionIcon>
-                      ) : null
-                    }
-                  />
-                  <input
-                    type="hidden"
-                    name={fields.parentId.name}
-                    value={parseGid(selectedProduct?.id).id}
+                    onChange={onChangeProduct}
+                    searchable
+                    clearable
                   />
                 </div>
               </Flex>
@@ -271,8 +232,11 @@ export default function AccountServicesCreate() {
                 </Stack>
                 <div style={{flex: 1}}>
                   <TextEditor
-                    content={selectedProduct?.descriptionHtml}
+                    content={descriptionHtml}
                     onUpdate={({editor}) => {
+                      descriptionInput.change(JSON.stringify(editor.getJSON()));
+                    }}
+                    onSelectionUpdate={({editor}) => {
                       descriptionInput.change(JSON.stringify(editor.getJSON()));
                     }}
                   />

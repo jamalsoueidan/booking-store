@@ -5,6 +5,7 @@ import {
   Divider,
   Flex,
   Grid,
+  GridCol,
   Group,
   rem,
   Text,
@@ -26,7 +27,6 @@ export async function loader({context}: LoaderFunctionArgs) {
   const customerId = await getCustomer({context});
   const response = await getBookingShopifyApi().customerProductsList(
     customerId,
-    context,
   );
 
   return json(response.payload);
@@ -118,20 +118,8 @@ export default function AccountServicesIndex() {
                       <Divider />
                     </Card.Section>
 
-                    <Flex gap="xl">
-                      <div style={{flex: 1}}>
-                        <Text size="sm">Vagtplan</Text>
-                        <Text fw={600} size="sm">
-                          {product.scheduleName}
-                        </Text>
-                      </div>
-                      <div style={{flex: 1}}>
-                        <Text size="sm">Tid</Text>
-                        <Text fw={600} size="sm">
-                          {durationToTime(product.duration ?? 0)}
-                        </Text>
-                      </div>
-                      <div style={{flex: 1}}>
+                    <Grid gutter="sm" columns={2}>
+                      <GridCol span={1}>
                         <Text size="sm">Pris</Text>
                         <Text fw={600} size="sm">
                           <Money
@@ -140,8 +128,26 @@ export default function AccountServicesIndex() {
                             as="span"
                           />
                         </Text>
-                      </div>
-                    </Flex>
+                      </GridCol>
+                      <GridCol span={1}>
+                        <Text size="sm">Tid</Text>
+                        <Text fw={600} size="sm">
+                          {durationToTime(product.duration ?? 0)}
+                        </Text>
+                      </GridCol>
+                      <GridCol span={1}>
+                        <Text size="sm">Varianter</Text>
+                        <Text fw={600} size="sm">
+                          {product.options.length} antal
+                        </Text>
+                      </GridCol>
+                      <GridCol span={1}>
+                        <Text size="sm">Vagtplan</Text>
+                        <Text fw={600} size="sm">
+                          {product.scheduleName}
+                        </Text>
+                      </GridCol>
+                    </Grid>
                   </Card>
                 </Grid.Col>
               );

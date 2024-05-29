@@ -41,11 +41,10 @@ export function TextEditor(options?: Partial<EditorOptions>) {
   useEffect(() => {
     if (
       editor &&
-      options?.content &&
-      JSON.stringify(content) !== JSON.stringify(options.content)
+      JSON.stringify(content) !== JSON.stringify(options?.content)
     ) {
-      setContent(options.content);
-      editor.commands.setContent(options.content);
+      setContent(options?.content);
+      editor.commands.setContent(options?.content || '');
     }
   }, [content, editor, options]);
 
