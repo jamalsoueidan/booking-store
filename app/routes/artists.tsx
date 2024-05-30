@@ -11,6 +11,7 @@ import {
   ScrollArea,
   Select,
   Stack,
+  Text,
 } from '@mantine/core';
 import {useDisclosure} from '@mantine/hooks';
 import {
@@ -23,14 +24,19 @@ import {json, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
 import {
   IconArrowDown,
   IconArrowsSort,
+  IconBuilding,
+  IconCar,
   IconFilter,
   IconFlag,
   IconGenderFemale,
+  IconHome,
+  IconLocation,
   IconNetwork,
   IconWorld,
   IconWorldCheck,
   IconX,
 } from '@tabler/icons-react';
+import {DK, US} from 'country-flag-icons/react/3x2';
 import {VisualTeaser} from '~/components/blocks/VisualTeaser';
 import {ProfessionButton} from '~/components/ProfessionButton';
 import {METAFIELD_QUERY} from '~/data/fragments';
@@ -180,6 +186,21 @@ export default function Artists() {
     );
   };
 
+  const locationSearchParams = searchParams.get('location');
+  const onChangeLocation = (value: string | null) => {
+    setSearchParams(
+      (prev) => {
+        if (value) {
+          prev.set('location', value);
+        } else {
+          prev.delete('location');
+        }
+        return prev;
+      },
+      {preventScrollReset: true},
+    );
+  };
+
   const deleteSearchParams = () => {
     setSearchParams(
       (prev) => {
@@ -244,10 +265,9 @@ export default function Artists() {
         position="right"
         opened={opened}
         onClose={close}
-        title="Filtre"
         overlayProps={{backgroundOpacity: 0.3, blur: 2}}
       >
-        <Stack gap="sm">
+        <Stack gap="xl">
           <Select
             size="md"
             value={professionSearchParams}
@@ -277,6 +297,7 @@ export default function Artists() {
             }))}
             clearable
           />
+
           <Select
             size="md"
             value={sortValue}
@@ -292,7 +313,53 @@ export default function Artists() {
             clearable
           />
 
-          <Divider />
+          <div>
+            <Group gap="xs" mb="xs">
+              <IconLocation />
+              <InputLabel size="md">Arbejdslokation?</InputLabel>
+            </Group>
+            <Radio.Group
+              value={locationSearchParams}
+              onChange={onChangeLocation}
+            >
+              <Stack gap="3px">
+                <Radio.Card value={null!} withBorder={false}>
+                  <Group wrap="nowrap" align="center">
+                    <Radio.Indicator />
+                    <div>
+                      <Text>Alle steder</Text>
+                    </div>
+                  </Group>
+                </Radio.Card>
+                <Radio.Card value="destination" withBorder={false}>
+                  <Group wrap="nowrap" align="center">
+                    <Radio.Indicator icon={() => <IconCar color="black" />} />
+                    <div>
+                      <Text>Kører ud til mig</Text>
+                    </div>
+                  </Group>
+                </Radio.Card>
+                <Radio.Card value="salon" withBorder={false}>
+                  <Group wrap="nowrap" align="center">
+                    <Radio.Indicator
+                      icon={() => <IconBuilding color="black" />}
+                    />
+                    <div>
+                      <Text>Salon</Text>
+                    </div>
+                  </Group>
+                </Radio.Card>
+                <Radio.Card value="home" withBorder={false}>
+                  <Group wrap="nowrap" align="center">
+                    <Radio.Indicator icon={() => <IconHome color="black" />} />
+                    <div>
+                      <Text>Hjemmefra</Text>
+                    </div>
+                  </Group>
+                </Radio.Card>
+              </Stack>
+            </Radio.Group>
+          </div>
           <div>
             <Group gap="xs" mb="xs">
               <IconGenderFemale />
@@ -301,13 +368,12 @@ export default function Artists() {
             <Radio.Group value={genderValue} onChange={onChangeGender}>
               <Stack gap="3px">
                 <Radio value={null!} label="Begge" />
-                <Radio value="woman" label="Kvinde" />
-                <Radio value="man" label="Mand" />
+                <Radio value="woman" label="Kvinder" />
+                <Radio value="man" label="Mænd" />
               </Stack>
             </Radio.Group>
           </div>
 
-          <Divider />
           <div>
             <Group gap="xs" mb="xs">
               <IconWorldCheck />
@@ -325,7 +391,7 @@ export default function Artists() {
               </Stack>
             </Checkbox.Group>
           </div>
-          <Divider />
+
           <div>
             <Group gap="xs" mb="xs">
               <IconFlag />
@@ -333,8 +399,20 @@ export default function Artists() {
             </Group>
             <Checkbox.Group value={langValue} onChange={onChangeLang}>
               <Stack gap="3px">
-                <Checkbox value="english" label="English" />
-                <Checkbox value="danish" label="Dansk" />
+                <Checkbox.Card value="english" withBorder={false}>
+                  <Flex gap="xs" align="center">
+                    <Checkbox.Indicator />
+                    <Text>Engelsk</Text>
+                    <US width={16} height={16} />
+                  </Flex>
+                </Checkbox.Card>
+                <Checkbox.Card value="danish" withBorder={false}>
+                  <Flex gap="xs" align="center">
+                    <Checkbox.Indicator />
+                    <Text>Dansk</Text>
+                    <DK width={16} height={16} />
+                  </Flex>
+                </Checkbox.Card>
               </Stack>
             </Checkbox.Group>
           </div>

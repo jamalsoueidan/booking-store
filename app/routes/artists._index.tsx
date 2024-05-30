@@ -1,8 +1,10 @@
 import {
   BackgroundImage,
   Badge,
+  Box,
   Button,
   Flex,
+  Group,
   Image,
   Mark,
   rem,
@@ -19,7 +21,9 @@ import {
   type LoaderFunctionArgs,
   type MetaFunction,
 } from '@shopify/remix-oxygen';
+import {DK, US} from 'country-flag-icons/react/3x2';
 import {type ArticleUserFragment} from 'storefrontapi.generated';
+import {LocationIcon} from '~/components/LocationIcon';
 import {METAFIELD_QUERY} from '~/data/fragments';
 import {ARTICLE_USER_FRAGMENT} from '~/graphql/fragments/ArtistUser';
 import {splitTags} from '~/lib/tags';
@@ -77,6 +81,11 @@ export const loader = async ({context, request}: LoaderFunctionArgs) => {
   if (lang) {
     const l = lang.split(',').filter((l) => l.length > 0);
     query.push(`tag:speak-${l.join(' OR tag:speak-')}`);
+  }
+
+  const location = searchParams.get('location');
+  if (location) {
+    query.push(`tag:location-${location}`);
   }
 
   const paginationVariables = getPaginationVariables(request, {
@@ -176,29 +185,59 @@ export const UserCard = ({article}: {article: ArticleUserFragment}) => {
           borderTopRightRadius: '3.2%',
         }}
       />
-
+      {tags['speak'] ? (
+        <Box pos="absolute" top={rem(10)} left={rem(10)}>
+          <Flex gap="xs">
+            {tags['speak'].includes('danish') && <DK width={16} height={16} />}
+            {tags['speak'].includes('english') && <US width={16} height={16} />}
+          </Flex>
+        </Box>
+      ) : null}
       <Mark
         color="black"
         c="white"
+        fz="sm"
         style={{
           position: 'absolute',
           right: 1,
           top: 1,
-          borderBottomLeftRadius: '15%',
-          borderTopRightRadius: '15%',
-          padding: '5px',
-          opacity: 0.7,
+          borderBottomLeftRadius: '8px',
+          borderTopRightRadius: '8px',
+          padding: '4px',
+          opacity: 0.6,
         }}
       >
-        {tags['city'][0].toUpperCase()}
+        <Group gap="xs">
+          {tags['location']?.includes('destination') && (
+            <LocationIcon
+              location={{locationType: 'destination', originType: 'commercial'}}
+              width={22}
+              height={22}
+            />
+          )}
+          {tags['location']?.includes('salon') && (
+            <LocationIcon
+              location={{locationType: 'origin', originType: 'commercial'}}
+              width={22}
+              height={22}
+            />
+          )}
+          {tags['location']?.includes('home') && (
+            <LocationIcon
+              location={{locationType: 'origin', originType: 'home'}}
+              width={22}
+              height={22}
+            />
+          )}
+          {tags['city'][0].toUpperCase()}
+        </Group>
       </Mark>
-
-      <Stack p="xs" pb="xs" pt="6px" gap="6px">
+      <Flex direction="column" p="xs" pb="xs" pt="6px" gap="6px">
         <div>
           <Text fz="md" fw={600} c="black">
             {user?.fullname?.value}
           </Text>
-          <Text fz="sm" c="#666">
+          <Text fz="sm" c="#666" lineClamp={2}>
             {user?.shortDescription?.value}
           </Text>
         </div>
@@ -209,7 +248,7 @@ export const UserCard = ({article}: {article: ArticleUserFragment}) => {
             </Badge>
           ))}
         </Flex>
-      </Stack>
+      </Flex>
     </UnstyledButton>
   );
 };

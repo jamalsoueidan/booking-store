@@ -54,6 +54,7 @@
     "@tiptap/react": "^2.2.5",
     "@tiptap/starter-kit": "^2.2.5",
     "clsx": "^2.1.0",
+    "country-flag-icons": "^1.5.11",
     "date-fns": "^2.30.0",
     "date-fns-tz": "^2.0.1",
     "embla-carousel-autoplay": "^7.1.0",
