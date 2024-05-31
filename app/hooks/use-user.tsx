@@ -1,15 +1,23 @@
 import React from 'react';
-import {type UserFragment} from 'storefrontapi.generated';
+import type {
+  UserFragment,
+  UserLocationsFragment,
+  UserSchedulesFragment,
+} from 'storefrontapi.generated';
 import {useUserMetaobject} from './useUserMetaobject';
 
-const UserContext = React.createContext<UserFragment | null | undefined>(null);
+const UserContext = React.createContext<
+  | (UserFragment & UserSchedulesFragment & UserLocationsFragment)
+  | null
+  | undefined
+>(null);
 
 export const UserProvider = ({
   children,
   user,
 }: {
   children: React.ReactNode;
-  user?: UserFragment | null;
+  user?: (UserFragment & UserSchedulesFragment) | null;
 }) => {
   return <UserContext.Provider value={user}>{children}</UserContext.Provider>;
 };

@@ -142,6 +142,12 @@ export default function AccountServicesIndex() {
                         </Text>
                       </GridCol>
                       <GridCol span={1}>
+                        <Text size="sm">Lokationer</Text>
+                        <Text fw={600} size="sm">
+                          {product.locations.length} antal
+                        </Text>
+                      </GridCol>
+                      <GridCol span={1}>
                         <Text size="sm">Vagtplan</Text>
                         <Text fw={600} size="sm">
                           {product.scheduleName}
