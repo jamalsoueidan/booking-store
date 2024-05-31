@@ -44,7 +44,7 @@ export default function AboutMe() {
 
             {user.professions.length > 0 ? (
               <Stack gap="xs">
-                <Title order={4}>Profession</Title>
+                <Title order={4}>Professioner</Title>
                 <Flex wrap="wrap" gap="xs">
                   {user.professions.map((p) => (
                     <Badge
@@ -82,7 +82,7 @@ export default function AboutMe() {
           </Stack>
         </Grid.Col>
         <Grid.Col span={{base: 12, sm: 4}}>
-          {user.social ? (
+          {user.social && Object.keys(user.social).length > 0 ? (
             <Stack gap="xs">
               <Title order={4}>Social</Title>
               <Stack gap="xs">
