@@ -1,5 +1,5 @@
 import {Tooltip, type CheckIconProps} from '@mantine/core';
-import {IconBuilding, IconCar, IconHome} from '@tabler/icons-react';
+import {IconBuildingStore, IconCar, IconHome} from '@tabler/icons-react';
 import type {CustomerLocationBase} from '~/lib/api/model';
 
 export function LocationIcon({
@@ -13,7 +13,7 @@ export function LocationIcon({
   if (location.locationType === 'destination') {
     return (
       <ConditionalTooltip
-        label="Kører ud dig din adresse"
+        label="Kører ud til din adresse"
         withTooltip={withTooltip}
       >
         <IconCar {...props} />
@@ -31,9 +31,25 @@ export function LocationIcon({
 
   return (
     <ConditionalTooltip label="I Salon" withTooltip={withTooltip}>
-      <IconBuilding {...props} />
+      <IconBuildingStore {...props} />
     </ConditionalTooltip>
   );
+}
+
+export function LocationText({
+  location,
+}: {
+  location: Pick<CustomerLocationBase, 'locationType' | 'originType'>;
+}) {
+  if (location.locationType === 'destination') {
+    return <>Kører ud til din lokation</>;
+  }
+
+  if (location.originType === 'home') {
+    return <>Hjemme</>;
+  }
+
+  return <>Salon</>;
 }
 
 export function LocationIconTooltip({
@@ -45,7 +61,7 @@ export function LocationIconTooltip({
 }) {
   if (location.locationType === 'destination') {
     return (
-      <ConditionalTooltip label="Kører til din lokation" withTooltip={true}>
+      <ConditionalTooltip label="Kører ud til din lokation" withTooltip={true}>
         {children}
       </ConditionalTooltip>
     );
