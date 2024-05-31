@@ -84,7 +84,7 @@ export default function UserIndex() {
         ) : null}
 
         <Flex gap="md" mt={rem(60)}>
-          <NavLink to="./" end>
+          <NavLink to="" end>
             {({isActive}) => (
               <Button
                 variant={isActive ? 'filled' : 'transparent'}
