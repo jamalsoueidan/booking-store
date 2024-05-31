@@ -339,12 +339,13 @@ function TreatmentProductUser({
     return null;
   }
 
-  const professions =
-    (JSON.parse(user.professions?.value || '[]') as Array<string>) || [];
+  const {professions} = user?.professions?.value
+    ? (JSON.parse(user?.professions?.value) as Record<string, []>)
+    : {professions: []};
 
   return (
     <Card withBorder p="xl" radius="lg">
-      <Stack gap="md">
+      <Stack gap="xl">
         <Flex justify="space-between">
           <Flex gap="lg" align="center">
             <Avatar src={user.image?.reference?.image?.url} size={rem(90)} />
