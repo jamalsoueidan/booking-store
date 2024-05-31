@@ -8,6 +8,37 @@ export type Profession = {
   count: number;
 };
 
+export const SpecialtiesTranslations = {
+  bridal_makeup: 'Bryllups Makeup',
+  sfx_makeup: 'SFX Makeup',
+  editorial_makeup: 'Redaktionel Makeup',
+  celebrity_makeup: 'Kendis Makeup',
+  airbrush_makeup: 'Airbrush Makeup',
+  stage_makeup: 'Scene Makeup',
+  ethereal_makeup: 'Etereal Makeup',
+  vintage_styles: 'Vintage Stilarter',
+  hair_coloring: 'Hår Farvning',
+  hair_extensions: 'Hår Extensions',
+  keratin_treatments: 'Keratin Behandlinger',
+  balayage_specialist: 'Balayage Specialist',
+  nail_art: 'Negl Kunst',
+  gel_nails: 'Gel Negle',
+  acrylic_nails: 'Akryl Negle',
+  manicure_pedicure: 'Manicure Pedicure',
+  eyelash_extensions: 'Vippe Extensions',
+  eyebrow_shaping: 'Bryn Formning',
+  facial_treatments: 'Ansigtsbehandlinger',
+  body_treatments: 'Kropsbehandlinger',
+  waxing_hair_removal: 'Voks Hårfjerning',
+  massage: 'Massage',
+  skin_care: 'Hudpleje',
+  permanent_makeup: 'Permanent Makeup',
+  microblading: 'Microblading',
+  cosmetic_teeth_whitening: 'Kosmetisk Tandblegning',
+  tattoo_removal: 'Tatoveringsfjernelse',
+  scar_treatment: 'Ar Behandling',
+};
+
 export const ProfessionURL: Record<string, string> = {
   all: 'https://cdn.shopify.com/s/files/1/0682/4060/5458/files/all.jpg?v=1713361903',
   nail_technician:

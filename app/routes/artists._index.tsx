@@ -157,9 +157,9 @@ export default function Component() {
 
 export const UserCard = ({article}: {article: ArticleUserFragment}) => {
   const user = article.user?.reference;
-  const professions = JSON.parse(
-    user?.professions?.value || '[]',
-  ) as Array<string>;
+  const professions = user?.professions?.value
+    ? (JSON.parse(user.professions.value) as Record<string, []>)
+    : {professions: []};
 
   const tags = splitTags(article.tags);
 
@@ -242,7 +242,7 @@ export const UserCard = ({article}: {article: ArticleUserFragment}) => {
           </Text>
         </div>
         <Flex gap="3px">
-          {professions.map((p) => (
+          {professions['professions'].map((p) => (
             <Badge variant="outline" c="black" color="gray.4" key={p} fw="400">
               {ProfessionTranslations[p]}
             </Badge>

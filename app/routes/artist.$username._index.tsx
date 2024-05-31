@@ -2,20 +2,35 @@ import {defer, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
 
 import {
   Button,
+  Card,
+  Divider,
   Flex,
-  SimpleGrid,
+  Grid,
+  Group,
+  rem,
   Skeleton,
   Stack,
   Text,
   Title,
-  rem,
 } from '@mantine/core';
 import '@mantine/tiptap/styles.css';
-import {Await, Link, useLoaderData, useSearchParams} from '@remix-run/react';
-import {Suspense} from 'react';
-import {ArtistProduct} from '~/components/artist/ArtistProduct';
+import {Await, Link, useLoaderData} from '@remix-run/react';
+import {Suspense, useMemo} from 'react';
+
+import {parseGid} from '@shopify/hydrogen';
+import {IconGps} from '@tabler/icons-react';
+import type {
+  LocationFragment,
+  ScheduleFragment,
+  TreatmentProductFragment,
+} from 'storefrontapi.generated';
+import {LocationIcon, LocationText} from '~/components/LocationIcon';
 import {GET_USER_PRODUCTS} from '~/graphql/queries/GetUserProducts';
 import {useUser} from '~/hooks/use-user';
+import {type CustomerScheduleSlot} from '~/lib/api/model';
+import {convertLocations} from '~/lib/convertLocations';
+import {durationToTime} from '~/lib/duration';
+import {translationsDays} from './api.users.filters';
 
 export async function loader({request, params, context}: LoaderFunctionArgs) {
   const {username} = params;
@@ -62,32 +77,44 @@ export default function ArtistIndex() {
     <Suspense fallback={<Skeleton height={8} radius="xl" />}>
       <Await resolve={data.collection}>
         {({collection}) => {
-          const productTypesFilter =
-            collection?.products.filters.find(
-              (filter) => filter.label === 'Produkttype',
-            )?.values || [];
-
-          const productTypes = productTypesFilter
-            .filter((f) => f.count > 0)
-            .map((f) => f.label);
-
+          const collections =
+            collection?.products.nodes.reduce((collections, product) => {
+              if (!collections[product.productType]) {
+                collections[product.productType] = [];
+              }
+              collections[product.productType].push(product);
+              return collections;
+            }, {} as Record<string, TreatmentProductFragment[]>) || {};
           return (
-            <Flex direction="column" gap={{base: 'md', sm: 'xl'}}>
-              {collection ? (
-                <ArtistSchedulesMenu labels={productTypes} />
-              ) : null}
-              <SimpleGrid cols={{base: 1, md: 2}} spacing="lg">
-                {collection?.products.nodes.map((product) => (
-                  <ArtistProduct key={product.id} product={product} />
-                ))}
-              </SimpleGrid>
-              {user.aboutMe ? (
-                <Stack gap="xs" mt="xl">
-                  <Title size={rem(28)}>Om mig</Title>
-                  <Text dangerouslySetInnerHTML={{__html: user.aboutMe}}></Text>
+            <Grid gutter="xl">
+              <Grid.Col span={{base: 12, sm: 8}}>
+                <Stack gap="xl">
+                  {Object.keys(collections).map((key) => (
+                    <Stack key={key} gap="sm">
+                      <Title order={3} fw="bold">
+                        {key}
+                      </Title>
+                      <Stack gap="md">
+                        {collections[key].map((product) => (
+                          <ArtistProduct key={product.id} product={product} />
+                        ))}
+                      </Stack>
+                    </Stack>
+                  ))}
                 </Stack>
-              ) : null}
-            </Flex>
+              </Grid.Col>
+              <Grid.Col span={{base: 12, sm: 4}}>
+                <Stack gap="md">
+                  {user.locations?.map((location) => (
+                    <Location
+                      key={location.id}
+                      location={location}
+                      schedules={user.schedules}
+                    />
+                  ))}
+                </Stack>
+              </Grid.Col>
+            </Grid>
           );
         }}
       </Await>
@@ -95,46 +122,186 @@ export default function ArtistIndex() {
   );
 }
 
-function ArtistSchedulesMenu({labels}: {labels: string[]}) {
-  const user = useUser();
-  const [searchParams] = useSearchParams();
+function Location({
+  location,
+  schedules,
+}: {
+  location: LocationFragment;
+  schedules?: ScheduleFragment[];
+}) {
+  const slots = schedules
+    ?.reduce((slots, schedule) => {
+      const found = schedule.locations?.references?.nodes.some(
+        (l) => l.id === location.id,
+      );
 
-  const type = String(searchParams.get('type'));
+      if (found) {
+        slots.push(
+          JSON.parse(schedule.slots?.value || '') as CustomerScheduleSlot[],
+        );
+      }
+
+      return slots;
+    }, [] as Array<Array<CustomerScheduleSlot>>)
+    .reverse()
+    .flat();
 
   return (
-    <Flex
-      gap={{base: 'sm', sm: 'lg'}}
-      justify="center"
-      align="center"
-      wrap="wrap"
+    <Card withBorder radius="md">
+      <Card.Section bg="black" px="md" py="sm">
+        <Title order={3} c="white">
+          <Group>
+            <LocationIcon
+              location={{
+                locationType: location.locationType?.value as any,
+                originType: location.originType?.value as any,
+              }}
+            />
+
+            <LocationText
+              location={{
+                locationType: location.locationType?.value as any,
+                originType: location.originType?.value as any,
+              }}
+            />
+          </Group>
+        </Title>
+      </Card.Section>
+      <Divider mb="md" />
+      <Title order={4} mb="xs">
+        Åbningstider{' '}
+      </Title>
+      <Stack gap={rem(3)}>
+        {slots?.map((slot) => {
+          return (
+            <Group key={slot.day}>
+              <Text>{translationsDays[slot.day]}</Text>
+              {slot.intervals.map((interval) => {
+                return (
+                  <Group key={interval.from + interval.to}>
+                    <Text>
+                      {interval.from} - {interval.to}
+                    </Text>
+                  </Group>
+                );
+              })}
+            </Group>
+          );
+        })}
+      </Stack>
+      <Card.Section>
+        <Divider my="md" />
+      </Card.Section>
+      {location.locationType?.value !== 'destination' ? (
+        <Group>
+          <IconGps />
+          {location.fullAddress?.value}
+        </Group>
+      ) : (
+        <Group>
+          <IconGps />
+          {
+            location.fullAddress?.value?.split(',')[
+              location.fullAddress?.value?.split(',').length - 1
+            ]
+          }
+        </Group>
+      )}
+    </Card>
+  );
+}
+
+export function ArtistProduct({product}: {product: TreatmentProductFragment}) {
+  const productId = parseGid(product?.id).id;
+  const locations = convertLocations(product.locations?.references?.nodes);
+  const variant = product.variants.nodes[0];
+
+  const discountString = useMemo(() => {
+    if (
+      variant.compareAtPrice?.amount &&
+      variant.compareAtPrice?.amount !== '0.0'
+    ) {
+      const discountAmount =
+        parseInt(variant.compareAtPrice?.amount) -
+        parseInt(variant.price.amount);
+      const discountPercentage = Math.abs(
+        (discountAmount / parseInt(variant.compareAtPrice?.amount)) * 100,
+      );
+      return `Spar ${discountPercentage.toFixed(0)}%`;
+    }
+    return null;
+  }, [variant.compareAtPrice?.amount, variant.price.amount]);
+
+  return (
+    <Card
+      key={product.handle}
+      withBorder
+      component={Link}
+      radius="md"
+      data-testid={`service-item-${productId}`}
+      to={`treatment/${product.handle}`}
     >
-      <Button
-        size="lg"
-        radius="lg"
-        variant={type === 'null' ? 'filled' : 'light'}
-        color={type === 'null' ? 'black' : user.theme}
-        component={Link}
-        to="?"
-        data-testid="schedule-button-all"
-      >
-        Alle
-      </Button>
-      {labels.map((label) => {
-        return (
-          <Button
-            size="lg"
-            key={label}
-            radius="lg"
-            variant={type.includes(label) ? 'filled' : 'light'}
-            color={type.includes(label) ? 'black' : user.theme}
-            component={Link}
-            to={`?type=${label}`}
-            data-testid={`schedule-button-${label.toLowerCase()}`}
-          >
-            {label}
-          </Button>
-        );
-      })}
-    </Flex>
+      <Grid>
+        <Grid.Col span={8}>
+          <Flex direction="column" gap="xs">
+            <div>
+              <Group gap="xs">
+                <Title
+                  order={2}
+                  size="md"
+                  fw={500}
+                  lts=".5px"
+                  data-testid={`service-title-${productId}`}
+                >
+                  {product.title}
+                </Title>
+                {locations
+                  .map((l) => ({
+                    locationType: l.locationType,
+                    originType: l.originType,
+                  }))
+                  .filter(
+                    (value, index, self) =>
+                      index ===
+                      self.findIndex(
+                        (t) =>
+                          t.locationType === value.locationType &&
+                          t.originType === value.originType,
+                      ),
+                  )
+                  .map((location, index) => (
+                    // eslint-disable-next-line react/no-array-index-key
+                    <LocationIcon key={index} location={location} />
+                  ))}
+              </Group>
+
+              <Text
+                c="dimmed"
+                size="sm"
+                data-testid={`service-duration-text-${productId}`}
+              >
+                {durationToTime(product.duration?.value || 0)}
+              </Text>
+            </div>
+
+            <Group>
+              <Text size="sm">{variant.price.amount} kr</Text>
+              {discountString ? (
+                <Text c="green.9" size="sm">
+                  {discountString}
+                </Text>
+              ) : null}
+            </Group>
+          </Flex>
+        </Grid.Col>
+        <Grid.Col span={4}>
+          <Flex justify="flex-end" align="center" h="100%">
+            <Button variant="outline" c="black" color="gray.4" radius="lg">
+              Bestil tid
+            </Button>
+          </Flex>
+        </Grid.Col>
+      </Grid>
+    </Card>
   );
 }

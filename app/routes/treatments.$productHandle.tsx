@@ -34,9 +34,9 @@ import {
 import {PriceBadge} from '~/components/artist/PriceBadge';
 import {ProfessionTranslations} from './api.users.professions';
 
-import {
+import type {
+  ProductCollectionSortKeys,
   ProductFilter,
-  type ProductCollectionSortKeys,
 } from '@shopify/hydrogen/storefront-api-types';
 import {IconCalendar} from '@tabler/icons-react';
 import type {
@@ -148,7 +148,7 @@ export async function loader({params, request, context}: LoaderFunctionArgs) {
 
 export default function Product() {
   const {product, collection} = useLoaderData<typeof loader>();
-  const [searchParams, setSearchParams] = useSearchParams();
+  const [, setSearchParams] = useSearchParams();
 
   const tags = collection?.products.filters.find(
     (p) => p.id === 'filter.p.tag',

@@ -158,13 +158,12 @@ export default function ArtistTreatments() {
       <ArtistShell.Main>
         <Flex direction="column" justify="center" mb="lg">
           <Title order={2} fw={600} fz={{base: 'h2'}} ta="center">
-            Tilvalg
+            Vælg yderligere behandlinger.
           </Title>
 
           {products?.length > 0 ? (
             <Text c="dimmed" ta="center">
-              Du har mulighed for at kombinere behandling med andre og eventuel
-              spar penge!
+              Forkæl dig selv med en eller flere ekstra behandlinger.
             </Text>
           ) : (
             <Text c="dimmed" ta="center">
