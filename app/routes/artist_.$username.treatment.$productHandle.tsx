@@ -17,6 +17,7 @@ import {
   Link,
   Outlet,
   useLoaderData,
+  useNavigate,
   useOutletContext,
   type ShouldRevalidateFunctionArgs,
 } from '@remix-run/react';
@@ -151,6 +152,7 @@ export async function loader({params, request, context}: LoaderFunctionArgs) {
 export default function Booking() {
   const {product, products} = useLoaderData<typeof loader>();
   const {opacity, shadow} = useScrollEffect();
+  const navigate = useNavigate();
 
   const productOptions = product.options?.references?.nodes;
   const user = product.user?.reference;
@@ -176,8 +178,7 @@ export default function Booking() {
             <ActionIcon
               variant="transparent"
               c="black"
-              component={Link}
-              to="../"
+              onClick={() => navigate(-1)}
             >
               <IconArrowLeft
                 style={{width: rem(36), height: rem(36), strokeWidth: 1}}
