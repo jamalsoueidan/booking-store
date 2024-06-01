@@ -1,20 +1,36 @@
-import {Button, Card, Flex, Image, Radio, Text, Title} from '@mantine/core';
+import {
+  Box,
+  Button,
+  Card,
+  Flex,
+  Image,
+  Radio,
+  Text,
+  Title,
+} from '@mantine/core';
 import {redirect, useSearchParams} from '@remix-run/react';
 import {Money, parseGid} from '@shopify/hydrogen';
 import React, {useMemo} from 'react';
 import type {
+  LocationFragment,
+  PickMoreTreatmentProductFragment,
   TreatmentOptionFragment,
   TreatmentOptionVariantFragment,
+  TreatmentProductWithOptionsFragment,
 } from 'storefrontapi.generated';
+import {convertLocations} from '~/lib/convertLocations';
 import {durationToTime} from '~/lib/duration';
+import {parseOptionsFromQuery} from '~/lib/parseOptionsQueryParameters';
 
 export type RedirectToOptionsProps = {
   productOptions: TreatmentOptionFragment[];
+  productLocations?: LocationFragment[];
   request: Request;
 };
 
 export function redirectToOptions({
   productOptions,
+  productLocations,
   request,
 }: RedirectToOptionsProps) {
   const parentId = parseGid(productOptions[0].parentId?.value).id;
@@ -39,7 +55,11 @@ export function redirectToOptions({
       searchParams.set(`options[${parentId}][${param.name}]`, param.value);
     });
 
+    if (productLocations && productLocations.length === 1) {
+      searchParams.set(`locationId`, productLocations[0].handle);
+    }
     url.search = searchParams.toString();
+
     throw redirect(url.toString(), {
       status: 302,
     });
@@ -86,38 +106,31 @@ export function OptionSelector({
   });
 
   return (
-    <Card withBorder>
-      <Flex direction={{base: 'column', sm: 'row'}} gap="xs">
-        <Flex direction="column" gap="xs" style={{flex: 1}}>
-          <Title order={4}>{productWithVariants.options[0].name}</Title>
-          <Text>{productWithVariants.description}</Text>
-        </Flex>
-        <Flex
-          direction="column"
-          justify="center"
-          align="center"
-          gap="md"
-          style={{flex: 1}}
-        >
-          {selectedVariant ? (
-            <div>
-              <Flex align="center" gap="xs">
-                <Text fw="bold" ta="center">
-                  <Money as="span" data={selectedVariant.price} />
-                </Text>
-                <Text fz="14" c="dimmed">
-                  {durationToTime(selectedVariant?.duration?.value ?? 0)}
-                </Text>
-              </Flex>
-              <Text c="dimmed" ta="center">
-                {selectedVariant?.title}
+    <Card withBorder radius="md">
+      <Box mb="sm">
+        <Title order={4}>{productWithVariants.options[0].name} </Title>
+        {selectedVariant ? (
+          <div>
+            <Flex align="center" gap="xs">
+              <Text fz="sm">
+                <Money
+                  as="span"
+                  data={selectedVariant.price}
+                  withoutCurrency
+                  withoutTrailingZeros
+                />{' '}
+                kr.
               </Text>
-            </div>
-          ) : null}
-          <Flex gap="xs" wrap={{base: 'nowrap', sm: 'wrap'}}>
-            {optionsMarkup}
-          </Flex>
-        </Flex>
+              <Text fz="sm" c="dimmed">
+                {durationToTime(selectedVariant?.duration?.value ?? 0)}
+              </Text>
+            </Flex>
+          </div>
+        ) : null}
+      </Box>
+
+      <Flex direction="column" gap="xs" wrap={{base: 'nowrap', sm: 'wrap'}}>
+        {optionsMarkup}
       </Flex>
     </Card>
   );
@@ -164,8 +177,7 @@ export function ProductOption({
         onClick={toggleSearchParams}
         variant="outline"
         radius="md"
-        size="xl"
-        px="xs"
+        size="lg"
         styles={{
           root: {
             flex: 1,
@@ -183,32 +195,142 @@ export function ProductOption({
   }
   return (
     <Button
+      fullWidth
       onClick={updateSearchParams}
       variant="outline"
       radius="md"
-      size="xl"
-      px="xs"
+      size="lg"
       styles={{
         root: {
-          flex: 1,
           border:
             value === parseGid(variant.id).id
               ? '4px solid var(--mantine-color-blue-outline)'
               : '1px solid var(--mantine-color-gray-outline)',
         },
       }}
-      color={value === parseGid(variant.id).id ? 'blue' : 'gray'}
+      color="black"
+      fw="normal"
+      leftSection={
+        variant.image?.url ? (
+          <Image src={variant.image.url} height="40px" width="auto" />
+        ) : (
+          <Radio
+            checked={value === parseGid(variant.id).id}
+            onChange={() => {}}
+          />
+        )
+      }
     >
-      {variant.image?.url ? (
-        <Image src={variant.image.url} height="100%" />
-      ) : (
-        <Radio
-          checked={value === parseGid(variant.id).id}
-          onChange={() => {}}
-        />
-      )}
+      {variant.title}
     </Button>
   );
+}
+
+export function useCalculationForExtraProducts({
+  product,
+  products,
+}: {
+  product: TreatmentProductWithOptionsFragment;
+  products: PickMoreTreatmentProductFragment[];
+}) {
+  const [searchParams] = useSearchParams();
+  const locationId = searchParams.get('locationId');
+
+  const selectedLocation = useMemo(() => {
+    const locations = convertLocations(product.locations?.references?.nodes);
+    return locations.find((l) => l._id === locationId);
+  }, [locationId, product.locations?.references?.nodes]);
+
+  const selectedProductsIds = searchParams.getAll('productIds');
+  const summary = useMemo(() => {
+    const pickedVariants: Array<
+      Pick<
+        TreatmentOptionVariantFragment,
+        'title' | 'price' | 'compareAtPrice' | 'duration'
+      > & {isVariant: boolean}
+    > = [];
+    const selectedProducts = products.filter((p) =>
+      selectedProductsIds.some((sp) => sp === parseGid(p.id).id),
+    );
+
+    const optionsFromQuery: Record<
+      string,
+      Record<string, string>
+    > = parseOptionsFromQuery(searchParams);
+
+    const summary = selectedProducts.reduce(
+      (summary, product) => {
+        const productId = parseGid(product.id).id;
+        const productOptions = optionsFromQuery[productId];
+
+        pickedVariants.push({
+          title: product.title,
+          duration: product.duration,
+          isVariant: false,
+          ...product.variants.nodes[0],
+        });
+
+        if (!product.options) {
+          const productPrice = parseInt(product.variants.nodes[0].price.amount);
+          const productDuration = parseInt(product.duration?.value || '');
+          return {
+            price: summary.price + productPrice,
+            duration: summary.duration + productDuration,
+          };
+        }
+
+        const variantSummary = product.options?.references?.nodes
+          .filter((p) => productOptions[parseGid(p.id).id])
+          .reduce(
+            (summary, product) => {
+              const productId = parseGid(product.id).id;
+              const variantId = productOptions[productId];
+              const variant = product.variants.nodes.find(
+                (p) => parseGid(p.id).id === variantId,
+              );
+
+              if (variant) {
+                pickedVariants.push({
+                  title: variant.title,
+                  duration: variant.duration,
+                  price: variant.price,
+                  compareAtPrice: variant.compareAtPrice,
+                  isVariant: true,
+                });
+                const variantPrice = parseInt(variant?.price.amount || '');
+                const variantDuration = parseInt(
+                  variant?.duration?.value || '',
+                );
+
+                return {
+                  price: summary.price + variantPrice,
+                  duration: summary.duration + variantDuration,
+                };
+              }
+
+              return {
+                price: summary.price,
+                duration: summary.duration,
+              };
+            },
+            {
+              price: 0,
+              duration: 0,
+            },
+          ) || {price: 0, duration: 0};
+
+        return {
+          price: summary.price + variantSummary.price,
+          duration: summary.duration + variantSummary.duration,
+        };
+      },
+      {price: 0, duration: 0},
+    );
+
+    return {...summary, pickedVariants};
+  }, [products, searchParams, selectedProductsIds]);
+
+  return {selectedLocation, ...summary};
 }
 
 export function useCalculateDurationAndPrice({
@@ -252,8 +374,8 @@ export function useCalculateDurationAndPrice({
         currentDuration || 0,
       ) || currentDuration;
 
-    return [totalDuration, totalPrice];
+    return [totalDuration || 0, totalPrice || 0];
   }, [currentDuration, currentPrice, pickedVariants]);
 
-  return {pickedVariants, totalDuration, totalPrice};
+  return {pickedVariants: pickedVariants ?? [], totalDuration, totalPrice};
 }

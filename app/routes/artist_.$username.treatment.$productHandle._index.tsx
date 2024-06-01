@@ -1,15 +1,15 @@
-import {Button, Flex, Stack, Text, Title} from '@mantine/core';
+import {Button, Grid, Stack, Text, Title} from '@mantine/core';
 import {Link, useOutletContext, useSearchParams} from '@remix-run/react';
-import {ArtistShell} from '~/components/ArtistShell';
 import {OptionSelector, ProductOption} from '~/components/OptionSelector';
-import {TreatmentStepper} from '~/components/TreatmentStepper';
 
-import type {OutletLoader} from './artist_.$username.treatment.$productHandle';
+import {
+  BookingDetails,
+  type OutletLoader,
+} from './artist_.$username.treatment.$productHandle';
 
 export default function ProductDescription() {
   const [searchParams] = useSearchParams();
-
-  const {product, totalPrice, totalDuration} = useOutletContext<OutletLoader>();
+  const {product} = useOutletContext<OutletLoader>();
 
   const productOptions = product.options?.references?.nodes;
 
@@ -23,83 +23,75 @@ export default function ProductDescription() {
 
   return (
     <>
-      <ArtistShell.Main>
-        <Flex direction="column" justify="center" mb="lg">
-          <Title order={2} fw={600} fz="h2" ta="center">
-            Produkt
-          </Title>
+      <Grid.Col span={{base: 12, md: 7}}>
+        <Stack gap="xl">
+          <div>
+            <Text size="sm" c="dimmed">
+              Trin 1 ud af 4
+            </Text>
+            <Title order={1} fw={600} size="h2">
+              Vælg detaljer
+            </Title>
+          </div>
+          {productOptions ? (
+            <>
+              {required && required.length > 0 ? (
+                <>
+                  <Stack gap="md">
+                    {required?.map((productWithVariants) => {
+                      return (
+                        <OptionSelector
+                          key={productWithVariants.id}
+                          productWithVariants={productWithVariants}
+                        >
+                          {(props) => {
+                            return <ProductOption {...props} />;
+                          }}
+                        </OptionSelector>
+                      );
+                    })}
+                  </Stack>
+                </>
+              ) : null}
+              {choices && choices.length > 0 ? (
+                <div>
+                  <Title order={3} fw={600} mb="sm" fz="xl">
+                    Tilføj eventuelle ekstra services
+                  </Title>
+                  <Stack gap="md">
+                    {choices?.map((productWithVariants) => {
+                      return (
+                        <OptionSelector
+                          key={productWithVariants.id}
+                          productWithVariants={productWithVariants}
+                        >
+                          {(props) => {
+                            return <ProductOption {...props} />;
+                          }}
+                        </OptionSelector>
+                      );
+                    })}
+                  </Stack>
+                </div>
+              ) : null}
+            </>
+          ) : null}
+        </Stack>
+      </Grid.Col>
 
-          <Text c="dimmed" ta="center">
-            Produkt beskrivelse {productOptions ? 'samt ekstra valg' : ''}
-          </Text>
-        </Flex>
-        <Text c="dimmed" fw={400}>
-          {product.description}
-        </Text>
-        {productOptions ? (
-          <>
-            {required && required.length > 0 ? (
-              <>
-                <Title order={3} fw={600} mt="xl" mb="sm" fz="h3" ta="center">
-                  Påkrævet valg
-                </Title>
-                <Stack gap="md">
-                  {required?.map((productWithVariants) => {
-                    return (
-                      <OptionSelector
-                        key={productWithVariants.id}
-                        productWithVariants={productWithVariants}
-                      >
-                        {(props) => {
-                          return <ProductOption {...props} />;
-                        }}
-                      </OptionSelector>
-                    );
-                  })}
-                </Stack>
-              </>
-            ) : null}
-            {choices && choices.length > 0 ? (
-              <>
-                <Title order={3} fw={600} mt="xl" mb="sm" fz="h3" ta="center">
-                  Vælg tilvalg:
-                </Title>
-                <Stack gap="md">
-                  {choices?.map((productWithVariants) => {
-                    return (
-                      <OptionSelector
-                        key={productWithVariants.id}
-                        productWithVariants={productWithVariants}
-                      >
-                        {(props) => {
-                          return <ProductOption {...props} />;
-                        }}
-                      </OptionSelector>
-                    );
-                  })}
-                </Stack>
-              </>
-            ) : null}
-          </>
-        ) : null}
-      </ArtistShell.Main>
-      <ArtistShell.Footer>
-        <TreatmentStepper
-          totalPrice={totalPrice}
-          totalDuration={totalDuration}
-          withBackButton={false}
+      <BookingDetails>
+        <Button
+          variant="fill"
+          color="black"
+          component={Link}
+          to={`pick-location?${searchParams.toString()}`}
+          relative="route"
+          prefetch="render"
+          size="lg"
         >
-          <Button
-            variant="default"
-            component={Link}
-            to={`pick-location?${searchParams.toString()}`}
-            relative="route"
-            prefetch="render"
-          >
-            Bestil tid
-          </Button>
-        </TreatmentStepper>
-      </ArtistShell.Footer>
+          Forsæt
+        </Button>
+      </BookingDetails>
     </>
   );
 }

@@ -14,7 +14,7 @@ import {
   Title,
 } from '@mantine/core';
 import '@mantine/tiptap/styles.css';
-import {Await, Link, useLoaderData} from '@remix-run/react';
+import {Await, Link, Outlet, useLoaderData} from '@remix-run/react';
 import {Suspense, useMemo} from 'react';
 
 import {parseGid} from '@shopify/hydrogen';
@@ -87,7 +87,7 @@ export default function ArtistIndex() {
             }, {} as Record<string, TreatmentProductFragment[]>) || {};
           return (
             <Grid gutter="xl">
-              <Grid.Col span={{base: 12, sm: 8}}>
+              <Grid.Col span={{base: 12, md: 8}}>
                 <Stack gap="xl">
                   {Object.keys(collections).map((key) => (
                     <Stack key={key} gap="sm">
@@ -103,7 +103,7 @@ export default function ArtistIndex() {
                   ))}
                 </Stack>
               </Grid.Col>
-              <Grid.Col span={{base: 12, sm: 4}}>
+              <Grid.Col span={{base: 12, md: 4}}>
                 <Stack gap="md">
                   {user.locations?.map((location) => (
                     <Location
@@ -118,6 +118,7 @@ export default function ArtistIndex() {
           );
         }}
       </Await>
+      <Outlet />
     </Suspense>
   );
 }
@@ -285,7 +286,9 @@ export function ArtistProduct({product}: {product: TreatmentProductFragment}) {
             </div>
 
             <Group>
-              <Text size="sm">{variant.price.amount} kr</Text>
+              <Text size="sm">
+                {product.options?.value ? 'fra' : ''} {variant.price.amount} kr
+              </Text>
               {discountString ? (
                 <Text c="green.9" size="sm">
                   {discountString}
