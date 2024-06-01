@@ -1,6 +1,9 @@
 import {
+  ActionIcon,
   Button,
   Flex,
+  Grid,
+  rem,
   ScrollArea,
   Select,
   SimpleGrid,
@@ -8,9 +11,9 @@ import {
   Stack,
   Text,
   Title,
+  UnstyledButton,
   type SelectProps,
 } from '@mantine/core';
-import {useMediaQuery} from '@mantine/hooks';
 import {
   Await,
   Link,
@@ -24,8 +27,6 @@ import {defer, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
 import {format, isValid, parse, set} from 'date-fns';
 import {da} from 'date-fns/locale';
 import {Suspense} from 'react';
-import {ArtistShell} from '~/components/ArtistShell';
-import {TreatmentStepper} from '~/components/TreatmentStepper';
 import {PRODUCT_VALIDATE_HANDLER_QUERY} from '~/data/queries';
 import {getBookingShopifyApi} from '~/lib/api/bookingShopifyApi';
 import type {
@@ -34,6 +35,7 @@ import type {
   UserAvailabilitySlot,
 } from '~/lib/api/model';
 import {parseOptionsFromQuery} from '~/lib/parseOptionsQueryParameters';
+import {BookingDetails} from './artist_.$username.treatment.$productHandle';
 
 export function shouldRevalidate({
   currentUrl,
@@ -104,7 +106,7 @@ export default function ArtistTreatmentPickDatetime() {
 
   return (
     <>
-      <ArtistShell.Main>
+      <Grid.Col span={{base: 12, md: 7}}>
         <Suspense
           fallback={
             <Stack gap="lg">
@@ -131,19 +133,21 @@ export default function ArtistTreatmentPickDatetime() {
             {({payload}) => <TreatmentPickDatetime availability={payload} />}
           </Await>
         </Suspense>
-      </ArtistShell.Main>
-      <ArtistShell.Footer>
-        <TreatmentStepper>
-          <Button
-            variant="default"
-            component={Link}
-            to={`../completed${location.search}`}
-            disabled={isDisabled}
-          >
-            Færdig
-          </Button>
-        </TreatmentStepper>
-      </ArtistShell.Footer>
+      </Grid.Col>
+      <BookingDetails>
+        <Button
+          variant="fill"
+          color="black"
+          component={Link}
+          to={`../completed${location.search}`}
+          disabled={isDisabled}
+          relative="route"
+          prefetch="render"
+          size="lg"
+        >
+          Færdig
+        </Button>
+      </BookingDetails>
     </>
   );
 }
@@ -153,7 +157,6 @@ type TreatmentPickDatetimeProps = {
 };
 
 function TreatmentPickDatetime({availability}: TreatmentPickDatetimeProps) {
-  const isMobile = useMediaQuery('(max-width: 48em)');
   const [searchParams, setSearchParams] = useSearchParams();
 
   const onPickDate = (month: string | null) => {
@@ -233,16 +236,15 @@ function TreatmentPickDatetime({availability}: TreatmentPickDatetimeProps) {
     ));
 
   return (
-    <Stack gap="lg">
-      <Flex direction="column" justify="center">
-        <Title order={2} fw={600} fz={{base: 'h2'}} ta="center">
+    <Stack gap="xl">
+      <div>
+        <Text size="sm" c="dimmed">
+          Trin 3 ud af 4
+        </Text>
+        <Title order={1} fw={600}>
           Tidsbestilling
         </Title>
-
-        <Text c="dimmed" ta="center">
-          Vælge dato og tid hvornår du vil lave behandling
-        </Text>
-      </Flex>
+      </div>
 
       <SimpleGrid cols={2}>
         <MonthSelector
@@ -255,14 +257,7 @@ function TreatmentPickDatetime({availability}: TreatmentPickDatetimeProps) {
           <Title order={4} mb="sm" fw={600} size="md">
             Hvornår skal vi mødes?
           </Title>
-          <ScrollArea
-            h="auto"
-            w="100%"
-            type={isMobile ? 'always' : 'auto'}
-            pb="xs"
-            scrollbars="x"
-            offsetScrollbars="x"
-          >
+          <ScrollArea type="auto" offsetScrollbars="x">
             <Flex gap="sm">{days}</Flex>
           </ScrollArea>
         </div>
@@ -295,23 +290,24 @@ function AvailabilityDay({
 }) {
   const isSelected =
     availability.date.substring(0, 10) === selected?.substring(0, 10);
+
   return (
-    <Button
-      onClick={onClick}
-      color={isSelected ? 'black' : '#e5e5e5'}
-      bg={isSelected ? '#e5e5e5' : undefined}
-      variant="outline"
-      h="56"
-    >
-      <Stack gap="2" justify="center">
-        <Text size="xs" ta="center" fw={isSelected ? 700 : 400} c="black">
-          {format(new Date(availability.date), 'EEEE', {locale: da})}
-        </Text>
-        <Text size="sm" ta="center" fw={isSelected ? 700 : 400} c="black">
-          {format(new Date(availability.date), 'd. LLL', {locale: da})}
+    <UnstyledButton onClick={onClick} color={isSelected ? 'black' : '#e5e5e5'}>
+      <Stack gap="4px">
+        <ActionIcon
+          variant={isSelected ? 'filled' : 'outline'}
+          c={isSelected ? 'white' : 'black'}
+          color={isSelected ? 'blue' : 'gray.4'}
+          radius="xl"
+          size={rem(60)}
+        >
+          <Text>{format(new Date(availability.date), 'd.', {locale: da})}</Text>
+        </ActionIcon>
+        <Text ta="center">
+          {format(new Date(availability.date), 'EEE', {locale: da})}
         </Text>
       </Stack>
-    </Button>
+    </UnstyledButton>
   );
 }
 
@@ -328,9 +324,10 @@ function AvailabilityTime({
   return (
     <Button
       onClick={onClick}
-      color={isSelected ? 'black' : '#e5e5e5'}
-      bg={isSelected ? '#e5e5e5' : undefined}
-      variant="outline"
+      variant={isSelected ? 'filled' : 'outline'}
+      c={isSelected ? 'white' : 'black'}
+      color={isSelected ? 'blue' : 'gray.4'}
+      size="md"
     >
       <Text size="sm" ta="center" fw={isSelected ? 700 : 400} c="black">
         {format(new Date(slot.from), 'HH:mm', {locale: da})}

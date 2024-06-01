@@ -1,19 +1,20 @@
-import {Button, Flex, Text, Title} from '@mantine/core';
+import {Button, Flex, Grid, Stack, Text, Title} from '@mantine/core';
 import {useDisclosure} from '@mantine/hooks';
 import {Link, useOutletContext, useSearchParams} from '@remix-run/react';
-import {ArtistShell} from '~/components/ArtistShell';
 import {LocationModal} from '~/components/LocationModal';
-import {TreatmentStepper} from '~/components/TreatmentStepper';
 import {AristLocationRadioCard} from '~/components/artist/ArtistLocationRadioCard';
 import {
   CustomerLocationBaseLocationType,
   type CustomerLocation,
 } from '~/lib/api/model';
 import {convertLocations} from '~/lib/convertLocations';
-import type {OutletLoader} from './artist_.$username.treatment.$productHandle';
+import {
+  BookingDetails,
+  type OutletLoader,
+} from './artist_.$username.treatment.$productHandle';
 
 export default function ArtistTreatmentPickLocation() {
-  const {product, totalPrice, totalDuration} = useOutletContext<OutletLoader>();
+  const {product} = useOutletContext<OutletLoader>();
   const [searchParams] = useSearchParams();
   const isDisabled =
     !searchParams.has('locationId') || searchParams.get('locationId') === '';
@@ -22,21 +23,34 @@ export default function ArtistTreatmentPickLocation() {
 
   return (
     <>
-      <ArtistShell.Main>
-        <ArtistLocationPicker locations={locations} />
-      </ArtistShell.Main>
-      <ArtistShell.Footer>
-        <TreatmentStepper totalPrice={totalPrice} totalDuration={totalDuration}>
-          <Button
-            variant="default"
-            component={Link}
-            to={`../pick-more?${searchParams.toString()}`}
-            disabled={isDisabled}
-          >
-            Næste
-          </Button>
-        </TreatmentStepper>
-      </ArtistShell.Footer>
+      <Grid.Col span={{base: 12, md: 7}}>
+        <Stack gap="xl">
+          <div>
+            <Text size="sm" c="dimmed">
+              Trin 2 ud af 4
+            </Text>
+
+            <Title order={1} fw={600} size="h2">
+              Vælg lokation
+            </Title>
+          </div>
+          <ArtistLocationPicker locations={locations} />
+        </Stack>
+      </Grid.Col>
+      <BookingDetails>
+        <Button
+          variant="fill"
+          color="black"
+          component={Link}
+          to={`../pick-more?${searchParams.toString()}`}
+          relative="route"
+          prefetch="render"
+          size="lg"
+          disabled={isDisabled}
+        >
+          Forsæt
+        </Button>
+      </BookingDetails>
     </>
   );
 }
@@ -111,16 +125,6 @@ function ArtistLocationPicker({locations}: {locations: CustomerLocation[]}) {
 
   return (
     <>
-      <Flex direction="column" justify="center" mb="lg">
-        <Title order={2} fw={600} fz={{base: 'h2'}} ta="center">
-          Lokation
-        </Title>
-
-        <Text c="dimmed" ta="center">
-          Vælg behandlingslokation hvor du vil lave behandlingen.
-        </Text>
-      </Flex>
-
       <Flex gap="lg" direction="column">
         {markup}
       </Flex>

@@ -117,9 +117,9 @@ export function AddToCartTreatment({
       return input;
     });
 
+  //<AddToCartButton lines={lines}>Tilføj indkøbskurv</AddToCartButton>
   return (
     <Flex justify="flex-end" gap="md">
-      <AddToCartButton lines={lines}>Tilføj indkøbskurv</AddToCartButton>
       <AddToCartButton lines={lines} redirectTo={redirectTo}>
         Gå til betaling
       </AddToCartButton>
@@ -158,7 +158,10 @@ export function AddToCartButton({
               value={JSON.stringify(analytics)}
             />
             <Button
-              variant="default"
+              variant="fill"
+              color="black"
+              size="lg"
+              fullWidth
               type="submit"
               onClick={onClick}
               leftSection={redirectTo ? <IconPaywall /> : <IconShoppingCart />}

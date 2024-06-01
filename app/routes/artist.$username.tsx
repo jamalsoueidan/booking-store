@@ -11,6 +11,7 @@ import {
   Container,
   Divider,
   Flex,
+  Group,
   rem,
   Stack,
   Text,
@@ -60,15 +61,16 @@ export default function UserIndex() {
   return (
     <UserProvider user={user}>
       <Container size="xl" mb="xl">
-        <Flex direction="column" mt={rem(100)}>
-          <Stack gap="xs">
-            <Avatar src={user?.image?.reference?.image?.url} size={rem(150)} />
-
-            <Title order={1}>{user?.fullname?.value}</Title>
-            <Text fz="lg">
-              {user?.shortDescription?.value} <br />
-            </Text>
-          </Stack>
+        <Flex align="center" direction="column" mt={rem(100)}>
+          <Group gap="xs">
+            <Avatar src={user?.image?.reference?.image?.url} size={rem(130)} />
+            <Stack gap="xs">
+              <Title order={1}>{user?.fullname?.value}</Title>
+              <Text fz="lg">
+                {user?.shortDescription?.value} <br />
+              </Text>
+            </Stack>
+          </Group>
         </Flex>
 
         {!user?.active?.value ? (
@@ -83,7 +85,7 @@ export default function UserIndex() {
           </Alert>
         ) : null}
 
-        <Flex gap="md" mt={rem(60)}>
+        <Flex gap="md" mt={rem(50)}>
           <NavLink to="" end>
             {({isActive}) => (
               <Button

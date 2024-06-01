@@ -1,4 +1,14 @@
-import {Anchor, Card, Divider, Flex, Group, Stack, Text} from '@mantine/core';
+import {
+  Anchor,
+  Avatar,
+  Card,
+  Flex,
+  Grid,
+  Group,
+  Stack,
+  Text,
+  Title,
+} from '@mantine/core';
 import {useLoaderData, useOutletContext} from '@remix-run/react';
 import {Money, parseGid} from '@shopify/hydrogen';
 import {
@@ -6,15 +16,16 @@ import {
   type LoaderFunctionArgs,
   type SerializeFrom,
 } from '@shopify/remix-oxygen';
-import {IconClockHour3, IconHotelService} from '@tabler/icons-react';
+import {IconClockHour3} from '@tabler/icons-react';
 import {format} from 'date-fns';
 import da from 'date-fns/locale/da';
 import {v4 as uuidv4} from 'uuid';
 import {AddToCartTreatment} from '~/components/AddToCartTreatments';
-import {ArtistShell} from '~/components/ArtistShell';
-import {TreatmentArtistCardComplete} from '~/components/treatment/TreatmentArtistCardComplete';
 import {PRODUCT_SELECTED_OPTIONS_QUERY} from '~/data/queries';
-import type {loader as rootLoader} from './artist_.$username.treatment.$productHandle';
+import {
+  BookingDetails,
+  type loader as rootLoader,
+} from './artist_.$username.treatment.$productHandle';
 
 import {LocationIcon} from '~/components/LocationIcon';
 import {getBookingShopifyApi} from '~/lib/api/bookingShopifyApi';
@@ -129,77 +140,100 @@ export default function ArtistTreatmentsBooking() {
 
   return (
     <>
-      <ArtistShell.Main>
-        <TreatmentArtistCardComplete user={product.user?.reference} />
-
-        <Card.Section py="md">
-          <Divider />
-        </Card.Section>
-
-        <Group mb="xs" gap="xs">
-          <LocationIcon location={data.location} />
-          <Text fz="lg" fw="bold">
-            Location
-          </Text>
-        </Group>
-        {data?.location.locationType === 'destination' ? (
-          <>
-            <Text fz="md" fw={500}>
-              {data?.availability.shipping?.destination.fullAddress}
+      <Grid.Col span={{base: 12, md: 7}}>
+        <Stack gap="xl">
+          <div>
+            <Text size="sm" c="dimmed">
+              Trin 4 ud af 4
             </Text>
-            <Text fz="xs" c="red" fw={500}>
-              Udgifterne bliver beregnet under købsprocessen{' '}
-              {data?.availability.shipping?.cost.value}{' '}
-              {data?.availability.shipping?.cost.currency}
-            </Text>
-          </>
-        ) : (
-          <>
-            <Text fz="md" fw={500}>
-              {data?.location.name}
-            </Text>
-            <Text fz="md" fw={500}>
-              {data?.location.fullAddress}
-            </Text>
-            <Anchor href="googlemap">Se google map</Anchor>
-          </>
-        )}
+            <Title order={1} fw={600} size="h2">
+              Gennemgå og bekræft
+            </Title>
+          </div>
 
-        <Card.Section py="md">
-          <Divider />
-        </Card.Section>
+          <Card withBorder radius="md">
+            <Group wrap="nowrap" gap="xs">
+              <Avatar
+                src={
+                  product.user?.reference?.image?.reference?.image?.url || ''
+                }
+                radius={0}
+                size={64}
+              />
+              <div style={{flex: 1}}>
+                <Text size="md" c="dimmed" fw="500">
+                  Du bliver behandlet af
+                </Text>
+                <Text size="xl" fw="bold">
+                  {product.user?.reference?.fullname?.value}
+                </Text>
+              </div>
+            </Group>
+          </Card>
 
-        <Group mb="xs" gap="xs">
-          <IconClockHour3 />
-          <Text fz="lg" fw="bold">
-            Tid
-          </Text>
-        </Group>
-        {data?.availability.slot.from && (
-          <Text fz="md" fw={500}>
-            {format(
-              new Date(data?.availability.slot.from || ''),
-              "EEEE',' 'd.' d'.' LLL 'kl 'HH:mm",
-              {
-                locale: da,
-              },
-            )}
-          </Text>
-        )}
+          <Card withBorder radius="md">
+            <Stack gap="md">
+              <Group gap="xs" align="center">
+                <LocationIcon location={data.location} />
+                <Title order={3} fw={600} fz="xl">
+                  Location
+                </Title>
+              </Group>
 
-        <Card.Section py="md">
-          <Divider />
-        </Card.Section>
+              <Stack gap="0">
+                {data?.location.locationType === 'destination' ? (
+                  <>
+                    <Text fz="md" fw={500}>
+                      {data?.availability.shipping?.destination.fullAddress}
+                    </Text>
+                    <Text fz="xs" c="red" fw={500}>
+                      Udgifterne bliver beregnet under købsprocessen{' '}
+                      {data?.availability.shipping?.cost.value}{' '}
+                      {data?.availability.shipping?.cost.currency}
+                    </Text>
+                  </>
+                ) : (
+                  <>
+                    <Text fz="md" fw={500}>
+                      {data?.location.name}
+                    </Text>
+                    <Text fz="md" fw={500}>
+                      {data?.location.fullAddress}
+                    </Text>
+                    <Anchor href="googlemap">Se google map</Anchor>
+                  </>
+                )}
+              </Stack>
+            </Stack>
+          </Card>
 
-        <Group mb="xs" gap="xs">
-          <IconHotelService />
-          <Text fz="lg" fw="bold">
-            Ydelser
-          </Text>
-        </Group>
-        <Stack gap="xs">{productMarkup}</Stack>
-      </ArtistShell.Main>
-      <ArtistShell.Footer>
+          <Card withBorder radius="md">
+            <Stack gap="md">
+              <Group gap="xs" align="center">
+                <IconClockHour3 />
+                <Title order={3} fw={600} fz="xl">
+                  Tid
+                </Title>
+              </Group>
+
+              <Stack gap="xs">
+                {data?.availability.slot.from && (
+                  <Text fz="md" fw={500}>
+                    {format(
+                      new Date(data?.availability.slot.from || ''),
+                      "EEEE',' 'd.' d'.' LLL 'kl 'HH:mm",
+                      {
+                        locale: da,
+                      },
+                    )}
+                  </Text>
+                )}
+              </Stack>
+            </Stack>
+          </Card>
+        </Stack>
+      </Grid.Col>
+      <BookingDetails>
         <AddToCartTreatment
           products={data.products.nodes}
           availability={data.availability}
@@ -207,7 +241,7 @@ export default function ArtistTreatmentsBooking() {
           groupId={data.groupId}
           redirectTo="cart"
         />
-      </ArtistShell.Footer>
+      </BookingDetails>
     </>
   );
 }
