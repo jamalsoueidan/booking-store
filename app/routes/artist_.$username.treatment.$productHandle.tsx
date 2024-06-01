@@ -198,7 +198,7 @@ export default function Booking() {
               variant="transparent"
               c="black"
               component={Link}
-              to="../"
+              to="./../../"
             >
               <IconX
                 style={{width: rem(36), height: rem(36), strokeWidth: 1}}
