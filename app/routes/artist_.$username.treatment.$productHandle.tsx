@@ -172,10 +172,17 @@ export default function Booking() {
     <div>
       <Affix position={{top: 0, left: 0, right: 0}}>
         <Container size="xl">
-          <Flex h={60} py="md" bg="white" justify="space-between">
-            <IconArrowLeft
-              style={{width: rem(36), height: rem(36), strokeWidth: 1}}
-            />
+          <Flex h={50} bg="white" justify="space-between" align="center">
+            <ActionIcon
+              variant="transparent"
+              c="black"
+              component={Link}
+              to="../"
+            >
+              <IconArrowLeft
+                style={{width: rem(36), height: rem(36), strokeWidth: 1}}
+              />
+            </ActionIcon>
 
             <Title
               order={2}
