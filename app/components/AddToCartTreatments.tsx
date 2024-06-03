@@ -94,11 +94,12 @@ export function AddToCartTreatment({
     },
   );
 
-  console.log(lines);
-  //<AddToCartButton lines={lines} redirectTo={redirectTo}>Gå til betaling</AddToCartButton>
+  //<AddToCartButton lines={lines}>Tilføj indkøbskurv</AddToCartButton>
   return (
     <Flex justify="flex-end" gap="md">
-      <AddToCartButton lines={lines}>Tilføj indkøbskurv</AddToCartButton>
+      <AddToCartButton lines={lines} redirectTo={redirectTo}>
+        Gå til betaling
+      </AddToCartButton>
     </Flex>
   );
 }
