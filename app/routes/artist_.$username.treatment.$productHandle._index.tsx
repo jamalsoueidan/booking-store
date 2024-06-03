@@ -56,7 +56,7 @@ export default function ProductDescription() {
               {choices && choices.length > 0 ? (
                 <div>
                   <Title order={3} fw={600} mb="sm" fz="xl">
-                    Tilføj eventuelle ekstra services
+                    Tilføj ekstra services
                   </Title>
                   <Stack gap="md">
                     {choices?.map((productWithVariants) => {

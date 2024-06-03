@@ -270,9 +270,10 @@ export function useCalculationForExtraProducts({
           ...product.variants.nodes[0],
         });
 
+        const productPrice = parseInt(product.variants.nodes[0].price.amount);
+        const productDuration = parseInt(product.duration?.value || '');
+
         if (!product.options) {
-          const productPrice = parseInt(product.variants.nodes[0].price.amount);
-          const productDuration = parseInt(product.duration?.value || '');
           return {
             price: summary.price + productPrice,
             duration: summary.duration + productDuration,
@@ -291,7 +292,7 @@ export function useCalculationForExtraProducts({
 
               if (variant) {
                 pickedVariants.push({
-                  title: variant.title,
+                  title: product.title + ' - ' + variant.title,
                   duration: variant.duration,
                   price: variant.price,
                   compareAtPrice: variant.compareAtPrice,
@@ -320,8 +321,9 @@ export function useCalculationForExtraProducts({
           ) || {price: 0, duration: 0};
 
         return {
-          price: summary.price + variantSummary.price,
-          duration: summary.duration + variantSummary.duration,
+          price: summary.price + variantSummary.price + productPrice,
+          duration:
+            summary.duration + variantSummary.duration + productDuration,
         };
       },
       {price: 0, duration: 0},

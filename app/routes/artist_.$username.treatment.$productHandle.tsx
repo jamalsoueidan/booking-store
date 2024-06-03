@@ -319,10 +319,10 @@ export function BookingDetails({children}: PropsWithChildren) {
         <Box p="md">
           <Flex justify="space-between">
             <Flex direction="column">
-              <Text fw="bold">{totalPrice} kr.</Text>
+              <Text fw="bold">{totalPrice + summary.price} kr.</Text>
               <Text>
                 {1 + summary.pickedVariants.filter((f) => !f.isVariant).length}{' '}
-                ydelse - {durationToTime(summary.duration || 0)}
+                ydelse - {durationToTime(totalDuration + summary.duration)}
               </Text>
             </Flex>
             {children}

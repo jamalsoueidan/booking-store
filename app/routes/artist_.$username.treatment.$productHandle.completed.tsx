@@ -2,7 +2,6 @@ import {
   Anchor,
   Avatar,
   Card,
-  Flex,
   Grid,
   Group,
   Stack,
@@ -10,7 +9,7 @@ import {
   Title,
 } from '@mantine/core';
 import {useLoaderData, useOutletContext} from '@remix-run/react';
-import {Money, parseGid} from '@shopify/hydrogen';
+import {parseGid} from '@shopify/hydrogen';
 import {
   json,
   type LoaderFunctionArgs,
@@ -29,7 +28,6 @@ import {
 
 import {LocationIcon} from '~/components/LocationIcon';
 import {getBookingShopifyApi} from '~/lib/api/bookingShopifyApi';
-import {durationToTime} from '~/lib/duration';
 import {parseOptionsFromQuery} from '~/lib/parseOptionsQueryParameters';
 
 export const loader = async ({
@@ -61,8 +59,6 @@ export const loader = async ({
       throw new Response(null, {status: 404});
     }
 
-    const joinProductIds = productIds.concat(parseGid(product.id).id);
-
     const {payload: location} = await getBookingShopifyApi().userLocationGet(
       username,
       locationId,
@@ -70,34 +66,17 @@ export const loader = async ({
 
     const {payload: availability} =
       await getBookingShopifyApi().userAvailabilityGet(username, locationId, {
-        productIds: joinProductIds,
+        productIds: [parseGid(product.id).id, ...productIds],
         fromDate, //: '2023-11-26T05:15:00.000Z',
         toDate, //: '2023-11-26T08:05:00.000Z',
         shippingId: shippingId ? shippingId : undefined,
         optionIds: parseOptionsFromQuery(url.searchParams),
       });
 
-    const availabilityProducts = availability.slot.products.map(
-      (p) => p.productId,
-    );
-
-    const {products} = await context.storefront.query(
-      GET_TREATMENT_PRODUCTS_IN_CART,
-      {
-        variables: {
-          first: availabilityProducts.length,
-          query: `id:${availabilityProducts.join(' OR id:')}`,
-          country: context.storefront.i18n.country,
-          language: context.storefront.i18n.language,
-        },
-      },
-    );
-
     const groupId = uuidv4();
 
     return json({
       location,
-      products,
       availability,
       groupId,
     });
@@ -109,34 +88,6 @@ export const loader = async ({
 export default function ArtistTreatmentsBooking() {
   const data = useLoaderData<typeof loader>();
   const {product} = useOutletContext<SerializeFrom<typeof rootLoader>>();
-
-  const productMarkup = data.products.nodes.map((product) => {
-    const pickedVariant = product.variants.nodes[0];
-
-    return (
-      <div key={product.id}>
-        <Text fz="md" fw={500}>
-          {product.title}
-        </Text>
-        {product.type?.value === 'option' ? (
-          <Text>{pickedVariant.title}</Text>
-        ) : null}
-        <Text fz="md" c="dimmed" fw={500} lineClamp={1}>
-          {product.description}
-        </Text>
-        <Flex align="center" gap="lg">
-          <Text fz="xs" c="dimmed" tt="uppercase" fw={500}>
-            {durationToTime(
-              product.duration?.value || pickedVariant.duration?.value || 0,
-            )}
-          </Text>
-          <Text fz="xs" c="dimmed" fw={500}>
-            <Money data={pickedVariant.price} as="span" />
-          </Text>
-        </Flex>
-      </div>
-    );
-  });
 
   return (
     <>
@@ -235,7 +186,6 @@ export default function ArtistTreatmentsBooking() {
       </Grid.Col>
       <BookingDetails>
         <AddToCartTreatment
-          products={data.products.nodes}
           availability={data.availability}
           location={data.location}
           groupId={data.groupId}

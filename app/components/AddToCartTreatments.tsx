@@ -1,18 +1,15 @@
 import {Button, Flex} from '@mantine/core';
 import {type FetcherWithComponents} from '@remix-run/react';
-import {CartForm, parseGid} from '@shopify/hydrogen';
+import {CartForm} from '@shopify/hydrogen';
 import {type CartLineInput} from '@shopify/hydrogen/storefront-api-types';
 import {IconPaywall, IconShoppingCart} from '@tabler/icons-react';
 import {format} from 'date-fns';
 import da from 'date-fns/locale/da';
-import {type CartProductsFragment} from 'storefrontapi.generated';
 import type {CustomerLocation, UserAvailabilitySingle} from '~/lib/api/model';
 import {durationToTime} from '~/lib/duration';
-import {matchesGid} from '~/lib/matches-gid';
 
 type AddToCartTreatmentProps = {
   availability: UserAvailabilitySingle;
-  products: CartProductsFragment[];
   location: CustomerLocation;
   groupId: string;
   redirectTo?: string;
@@ -20,22 +17,12 @@ type AddToCartTreatmentProps = {
 
 export function AddToCartTreatment({
   availability,
-  products,
   location,
   groupId,
   redirectTo,
 }: AddToCartTreatmentProps) {
-  const lines: Array<CartLineInput> = products
-    .filter((product) =>
-      availability.slot.products.some(
-        (p) => p.productId.toString() === parseGid(product.id).id,
-      ),
-    )
-    .map((product) => {
-      const slotProduct = availability.slot.products.find(
-        (p) => p.productId.toString() === parseGid(product.id).id,
-      )!;
-
+  const lines: Array<CartLineInput> = availability.slot.products.map(
+    (slotProduct) => {
       const input = {
         merchandiseId: `gid://shopify/ProductVariant/${
           slotProduct.variantId || ''
@@ -88,17 +75,6 @@ export function AddToCartTreatment({
           key: '_parentId',
           value: slotProduct.parentId.toString(),
         });
-
-        const parentProduct = products.find((p) =>
-          matchesGid(p.id, slotProduct.parentId!),
-        );
-
-        if (parentProduct?.title) {
-          input.attributes.push({
-            key: 'Til: ',
-            value: parentProduct?.title,
-          });
-        }
       }
 
       if (availability.shipping) {
@@ -115,14 +91,14 @@ export function AddToCartTreatment({
       }
 
       return input;
-    });
+    },
+  );
 
-  //<AddToCartButton lines={lines}>Tilføj indkøbskurv</AddToCartButton>
+  console.log(lines);
+  //<AddToCartButton lines={lines} redirectTo={redirectTo}>Gå til betaling</AddToCartButton>
   return (
     <Flex justify="flex-end" gap="md">
-      <AddToCartButton lines={lines} redirectTo={redirectTo}>
-        Gå til betaling
-      </AddToCartButton>
+      <AddToCartButton lines={lines}>Tilføj indkøbskurv</AddToCartButton>
     </Flex>
   );
 }
