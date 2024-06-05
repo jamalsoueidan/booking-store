@@ -34,7 +34,6 @@ export async function loader({context}: LoaderFunctionArgs) {
 export default function AccountLocationsIndex() {
   const {locations} = useLoaderData<typeof loader>();
 
-  console.log(locations);
   return (
     <>
       <AccountTitle heading="Lokationer">
