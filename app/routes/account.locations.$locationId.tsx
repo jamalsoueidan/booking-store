@@ -48,7 +48,7 @@ export default function AccountLocationsEdit() {
           fw="300"
           component={Link}
           to={`https://www.google.com/maps/search/?api=1&query=${defaultValue.geoLocation.coordinates
-            .reverse()
+            .sort()
             .join(',')}`}
           target="_blank"
           rel="noreferrer"
