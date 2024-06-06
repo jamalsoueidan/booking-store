@@ -1,17 +1,15 @@
 import {
-  BackgroundImage,
+  Avatar,
   Badge,
-  Box,
   Button,
+  Card,
   Flex,
   Group,
   Image,
-  Mark,
   rem,
   SimpleGrid,
   Stack,
   Text,
-  UnstyledButton,
 } from '@mantine/core';
 import {Link, useLoaderData} from '@remix-run/react';
 import {getPaginationVariables, Pagination} from '@shopify/hydrogen';
@@ -25,7 +23,7 @@ import {DK, US} from 'country-flag-icons/react/3x2';
 import {type ArticleUserFragment} from 'storefrontapi.generated';
 import {LocationIcon} from '~/components/LocationIcon';
 import {METAFIELD_QUERY} from '~/data/fragments';
-import {ARTICLE_USER_FRAGMENT} from '~/graphql/fragments/ArtistUser';
+import {ARTICLE_USER_FRAGMENT} from '~/graphql/fragments/ArticleUser';
 import {splitTags} from '~/lib/tags';
 import {ProfessionTranslations} from './api.users.professions';
 
@@ -88,8 +86,15 @@ export const loader = async ({context, request}: LoaderFunctionArgs) => {
     query.push(`tag:location-${location}`);
   }
 
+  const product = searchParams.get('product');
+  if (product) {
+    query.push(`tag:parentid-${product}`);
+  } else {
+    query.push('tag:parentid');
+  }
+
   const paginationVariables = getPaginationVariables(request, {
-    pageBy: 5,
+    pageBy: 10,
   });
 
   const {data} = await storefront.query(USERS_QUERY, {
@@ -134,7 +139,7 @@ export default function Component() {
               ↑ Hent tidligere
             </Button>
           </Flex>
-          <SimpleGrid cols={{base: 1, sm: 2, md: 4}}>
+          <SimpleGrid cols={{base: 1, sm: 2, md: 3}} spacing="lg">
             {nodes.map((article) => {
               return <UserCard article={article as any} key={article.id} />;
             })}
@@ -162,86 +167,100 @@ export const UserCard = ({article}: {article: ArticleUserFragment}) => {
     : {professions: []};
 
   const tags = splitTags(article.tags);
+  const products = article.collection?.reference?.products.nodes;
 
   return (
-    <UnstyledButton
+    <Card
       component={Link}
       to={`/artist/${user?.username?.value}`}
-      style={{
-        borderRadius: '3%',
-        border: '1px solid #ccc',
-        position: 'relative',
-      }}
+      withBorder
+      radius="lg"
+      p="xs"
+      pos="relative"
     >
-      <BackgroundImage
-        component={Image}
-        mih={rem(300)}
-        src={
-          user?.image?.reference?.image?.url ||
-          'https://placehold.co/400x600?text=Ekspert'
-        }
-        style={{
-          borderTopLeftRadius: '3.2%',
-          borderTopRightRadius: '3.2%',
-        }}
-      />
-      {tags['speak'] ? (
-        <Box pos="absolute" top={rem(10)} left={rem(10)}>
-          <Flex gap="xs">
-            {tags['speak'].includes('danish') && <DK width={16} height={16} />}
-            {tags['speak'].includes('english') && <US width={16} height={16} />}
-          </Flex>
-        </Box>
-      ) : null}
-      <Mark
-        color="black"
-        c="white"
-        fz="sm"
-        style={{
-          position: 'absolute',
-          right: 1,
-          top: 1,
-          borderBottomLeftRadius: '8px',
-          borderTopRightRadius: '8px',
-          padding: '4px',
-          opacity: 0.6,
-        }}
-      >
-        <Group gap="xs">
-          {tags['location']?.includes('destination') && (
-            <LocationIcon
-              location={{locationType: 'destination', originType: 'commercial'}}
-              width={22}
-              height={22}
-            />
-          )}
-          {tags['location']?.includes('salon') && (
-            <LocationIcon
-              location={{locationType: 'origin', originType: 'commercial'}}
-              width={22}
-              height={22}
-            />
-          )}
-          {tags['location']?.includes('home') && (
-            <LocationIcon
-              location={{locationType: 'origin', originType: 'home'}}
-              width={22}
-              height={22}
-            />
-          )}
-          {tags['city'][0].toUpperCase()}
-        </Group>
-      </Mark>
-      <Flex direction="column" p="xs" pb="xs" pt="6px" gap="6px">
+      <SimpleGrid cols={3} spacing="6px">
+        {products?.map((p, index) => (
+          <Image
+            key={p.id}
+            src={p.featuredImage?.url}
+            style={
+              index === 0
+                ? {borderTopLeftRadius: '10px', borderBottomLeftRadius: '10px'}
+                : index === 2
+                ? {
+                    borderTopRightRadius: '10px',
+                    borderBottomRightRadius: '10px',
+                  }
+                : {}
+            }
+          />
+        ))}
+      </SimpleGrid>
+      <Flex mt="-40px" justify="center">
+        <Avatar
+          style={{border: '3px solid #FFF'}}
+          src={
+            user?.image?.reference?.image?.url ||
+            'https://placehold.co/400x600?text=Ekspert'
+          }
+          size={rem(72)}
+        />
+      </Flex>
+
+      <Flex direction="column" px="xs" pb="0" pt="6px" gap="sm">
         <div>
-          <Text fz="md" fw={600} c="black">
-            {user?.fullname?.value}
+          <Text fz="lg" fw={600} c="black" ta="center">
+            {user?.fullname?.value}{' '}
           </Text>
-          <Text fz="sm" c="#666" lineClamp={2}>
-            {user?.shortDescription?.value}
-          </Text>
+
+          <Group gap="4" justify="center">
+            {tags['location']?.includes('destination') && (
+              <LocationIcon
+                location={{
+                  locationType: 'destination',
+                  originType: 'commercial',
+                }}
+                width={18}
+                height={18}
+                color="gray"
+              />
+            )}
+            {tags['location']?.includes('salon') && (
+              <LocationIcon
+                location={{locationType: 'origin', originType: 'commercial'}}
+                width={18}
+                height={18}
+                color="gray"
+              />
+            )}
+            {tags['location']?.includes('home') && (
+              <LocationIcon
+                location={{locationType: 'origin', originType: 'home'}}
+                width={18}
+                height={18}
+                color="gray"
+              />
+            )}
+            <Text fz="md" c="dimmed" lineClamp={1}>
+              {tags['city'][0][0].toUpperCase()}
+              {tags['city'][0].substring(1)}
+            </Text>
+          </Group>
+
+          {tags['speak'] ? (
+            <Group justify="center" mt="2px">
+              <Flex gap="xs">
+                {tags['speak'].includes('danish') && (
+                  <DK width={18} height={18} />
+                )}
+                {tags['speak'].includes('english') && (
+                  <US width={18} height={18} />
+                )}
+              </Flex>
+            </Group>
+          ) : null}
         </div>
-        <Flex gap="3px">
+        <Flex gap="xs" justify="center">
           {professions['professions'].map((p) => (
             <Badge variant="outline" c="black" color="gray.4" key={p} fw="400">
               {ProfessionTranslations[p]}
@@ -249,7 +268,7 @@ export const UserCard = ({article}: {article: ArticleUserFragment}) => {
           ))}
         </Flex>
       </Flex>
-    </UnstyledButton>
+    </Card>
   );
 };
 

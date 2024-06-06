@@ -33,7 +33,7 @@ import {H1} from '~/components/titles/H1';
 import {H2} from '~/components/titles/H2';
 
 import {ProfessionButton} from '~/components/ProfessionButton';
-import {ARTICLE_USER_FRAGMENT} from '~/graphql/fragments/ArtistUser';
+import {ARTICLE_USER_FRAGMENT} from '~/graphql/fragments/ArticleUser';
 import {getTags} from '~/lib/tags';
 import {useComponents} from '~/lib/use-components';
 import {UserCard} from './artists._index';
@@ -315,7 +315,7 @@ export const USERS_QUERY = `#graphql
     $language: LanguageCode
   ) @inContext(country: $country, language: $language) {
     data: blog(id: "gid://shopify/Blog/105364226375") {
-      users: articles(first: 4, sortKey: PUBLISHED_AT, reverse: true) {
+      users: articles(first: 4, sortKey: PUBLISHED_AT, reverse: true, query: "tag:parentid") {
         nodes {
           ...ArticleUser
         }

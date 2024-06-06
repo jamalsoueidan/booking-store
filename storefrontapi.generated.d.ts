@@ -1777,6 +1777,16 @@ export type ArticleUserFragment = Pick<
   collection?: StorefrontAPI.Maybe<{
     reference?: StorefrontAPI.Maybe<{
       products: {
+        nodes: Array<
+          Pick<StorefrontAPI.Product, 'id'> & {
+            featuredImage?: StorefrontAPI.Maybe<
+              Pick<
+                StorefrontAPI.Image,
+                'id' | 'altText' | 'url' | 'width' | 'height'
+              >
+            >;
+          }
+        >;
         filters: Array<
           Pick<StorefrontAPI.Filter, 'label'> & {
             values: Array<
@@ -1787,6 +1797,12 @@ export type ArticleUserFragment = Pick<
       };
     }>;
   }>;
+};
+
+export type ArticleUserProductFragment = Pick<StorefrontAPI.Product, 'id'> & {
+  featuredImage?: StorefrontAPI.Maybe<
+    Pick<StorefrontAPI.Image, 'id' | 'altText' | 'url' | 'width' | 'height'>
+  >;
 };
 
 export type LocationFragment = Pick<
@@ -3057,6 +3073,16 @@ export type FrontUsersQuery = {
           collection?: StorefrontAPI.Maybe<{
             reference?: StorefrontAPI.Maybe<{
               products: {
+                nodes: Array<
+                  Pick<StorefrontAPI.Product, 'id'> & {
+                    featuredImage?: StorefrontAPI.Maybe<
+                      Pick<
+                        StorefrontAPI.Image,
+                        'id' | 'altText' | 'url' | 'width' | 'height'
+                      >
+                    >;
+                  }
+                >;
                 filters: Array<
                   Pick<StorefrontAPI.Filter, 'label'> & {
                     values: Array<
@@ -3923,6 +3949,16 @@ export type ArtistsIndexQuery = {
           collection?: StorefrontAPI.Maybe<{
             reference?: StorefrontAPI.Maybe<{
               products: {
+                nodes: Array<
+                  Pick<StorefrontAPI.Product, 'id'> & {
+                    featuredImage?: StorefrontAPI.Maybe<
+                      Pick<
+                        StorefrontAPI.Image,
+                        'id' | 'altText' | 'url' | 'width' | 'height'
+                      >
+                    >;
+                  }
+                >;
                 filters: Array<
                   Pick<StorefrontAPI.Filter, 'label'> & {
                     values: Array<
@@ -4976,7 +5012,7 @@ interface GeneratedQueryTypes {
     return: RecommendedTreatmentsQuery;
     variables: RecommendedTreatmentsQueryVariables;
   };
-  '#graphql\n  #graphql\n  #graphql\n  fragment User on Metaobject {\n    id\n    aboutMe: field(key: "about_me") {\n      value\n    }\n    active: field(key: "active") {\n      value\n    }\n    fullname: field(key: "fullname") {\n      value\n    }\n    professions: field(key: "professions") {\n      value\n    }\n    specialties: field(key: "specialties") {\n      value\n    }\n    social: field(key: "social") {\n      value\n    }\n    shortDescription: field(key: "short_description") {\n      value\n    }\n    username: field(key: "username") {\n      value\n    }\n    theme: field(key: "theme") {\n      value\n    }\n    image: field(key: "image") {\n      reference {\n        ... on MediaImage {\n          image {\n            width\n            height\n            url(transform: { maxHeight: 250, maxWidth: 250, crop: CENTER })\n          }\n        }\n      }\n    }\n  }\n\n  #graphql\n  fragment UserCollectionFilter on Filter {\n    label\n    values {\n      label\n      input\n      count\n    }\n  }\n\n  fragment ArticleUser on Article {\n    title\n    tags\n    id\n    user: metafield(key: "user", namespace: "booking") {\n      reference {\n        ...User\n      }\n    }\n    collection: metafield(key: "collection", namespace: "booking") {\n      reference {\n        ... on Collection {\n          products(first: 1) {\n            filters {\n             ...UserCollectionFilter\n            }\n          }\n        }\n      }\n    }\n  }\n\n  query FrontUsers(\n    $country: CountryCode\n    $language: LanguageCode\n  ) @inContext(country: $country, language: $language) {\n    data: blog(id: "gid://shopify/Blog/105364226375") {\n      users: articles(first: 4, sortKey: PUBLISHED_AT, reverse: true) {\n        nodes {\n          ...ArticleUser\n        }\n      }\n    }\n  }\n': {
+  '#graphql\n  #graphql\n  #graphql\n  fragment User on Metaobject {\n    id\n    aboutMe: field(key: "about_me") {\n      value\n    }\n    active: field(key: "active") {\n      value\n    }\n    fullname: field(key: "fullname") {\n      value\n    }\n    professions: field(key: "professions") {\n      value\n    }\n    specialties: field(key: "specialties") {\n      value\n    }\n    social: field(key: "social") {\n      value\n    }\n    shortDescription: field(key: "short_description") {\n      value\n    }\n    username: field(key: "username") {\n      value\n    }\n    theme: field(key: "theme") {\n      value\n    }\n    image: field(key: "image") {\n      reference {\n        ... on MediaImage {\n          image {\n            width\n            height\n            url(transform: { maxHeight: 250, maxWidth: 250, crop: CENTER })\n          }\n        }\n      }\n    }\n  }\n\n  #graphql\n  fragment UserCollectionFilter on Filter {\n    label\n    values {\n      label\n      input\n      count\n    }\n  }\n\n  #graphql\n  fragment ArticleUserProduct on Product {\n    id\n    featuredImage {\n      id\n      altText\n      url(transform: { maxHeight: 250, maxWidth: 250, crop: CENTER })\n      width\n      height\n    }\n  }\n\n\n  fragment ArticleUser on Article {\n    title\n    tags\n    id\n    user: metafield(key: "user", namespace: "booking") {\n      reference {\n        ...User\n      }\n    }\n    collection: metafield(key: "collection", namespace: "booking") {\n      reference {\n        ... on Collection {\n          products(first: 3, sortKey: RELEVANCE, filters: [{productMetafield: {namespace: "booking", key: "hide_from_profile", value: "false"}}, {productMetafield: {namespace: "system", key: "active",value: "true"}}]) {\n            nodes {\n              ...ArticleUserProduct\n            }\n            filters {\n              ...UserCollectionFilter\n            }\n          }\n        }\n      }\n    }\n  }\n\n  query FrontUsers(\n    $country: CountryCode\n    $language: LanguageCode\n  ) @inContext(country: $country, language: $language) {\n    data: blog(id: "gid://shopify/Blog/105364226375") {\n      users: articles(first: 4, sortKey: PUBLISHED_AT, reverse: true, query: "tag:parentid") {\n        nodes {\n          ...ArticleUser\n        }\n      }\n    }\n  }\n': {
     return: FrontUsersQuery;
     variables: FrontUsersQueryVariables;
   };
@@ -5012,7 +5048,7 @@ interface GeneratedQueryTypes {
     return: PickMoreProductsQuery;
     variables: PickMoreProductsQueryVariables;
   };
-  '#graphql\n  #graphql\n  #graphql\n  fragment User on Metaobject {\n    id\n    aboutMe: field(key: "about_me") {\n      value\n    }\n    active: field(key: "active") {\n      value\n    }\n    fullname: field(key: "fullname") {\n      value\n    }\n    professions: field(key: "professions") {\n      value\n    }\n    specialties: field(key: "specialties") {\n      value\n    }\n    social: field(key: "social") {\n      value\n    }\n    shortDescription: field(key: "short_description") {\n      value\n    }\n    username: field(key: "username") {\n      value\n    }\n    theme: field(key: "theme") {\n      value\n    }\n    image: field(key: "image") {\n      reference {\n        ... on MediaImage {\n          image {\n            width\n            height\n            url(transform: { maxHeight: 250, maxWidth: 250, crop: CENTER })\n          }\n        }\n      }\n    }\n  }\n\n  #graphql\n  fragment UserCollectionFilter on Filter {\n    label\n    values {\n      label\n      input\n      count\n    }\n  }\n\n  fragment ArticleUser on Article {\n    title\n    tags\n    id\n    user: metafield(key: "user", namespace: "booking") {\n      reference {\n        ...User\n      }\n    }\n    collection: metafield(key: "collection", namespace: "booking") {\n      reference {\n        ... on Collection {\n          products(first: 1) {\n            filters {\n             ...UserCollectionFilter\n            }\n          }\n        }\n      }\n    }\n  }\n\n  query ArtistsIndex(\n    $country: CountryCode\n    $language: LanguageCode\n    $first: Int\n    $last: Int\n    $startCursor: String\n    $endCursor: String\n    $query: String\n    $sortKey: ArticleSortKeys = PUBLISHED_AT\n    $reverse: Boolean = true\n  ) @inContext(country: $country, language: $language) {\n    data: blog(id: "gid://shopify/Blog/105364226375") {\n      users: articles(first: $first, last: $last, before: $startCursor, after: $endCursor, query: $query, sortKey: $sortKey, reverse: $reverse) {\n        nodes {\n          ...ArticleUser\n        }\n        pageInfo {\n          hasPreviousPage\n          hasNextPage\n          endCursor\n          startCursor\n        }\n      }\n    }\n  }\n': {
+  '#graphql\n  #graphql\n  #graphql\n  fragment User on Metaobject {\n    id\n    aboutMe: field(key: "about_me") {\n      value\n    }\n    active: field(key: "active") {\n      value\n    }\n    fullname: field(key: "fullname") {\n      value\n    }\n    professions: field(key: "professions") {\n      value\n    }\n    specialties: field(key: "specialties") {\n      value\n    }\n    social: field(key: "social") {\n      value\n    }\n    shortDescription: field(key: "short_description") {\n      value\n    }\n    username: field(key: "username") {\n      value\n    }\n    theme: field(key: "theme") {\n      value\n    }\n    image: field(key: "image") {\n      reference {\n        ... on MediaImage {\n          image {\n            width\n            height\n            url(transform: { maxHeight: 250, maxWidth: 250, crop: CENTER })\n          }\n        }\n      }\n    }\n  }\n\n  #graphql\n  fragment UserCollectionFilter on Filter {\n    label\n    values {\n      label\n      input\n      count\n    }\n  }\n\n  #graphql\n  fragment ArticleUserProduct on Product {\n    id\n    featuredImage {\n      id\n      altText\n      url(transform: { maxHeight: 250, maxWidth: 250, crop: CENTER })\n      width\n      height\n    }\n  }\n\n\n  fragment ArticleUser on Article {\n    title\n    tags\n    id\n    user: metafield(key: "user", namespace: "booking") {\n      reference {\n        ...User\n      }\n    }\n    collection: metafield(key: "collection", namespace: "booking") {\n      reference {\n        ... on Collection {\n          products(first: 3, sortKey: RELEVANCE, filters: [{productMetafield: {namespace: "booking", key: "hide_from_profile", value: "false"}}, {productMetafield: {namespace: "system", key: "active",value: "true"}}]) {\n            nodes {\n              ...ArticleUserProduct\n            }\n            filters {\n              ...UserCollectionFilter\n            }\n          }\n        }\n      }\n    }\n  }\n\n  query ArtistsIndex(\n    $country: CountryCode\n    $language: LanguageCode\n    $first: Int\n    $last: Int\n    $startCursor: String\n    $endCursor: String\n    $query: String\n    $sortKey: ArticleSortKeys = PUBLISHED_AT\n    $reverse: Boolean = true\n  ) @inContext(country: $country, language: $language) {\n    data: blog(id: "gid://shopify/Blog/105364226375") {\n      users: articles(first: $first, last: $last, before: $startCursor, after: $endCursor, query: $query, sortKey: $sortKey, reverse: $reverse) {\n        nodes {\n          ...ArticleUser\n        }\n        pageInfo {\n          hasPreviousPage\n          hasNextPage\n          endCursor\n          startCursor\n        }\n      }\n    }\n  }\n': {
     return: ArtistsIndexQuery;
     variables: ArtistsIndexQueryVariables;
   };

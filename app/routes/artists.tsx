@@ -20,6 +20,7 @@ import {
   useLoaderData,
   useSearchParams,
 } from '@remix-run/react';
+import {parseGid} from '@shopify/hydrogen';
 import {json, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
 import {
   IconArrowDown,
@@ -32,16 +33,19 @@ import {
   IconHome,
   IconLocation,
   IconNetwork,
+  IconServicemark,
   IconWorld,
   IconWorldCheck,
   IconX,
 } from '@tabler/icons-react';
 import {DK, US} from 'country-flag-icons/react/3x2';
+import {useMemo} from 'react';
 import {VisualTeaser} from '~/components/blocks/VisualTeaser';
 import {ProfessionButton} from '~/components/ProfessionButton';
 import {METAFIELD_QUERY} from '~/data/fragments';
 import {getTags} from '~/lib/tags';
 import {useComponents} from '~/lib/use-components';
+import {COLLECTION} from './account.services.create';
 import {ProfessionTranslations} from './api.users.professions';
 
 export const shouldRevalidate: ShouldRevalidateFunction = ({
@@ -60,6 +64,8 @@ export const loader = async (args: LoaderFunctionArgs) => {
     context.env.PUBLIC_STORE_DOMAIN,
     context.env.PRIVATE_API_ACCESS_TOKEN,
   );
+
+  const {collection} = await context.storefront.query(COLLECTION);
 
   const {metaobject: visualTeaser} = await context.storefront.query(
     METAFIELD_QUERY,
@@ -85,15 +91,31 @@ export const loader = async (args: LoaderFunctionArgs) => {
     components,
     visualTeaser,
     tags,
+    collection,
   });
 };
 
 export default function Artists() {
-  const {tags, components, visualTeaser} = useLoaderData<typeof loader>();
+  const {tags, components, visualTeaser, collection} =
+    useLoaderData<typeof loader>();
   const [opened, {open, close}] = useDisclosure(false);
   const [searchParams, setSearchParams] = useSearchParams();
   const markup = useComponents(
     components?.fields.find(({key}) => key === 'components'),
+  );
+
+  const products = useMemo(
+    () =>
+      collection?.children?.references?.nodes.reduce((products, collection) => {
+        collection.products.nodes.forEach((product) => {
+          products.push({
+            value: parseGid(product.id).id,
+            label: `${collection.title}: ${product.title}`,
+          });
+        });
+        return products;
+      }, [] as Array<{value: string; label: string}>),
+    [collection?.children?.references?.nodes],
   );
 
   const cityValue = searchParams.get('city');
@@ -127,7 +149,7 @@ export default function Artists() {
   };
 
   const genderValue = searchParams.get('gender');
-  const onChangeGender = (value: string) => {
+  const onChangeGender = (value: string | null) => {
     setSearchParams(
       (prev) => {
         if (value) {
@@ -141,8 +163,10 @@ export default function Artists() {
     );
   };
 
-  const daysValue = String(searchParams.get('days') || '').split(',');
-  const onChangeDays = (value: string[]) => {
+  const daysValue = String(searchParams.get('days') || '')
+    .split(',')
+    .filter((p) => p.length > 0);
+  const onChangeDays = (value: string[] | null) => {
     setSearchParams(
       (prev) => {
         if (value) {
@@ -156,8 +180,10 @@ export default function Artists() {
     );
   };
 
-  const langValue = String(searchParams.get('lang') || '').split(',');
-  const onChangeLang = (value: string[]) => {
+  const langValue = String(searchParams.get('lang') || '')
+    .split(',')
+    .filter((p) => p.length > 0);
+  const onChangeLang = (value: string[] | null) => {
     setSearchParams(
       (prev) => {
         if (value) {
@@ -179,6 +205,24 @@ export default function Artists() {
           prev.set('profession', value);
         } else {
           prev.delete('profession');
+        }
+        return prev;
+      },
+      {preventScrollReset: true},
+    );
+  };
+
+  const productSearchParams = searchParams.get('product') || '';
+  const selectedProduct = products?.find(
+    (product) => product.value === productSearchParams,
+  );
+  const onChangeProduct = (value: string | null) => {
+    setSearchParams(
+      (prev) => {
+        if (value) {
+          prev.set('product', value);
+        } else {
+          prev.delete('product');
         }
         return prev;
       },
@@ -225,35 +269,149 @@ export default function Artists() {
           <ScrollArea h="auto" type="auto" py={{base: 'md', sm: undefined}}>
             <Flex gap={{base: 'sm', sm: 'lg'}} justify="center">
               <ProfessionButton profession={'all'} reset />
-              {tags['profession'].map((profession) => (
-                <ProfessionButton key={profession} profession={profession} />
-              ))}
+              {tags['profession']
+                .sort((a, b) => {
+                  const translatedA = ProfessionTranslations[a] || a;
+                  const translatedB = ProfessionTranslations[b] || b;
+                  return translatedA.localeCompare(translatedB);
+                })
+                .map((profession) => (
+                  <ProfessionButton key={profession} profession={profession} />
+                ))}
             </Flex>
           </ScrollArea>
-          <Flex justify="center" gap="md">
-            <Button
-              variant="outline"
-              c="black"
-              color="gray.3"
-              onClick={open}
-              size="xl"
-              leftSection={<IconFilter />}
-              rightSection={<IconArrowDown />}
-            >
-              Filtre
-            </Button>
-            {searchParams.size > 0 ? (
+          <Flex direction="column" justify="center" gap="md">
+            <Flex justify="center" gap="md">
               <Button
                 variant="outline"
                 c="black"
                 color="gray.3"
-                onClick={deleteSearchParams}
+                onClick={open}
                 size="xl"
-                rightSection={<IconX />}
+                leftSection={<IconFilter />}
+                rightSection={<IconArrowDown />}
               >
-                Nulstil filtre
+                Filtre
               </Button>
-            ) : null}
+            </Flex>
+            <Flex justify="center" gap="md" wrap="wrap">
+              {searchParams.size > 0 ? (
+                <>
+                  {professionSearchParams ? (
+                    <Button
+                      variant="outline"
+                      c="black"
+                      color="gray.3"
+                      onClick={() => onChangeProfession(null)}
+                      size="md"
+                      rightSection={<IconX />}
+                      leftSection={<IconNetwork />}
+                    >
+                      {`${ProfessionTranslations[
+                        professionSearchParams
+                      ][0].toUpperCase()}${ProfessionTranslations[
+                        professionSearchParams
+                      ].substring(1)}`}
+                    </Button>
+                  ) : null}
+                  {selectedProduct ? (
+                    <Button
+                      variant="outline"
+                      c="black"
+                      color="gray.3"
+                      onClick={() => onChangeProduct(null)}
+                      size="md"
+                      rightSection={<IconX />}
+                      leftSection={<IconServicemark />}
+                    >
+                      {selectedProduct.label}
+                    </Button>
+                  ) : null}
+                  {cityValue ? (
+                    <Button
+                      variant="outline"
+                      c="black"
+                      color="gray.3"
+                      onClick={() => onChangeCity(null)}
+                      size="md"
+                      rightSection={<IconX />}
+                      leftSection={<IconWorld />}
+                    >
+                      {cityValue[0].toUpperCase() + cityValue.slice(1)}
+                    </Button>
+                  ) : null}
+                  {sortValue ? (
+                    <Button
+                      variant="outline"
+                      c="black"
+                      color="gray.3"
+                      onClick={() => onChangeSort(null)}
+                      size="md"
+                      rightSection={<IconX />}
+                      leftSection={<IconArrowsSort />}
+                    >
+                      Sortering
+                    </Button>
+                  ) : null}
+                  {locationSearchParams ? (
+                    <Button
+                      variant="outline"
+                      c="black"
+                      color="gray.3"
+                      onClick={() => onChangeLocation(null)}
+                      size="md"
+                      rightSection={<IconX />}
+                      leftSection={<IconLocation />}
+                    >
+                      {locationSearchParams === 'destination' &&
+                        'Kører ud til mig'}
+                      {locationSearchParams === 'salon' && 'Salon'}
+                      {locationSearchParams === 'home' && 'Hjemmefra'}
+                    </Button>
+                  ) : null}
+                  {genderValue ? (
+                    <Button
+                      variant="outline"
+                      c="black"
+                      color="gray.3"
+                      onClick={() => onChangeGender(null)}
+                      size="md"
+                      rightSection={<IconX />}
+                      leftSection={<IconGenderFemale />}
+                    >
+                      {genderValue === 'woman' && 'Kvinder'}
+                      {genderValue === 'man' && 'Mænd'}
+                    </Button>
+                  ) : null}
+                  {daysValue.length > 0 ? (
+                    <Button
+                      variant="outline"
+                      c="black"
+                      color="gray.3"
+                      onClick={() => onChangeDays(null)}
+                      size="md"
+                      rightSection={<IconX />}
+                      leftSection={<IconWorldCheck />}
+                    >
+                      Arbejdsdage valg
+                    </Button>
+                  ) : null}
+                  {langValue.length > 0 ? (
+                    <Button
+                      variant="outline"
+                      c="black"
+                      color="gray.3"
+                      onClick={() => onChangeLang(null)}
+                      size="md"
+                      rightSection={<IconX />}
+                      leftSection={<IconFlag />}
+                    >
+                      Sprog valg
+                    </Button>
+                  ) : null}
+                </>
+              ) : null}
+            </Flex>
           </Flex>
           <Outlet />
         </Stack>
@@ -286,12 +444,23 @@ export default function Artists() {
 
           <Select
             size="md"
+            value={productSearchParams}
+            label="Behandlinger:"
+            placeholder="Alle behandlinger"
+            onChange={onChangeProduct}
+            leftSection={<IconServicemark />}
+            data={products}
+            clearable
+          />
+
+          <Select
+            size="md"
             value={cityValue}
             label="Vis skønhedseksperter fra byer:"
             placeholder="Alle byer"
             onChange={onChangeCity}
             leftSection={<IconWorld />}
-            data={tags['city'].map((p) => ({
+            data={tags['city'].sort().map((p) => ({
               label: `${p[0].toUpperCase()}${p.substring(1)}`,
               value: p,
             }))}
