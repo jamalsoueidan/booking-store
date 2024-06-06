@@ -1,52 +1,39 @@
-import {
-  Badge,
-  type BadgeProps,
-  type MantineSize,
-  rem,
-  Text,
-} from '@mantine/core';
-import {Money} from '@shopify/hydrogen';
+import {Group, Text, type TextProps} from '@mantine/core';
 import type {Maybe, MoneyV2} from '@shopify/hydrogen/storefront-api-types';
+import {useMemo} from 'react';
 
 export function PriceBadge({
   price,
   compareAtPrice,
+  options,
   ...props
 }: {
   price: Pick<MoneyV2, 'amount' | 'currencyCode'>;
   compareAtPrice?: Maybe<Pick<MoneyV2, 'amount' | 'currencyCode'>>;
-} & BadgeProps) {
-  const sizes: Record<
-    MantineSize | any,
-    {compareAtPrice: string; price: string}
-  > = {
-    sm: {
-      compareAtPrice: rem(11),
-      price: rem(13),
-    },
-    lg: {
-      compareAtPrice: 'xs',
-      price: 'sm',
-    },
-  };
-
-  const size = props.size
-    ? sizes[props.size]
-    : {
-        compareAtPrice: 'xs',
-        price: 'sm',
-      };
+  options?: string | null;
+} & TextProps) {
+  const discountString = useMemo(() => {
+    if (compareAtPrice?.amount && compareAtPrice?.amount !== '0.0') {
+      const discountAmount =
+        parseInt(compareAtPrice?.amount) - parseInt(price.amount);
+      const discountPercentage = Math.abs(
+        (discountAmount / parseInt(compareAtPrice?.amount)) * 100,
+      );
+      return `Spar ${discountPercentage.toFixed(0)}%`;
+    }
+    return null;
+  }, [compareAtPrice?.amount, price.amount]);
 
   return (
-    <Badge variant="outline" size="lg" color="black" {...props}>
-      {compareAtPrice && compareAtPrice?.amount !== '0.0' ? (
-        <Text fz={size.compareAtPrice} component="span" td="line-through">
-          <Money as="span" data={compareAtPrice} withoutTrailingZeros />
-        </Text>
-      ) : null}{' '}
-      <Text fz={size.compareAtPrice} fw="bold" component="span">
-        <Money as="span" data={price} withoutTrailingZeros />
+    <Group gap="xs" justify="flex-end">
+      <Text size="sm" {...props}>
+        {options ? 'fra' : ''} {price.amount} kr
       </Text>
-    </Badge>
+      {discountString ? (
+        <Text c="green.9" size="sm">
+          {discountString}
+        </Text>
+      ) : null}
+    </Group>
   );
 }

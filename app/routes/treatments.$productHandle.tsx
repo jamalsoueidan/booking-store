@@ -19,16 +19,17 @@ import {
   Button,
   Card,
   Container,
+  Divider,
   Flex,
+  Grid,
   Group,
   rem,
-  ScrollArea,
   Select,
   SimpleGrid,
   Stack,
   Text,
   Title,
-  type CardProps,
+  UnstyledButton,
 } from '@mantine/core';
 
 import {PriceBadge} from '~/components/artist/PriceBadge';
@@ -38,7 +39,7 @@ import type {
   ProductCollectionSortKeys,
   ProductFilter,
 } from '@shopify/hydrogen/storefront-api-types';
-import {IconCalendar} from '@tabler/icons-react';
+import React from 'react';
 import type {
   TreatmentsForCollectionFragment,
   UserCollectionFragment,
@@ -218,12 +219,12 @@ export default function Product() {
       </Flex>
 
       <Card
-        radius="lg"
+        radius="md"
         withBorder
         bg="rgba(243, 175, 228, 0.15)"
         style={{border: '1px solid rgba(243, 175, 228, 0.25)'}}
         mt={rem(15)}
-        mb={rem(60)}
+        mb={rem(30)}
       >
         <Flex
           direction={{base: 'column', sm: 'row'}}
@@ -231,6 +232,14 @@ export default function Product() {
           gap="md"
         >
           <Flex gap="xl">
+            <Flex direction="column">
+              <Text tt="uppercase" ta="center" fz="sm" c="gray" fw="400">
+                Kategori
+              </Text>
+              <Text ta="center" fw="600">
+                {product.productType}
+              </Text>
+            </Flex>
             <Flex direction="column">
               <Text tt="uppercase" ta="center" fz="sm" c="gray" fw="400">
                 Skønhedseksperter
@@ -288,13 +297,20 @@ export default function Product() {
                 ↑ Hent tidligere
               </Button>
             </Flex>
-            <Flex direction="column" gap="lg">
-              {nodes.map((product) => {
-                return (
-                  <TreatmentProductUser key={product.id} product={product} />
-                );
-              })}
-            </Flex>
+            <SimpleGrid cols={{base: 1, sm: 2}}>
+              <Flex direction="column" gap="lg">
+                {nodes.map((product) => {
+                  return (
+                    <TreatmentProductUser key={product.id} product={product} />
+                  );
+                })}
+              </Flex>
+              <Box pos="relative">
+                <Card withBorder pos="sticky" top="0">
+                  asd
+                </Card>
+              </Box>
+            </SimpleGrid>
             <Flex justify="center">
               <Button
                 variant="default"
@@ -339,13 +355,15 @@ function TreatmentProductUser({
     return null;
   }
 
+  const userProducts =
+    product.user?.reference?.collection?.reference?.products.nodes ?? [];
   const {professions} = user?.professions?.value
     ? (JSON.parse(user?.professions?.value) as Record<string, []>)
     : {professions: []};
 
   return (
-    <Card withBorder p="xl" radius="lg">
-      <Stack gap="xl">
+    <Card withBorder radius="md" pb="xs">
+      <UnstyledButton component={Link} to={`/artist/${user.username?.value}`}>
         <Flex justify="space-between">
           <Flex gap="lg" align="center">
             <Avatar src={user.image?.reference?.image?.url} size={rem(90)} />
@@ -365,56 +383,47 @@ function TreatmentProductUser({
               </Flex>
             </Stack>
           </Flex>
-          <Box visibleFrom="sm">
-            <Button
-              variant="outline"
-              c="black"
-              color="gray.3"
-              radius="lg"
-              component={Link}
-              to={`/artist/${user.username?.value}`}
-            >
+          <Flex visibleFrom="sm" align="center">
+            <Button variant="outline" c="black" color="gray.3" radius="lg">
               Vis profil
             </Button>
-          </Box>
+          </Flex>
         </Flex>
+      </UnstyledButton>
 
-        <ScrollArea h="auto" type="auto" offsetScrollbars="x">
-          <SimpleGrid cols={{base: 1, sm: 2, md: 4}}>
-            <ArtistProduct
-              user={user}
-              product={product}
-              bg="rgba(243, 175, 228, 0.1)"
-              style={{flex: 1}}
-            />
-            {product.user?.reference?.collection?.reference?.products.nodes
-              .filter((p) => p.id !== product.id)
-              .map((p) => (
-                <ArtistProduct
-                  key={p.id}
-                  user={user}
-                  product={p}
-                  style={{flex: 1}}
-                  visibleFrom="sm"
-                />
-              ))}
-          </SimpleGrid>
-        </ScrollArea>
+      <Card.Section>
+        <Divider mt="md" mb="xs" color="gray.2" />
+      </Card.Section>
 
-        <Box hiddenFrom="sm">
-          <Button
-            variant="outline"
-            c="black"
-            color="gray.3"
-            radius="lg"
-            component={Link}
-            to={`/artist/${user.username?.value}`}
-            w="100%"
-          >
-            Vis profil
-          </Button>
-        </Box>
-      </Stack>
+      <ArtistProduct user={user} product={product} />
+
+      {userProducts
+        .filter((p) => p.id !== product.id)
+        .map((p) => (
+          <React.Fragment key={p.id}>
+            <Card.Section>
+              <Divider my="xs" color="gray.2" />
+            </Card.Section>
+            <ArtistProduct user={user} product={p} />
+          </React.Fragment>
+        ))}
+
+      <Box hiddenFrom="sm" mt="sm">
+        <Card.Section>
+          <Divider mt="xs" mb="sm" color="gray.2" />
+        </Card.Section>
+        <Button
+          variant="outline"
+          c="black"
+          color="gray.3"
+          radius="lg"
+          component={Link}
+          to={`/artist/${user.username?.value}`}
+          w="100%"
+        >
+          Vis profil
+        </Button>
+      </Box>
     </Card>
   );
 }
@@ -422,84 +431,80 @@ function TreatmentProductUser({
 export function ArtistProduct({
   user,
   product,
-  ...props
 }: {
   user: UserCollectionFragment;
   product: TreatmentsForCollectionFragment;
-} & CardProps) {
+}) {
   const productId = parseGid(product?.id).id;
-  const locations = product.locations?.references?.nodes.map((p) => ({
-    locationType: p.locationType?.value as CustomerLocationBaseLocationType,
-    originType: p.originType?.value as CustomerLocationBaseOriginType,
-  }));
+  const locations =
+    product.locations?.references?.nodes.map((p) => ({
+      locationType: p.locationType?.value as CustomerLocationBaseLocationType,
+      originType: p.originType?.value as CustomerLocationBaseOriginType,
+    })) || [];
 
   return (
-    <Card
-      key={product.handle}
-      withBorder
+    <UnstyledButton
       component={Link}
-      radius="md"
-      p="md"
       data-testid={`service-item-${productId}`}
       to={`/artist/${user.username?.value}/treatment/${product.handle}`}
-      {...props}
     >
-      <Flex direction="column" gap="md" h="100%">
-        <Stack gap="sm" style={{flex: 1}}>
-          <Flex justify="space-between">
-            <Title
-              order={2}
-              size={rem(20)}
-              fw={600}
-              lts=".5px"
-              data-testid={`service-title-${productId}`}
-              lineClamp={1}
-            >
-              {product.title}
-            </Title>
-            <Flex gap="4px">
-              {locations?.map((location, index) => (
-                // eslint-disable-next-line react/no-array-index-key
-                <LocationIcon key={index} location={location} />
-              ))}
-            </Flex>
-          </Flex>
-          <Text c="dimmed" size="sm" fw={400} lineClamp={3}>
-            {product.description}
-          </Text>
-        </Stack>
+      <Grid>
+        <Grid.Col span={8}>
+          <Flex direction="column" gap="xs">
+            <div>
+              <Group gap="xs">
+                <Title
+                  order={2}
+                  size="md"
+                  fw={500}
+                  lts=".5px"
+                  data-testid={`service-title-${productId}`}
+                >
+                  {product.title}
+                </Title>
+                <Flex gap="4px">
+                  {locations
+                    .filter(
+                      (value, index, self) =>
+                        index ===
+                        self.findIndex(
+                          (t) =>
+                            t.locationType === value.locationType &&
+                            t.originType === value.originType,
+                        ),
+                    )
+                    .map((location, index) => (
+                      <LocationIcon
+                        // eslint-disable-next-line react/no-array-index-key
+                        key={index}
+                        location={location}
+                        style={{width: 18, height: 18}}
+                      />
+                    ))}
+                </Flex>
+              </Group>
 
-        <Group
-          justify="space-between"
-          bg={props.bg ? 'pink.1' : 'gray.1'}
-          w="100%"
-          px="md"
-          py="sm"
-          style={{borderRadius: '5px'}}
-        >
-          <Flex gap="4px" align="center">
-            <IconCalendar
-              style={{width: rem(18), height: rem(18)}}
-              stroke="1"
+              <Text
+                c="dimmed"
+                size="sm"
+                data-testid={`service-duration-text-${productId}`}
+              >
+                {durationToTime(product.duration?.value || 0)}
+              </Text>
+            </div>
+          </Flex>
+        </Grid.Col>
+        <Grid.Col span={4}>
+          <Flex justify="flex-end" align="center" h="100%">
+            <PriceBadge
+              compareAtPrice={product.variants.nodes[0].compareAtPrice}
+              price={product.variants.nodes[0].price}
+              fw="600"
             />
-            <Text
-              fw="bold"
-              fz="xs"
-              data-testid={`service-duration-text-${productId}`}
-            >
-              {durationToTime(product.duration?.value || 0)}
-            </Text>
           </Flex>
-
-          <PriceBadge
-            compareAtPrice={product.variants.nodes[0].compareAtPrice}
-            price={product.variants.nodes[0].price}
-            size="sm"
-            py={rem(10)}
-          />
-        </Group>
-      </Flex>
-    </Card>
+        </Grid.Col>
+      </Grid>
+    </UnstyledButton>
   );
 }
 
@@ -535,6 +540,7 @@ const TREATMENT_WITH_COLLECTION_HANDLER_FRAGMENT = `#graphql
       reference {
         ... on Collection {
           handle
+          title
         }
       }
     }
@@ -580,7 +586,7 @@ const USER_COLLECTION_FRAGMENT = `#graphql
       reference {
         ... on Collection {
           id
-          products(first: 4, sortKey: BEST_SELLING, filters: [{tag: "treatments"}, {productMetafield: {namespace: "booking",key: "hide_from_profile",value: "false"}}]) {
+          products(first: 2, sortKey: BEST_SELLING, filters: [{tag: "treatments"}, {productMetafield: {namespace: "booking",key: "hide_from_profile",value: "false"}}]) {
             nodes {
               id
               title

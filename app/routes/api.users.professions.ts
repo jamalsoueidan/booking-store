@@ -8,7 +8,7 @@ export type Profession = {
   count: number;
 };
 
-export const SpecialtiesTranslations = {
+export const SpecialtiesTranslations: Record<string, string> = {
   bridal_makeup: 'Bryllups Makeup',
   sfx_makeup: 'SFX Makeup',
   editorial_makeup: 'Redaktionel Makeup',

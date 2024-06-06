@@ -16,6 +16,9 @@ export const USER_FRAGMENT = `#graphql
     specialties: field(key: "specialties") {
       value
     }
+    speaks: field(key: "speaks") {
+      value
+    }
     social: field(key: "social") {
       value
     }

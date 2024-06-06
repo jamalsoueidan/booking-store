@@ -14,11 +14,15 @@ export const useUserMetaobject = (
   const shortDescription = user?.shortDescription?.value;
 
   const {professions} = user?.professions?.value
-    ? (JSON.parse(user?.professions?.value) as Record<string, []>)
+    ? (JSON.parse(user?.professions?.value) as Record<string, string[]>)
     : {professions: []};
 
+  const {speaks} = user?.speaks?.value
+    ? (JSON.parse(user?.speaks?.value) as Record<string, string[]>)
+    : {speaks: []};
+
   const {specialties} = user?.specialties?.value
-    ? (JSON.parse(user?.specialties?.value) as Record<string, []>)
+    ? (JSON.parse(user?.specialties?.value) as Record<string, string[]>)
     : {specialties: []};
 
   const social = user?.social?.value
@@ -47,6 +51,7 @@ export const useUserMetaobject = (
     theme,
     professions,
     social,
+    speaks,
     specialties,
     active,
     schedules,
