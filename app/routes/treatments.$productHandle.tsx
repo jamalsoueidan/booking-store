@@ -377,7 +377,12 @@ export default function Product() {
                   fallback={
                     <div
                       id="skeleton"
-                      style={{height: '100vh', background: '#d1d1d1'}}
+                      style={{
+                        height: '100vh',
+                        border: '1px solid #dee2e6',
+                        borderRadius: '10px',
+                        background: '#d1d1d1',
+                      }}
                     />
                   }
                 >
