@@ -70,12 +70,12 @@ export async function loader(args: LoaderFunctionArgs) {
       variables: {
         query: 'tag:treatments AND tag:system',
       },
-      cache: context.storefront.CacheLong(),
+      cache: context.storefront.CacheShort(),
     },
   );
 
   const {data} = await storefront.query(USERS_QUERY, {
-    cache: context.storefront.CacheLong(),
+    cache: context.storefront.CacheShort(),
   });
 
   const components = await context.storefront.query(METAFIELD_QUERY, {
@@ -85,7 +85,7 @@ export async function loader(args: LoaderFunctionArgs) {
       country: context.storefront.i18n.country,
       language: context.storefront.i18n.language,
     },
-    cache: context.storefront.CacheLong(),
+    cache: context.storefront.CacheShort(),
   });
 
   return json({

@@ -1,6 +1,5 @@
 import {
   Button,
-  Checkbox,
   Container,
   Divider,
   Drawer,
@@ -11,7 +10,6 @@ import {
   ScrollArea,
   Select,
   Stack,
-  Text,
 } from '@mantine/core';
 import {useDisclosure} from '@mantine/hooks';
 import {
@@ -25,26 +23,32 @@ import {json, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
 import {
   IconArrowDown,
   IconArrowsSort,
-  IconBuilding,
-  IconCar,
   IconFilter,
-  IconFlag,
   IconGenderFemale,
-  IconHome,
-  IconLocation,
   IconNetwork,
-  IconPhone,
   IconServicemark,
-  IconWorld,
-  IconWorldCheck,
   IconX,
 } from '@tabler/icons-react';
-import {DK, US} from 'country-flag-icons/react/3x2';
 import {useMemo} from 'react';
 import {VisualTeaser} from '~/components/blocks/VisualTeaser';
+import {
+  AddCityFilter,
+  RemoveCityFilterButton,
+} from '~/components/filters/CityFilter';
+import {
+  AddDayFilter,
+  RemoveDayFilterButton,
+} from '~/components/filters/DayFilter';
+import {
+  AddLanguageFilter,
+  RemoveLanguageFilterButton,
+} from '~/components/filters/LanguageFilter';
+import {
+  AddLocationFilter,
+  RemoveLocationFilterButton,
+} from '~/components/filters/LocationFilter';
 import {ProfessionButton} from '~/components/ProfessionButton';
 import {METAFIELD_QUERY} from '~/data/fragments';
-import {CustomerLocationBaseLocationType} from '~/lib/api/model';
 import {getTags} from '~/lib/tags';
 import {useComponents} from '~/lib/use-components';
 import {COLLECTION} from './account.services.create';
@@ -120,21 +124,6 @@ export default function Artists() {
     [collection?.children?.references?.nodes],
   );
 
-  const cityValue = searchParams.get('city');
-  const onChangeCity = (value: string | null) => {
-    setSearchParams(
-      (prev) => {
-        if (value) {
-          prev.set('city', value);
-        } else {
-          prev.delete('city');
-        }
-        return prev;
-      },
-      {preventScrollReset: true},
-    );
-  };
-
   const sortValue = searchParams.get('sort');
   const onChangeSort = (value: string | null) => {
     setSearchParams(
@@ -158,40 +147,6 @@ export default function Artists() {
           prev.set('gender', value);
         } else {
           prev.delete('gender');
-        }
-        return prev;
-      },
-      {preventScrollReset: true},
-    );
-  };
-
-  const daysValue = String(searchParams.get('days') || '')
-    .split(',')
-    .filter((p) => p.length > 0);
-  const onChangeDays = (value: string[] | null) => {
-    setSearchParams(
-      (prev) => {
-        if (value) {
-          prev.set('days', value.filter((v) => v.length > 0).join(','));
-        } else {
-          prev.delete('days');
-        }
-        return prev;
-      },
-      {preventScrollReset: true},
-    );
-  };
-
-  const langValue = String(searchParams.get('lang') || '')
-    .split(',')
-    .filter((p) => p.length > 0);
-  const onChangeLang = (value: string[] | null) => {
-    setSearchParams(
-      (prev) => {
-        if (value) {
-          prev.set('lang', value.filter((v) => v.length > 0).join(','));
-        } else {
-          prev.delete('lang');
         }
         return prev;
       },
@@ -226,36 +181,6 @@ export default function Artists() {
         } else {
           prev.delete('product');
         }
-        return prev;
-      },
-      {preventScrollReset: true},
-    );
-  };
-
-  const locationSearchParams = searchParams.get('location');
-  const onChangeLocation = (value: string | null) => {
-    setSearchParams(
-      (prev) => {
-        if (value) {
-          prev.set('location', value);
-        } else {
-          prev.delete('location');
-        }
-        return prev;
-      },
-      {preventScrollReset: true},
-    );
-  };
-
-  const deleteSearchParams = () => {
-    setSearchParams(
-      (prev) => {
-        prev.delete('city');
-        prev.delete('sort');
-        prev.delete('gender');
-        prev.delete('days');
-        prev.delete('lang');
-        prev.delete('profession');
         return prev;
       },
       {preventScrollReset: true},
@@ -329,19 +254,7 @@ export default function Artists() {
                       {selectedProduct.label}
                     </Button>
                   ) : null}
-                  {cityValue ? (
-                    <Button
-                      variant="outline"
-                      c="black"
-                      color="gray.3"
-                      onClick={() => onChangeCity(null)}
-                      size="md"
-                      rightSection={<IconX />}
-                      leftSection={<IconWorld />}
-                    >
-                      {cityValue[0].toUpperCase() + cityValue.slice(1)}
-                    </Button>
-                  ) : null}
+                  <RemoveCityFilterButton />
                   {sortValue ? (
                     <Button
                       variant="outline"
@@ -355,28 +268,7 @@ export default function Artists() {
                       Sortering
                     </Button>
                   ) : null}
-                  {locationSearchParams ? (
-                    <Button
-                      variant="outline"
-                      c="black"
-                      color="gray.3"
-                      onClick={() => onChangeLocation(null)}
-                      size="md"
-                      rightSection={<IconX />}
-                      leftSection={<IconLocation />}
-                    >
-                      {locationSearchParams ===
-                        CustomerLocationBaseLocationType.destination &&
-                        'Kører ud til mig'}
-                      {locationSearchParams ===
-                        CustomerLocationBaseLocationType.commercial && 'Salon'}
-                      {locationSearchParams ===
-                        CustomerLocationBaseLocationType.home && 'Hjemmefra'}
-                      {locationSearchParams ===
-                        CustomerLocationBaseLocationType.virtual &&
-                        'Telefonopkald'}
-                    </Button>
-                  ) : null}
+                  <RemoveLocationFilterButton />
                   {genderValue ? (
                     <Button
                       variant="outline"
@@ -391,32 +283,8 @@ export default function Artists() {
                       {genderValue === 'man' && 'Mænd'}
                     </Button>
                   ) : null}
-                  {daysValue.length > 0 ? (
-                    <Button
-                      variant="outline"
-                      c="black"
-                      color="gray.3"
-                      onClick={() => onChangeDays(null)}
-                      size="md"
-                      rightSection={<IconX />}
-                      leftSection={<IconWorldCheck />}
-                    >
-                      Arbejdsdage valg
-                    </Button>
-                  ) : null}
-                  {langValue.length > 0 ? (
-                    <Button
-                      variant="outline"
-                      c="black"
-                      color="gray.3"
-                      onClick={() => onChangeLang(null)}
-                      size="md"
-                      rightSection={<IconX />}
-                      leftSection={<IconFlag />}
-                    >
-                      Sprog valg
-                    </Button>
-                  ) : null}
+                  <RemoveDayFilterButton />
+                  <RemoveLanguageFilterButton />
                 </>
               ) : null}
             </Flex>
@@ -449,7 +317,6 @@ export default function Artists() {
             }))}
             clearable
           />
-
           <Select
             size="md"
             value={productSearchParams}
@@ -460,21 +327,7 @@ export default function Artists() {
             data={products}
             clearable
           />
-
-          <Select
-            size="md"
-            value={cityValue}
-            label="Vis skønhedseksperter fra byer:"
-            placeholder="Alle byer"
-            onChange={onChangeCity}
-            leftSection={<IconWorld />}
-            data={tags['city'].sort().map((p) => ({
-              label: `${p[0].toUpperCase()}${p.substring(1)}`,
-              value: p,
-            }))}
-            clearable
-          />
-
+          <AddCityFilter tags={tags['city']} />
           <Select
             size="md"
             value={sortValue}
@@ -484,79 +337,14 @@ export default function Artists() {
             onChange={onChangeSort}
             data={[
               {label: 'Navn', value: 'title'},
-              {label: 'Nyeste', value: 'published_at'},
-              {label: 'Ældest', value: 'reverse'},
+              {label: 'Nyeste tilføjet', value: 'published_at'},
+              {label: 'Ældest tilføjet', value: 'reverse'},
             ]}
             clearable
           />
-
-          <div>
-            <Group gap="xs" mb="xs">
-              <IconLocation />
-              <InputLabel size="md">Arbejdslokation?</InputLabel>
-            </Group>
-            <Radio.Group
-              value={locationSearchParams}
-              onChange={onChangeLocation}
-            >
-              <Stack gap="3px">
-                <Radio.Card value={null!} withBorder={false}>
-                  <Group wrap="nowrap" align="center">
-                    <Radio.Indicator />
-                    <div>
-                      <Text>Alle steder</Text>
-                    </div>
-                  </Group>
-                </Radio.Card>
-                <Radio.Card
-                  value={CustomerLocationBaseLocationType.destination}
-                  withBorder={false}
-                >
-                  <Group wrap="nowrap" align="center">
-                    <Radio.Indicator icon={() => <IconCar color="black" />} />
-                    <div>
-                      <Text>Kører ud til mig</Text>
-                    </div>
-                  </Group>
-                </Radio.Card>
-                <Radio.Card
-                  value={CustomerLocationBaseLocationType.commercial}
-                  withBorder={false}
-                >
-                  <Group wrap="nowrap" align="center">
-                    <Radio.Indicator
-                      icon={() => <IconBuilding color="black" />}
-                    />
-                    <div>
-                      <Text>Salon</Text>
-                    </div>
-                  </Group>
-                </Radio.Card>
-                <Radio.Card
-                  value={CustomerLocationBaseLocationType.home}
-                  withBorder={false}
-                >
-                  <Group wrap="nowrap" align="center">
-                    <Radio.Indicator icon={() => <IconHome color="black" />} />
-                    <div>
-                      <Text>Hjemmefra</Text>
-                    </div>
-                  </Group>
-                </Radio.Card>
-                <Radio.Card
-                  value={CustomerLocationBaseLocationType.virtual}
-                  withBorder={false}
-                >
-                  <Group wrap="nowrap" align="center">
-                    <Radio.Indicator icon={() => <IconPhone color="black" />} />
-                    <div>
-                      <Text>Videoopkald</Text>
-                    </div>
-                  </Group>
-                </Radio.Card>
-              </Stack>
-            </Radio.Group>
-          </div>
+          <AddLocationFilter tags={tags['location_type']} />
+          <AddDayFilter />
+          <AddLanguageFilter />
           <div>
             <Group gap="xs" mb="xs">
               <IconGenderFemale />
@@ -569,49 +357,6 @@ export default function Artists() {
                 <Radio value="man" label="Mænd" />
               </Stack>
             </Radio.Group>
-          </div>
-
-          <div>
-            <Group gap="xs" mb="xs">
-              <IconWorldCheck />
-              <InputLabel size="md">Skønhedsekspert arbejdsdage?</InputLabel>
-            </Group>
-            <Checkbox.Group value={daysValue} onChange={onChangeDays}>
-              <Stack gap="3px">
-                <Checkbox value="monday" label="Mandag" />
-                <Checkbox value="tuesday" label="Tirsdag" />
-                <Checkbox value="wednesday" label="Onsdag" />
-                <Checkbox value="thursday" label="Torsdag" />
-                <Checkbox value="friday" label="Fredag" />
-                <Checkbox value="saturday" label="Lørdag" />
-                <Checkbox value="sunday" label="Søndag" />
-              </Stack>
-            </Checkbox.Group>
-          </div>
-
-          <div>
-            <Group gap="xs" mb="xs">
-              <IconFlag />
-              <InputLabel size="md">Skønhedseksperten taler</InputLabel>
-            </Group>
-            <Checkbox.Group value={langValue} onChange={onChangeLang}>
-              <Stack gap="3px">
-                <Checkbox.Card value="english" withBorder={false}>
-                  <Flex gap="xs" align="center">
-                    <Checkbox.Indicator />
-                    <Text>Engelsk</Text>
-                    <US width={16} height={16} />
-                  </Flex>
-                </Checkbox.Card>
-                <Checkbox.Card value="danish" withBorder={false}>
-                  <Flex gap="xs" align="center">
-                    <Checkbox.Indicator />
-                    <Text>Dansk</Text>
-                    <DK width={16} height={16} />
-                  </Flex>
-                </Checkbox.Card>
-              </Stack>
-            </Checkbox.Group>
           </div>
         </Stack>
       </Drawer>

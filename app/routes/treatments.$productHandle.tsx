@@ -20,6 +20,7 @@ import {
   Card,
   Container,
   Divider,
+  Drawer,
   Flex,
   Grid,
   Group,
@@ -30,20 +31,28 @@ import {
   Text,
   Title,
   UnstyledButton,
+  type UnstyledButtonProps,
 } from '@mantine/core';
 
 import {PriceBadge} from '~/components/artist/PriceBadge';
 import {ProfessionTranslations} from './api.users.professions';
 
+import {useDisclosure} from '@mantine/hooks';
 import type {
   ProductCollectionSortKeys,
   ProductFilter,
 } from '@shopify/hydrogen/storefront-api-types';
+import {IconArrowDown, IconArrowsSort, IconFilter} from '@tabler/icons-react';
 import React from 'react';
 import type {
   TreatmentsForCollectionFragment,
   UserCollectionFragment,
 } from 'storefrontapi.generated';
+import {AddCityFilter} from '~/components/filters/CityFilter';
+import {AddDayFilter} from '~/components/filters/DayFilter';
+import {AddLocationFilter} from '~/components/filters/LocationFilter';
+import {AddPriceFilter} from '~/components/filters/PriceFilter';
+import {ResetFilter} from '~/components/filters/ResetFilter';
 import {LocationIcon} from '~/components/LocationIcon';
 import type {CustomerLocationBaseLocationType} from '~/lib/api/model';
 import {durationToTime} from '~/lib/duration';
@@ -121,6 +130,17 @@ export async function loader({params, request, context}: LoaderFunctionArgs) {
     filters.push({tag: `city-${city}`});
   }
 
+  const location = searchParams.get('location');
+  if (location) {
+    filters.push({tag: `location_type-${location}`});
+  }
+
+  const price = searchParams.get('price');
+  if (price) {
+    const [min, max] = price.split(',').map(Number);
+    filters.push({price: {min, max}});
+  }
+
   const {collection} = await storefront.query(TREATMENT_COLLECTION, {
     variables: {
       handle: product.collection.reference.handle,
@@ -132,6 +152,16 @@ export async function loader({params, request, context}: LoaderFunctionArgs) {
     cache: storefront.CacheShort(),
   });
 
+  const {collection: collectionFiltersOnly} = await storefront.query(
+    FILTER_COLLECTION,
+    {
+      variables: {
+        handle: product.collection.reference.handle,
+      },
+      cache: storefront.CacheLong(),
+    },
+  );
+
   if (!collection) {
     throw new Response(
       `Collection ${product.collection?.reference?.handle} not found`,
@@ -141,27 +171,44 @@ export async function loader({params, request, context}: LoaderFunctionArgs) {
     );
   }
 
-  return json({product, collection});
+  return json({
+    product,
+    collection,
+    filters: collectionFiltersOnly?.products.filters || [],
+  });
+}
+
+interface PriceRange {
+  price: {
+    min: number;
+    max: number;
+  };
 }
 
 export default function Product() {
-  const {product, collection} = useLoaderData<typeof loader>();
+  const {product, collection, filters} = useLoaderData<typeof loader>();
   const [, setSearchParams] = useSearchParams();
+  const [opened, {open, close}] = useDisclosure(false);
 
-  const tags = collection?.products.filters.find(
-    (p) => p.id === 'filter.p.tag',
-  );
+  const price = filters.find((p) => p.id === 'filter.v.price')?.values[0];
 
-  const availability = collection?.products.filters
+  const priceRange = price
+    ? (JSON.parse(price.input as string) as PriceRange)
+    : {price: {min: 0, max: 0}};
+
+  const tags = filters.find((p) => p.id === 'filter.p.tag');
+
+  const availability = filters
     .find((k) => k.id === 'filter.v.availability')
     ?.values.find((p) => (p.input as any)?.includes('true')) || {count: 0};
 
-  const cities = tags?.values
-    .filter((p) => p.label.includes('city'))
-    .map((c) => {
-      const [tag, ...rest] = c.label.split('-');
-      return rest.join('-');
-    });
+  const cities =
+    tags?.values
+      .filter((p) => p.label.includes('city'))
+      .map((c) => {
+        const [tag, ...rest] = c.label.split('-');
+        return rest.join('-');
+      }) || [];
 
   const cityCount =
     tags?.values
@@ -170,6 +217,14 @@ export default function Product() {
         return total + city.count;
       }, 0) || 0;
 
+  const locations =
+    tags?.values
+      .filter((p) => p.label.includes('location_type'))
+      .map((c) => {
+        const [tag, ...rest] = c.label.split('-');
+        return rest.join('-');
+      }) || [];
+
   const onChangeSort = (value: string | null) => {
     setSearchParams(
       (prev) => {
@@ -177,20 +232,6 @@ export default function Product() {
           prev.set('sort', value.toLowerCase());
         } else {
           prev.delete('sort');
-        }
-        return prev;
-      },
-      {preventScrollReset: true},
-    );
-  };
-
-  const onChangeCity = (value: string | null) => {
-    setSearchParams(
-      (prev) => {
-        if (value) {
-          prev.set('city', value.toLowerCase());
-        } else {
-          prev.delete('city');
         }
         return prev;
       },
@@ -254,32 +295,52 @@ export default function Product() {
           </Flex>
 
           <Flex justify="flex-end" gap="md">
-            <Select
-              size="lg"
-              placeholder="Vælge by:"
-              onChange={onChangeCity}
-              clearable
-              data={
-                cities?.map((c) => ({
-                  label: `${c[0].toUpperCase()}${c.substring(1)}`,
-                  value: c,
-                })) || []
-              }
-            />
-            <Select
-              size="lg"
-              placeholder="Sortere efter:"
-              onChange={onChangeSort}
-              clearable
-              data={[
-                {label: 'Nyeste', value: 'newest'},
-                {label: 'Billigst', value: 'cheapest'},
-                {label: 'Dyrest', value: 'expensive'},
-              ]}
-            />
+            <ResetFilter />
+            <Button
+              variant="outline"
+              c="black"
+              color="gray.3"
+              bg="white"
+              onClick={open}
+              size="xl"
+              leftSection={<IconFilter />}
+              rightSection={<IconArrowDown />}
+            >
+              Filtre
+            </Button>
           </Flex>
         </Flex>
       </Card>
+
+      <Drawer
+        position="right"
+        opened={opened}
+        onClose={close}
+        overlayProps={{backgroundOpacity: 0.3, blur: 2}}
+      >
+        <Stack gap="xl">
+          <AddCityFilter tags={cities} />
+          <Select
+            size="md"
+            label="Sortere efter:"
+            placeholder="Vælg sortering"
+            onChange={onChangeSort}
+            leftSection={<IconArrowsSort />}
+            data={[
+              {label: 'Nyeste', value: 'newest'},
+              {label: 'Billigst', value: 'cheapest'},
+              {label: 'Dyrest', value: 'expensive'},
+            ]}
+            clearable
+          />
+          <AddPriceFilter
+            min={priceRange.price.min}
+            max={priceRange.price.max}
+          />
+          <AddLocationFilter tags={locations} />
+          <AddDayFilter />
+        </Stack>
+      </Drawer>
 
       <Pagination connection={collection.products}>
         {({nodes, isLoading, PreviousLink, NextLink}) => (
@@ -373,7 +434,13 @@ function TreatmentProductUser({
               </Text>
               <Flex gap="xs" mt={rem(8)} wrap="wrap">
                 {professions.map((p) => (
-                  <Badge key={p} color="pink.4">
+                  <Badge
+                    variant="outline"
+                    c="black"
+                    color="gray.4"
+                    key={p}
+                    fw="400"
+                  >
                     {ProfessionTranslations[p]}
                   </Badge>
                 ))}
@@ -396,12 +463,16 @@ function TreatmentProductUser({
 
       {userProducts
         .filter((p) => p.id !== product.id)
-        .map((p) => (
+        .map((p, index) => (
           <React.Fragment key={p.id}>
             <Card.Section>
               <Divider my="xs" color="gray.2" />
             </Card.Section>
-            <ArtistProduct user={user} product={p} />
+            <ArtistProduct
+              user={user}
+              product={p}
+              style={{opacity: Math.max(0.5 - index * 0.2, 0)}}
+            />
           </React.Fragment>
         ))}
 
@@ -428,21 +499,35 @@ function TreatmentProductUser({
 export function ArtistProduct({
   user,
   product,
+  ...props
 }: {
   user: UserCollectionFragment;
   product: TreatmentsForCollectionFragment;
-}) {
+} & UnstyledButtonProps) {
   const productId = parseGid(product?.id).id;
   const locations =
     product.locations?.references?.nodes.map((p) => ({
       locationType: p.locationType?.value as CustomerLocationBaseLocationType,
     })) || [];
 
+  const sortAndRemoveDuplicates = (
+    locations: Array<{
+      locationType: CustomerLocationBaseLocationType;
+    }>,
+  ) => {
+    const locationTypes = locations.map((loc) => loc.locationType);
+    const uniqueLocationTypes = [...new Set(locationTypes)];
+    return uniqueLocationTypes.sort().map((locationType) => ({locationType}));
+  };
+
+  const sortedLocations = sortAndRemoveDuplicates(locations);
+
   return (
     <UnstyledButton
       component={Link}
       data-testid={`service-item-${productId}`}
       to={`/artist/${user.username?.value}/treatment/${product.handle}`}
+      {...props}
     >
       <Grid>
         <Grid.Col span={8}>
@@ -459,22 +544,13 @@ export function ArtistProduct({
                   {product.title}
                 </Title>
                 <Flex gap="4px">
-                  {locations
-                    .filter(
-                      (value, index, self) =>
-                        index ===
-                        self.findIndex(
-                          (t) => t.locationType === value.locationType,
-                        ),
-                    )
-                    .map((location, index) => (
-                      <LocationIcon
-                        // eslint-disable-next-line react/no-array-index-key
-                        key={index}
-                        location={location}
-                        style={{width: 18, height: 18}}
-                      />
-                    ))}
+                  {sortedLocations.map((location) => (
+                    <LocationIcon
+                      key={location.locationType}
+                      location={location}
+                      style={{width: 18, height: 18}}
+                    />
+                  ))}
                 </Flex>
               </Group>
 
@@ -710,15 +786,6 @@ const TREATMENT_COLLECTION = `#graphql
         sortKey: $sortKey,
         reverse: $reverse
       ) {
-        filters {
-          id
-          label
-          values {
-            input
-            label
-            count
-          }
-        }
         nodes {
           ...TreatmentsForCollection
         }
@@ -727,6 +794,28 @@ const TREATMENT_COLLECTION = `#graphql
           hasNextPage
           endCursor
           startCursor
+        }
+      }
+    }
+  }
+` as const;
+
+const FILTER_COLLECTION = `#graphql
+  query TreatmentFilterCollection(
+    $handle: String!
+    $country: CountryCode
+    $language: LanguageCode
+  ) @inContext(country: $country, language: $language) {
+    collection(handle: $handle) {
+      products(first: 1) {
+        filters {
+          id
+          label
+          values {
+            input
+            label
+            count
+          }
         }
       }
     }
