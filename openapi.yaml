@@ -330,8 +330,6 @@ components:
       items:
         type: object
         properties:
-          metafieldId:
-            type: string
           location:
             type: string
           locationType:
@@ -342,7 +340,6 @@ components:
               - destination
               - virtual
         required:
-          - metafieldId
           - location
           - locationType
     CustomerProductUpdateResponse:

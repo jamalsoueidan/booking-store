@@ -1268,7 +1268,6 @@ export const customerLocationGetProductsResponse = zod.object({
 })
 }).and(zod.object({
   "locations": zod.array(zod.object({
-  "metafieldId": zod.string(),
   "location": zod.string(),
   "locationType": zod.enum(['home', 'commercial', 'destination', 'virtual'])
 }))
@@ -2173,7 +2172,6 @@ export const customerProductsListResponse = zod.object({
 })
 }).and(zod.object({
   "locations": zod.array(zod.object({
-  "metafieldId": zod.string(),
   "location": zod.string(),
   "locationType": zod.enum(['home', 'commercial', 'destination', 'virtual'])
 }))
@@ -2251,7 +2249,6 @@ export const customerProductGetResponse = zod.object({
 })
 }).and(zod.object({
   "locations": zod.array(zod.object({
-  "metafieldId": zod.string(),
   "location": zod.string(),
   "locationType": zod.enum(['home', 'commercial', 'destination', 'virtual'])
 }))
@@ -2293,7 +2290,6 @@ export const customerProductUpdateBody = zod.object({
   "unit": zod.enum(['weeks', 'months'])
 }).optional(),
   "locations": zod.array(zod.object({
-  "metafieldId": zod.string(),
   "location": zod.string(),
   "locationType": zod.enum(['home', 'commercial', 'destination', 'virtual'])
 })).optional(),
@@ -2346,7 +2342,6 @@ export const customerProductUpdateResponse = zod.object({
 })
 }).and(zod.object({
   "locations": zod.array(zod.object({
-  "metafieldId": zod.string(),
   "location": zod.string(),
   "locationType": zod.enum(['home', 'commercial', 'destination', 'virtual'])
 }))
@@ -2390,7 +2385,6 @@ export const customerProductAddBody = zod.object({
   "description": zod.string(),
   "descriptionHtml": zod.string(),
   "locations": zod.array(zod.object({
-  "metafieldId": zod.string(),
   "location": zod.string(),
   "locationType": zod.enum(['home', 'commercial', 'destination', 'virtual'])
 })),
@@ -2451,7 +2445,6 @@ export const customerProductAddResponse = zod.object({
 })
 }).and(zod.object({
   "locations": zod.array(zod.object({
-  "metafieldId": zod.string(),
   "location": zod.string(),
   "locationType": zod.enum(['home', 'commercial', 'destination', 'virtual'])
 }))
@@ -2673,7 +2666,6 @@ export const customerScheduleCreateResponse = zod.object({
 })
 }).and(zod.object({
   "locations": zod.array(zod.object({
-  "metafieldId": zod.string(),
   "location": zod.string(),
   "locationType": zod.enum(['home', 'commercial', 'destination', 'virtual'])
 }))
@@ -2745,7 +2737,6 @@ export const customerScheduleListResponse = zod.object({
 })
 }).and(zod.object({
   "locations": zod.array(zod.object({
-  "metafieldId": zod.string(),
   "location": zod.string(),
   "locationType": zod.enum(['home', 'commercial', 'destination', 'virtual'])
 }))
@@ -2818,7 +2809,6 @@ export const customerScheduleGetResponse = zod.object({
 })
 }).and(zod.object({
   "locations": zod.array(zod.object({
-  "metafieldId": zod.string(),
   "location": zod.string(),
   "locationType": zod.enum(['home', 'commercial', 'destination', 'virtual'])
 }))
@@ -2895,7 +2885,6 @@ export const customerScheduleUpdateResponse = zod.object({
 })
 }).and(zod.object({
   "locations": zod.array(zod.object({
-  "metafieldId": zod.string(),
   "location": zod.string(),
   "locationType": zod.enum(['home', 'commercial', 'destination', 'virtual'])
 }))
@@ -2996,7 +2985,6 @@ export const customerScheduleSlotUpdateResponse = zod.object({
 })
 }).and(zod.object({
   "locations": zod.array(zod.object({
-  "metafieldId": zod.string(),
   "location": zod.string(),
   "locationType": zod.enum(['home', 'commercial', 'destination', 'virtual'])
 }))
@@ -3707,7 +3695,6 @@ export const userProductsListByScheduleResponse = zod.object({
 })
 }).and(zod.object({
   "locations": zod.array(zod.object({
-  "metafieldId": zod.string(),
   "location": zod.string(),
   "locationType": zod.enum(['home', 'commercial', 'destination', 'virtual'])
 }))
@@ -3771,7 +3758,6 @@ export const userProductGetResponse = zod.object({
 })
 }).and(zod.object({
   "locations": zod.array(zod.object({
-  "metafieldId": zod.string(),
   "location": zod.string(),
   "locationType": zod.enum(['home', 'commercial', 'destination', 'virtual'])
 }))

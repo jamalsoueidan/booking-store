@@ -9,5 +9,4 @@ import type {CustomerProductLocationsItemLocationType} from './customerProductLo
 export type CustomerProductLocationsItem = {
   location: string;
   locationType: CustomerProductLocationsItemLocationType;
-  metafieldId: string;
 };
