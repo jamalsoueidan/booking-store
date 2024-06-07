@@ -337,18 +337,14 @@ components:
           locationType:
             type: string
             enum:
-              - origin
-              - destination
-          originType:
-            type: string
-            enum:
               - home
               - commercial
+              - destination
+              - virtual
         required:
           - metafieldId
           - location
           - locationType
-          - originType
     CustomerProductUpdateResponse:
       type: object
       properties:
@@ -1924,16 +1920,13 @@ components:
         locationType:
           type: string
           enum:
-            - origin
+            - home
+            - commercial
             - destination
+            - virtual
         customerId:
           type: string
           format: gid
-        originType:
-          type: string
-          enum:
-            - home
-            - commercial
         name:
           type: string
         fullAddress:
@@ -1945,7 +1938,6 @@ components:
       required:
         - metafieldId
         - locationType
-        - originType
         - customerId
         - name
         - fullAddress
@@ -2011,11 +2003,6 @@ components:
           type: string
         fullAddress:
           type: string
-        originType:
-          type: string
-          enum:
-            - home
-            - commercial
         distanceForFree:
           type: number
         distanceHourlyRate:
@@ -2031,12 +2018,13 @@ components:
         locationType:
           type: string
           enum:
-            - origin
+            - home
+            - commercial
             - destination
+            - virtual
       required:
         - name
         - fullAddress
-        - originType
         - distanceForFree
         - distanceHourlyRate
         - fixedRatePerKm
@@ -2099,11 +2087,6 @@ components:
           type: string
         fullAddress:
           type: string
-        originType:
-          type: string
-          enum:
-            - home
-            - commercial
         distanceForFree:
           type: number
         distanceHourlyRate:
@@ -2119,7 +2102,6 @@ components:
       required:
         - name
         - fullAddress
-        - originType
         - distanceForFree
         - distanceHourlyRate
         - fixedRatePerKm
@@ -2462,19 +2444,15 @@ components:
               locationType:
                 type: string
                 enum:
-                  - origin
-                  - destination
-              originType:
-                type: string
-                enum:
                   - home
                   - commercial
+                  - destination
+                  - virtual
               count:
                 type: integer
             required:
               - city
               - locationType
-              - originType
               - count
         availableDays:
           type: array
@@ -2547,12 +2525,14 @@ components:
               type: string
             locationType:
               type: string
-            originType:
-              type: string
+              enum:
+                - home
+                - commercial
+                - destination
+                - virtual
           required:
             - city
             - locationType
-            - originType
         days:
           type: array
           items:
