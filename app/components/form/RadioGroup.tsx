@@ -1,6 +1,13 @@
 import {useInputControl, type FieldMetadata} from '@conform-to/react';
-import {Radio} from '@mantine/core';
-import {useMemo} from 'react';
+import {Group, Radio, Stack} from '@mantine/core';
+import {
+  IconBuildingStore,
+  IconCar,
+  IconHome,
+  IconPhone,
+} from '@tabler/icons-react';
+import React, {useMemo} from 'react';
+import {CustomerLocationBaseLocationType} from '~/lib/api/model';
 
 export type RadioGroupProps = {
   label: string;
@@ -20,22 +27,32 @@ export function RadioGroup({data, field, ...props}: RadioGroupProps) {
   const control = useInputControl(field);
 
   return (
-    <>
-      <Radio.Group
-        defaultValue={initialValue}
-        onChange={control.change}
-        {...props}
-      >
+    <Radio.Group
+      defaultValue={initialValue}
+      onChange={control.change}
+      {...props}
+    >
+      <Stack gap="xs" mt="xs">
         {data.map((d) => (
-          <Radio
-            key={d.value}
-            mt="xs"
-            mb="xs"
-            label={d.label}
-            value={d.value}
-          />
+          <React.Fragment key={d.value}>
+            <Group>
+              <Radio label={d.label} value={d.value} />
+              {d.value === CustomerLocationBaseLocationType.home && (
+                <IconHome size={20} />
+              )}
+              {d.value === CustomerLocationBaseLocationType.commercial && (
+                <IconBuildingStore size={20} />
+              )}
+              {d.value === CustomerLocationBaseLocationType.destination && (
+                <IconCar size={20} />
+              )}
+              {d.value === CustomerLocationBaseLocationType.virtual && (
+                <IconPhone size={20} />
+              )}
+            </Group>
+          </React.Fragment>
         ))}
-      </Radio.Group>
-    </>
+      </Stack>
+    </Radio.Group>
   );
 }

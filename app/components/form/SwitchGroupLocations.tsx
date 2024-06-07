@@ -65,11 +65,6 @@ export function SwitchGroupLocations({
         <React.Fragment key={item._id}>
           <input
             hidden
-            name={`${field.name}[${index}].metafieldId`}
-            defaultValue={item.metafieldId}
-          />
-          <input
-            hidden
             name={`${field.name}[${index}].location`}
             defaultValue={item._id}
           />

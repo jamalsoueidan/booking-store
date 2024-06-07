@@ -24,6 +24,7 @@ import {type ArticleUserFragment} from 'storefrontapi.generated';
 import {LocationIcon} from '~/components/LocationIcon';
 import {METAFIELD_QUERY} from '~/data/fragments';
 import {ARTICLE_USER_FRAGMENT} from '~/graphql/fragments/ArticleUser';
+import {CustomerLocationBaseLocationType} from '~/lib/api/model';
 import {splitTags} from '~/lib/tags';
 import {ProfessionTranslations} from './api.users.professions';
 
@@ -83,7 +84,7 @@ export const loader = async ({context, request}: LoaderFunctionArgs) => {
 
   const location = searchParams.get('location');
   if (location) {
-    query.push(`tag:location-${location}`);
+    query.push(`tag:location_type-${location}`);
   }
 
   const product = searchParams.get('product');
@@ -214,27 +215,49 @@ export const UserCard = ({article}: {article: ArticleUserFragment}) => {
           </Text>
 
           <Group gap="4" justify="center">
-            {tags['location']?.includes('destination') && (
+            {tags['location_type']?.includes(
+              CustomerLocationBaseLocationType.destination,
+            ) && (
               <LocationIcon
                 location={{
-                  locationType: 'destination',
+                  locationType: CustomerLocationBaseLocationType.destination,
                 }}
                 width={18}
                 height={18}
                 color="gray"
               />
             )}
-            {tags['location']?.includes('salon') && (
+            {tags['location_type']?.includes(
+              CustomerLocationBaseLocationType.commercial,
+            ) && (
               <LocationIcon
-                location={{locationType: 'commercial'}}
+                location={{
+                  locationType: CustomerLocationBaseLocationType.commercial,
+                }}
                 width={18}
                 height={18}
                 color="gray"
               />
             )}
-            {tags['location']?.includes('home') && (
+            {tags['location_type']?.includes(
+              CustomerLocationBaseLocationType.home,
+            ) && (
               <LocationIcon
-                location={{locationType: 'home'}}
+                location={{
+                  locationType: CustomerLocationBaseLocationType.home,
+                }}
+                width={18}
+                height={18}
+                color="gray"
+              />
+            )}
+            {tags['location_type']?.includes(
+              CustomerLocationBaseLocationType.virtual,
+            ) && (
+              <LocationIcon
+                location={{
+                  locationType: CustomerLocationBaseLocationType.virtual,
+                }}
                 width={18}
                 height={18}
                 color="gray"

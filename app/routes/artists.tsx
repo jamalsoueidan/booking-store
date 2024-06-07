@@ -33,6 +33,7 @@ import {
   IconHome,
   IconLocation,
   IconNetwork,
+  IconPhone,
   IconServicemark,
   IconWorld,
   IconWorldCheck,
@@ -43,6 +44,7 @@ import {useMemo} from 'react';
 import {VisualTeaser} from '~/components/blocks/VisualTeaser';
 import {ProfessionButton} from '~/components/ProfessionButton';
 import {METAFIELD_QUERY} from '~/data/fragments';
+import {CustomerLocationBaseLocationType} from '~/lib/api/model';
 import {getTags} from '~/lib/tags';
 import {useComponents} from '~/lib/use-components';
 import {COLLECTION} from './account.services.create';
@@ -363,10 +365,16 @@ export default function Artists() {
                       rightSection={<IconX />}
                       leftSection={<IconLocation />}
                     >
-                      {locationSearchParams === 'destination' &&
+                      {locationSearchParams ===
+                        CustomerLocationBaseLocationType.destination &&
                         'Kører ud til mig'}
-                      {locationSearchParams === 'salon' && 'Salon'}
-                      {locationSearchParams === 'home' && 'Hjemmefra'}
+                      {locationSearchParams ===
+                        CustomerLocationBaseLocationType.commercial && 'Salon'}
+                      {locationSearchParams ===
+                        CustomerLocationBaseLocationType.home && 'Hjemmefra'}
+                      {locationSearchParams ===
+                        CustomerLocationBaseLocationType.virtual &&
+                        'Telefonopkald'}
                     </Button>
                   ) : null}
                   {genderValue ? (
@@ -500,7 +508,10 @@ export default function Artists() {
                     </div>
                   </Group>
                 </Radio.Card>
-                <Radio.Card value="destination" withBorder={false}>
+                <Radio.Card
+                  value={CustomerLocationBaseLocationType.destination}
+                  withBorder={false}
+                >
                   <Group wrap="nowrap" align="center">
                     <Radio.Indicator icon={() => <IconCar color="black" />} />
                     <div>
@@ -508,7 +519,10 @@ export default function Artists() {
                     </div>
                   </Group>
                 </Radio.Card>
-                <Radio.Card value="salon" withBorder={false}>
+                <Radio.Card
+                  value={CustomerLocationBaseLocationType.commercial}
+                  withBorder={false}
+                >
                   <Group wrap="nowrap" align="center">
                     <Radio.Indicator
                       icon={() => <IconBuilding color="black" />}
@@ -518,11 +532,25 @@ export default function Artists() {
                     </div>
                   </Group>
                 </Radio.Card>
-                <Radio.Card value="home" withBorder={false}>
+                <Radio.Card
+                  value={CustomerLocationBaseLocationType.home}
+                  withBorder={false}
+                >
                   <Group wrap="nowrap" align="center">
                     <Radio.Indicator icon={() => <IconHome color="black" />} />
                     <div>
                       <Text>Hjemmefra</Text>
+                    </div>
+                  </Group>
+                </Radio.Card>
+                <Radio.Card
+                  value={CustomerLocationBaseLocationType.virtual}
+                  withBorder={false}
+                >
+                  <Group wrap="nowrap" align="center">
+                    <Radio.Indicator icon={() => <IconPhone color="black" />} />
+                    <div>
+                      <Text>Videoopkald</Text>
                     </div>
                   </Group>
                 </Radio.Card>
