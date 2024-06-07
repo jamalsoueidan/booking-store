@@ -1,18 +1,4 @@
 import {
-  json,
-  type LoaderFunctionArgs,
-  type MetaFunction,
-} from '@shopify/remix-oxygen';
-
-import {Link, useLoaderData, useSearchParams} from '@remix-run/react';
-import {
-  UNSTABLE_Analytics as Analytics,
-  getPaginationVariables,
-  Pagination,
-  parseGid,
-} from '@shopify/hydrogen';
-
-import {
   Avatar,
   Badge,
   Box,
@@ -33,6 +19,20 @@ import {
   UnstyledButton,
   type UnstyledButtonProps,
 } from '@mantine/core';
+import {Link, useLoaderData, useSearchParams} from '@remix-run/react';
+import {
+  UNSTABLE_Analytics as Analytics,
+  getPaginationVariables,
+  Pagination,
+  parseGid,
+} from '@shopify/hydrogen';
+import {
+  json,
+  type LinksFunction,
+  type LoaderFunctionArgs,
+  type MetaFunction,
+} from '@shopify/remix-oxygen';
+import {ClientOnly} from 'remix-utils/client-only';
 
 import {PriceBadge} from '~/components/artist/PriceBadge';
 import {ProfessionTranslations} from './api.users.professions';
@@ -43,6 +43,7 @@ import type {
   ProductFilter,
 } from '@shopify/hydrogen/storefront-api-types';
 import {IconArrowDown, IconArrowsSort, IconFilter} from '@tabler/icons-react';
+import leafletStyles from 'leaflet/dist/leaflet.css?url';
 import React from 'react';
 import type {
   TreatmentsForCollectionFragment,
@@ -53,9 +54,17 @@ import {AddDayFilter} from '~/components/filters/DayFilter';
 import {AddLocationFilter} from '~/components/filters/LocationFilter';
 import {AddPriceFilter} from '~/components/filters/PriceFilter';
 import {ResetFilter} from '~/components/filters/ResetFilter';
+import {LeafletMap} from '~/components/LeafletMap.client';
 import {LocationIcon} from '~/components/LocationIcon';
 import type {CustomerLocationBaseLocationType} from '~/lib/api/model';
 import {durationToTime} from '~/lib/duration';
+
+export const links: LinksFunction = () => [
+  {
+    rel: 'stylesheet',
+    href: leafletStyles,
+  },
+];
 
 export const meta: MetaFunction<typeof loader> = ({data}) => {
   return [{title: `BySisters | ${data?.product.title ?? ''}`}];
@@ -364,9 +373,16 @@ export default function Product() {
                 })}
               </Flex>
               <Box pos="relative">
-                <Card withBorder pos="sticky" top="0">
-                  asd
-                </Card>
+                <ClientOnly
+                  fallback={
+                    <div
+                      id="skeleton"
+                      style={{height: '100vh', background: '#d1d1d1'}}
+                    />
+                  }
+                >
+                  {() => <LeafletMap />}
+                </ClientOnly>
               </Box>
             </SimpleGrid>
             <Flex justify="center">
