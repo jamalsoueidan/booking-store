@@ -7,7 +7,7 @@ export function LocationIcon({
   withTooltip = true,
   ...props
 }: {
-  location: Pick<CustomerLocationBase, 'locationType' | 'originType'>;
+  location: Pick<CustomerLocationBase, 'locationType'>;
   withTooltip?: boolean;
 } & CheckIconProps) {
   if (location.locationType === 'destination') {
@@ -21,7 +21,7 @@ export function LocationIcon({
     );
   }
 
-  if (location.originType === 'home') {
+  if (location.locationType === 'home') {
     return (
       <ConditionalTooltip label="I Hjem" withTooltip={withTooltip}>
         <IconHome {...props} />
@@ -39,13 +39,13 @@ export function LocationIcon({
 export function LocationText({
   location,
 }: {
-  location: Pick<CustomerLocationBase, 'locationType' | 'originType'>;
+  location: Pick<CustomerLocationBase, 'locationType'>;
 }) {
   if (location.locationType === 'destination') {
     return <>Kører ud til din lokation</>;
   }
 
-  if (location.originType === 'home') {
+  if (location.locationType === 'home') {
     return <>Hjemme</>;
   }
 
@@ -56,7 +56,7 @@ export function LocationIconTooltip({
   location,
   children,
 }: {
-  location: Pick<CustomerLocationBase, 'locationType' | 'originType'>;
+  location: Pick<CustomerLocationBase, 'locationType'>;
   children: React.ReactNode;
 }) {
   if (location.locationType === 'destination') {
@@ -67,7 +67,7 @@ export function LocationIconTooltip({
     );
   }
 
-  if (location.originType === 'home') {
+  if (location.locationType === 'home') {
     return (
       <ConditionalTooltip label="Hjemme" withTooltip={true}>
         {children}

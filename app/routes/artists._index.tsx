@@ -218,7 +218,6 @@ export const UserCard = ({article}: {article: ArticleUserFragment}) => {
               <LocationIcon
                 location={{
                   locationType: 'destination',
-                  originType: 'commercial',
                 }}
                 width={18}
                 height={18}
@@ -227,7 +226,7 @@ export const UserCard = ({article}: {article: ArticleUserFragment}) => {
             )}
             {tags['location']?.includes('salon') && (
               <LocationIcon
-                location={{locationType: 'origin', originType: 'commercial'}}
+                location={{locationType: 'commercial'}}
                 width={18}
                 height={18}
                 color="gray"
@@ -235,7 +234,7 @@ export const UserCard = ({article}: {article: ArticleUserFragment}) => {
             )}
             {tags['location']?.includes('home') && (
               <LocationIcon
-                location={{locationType: 'origin', originType: 'home'}}
+                location={{locationType: 'home'}}
                 width={18}
                 height={18}
                 color="gray"

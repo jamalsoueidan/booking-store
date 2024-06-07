@@ -585,9 +585,8 @@ export const customerBookingGetByGroupResponse = zod.object({
   "location": zod.string(),
   "origin": zod.object({
   "metafieldId": zod.string(),
-  "locationType": zod.enum(['origin', 'destination']),
+  "locationType": zod.enum(['home', 'commercial', 'destination', 'virtual']),
   "customerId": zod.string(),
-  "originType": zod.enum(['home', 'commercial']),
   "name": zod.string(),
   "fullAddress": zod.string(),
   "city": zod.string(),
@@ -623,9 +622,8 @@ export const customerBookingGetByGroupResponse = zod.object({
 }),
   "location": zod.object({
   "metafieldId": zod.string(),
-  "locationType": zod.enum(['origin', 'destination']),
+  "locationType": zod.enum(['home', 'commercial', 'destination', 'virtual']),
   "customerId": zod.string(),
-  "originType": zod.enum(['home', 'commercial']),
   "name": zod.string(),
   "fullAddress": zod.string(),
   "city": zod.string(),
@@ -986,9 +984,8 @@ export const customerBookingRangeResponse = zod.object({
   "location": zod.string(),
   "origin": zod.object({
   "metafieldId": zod.string(),
-  "locationType": zod.enum(['origin', 'destination']),
+  "locationType": zod.enum(['home', 'commercial', 'destination', 'virtual']),
   "customerId": zod.string(),
-  "originType": zod.enum(['home', 'commercial']),
   "name": zod.string(),
   "fullAddress": zod.string(),
   "city": zod.string(),
@@ -1024,9 +1021,8 @@ export const customerBookingRangeResponse = zod.object({
 }),
   "location": zod.object({
   "metafieldId": zod.string(),
-  "locationType": zod.enum(['origin', 'destination']),
+  "locationType": zod.enum(['home', 'commercial', 'destination', 'virtual']),
   "customerId": zod.string(),
-  "originType": zod.enum(['home', 'commercial']),
   "name": zod.string(),
   "fullAddress": zod.string(),
   "city": zod.string(),
@@ -1100,9 +1096,8 @@ export const customerLocationGetResponse = zod.object({
   "success": zod.boolean(),
   "payload": zod.object({
   "metafieldId": zod.string(),
-  "locationType": zod.enum(['origin', 'destination']),
+  "locationType": zod.enum(['home', 'commercial', 'destination', 'virtual']),
   "customerId": zod.string(),
-  "originType": zod.enum(['home', 'commercial']),
   "name": zod.string(),
   "fullAddress": zod.string(),
   "city": zod.string(),
@@ -1186,7 +1181,6 @@ export const customerLocationUpdateParams = zod.object({
 export const customerLocationUpdateBody = zod.object({
   "name": zod.string(),
   "fullAddress": zod.string(),
-  "originType": zod.enum(['home', 'commercial']),
   "distanceForFree": zod.number(),
   "distanceHourlyRate": zod.number(),
   "fixedRatePerKm": zod.number(),
@@ -1199,9 +1193,8 @@ export const customerLocationUpdateResponse = zod.object({
   "success": zod.boolean(),
   "payload": zod.object({
   "metafieldId": zod.string(),
-  "locationType": zod.enum(['origin', 'destination']),
+  "locationType": zod.enum(['home', 'commercial', 'destination', 'virtual']),
   "customerId": zod.string(),
-  "originType": zod.enum(['home', 'commercial']),
   "name": zod.string(),
   "fullAddress": zod.string(),
   "city": zod.string(),
@@ -1277,8 +1270,7 @@ export const customerLocationGetProductsResponse = zod.object({
   "locations": zod.array(zod.object({
   "metafieldId": zod.string(),
   "location": zod.string(),
-  "locationType": zod.enum(['origin', 'destination']),
-  "originType": zod.enum(['home', 'commercial'])
+  "locationType": zod.enum(['home', 'commercial', 'destination', 'virtual'])
 }))
 })))
 })
@@ -1344,23 +1336,21 @@ export const customerLocationCreateParams = zod.object({
 export const customerLocationCreateBody = zod.object({
   "name": zod.string(),
   "fullAddress": zod.string(),
-  "originType": zod.enum(['home', 'commercial']),
   "distanceForFree": zod.number(),
   "distanceHourlyRate": zod.number(),
   "fixedRatePerKm": zod.number(),
   "minDriveDistance": zod.number(),
   "maxDriveDistance": zod.number(),
   "startFee": zod.number(),
-  "locationType": zod.enum(['origin', 'destination'])
+  "locationType": zod.enum(['home', 'commercial', 'destination', 'virtual'])
 })
 
 export const customerLocationCreateResponse = zod.object({
   "success": zod.boolean(),
   "payload": zod.object({
   "metafieldId": zod.string(),
-  "locationType": zod.enum(['origin', 'destination']),
+  "locationType": zod.enum(['home', 'commercial', 'destination', 'virtual']),
   "customerId": zod.string(),
-  "originType": zod.enum(['home', 'commercial']),
   "name": zod.string(),
   "fullAddress": zod.string(),
   "city": zod.string(),
@@ -1393,9 +1383,8 @@ export const customerLocationListResponse = zod.object({
   "success": zod.boolean(),
   "payload": zod.array(zod.object({
   "metafieldId": zod.string(),
-  "locationType": zod.enum(['origin', 'destination']),
+  "locationType": zod.enum(['home', 'commercial', 'destination', 'virtual']),
   "customerId": zod.string(),
-  "originType": zod.enum(['home', 'commercial']),
   "name": zod.string(),
   "fullAddress": zod.string(),
   "city": zod.string(),
@@ -1753,9 +1742,8 @@ export const customerOrderGetResponse = zod.object({
 }),
   "location": zod.object({
   "metafieldId": zod.string(),
-  "locationType": zod.enum(['origin', 'destination']),
+  "locationType": zod.enum(['home', 'commercial', 'destination', 'virtual']),
   "customerId": zod.string(),
-  "originType": zod.enum(['home', 'commercial']),
   "name": zod.string(),
   "fullAddress": zod.string(),
   "city": zod.string(),
@@ -1784,9 +1772,8 @@ export const customerOrderGetResponse = zod.object({
   "location": zod.string(),
   "origin": zod.object({
   "metafieldId": zod.string(),
-  "locationType": zod.enum(['origin', 'destination']),
+  "locationType": zod.enum(['home', 'commercial', 'destination', 'virtual']),
   "customerId": zod.string(),
-  "originType": zod.enum(['home', 'commercial']),
   "name": zod.string(),
   "fullAddress": zod.string(),
   "city": zod.string(),
@@ -2027,9 +2014,8 @@ export const customerPayoutLogPaginateResponse = zod.object({
   "location": zod.string(),
   "origin": zod.object({
   "metafieldId": zod.string(),
-  "locationType": zod.enum(['origin', 'destination']),
+  "locationType": zod.enum(['home', 'commercial', 'destination', 'virtual']),
   "customerId": zod.string(),
-  "originType": zod.enum(['home', 'commercial']),
   "name": zod.string(),
   "fullAddress": zod.string(),
   "city": zod.string(),
@@ -2189,8 +2175,7 @@ export const customerProductsListResponse = zod.object({
   "locations": zod.array(zod.object({
   "metafieldId": zod.string(),
   "location": zod.string(),
-  "locationType": zod.enum(['origin', 'destination']),
-  "originType": zod.enum(['home', 'commercial'])
+  "locationType": zod.enum(['home', 'commercial', 'destination', 'virtual'])
 }))
 })).and(zod.object({
   "scheduleId": zod.string(),
@@ -2268,8 +2253,7 @@ export const customerProductGetResponse = zod.object({
   "locations": zod.array(zod.object({
   "metafieldId": zod.string(),
   "location": zod.string(),
-  "locationType": zod.enum(['origin', 'destination']),
-  "originType": zod.enum(['home', 'commercial'])
+  "locationType": zod.enum(['home', 'commercial', 'destination', 'virtual'])
 }))
 })).and(zod.object({
   "scheduleId": zod.string(),
@@ -2311,8 +2295,7 @@ export const customerProductUpdateBody = zod.object({
   "locations": zod.array(zod.object({
   "metafieldId": zod.string(),
   "location": zod.string(),
-  "locationType": zod.enum(['origin', 'destination']),
-  "originType": zod.enum(['home', 'commercial'])
+  "locationType": zod.enum(['home', 'commercial', 'destination', 'virtual'])
 })).optional(),
   "title": zod.string().optional(),
   "description": zod.string().optional(),
@@ -2365,8 +2348,7 @@ export const customerProductUpdateResponse = zod.object({
   "locations": zod.array(zod.object({
   "metafieldId": zod.string(),
   "location": zod.string(),
-  "locationType": zod.enum(['origin', 'destination']),
-  "originType": zod.enum(['home', 'commercial'])
+  "locationType": zod.enum(['home', 'commercial', 'destination', 'virtual'])
 }))
 })).and(zod.object({
   "scheduleId": zod.string(),
@@ -2410,8 +2392,7 @@ export const customerProductAddBody = zod.object({
   "locations": zod.array(zod.object({
   "metafieldId": zod.string(),
   "location": zod.string(),
-  "locationType": zod.enum(['origin', 'destination']),
-  "originType": zod.enum(['home', 'commercial'])
+  "locationType": zod.enum(['home', 'commercial', 'destination', 'virtual'])
 })),
   "scheduleId": zod.string(),
   "hideFromProfile": zod.string(),
@@ -2472,8 +2453,7 @@ export const customerProductAddResponse = zod.object({
   "locations": zod.array(zod.object({
   "metafieldId": zod.string(),
   "location": zod.string(),
-  "locationType": zod.enum(['origin', 'destination']),
-  "originType": zod.enum(['home', 'commercial'])
+  "locationType": zod.enum(['home', 'commercial', 'destination', 'virtual'])
 }))
 })).and(zod.object({
   "scheduleId": zod.string(),
@@ -2695,8 +2675,7 @@ export const customerScheduleCreateResponse = zod.object({
   "locations": zod.array(zod.object({
   "metafieldId": zod.string(),
   "location": zod.string(),
-  "locationType": zod.enum(['origin', 'destination']),
-  "originType": zod.enum(['home', 'commercial'])
+  "locationType": zod.enum(['home', 'commercial', 'destination', 'virtual'])
 }))
 })))
 })
@@ -2768,8 +2747,7 @@ export const customerScheduleListResponse = zod.object({
   "locations": zod.array(zod.object({
   "metafieldId": zod.string(),
   "location": zod.string(),
-  "locationType": zod.enum(['origin', 'destination']),
-  "originType": zod.enum(['home', 'commercial'])
+  "locationType": zod.enum(['home', 'commercial', 'destination', 'virtual'])
 }))
 })))
 }))
@@ -2842,8 +2820,7 @@ export const customerScheduleGetResponse = zod.object({
   "locations": zod.array(zod.object({
   "metafieldId": zod.string(),
   "location": zod.string(),
-  "locationType": zod.enum(['origin', 'destination']),
-  "originType": zod.enum(['home', 'commercial'])
+  "locationType": zod.enum(['home', 'commercial', 'destination', 'virtual'])
 }))
 })))
 })
@@ -2920,8 +2897,7 @@ export const customerScheduleUpdateResponse = zod.object({
   "locations": zod.array(zod.object({
   "metafieldId": zod.string(),
   "location": zod.string(),
-  "locationType": zod.enum(['origin', 'destination']),
-  "originType": zod.enum(['home', 'commercial'])
+  "locationType": zod.enum(['home', 'commercial', 'destination', 'virtual'])
 }))
 })))
 })
@@ -3022,8 +2998,7 @@ export const customerScheduleSlotUpdateResponse = zod.object({
   "locations": zod.array(zod.object({
   "metafieldId": zod.string(),
   "location": zod.string(),
-  "locationType": zod.enum(['origin', 'destination']),
-  "originType": zod.enum(['home', 'commercial'])
+  "locationType": zod.enum(['home', 'commercial', 'destination', 'virtual'])
 }))
 })))
 })
@@ -3257,9 +3232,8 @@ export const shippingCreateResponse = zod.object({
   "location": zod.string(),
   "origin": zod.object({
   "metafieldId": zod.string(),
-  "locationType": zod.enum(['origin', 'destination']),
+  "locationType": zod.enum(['home', 'commercial', 'destination', 'virtual']),
   "customerId": zod.string(),
-  "originType": zod.enum(['home', 'commercial']),
   "name": zod.string(),
   "fullAddress": zod.string(),
   "city": zod.string(),
@@ -3320,9 +3294,8 @@ export const shippingCalculateResponse = zod.object({
   "location": zod.string(),
   "origin": zod.object({
   "metafieldId": zod.string(),
-  "locationType": zod.enum(['origin', 'destination']),
+  "locationType": zod.enum(['home', 'commercial', 'destination', 'virtual']),
   "customerId": zod.string(),
-  "originType": zod.enum(['home', 'commercial']),
   "name": zod.string(),
   "fullAddress": zod.string(),
   "city": zod.string(),
@@ -3379,9 +3352,8 @@ export const shippingGetResponse = zod.object({
   "location": zod.string(),
   "origin": zod.object({
   "metafieldId": zod.string(),
-  "locationType": zod.enum(['origin', 'destination']),
+  "locationType": zod.enum(['home', 'commercial', 'destination', 'virtual']),
   "customerId": zod.string(),
-  "originType": zod.enum(['home', 'commercial']),
   "name": zod.string(),
   "fullAddress": zod.string(),
   "city": zod.string(),
@@ -3452,9 +3424,8 @@ export const userAvailabilityGenerateResponse = zod.object({
   "location": zod.string(),
   "origin": zod.object({
   "metafieldId": zod.string(),
-  "locationType": zod.enum(['origin', 'destination']),
+  "locationType": zod.enum(['home', 'commercial', 'destination', 'virtual']),
   "customerId": zod.string(),
-  "originType": zod.enum(['home', 'commercial']),
   "name": zod.string(),
   "fullAddress": zod.string(),
   "city": zod.string(),
@@ -3541,9 +3512,8 @@ export const userAvailabilityGetResponse = zod.object({
   "location": zod.string(),
   "origin": zod.object({
   "metafieldId": zod.string(),
-  "locationType": zod.enum(['origin', 'destination']),
+  "locationType": zod.enum(['home', 'commercial', 'destination', 'virtual']),
   "customerId": zod.string(),
-  "originType": zod.enum(['home', 'commercial']),
   "name": zod.string(),
   "fullAddress": zod.string(),
   "city": zod.string(),
@@ -3595,9 +3565,8 @@ export const userLocationGetResponse = zod.object({
   "success": zod.boolean(),
   "payload": zod.object({
   "metafieldId": zod.string(),
-  "locationType": zod.enum(['origin', 'destination']),
+  "locationType": zod.enum(['home', 'commercial', 'destination', 'virtual']),
   "customerId": zod.string(),
-  "originType": zod.enum(['home', 'commercial']),
   "name": zod.string(),
   "fullAddress": zod.string(),
   "city": zod.string(),
@@ -3740,8 +3709,7 @@ export const userProductsListByScheduleResponse = zod.object({
   "locations": zod.array(zod.object({
   "metafieldId": zod.string(),
   "location": zod.string(),
-  "locationType": zod.enum(['origin', 'destination']),
-  "originType": zod.enum(['home', 'commercial'])
+  "locationType": zod.enum(['home', 'commercial', 'destination', 'virtual'])
 }))
 })).and(zod.object({
   "scheduleId": zod.string(),
@@ -3805,8 +3773,7 @@ export const userProductGetResponse = zod.object({
   "locations": zod.array(zod.object({
   "metafieldId": zod.string(),
   "location": zod.string(),
-  "locationType": zod.enum(['origin', 'destination']),
-  "originType": zod.enum(['home', 'commercial'])
+  "locationType": zod.enum(['home', 'commercial', 'destination', 'virtual'])
 }))
 })).and(zod.object({
   "scheduleId": zod.string(),
@@ -3954,9 +3921,8 @@ export const userScheduleGetByProductResponse = zod.object({
 })),
   "locations": zod.array(zod.object({
   "metafieldId": zod.string(),
-  "locationType": zod.enum(['origin', 'destination']),
+  "locationType": zod.enum(['home', 'commercial', 'destination', 'virtual']),
   "customerId": zod.string(),
-  "originType": zod.enum(['home', 'commercial']),
   "name": zod.string(),
   "fullAddress": zod.string(),
   "city": zod.string(),
@@ -4018,9 +3984,8 @@ export const userScheduleGetByProductResponse = zod.object({
 }).and(zod.object({
   "locations": zod.array(zod.object({
   "metafieldId": zod.string(),
-  "locationType": zod.enum(['origin', 'destination']),
+  "locationType": zod.enum(['home', 'commercial', 'destination', 'virtual']),
   "customerId": zod.string(),
-  "originType": zod.enum(['home', 'commercial']),
   "name": zod.string(),
   "fullAddress": zod.string(),
   "city": zod.string(),
@@ -4068,9 +4033,8 @@ export const userScheduleGetByLocationResponse = zod.object({
 })),
   "locations": zod.array(zod.object({
   "metafieldId": zod.string(),
-  "locationType": zod.enum(['origin', 'destination']),
+  "locationType": zod.enum(['home', 'commercial', 'destination', 'virtual']),
   "customerId": zod.string(),
-  "originType": zod.enum(['home', 'commercial']),
   "name": zod.string(),
   "fullAddress": zod.string(),
   "city": zod.string(),
@@ -4132,9 +4096,8 @@ export const userScheduleGetByLocationResponse = zod.object({
 }).and(zod.object({
   "locations": zod.array(zod.object({
   "metafieldId": zod.string(),
-  "locationType": zod.enum(['origin', 'destination']),
+  "locationType": zod.enum(['home', 'commercial', 'destination', 'virtual']),
   "customerId": zod.string(),
-  "originType": zod.enum(['home', 'commercial']),
   "name": zod.string(),
   "fullAddress": zod.string(),
   "city": zod.string(),
@@ -4180,9 +4143,8 @@ export const userSchedulesListLocationsResponse = zod.object({
 })),
   "locations": zod.array(zod.object({
   "metafieldId": zod.string(),
-  "locationType": zod.enum(['origin', 'destination']),
+  "locationType": zod.enum(['home', 'commercial', 'destination', 'virtual']),
   "customerId": zod.string(),
-  "originType": zod.enum(['home', 'commercial']),
   "name": zod.string(),
   "fullAddress": zod.string(),
   "city": zod.string(),
@@ -4230,8 +4192,7 @@ export const usersFiltersResponse = zod.object({
   "payload": zod.object({
   "locations": zod.array(zod.object({
   "city": zod.string(),
-  "locationType": zod.enum(['origin', 'destination']),
-  "originType": zod.enum(['home', 'commercial']),
+  "locationType": zod.enum(['home', 'commercial', 'destination', 'virtual']),
   "count": zod.number()
 })),
   "availableDays": zod.array(zod.object({
@@ -4267,8 +4228,7 @@ export const usersSearchBody = zod.object({
   "specialties": zod.string().optional(),
   "location": zod.object({
   "city": zod.string(),
-  "locationType": zod.string(),
-  "originType": zod.string()
+  "locationType": zod.enum(['home', 'commercial', 'destination', 'virtual'])
 }).optional(),
   "days": zod.array(zod.string()).optional()
 })

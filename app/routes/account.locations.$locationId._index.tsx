@@ -11,7 +11,7 @@ import {getCustomer} from '~/lib/get-customer';
 import {customerLocationUpdateBody} from '~/lib/zod/bookingShopifyApi';
 
 import {parseWithZod} from '@conform-to/zod';
-import {Anchor, Group, Select, Stack, Text, TextInput} from '@mantine/core';
+import {Anchor, Group, Stack, Text, TextInput} from '@mantine/core';
 import {redirectWithSuccess} from 'remix-toast';
 import {AddressAutocompleteInput} from '~/components/form/AddressAutocompleteInput';
 import {NumericInput} from '~/components/form/NumericInput';
@@ -115,25 +115,6 @@ export default function AccountLocationsEdit() {
           {...getInputProps(fields.fullAddress, {type: 'text'})}
           data-testid="address-input"
         />
-
-        {defaultValue.locationType === 'destination' ? (
-          <input
-            {...getInputProps(fields.originType, {
-              type: 'hidden',
-            })}
-          />
-        ) : (
-          <Select
-            label="Arbejdsstedssted"
-            defaultValue={fields.originType.initialValue}
-            data={[
-              {value: 'home', label: 'Hus/lejlighed'},
-              {value: 'commercial', label: 'Butik'},
-            ]}
-            {...getInputProps(fields.originType, {type: 'text'})}
-            data-testid="origin-type-input"
-          />
-        )}
 
         <NumericInput
           field={fields.startFee}

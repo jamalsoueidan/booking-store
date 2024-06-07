@@ -155,14 +155,12 @@ function Location({
             <LocationIcon
               location={{
                 locationType: location.locationType?.value as any,
-                originType: location.originType?.value as any,
               }}
             />
 
             <LocationText
               location={{
                 locationType: location.locationType?.value as any,
-                originType: location.originType?.value as any,
               }}
             />
           </Group>
@@ -259,15 +257,12 @@ export function ArtistProduct({product}: {product: TreatmentProductFragment}) {
                 {locations
                   .map((l) => ({
                     locationType: l.locationType,
-                    originType: l.originType,
                   }))
                   .filter(
                     (value, index, self) =>
                       index ===
                       self.findIndex(
-                        (t) =>
-                          t.locationType === value.locationType &&
-                          t.originType === value.originType,
+                        (t) => t.locationType === value.locationType,
                       ),
                   )
                   .map((location, index) => (

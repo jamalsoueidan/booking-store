@@ -45,10 +45,7 @@ import type {
   UserCollectionFragment,
 } from 'storefrontapi.generated';
 import {LocationIcon} from '~/components/LocationIcon';
-import type {
-  CustomerLocationBaseLocationType,
-  CustomerLocationBaseOriginType,
-} from '~/lib/api/model';
+import type {CustomerLocationBaseLocationType} from '~/lib/api/model';
 import {durationToTime} from '~/lib/duration';
 
 export const meta: MetaFunction<typeof loader> = ({data}) => {
@@ -439,7 +436,6 @@ export function ArtistProduct({
   const locations =
     product.locations?.references?.nodes.map((p) => ({
       locationType: p.locationType?.value as CustomerLocationBaseLocationType,
-      originType: p.originType?.value as CustomerLocationBaseOriginType,
     })) || [];
 
   return (
@@ -468,9 +464,7 @@ export function ArtistProduct({
                       (value, index, self) =>
                         index ===
                         self.findIndex(
-                          (t) =>
-                            t.locationType === value.locationType &&
-                            t.originType === value.originType,
+                          (t) => t.locationType === value.locationType,
                         ),
                     )
                     .map((location, index) => (
@@ -619,9 +613,6 @@ const USER_COLLECTION_FRAGMENT = `#graphql
                       locationType: field(key: "location_type") {
                         value
                       }
-                      originType: field(key: "origin_type") {
-                        value
-                      }
                     }
                   }
                 }
@@ -662,9 +653,6 @@ const TREATMENTS_FOR_COLLECTION = `#graphql
           ... on Metaobject {
             id
             locationType: field(key: "location_type") {
-              value
-            }
-            originType: field(key: "origin_type") {
               value
             }
           }

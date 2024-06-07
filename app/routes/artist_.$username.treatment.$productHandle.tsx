@@ -257,7 +257,6 @@ export function BookingDetails({children}: PropsWithChildren) {
                   <LocationIcon
                     location={{
                       locationType: selectedLocation.locationType,
-                      originType: selectedLocation.originType,
                     }}
                   />
                 </Group>

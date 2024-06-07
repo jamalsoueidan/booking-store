@@ -5,7 +5,6 @@
  * OpenAPI spec version: 1.0.0
  */
 import type {CustomerLocationCreateBodyLocationType} from './customerLocationCreateBodyLocationType';
-import type {CustomerLocationCreateBodyOriginType} from './customerLocationCreateBodyOriginType';
 
 export interface CustomerLocationCreateBody {
   distanceForFree: number;
@@ -16,6 +15,5 @@ export interface CustomerLocationCreateBody {
   maxDriveDistance: number;
   minDriveDistance: number;
   name: string;
-  originType: CustomerLocationCreateBodyOriginType;
   startFee: number;
 }

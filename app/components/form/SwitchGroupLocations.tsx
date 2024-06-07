@@ -78,11 +78,6 @@ export function SwitchGroupLocations({
             name={`${field.name}[${index}].locationType`}
             defaultValue={item.locationType}
           />
-          <input
-            hidden
-            name={`${field.name}[${index}].originType`}
-            defaultValue={item.originType}
-          />
         </React.Fragment>
       ))}
     </Switch.Group>
