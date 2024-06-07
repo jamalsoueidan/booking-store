@@ -250,19 +250,20 @@ export default function Product() {
 
   return (
     <Container size="xl">
-      <Flex direction="column" mt={rem(100)} gap="xs">
+      <Flex direction="row" mt={rem(100)} gap={{base: 'sm', sm: 'lg'}}>
         <Avatar
           alt={product.featuredImage?.altText || 'Product Image'}
           src={product.featuredImage?.url}
           size={rem(150)}
           style={{border: '3px solid rgba(243, 175, 228, 0.7)'}}
         />
+        <Flex direction="column" justify="center">
+          <Title order={1}>{product?.title}</Title>
 
-        <Title order={1}>{product?.title}</Title>
-
-        <Text size="xl" c="dimmed" fw={400}>
-          {product.description}
-        </Text>
+          <Text size="xl" c="dimmed" fw={400}>
+            {product.description}
+          </Text>
+        </Flex>
       </Flex>
 
       <Card
