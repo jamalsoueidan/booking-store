@@ -10,7 +10,7 @@ import {customerLocationCreateBody} from '~/lib/zod/bookingShopifyApi';
 
 import {getFormProps, getInputProps, useForm} from '@conform-to/react';
 import {parseWithZod} from '@conform-to/zod';
-import {Select, Stack, TextInput} from '@mantine/core';
+import {Stack, TextInput} from '@mantine/core';
 import {redirectWithSuccess} from 'remix-toast';
 import {AccountContent} from '~/components/account/AccountContent';
 import {AccountTitle} from '~/components/account/AccountTitle';
@@ -19,6 +19,7 @@ import {NumericInput} from '~/components/form/NumericInput';
 import {RadioGroup} from '~/components/form/RadioGroup';
 import {SubmitButton} from '~/components/form/SubmitButton';
 import {getBookingShopifyApi} from '~/lib/api/bookingShopifyApi';
+import {CustomerLocationBaseLocationType} from '~/lib/api/model';
 import {baseURL} from '~/lib/api/mutator/query-client';
 
 const schema = customerLocationCreateBody;
@@ -56,9 +57,8 @@ export async function loader({context}: LoaderFunctionArgs) {
 
   return json({
     name: '',
-    locationType: 'origin',
+    locationType: CustomerLocationBaseLocationType.commercial,
     fullAddress: '',
-    originType: 'commercial',
     distanceHourlyRate: '500',
     fixedRatePerKm: '20',
     distanceForFree: '4',
@@ -96,13 +96,21 @@ export default function Component() {
               field={fields.locationType}
               data={[
                 {
-                  label: 'Opret en fast arbejdslokation.',
-                  value: 'origin',
+                  label: 'Arbejder fra salon/klink',
+                  value: CustomerLocationBaseLocationType.commercial,
+                },
+                {
+                  label: 'Arbejder hjemmefra',
+                  value: CustomerLocationBaseLocationType.home,
+                },
+                {
+                  label: 'Jeg vil kører ud til kunden.',
+                  value: CustomerLocationBaseLocationType.destination,
                 },
                 {
                   label:
-                    'Opret en mobil arbejdslokation (Du vil kører til kunden).',
-                  value: 'destination',
+                    'Jeg vil mødes online via videochat eller telefonopkald',
+                  value: CustomerLocationBaseLocationType.virtual,
                 },
               ]}
               data-testid="location-type-input"
@@ -128,30 +136,14 @@ export default function Component() {
               {...getInputProps(fields.fullAddress, {type: 'text'})}
             />
 
-            {fields.locationType.value === 'destination' ? (
-              <input
-                {...getInputProps(fields.originType, {
-                  type: 'hidden',
-                })}
-              />
-            ) : (
-              <Select
-                label="Arbejdsstedssted"
-                defaultValue={fields.originType.initialValue}
-                data={[
-                  {value: 'commercial', label: 'Butik'},
-                  {value: 'home', label: 'Eget sted'},
-                ]}
-                {...getInputProps(fields.originType, {type: 'text'})}
-                data-testid="origin-type-input"
-              />
-            )}
-
             <NumericInput
               field={fields.startFee}
               label="Udgifter for turen"
               rightSection="kr"
-              hidden={fields.locationType.value !== 'destination'}
+              hidden={
+                fields.locationType.value !==
+                CustomerLocationBaseLocationType.destination
+              }
               data-testid="start-fee-input"
             />
 
@@ -159,7 +151,10 @@ export default function Component() {
               field={fields.distanceHourlyRate}
               label="Timepris for kørsel"
               rightSection="kr"
-              hidden={fields.locationType.value !== 'destination'}
+              hidden={
+                fields.locationType.value !==
+                CustomerLocationBaseLocationType.destination
+              }
               data-testid="hourly-rate-input"
             />
 
@@ -167,7 +162,10 @@ export default function Component() {
               field={fields.fixedRatePerKm}
               label="Pris pr. kilometer"
               rightSection="kr"
-              hidden={fields.locationType.value !== 'destination'}
+              hidden={
+                fields.locationType.value !==
+                CustomerLocationBaseLocationType.destination
+              }
               data-testid="fixed-rate-input"
             />
 
@@ -175,7 +173,10 @@ export default function Component() {
               field={fields.distanceForFree}
               label="Afstanden der køres gratis, inden takstberegningen påbegyndes."
               suffix=" km"
-              hidden={fields.locationType.value !== 'destination'}
+              hidden={
+                fields.locationType.value !==
+                CustomerLocationBaseLocationType.destination
+              }
               data-testid="distance-free-input"
             />
 
@@ -183,7 +184,10 @@ export default function Component() {
               field={fields.minDriveDistance}
               label="Minimum der skal køres for at acceptere en kørselsopgave"
               suffix=" km"
-              hidden={fields.locationType.value !== 'destination'}
+              hidden={
+                fields.locationType.value !==
+                CustomerLocationBaseLocationType.destination
+              }
               data-testid="min-drive-distance-input"
             />
 
@@ -191,7 +195,10 @@ export default function Component() {
               field={fields.maxDriveDistance}
               label="Maximum der køres"
               suffix=" km"
-              hidden={fields.locationType.value !== 'destination'}
+              hidden={
+                fields.locationType.value !==
+                CustomerLocationBaseLocationType.destination
+              }
               data-testid="max-drive-distance-input"
             />
 

@@ -10,6 +10,8 @@ export type UsersFiltersPayloadLocationsItemLocationType =
 
 // eslint-disable-next-line @typescript-eslint/no-redeclare
 export const UsersFiltersPayloadLocationsItemLocationType = {
-  origin: 'origin',
+  home: 'home',
+  commercial: 'commercial',
   destination: 'destination',
+  virtual: 'virtual',
 } as const;

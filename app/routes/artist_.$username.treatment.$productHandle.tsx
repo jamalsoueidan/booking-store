@@ -42,7 +42,6 @@ import {
 import {LOCATION_FRAGMENT} from '~/graphql/fragments/Location';
 import {TREATMENT_OPTION_FRAGMENT} from '~/graphql/fragments/TreatmentOption';
 import {USER_FRAGMENT} from '~/graphql/fragments/User';
-import {useDynamicWidth} from '~/hooks/useDynamicWidth';
 import {useScrollEffect} from '~/hooks/useScrollEffect';
 import {type CustomerLocation} from '~/lib/api/model';
 import {durationToTime} from '~/lib/duration';
@@ -236,7 +235,6 @@ export default function Booking() {
 }
 
 export function BookingDetails({children}: PropsWithChildren) {
-  const {ref, width} = useDynamicWidth();
   const {
     selectedLocation,
     product,
@@ -247,8 +245,8 @@ export function BookingDetails({children}: PropsWithChildren) {
   } = useOutletContext<OutletLoader>();
 
   return (
-    <Grid.Col span={{base: 12, md: 5}} ref={ref} visibleFrom="md">
-      <Card withBorder radius="md" pos="fixed" top="80" flex="1" w={width}>
+    <Grid.Col span={{base: 12, md: 5}} visibleFrom="md" pos="relative">
+      <Card withBorder radius="md" pos="sticky" top="64px" flex="1">
         <Stack gap="md">
           {selectedLocation ? (
             <div>
@@ -259,7 +257,6 @@ export function BookingDetails({children}: PropsWithChildren) {
                   <LocationIcon
                     location={{
                       locationType: selectedLocation.locationType,
-                      originType: selectedLocation.originType,
                     }}
                   />
                 </Group>

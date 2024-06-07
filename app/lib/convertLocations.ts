@@ -12,9 +12,9 @@ export const convertLocations = (nodes?: LocationFragment[]) => {
       const fixedRatePerKm = parseInt(node.fixedRatePerKm?.value || '');
       const minDriveDistance = parseInt(node.minDriveDistance?.value || '');
       const maxDriveDistance = parseInt(node.maxDriveDistance?.value || '');
+      const startFee = parseInt(node.startFee?.value || '');
       const fullAddress = String(node.fullAddress?.value);
       const locationType = String(node.locationType?.value) as any;
-      const originType = String(node.originType?.value) as any;
 
       items.push({
         _id: node.handle,
@@ -34,8 +34,7 @@ export const convertLocations = (nodes?: LocationFragment[]) => {
         maxDriveDistance,
         minDriveDistance,
         name,
-        originType,
-        startFee: 12,
+        startFee,
       });
       return items;
     }, [] as Array<CustomerLocation>) || []

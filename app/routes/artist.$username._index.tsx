@@ -19,6 +19,9 @@ import {Suspense, useMemo} from 'react';
 
 import {parseGid} from '@shopify/hydrogen';
 import {IconGps} from '@tabler/icons-react';
+import {da} from 'date-fns/locale';
+
+import {format} from 'date-fns';
 import type {
   LocationFragment,
   ScheduleFragment,
@@ -155,14 +158,12 @@ function Location({
             <LocationIcon
               location={{
                 locationType: location.locationType?.value as any,
-                originType: location.originType?.value as any,
               }}
             />
 
             <LocationText
               location={{
                 locationType: location.locationType?.value as any,
-                originType: location.originType?.value as any,
               }}
             />
           </Group>
@@ -181,7 +182,13 @@ function Location({
                 return (
                   <Group key={interval.from + interval.to}>
                     <Text>
-                      {interval.from} - {interval.to}
+                      {format(timeToDate(interval.from, new Date()), 'HH:mm', {
+                        locale: da,
+                      })}{' '}
+                      -{' '}
+                      {format(timeToDate(interval.to, new Date()), 'HH:mm', {
+                        locale: da,
+                      })}
                     </Text>
                   </Group>
                 );
@@ -259,15 +266,12 @@ export function ArtistProduct({product}: {product: TreatmentProductFragment}) {
                 {locations
                   .map((l) => ({
                     locationType: l.locationType,
-                    originType: l.originType,
                   }))
                   .filter(
                     (value, index, self) =>
                       index ===
                       self.findIndex(
-                        (t) =>
-                          t.locationType === value.locationType &&
-                          t.originType === value.originType,
+                        (t) => t.locationType === value.locationType,
                       ),
                   )
                   .map((location, index) => (
@@ -307,4 +311,12 @@ export function ArtistProduct({product}: {product: TreatmentProductFragment}) {
       </Grid>
     </Card>
   );
+}
+
+// Helper function to convert time string to Date object
+function timeToDate(time: string, date: Date): Date {
+  const [hour, minute] = time.split(':').map(Number);
+  const newDate = new Date(date);
+  newDate.setUTCHours(hour, minute, 0, 0);
+  return newDate;
 }

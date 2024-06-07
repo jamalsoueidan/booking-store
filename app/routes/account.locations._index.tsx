@@ -170,7 +170,9 @@ export const AccountLocation = ({data}: AccountLocationProps) => {
             <div>
               <Text size="xs">Arbejdsstedssted</Text>
               <Text fw={600} size="xs">
-                {data.originType === 'commercial' ? 'Butik' : 'Eget sted'}
+                {data.locationType === 'commercial' && 'Salon/Klink'}
+                {data.locationType === 'home' && 'Hjemmefra'}
+                {data.locationType === 'virtual' && 'Videochat/Opkld'}
               </Text>
             </div>
           </SimpleGrid>

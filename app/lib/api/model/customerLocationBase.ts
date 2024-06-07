@@ -5,7 +5,6 @@
  * OpenAPI spec version: 1.0.0
  */
 import type {CustomerLocationBaseLocationType} from './customerLocationBaseLocationType';
-import type {CustomerLocationBaseOriginType} from './customerLocationBaseOriginType';
 
 export interface CustomerLocationBase {
   city: string;
@@ -15,5 +14,4 @@ export interface CustomerLocationBase {
   locationType: CustomerLocationBaseLocationType;
   metafieldId: string;
   name: string;
-  originType: CustomerLocationBaseOriginType;
 }

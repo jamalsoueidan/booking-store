@@ -5,11 +5,11 @@
  * OpenAPI spec version: 1.0.0
  */
 
-export type CustomerProductLocationsItemLocationType =
-  (typeof CustomerProductLocationsItemLocationType)[keyof typeof CustomerProductLocationsItemLocationType];
+export type UsersSearchBodyLocationLocationType =
+  (typeof UsersSearchBodyLocationLocationType)[keyof typeof UsersSearchBodyLocationLocationType];
 
 // eslint-disable-next-line @typescript-eslint/no-redeclare
-export const CustomerProductLocationsItemLocationType = {
+export const UsersSearchBodyLocationLocationType = {
   home: 'home',
   commercial: 'commercial',
   destination: 'destination',

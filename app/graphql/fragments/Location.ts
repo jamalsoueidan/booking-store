@@ -17,9 +17,6 @@ export const LOCATION_FRAGMENT = `#graphql
     country: field(key: "country") {
       value
     }
-    originType: field(key: "origin_type") {
-      value
-    }
     distanceForFree: field(key: "distance_for_free") {
       value
     }

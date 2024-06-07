@@ -175,10 +175,8 @@ function Users({
 
   const availability = filters.find((p) => p.id === 'filter.v.availability');
 
-  const highestCount = availability?.values.reduce(
-    (max, obj) => Math.max(max, obj.count),
-    0,
-  );
+  const highestCount =
+    availability?.values.reduce((max, obj) => Math.max(max, obj.count), 0) || 0;
 
   const users = products.map((p) => p.user);
 
@@ -192,9 +190,11 @@ function Users({
           size="sm"
         />
       ))}
-      <Avatar radius="lg" size="sm">
-        +{highestCount}
-      </Avatar>
+      {highestCount > users.length ? (
+        <Avatar radius="lg" size="sm">
+          +{highestCount - users.length}
+        </Avatar>
+      ) : null}
     </Avatar.Group>
   );
 }
@@ -261,7 +261,7 @@ export const CATEGORIES_COLLECTION_FRAGMENT = `#graphql
     collection: metafield(key: "collection", namespace: "system") {
       reference {
         ... on Collection {
-          products(first: 5, sortKey: RELEVANCE, filters: [{productMetafield: {namespace: "system", key: "default", value: "true"}}, {productMetafield: {namespace: "booking", key: "hide_from_profile", value: "false"}}, {productMetafield: {namespace: "system", key: "active",value: "true"}}]) {
+          products(first: 3, sortKey: RELEVANCE, filters: [{productMetafield: {namespace: "system", key: "default", value: "true"}}, {productMetafield: {namespace: "booking", key: "hide_from_profile", value: "false"}}, {productMetafield: {namespace: "system", key: "active",value: "true"}}]) {
             filters {
               ...CategoriesCollectionFilter
             }

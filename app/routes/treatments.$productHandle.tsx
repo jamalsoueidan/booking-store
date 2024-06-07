@@ -1,9 +1,24 @@
 import {
-  json,
-  type LoaderFunctionArgs,
-  type MetaFunction,
-} from '@shopify/remix-oxygen';
-
+  Avatar,
+  Badge,
+  Box,
+  Button,
+  Card,
+  Container,
+  Divider,
+  Drawer,
+  Flex,
+  Grid,
+  Group,
+  rem,
+  Select,
+  SimpleGrid,
+  Stack,
+  Text,
+  Title,
+  UnstyledButton,
+  type UnstyledButtonProps,
+} from '@mantine/core';
 import {Link, useLoaderData, useSearchParams} from '@remix-run/react';
 import {
   UNSTABLE_Analytics as Analytics,
@@ -11,44 +26,45 @@ import {
   Pagination,
   parseGid,
 } from '@shopify/hydrogen';
-
 import {
-  Avatar,
-  Badge,
-  Box,
-  Button,
-  Card,
-  Container,
-  Flex,
-  Group,
-  rem,
-  ScrollArea,
-  Select,
-  SimpleGrid,
-  Stack,
-  Text,
-  Title,
-  type CardProps,
-} from '@mantine/core';
+  json,
+  type LinksFunction,
+  type LoaderFunctionArgs,
+  type MetaFunction,
+} from '@shopify/remix-oxygen';
+import {ClientOnly} from 'remix-utils/client-only';
 
 import {PriceBadge} from '~/components/artist/PriceBadge';
 import {ProfessionTranslations} from './api.users.professions';
 
+import {useDisclosure} from '@mantine/hooks';
 import type {
   ProductCollectionSortKeys,
   ProductFilter,
 } from '@shopify/hydrogen/storefront-api-types';
-import {IconCalendar} from '@tabler/icons-react';
+import {IconArrowDown, IconArrowsSort, IconFilter} from '@tabler/icons-react';
+import leafletStyles from 'leaflet/dist/leaflet.css?url';
+import React from 'react';
 import type {
   TreatmentsForCollectionFragment,
   UserCollectionFragment,
 } from 'storefrontapi.generated';
+import {AddCityFilter} from '~/components/filters/CityFilter';
+import {AddDayFilter} from '~/components/filters/DayFilter';
+import {AddLocationFilter} from '~/components/filters/LocationFilter';
+import {AddPriceFilter} from '~/components/filters/PriceFilter';
+import {ResetFilter} from '~/components/filters/ResetFilter';
+import {LeafletMap} from '~/components/LeafletMap.client';
 import {LocationIcon} from '~/components/LocationIcon';
-import type {
-  CustomerLocationBaseLocationType,
-  CustomerLocationBaseOriginType,
-} from '~/lib/api/model';
+import type {CustomerLocationBaseLocationType} from '~/lib/api/model';
 import {durationToTime} from '~/lib/duration';
+
+export const links: LinksFunction = () => [
+  {
+    rel: 'stylesheet',
+    href: leafletStyles,
+  },
+];
 
 export const meta: MetaFunction<typeof loader> = ({data}) => {
   return [{title: `BySisters | ${data?.product.title ?? ''}`}];
@@ -123,6 +139,17 @@ export async function loader({params, request, context}: LoaderFunctionArgs) {
     filters.push({tag: `city-${city}`});
   }
 
+  const location = searchParams.get('location');
+  if (location) {
+    filters.push({tag: `location_type-${location}`});
+  }
+
+  const price = searchParams.get('price');
+  if (price) {
+    const [min, max] = price.split(',').map(Number);
+    filters.push({price: {min, max}});
+  }
+
   const {collection} = await storefront.query(TREATMENT_COLLECTION, {
     variables: {
       handle: product.collection.reference.handle,
@@ -134,6 +161,16 @@ export async function loader({params, request, context}: LoaderFunctionArgs) {
     cache: storefront.CacheShort(),
   });
 
+  const {collection: collectionFiltersOnly} = await storefront.query(
+    FILTER_COLLECTION,
+    {
+      variables: {
+        handle: product.collection.reference.handle,
+      },
+      cache: storefront.CacheLong(),
+    },
+  );
+
   if (!collection) {
     throw new Response(
       `Collection ${product.collection?.reference?.handle} not found`,
@@ -143,27 +180,44 @@ export async function loader({params, request, context}: LoaderFunctionArgs) {
     );
   }
 
-  return json({product, collection});
+  return json({
+    product,
+    collection,
+    filters: collectionFiltersOnly?.products.filters || [],
+  });
+}
+
+interface PriceRange {
+  price: {
+    min: number;
+    max: number;
+  };
 }
 
 export default function Product() {
-  const {product, collection} = useLoaderData<typeof loader>();
+  const {product, collection, filters} = useLoaderData<typeof loader>();
   const [, setSearchParams] = useSearchParams();
+  const [opened, {open, close}] = useDisclosure(false);
 
-  const tags = collection?.products.filters.find(
-    (p) => p.id === 'filter.p.tag',
-  );
+  const price = filters.find((p) => p.id === 'filter.v.price')?.values[0];
 
-  const availability = collection?.products.filters
+  const priceRange = price
+    ? (JSON.parse(price.input as string) as PriceRange)
+    : {price: {min: 0, max: 0}};
+
+  const tags = filters.find((p) => p.id === 'filter.p.tag');
+
+  const availability = filters
     .find((k) => k.id === 'filter.v.availability')
     ?.values.find((p) => (p.input as any)?.includes('true')) || {count: 0};
 
-  const cities = tags?.values
-    .filter((p) => p.label.includes('city'))
-    .map((c) => {
-      const [tag, ...rest] = c.label.split('-');
-      return rest.join('-');
-    });
+  const cities =
+    tags?.values
+      .filter((p) => p.label.includes('city'))
+      .map((c) => {
+        const [tag, ...rest] = c.label.split('-');
+        return rest.join('-');
+      }) || [];
 
   const cityCount =
     tags?.values
@@ -172,6 +226,14 @@ export default function Product() {
         return total + city.count;
       }, 0) || 0;
 
+  const locations =
+    tags?.values
+      .filter((p) => p.label.includes('location_type'))
+      .map((c) => {
+        const [tag, ...rest] = c.label.split('-');
+        return rest.join('-');
+      }) || [];
+
   const onChangeSort = (value: string | null) => {
     setSearchParams(
       (prev) => {
@@ -179,20 +241,6 @@ export default function Product() {
           prev.set('sort', value.toLowerCase());
         } else {
           prev.delete('sort');
-        }
-        return prev;
-      },
-      {preventScrollReset: true},
-    );
-  };
-
-  const onChangeCity = (value: string | null) => {
-    setSearchParams(
-      (prev) => {
-        if (value) {
-          prev.set('city', value.toLowerCase());
-        } else {
-          prev.delete('city');
         }
         return prev;
       },
@@ -218,12 +266,12 @@ export default function Product() {
       </Flex>
 
       <Card
-        radius="lg"
+        radius="md"
         withBorder
         bg="rgba(243, 175, 228, 0.15)"
         style={{border: '1px solid rgba(243, 175, 228, 0.25)'}}
         mt={rem(15)}
-        mb={rem(60)}
+        mb={rem(30)}
       >
         <Flex
           direction={{base: 'column', sm: 'row'}}
@@ -231,6 +279,14 @@ export default function Product() {
           gap="md"
         >
           <Flex gap="xl">
+            <Flex direction="column">
+              <Text tt="uppercase" ta="center" fz="sm" c="gray" fw="400">
+                Kategori
+              </Text>
+              <Text ta="center" fw="600">
+                {product.productType}
+              </Text>
+            </Flex>
             <Flex direction="column">
               <Text tt="uppercase" ta="center" fz="sm" c="gray" fw="400">
                 Skønhedseksperter
@@ -248,32 +304,52 @@ export default function Product() {
           </Flex>
 
           <Flex justify="flex-end" gap="md">
-            <Select
-              size="lg"
-              placeholder="Vælge by:"
-              onChange={onChangeCity}
-              clearable
-              data={
-                cities?.map((c) => ({
-                  label: `${c[0].toUpperCase()}${c.substring(1)}`,
-                  value: c,
-                })) || []
-              }
-            />
-            <Select
-              size="lg"
-              placeholder="Sortere efter:"
-              onChange={onChangeSort}
-              clearable
-              data={[
-                {label: 'Nyeste', value: 'newest'},
-                {label: 'Billigst', value: 'cheapest'},
-                {label: 'Dyrest', value: 'expensive'},
-              ]}
-            />
+            <ResetFilter />
+            <Button
+              variant="outline"
+              c="black"
+              color="gray.3"
+              bg="white"
+              onClick={open}
+              size="xl"
+              leftSection={<IconFilter />}
+              rightSection={<IconArrowDown />}
+            >
+              Filtre
+            </Button>
           </Flex>
         </Flex>
       </Card>
+
+      <Drawer
+        position="right"
+        opened={opened}
+        onClose={close}
+        overlayProps={{backgroundOpacity: 0.3, blur: 2}}
+      >
+        <Stack gap="xl">
+          <AddCityFilter tags={cities} />
+          <Select
+            size="md"
+            label="Sortere efter:"
+            placeholder="Vælg sortering"
+            onChange={onChangeSort}
+            leftSection={<IconArrowsSort />}
+            data={[
+              {label: 'Nyeste', value: 'newest'},
+              {label: 'Billigst', value: 'cheapest'},
+              {label: 'Dyrest', value: 'expensive'},
+            ]}
+            clearable
+          />
+          <AddPriceFilter
+            min={priceRange.price.min}
+            max={priceRange.price.max}
+          />
+          <AddLocationFilter tags={locations} />
+          <AddDayFilter />
+        </Stack>
+      </Drawer>
 
       <Pagination connection={collection.products}>
         {({nodes, isLoading, PreviousLink, NextLink}) => (
@@ -288,13 +364,32 @@ export default function Product() {
                 ↑ Hent tidligere
               </Button>
             </Flex>
-            <Flex direction="column" gap="lg">
-              {nodes.map((product) => {
-                return (
-                  <TreatmentProductUser key={product.id} product={product} />
-                );
-              })}
-            </Flex>
+            <SimpleGrid cols={{base: 1, sm: 2}}>
+              <Flex direction="column" gap="lg">
+                {nodes.map((product) => {
+                  return (
+                    <TreatmentProductUser key={product.id} product={product} />
+                  );
+                })}
+              </Flex>
+              <Box pos="relative">
+                <ClientOnly
+                  fallback={
+                    <div
+                      id="skeleton"
+                      style={{
+                        height: '100vh',
+                        border: '1px solid #dee2e6',
+                        borderRadius: '10px',
+                        background: '#d1d1d1',
+                      }}
+                    />
+                  }
+                >
+                  {() => <LeafletMap />}
+                </ClientOnly>
+              </Box>
+            </SimpleGrid>
             <Flex justify="center">
               <Button
                 variant="default"
@@ -339,13 +434,15 @@ function TreatmentProductUser({
     return null;
   }
 
+  const userProducts =
+    product.user?.reference?.collection?.reference?.products.nodes ?? [];
   const {professions} = user?.professions?.value
     ? (JSON.parse(user?.professions?.value) as Record<string, []>)
     : {professions: []};
 
   return (
-    <Card withBorder p="xl" radius="lg">
-      <Stack gap="xl">
+    <Card withBorder radius="md" pb="xs">
+      <UnstyledButton component={Link} to={`/artist/${user.username?.value}`}>
         <Flex justify="space-between">
           <Flex gap="lg" align="center">
             <Avatar src={user.image?.reference?.image?.url} size={rem(90)} />
@@ -358,63 +455,64 @@ function TreatmentProductUser({
               </Text>
               <Flex gap="xs" mt={rem(8)} wrap="wrap">
                 {professions.map((p) => (
-                  <Badge key={p} color="pink.4">
+                  <Badge
+                    variant="outline"
+                    c="black"
+                    color="gray.4"
+                    key={p}
+                    fw="400"
+                  >
                     {ProfessionTranslations[p]}
                   </Badge>
                 ))}
               </Flex>
             </Stack>
           </Flex>
-          <Box visibleFrom="sm">
-            <Button
-              variant="outline"
-              c="black"
-              color="gray.3"
-              radius="lg"
-              component={Link}
-              to={`/artist/${user.username?.value}`}
-            >
+          <Flex visibleFrom="sm" align="center">
+            <Button variant="outline" c="black" color="gray.3" radius="lg">
               Vis profil
             </Button>
-          </Box>
+          </Flex>
         </Flex>
+      </UnstyledButton>
 
-        <ScrollArea h="auto" type="auto" offsetScrollbars="x">
-          <SimpleGrid cols={{base: 1, sm: 2, md: 4}}>
+      <Card.Section>
+        <Divider mt="md" mb="xs" color="gray.2" />
+      </Card.Section>
+
+      <ArtistProduct user={user} product={product} />
+
+      {userProducts
+        .filter((p) => p.id !== product.id)
+        .map((p, index) => (
+          <React.Fragment key={p.id}>
+            <Card.Section>
+              <Divider my="xs" color="gray.2" />
+            </Card.Section>
             <ArtistProduct
               user={user}
-              product={product}
-              bg="rgba(243, 175, 228, 0.1)"
-              style={{flex: 1}}
+              product={p}
+              style={{opacity: Math.max(0.5 - index * 0.2, 0)}}
             />
-            {product.user?.reference?.collection?.reference?.products.nodes
-              .filter((p) => p.id !== product.id)
-              .map((p) => (
-                <ArtistProduct
-                  key={p.id}
-                  user={user}
-                  product={p}
-                  style={{flex: 1}}
-                  visibleFrom="sm"
-                />
-              ))}
-          </SimpleGrid>
-        </ScrollArea>
+          </React.Fragment>
+        ))}
 
-        <Box hiddenFrom="sm">
-          <Button
-            variant="outline"
-            c="black"
-            color="gray.3"
-            radius="lg"
-            component={Link}
-            to={`/artist/${user.username?.value}`}
-            w="100%"
-          >
-            Vis profil
-          </Button>
-        </Box>
-      </Stack>
+      <Box hiddenFrom="sm" mt="sm">
+        <Card.Section>
+          <Divider mt="xs" mb="sm" color="gray.2" />
+        </Card.Section>
+        <Button
+          variant="outline"
+          c="black"
+          color="gray.3"
+          radius="lg"
+          component={Link}
+          to={`/artist/${user.username?.value}`}
+          w="100%"
+        >
+          Vis profil
+        </Button>
+      </Box>
     </Card>
   );
 }
@@ -426,80 +524,78 @@ export function ArtistProduct({
 }: {
   user: UserCollectionFragment;
   product: TreatmentsForCollectionFragment;
-} & CardProps) {
+} & UnstyledButtonProps) {
   const productId = parseGid(product?.id).id;
-  const locations = product.locations?.references?.nodes.map((p) => ({
-    locationType: p.locationType?.value as CustomerLocationBaseLocationType,
-    originType: p.originType?.value as CustomerLocationBaseOriginType,
-  }));
+  const locations =
+    product.locations?.references?.nodes.map((p) => ({
+      locationType: p.locationType?.value as CustomerLocationBaseLocationType,
+    })) || [];
+
+  const sortAndRemoveDuplicates = (
+    locations: Array<{
+      locationType: CustomerLocationBaseLocationType;
+    }>,
+  ) => {
+    const locationTypes = locations.map((loc) => loc.locationType);
+    const uniqueLocationTypes = [...new Set(locationTypes)];
+    return uniqueLocationTypes.sort().map((locationType) => ({locationType}));
+  };
+
+  const sortedLocations = sortAndRemoveDuplicates(locations);
 
   return (
-    <Card
-      key={product.handle}
-      withBorder
+    <UnstyledButton
       component={Link}
-      radius="md"
-      p="md"
       data-testid={`service-item-${productId}`}
       to={`/artist/${user.username?.value}/treatment/${product.handle}`}
       {...props}
     >
-      <Flex direction="column" gap="md" h="100%">
-        <Stack gap="sm" style={{flex: 1}}>
-          <Flex justify="space-between">
-            <Title
-              order={2}
-              size={rem(20)}
-              fw={600}
-              lts=".5px"
-              data-testid={`service-title-${productId}`}
-              lineClamp={1}
-            >
-              {product.title}
-            </Title>
-            <Flex gap="4px">
-              {locations?.map((location, index) => (
-                // eslint-disable-next-line react/no-array-index-key
-                <LocationIcon key={index} location={location} />
-              ))}
-            </Flex>
-          </Flex>
-          <Text c="dimmed" size="sm" fw={400} lineClamp={3}>
-            {product.description}
-          </Text>
-        </Stack>
+      <Grid>
+        <Grid.Col span={8}>
+          <Flex direction="column" gap="xs">
+            <div>
+              <Group gap="xs">
+                <Title
+                  order={2}
+                  size="md"
+                  fw={500}
+                  lts=".5px"
+                  data-testid={`service-title-${productId}`}
+                >
+                  {product.title}
+                </Title>
+                <Flex gap="4px">
+                  {sortedLocations.map((location) => (
+                    <LocationIcon
+                      key={location.locationType}
+                      location={location}
+                      style={{width: 18, height: 18}}
+                    />
+                  ))}
+                </Flex>
+              </Group>
 
-        <Group
-          justify="space-between"
-          bg={props.bg ? 'pink.1' : 'gray.1'}
-          w="100%"
-          px="md"
-          py="sm"
-          style={{borderRadius: '5px'}}
-        >
-          <Flex gap="4px" align="center">
-            <IconCalendar
-              style={{width: rem(18), height: rem(18)}}
-              stroke="1"
+              <Text
+                c="dimmed"
+                size="sm"
+                data-testid={`service-duration-text-${productId}`}
+              >
+                {durationToTime(product.duration?.value || 0)}
+              </Text>
+            </div>
+          </Flex>
+        </Grid.Col>
+        <Grid.Col span={4}>
+          <Flex justify="flex-end" align="center" h="100%">
+            <PriceBadge
+              compareAtPrice={product.variants.nodes[0].compareAtPrice}
+              price={product.variants.nodes[0].price}
+              fw="600"
             />
-            <Text
-              fw="bold"
-              fz="xs"
-              data-testid={`service-duration-text-${productId}`}
-            >
-              {durationToTime(product.duration?.value || 0)}
-            </Text>
           </Flex>
-
-          <PriceBadge
-            compareAtPrice={product.variants.nodes[0].compareAtPrice}
-            price={product.variants.nodes[0].price}
-            size="sm"
-            py={rem(10)}
-          />
-        </Group>
-      </Flex>
-    </Card>
+        </Grid.Col>
+      </Grid>
+    </UnstyledButton>
   );
 }
 
@@ -535,6 +631,7 @@ const TREATMENT_WITH_COLLECTION_HANDLER_FRAGMENT = `#graphql
       reference {
         ... on Collection {
           handle
+          title
         }
       }
     }
@@ -580,7 +677,7 @@ const USER_COLLECTION_FRAGMENT = `#graphql
       reference {
         ... on Collection {
           id
-          products(first: 4, sortKey: BEST_SELLING, filters: [{tag: "treatments"}, {productMetafield: {namespace: "booking",key: "hide_from_profile",value: "false"}}]) {
+          products(first: 2, sortKey: BEST_SELLING, filters: [{tag: "treatments"}, {productMetafield: {namespace: "booking",key: "hide_from_profile",value: "false"}}]) {
             nodes {
               id
               title
@@ -611,9 +708,6 @@ const USER_COLLECTION_FRAGMENT = `#graphql
                     ... on Metaobject {
                       id
                       locationType: field(key: "location_type") {
-                        value
-                      }
-                      originType: field(key: "origin_type") {
                         value
                       }
                     }
@@ -656,9 +750,6 @@ const TREATMENTS_FOR_COLLECTION = `#graphql
           ... on Metaobject {
             id
             locationType: field(key: "location_type") {
-              value
-            }
-            originType: field(key: "origin_type") {
               value
             }
           }
@@ -716,15 +807,6 @@ const TREATMENT_COLLECTION = `#graphql
         sortKey: $sortKey,
         reverse: $reverse
       ) {
-        filters {
-          id
-          label
-          values {
-            input
-            label
-            count
-          }
-        }
         nodes {
           ...TreatmentsForCollection
         }
@@ -733,6 +815,28 @@ const TREATMENT_COLLECTION = `#graphql
           hasNextPage
           endCursor
           startCursor
+        }
+      }
+    }
+  }
+` as const;
+
+const FILTER_COLLECTION = `#graphql
+  query TreatmentFilterCollection(
+    $handle: String!
+    $country: CountryCode
+    $language: LanguageCode
+  ) @inContext(country: $country, language: $language) {
+    collection(handle: $handle) {
+      products(first: 1) {
+        filters {
+          id
+          label
+          values {
+            input
+            label
+            count
+          }
         }
       }
     }

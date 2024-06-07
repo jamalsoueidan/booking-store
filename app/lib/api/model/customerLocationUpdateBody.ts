@@ -4,7 +4,6 @@
  * Booking Shopify Api
  * OpenAPI spec version: 1.0.0
  */
-import type {CustomerLocationUpdateBodyOriginType} from './customerLocationUpdateBodyOriginType';
 
 export interface CustomerLocationUpdateBody {
   distanceForFree: number;
@@ -14,6 +13,5 @@ export interface CustomerLocationUpdateBody {
   maxDriveDistance: number;
   minDriveDistance: number;
   name: string;
-  originType: CustomerLocationUpdateBodyOriginType;
   startFee: number;
 }

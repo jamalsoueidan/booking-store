@@ -10,6 +10,8 @@ export type CustomerLocationBaseLocationType =
 
 // eslint-disable-next-line @typescript-eslint/no-redeclare
 export const CustomerLocationBaseLocationType = {
-  origin: 'origin',
+  home: 'home',
+  commercial: 'commercial',
   destination: 'destination',
+  virtual: 'virtual',
 } as const;
