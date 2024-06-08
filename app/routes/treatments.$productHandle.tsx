@@ -58,11 +58,16 @@ import {LeafletMap} from '~/components/LeafletMap.client';
 import {LocationIcon} from '~/components/LocationIcon';
 import type {CustomerLocationBaseLocationType} from '~/lib/api/model';
 import {durationToTime} from '~/lib/duration';
+import localLeafletStyles from '~/styles/leaflet.css?url';
 
 export const links: LinksFunction = () => [
   {
     rel: 'stylesheet',
     href: leafletStyles,
+  },
+  {
+    rel: 'stylesheet',
+    href: localLeafletStyles,
   },
 ];
 
@@ -374,21 +379,23 @@ export default function Product() {
                 })}
               </Flex>
               <Box pos="relative">
-                <ClientOnly
-                  fallback={
-                    <div
-                      id="skeleton"
-                      style={{
-                        height: '100vh',
-                        border: '1px solid #dee2e6',
-                        borderRadius: '10px',
-                        background: '#d1d1d1',
-                      }}
-                    />
-                  }
-                >
-                  {() => <LeafletMap />}
-                </ClientOnly>
+                <div style={{position: 'sticky', top: 0}}>
+                  <ClientOnly
+                    fallback={
+                      <div
+                        id="skeleton"
+                        style={{
+                          height: '100vh',
+                          border: '1px solid #dee2e6',
+                          borderRadius: '10px',
+                          background: '#d1d1d1',
+                        }}
+                      />
+                    }
+                  >
+                    {() => <LeafletMap products={nodes} />}
+                  </ClientOnly>
+                </div>
               </Box>
             </SimpleGrid>
             <Flex justify="center">
@@ -751,6 +758,9 @@ const TREATMENTS_FOR_COLLECTION = `#graphql
           ... on Metaobject {
             id
             locationType: field(key: "location_type") {
+              value
+            }
+            geoLocation: field(key: "geo_location") {
               value
             }
           }
