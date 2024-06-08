@@ -27,7 +27,6 @@ import {defer, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
 import {format, isValid, parse, set} from 'date-fns';
 import {da} from 'date-fns/locale';
 import {Suspense} from 'react';
-import {PRODUCT_VALIDATE_HANDLER_QUERY} from '~/data/queries';
 import {getBookingShopifyApi} from '~/lib/api/bookingShopifyApi';
 import type {
   UserAvailability,
@@ -35,7 +34,10 @@ import type {
   UserAvailabilitySlot,
 } from '~/lib/api/model';
 import {parseOptionsFromQuery} from '~/lib/parseOptionsQueryParameters';
-import {BookingDetails} from './artist_.$username.treatment.$productHandle';
+import {
+  BookingDetails,
+  GET_PRODUCT_WITH_OPTIONS,
+} from './artist_.$username.treatment.$productHandle';
 
 export function shouldRevalidate({
   currentUrl,
@@ -58,7 +60,7 @@ export function shouldRevalidate({
 }
 
 export async function loader({params, request, context}: LoaderFunctionArgs) {
-  const {productHandle, username} = params;
+  const {productHandle} = params;
   const {storefront} = context;
   const url = new URL(request.url);
   const searchParams = url.searchParams;
@@ -68,13 +70,14 @@ export async function loader({params, request, context}: LoaderFunctionArgs) {
   const locationId = searchParams.get('locationId') as string | undefined;
   const shippingId = searchParams.get('shippingId') as string | undefined;
 
-  if (!username || !productHandle || !locationId) {
+  if (!productHandle || !locationId) {
     throw new Response('Expected artist handle to be defined', {status: 400});
   }
 
-  const {product} = await storefront.query(PRODUCT_VALIDATE_HANDLER_QUERY, {
-    variables: {productHandle},
-    cache: context.storefront.CacheShort(),
+  const {product} = await storefront.query(GET_PRODUCT_WITH_OPTIONS, {
+    variables: {
+      productHandle,
+    },
   });
 
   if (!product?.id) {
@@ -82,7 +85,7 @@ export async function loader({params, request, context}: LoaderFunctionArgs) {
   }
 
   const availability = getBookingShopifyApi().userAvailabilityGenerate(
-    username,
+    product.user?.reference?.username?.value || '',
     locationId,
     {
       productIds: [parseGid(product.id).id, ...productIds],

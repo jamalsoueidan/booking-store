@@ -8,26 +8,22 @@ import {
   Text,
   Title,
 } from '@mantine/core';
-import {useLoaderData, useOutletContext} from '@remix-run/react';
+import {useLoaderData} from '@remix-run/react';
 import {parseGid} from '@shopify/hydrogen';
-import {
-  json,
-  type LoaderFunctionArgs,
-  type SerializeFrom,
-} from '@shopify/remix-oxygen';
+import {json, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
 import {IconClockHour3} from '@tabler/icons-react';
 import {format} from 'date-fns';
 import da from 'date-fns/locale/da';
 import {v4 as uuidv4} from 'uuid';
 import {AddToCartTreatment} from '~/components/AddToCartTreatments';
-import {PRODUCT_SELECTED_OPTIONS_QUERY} from '~/data/queries';
 import {
   BookingDetails,
-  type loader as rootLoader,
+  GET_PRODUCT_WITH_OPTIONS,
 } from './artist_.$username.treatment.$productHandle';
 
 import {LocationIcon} from '~/components/LocationIcon';
 import {getBookingShopifyApi} from '~/lib/api/bookingShopifyApi';
+import {convertToLocation} from '~/lib/convertLocations';
 import {parseOptionsFromQuery} from '~/lib/parseOptionsQueryParameters';
 
 export const loader = async ({
@@ -35,7 +31,7 @@ export const loader = async ({
   params,
   context,
 }: LoaderFunctionArgs) => {
-  const {productHandle, username} = params;
+  const {productHandle} = params;
   const {storefront} = context;
 
   const url = new URL(request.url);
@@ -46,23 +42,29 @@ export const loader = async ({
   const fromDate = searchParams.get('fromDate');
   const toDate = searchParams.get('toDate');
 
-  if (!productHandle || !username || !locationId || !fromDate || !toDate) {
+  if (!productHandle || !locationId || !fromDate || !toDate) {
     throw new Response('Expected productId to be selected', {status: 400});
   }
 
   try {
-    const {product} = await storefront.query(PRODUCT_SELECTED_OPTIONS_QUERY, {
-      variables: {productHandle, selectedOptions: []},
+    const {product} = await storefront.query(GET_PRODUCT_WITH_OPTIONS, {
+      variables: {
+        productHandle,
+      },
     });
 
     if (!product?.id) {
       throw new Response(null, {status: 404});
     }
 
-    const {payload: location} = await getBookingShopifyApi().userLocationGet(
-      username,
-      locationId,
+    const location = product.locations?.references?.nodes.find(
+      (l) => l.handle === locationId,
     );
+    const username = product.user?.reference?.username?.value || '';
+
+    if (!location || !username) {
+      throw new Response('Location or username not found', {status: 404});
+    }
 
     const {payload: availability} =
       await getBookingShopifyApi().userAvailabilityGet(username, locationId, {
@@ -76,9 +78,10 @@ export const loader = async ({
     const groupId = uuidv4();
 
     return json({
-      location,
+      location: convertToLocation(location),
       availability,
       groupId,
+      product,
     });
   } catch (err) {
     throw new Response('Username or product handle is wrong', {status: 404});
@@ -87,7 +90,6 @@ export const loader = async ({
 
 export default function ArtistTreatmentsBooking() {
   const data = useLoaderData<typeof loader>();
-  const {product} = useOutletContext<SerializeFrom<typeof rootLoader>>();
 
   return (
     <>
@@ -106,7 +108,8 @@ export default function ArtistTreatmentsBooking() {
             <Group wrap="nowrap" gap="xs">
               <Avatar
                 src={
-                  product.user?.reference?.image?.reference?.image?.url || ''
+                  data.product.user?.reference?.image?.reference?.image?.url ||
+                  ''
                 }
                 radius={0}
                 size={64}
@@ -116,7 +119,7 @@ export default function ArtistTreatmentsBooking() {
                   Du bliver behandlet af
                 </Text>
                 <Text size="xl" fw="bold">
-                  {product.user?.reference?.fullname?.value}
+                  {data.product.user?.reference?.fullname?.value}
                 </Text>
               </div>
             </Group>
@@ -125,14 +128,18 @@ export default function ArtistTreatmentsBooking() {
           <Card withBorder radius="md">
             <Stack gap="md">
               <Group gap="xs" align="center">
-                <LocationIcon location={data.location} />
+                <LocationIcon
+                  location={{
+                    locationType: data.location?.locationType,
+                  }}
+                />
                 <Title order={3} fw={600} fz="xl">
                   Location
                 </Title>
               </Group>
 
               <Stack gap="0">
-                {data?.location.locationType === 'destination' ? (
+                {data?.location?.locationType === 'destination' ? (
                   <>
                     <Text fz="md" fw={500}>
                       {data?.availability.shipping?.destination.fullAddress}

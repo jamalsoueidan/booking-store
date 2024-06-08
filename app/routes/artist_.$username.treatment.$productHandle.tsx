@@ -84,10 +84,10 @@ export const meta: MetaFunction<typeof loader> = ({data}) => {
 };
 
 export async function loader({params, request, context}: LoaderFunctionArgs) {
-  const {username, productHandle} = params;
+  const {productHandle} = params;
   const {storefront} = context;
 
-  if (!productHandle || !username) {
+  if (!productHandle) {
     throw new Response('Expected product handle to be defined', {status: 404});
   }
 
@@ -117,7 +117,7 @@ export async function loader({params, request, context}: LoaderFunctionArgs) {
   if (locationId) {
     const {collection} = await context.storefront.query(PICK_MORE_PRODUCTS, {
       variables: {
-        handle: username,
+        handle: product.user?.reference?.username?.value || '',
         filters: [
           {tag: 'treatments'},
           {tag: `locationid-${locationId}`},
