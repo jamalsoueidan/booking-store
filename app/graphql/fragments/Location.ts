@@ -35,5 +35,8 @@ export const LOCATION_FRAGMENT = `#graphql
     startFee: field(key: "start_fee") {
       value
     }
+    geoLocation: field(key: "geo_location") {
+      value
+    }
   }
 ` as const;
