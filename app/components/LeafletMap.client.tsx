@@ -1,5 +1,5 @@
 import {Avatar, MantineProvider} from '@mantine/core';
-import L, {divIcon, point, type LatLngTuple} from 'leaflet';
+import L, {divIcon, point} from 'leaflet';
 import {useEffect} from 'react';
 import {renderToStaticMarkup} from 'react-dom/server';
 import {MapContainer, Marker, Popup, TileLayer, useMap} from 'react-leaflet';
@@ -41,8 +41,6 @@ export function LeafletMap({
 }: {
   products: TreatmentsForCollectionFragment[];
 }) {
-  const position: LatLngTuple = [51.505, -0.09];
-
   const geoLocations = products.reduce((geos, product) => {
     const newGeos = product.locations?.references?.nodes.reduce((geos, l) => {
       if (l.geoLocation?.value) {

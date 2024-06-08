@@ -4,12 +4,15 @@ import {IconX} from '@tabler/icons-react';
 
 export function ResetFilter() {
   const [searchParams, setSearchParams] = useSearchParams();
+  const keysToKeep = ['direction', 'cursor', 'map'];
 
   const deleteSearchParams = () => {
     setSearchParams(
       (prev) => {
         prev.forEach((_, key) => {
-          prev.delete(key);
+          if (!keysToKeep.includes(key)) {
+            prev.delete(key);
+          }
         });
         return prev;
       },
@@ -17,7 +20,11 @@ export function ResetFilter() {
     );
   };
 
-  if (searchParams.size === 0) {
+  const remainingParamsCount = Array.from(searchParams.keys()).filter(
+    (key) => !keysToKeep.includes(key),
+  ).length;
+
+  if (remainingParamsCount === 0) {
     return null;
   }
 
