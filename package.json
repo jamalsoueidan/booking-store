@@ -22,6 +22,7 @@
   },
   "prettier": "@shopify/prettier-config",
   "dependencies": {
+    "@changey/react-leaflet-markercluster": "^4.0.0-rc1",
     "@conform-to/react": "^1.1.4",
     "@conform-to/zod": "^1.1.4",
     "@fullcalendar/core": "^6.1.13",
