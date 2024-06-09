@@ -111,6 +111,25 @@ export async function loader({params, request, context}: LoaderFunctionArgs) {
     });
   }
 
+  /*const path = request.url.substring(
+    request.url.indexOf(product.handle) + product.handle.length,
+  );
+
+  // product have no options redirect to pick-location
+  const options = product.options?.references?.nodes;
+  if (path === '' && !options) {
+    return redirect('pick-location');
+  }
+
+  // product have only one location and its not destination move to pick more
+  const locations = convertLocations(product.locations?.references?.nodes);
+  if (path.includes('pick-location') && locations.length === 1) {
+    const location = locations[0];
+    if (location.locationType !== 'destination') {
+      return redirect(`pick-more?locationId=${location._id}`);
+    }
+  }*/
+
   const {searchParams} = new URL(request.url);
   const locationId = searchParams.get('locationId') as string;
   let products: PickMoreTreatmentProductFragment[] = [];

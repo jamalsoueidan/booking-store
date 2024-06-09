@@ -56,7 +56,7 @@ export default function ProductDescription() {
               {choices && choices.length > 0 ? (
                 <div>
                   <Title order={3} fw={600} mb="sm" fz="xl">
-                    Tilføj ekstra services
+                    Tilvalg til den behandling
                   </Title>
                   <Stack gap="md">
                     {choices?.map((productWithVariants) => {
@@ -75,7 +75,16 @@ export default function ProductDescription() {
                 </div>
               ) : null}
             </>
-          ) : null}
+          ) : (
+            <Text>
+              Der er ingen detaljer at udfylde for dette produkt. Klik venligst
+              på{' '}
+              <Text component="span" fw="bold">
+                Fortsæt
+              </Text>
+              .
+            </Text>
+          )}
         </Stack>
       </Grid.Col>
 

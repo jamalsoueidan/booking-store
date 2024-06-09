@@ -47,13 +47,26 @@ export default function ArtistTreatments() {
             </Text>
           </div>
 
-          <Stack gap="md">
-            {products.map((product) => (
-              <ArtistServiceProduct key={product.id} product={product} />
-            ))}
-          </Stack>
+          {products.length > 0 ? (
+            <>
+              <Stack gap="md">
+                {products.map((product) => (
+                  <ArtistServiceProduct key={product.id} product={product} />
+                ))}
+              </Stack>
 
-          <Outlet />
+              <Outlet />
+            </>
+          ) : (
+            <Text>
+              Der er ingen ekstra behandlinger tilgængelige for dette produkt.
+              Klik venligst på{' '}
+              <Text component="span" fw="bold">
+                Fortsæt
+              </Text>
+              .
+            </Text>
+          )}
         </Stack>
       </Grid.Col>
       <BookingDetails>

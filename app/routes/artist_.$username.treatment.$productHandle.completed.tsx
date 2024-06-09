@@ -2,16 +2,17 @@ import {
   Anchor,
   Avatar,
   Card,
+  Flex,
   Grid,
   Group,
   Stack,
   Text,
   Title,
 } from '@mantine/core';
-import {useLoaderData} from '@remix-run/react';
+import {useLoaderData, useOutletContext} from '@remix-run/react';
 import {parseGid} from '@shopify/hydrogen';
 import {json, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
-import {IconClockHour3} from '@tabler/icons-react';
+import {IconClockHour3, IconServicemark} from '@tabler/icons-react';
 import {format} from 'date-fns';
 import da from 'date-fns/locale/da';
 import {v4 as uuidv4} from 'uuid';
@@ -19,11 +20,13 @@ import {AddToCartTreatment} from '~/components/AddToCartTreatments';
 import {
   BookingDetails,
   GET_PRODUCT_WITH_OPTIONS,
+  type OutletLoader,
 } from './artist_.$username.treatment.$productHandle';
 
 import {LocationIcon} from '~/components/LocationIcon';
 import {getBookingShopifyApi} from '~/lib/api/bookingShopifyApi';
 import {convertToLocation} from '~/lib/convertLocations';
+import {durationToTime} from '~/lib/duration';
 import {parseOptionsFromQuery} from '~/lib/parseOptionsQueryParameters';
 
 export const loader = async ({
@@ -90,11 +93,12 @@ export const loader = async ({
 
 export default function ArtistTreatmentsBooking() {
   const data = useLoaderData<typeof loader>();
+  const {product, pickedVariants, summary} = useOutletContext<OutletLoader>();
 
   return (
     <>
       <Grid.Col span={{base: 12, md: 7}}>
-        <Stack gap="xl">
+        <Stack gap="lg">
           <div>
             <Text size="sm" c="dimmed">
               Trin 4 ud af 4
@@ -126,7 +130,32 @@ export default function ArtistTreatmentsBooking() {
           </Card>
 
           <Card withBorder radius="md">
-            <Stack gap="md">
+            <Stack gap="sm">
+              <Group gap="xs" align="center">
+                <IconClockHour3 />
+                <Title order={3} fw={600} fz="xl">
+                  Tid
+                </Title>
+              </Group>
+
+              <Stack gap="xs">
+                {data?.availability.slot.from && (
+                  <Text fz="md" fw={500}>
+                    {format(
+                      new Date(data?.availability.slot.from || ''),
+                      "EEEE',' 'd.' d'.' LLL 'kl 'HH:mm",
+                      {
+                        locale: da,
+                      },
+                    )}
+                  </Text>
+                )}
+              </Stack>
+            </Stack>
+          </Card>
+
+          <Card withBorder radius="md">
+            <Stack gap="sm">
               <Group gap="xs" align="center">
                 <LocationIcon
                   location={{
@@ -165,28 +194,45 @@ export default function ArtistTreatmentsBooking() {
             </Stack>
           </Card>
 
-          <Card withBorder radius="md">
-            <Stack gap="md">
+          <Card withBorder radius="md" hiddenFrom="sm">
+            <Stack gap="sm">
               <Group gap="xs" align="center">
-                <IconClockHour3 />
+                <IconServicemark />
                 <Title order={3} fw={600} fz="xl">
-                  Tid
+                  Behandlinger
                 </Title>
               </Group>
-
-              <Stack gap="xs">
-                {data?.availability.slot.from && (
-                  <Text fz="md" fw={500}>
-                    {format(
-                      new Date(data?.availability.slot.from || ''),
-                      "EEEE',' 'd.' d'.' LLL 'kl 'HH:mm",
-                      {
-                        locale: da,
-                      },
-                    )}
-                  </Text>
-                )}
-              </Stack>
+              <Flex justify="space-between">
+                <div>
+                  <Title order={4} fw="600">
+                    {product.title}
+                  </Title>
+                  <Text>{durationToTime(product.duration?.value || 0)}</Text>
+                </div>
+                <Text>{product.variants.nodes[0].price.amount} kr.</Text>
+              </Flex>
+              {pickedVariants?.map((variant) => (
+                <Flex justify="space-between" key={variant.title}>
+                  <div>
+                    <Title order={4} fw="600">
+                      {product.title} - {variant.title}
+                    </Title>
+                    <Text>{durationToTime(variant.duration?.value || 0)}</Text>
+                  </div>
+                  <Text>{variant.price.amount} kr.</Text>
+                </Flex>
+              ))}
+              {summary.pickedVariants?.map((variant) => (
+                <Flex justify="space-between" key={variant.title}>
+                  <div>
+                    <Title order={4} fw="600">
+                      {variant.title}
+                    </Title>
+                    <Text>{durationToTime(variant.duration?.value || 0)}</Text>
+                  </div>
+                  <Text>{variant.price.amount} kr.</Text>
+                </Flex>
+              ))}
             </Stack>
           </Card>
         </Stack>

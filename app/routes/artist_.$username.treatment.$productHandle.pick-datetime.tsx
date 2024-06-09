@@ -328,11 +328,15 @@ function AvailabilityTime({
     <Button
       onClick={onClick}
       variant={isSelected ? 'filled' : 'outline'}
-      c={isSelected ? 'white' : 'black'}
       color={isSelected ? 'blue' : 'gray.4'}
       size="md"
     >
-      <Text size="sm" ta="center" fw={isSelected ? 700 : 400} c="black">
+      <Text
+        size="sm"
+        ta="center"
+        fw={isSelected ? 700 : 400}
+        c={isSelected ? 'white' : 'black'}
+      >
         {format(new Date(slot.from), 'HH:mm', {locale: da})}
       </Text>
     </Button>
