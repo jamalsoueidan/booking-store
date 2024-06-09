@@ -4,6 +4,7 @@ export const USER_COLLECTION_WITH_PRODUCTS = `#graphql
   ${TREATMENT_PRODUCT}
 
   fragment UserCollectionProductsFilters on Filter {
+    id
     label
     values {
       label

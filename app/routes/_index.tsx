@@ -204,7 +204,7 @@ function FeaturedArtists({
             </ScrollArea>
           ) : null}
 
-          <SimpleGrid cols={{base: 2, sm: 3, md: 4}} spacing="xl">
+          <SimpleGrid cols={{base: 1, sm: 3}} spacing="xl">
             {users.map((user) => (
               <UserCard key={user.id} article={user} />
             ))}
@@ -315,7 +315,7 @@ export const USERS_QUERY = `#graphql
     $language: LanguageCode
   ) @inContext(country: $country, language: $language) {
     data: blog(id: "gid://shopify/Blog/105364226375") {
-      users: articles(first: 4, sortKey: PUBLISHED_AT, reverse: true, query: "tag:parentid") {
+      users: articles(first: 3, sortKey: PUBLISHED_AT, reverse: true, query: "tag:parentid") {
         nodes {
           ...ArticleUser
         }

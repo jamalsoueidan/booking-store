@@ -1,6 +1,7 @@
 export const ARTICLE_USER_PRODUCT = `#graphql
   fragment ArticleUserProduct on Product {
     id
+    title
     featuredImage {
       id
       altText

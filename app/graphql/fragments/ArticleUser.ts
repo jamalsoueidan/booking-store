@@ -19,7 +19,7 @@ export const ARTICLE_USER_FRAGMENT = `#graphql
     collection: metafield(key: "collection", namespace: "booking") {
       reference {
         ... on Collection {
-          products(first: 3, sortKey: RELEVANCE, filters: [{productMetafield: {namespace: "booking", key: "hide_from_profile", value: "false"}}, {productMetafield: {namespace: "system", key: "active",value: "true"}}]) {
+          products(first: 2, sortKey: RELEVANCE, filters: [{productMetafield: {namespace: "booking", key: "hide_from_profile", value: "false"}}, {productMetafield: {namespace: "system", key: "active",value: "true"}}]) {
             nodes {
               ...ArticleUserProduct
             }
