@@ -1,4 +1,8 @@
+import {USER_LOCATIONS_FRAGMENT} from './UserLocations';
+
 export const USER_SCHEDULES_FRAGMENT = `#graphql
+  ${USER_LOCATIONS_FRAGMENT}
+
   fragment Schedule on Metaobject {
     id
     handle
@@ -8,16 +12,7 @@ export const USER_SCHEDULES_FRAGMENT = `#graphql
     slots: field(key: "slots") {
       value
     }
-    locations: field(key: "locations") {
-      references(first: 4) {
-        nodes {
-          ...on Metaobject {
-            id
-            handle
-          }
-        }
-      }
-    }
+    ...UserLocations
   }
 
   fragment UserSchedules on Metaobject {
