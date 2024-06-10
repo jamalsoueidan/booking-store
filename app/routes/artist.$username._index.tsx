@@ -44,6 +44,20 @@ export async function loader({request, params, context}: LoaderFunctionArgs) {
     });
   }
 
+  const encoder = new TextEncoder();
+  const data = encoder.encode('weekend');
+
+  // Hash the word using SHA-256
+  const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+  const hashArray = Array.from(new Uint8Array(hashBuffer));
+  const hashHex = hashArray
+    .map((b) => b.toString(16).padStart(2, '0'))
+    .join('');
+
+  // Use the first 6 characters of the hash as the color
+  const color = `#${hashHex.substring(0, 6)}`;
+  console.log(color);
+
   const {searchParams} = new URL(request.url);
   const type = searchParams.get('type');
 

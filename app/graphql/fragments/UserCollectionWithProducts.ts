@@ -1,17 +1,9 @@
 import {TREATMENT_PRODUCT} from './TreatmentProduct';
+import {USER_COLLECTION_FILTER} from './UserCollectionFilter';
 
 export const USER_COLLECTION_WITH_PRODUCTS = `#graphql
   ${TREATMENT_PRODUCT}
-
-  fragment UserCollectionProductsFilters on Filter {
-    id
-    label
-    values {
-      label
-      input
-      count
-    }
-  }
+  ${USER_COLLECTION_FILTER}
 
   fragment UserCollectionWithProducts on Collection {
     id
@@ -21,7 +13,7 @@ export const USER_COLLECTION_WITH_PRODUCTS = `#graphql
         ...TreatmentProduct
       }
       filters {
-        ...UserCollectionProductsFilters
+        ...UserCollectionFilter
       }
     }
   }
