@@ -5,6 +5,7 @@ import {
   Flex,
   Grid,
   Group,
+  rem,
   Stack,
   Text,
   Title,
@@ -194,7 +195,7 @@ export default function ArtistTreatmentsBooking() {
             </Stack>
           </Card>
 
-          <Card withBorder radius="md" hiddenFrom="sm">
+          <Card withBorder radius="md" hiddenFrom="sm" mb={rem(70)}>
             <Stack gap="sm">
               <Group gap="xs" align="center">
                 <IconServicemark />
