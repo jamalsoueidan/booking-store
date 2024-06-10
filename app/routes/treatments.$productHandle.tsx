@@ -61,6 +61,7 @@ import {AddPriceFilter} from '~/components/filters/PriceFilter';
 import {ResetFilter} from '~/components/filters/ResetFilter';
 import {LeafletMap} from '~/components/LeafletMap.client';
 import {LocationIcon} from '~/components/LocationIcon';
+import {USER_COLLECTION_FILTER} from '~/graphql/fragments/UserCollectionFilter';
 import type {CustomerLocationBaseLocationType} from '~/lib/api/model';
 import {durationToTime} from '~/lib/duration';
 import localLeafletStyles from '~/styles/leaflet.css?url';
@@ -543,6 +544,7 @@ function TreatmentProductUser({
 
       {userProducts
         .filter((p) => p.id !== product.id)
+        .slice(0, 2)
         .map((p, index) => (
           <React.Fragment key={p.id}>
             <Card.Section>
@@ -669,7 +671,7 @@ const TREATMENT_WITH_COLLECTION_HANDLER_FRAGMENT = `#graphql
     featuredImage {
       id
       altText
-      url(transform: { maxHeight: 500, maxWidth: 500, crop: CENTER })
+      url(transform: { maxHeight: 250, maxWidth: 250, crop: CENTER })
       width
       height
     }
@@ -700,12 +702,6 @@ const TREATMENT_WITH_COLLECTION_HANDLER_FRAGMENT = `#graphql
 const USER_COLLECTION_FRAGMENT = `#graphql
   fragment UserCollection on Metaobject {
     id
-    aboutMe: field(key: "about_me") {
-      value
-    }
-    active: field(key: "active") {
-      value
-    }
     fullname: field(key: "fullname") {
       value
     }
@@ -718,16 +714,13 @@ const USER_COLLECTION_FRAGMENT = `#graphql
     username: field(key: "username") {
       value
     }
-    theme: field(key: "theme") {
-      value
-    }
     image: field(key: "image") {
       reference {
         ... on MediaImage {
           image {
             width
             height
-            url(transform: { maxHeight: 250, maxWidth: 250, crop: CENTER })
+            url(transform: { maxHeight: 100, maxWidth: 100, crop: CENTER })
           }
         }
       }
@@ -736,13 +729,11 @@ const USER_COLLECTION_FRAGMENT = `#graphql
       reference {
         ... on Collection {
           id
-          products(first: 2, sortKey: BEST_SELLING, filters: [{tag: "treatments"}, {productMetafield: {namespace: "booking",key: "hide_from_profile",value: "false"}}]) {
+          products(first: 3, sortKey: BEST_SELLING, filters: [{tag: "treatments"}, {productMetafield: {namespace: "booking",key: "hide_from_profile",value: "false"}}]) {
             nodes {
               id
               title
-              description
               handle
-              vendor
               productType
               variants(first: 1) {
                 nodes {
@@ -786,9 +777,7 @@ const TREATMENTS_FOR_COLLECTION = `#graphql
   fragment TreatmentsForCollection on Product {
     id
     title
-    description
     handle
-    vendor
     productType
     variants(first: 1) {
       nodes {
@@ -884,6 +873,7 @@ const TREATMENT_COLLECTION = `#graphql
 ` as const;
 
 const FILTER_COLLECTION = `#graphql
+  ${USER_COLLECTION_FILTER}
   query TreatmentFilterCollection(
     $handle: String!
     $country: CountryCode
@@ -892,13 +882,7 @@ const FILTER_COLLECTION = `#graphql
     collection(handle: $handle) {
       products(first: 1) {
         filters {
-          id
-          label
-          values {
-            input
-            label
-            count
-          }
+          ...UserCollectionFilter
         }
       }
     }
