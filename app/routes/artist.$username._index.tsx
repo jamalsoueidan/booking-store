@@ -15,19 +15,17 @@ import {
 } from '@mantine/core';
 import '@mantine/tiptap/styles.css';
 import {Await, Link, Outlet, useLoaderData} from '@remix-run/react';
-import {Suspense, useMemo} from 'react';
+import {Suspense, useEffect, useMemo, useState} from 'react';
 
 import {parseGid} from '@shopify/hydrogen';
-import {IconGps} from '@tabler/icons-react';
 import {da} from 'date-fns/locale';
 
 import {format} from 'date-fns';
 import type {
-  LocationFragment,
   ScheduleFragment,
   TreatmentProductFragment,
 } from 'storefrontapi.generated';
-import {LocationIcon, LocationText} from '~/components/LocationIcon';
+import {LocationIcon} from '~/components/LocationIcon';
 import {GET_USER_PRODUCTS} from '~/graphql/queries/GetUserProducts';
 import {useUser} from '~/hooks/use-user';
 import {type CustomerScheduleSlot} from '~/lib/api/model';
@@ -108,13 +106,24 @@ export default function ArtistIndex() {
               </Grid.Col>
               <Grid.Col span={{base: 12, md: 4}}>
                 <Stack gap="md">
-                  {user.locations?.map((location) => (
-                    <Location
-                      key={location.id}
-                      location={location}
-                      schedules={user.schedules}
-                    />
-                  ))}
+                  {user.schedules
+                    ?.sort((a, b) => {
+                      const aContainsMonday =
+                        a.slots?.value?.includes('monday');
+                      const bContainsMonday =
+                        b.slots?.value?.includes('monday');
+
+                      if (aContainsMonday && !bContainsMonday) {
+                        return -1;
+                      } else if (!aContainsMonday && bContainsMonday) {
+                        return 1;
+                      } else {
+                        return 0;
+                      }
+                    })
+                    .map((schedule) => (
+                      <Schedule key={schedule.handle} schedule={schedule} />
+                    ))}
                 </Stack>
               </Grid.Col>
             </Grid>
@@ -126,47 +135,43 @@ export default function ArtistIndex() {
   );
 }
 
-function Location({
-  location,
-  schedules,
-}: {
-  location: LocationFragment;
-  schedules?: ScheduleFragment[];
-}) {
-  const slots = schedules
-    ?.reduce((slots, schedule) => {
-      const found = schedule.locations?.references?.nodes.some(
-        (l) => l.id === location.id,
-      );
+async function wordToColor(word: string) {
+  const encoder = new TextEncoder();
+  const data = encoder.encode(word);
 
-      if (found) {
-        slots.push(
-          JSON.parse(schedule.slots?.value || '') as CustomerScheduleSlot[],
-        );
-      }
+  const hashBuffer = await crypto.subtle.digest('SHA-256', data);
 
-      return slots;
-    }, [] as Array<Array<CustomerScheduleSlot>>)
-    .reverse()
-    .flat();
+  const hashArray = Array.from(new Uint8Array(hashBuffer));
+  const hashHex = hashArray
+    .map((b) => b.toString(16).padStart(2, '0'))
+    .join('');
+
+  const color = `#${hashHex.substring(0, 6)}`;
+
+  return color;
+}
+
+function Schedule({schedule}: {schedule: ScheduleFragment}) {
+  const [scheduleColor, setScheduleColor] = useState<string>('#fff');
+
+  useEffect(() => {
+    const fetchColor = async () => {
+      const color = await wordToColor(schedule.handle || '');
+      setScheduleColor(color);
+    };
+
+    fetchColor();
+  }, [schedule]);
+
+  const slots = JSON.parse(
+    schedule.slots?.value || '',
+  ) as CustomerScheduleSlot[];
 
   return (
     <Card withBorder radius="md">
-      <Card.Section bg="black" px="md" py="sm">
+      <Card.Section bg={scheduleColor} px="md" py="sm">
         <Title order={3} c="white">
-          <Group>
-            <LocationIcon
-              location={{
-                locationType: location.locationType?.value as any,
-              }}
-            />
-
-            <LocationText
-              location={{
-                locationType: location.locationType?.value as any,
-              }}
-            />
-          </Group>
+          {schedule.name?.value}
         </Title>
       </Card.Section>
       <Divider mb="md" />
@@ -200,26 +205,46 @@ function Location({
       <Card.Section>
         <Divider my="md" />
       </Card.Section>
-      {location.locationType?.value !== 'destination' ? (
-        <Group>
-          <IconGps />
-          {location.fullAddress?.value}
-        </Group>
-      ) : (
-        <Group>
-          <IconGps />
-          {
-            location.fullAddress?.value?.split(',')[
-              location.fullAddress?.value?.split(',').length - 1
-            ]
-          }
-        </Group>
-      )}
+      <Stack gap="xs">
+        {schedule.locations?.references?.nodes.map((location) => (
+          <Group key={location.handle}>
+            <LocationIcon
+              location={{locationType: location.locationType?.value as any}}
+              color={scheduleColor || '#000000'}
+            />
+            {location.locationType?.value === 'destination' ||
+            location.locationType?.value === 'virtual' ? (
+              <>
+                {
+                  location.fullAddress?.value?.split(',')[
+                    location.fullAddress?.value?.split(',').length - 1
+                  ]
+                }
+              </>
+            ) : (
+              <>{location.fullAddress?.value}</>
+            )}
+          </Group>
+        ))}
+      </Stack>
     </Card>
   );
 }
 
 export function ArtistProduct({product}: {product: TreatmentProductFragment}) {
+  const [scheduleColor, setScheduleColor] = useState<string>('#fff');
+
+  useEffect(() => {
+    const fetchColor = async () => {
+      const color = await wordToColor(
+        product.scheduleId?.reference?.handle || '',
+      );
+      setScheduleColor(color);
+    };
+
+    fetchColor();
+  }, [product.scheduleId]);
+
   const productId = parseGid(product?.id).id;
   const locations = convertLocations(product.locations?.references?.nodes);
   const variant = product.variants.nodes[0];
@@ -274,9 +299,12 @@ export function ArtistProduct({product}: {product: TreatmentProductFragment}) {
                         (t) => t.locationType === value.locationType,
                       ),
                   )
-                  .map((location, index) => (
-                    // eslint-disable-next-line react/no-array-index-key
-                    <LocationIcon key={index} location={location} />
+                  .map((location) => (
+                    <LocationIcon
+                      key={location.locationType}
+                      location={location}
+                      color={scheduleColor}
+                    />
                   ))}
               </Group>
 
@@ -293,11 +321,7 @@ export function ArtistProduct({product}: {product: TreatmentProductFragment}) {
               <Text size="sm">
                 {product.options?.value ? 'fra' : ''} {variant.price.amount} kr
               </Text>
-              {discountString ? (
-                <Text c="green.9" size="sm">
-                  {discountString}
-                </Text>
-              ) : null}
+              {discountString ? <Text size="sm">{discountString}</Text> : null}
             </Group>
           </Flex>
         </Grid.Col>

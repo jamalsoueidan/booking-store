@@ -38,8 +38,11 @@ export const TREATMENT_PRODUCT = `#graphql
       value
     }
     scheduleId: metafield(key: "scheduleId", namespace: "booking") {
-      id
-      value
+      reference {
+        ... on Metaobject {
+          handle
+        }
+      }
     }
     locations: metafield(key: "locations", namespace: "booking") {
       references(first: 10) {
