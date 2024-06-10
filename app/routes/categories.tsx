@@ -1,9 +1,10 @@
-import {Button, Container, Flex} from '@mantine/core';
+import {Button, Container, Flex, Select} from '@mantine/core';
 import {
   Link,
   NavLink,
   Outlet,
   useLoaderData,
+  useNavigate,
   useParams,
 } from '@remix-run/react';
 import {json, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
@@ -29,7 +30,15 @@ export async function loader({context}: LoaderFunctionArgs) {
 
 export default function Collections() {
   const params = useParams();
+  const navigate = useNavigate();
   const {collection, visualTeaser} = useLoaderData<typeof loader>();
+  const data = [
+    {label: 'Alle behandlinger', value: ''},
+    ...(collection?.children?.references?.nodes || []).map((collection) => ({
+      label: collection.title,
+      value: collection.handle,
+    })),
+  ];
 
   return (
     <>
@@ -74,6 +83,20 @@ export default function Collections() {
               )}
             </NavLink>
           ))}
+        </Flex>
+        <Flex justify="center" gap="lg" hiddenFrom="sm">
+          <Select
+            placeholder="Alle behandlinger"
+            size="lg"
+            onChange={(value) => {
+              if (!value) {
+                navigate(`/categories`);
+              } else {
+                navigate(`/categories/${value}`);
+              }
+            }}
+            data={data}
+          />
         </Flex>
       </Container>
 
