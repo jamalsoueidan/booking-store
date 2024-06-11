@@ -18,7 +18,6 @@ import Autoplay from 'embla-carousel-autoplay';
 import {IconArrowRight, IconMoodWink, IconSearch} from '@tabler/icons-react';
 
 import {Carousel} from '@mantine/carousel';
-import {useMediaQuery} from '@mantine/hooks';
 import {useRef} from 'react';
 import type {
   ArticleUserFragment,
@@ -30,10 +29,15 @@ import {H2} from '~/components/titles/H2';
 
 import {ProfessionButton} from '~/components/ProfessionButton';
 import {ARTICLE_USER_FRAGMENT} from '~/graphql/fragments/ArticleUser';
-import {METAFIELD_QUERY} from '~/graphql/queries/Metafield';
+import {
+  METAFIELD_QUERY,
+  METAFIELD_TRANSLATIONS_QUERY,
+} from '~/graphql/queries/Metafield';
 
 import {Headless} from '~/components/blocks/Headless';
+import {convertJsonStructure} from '~/lib/convertTranslations';
 import {getTags} from '~/lib/tags';
+import {TranslationProvider, useTranslations} from '~/providers/Translation';
 import {UserCard} from './artists._index';
 import {
   CATEGORIES_COLLECTION_FRAGMENT,
@@ -44,11 +48,10 @@ export function shouldRevalidate() {
   return false;
 }
 
-export const meta: MetaFunction = () => {
+export const meta: MetaFunction<typeof loader> = ({data}) => {
   return [
     {
-      title:
-        'BySisters | Find skønhedseksperter og book deres [behandlinger] direkte på vores platform. Vores platform forbinder dig med talentfulde skønhedseksperter inden for alle aspekter af skønhed.',
+      title: `BySisters | ${data?.translations['index_meta']}`,
     },
   ];
 };
@@ -89,30 +92,42 @@ export async function loader(args: LoaderFunctionArgs) {
     },
   );
 
+  const {metaobject: translations} = await context.storefront.query(
+    METAFIELD_TRANSLATIONS_QUERY,
+    {
+      variables: {
+        handle: 'index',
+        type: 'translations',
+        country: context.storefront.i18n.country,
+        language: context.storefront.i18n.language,
+      },
+      cache: context.storefront.CacheShort(),
+    },
+  );
+
   return json({
     recommendedTreatments,
     users: data?.users.nodes || [],
+    translations: convertJsonStructure(translations),
     components,
     tags,
   });
 }
 
 export default function Homepage() {
-  const {users, recommendedTreatments, components, tags} =
+  const {users, recommendedTreatments, components, translations, tags} =
     useLoaderData<typeof loader>();
 
   return (
-    <>
+    <TranslationProvider data={translations}>
       <Box pt={rem(100)} pb={rem(50)}>
         <Container size="xl">
           <Stack gap="xl">
             <H1 gradients={{from: 'orange', to: 'orange.3'}}>
-              Find [skønhedseksperter] og book deres [behandlinger] direkte på
-              vores platform
+              {translations['index_title']}
             </H1>
             <Title order={2} c="dimmed" fw="normal" ta="center">
-              Vores platform forbinder dig med talentfulde skønhedseksperter
-              inden for alle aspekter af skønhed.
+              {translations['index_subtitle']}
             </Title>
 
             <Flex
@@ -130,7 +145,7 @@ export default function Homepage() {
                 fw="bold"
                 rightSection={<IconSearch />}
               >
-                Find en skønhedsekspert
+                {translations['index_left_button']}
               </Button>
 
               <Button
@@ -143,7 +158,7 @@ export default function Homepage() {
                 radius="md"
                 rightSection={<IconMoodWink />}
               >
-                Vis behandlinger
+                {translations['index_right_button']}
               </Button>
             </Flex>
           </Stack>
@@ -153,7 +168,7 @@ export default function Homepage() {
       <FeaturedArtists users={users as any} tags={tags} />
       <RecommendedTreatments products={recommendedTreatments.nodes} />
       <Headless components={components?.components} />
-    </>
+    </TranslationProvider>
   );
 }
 
@@ -165,8 +180,7 @@ function FeaturedArtists({
   tags?: Record<string, string[]>;
 }) {
   const theme = useMantineTheme();
-  const isMobile = useMediaQuery('(max-width: 62em)');
-  if (!users) return null;
+  const {t} = useTranslations();
 
   return (
     <Box
@@ -176,17 +190,12 @@ function FeaturedArtists({
       <Container size="xl">
         <Stack gap="xl">
           <H2 gradients={{from: '#9030ed', to: '#e71b7c'}}>
-            Mød vores [talentfulde eksperter]
+            {t['index_artists_title']}
           </H2>
 
           {tags && tags['profession'] ? (
-            <ScrollArea
-              h="auto"
-              w="100%"
-              type={isMobile ? 'always' : 'never'}
-              py={isMobile ? 'md' : undefined}
-            >
-              <Flex justify="center" gap={isMobile ? 'sm' : 'lg'}>
+            <ScrollArea type="auto" offsetScrollbars="x">
+              <Flex justify="center" gap={{base: 'sm', sm: 'lg'}}>
                 {tags['profession']?.map((profession) => (
                   <ProfessionButton key={profession} profession={profession} />
                 ))}
@@ -215,7 +224,7 @@ function FeaturedArtists({
                 />
               }
             >
-              Vis skønhedseksperter
+              {t['index_artists_button']}
             </Button>
           </Flex>
         </Stack>
@@ -230,6 +239,7 @@ function RecommendedTreatments({
   products: CategoriesCollectionFragment[];
 }) {
   const theme = useMantineTheme();
+  const {t} = useTranslations();
   const AUTOPLAY_DELAY = useRef(Autoplay({delay: 2000}));
 
   return (
@@ -240,7 +250,7 @@ function RecommendedTreatments({
       <Stack gap="xl">
         <Container size="xl">
           <H2 gradients={{from: '#9030ed', to: '#e71b7c'}}>
-            Book unikke [oplevelser og skønhedsoplevelse]
+            {t['index_treatments_title']}
           </H2>
         </Container>
         <Box px="xl" style={{overflow: 'hidden'}}>
@@ -274,7 +284,7 @@ function RecommendedTreatments({
                 />
               }
             >
-              Vis Kategorier
+              {t['index_treatments_button']}
             </Button>
           </Flex>
         </Container>
