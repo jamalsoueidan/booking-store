@@ -29,13 +29,8 @@ import {H2} from '~/components/titles/H2';
 
 import {ProfessionButton} from '~/components/ProfessionButton';
 import {ARTICLE_USER_FRAGMENT} from '~/graphql/fragments/ArticleUser';
-import {
-  METAFIELD_QUERY,
-  METAFIELD_TRANSLATIONS_QUERY,
-} from '~/graphql/queries/Metafield';
 
 import {Headless} from '~/components/blocks/Headless';
-import {convertJsonStructure} from '~/lib/convertTranslations';
 import {getTags} from '~/lib/tags';
 import {TranslationProvider, useTranslations} from '~/providers/Translation';
 import {UserCard} from './artists._index';
@@ -43,6 +38,7 @@ import {
   CATEGORIES_COLLECTION_FRAGMENT,
   TreatmentCard,
 } from './categories.($handle)._index';
+import {PAGE_QUERY} from './pages.$handle';
 
 export function shouldRevalidate() {
   return false;
@@ -51,7 +47,7 @@ export function shouldRevalidate() {
 export const meta: MetaFunction<typeof loader> = ({data}) => {
   return [
     {
-      title: `BySisters | ${data?.translations['index_meta']}`,
+      title: `BySisters: ${data?.page?.seo?.title}`,
     },
   ];
 };
@@ -79,96 +75,83 @@ export async function loader(args: LoaderFunctionArgs) {
     cache: context.storefront.CacheShort(),
   });
 
-  const {metaobject: components} = await context.storefront.query(
-    METAFIELD_QUERY,
-    {
-      variables: {
-        handle: 'index',
-        type: 'components',
-        country: context.storefront.i18n.country,
-        language: context.storefront.i18n.language,
-      },
-      cache: context.storefront.CacheShort(),
+  const {page} = await context.storefront.query(PAGE_QUERY, {
+    variables: {
+      handle: 'index',
     },
-  );
-
-  const {metaobject: translations} = await context.storefront.query(
-    METAFIELD_TRANSLATIONS_QUERY,
-    {
-      variables: {
-        handle: 'index',
-        type: 'translations',
-        country: context.storefront.i18n.country,
-        language: context.storefront.i18n.language,
-      },
-      cache: context.storefront.CacheShort(),
-    },
-  );
+    cache: context.storefront.CacheLong(),
+  });
 
   return json({
     recommendedTreatments,
     users: data?.users.nodes || [],
-    translations: convertJsonStructure(translations),
-    components,
+    page,
     tags,
   });
 }
 
 export default function Homepage() {
-  const {users, recommendedTreatments, components, translations, tags} =
+  const {users, recommendedTreatments, page, tags} =
     useLoaderData<typeof loader>();
 
   return (
-    <TranslationProvider data={translations}>
-      <Box pt={rem(100)} pb={rem(50)}>
-        <Container size="xl">
-          <Stack gap="xl">
-            <H1 gradients={{from: 'orange', to: 'orange.3'}}>
-              {translations['index_title']}
-            </H1>
-            <Title order={2} c="dimmed" fw="normal" ta="center">
-              {translations['index_subtitle']}
-            </Title>
-
-            <Flex
-              direction={{base: 'column', sm: 'row'}}
-              justify="center"
-              gap={{base: 'sm', sm: 'xl'}}
-            >
-              <Button
-                variant="outline"
-                color="orange"
-                component={Link}
-                to="/artists"
-                size="xl"
-                radius="md"
-                fw="bold"
-                rightSection={<IconSearch />}
-              >
-                {translations['index_left_button']}
-              </Button>
-
-              <Button
-                variant="outline"
-                color="pink"
-                component={Link}
-                to="/categories"
-                size="xl"
-                fw="bold"
-                radius="md"
-                rightSection={<IconMoodWink />}
-              >
-                {translations['index_right_button']}
-              </Button>
-            </Flex>
-          </Stack>
-        </Container>
-      </Box>
-
+    <TranslationProvider data={page?.translations}>
+      <Header />
       <FeaturedArtists users={users as any} tags={tags} />
       <RecommendedTreatments products={recommendedTreatments.nodes} />
-      <Headless components={components?.components} />
+      <Headless components={page?.components} />
     </TranslationProvider>
+  );
+}
+
+function Header() {
+  const {t} = useTranslations();
+
+  return (
+    <Box pt={rem(100)} pb={rem(50)}>
+      <Container size="xl">
+        <Stack gap="xl">
+          <H1 gradients={{from: 'orange', to: 'orange.3'}}>
+            {t('index_title')}
+          </H1>
+          <Title order={2} c="dimmed" fw="normal" ta="center">
+            {t('index_subtitle')}
+          </Title>
+
+          <Flex
+            direction={{base: 'column', sm: 'row'}}
+            justify="center"
+            gap={{base: 'sm', sm: 'xl'}}
+          >
+            <Button
+              variant="outline"
+              color="orange"
+              component={Link}
+              to="/artists"
+              size="xl"
+              radius="md"
+              fw="bold"
+              rightSection={<IconSearch />}
+            >
+              {t('index_left_button')}
+            </Button>
+
+            <Button
+              variant="outline"
+              color="pink"
+              component={Link}
+              to="/categories"
+              size="xl"
+              fw="bold"
+              radius="md"
+              rightSection={<IconMoodWink />}
+            >
+              {t('index_right_button')}
+            </Button>
+          </Flex>
+        </Stack>
+      </Container>
+    </Box>
   );
 }
 
@@ -190,7 +173,7 @@ function FeaturedArtists({
       <Container size="xl">
         <Stack gap="xl">
           <H2 gradients={{from: '#9030ed', to: '#e71b7c'}}>
-            {t['index_artists_title']}
+            {t('index_artists_title')}
           </H2>
 
           {tags && tags['profession'] ? (
@@ -224,7 +207,7 @@ function FeaturedArtists({
                 />
               }
             >
-              {t['index_artists_button']}
+              {t('index_artists_button')}
             </Button>
           </Flex>
         </Stack>
@@ -250,7 +233,7 @@ function RecommendedTreatments({
       <Stack gap="xl">
         <Container size="xl">
           <H2 gradients={{from: '#9030ed', to: '#e71b7c'}}>
-            {t['index_treatments_title']}
+            {t('index_treatments_title')}
           </H2>
         </Container>
         <Box px="xl" style={{overflow: 'hidden'}}>
@@ -284,7 +267,7 @@ function RecommendedTreatments({
                 />
               }
             >
-              {t['index_treatments_button']}
+              {t('index_treatments_button')}
             </Button>
           </Flex>
         </Container>

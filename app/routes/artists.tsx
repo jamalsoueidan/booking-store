@@ -14,12 +14,16 @@ import {
 import {useDisclosure} from '@mantine/hooks';
 import {
   Outlet,
-  type ShouldRevalidateFunction,
   useLoaderData,
   useSearchParams,
+  type ShouldRevalidateFunction,
 } from '@remix-run/react';
 import {parseGid} from '@shopify/hydrogen';
-import {json, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
+import {
+  json,
+  type LoaderFunctionArgs,
+  type MetaFunction,
+} from '@shopify/remix-oxygen';
 import {
   IconArrowDown,
   IconArrowsSort,
@@ -30,6 +34,7 @@ import {
   IconX,
 } from '@tabler/icons-react';
 import {useMemo} from 'react';
+import {type CategoriesStorefrontQuery} from 'storefrontapi.generated';
 import {Headless} from '~/components/blocks/Headless';
 import {VisualTeaser} from '~/components/blocks/VisualTeaser';
 import {
@@ -49,13 +54,18 @@ import {
   RemoveLocationFilterButton,
 } from '~/components/filters/LocationFilter';
 import {ProfessionButton} from '~/components/ProfessionButton';
-import {
-  METAFIELD_QUERY,
-  METAFIELD_VISUAL_TEASER_QUERY,
-} from '~/graphql/queries/Metafield';
 import {getTags} from '~/lib/tags';
+import {TranslationProvider, useTranslations} from '~/providers/Translation';
 import {COLLECTION} from './account.services.create';
-import {ProfessionTranslations} from './api.users.professions';
+import {PAGE_QUERY} from './pages.$handle';
+
+export const meta: MetaFunction<typeof loader> = ({data}) => {
+  return [
+    {
+      title: `BySisters: ${data?.page?.seo?.title}`,
+    },
+  ];
+};
 
 export const shouldRevalidate: ShouldRevalidateFunction = ({
   currentParams,
@@ -76,37 +86,49 @@ export const loader = async (args: LoaderFunctionArgs) => {
 
   const {collection} = await context.storefront.query(COLLECTION);
 
-  const {metaobject: visualTeaser} = await context.storefront.query(
-    METAFIELD_VISUAL_TEASER_QUERY,
-    {
-      variables: {
-        handle: 'artists',
-        type: 'visual_teaser',
-      },
+  const {page} = await context.storefront.query(PAGE_QUERY, {
+    variables: {
+      handle: 'artists',
     },
-  );
-
-  const {metaobject: components} = await context.storefront.query(
-    METAFIELD_QUERY,
-    {
-      variables: {
-        handle: 'artists',
-        type: 'components',
-      },
-    },
-  );
+    cache: context.storefront.CacheLong(),
+  });
 
   return json({
-    components,
-    visualTeaser,
+    page,
     tags,
     collection,
   });
 };
 
 export default function Artists() {
-  const {tags, components, visualTeaser, collection} =
-    useLoaderData<typeof loader>();
+  const {tags, page, collection} = useLoaderData<typeof loader>();
+
+  return (
+    <TranslationProvider data={page?.translations}>
+      <VisualTeaser data={page?.header?.reference} />
+
+      <Container size="xl">
+        <Stack gap="xl">
+          <CategoriesAndFilters tags={tags} collection={collection} />
+          <Outlet />
+        </Stack>
+      </Container>
+
+      <Divider />
+
+      <Headless components={page?.components} />
+    </TranslationProvider>
+  );
+}
+
+function CategoriesAndFilters({
+  tags,
+  collection,
+}: {
+  tags: Record<string, string[]>;
+  collection: CategoriesStorefrontQuery['collection'];
+}) {
+  const {t} = useTranslations();
   const [opened, {open, close}] = useDisclosure(false);
   const [searchParams, setSearchParams] = useSearchParams();
 
@@ -189,112 +211,102 @@ export default function Artists() {
 
   return (
     <>
-      {visualTeaser && <VisualTeaser data={visualTeaser} />}
-
-      <Container size="xl">
-        <Stack gap="xl">
-          <ScrollArea h="auto" type="auto" py={{base: 'md', sm: undefined}}>
-            <Flex gap={{base: 'sm', sm: 'lg'}} justify="center">
-              <ProfessionButton profession={'all'} reset />
-              {tags['profession']
-                .sort((a, b) => {
-                  const translatedA = ProfessionTranslations[a] || a;
-                  const translatedB = ProfessionTranslations[b] || b;
-                  return translatedA.localeCompare(translatedB);
-                })
-                .map((profession) => (
-                  <ProfessionButton key={profession} profession={profession} />
-                ))}
-            </Flex>
-          </ScrollArea>
-          <Flex direction="column" justify="center" gap="md">
-            <Flex justify="center" gap="md">
-              <Button
-                variant="outline"
-                c="black"
-                color="gray.3"
-                onClick={open}
-                size="xl"
-                leftSection={<IconFilter />}
-                rightSection={<IconArrowDown />}
-              >
-                Filtre
-              </Button>
-            </Flex>
-            <Flex justify="center" gap="md" wrap="wrap">
-              {searchParams.size > 0 ? (
-                <>
-                  {professionSearchParams ? (
-                    <Button
-                      variant="outline"
-                      c="black"
-                      color="gray.3"
-                      onClick={() => onChangeProfession(null)}
-                      size="md"
-                      rightSection={<IconX />}
-                      leftSection={<IconNetwork />}
-                    >
-                      {`${ProfessionTranslations[
-                        professionSearchParams
-                      ][0].toUpperCase()}${ProfessionTranslations[
-                        professionSearchParams
-                      ].substring(1)}`}
-                    </Button>
-                  ) : null}
-                  {selectedProduct ? (
-                    <Button
-                      variant="outline"
-                      c="black"
-                      color="gray.3"
-                      onClick={() => onChangeProduct(null)}
-                      size="md"
-                      rightSection={<IconX />}
-                      leftSection={<IconServicemark />}
-                    >
-                      {selectedProduct.label}
-                    </Button>
-                  ) : null}
-                  <RemoveCityFilterButton />
-                  {sortValue ? (
-                    <Button
-                      variant="outline"
-                      c="black"
-                      color="gray.3"
-                      onClick={() => onChangeSort(null)}
-                      size="md"
-                      rightSection={<IconX />}
-                      leftSection={<IconArrowsSort />}
-                    >
-                      Sortering
-                    </Button>
-                  ) : null}
-                  <RemoveLocationFilterButton />
-                  {genderValue ? (
-                    <Button
-                      variant="outline"
-                      c="black"
-                      color="gray.3"
-                      onClick={() => onChangeGender(null)}
-                      size="md"
-                      rightSection={<IconX />}
-                      leftSection={<IconGenderFemale />}
-                    >
-                      {genderValue === 'woman' && 'Kvinder'}
-                      {genderValue === 'man' && 'Mænd'}
-                    </Button>
-                  ) : null}
-                  <RemoveDayFilterButton />
-                  <RemoveLanguageFilterButton />
-                </>
+      <ScrollArea h="auto" type="auto" py={{base: 'md', sm: undefined}}>
+        <Flex gap={{base: 'sm', sm: 'lg'}} justify="center">
+          <ProfessionButton profession={'all'} reset />
+          {tags['profession']
+            .sort((a, b) => {
+              const translatedA = t(`profession_${a}`) || a;
+              const translatedB = t(`profession_${b}`) || b;
+              return translatedA.localeCompare(translatedB);
+            })
+            .map((profession) => (
+              <ProfessionButton key={profession} profession={profession} />
+            ))}
+        </Flex>
+      </ScrollArea>
+      <Flex direction="column" justify="center" gap="md">
+        <Flex justify="center" gap="md">
+          <Button
+            variant="outline"
+            c="black"
+            color="gray.3"
+            onClick={open}
+            size="xl"
+            leftSection={<IconFilter />}
+            rightSection={<IconArrowDown />}
+          >
+            Filtre
+          </Button>
+        </Flex>
+        <Flex justify="center" gap="md" wrap="wrap">
+          {searchParams.size > 0 ? (
+            <>
+              {professionSearchParams ? (
+                <Button
+                  variant="outline"
+                  c="black"
+                  color="gray.3"
+                  onClick={() => onChangeProfession(null)}
+                  size="md"
+                  rightSection={<IconX />}
+                  leftSection={<IconNetwork />}
+                >
+                  {`${t(
+                    `profession_${professionSearchParams}`,
+                  )[0].toUpperCase()}${t(
+                    `profession_${professionSearchParams}`,
+                  ).substring(1)}`}
+                </Button>
               ) : null}
-            </Flex>
-          </Flex>
-          <Outlet />
-        </Stack>
-      </Container>
-
-      <Divider />
-
+              {selectedProduct ? (
+                <Button
+                  variant="outline"
+                  c="black"
+                  color="gray.3"
+                  onClick={() => onChangeProduct(null)}
+                  size="md"
+                  rightSection={<IconX />}
+                  leftSection={<IconServicemark />}
+                >
+                  {selectedProduct.label}
+                </Button>
+              ) : null}
+              <RemoveCityFilterButton />
+              {sortValue ? (
+                <Button
+                  variant="outline"
+                  c="black"
+                  color="gray.3"
+                  onClick={() => onChangeSort(null)}
+                  size="md"
+                  rightSection={<IconX />}
+                  leftSection={<IconArrowsSort />}
+                >
+                  Sortering
+                </Button>
+              ) : null}
+              <RemoveLocationFilterButton />
+              {genderValue ? (
+                <Button
+                  variant="outline"
+                  c="black"
+                  color="gray.3"
+                  onClick={() => onChangeGender(null)}
+                  size="md"
+                  rightSection={<IconX />}
+                  leftSection={<IconGenderFemale />}
+                >
+                  {genderValue === 'woman' && 'Kvinder'}
+                  {genderValue === 'man' && 'Mænd'}
+                </Button>
+              ) : null}
+              <RemoveDayFilterButton />
+              <RemoveLanguageFilterButton />
+            </>
+          ) : null}
+        </Flex>
+      </Flex>
       <Drawer
         position="right"
         opened={opened}
@@ -310,9 +322,9 @@ export default function Artists() {
             onChange={onChangeProfession}
             leftSection={<IconNetwork />}
             data={tags['profession'].map((p) => ({
-              label: `${ProfessionTranslations[
-                p
-              ][0].toUpperCase()}${ProfessionTranslations[p].substring(1)}`,
+              label: `${t(`profession_${p}`)[0].toUpperCase()}${t(
+                `profession_${p}`,
+              ).substring(1)}`,
               value: p,
             }))}
             clearable
@@ -360,8 +372,6 @@ export default function Artists() {
           </div>
         </Stack>
       </Drawer>
-
-      <Headless components={components?.components} />
     </>
   );
 }

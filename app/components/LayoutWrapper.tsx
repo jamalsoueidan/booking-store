@@ -114,7 +114,7 @@ export function LayoutWrapper({children}: {children: ReactNode}) {
             data.header.menu?.items.map(({url, title}) => (
               <NavLink
                 key={url}
-                to={new URL(url || '').pathname}
+                to={new URL(url || '').pathname.replace('/en/', '/')}
                 onClick={publishSideCartViewed}
               >
                 {({isActive}) => (
@@ -123,12 +123,16 @@ export function LayoutWrapper({children}: {children: ReactNode}) {
                     fz="md"
                     fw="500"
                     variant={
-                      title.includes('skønhedskarriere')
+                      title.includes('skønhedskarriere') ||
+                      title.includes('beauty career')
                         ? 'filled'
                         : 'transparent'
                     }
                     color={
-                      title.includes('skønhedskarriere') ? '#8a60f6' : 'black'
+                      title.includes('skønhedskarriere') ||
+                      title.includes('beauty career')
+                        ? '#8a60f6'
+                        : 'black'
                     }
                   >
                     {title}

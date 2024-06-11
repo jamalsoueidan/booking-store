@@ -2,6 +2,7 @@ import {useLoaderData, type MetaFunction} from '@remix-run/react';
 import {json, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
 import {Headless} from '~/components/blocks/Headless';
 import {Wrapper} from '~/components/Wrapper';
+import {TRANSLATIONS_FRAGMENT} from '~/graphql/fragments/Translation';
 import {ACCORDION_FRAGMENT} from '~/graphql/headless/Accordion';
 import {BACKGROUND_IMAGE_FRAGMENT} from '~/graphql/headless/BackgroundImage';
 import {BUTTON_FRAGMENT} from '~/graphql/headless/Button';
@@ -81,6 +82,8 @@ const PAGE_FRAGMENT = `#graphql
   ${FAQ_FRAGMENT}
   ${IMAGE_GRID_WITH_HEADER_FRAGMENT}
 
+  ${TRANSLATIONS_FRAGMENT}
+
   fragment Page on Page {
     id
     title
@@ -102,6 +105,29 @@ const PAGE_FRAGMENT = `#graphql
           ...VisualTeaser
           ...Faq
           ...ImageGridWithHeader
+        }
+      }
+    }
+
+    header: metafield(namespace: "booking", key: "header") {
+      reference {
+        ...Accordion
+        ...CallToAction
+        ...CardMedia
+        ...Features
+        ...Help
+        ...Maps
+        ...SideBySide
+        ...VisualTeaser
+        ...Faq
+        ...ImageGridWithHeader
+      }
+    }
+
+    translations: metafield(namespace: "booking", key: "translations") {
+      references(first: 250) {
+        nodes {
+          ...Translations
         }
       }
     }

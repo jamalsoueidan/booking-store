@@ -1,4 +1,4 @@
-import {type ComponentsFragment} from 'storefrontapi.generated';
+import {type PageFragment} from 'storefrontapi.generated';
 import {CallToAction} from '~/components/blocks/CallToAction';
 import {CardMedia} from '~/components/blocks/CardMedia';
 import {Faq} from '~/components/blocks/Faq';
@@ -12,7 +12,7 @@ import {VisualTeaser} from '~/components/blocks/VisualTeaser';
 export function Headless({
   components,
 }: {
-  components?: ComponentsFragment['components'] | null;
+  components?: PageFragment['components'] | null;
 }) {
   return components?.references?.nodes.map((c) => {
     if (c.type === 'features') {

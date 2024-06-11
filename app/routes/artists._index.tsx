@@ -23,10 +23,9 @@ import {DK, US} from 'country-flag-icons/react/3x2';
 import {type ArticleUserFragment} from 'storefrontapi.generated';
 import {LocationIcon} from '~/components/LocationIcon';
 import {ARTICLE_USER_FRAGMENT} from '~/graphql/fragments/ArticleUser';
-import {METAFIELD_QUERY} from '~/graphql/queries/Metafield';
 import {CustomerLocationBaseLocationType} from '~/lib/api/model';
 import {splitTags} from '~/lib/tags';
-import {ProfessionTranslations} from './api.users.professions';
+import {useTranslations} from '~/providers/Translation';
 
 export const meta: MetaFunction = () => {
   return [{title: `BySisters | Find Skønhedseksperter`}];
@@ -108,17 +107,7 @@ export const loader = async ({context, request}: LoaderFunctionArgs) => {
     cache: context.storefront.CacheShort(),
   });
 
-  const {metaobject: components} = await context.storefront.query(
-    METAFIELD_QUERY,
-    {
-      variables: {
-        handle: 'artists',
-        type: 'components',
-      },
-    },
-  );
-
-  return json({users: data, components});
+  return json({users: data});
 };
 
 export default function Component() {
@@ -162,6 +151,7 @@ export default function Component() {
 }
 
 export const UserCard = ({article}: {article: ArticleUserFragment}) => {
+  const {t} = useTranslations();
   const user = article.user?.reference;
   const professions = user?.professions?.value
     ? (JSON.parse(user.professions.value) as Record<string, []>)
@@ -272,7 +262,7 @@ export const UserCard = ({article}: {article: ArticleUserFragment}) => {
       <Flex gap="xs" my="md">
         {professions['professions'].map((p) => (
           <Badge variant="outline" c="black" color="gray.4" key={p} fw="400">
-            {ProfessionTranslations[p]}
+            {t(`profession_${p}`)}
           </Badge>
         ))}
       </Flex>

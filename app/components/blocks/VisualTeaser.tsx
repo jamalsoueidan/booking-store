@@ -14,8 +14,10 @@ import {Link} from '@remix-run/react';
 import type {VisualTeaserFragment} from 'storefrontapi.generated';
 import {H1} from '../titles/H1';
 
-export const VisualTeaser = ({data}: {data: VisualTeaserFragment}) => {
+export const VisualTeaser = ({data}: {data?: VisualTeaserFragment | null}) => {
   const theme = useMantineTheme();
+
+  if (!data) return null;
 
   const title = data.title?.value;
   const subtitle = data.subtitle?.value;

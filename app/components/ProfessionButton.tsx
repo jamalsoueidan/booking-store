@@ -46,7 +46,7 @@ export const ProfessionButton = ({
     >
       <Avatar
         src={modifyImageUrl(ProfessionURL[profession], '200x200')}
-        alt={t[`profession_${profession}`]}
+        alt={t(`profession_${profession}`)}
         radius="100%"
         size={rem(90)}
       />
@@ -58,7 +58,7 @@ export const ProfessionButton = ({
         ta="center"
         fz={{base: 'xs', sm: 'md'}}
       >
-        {t[`profession_${profession}`]}
+        {t(`profession_${profession}`)}
       </Title>
     </UnstyledButton>
   );
