@@ -123,9 +123,11 @@ function getLocaleFromRequest(request: Request): I18nLocale {
   } as Record<I18nLocale['country'], I18nLocale['language']>;
 
   const url = new URL(request.url);
+  console.log(url);
   const firstSubdomain = url.hostname
     .split('.')[0]
     ?.toUpperCase() as keyof typeof supportedLocales;
+  console.log(firstSubdomain);
 
   const language = supportedLocales[firstSubdomain]
     ? {language: supportedLocales[firstSubdomain], country: firstSubdomain}
