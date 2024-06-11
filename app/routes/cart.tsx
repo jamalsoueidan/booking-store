@@ -10,7 +10,7 @@ import {Suspense} from 'react';
 import {VisualTeaser} from '~/components/blocks/VisualTeaser';
 import {CartMain} from '~/components/Cart';
 import {Wrapper} from '~/components/Wrapper';
-import {METAFIELD_QUERY} from '~/data/fragments';
+import {METAFIELD_VISUAL_TEASER_QUERY} from '~/graphql/queries/Metafield';
 import {useRootLoaderData} from '~/root';
 
 export const meta: MetaFunction = () => {
@@ -99,7 +99,7 @@ export async function action({request, context}: ActionFunctionArgs) {
 
 export async function loader({context, request}: LoaderFunctionArgs) {
   const {metaobject: visualTeaser} = await context.storefront.query(
-    METAFIELD_QUERY,
+    METAFIELD_VISUAL_TEASER_QUERY,
     {
       variables: {
         handle: 'cart',
@@ -118,7 +118,7 @@ export default function Cart() {
 
   return (
     <>
-      <VisualTeaser component={visualTeaser} />
+      {visualTeaser && <VisualTeaser data={visualTeaser} />}
 
       <Wrapper>
         <Suspense fallback={<p>Henter indkøbskurv ...</p>}>

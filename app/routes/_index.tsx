@@ -16,7 +16,6 @@ import {json, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
 import Autoplay from 'embla-carousel-autoplay';
 
 import {IconArrowRight, IconMoodWink, IconSearch} from '@tabler/icons-react';
-import {METAFIELD_QUERY} from '~/data/fragments';
 
 import {Carousel} from '@mantine/carousel';
 import {useMediaQuery} from '@mantine/hooks';
@@ -24,18 +23,17 @@ import {useRef} from 'react';
 import type {
   ArticleUserFragment,
   CategoriesCollectionFragment,
-  PageComponentMetaobjectFragment,
-  PageFragment,
 } from 'storefrontapi.generated';
-import {useField} from '~/components/blocks/utils';
 import {Slider} from '~/components/Slider';
 import {H1} from '~/components/titles/H1';
 import {H2} from '~/components/titles/H2';
 
 import {ProfessionButton} from '~/components/ProfessionButton';
 import {ARTICLE_USER_FRAGMENT} from '~/graphql/fragments/ArticleUser';
+import {METAFIELD_QUERY} from '~/graphql/queries/Metafield';
+
+import {Headless} from '~/components/blocks/Headless';
 import {getTags} from '~/lib/tags';
-import {useComponents} from '~/lib/use-components';
 import {UserCard} from './artists._index';
 import {
   CATEGORIES_COLLECTION_FRAGMENT,
@@ -78,15 +76,18 @@ export async function loader(args: LoaderFunctionArgs) {
     cache: context.storefront.CacheShort(),
   });
 
-  const components = await context.storefront.query(METAFIELD_QUERY, {
-    variables: {
-      handle: 'index',
-      type: 'components',
-      country: context.storefront.i18n.country,
-      language: context.storefront.i18n.language,
+  const {metaobject: components} = await context.storefront.query(
+    METAFIELD_QUERY,
+    {
+      variables: {
+        handle: 'index',
+        type: 'components',
+        country: context.storefront.i18n.country,
+        language: context.storefront.i18n.language,
+      },
+      cache: context.storefront.CacheShort(),
     },
-    cache: context.storefront.CacheShort(),
-  });
+  );
 
   return json({
     recommendedTreatments,
@@ -151,20 +152,9 @@ export default function Homepage() {
 
       <FeaturedArtists users={users as any} tags={tags} />
       <RecommendedTreatments products={recommendedTreatments.nodes} />
-      <DynamicComponents components={components.metaobject} />
+      <Headless components={components?.components} />
     </>
   );
-}
-
-function DynamicComponents({
-  components,
-}: {
-  components?: PageComponentMetaobjectFragment | null;
-}) {
-  const field = useField(components);
-  const com = field.getField<PageFragment['components']>('components');
-  const markup = useComponents(com);
-  return <>{markup}</>;
 }
 
 function FeaturedArtists({
