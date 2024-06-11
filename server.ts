@@ -117,22 +117,15 @@ export default {
 
 function getLocaleFromRequest(request: Request): I18nLocale {
   const defaultLocale: I18nLocale = {language: 'DA', country: 'DK'};
+
+  // Map directly from subdomains to locale values
   const supportedLocales = {
-    DK: 'DA',
-    US: 'EN',
-  } as Record<I18nLocale['country'], I18nLocale['language']>;
+    EN: {language: 'EN', country: 'US'},
+    DK: {language: 'DA', country: 'DK'},
+  } as Record<string, I18nLocale>;
 
   const url = new URL(request.url);
-  console.log(url);
-  const firstSubdomain = url.hostname
-    .split('.')[0]
-    ?.toUpperCase() as keyof typeof supportedLocales;
-  console.log(firstSubdomain);
+  const firstSubdomain = url.hostname.split('.')[0]?.toUpperCase();
 
-  const language = supportedLocales[firstSubdomain]
-    ? {language: supportedLocales[firstSubdomain], country: firstSubdomain}
-    : defaultLocale;
-
-  console.log(language);
-  return language;
+  return supportedLocales[firstSubdomain] || defaultLocale;
 }
