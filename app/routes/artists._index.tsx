@@ -22,8 +22,8 @@ import {
 import {DK, US} from 'country-flag-icons/react/3x2';
 import {type ArticleUserFragment} from 'storefrontapi.generated';
 import {LocationIcon} from '~/components/LocationIcon';
-import {METAFIELD_QUERY} from '~/data/fragments';
 import {ARTICLE_USER_FRAGMENT} from '~/graphql/fragments/ArticleUser';
+import {METAFIELD_QUERY} from '~/graphql/queries/Metafield';
 import {CustomerLocationBaseLocationType} from '~/lib/api/model';
 import {splitTags} from '~/lib/tags';
 import {ProfessionTranslations} from './api.users.professions';

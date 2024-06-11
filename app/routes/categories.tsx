@@ -9,14 +9,14 @@ import {
 } from '@remix-run/react';
 import {json, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
 import {VisualTeaser} from '~/components/blocks/VisualTeaser';
-import {METAFIELD_QUERY} from '~/data/fragments';
+import {METAFIELD_VISUAL_TEASER_QUERY} from '~/graphql/queries/Metafield';
 import {CATEGORIES} from '~/graphql/storefront/Categories';
 
 export async function loader({context}: LoaderFunctionArgs) {
   const {collection} = await context.storefront.query(CATEGORIES);
 
   const {metaobject: visualTeaser} = await context.storefront.query(
-    METAFIELD_QUERY,
+    METAFIELD_VISUAL_TEASER_QUERY,
     {
       variables: {
         handle: 'categories',
@@ -42,7 +42,7 @@ export default function Collections() {
 
   return (
     <>
-      <VisualTeaser component={visualTeaser} />
+      {visualTeaser && <VisualTeaser data={visualTeaser} />}
       <Container size="xl">
         <Flex justify="center" gap="lg" visibleFrom="sm">
           <Button

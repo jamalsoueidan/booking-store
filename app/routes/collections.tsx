@@ -3,7 +3,8 @@ import {Outlet, useLoaderData, useNavigate, useParams} from '@remix-run/react';
 import {json, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
 import {useState} from 'react';
 import {VisualTeaser} from '~/components/blocks/VisualTeaser';
-import {COLLECTION_ITEM_FRAGMENT, METAFIELD_QUERY} from '~/data/fragments';
+import {COLLECTION_ITEM_FRAGMENT} from '~/data/fragments';
+import {METAFIELD_VISUAL_TEASER_QUERY} from '~/graphql/queries/Metafield';
 
 export async function loader({context, request}: LoaderFunctionArgs) {
   const {collections} = await context.storefront.query(COLLECTIONS_QUERY, {
@@ -11,7 +12,7 @@ export async function loader({context, request}: LoaderFunctionArgs) {
   });
 
   const {metaobject: visualTeaser} = await context.storefront.query(
-    METAFIELD_QUERY,
+    METAFIELD_VISUAL_TEASER_QUERY,
     {
       variables: {
         handle: 'collections',
@@ -56,7 +57,7 @@ export default function Collections() {
 
   return (
     <>
-      <VisualTeaser component={visualTeaser} />
+      {visualTeaser && <VisualTeaser data={visualTeaser} />}
       <Container size="xl">
         <Flex
           justify="space-between"

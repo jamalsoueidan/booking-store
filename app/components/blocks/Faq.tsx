@@ -1,33 +1,21 @@
 import {Flex, Stack, Text, Title} from '@mantine/core';
-import {useMediaQuery} from '@mantine/hooks';
-import type {
-  PageComponentFragment,
-  PageComponentMetaobjectFragment,
-} from 'storefrontapi.generated';
+import type {FaqFragment} from 'storefrontapi.generated';
 import {Wrapper} from '../Wrapper';
 import {AccordionMetaobject} from './AccordionMetaobject';
 import classes from './Faq.module.css';
-import {useField} from './utils';
 
-export function Faq({
-  component,
-}: {
-  component?: PageComponentFragment | PageComponentMetaobjectFragment | null;
-}) {
-  const isMobile = useMediaQuery('(max-width: 62em)');
-  const field = useField(component);
-  if (!component) return null;
-
-  const backgroundColor = field.getFieldValue('background_color');
-  const direction = field.getFieldValue('direction') as any;
-  const title = field.getFieldValue('title');
-  const description = field.getFieldValue('description');
-  const accordion = field.getMetaObject('accordion');
+export function Faq({data}: {data: FaqFragment}) {
+  const backgroundColor = data.backgroundColor?.value;
+  const direction = data.direction
+    ?.value as React.CSSProperties['flexDirection'];
+  const title = data.title?.value;
+  const description = data.description?.value;
+  const accordion = data.accordion?.reference;
 
   return (
     <Wrapper bg={backgroundColor || undefined}>
-      <Flex direction={isMobile ? 'column' : direction || 'row'} gap="xl">
-        <Stack flex="1" justify="center" mb={!isMobile ? '20px' : 0}>
+      <Flex direction={{base: 'column', sm: direction || 'row'}} gap="xl">
+        <Stack flex="1" justify="center" mb={{base: 'sm', sm: 0}}>
           {title && (
             <Title ta="center" className={classes.title}>
               {title}
@@ -40,7 +28,7 @@ export function Faq({
           )}
         </Stack>
 
-        {accordion ? <AccordionMetaobject metaobject={accordion} /> : null}
+        {accordion ? <AccordionMetaobject data={accordion} /> : null}
       </Flex>
     </Wrapper>
   );

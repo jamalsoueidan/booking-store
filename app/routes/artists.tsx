@@ -30,6 +30,7 @@ import {
   IconX,
 } from '@tabler/icons-react';
 import {useMemo} from 'react';
+import {Headless} from '~/components/blocks/Headless';
 import {VisualTeaser} from '~/components/blocks/VisualTeaser';
 import {
   AddCityFilter,
@@ -48,9 +49,11 @@ import {
   RemoveLocationFilterButton,
 } from '~/components/filters/LocationFilter';
 import {ProfessionButton} from '~/components/ProfessionButton';
-import {METAFIELD_QUERY} from '~/data/fragments';
+import {
+  METAFIELD_QUERY,
+  METAFIELD_VISUAL_TEASER_QUERY,
+} from '~/graphql/queries/Metafield';
 import {getTags} from '~/lib/tags';
-import {useComponents} from '~/lib/use-components';
 import {COLLECTION} from './account.services.create';
 import {ProfessionTranslations} from './api.users.professions';
 
@@ -74,7 +77,7 @@ export const loader = async (args: LoaderFunctionArgs) => {
   const {collection} = await context.storefront.query(COLLECTION);
 
   const {metaobject: visualTeaser} = await context.storefront.query(
-    METAFIELD_QUERY,
+    METAFIELD_VISUAL_TEASER_QUERY,
     {
       variables: {
         handle: 'artists',
@@ -106,9 +109,6 @@ export default function Artists() {
     useLoaderData<typeof loader>();
   const [opened, {open, close}] = useDisclosure(false);
   const [searchParams, setSearchParams] = useSearchParams();
-  const markup = useComponents(
-    components?.fields.find(({key}) => key === 'components'),
-  );
 
   const products = useMemo(
     () =>
@@ -189,7 +189,7 @@ export default function Artists() {
 
   return (
     <>
-      <VisualTeaser component={visualTeaser} />
+      {visualTeaser && <VisualTeaser data={visualTeaser} />}
 
       <Container size="xl">
         <Stack gap="xl">
@@ -361,7 +361,7 @@ export default function Artists() {
         </Stack>
       </Drawer>
 
-      {markup}
+      <Headless components={components?.components} />
     </>
   );
 }

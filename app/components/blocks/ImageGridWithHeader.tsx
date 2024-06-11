@@ -10,24 +10,19 @@ import {
   useMantineTheme,
 } from '@mantine/core';
 import {Link} from '@remix-run/react';
-import type {
-  PageComponentCollectionFragment,
-  PageComponentFragment,
-} from 'storefrontapi.generated';
+import type {ImageGridWithHeaderFragment} from 'storefrontapi.generated';
 import {H2} from '../titles/H2';
 import {Wrapper} from '../Wrapper';
-import {useField} from './utils';
 
 export function ImageGridWithHeader({
-  component,
+  data,
 }: {
-  component: PageComponentFragment;
+  data: ImageGridWithHeaderFragment;
 }) {
   const theme = useMantineTheme();
-  const field = useField(component);
-  const title = field.getFieldValue('title');
-  const backgroundColor = field.getFieldValue('background_color');
-  const items = field.getItems<PageComponentCollectionFragment>('collections');
+  const title = data.title?.value;
+  const backgroundColor = data.backgroundColor?.value;
+  const items = data.collections?.references?.nodes;
 
   return (
     <Wrapper

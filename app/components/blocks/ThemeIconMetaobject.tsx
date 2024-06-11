@@ -5,8 +5,7 @@ import {
   IconHeart,
   IconSearch,
 } from '@tabler/icons-react';
-import {type PageComponentMetaobjectFragment} from 'storefrontapi.generated';
-import {useField} from './utils';
+import {type ThemeIconFragment} from 'storefrontapi.generated';
 
 const icons: Record<string, any> = {
   beach: IconBeach,
@@ -15,18 +14,11 @@ const icons: Record<string, any> = {
   '': IconHeart,
 };
 
-export function ThemeIconMetaobject({
-  metaobject,
-}: {
-  metaobject: PageComponentMetaobjectFragment | null;
-}) {
-  const field = useField(metaobject);
-  if (!metaobject) return null;
-
-  const variant = field.getFieldValue('variant');
-  const icon = field.getFieldValue('icon');
-  const color = field.getFieldValue('color');
-  const radius = field.getFieldValue('radius');
+export function ThemeIconMetaobject({data}: {data: ThemeIconFragment}) {
+  const variant = data.variant?.value;
+  const icon = data.icon?.value;
+  const color = data.color?.value;
+  const radius = data.radius?.value;
 
   const IconComponent = icons[icon || ''];
 

@@ -11,84 +11,26 @@ import {
   useMantineTheme,
 } from '@mantine/core';
 import {Link} from '@remix-run/react';
-import type {Image, Maybe} from '@shopify/hydrogen/storefront-api-types';
-import type {
-  PageComponentFragment,
-  PageComponentMetaobjectFragment,
-} from 'storefrontapi.generated';
+import type {VisualTeaserFragment} from 'storefrontapi.generated';
 import {H1} from '../titles/H1';
-import {useField} from './utils';
 
-export function VisualTeaser({
-  component,
-}: {
-  component?: PageComponentFragment | null;
-}) {
-  const field = useField(component);
-  const title = field.getFieldValue('title');
-  const subtitle = field.getFieldValue('subtitle');
-  const backgroundColor = field.getFieldValue('background_color');
-  const fontColor = field.getFieldValue('font_color');
-  const justify = field.getFieldValue('justify');
-  const height = field.getFieldValue('height');
-
-  const backgroundImage = field.getMetaObject('background_image');
-  const backgroundField = useField(backgroundImage);
-  const image = backgroundField.getImage('image');
-  const opacity = backgroundField.getFieldValue('opacity');
-  const style = backgroundField.getJSON('style');
-
-  const subbutton = field.getMetaObject('subbutton');
-
-  if (!component) return null;
-
-  return (
-    <VisualTeaserComponent
-      backgroundColor={backgroundColor}
-      title={title}
-      subtitle={subtitle}
-      image={image}
-      opacity={opacity}
-      style={style}
-      fontColor={fontColor}
-      justify={justify}
-      height={height}
-      subbutton={subbutton}
-    />
-  );
-}
-
-export type VisualTeaserComponentProps = {
-  backgroundColor?: string;
-  title?: string;
-  overtitle?: string;
-  subtitle?: string;
-  image?: Maybe<Pick<Image, 'url' | 'width' | 'height'>>;
-  subbutton: PageComponentMetaobjectFragment | null;
-  opacity?: string;
-  style?: Record<string, string>;
-  height?: string;
-  fontColor?: string;
-  justify?: string;
-};
-
-export const VisualTeaserComponent = ({
-  backgroundColor,
-  title,
-  subtitle,
-  image,
-  opacity,
-  style,
-  height,
-  fontColor,
-  justify,
-  subbutton,
-}: VisualTeaserComponentProps) => {
+export const VisualTeaser = ({data}: {data: VisualTeaserFragment}) => {
   const theme = useMantineTheme();
 
-  const subbuttonField = useField(subbutton);
-  const linkTo = subbuttonField.getFieldValue('link_to');
-  const text = subbuttonField.getFieldValue('text');
+  const title = data.title?.value;
+  const subtitle = data.subtitle?.value;
+  const backgroundColor = data.backgroundColor?.value;
+  const fontColor = data.fontColor?.value;
+  const justify = data.justify?.value;
+  const height = data.height?.value;
+
+  const image = data.backgroundImage?.reference?.image?.reference?.image;
+  const opacity = data.backgroundImage?.reference?.opacity?.value;
+  const style = data.backgroundImage?.reference?.style?.value;
+
+  const subbutton = data.subbutton?.reference;
+  const linkTo = subbutton?.linkTo?.value;
+  const text = subbutton?.text?.value;
 
   return (
     <Box
@@ -118,7 +60,13 @@ export const VisualTeaserComponent = ({
         ></BackgroundImage>
       ) : null}
 
-      <Container size="lg" py={0} h={height} pos="relative" style={{zIndex: 1}}>
+      <Container
+        size="lg"
+        py={0}
+        h={height || undefined}
+        pos="relative"
+        style={{zIndex: 1}}
+      >
         <Stack pt={rem(30)} pb={rem(50)} justify={justify || 'center'} h="100%">
           {title ? (
             <H1

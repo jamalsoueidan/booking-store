@@ -60,12 +60,12 @@ export const ProfessionURL: Record<string, string> = {
 export const ProfessionTranslations: Record<string, string> = {
   all: 'Alle',
   nail_technician: 'Negletekniker',
-  esthetician: 'Kosmetolog',
-  hair_stylist: 'Frisør',
-  makeup_artist: 'Makeupartist',
-  massage_therapist: 'Massageterapeut',
-  lash_technician: 'Vippetekniker',
-  brow_technician: 'Bryntekniker',
+  profession_esthetician: 'Kosmetolog',
+  profession_hair_stylist: 'Frisør',
+  profession_makeup_artist: 'Makeupartist',
+  profession_massage_therapist: 'Massageterapeut',
+  profession_lash_technician: 'Vippetekniker',
+  profession_brow_technician: 'Bryntekniker',
 };
 
 export const ProfessionSentenceTranslations: Record<string, string> = {
