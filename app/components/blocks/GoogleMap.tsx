@@ -1,9 +1,9 @@
-import {type PageComponentFragment} from 'storefrontapi.generated';
+import {type MapsFragment} from 'storefrontapi.generated';
 import {Wrapper} from '../Wrapper';
 import classes from './GoogleMap.module.css';
 
-export function GoogleMap({component}: {component: PageComponentFragment}) {
-  const url = component.fields.find(({key}) => key === 'url')?.value;
+export function GoogleMap({component}: {component: MapsFragment}) {
+  const url = component.url?.value;
 
   return (
     <Wrapper>

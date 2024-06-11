@@ -1,20 +1,16 @@
 import {Container, Flex, Text, Title, rem} from '@mantine/core';
-import {useMediaQuery} from '@mantine/hooks';
-import type {PageComponentFragment} from 'storefrontapi.generated';
-import {useField} from './utils';
+import {type SideBySideFragment} from 'storefrontapi.generated';
 
-export function SideBySide({component}: {component: PageComponentFragment}) {
-  const isMobile = useMediaQuery('(max-width: 62em)');
-  const field = useField(component);
-  const title = field.getFieldValue('title');
-  const text = field.getFieldValue('text');
+export function SideBySide({component}: {component: SideBySideFragment}) {
+  const title = component.title?.value;
+  const text = component.text?.value;
 
   return (
     <Container size="md" my={rem(80)}>
       <Flex
+        direction={{base: 'column', sm: 'row'}}
         justify="space-between"
         align="center"
-        style={{flexDirection: isMobile ? 'column' : 'row'}}
         gap="xl"
       >
         <Title fw={500} textWrap="wrap" style={{flex: 1}}>

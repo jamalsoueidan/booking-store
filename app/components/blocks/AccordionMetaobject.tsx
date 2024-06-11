@@ -1,26 +1,26 @@
 import {Accordion, Text} from '@mantine/core';
-import {type PageComponentMetaobjectFragment} from 'storefrontapi.generated';
-import {useField} from './utils';
+import type {
+  AccordionFragment,
+  AccordionItemFragment,
+} from 'storefrontapi.generated';
 
-export function AccordionMetaobject({
-  metaobject,
-}: {
-  metaobject: PageComponentMetaobjectFragment | null;
-}) {
-  const field = useField(metaobject);
-  if (!metaobject) return null;
-  const variant = field.getFieldValue('variant');
-  const items = field.getItems<PageComponentMetaobjectFragment>('items');
+export function AccordionMetaobject({data}: {data: AccordionFragment}) {
+  const variant = data.variant?.value;
+  const items = data.items?.references?.nodes;
+  if (!items) {
+    return null;
+  }
 
   return <AccordionComponent variant={variant || 'separated'} items={items} />;
 }
 
-export type AccordionComponentProps = {
+export function AccordionComponent({
+  variant,
+  items,
+}: {
   variant: string;
-  items: Array<PageComponentMetaobjectFragment>;
-};
-
-export function AccordionComponent({variant, items}: AccordionComponentProps) {
+  items: Array<AccordionItemFragment>;
+}) {
   return (
     <Accordion variant={variant || 'separated'} flex="1">
       {items.map((item) => (
@@ -33,11 +33,10 @@ export function AccordionComponent({variant, items}: AccordionComponentProps) {
 export const AccordionItemMetaobject = ({
   item,
 }: {
-  item: PageComponentMetaobjectFragment;
+  item: AccordionItemFragment;
 }) => {
-  const field = useField(item);
-  const label = field.getFieldValue('label');
-  const text = field.getFieldValue('text');
+  const label = item.label?.value;
+  const text = item.text?.value;
 
   return (
     <Accordion.Item key={item.id} value={label || ''}>

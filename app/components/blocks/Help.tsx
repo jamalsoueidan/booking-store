@@ -5,19 +5,14 @@ import {
   IconHeart,
   IconSearch,
 } from '@tabler/icons-react';
-import type {
-  PageComponentFragment,
-  PageComponentMetaobjectFragment,
-} from 'storefrontapi.generated';
+import type {HelpFragment, HelpItemFragment} from 'storefrontapi.generated';
 import {Wrapper} from '../Wrapper';
 import {ThemeIconMetaobject} from './ThemeIconMetaobject';
-import {useField} from './utils';
 
-export function Help({component}: {component: PageComponentFragment}) {
-  const field = useField(component);
-  const title = field.getFieldValue('title');
-  const backgroundColor = field.getFieldValue('background_color');
-  const items = field.getItems<PageComponentMetaobjectFragment>('items');
+export function Help({component}: {component: HelpFragment}) {
+  const title = component.title?.value;
+  const backgroundColor = component.backgroundColor?.value;
+  const items = component.items?.references?.nodes;
 
   return (
     <Wrapper bg={backgroundColor || undefined}>
@@ -42,22 +37,21 @@ const icons: Record<string, any> = {
   '': IconHeart,
 };
 
-const HelpItem = ({item}: {item: PageComponentMetaobjectFragment}) => {
-  const field = useField(item);
-  const title = field.getFieldValue('title');
-  const description = field.getFieldValue('description');
-  const backgroundColor = field.getFieldValue('background_color');
-  const themeIcon = field.getMetaObject('theme_icon');
+const HelpItem = ({item}: {item: HelpItemFragment}) => {
+  const title = item.title?.value;
+  const description = item.description?.value;
+  const backgroundColor = item.backgroundColor?.value;
+  const themeIcon = item.themeIcon?.reference;
 
   return (
     <Stack
       key={item.id}
       align="center"
       justify="flex-start"
-      bg={backgroundColor}
+      bg={backgroundColor || undefined}
       p="xl"
     >
-      {themeIcon ? <ThemeIconMetaobject metaobject={themeIcon} /> : null}
+      {themeIcon ? <ThemeIconMetaobject data={themeIcon} /> : null}
       <Title size={rem(28)} ta="center" fw={400}>
         {title}
       </Title>

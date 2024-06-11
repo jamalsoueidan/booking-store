@@ -1,20 +1,22 @@
 import {BackgroundImage, Container, Stack, Title, rem} from '@mantine/core';
-import type {PageComponentFragment} from 'storefrontapi.generated';
+import {type CallToActionFragment} from 'storefrontapi.generated';
 import {ButtonMetaobject} from './ButtonMetaobject';
 import {OverlayMetaobject} from './OverlayMetabject';
-import {useField} from './utils';
 
-export function CallToAction({component}: {component: PageComponentFragment}) {
-  const field = useField(component);
-  const image = field.getImage('image');
-  const title = field.getFieldValue('title');
-  const color = field.getFieldValue('color');
-  const button = field.getMetaObject('button');
-  const overlay = field.getMetaObject('overlay');
+export function CallToAction({component}: {component: CallToActionFragment}) {
+  const image = component.image?.reference;
+  const title = component.title?.value;
+  const color = component.color?.value;
+  const button = component.button?.reference;
+  const overlay = component.overlay?.reference;
 
   return (
-    <BackgroundImage src={image?.url || ''} style={{position: 'relative'}}>
-      <OverlayMetaobject metaobject={overlay} />
+    <BackgroundImage
+      src={image?.image?.url || ''}
+      bg="gray.4"
+      style={{position: 'relative'}}
+    >
+      {overlay ? <OverlayMetaobject data={overlay} /> : null}
       <Container
         size="md"
         py={rem(80)}
@@ -29,7 +31,7 @@ export function CallToAction({component}: {component: PageComponentFragment}) {
           >
             {title}
           </Title>
-          <ButtonMetaobject metaobject={button} />
+          {button && <ButtonMetaobject data={button} />}
         </Stack>
       </Container>
     </BackgroundImage>

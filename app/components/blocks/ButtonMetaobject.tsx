@@ -1,18 +1,10 @@
 import {Button} from '@mantine/core';
 import {Link} from '@remix-run/react';
-import {type PageComponentMetaobjectFragment} from 'storefrontapi.generated';
-import {useField} from './utils';
+import {type ButtonFragment} from 'storefrontapi.generated';
 
-export function ButtonMetaobject({
-  metaobject,
-}: {
-  metaobject: PageComponentMetaobjectFragment | null;
-}) {
-  const field = useField(metaobject);
-  if (!metaobject) return null;
-
-  const text = field.getFieldValue('text');
-  const linkTo = field.getFieldValue('link_to');
+export function ButtonMetaobject({data}: {data: ButtonFragment}) {
+  const text = data.text?.value;
+  const linkTo = data.linkTo?.value;
 
   return (
     <Button size="xl" component={Link} to={linkTo || ''}>
