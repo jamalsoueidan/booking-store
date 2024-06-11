@@ -127,7 +127,10 @@ function getLocaleFromRequest(request: Request): I18nLocale {
     .split('.')[0]
     ?.toUpperCase() as keyof typeof supportedLocales;
 
-  return supportedLocales[firstSubdomain]
+  const language = supportedLocales[firstSubdomain]
     ? {language: supportedLocales[firstSubdomain], country: firstSubdomain}
     : defaultLocale;
+
+  console.log(language);
+  return language;
 }
