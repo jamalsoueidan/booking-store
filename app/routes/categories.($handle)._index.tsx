@@ -25,6 +25,7 @@ import type {
   CategoriesCollectionProductFragment,
 } from 'storefrontapi.generated';
 import {Wrapper} from '~/components/Wrapper';
+import {useTranslations} from '~/providers/Translation';
 
 export const meta: MetaFunction<typeof loader> = ({data}) => {
   return [
@@ -58,6 +59,7 @@ export async function loader({request, params, context}: LoaderFunctionArgs) {
 }
 
 export default function Collection() {
+  const {t} = useTranslations();
   const {collection} = useLoaderData<typeof loader>();
 
   return (
@@ -72,7 +74,7 @@ export default function Collection() {
                 loading={isLoading}
                 size="xl"
               >
-                ↑ Hent tidligere
+                ↑ {t('pagination_previous_button')}
               </Button>
             </Flex>
             <SimpleGrid cols={{base: 1, xs: 2, sm: 3, md: 4}} spacing="lg">
@@ -87,7 +89,7 @@ export default function Collection() {
                 loading={isLoading}
                 size="xl"
               >
-                Hent flere ↓
+                {t('pagination_next_button')} ↓
               </Button>
             </Flex>
           </Stack>
@@ -110,6 +112,7 @@ export function TreatmentCard({
 }: {
   product: CategoriesCollectionFragment;
 }) {
+  const {t} = useTranslations();
   return (
     <Card
       key={product.handle}
@@ -136,7 +139,7 @@ export function TreatmentCard({
         mih="38px"
       >
         <Text c="dimmed" size="xs" fw={400} lineClamp={2} mx="sm">
-          {product.description || 'ingen beskrivelse'}
+          {product.description || '...'}
         </Text>
       </Flex>
       <Card.Section>
@@ -149,7 +152,7 @@ export function TreatmentCard({
           filters={product.collection?.reference?.products.filters || []}
         />
         <Button variant="default" size="xs" radius="lg">
-          Se behandling
+          {t('treatments_view')}
         </Button>
       </Group>
     </Card>

@@ -35,7 +35,6 @@ import {
 import {ClientOnly} from 'remix-utils/client-only';
 
 import {PriceBadge} from '~/components/artist/PriceBadge';
-import {ProfessionTranslations} from './api.users.professions';
 
 import {useDisclosure} from '@mantine/hooks';
 import type {
@@ -64,7 +63,9 @@ import {LocationIcon} from '~/components/LocationIcon';
 import {USER_COLLECTION_FILTER} from '~/graphql/fragments/UserCollectionFilter';
 import type {CustomerLocationBaseLocationType} from '~/lib/api/model';
 import {durationToTime} from '~/lib/duration';
+import {TranslationProvider, useTranslations} from '~/providers/Translation';
 import localLeafletStyles from '~/styles/leaflet.css?url';
+import {PAGE_QUERY} from './pages.$handle';
 
 export const links: LinksFunction = () => [
   {
@@ -191,9 +192,17 @@ export async function loader({params, request, context}: LoaderFunctionArgs) {
     );
   }
 
+  const {page} = await context.storefront.query(PAGE_QUERY, {
+    variables: {
+      handle: 'treatments',
+    },
+    cache: context.storefront.CacheLong(),
+  });
+
   return json({
     product,
     collection,
+    page,
     filters: collectionFiltersOnly?.products.filters || [],
   });
 }
@@ -206,7 +215,39 @@ interface PriceRange {
 }
 
 export default function Product() {
-  const {product, collection, filters} = useLoaderData<typeof loader>();
+  const {product, page} = useLoaderData<typeof loader>();
+
+  return (
+    <TranslationProvider data={page?.translations}>
+      <Container size="xl">
+        <Header />
+        <Stats />
+
+        <PaginationContent />
+
+        <Analytics.ProductView
+          data={{
+            products: [
+              {
+                id: product.id,
+                title: product.title,
+                price: product.variants.nodes[0].price.amount || '0',
+                vendor: product.vendor,
+                variantId: product.variants.nodes[0].id || '',
+                variantTitle: product.title || '',
+                quantity: 1,
+              },
+            ],
+          }}
+        />
+      </Container>
+    </TranslationProvider>
+  );
+}
+
+function Header() {
+  const {product, filters} = useLoaderData<typeof loader>();
+  const {t} = useTranslations();
   const [searchParams, setSearchParams] = useSearchParams();
   const [opened, {open, close}] = useDisclosure(false);
 
@@ -218,10 +259,6 @@ export default function Product() {
 
   const tags = filters.find((p) => p.id === 'filter.p.tag');
 
-  const availability = filters
-    .find((k) => k.id === 'filter.v.availability')
-    ?.values.find((p) => (p.input as any)?.includes('true')) || {count: 0};
-
   const cities =
     tags?.values
       .filter((p) => p.label.includes('city'))
@@ -229,13 +266,6 @@ export default function Product() {
         const [tag, ...rest] = c.label.split('-');
         return rest.join('-');
       }) || [];
-
-  const cityCount =
-    tags?.values
-      .filter((p) => p.label.includes('city'))
-      .reduce((total, city) => {
-        return total + city.count;
-      }, 0) || 0;
 
   const locations =
     tags?.values
@@ -275,96 +305,59 @@ export default function Product() {
   };
 
   return (
-    <Container size="xl">
-      <Flex direction="row" mt={rem(100)} mb="xl" gap={{base: 'sm', sm: 'lg'}}>
-        <Avatar
-          alt={product.featuredImage?.altText || 'Product Image'}
-          src={product.featuredImage?.url}
-          size={rem(120)}
-          style={{border: '3px solid rgba(243, 175, 228, 0.7)'}}
-        />
-        <Flex direction="column" justify="center">
-          <Title order={1} fz={{base: 'xl', sm: 'h1'}} mt="-5px">
-            {product?.title}
-          </Title>
+    <>
+      <Flex
+        direction={{base: 'column', sm: 'row'}}
+        mt={rem(100)}
+        mb="xl"
+        align="center"
+        gap="lg"
+      >
+        <Flex direction="row" gap={{base: 'sm', sm: 'lg'}}>
+          <Avatar
+            alt={product.featuredImage?.altText || 'Product Image'}
+            src={product.featuredImage?.url}
+            size={rem(120)}
+            style={{border: '3px solid rgba(243, 175, 228, 0.7)'}}
+          />
+          <Flex direction="column" justify="center">
+            <Title order={1} fz={{base: 'xl', sm: 'h1'}} mt="-5px">
+              {product?.title}
+            </Title>
 
-          <Text fz={{base: 'sm', sm: 'xl'}} c="dimmed" fw={400} lineClamp={3}>
-            {product.description}
-          </Text>
+            <Text fz={{base: 'sm', sm: 'xl'}} c="dimmed" fw={400} lineClamp={3}>
+              {product.description}
+            </Text>
+          </Flex>
+        </Flex>
+        <Flex justify={{base: 'center', sm: 'flex-end'}} gap="md">
+          <ResetFilter />
+          <Button
+            variant="outline"
+            c="black"
+            color="gray.3"
+            bg="white"
+            onClick={open}
+            size="xl"
+            leftSection={<IconFilter />}
+            rightSection={<IconArrowDown />}
+          >
+            {t('treatments_filter')}
+          </Button>
+          <Button
+            variant="outline"
+            c="black"
+            color="gray.3"
+            bg="white"
+            onClick={() => onChangeMap(map === 'hide' ? null : 'hide')}
+            size="xl"
+            rightSection={<IconGps />}
+            visibleFrom="sm"
+          >
+            {map === 'hide' ? t('show') : t('hide')} {t('treatments_map')}
+          </Button>
         </Flex>
       </Flex>
-
-      <Card
-        radius="md"
-        withBorder
-        bg="rgba(243, 175, 228, 0.15)"
-        style={{border: '1px solid rgba(243, 175, 228, 0.25)'}}
-        mt={rem(15)}
-        mb={rem(30)}
-      >
-        <Flex
-          direction={{base: 'column', sm: 'row'}}
-          justify="space-between"
-          gap={{base: 'md'}}
-        >
-          <Flex gap="xl" wrap="wrap">
-            <Flex direction="column" justify="center">
-              <Text tt="uppercase" ta="center" fz="sm" c="gray" fw="400">
-                Kategori
-              </Text>
-              <Text ta="center" fw="600">
-                {product.productType}
-              </Text>
-            </Flex>
-            <Flex direction="column" justify="center">
-              <Text tt="uppercase" ta="center" fz="sm" c="gray" fw="400">
-                Skønhedseksperter
-              </Text>
-              <Text ta="center" fw="600">
-                {availability?.count}
-              </Text>
-            </Flex>
-            <Flex direction="column" justify="center">
-              <Text tt="uppercase" ta="center" fz="sm" c="gray" fw="400">
-                Byer
-              </Text>
-              <Text ta="center">{cityCount}</Text>
-            </Flex>
-          </Flex>
-
-          <Card.Section hiddenFrom="sm">
-            <Divider />
-          </Card.Section>
-
-          <Flex justify={{base: 'center', sm: 'flex-end'}} gap="md">
-            <ResetFilter />
-            <Button
-              variant="outline"
-              c="black"
-              color="gray.3"
-              bg="white"
-              onClick={open}
-              size="xl"
-              leftSection={<IconFilter />}
-              rightSection={<IconArrowDown />}
-            >
-              Filtre
-            </Button>
-            <Button
-              variant="outline"
-              c="black"
-              color="gray.3"
-              bg="white"
-              onClick={() => onChangeMap(map === 'hide' ? null : 'hide')}
-              size="xl"
-              rightSection={<IconGps />}
-              visibleFrom="sm"
-            >
-              {map === 'hide' ? 'Vis' : 'Skjul'} Map
-            </Button>
-          </Flex>
-        </Flex>
-      </Card>
 
       <Drawer
         position="right"
@@ -376,14 +369,14 @@ export default function Product() {
           <AddCityFilter tags={cities} />
           <Select
             size="md"
-            label="Sortere efter:"
-            placeholder="Vælg sortering"
+            label={t('treatments_sort_label')}
+            placeholder={t('treatments_sort_placeholder')}
             onChange={onChangeSort}
             leftSection={<IconArrowsSort />}
             data={[
-              {label: 'Nyeste', value: 'newest'},
-              {label: 'Billigst', value: 'cheapest'},
-              {label: 'Dyrest', value: 'expensive'},
+              {label: t('treatments_sort_newest'), value: 'newest'},
+              {label: t('treatments_sort_cheapest'), value: 'cheapest'},
+              {label: t('treatments_sort_expensive'), value: 'expensive'},
             ]}
             clearable
           />
@@ -395,91 +388,136 @@ export default function Product() {
           <AddDayFilter />
         </Stack>
       </Drawer>
+    </>
+  );
+}
 
-      <Pagination connection={collection.products}>
-        {({nodes, isLoading, PreviousLink, NextLink, hasPreviousPage}) => (
-          <Stack gap="xl" mb={rem(50)}>
-            <SimpleGrid cols={map === 'hide' ? {base: 1} : {base: 1, sm: 2}}>
-              <Stack gap="xl">
-                {hasPreviousPage ? (
-                  <Flex justify="center">
-                    <Button
-                      variant="default"
-                      component={PreviousLink}
-                      loading={isLoading}
-                      size="xl"
-                    >
-                      ↑ Hent tidligere
-                    </Button>
-                  </Flex>
-                ) : null}
+function PaginationContent() {
+  const {collection} = useLoaderData<typeof loader>();
+  const {t} = useTranslations();
+  const [searchParams] = useSearchParams();
+  const map = String(searchParams.get('map'));
 
-                <SimpleGrid
-                  cols={map === 'hide' ? {base: 1, sm: 3} : {base: 1}}
-                >
-                  {nodes.map((product) => {
-                    return (
-                      <TreatmentProductUser
-                        key={product.id}
-                        product={product}
-                      />
-                    );
-                  })}
-                </SimpleGrid>
-
+  return (
+    <Pagination connection={collection.products}>
+      {({nodes, isLoading, PreviousLink, NextLink, hasPreviousPage}) => (
+        <Stack gap="xl" mb={rem(50)}>
+          <SimpleGrid cols={map === 'hide' ? {base: 1} : {base: 1, sm: 2}}>
+            <Stack gap="xl">
+              {hasPreviousPage ? (
                 <Flex justify="center">
                   <Button
                     variant="default"
-                    component={NextLink}
+                    component={PreviousLink}
                     loading={isLoading}
                     size="xl"
                   >
-                    Hent flere ↓
+                    ↑ {t('pagination_previous_button')}
                   </Button>
                 </Flex>
-              </Stack>
-              {map !== 'hide' ? (
-                <Box pos="relative">
-                  <div style={{position: 'sticky', top: 0}}>
-                    <ClientOnly
-                      fallback={
-                        <div
-                          id="skeleton"
-                          style={{
-                            height: '100vh',
-                            border: '1px solid #dee2e6',
-                            borderRadius: '10px',
-                            background: '#d1d1d1',
-                          }}
-                        />
-                      }
-                    >
-                      {() => <LeafletMap products={nodes} />}
-                    </ClientOnly>
-                  </div>
-                </Box>
               ) : null}
-            </SimpleGrid>
-          </Stack>
-        )}
-      </Pagination>
 
-      <Analytics.ProductView
-        data={{
-          products: [
-            {
-              id: product.id,
-              title: product.title,
-              price: product.variants.nodes[0].price.amount || '0',
-              vendor: product.vendor,
-              variantId: product.variants.nodes[0].id || '',
-              variantTitle: product.title || '',
-              quantity: 1,
-            },
-          ],
-        }}
-      />
-    </Container>
+              <SimpleGrid cols={map === 'hide' ? {base: 1, sm: 3} : {base: 1}}>
+                {nodes.map((product) => (
+                  <TreatmentProductUser key={product.id} product={product} />
+                ))}
+              </SimpleGrid>
+
+              <Flex justify="center">
+                <Button
+                  variant="default"
+                  component={NextLink}
+                  loading={isLoading}
+                  size="xl"
+                >
+                  {t('pagination_next_button')} ↓
+                </Button>
+              </Flex>
+            </Stack>
+            {map !== 'hide' ? (
+              <Box pos="relative">
+                <div style={{position: 'sticky', top: 0}}>
+                  <ClientOnly
+                    fallback={
+                      <div
+                        id="skeleton"
+                        style={{
+                          height: '100vh',
+                          border: '1px solid #dee2e6',
+                          borderRadius: '10px',
+                          background: '#d1d1d1',
+                        }}
+                      />
+                    }
+                  >
+                    {() => <LeafletMap products={nodes} />}
+                  </ClientOnly>
+                </div>
+              </Box>
+            ) : null}
+          </SimpleGrid>
+        </Stack>
+      )}
+    </Pagination>
+  );
+}
+
+function Stats() {
+  const {product, filters} = useLoaderData<typeof loader>();
+  const {t} = useTranslations();
+  const tags = filters.find((p) => p.id === 'filter.p.tag');
+
+  const availability = filters
+    .find((k) => k.id === 'filter.v.availability')
+    ?.values.find((p) => (p.input as any)?.includes('true')) || {count: 0};
+
+  const cityCount =
+    tags?.values
+      .filter((p) => p.label.includes('city'))
+      .reduce((total, city) => {
+        return total + city.count;
+      }, 0) || 0;
+
+  return (
+    <Card
+      radius="md"
+      withBorder
+      bg="rgba(243, 175, 228, 0.15)"
+      style={{border: '1px solid rgba(243, 175, 228, 0.25)'}}
+      mt={rem(15)}
+      mb={rem(30)}
+    >
+      <Flex
+        direction={{base: 'column', sm: 'row'}}
+        justify="space-between"
+        gap={{base: 'md'}}
+      >
+        <Flex gap="xl" wrap="wrap">
+          <Flex direction="column" justify="center">
+            <Text tt="uppercase" ta="center" fz="sm" c="gray" fw="400">
+              {t('treatments_category')}
+            </Text>
+            <Text ta="center" fw="600">
+              {product.productType}
+            </Text>
+          </Flex>
+          <Flex direction="column" justify="center">
+            <Text tt="uppercase" ta="center" fz="sm" c="gray" fw="400">
+              {t('treatments_beauty_expert')}
+            </Text>
+            <Text ta="center" fw="600">
+              {availability?.count}
+            </Text>
+          </Flex>
+          <Flex direction="column" justify="center">
+            <Text tt="uppercase" ta="center" fz="sm" c="gray" fw="400">
+              {t('treatments_cities')}
+            </Text>
+            <Text ta="center">{cityCount}</Text>
+          </Flex>
+        </Flex>
+      </Flex>
+    </Card>
   );
 }
 
@@ -488,6 +526,7 @@ function TreatmentProductUser({
 }: {
   product: TreatmentsForCollectionFragment;
 }) {
+  const {t} = useTranslations();
   const user = product.user?.reference;
 
   if (!user) {
@@ -522,7 +561,7 @@ function TreatmentProductUser({
                     key={p}
                     fw="400"
                   >
-                    {ProfessionTranslations[p]}
+                    {t(`profession_${p}`)}
                   </Badge>
                 ))}
               </Flex>
@@ -530,7 +569,7 @@ function TreatmentProductUser({
           </Flex>
           <Flex visibleFrom="sm" align="center">
             <Button variant="outline" c="black" color="gray.3" radius="lg">
-              Vis profil
+              {t('treatments_view_profile')}
             </Button>
           </Flex>
         </Flex>

@@ -19,21 +19,17 @@ import {IconArrowRight, IconMoodWink, IconSearch} from '@tabler/icons-react';
 
 import {Carousel} from '@mantine/carousel';
 import {useRef} from 'react';
-import type {
-  ArticleUserFragment,
-  CategoriesCollectionFragment,
-} from 'storefrontapi.generated';
 import {Slider} from '~/components/Slider';
 import {H1} from '~/components/titles/H1';
 import {H2} from '~/components/titles/H2';
 
 import {ProfessionButton} from '~/components/ProfessionButton';
-import {ARTICLE_USER_FRAGMENT} from '~/graphql/fragments/ArticleUser';
 
+import {getPaginationVariables} from '@shopify/hydrogen';
 import {Headless} from '~/components/blocks/Headless';
 import {getTags} from '~/lib/tags';
 import {TranslationProvider, useTranslations} from '~/providers/Translation';
-import {UserCard} from './artists._index';
+import {UserCard, USERS_QUERY} from './artists._index';
 import {
   CATEGORIES_COLLECTION_FRAGMENT,
   TreatmentCard,
@@ -52,8 +48,7 @@ export const meta: MetaFunction<typeof loader> = ({data}) => {
   ];
 };
 
-export async function loader(args: LoaderFunctionArgs) {
-  const {context} = args;
+export async function loader({context, request}: LoaderFunctionArgs) {
   const {storefront} = context;
 
   const tags = await getTags(
@@ -71,7 +66,17 @@ export async function loader(args: LoaderFunctionArgs) {
     },
   );
 
+  const paginationVariables = getPaginationVariables(request, {
+    pageBy: 5,
+  });
+
   const {data} = await storefront.query(USERS_QUERY, {
+    variables: {
+      sortKey: 'PUBLISHED_AT',
+      reverse: true,
+      query: 'tag:parentid',
+      ...paginationVariables,
+    },
     cache: context.storefront.CacheShort(),
   });
 
@@ -84,21 +89,20 @@ export async function loader(args: LoaderFunctionArgs) {
 
   return json({
     recommendedTreatments,
-    users: data?.users.nodes || [],
+    users: data,
     page,
     tags,
   });
 }
 
 export default function Homepage() {
-  const {users, recommendedTreatments, page, tags} =
-    useLoaderData<typeof loader>();
+  const {page} = useLoaderData<typeof loader>();
 
   return (
     <TranslationProvider data={page?.translations}>
       <Header />
-      <FeaturedArtists users={users as any} tags={tags} />
-      <RecommendedTreatments products={recommendedTreatments.nodes} />
+      <FeaturedArtists />
+      <RecommendedTreatments />
       <Headless components={page?.components} />
     </TranslationProvider>
   );
@@ -155,13 +159,8 @@ function Header() {
   );
 }
 
-function FeaturedArtists({
-  users,
-  tags,
-}: {
-  users: ArticleUserFragment[];
-  tags?: Record<string, string[]>;
-}) {
+function FeaturedArtists() {
+  const {users, tags} = useLoaderData<typeof loader>();
   const theme = useMantineTheme();
   const {t} = useTranslations();
 
@@ -179,16 +178,25 @@ function FeaturedArtists({
           {tags && tags['profession'] ? (
             <ScrollArea type="auto" offsetScrollbars="x">
               <Flex justify="center" gap={{base: 'sm', sm: 'lg'}}>
-                {tags['profession']?.map((profession) => (
-                  <ProfessionButton key={profession} profession={profession} />
-                ))}
+                {tags['profession']
+                  ?.sort((a, b) => {
+                    const translatedA = t(`profession_${a}`) || a;
+                    const translatedB = t(`profession_${b}`) || b;
+                    return translatedA.localeCompare(translatedB);
+                  })
+                  .map((profession) => (
+                    <ProfessionButton
+                      key={profession}
+                      profession={profession}
+                    />
+                  ))}
               </Flex>
             </ScrollArea>
           ) : null}
 
           <SimpleGrid cols={{base: 1, sm: 3}} spacing="xl">
-            {users.map((user) => (
-              <UserCard key={user.id} article={user} />
+            {users?.users?.nodes.map((user) => (
+              <UserCard key={user.id} article={user as any} />
             ))}
           </SimpleGrid>
           <Flex justify="center">
@@ -216,11 +224,8 @@ function FeaturedArtists({
   );
 }
 
-function RecommendedTreatments({
-  products,
-}: {
-  products: CategoriesCollectionFragment[];
-}) {
+function RecommendedTreatments() {
+  const {recommendedTreatments} = useLoaderData<typeof loader>();
   const theme = useMantineTheme();
   const {t} = useTranslations();
   const AUTOPLAY_DELAY = useRef(Autoplay({delay: 2000}));
@@ -241,7 +246,7 @@ function RecommendedTreatments({
             plugins={[AUTOPLAY_DELAY.current]}
             slideSize={{base: '100%', md: '20%'}}
           >
-            {products.map((product) => {
+            {recommendedTreatments.nodes.map((product) => {
               return (
                 <Carousel.Slide key={product.id}>
                   <TreatmentCard product={product} />
@@ -286,22 +291,6 @@ export const RECOMMENDED_TREATMENTS_QUERY = `#graphql
     products(first: 10, sortKey: RELEVANCE, query: $query) {
       nodes {
         ...CategoriesCollection
-      }
-    }
-  }
-` as const;
-
-export const USERS_QUERY = `#graphql
-  ${ARTICLE_USER_FRAGMENT}
-  query FrontUsers(
-    $country: CountryCode
-    $language: LanguageCode
-  ) @inContext(country: $country, language: $language) {
-    data: blog(id: "gid://shopify/Blog/105364226375") {
-      users: articles(first: 3, sortKey: PUBLISHED_AT, reverse: true, query: "tag:parentid") {
-        nodes {
-          ...ArticleUser
-        }
       }
     }
   }

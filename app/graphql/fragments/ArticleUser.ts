@@ -8,9 +8,9 @@ export const ARTICLE_USER_FRAGMENT = `#graphql
   ${ARTICLE_USER_PRODUCT}
 
   fragment ArticleUser on Article {
+    id
     title
     tags
-    id
     user: metafield(key: "user", namespace: "booking") {
       reference {
         ...User
