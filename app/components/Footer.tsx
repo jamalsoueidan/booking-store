@@ -124,7 +124,7 @@ function FooterMenu({menu}: {menu: FooterQuery['menu']}) {
           return (
             <Anchor
               component={Link}
-              to={url || ''}
+              to={url?.replace('/en/', '/') || ''}
               c="dimmed"
               size="sm"
               key={item.id}
