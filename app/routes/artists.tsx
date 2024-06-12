@@ -236,7 +236,7 @@ function CategoriesAndFilters({
             leftSection={<IconFilter />}
             rightSection={<IconArrowDown />}
           >
-            Filtre
+            {t('artists_filters')}
           </Button>
         </Flex>
         <Flex justify="center" gap="md" wrap="wrap">
@@ -283,7 +283,7 @@ function CategoriesAndFilters({
                   rightSection={<IconX />}
                   leftSection={<IconArrowsSort />}
                 >
-                  Sortering
+                  {t('artists_sorting')}
                 </Button>
               ) : null}
               <RemoveLocationFilterButton />
@@ -297,8 +297,8 @@ function CategoriesAndFilters({
                   rightSection={<IconX />}
                   leftSection={<IconGenderFemale />}
                 >
-                  {genderValue === 'woman' && 'Kvinder'}
-                  {genderValue === 'man' && 'Mænd'}
+                  {genderValue === 'woman' && t('artists_gender_woman')}
+                  {genderValue === 'man' && t('artists_gender_men')}
                 </Button>
               ) : null}
               <RemoveDayFilterButton />
@@ -317,8 +317,8 @@ function CategoriesAndFilters({
           <Select
             size="md"
             value={professionSearchParams}
-            label="Skønhedseksperter profession:"
-            placeholder="Alle professioner"
+            label={t('artists_profession_label')}
+            placeholder={t('artists_profession_placeholder')}
             onChange={onChangeProfession}
             leftSection={<IconNetwork />}
             data={tags['profession'].map((p) => ({
@@ -332,8 +332,8 @@ function CategoriesAndFilters({
           <Select
             size="md"
             value={productSearchParams}
-            label="Behandlinger:"
-            placeholder="Alle behandlinger"
+            label={t('artists_treatments_label')}
+            placeholder={t('artists_treatments_placeholder')}
             onChange={onChangeProduct}
             leftSection={<IconServicemark />}
             data={products}
@@ -343,14 +343,17 @@ function CategoriesAndFilters({
           <Select
             size="md"
             value={sortValue}
-            label="Sortere skønhedseksperter efter:"
+            label={t('artists_sorting_by_label')}
             leftSection={<IconArrowsSort />}
-            placeholder="Vælge sortering"
+            placeholder={t('artists_sorting_by_placeholder')}
             onChange={onChangeSort}
             data={[
-              {label: 'Navn', value: 'title'},
-              {label: 'Nyeste tilføjet', value: 'published_at'},
-              {label: 'Ældest tilføjet', value: 'reverse'},
+              {label: t('artists_sorting_by_name'), value: 'title'},
+              {label: t('artists_sorting_by_newest'), value: 'published_at'},
+              {
+                label: t('artists_sorting_by_oldest'),
+                value: 'reverse',
+              },
             ]}
             clearable
           />
@@ -360,13 +363,13 @@ function CategoriesAndFilters({
           <div>
             <Group gap="xs" mb="xs">
               <IconGenderFemale />
-              <InputLabel size="md">Skønhedsekspert køn?</InputLabel>
+              <InputLabel size="md">{t('artists_gender_label')}</InputLabel>
             </Group>
             <Radio.Group value={genderValue} onChange={onChangeGender}>
               <Stack gap="3px">
-                <Radio value={null!} label="Begge" />
-                <Radio value="woman" label="Kvinder" />
-                <Radio value="man" label="Mænd" />
+                <Radio value={null!} label={t('artists_gender_all')} />
+                <Radio value="woman" label={t('artists_gender_woman')} />
+                <Radio value="man" label={t('artists_gender_men')} />
               </Stack>
             </Radio.Group>
           </div>

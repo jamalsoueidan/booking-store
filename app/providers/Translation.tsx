@@ -38,6 +38,7 @@ export const useTranslations = () => {
     (key: string) => {
       const value = data[key];
       if (!value) {
+        console.log(`missing_${key}`, data);
         return `missing_${key}`;
       }
       return value;

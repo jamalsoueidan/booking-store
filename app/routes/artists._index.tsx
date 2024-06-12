@@ -111,6 +111,7 @@ export const loader = async ({context, request}: LoaderFunctionArgs) => {
 };
 
 export default function Component() {
+  const {t} = useTranslations();
   const {users} = useLoaderData<typeof loader>();
 
   if (!users) return <>No users</>;
@@ -126,7 +127,7 @@ export default function Component() {
               loading={isLoading}
               size="xl"
             >
-              ↑ Hent tidligere
+              ↑ {t('pagination_previous_button')}
             </Button>
           </Flex>
           <SimpleGrid cols={{base: 1, sm: 2, md: 3}} spacing="lg">
@@ -141,7 +142,7 @@ export default function Component() {
               loading={isLoading}
               size="xl"
             >
-              Hent flere ↓
+              {t('pagination_next_button')} ↓
             </Button>
           </Flex>
         </Stack>

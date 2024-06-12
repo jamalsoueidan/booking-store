@@ -2,8 +2,10 @@ import {Group, RangeSlider, Stack, Text} from '@mantine/core';
 import {useSearchParams} from '@remix-run/react';
 import {IconMoneybag} from '@tabler/icons-react';
 import {useEffect, useState} from 'react';
+import {useTranslations} from '~/providers/Translation';
 
 export function AddPriceFilter({min, max}: {min: number; max: number}) {
+  const {t} = useTranslations();
   const [searchParams, setSearchParams] = useSearchParams();
   const [value, setValue] = useState([0, max]);
 
@@ -32,7 +34,7 @@ export function AddPriceFilter({min, max}: {min: number; max: number}) {
     <Stack gap="xs" mb="lg">
       <Group gap="xs">
         <IconMoneybag />
-        <Text fw="bold">Pris:</Text>
+        <Text fw="bold">{t('filter_price_label')}</Text>
       </Group>
       <RangeSlider
         value={value as any}
@@ -44,11 +46,11 @@ export function AddPriceFilter({min, max}: {min: number; max: number}) {
         marks={[
           {
             value: 10,
-            label: `fra ${0} kr`,
+            label: `${t('filter_price_from')} ${0} kr`,
           },
           {
             value: max - 10,
-            label: `til ${max} kr`,
+            label: `${'filter_price_to'} ${max} kr`,
           },
         ]}
       />
