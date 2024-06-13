@@ -33,7 +33,7 @@ import {
   IconShoppingCartPlus,
 } from '@tabler/icons-react';
 import {Suspense, type ReactNode} from 'react';
-import {TranslationProvider} from '~/providers/Translation';
+import {TranslationProvider, useTranslations} from '~/providers/Translation';
 import {type loader} from '~/root';
 import {Footer} from './Footer';
 import logo from '/Artboard4.svg';
@@ -159,61 +159,7 @@ export function LayoutWrapper({children}: {children: ReactNode}) {
                 );
               })}
           </Flex>
-          <Flex
-            justify="flex-end"
-            align="center"
-            gap="sm"
-            visibleFrom="sm"
-            miw="150px"
-          >
-            <Suspense>
-              <Await resolve={data.isLoggedIn}>
-                {(isLoggedIn) =>
-                  isLoggedIn ? (
-                    <ActionIcon
-                      variant="outline"
-                      size="lg"
-                      color="black"
-                      component={Link}
-                      to="/account"
-                      data-testid="login-button"
-                    >
-                      <IconKey />
-                    </ActionIcon>
-                  ) : (
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      color="black"
-                      component={Link}
-                      to="/account"
-                      data-testid="login-button"
-                    >
-                      Log ind
-                    </Button>
-                  )
-                }
-              </Await>
-            </Suspense>
-            <Suspense>
-              <Await resolve={data.cart}>
-                {(cart) =>
-                  cart?.totalQuantity && cart?.totalQuantity > 0 ? (
-                    <ActionIcon
-                      variant="outline"
-                      size="lg"
-                      color="black"
-                      component={Link}
-                      to="/cart"
-                      data-testid="cart-button"
-                    >
-                      <IconShoppingCartPlus />
-                    </ActionIcon>
-                  ) : null
-                }
-              </Await>
-            </Suspense>
-          </Flex>
+          <AuthSection />
         </AppShell.Header>
 
         <AppShell.Navbar px={4}>
@@ -290,5 +236,68 @@ export function LayoutWrapper({children}: {children: ReactNode}) {
         </AppShell.Main>
       </AppShell>
     </TranslationProvider>
+  );
+}
+
+function AuthSection() {
+  const data = useLoaderData<typeof loader>();
+  const {t} = useTranslations();
+
+  return (
+    <Flex
+      justify="flex-end"
+      align="center"
+      gap="sm"
+      visibleFrom="sm"
+      miw="150px"
+    >
+      <Suspense>
+        <Await resolve={data.isLoggedIn}>
+          {(isLoggedIn) =>
+            isLoggedIn ? (
+              <ActionIcon
+                variant="outline"
+                size="lg"
+                color="black"
+                component={Link}
+                to="/account"
+                data-testid="login-button"
+              >
+                <IconKey />
+              </ActionIcon>
+            ) : (
+              <Button
+                variant="outline"
+                size="sm"
+                color="black"
+                component={Link}
+                to="/account"
+                data-testid="login-button"
+              >
+                {t('login')}
+              </Button>
+            )
+          }
+        </Await>
+      </Suspense>
+      <Suspense>
+        <Await resolve={data.cart}>
+          {(cart) =>
+            cart?.totalQuantity && cart?.totalQuantity > 0 ? (
+              <ActionIcon
+                variant="outline"
+                size="lg"
+                color="black"
+                component={Link}
+                to="/cart"
+                data-testid="cart-button"
+              >
+                <IconShoppingCartPlus />
+              </ActionIcon>
+            ) : null
+          }
+        </Await>
+      </Suspense>
+    </Flex>
   );
 }
