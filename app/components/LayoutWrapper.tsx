@@ -121,7 +121,9 @@ export function LayoutWrapper({children}: {children: ReactNode}) {
               data.header.menu?.items.map(({url, title}) => (
                 <NavLink
                   key={url}
-                  to={new URL(url || '').pathname.replace('/en/', '/')}
+                  to={new URL(url || '').pathname
+                    .replace('/en/', '/')
+                    .replace('/ar/', '/')}
                   onClick={publishSideCartViewed}
                 >
                   {({isActive}) => (
