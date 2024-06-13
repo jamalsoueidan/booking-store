@@ -3516,93 +3516,85 @@ export type PickMoreTreatmentProductFragment = Pick<
 };
 
 export type PickMoreProductsQueryVariables = StorefrontAPI.Exact<{
-  handle: StorefrontAPI.Scalars['String']['input'];
   country?: StorefrontAPI.InputMaybe<StorefrontAPI.CountryCode>;
   language?: StorefrontAPI.InputMaybe<StorefrontAPI.LanguageCode>;
-  filters?: StorefrontAPI.InputMaybe<
-    Array<StorefrontAPI.ProductFilter> | StorefrontAPI.ProductFilter
-  >;
+  query?: StorefrontAPI.InputMaybe<StorefrontAPI.Scalars['String']['input']>;
 }>;
 
 export type PickMoreProductsQuery = {
-  collection?: StorefrontAPI.Maybe<{
-    products: {
-      nodes: Array<
-        Pick<
-          StorefrontAPI.Product,
-          'id' | 'title' | 'descriptionHtml' | 'productType' | 'handle'
-        > & {
-          featuredImage?: StorefrontAPI.Maybe<
-            Pick<
-              StorefrontAPI.Image,
-              'id' | 'altText' | 'url' | 'width' | 'height'
-            >
-          >;
-          variants: {
-            nodes: Array<{
-              compareAtPrice?: StorefrontAPI.Maybe<
-                Pick<StorefrontAPI.MoneyV2, 'amount' | 'currencyCode'>
+  products: {
+    nodes: Array<
+      Pick<
+        StorefrontAPI.Product,
+        'id' | 'title' | 'descriptionHtml' | 'productType' | 'handle'
+      > & {
+        featuredImage?: StorefrontAPI.Maybe<
+          Pick<
+            StorefrontAPI.Image,
+            'id' | 'altText' | 'url' | 'width' | 'height'
+          >
+        >;
+        variants: {
+          nodes: Array<{
+            compareAtPrice?: StorefrontAPI.Maybe<
+              Pick<StorefrontAPI.MoneyV2, 'amount' | 'currencyCode'>
+            >;
+            price: Pick<StorefrontAPI.MoneyV2, 'amount' | 'currencyCode'>;
+          }>;
+        };
+        options?: StorefrontAPI.Maybe<
+          Pick<StorefrontAPI.Metafield, 'value'> & {
+            references?: StorefrontAPI.Maybe<{
+              nodes: Array<
+                Pick<
+                  StorefrontAPI.Product,
+                  'id' | 'title' | 'handle' | 'description'
+                > & {
+                  options: Array<
+                    Pick<StorefrontAPI.ProductOption, 'name' | 'values'>
+                  >;
+                  variants: {
+                    nodes: Array<
+                      Pick<StorefrontAPI.ProductVariant, 'id' | 'title'> & {
+                        image?: StorefrontAPI.Maybe<
+                          Pick<
+                            StorefrontAPI.Image,
+                            'id' | 'url' | 'altText' | 'width' | 'height'
+                          >
+                        >;
+                        price: Pick<
+                          StorefrontAPI.MoneyV2,
+                          'amount' | 'currencyCode'
+                        >;
+                        compareAtPrice?: StorefrontAPI.Maybe<
+                          Pick<StorefrontAPI.MoneyV2, 'amount' | 'currencyCode'>
+                        >;
+                        selectedOptions: Array<
+                          Pick<StorefrontAPI.SelectedOption, 'name' | 'value'>
+                        >;
+                        duration?: StorefrontAPI.Maybe<
+                          Pick<StorefrontAPI.Metafield, 'value'>
+                        >;
+                      }
+                    >;
+                  };
+                  parentId?: StorefrontAPI.Maybe<
+                    Pick<StorefrontAPI.Metafield, 'value'>
+                  >;
+                  required?: StorefrontAPI.Maybe<
+                    Pick<StorefrontAPI.Metafield, 'value'>
+                  >;
+                }
               >;
-              price: Pick<StorefrontAPI.MoneyV2, 'amount' | 'currencyCode'>;
             }>;
-          };
-          options?: StorefrontAPI.Maybe<
-            Pick<StorefrontAPI.Metafield, 'value'> & {
-              references?: StorefrontAPI.Maybe<{
-                nodes: Array<
-                  Pick<
-                    StorefrontAPI.Product,
-                    'id' | 'title' | 'handle' | 'description'
-                  > & {
-                    options: Array<
-                      Pick<StorefrontAPI.ProductOption, 'name' | 'values'>
-                    >;
-                    variants: {
-                      nodes: Array<
-                        Pick<StorefrontAPI.ProductVariant, 'id' | 'title'> & {
-                          image?: StorefrontAPI.Maybe<
-                            Pick<
-                              StorefrontAPI.Image,
-                              'id' | 'url' | 'altText' | 'width' | 'height'
-                            >
-                          >;
-                          price: Pick<
-                            StorefrontAPI.MoneyV2,
-                            'amount' | 'currencyCode'
-                          >;
-                          compareAtPrice?: StorefrontAPI.Maybe<
-                            Pick<
-                              StorefrontAPI.MoneyV2,
-                              'amount' | 'currencyCode'
-                            >
-                          >;
-                          selectedOptions: Array<
-                            Pick<StorefrontAPI.SelectedOption, 'name' | 'value'>
-                          >;
-                          duration?: StorefrontAPI.Maybe<
-                            Pick<StorefrontAPI.Metafield, 'value'>
-                          >;
-                        }
-                      >;
-                    };
-                    parentId?: StorefrontAPI.Maybe<
-                      Pick<StorefrontAPI.Metafield, 'value'>
-                    >;
-                    required?: StorefrontAPI.Maybe<
-                      Pick<StorefrontAPI.Metafield, 'value'>
-                    >;
-                  }
-                >;
-              }>;
-            }
-          >;
-          duration?: StorefrontAPI.Maybe<
-            Pick<StorefrontAPI.Metafield, 'id' | 'value'>
-          >;
-        }
-      >;
-    };
-  }>;
+          }
+        >;
+        duration?: StorefrontAPI.Maybe<
+          Pick<StorefrontAPI.Metafield, 'id' | 'value'>
+        >;
+      }
+    >;
+  };
 };
 
 export type ArtistsIndexQueryVariables = StorefrontAPI.Exact<{
@@ -6050,7 +6042,7 @@ interface GeneratedQueryTypes {
     return: ArtistOptionsQuery;
     variables: ArtistOptionsQueryVariables;
   };
-  '#graphql\n  #graphql\n  #graphql\n  #graphql\n  fragment TreatmentOptionVariant on ProductVariant {\n    id\n    title\n    image {\n      id\n      url(transform: { maxHeight: 100, maxWidth: 100, crop: CENTER })\n      altText\n      width\n      height\n    }\n    price {\n      amount\n      currencyCode\n    }\n    compareAtPrice {\n      amount\n      currencyCode\n    }\n    selectedOptions {\n      name\n      value\n    }\n    duration: metafield(key: "duration", namespace: "booking") {\n      value\n    }\n  }\n\n\n  fragment TreatmentOption on Product {\n    id\n    title\n    handle\n    description\n    options {\n      name\n      values\n    }\n    variants(first: 5) {\n      nodes {\n        ...TreatmentOptionVariant\n      }\n    }\n    parentId: metafield(key: "parentId", namespace: "booking") {\n      value\n    }\n    required: metafield(key: "required", namespace: "system") {\n      value\n    }\n  }\n\n  fragment PickMoreTreatmentProduct on Product {\n    id\n    title\n    descriptionHtml\n    productType\n    handle\n    featuredImage {\n      id\n      altText\n      url(transform: { maxHeight: 250, maxWidth: 250, crop: CENTER })\n      width\n      height\n    }\n    variants(first: 1) {\n      nodes {\n        compareAtPrice {\n          amount\n          currencyCode\n        }\n        price {\n          amount\n          currencyCode\n        }\n      }\n    }\n    options: metafield(key: "options", namespace: "booking") {\n      value\n      references(first: 10) {\n        nodes {\n          ...TreatmentOption\n        }\n      }\n    }\n    duration: metafield(key: "duration", namespace: "booking") {\n      id\n      value\n    }\n  }\n\n\n  query PickMoreProducts(\n    $handle: String!\n    $country: CountryCode\n    $language: LanguageCode\n    $filters: [ProductFilter!] = {}\n  ) @inContext(country: $country, language: $language) {\n    collection(handle: $handle) {\n      products(first: 20, sortKey: TITLE, filters: $filters) {\n        nodes {\n          ...PickMoreTreatmentProduct\n        }\n      }\n    }\n  }\n': {
+  '#graphql\n  #graphql\n  #graphql\n  #graphql\n  fragment TreatmentOptionVariant on ProductVariant {\n    id\n    title\n    image {\n      id\n      url(transform: { maxHeight: 100, maxWidth: 100, crop: CENTER })\n      altText\n      width\n      height\n    }\n    price {\n      amount\n      currencyCode\n    }\n    compareAtPrice {\n      amount\n      currencyCode\n    }\n    selectedOptions {\n      name\n      value\n    }\n    duration: metafield(key: "duration", namespace: "booking") {\n      value\n    }\n  }\n\n\n  fragment TreatmentOption on Product {\n    id\n    title\n    handle\n    description\n    options {\n      name\n      values\n    }\n    variants(first: 5) {\n      nodes {\n        ...TreatmentOptionVariant\n      }\n    }\n    parentId: metafield(key: "parentId", namespace: "booking") {\n      value\n    }\n    required: metafield(key: "required", namespace: "system") {\n      value\n    }\n  }\n\n  fragment PickMoreTreatmentProduct on Product {\n    id\n    title\n    descriptionHtml\n    productType\n    handle\n    featuredImage {\n      id\n      altText\n      url(transform: { maxHeight: 250, maxWidth: 250, crop: CENTER })\n      width\n      height\n    }\n    variants(first: 1) {\n      nodes {\n        compareAtPrice {\n          amount\n          currencyCode\n        }\n        price {\n          amount\n          currencyCode\n        }\n      }\n    }\n    options: metafield(key: "options", namespace: "booking") {\n      value\n      references(first: 10) {\n        nodes {\n          ...TreatmentOption\n        }\n      }\n    }\n    duration: metafield(key: "duration", namespace: "booking") {\n      id\n      value\n    }\n  }\n\n\n  query PickMoreProducts(\n    $country: CountryCode\n    $language: LanguageCode\n    $query: String\n  ) @inContext(country: $country, language: $language) {\n    products(first: 20, sortKey: TITLE, query: $query) {\n      nodes {\n        ...PickMoreTreatmentProduct\n      }\n    }\n  }\n': {
     return: PickMoreProductsQuery;
     variables: PickMoreProductsQueryVariables;
   };
@@ -6102,7 +6094,7 @@ interface GeneratedQueryTypes {
     return: GetProductWithCollectionHandleQuery;
     variables: GetProductWithCollectionHandleQueryVariables;
   };
-  '#graphql\n  #graphql\n  #graphql\n  fragment UserCollection on Metaobject {\n    id\n    fullname: field(key: "fullname") {\n      value\n    }\n    professions: field(key: "professions") {\n      value\n    }\n    shortDescription: field(key: "short_description") {\n      value\n    }\n    username: field(key: "username") {\n      value\n    }\n    image: field(key: "image") {\n      reference {\n        ... on MediaImage {\n          image {\n            width\n            height\n            url(transform: { maxHeight: 100, maxWidth: 100, crop: CENTER })\n          }\n        }\n      }\n    }\n    collection: field(key: "collection") {\n      reference {\n        ... on Collection {\n          id\n          products(first: 3, sortKey: BEST_SELLING, filters: [{tag: "treatments"}, {productMetafield: {namespace: "booking",key: "hide_from_profile",value: "false"}}]) {\n            nodes {\n              id\n              title\n              handle\n              productType\n              variants(first: 1) {\n                nodes {\n                  id\n                  compareAtPrice {\n                    amount\n                    currencyCode\n                  }\n                  price {\n                    amount\n                    currencyCode\n                  }\n                }\n              }\n              duration: metafield(key: "duration", namespace: "booking") {\n                id\n                value\n              }\n              locations: metafield(key: "locations", namespace: "booking") {\n                references(first: 3) {\n                  nodes {\n                    ... on Metaobject {\n                      id\n                      locationType: field(key: "location_type") {\n                        value\n                      }\n                    }\n                  }\n                }\n              }\n            }\n          }\n        }\n      }\n    }\n  }\n\n  fragment TreatmentsForCollection on Product {\n    id\n    title\n    handle\n    productType\n    variants(first: 1) {\n      nodes {\n        id\n        compareAtPrice {\n          amount\n          currencyCode\n        }\n        price {\n          amount\n          currencyCode\n        }\n      }\n    }\n    locations: metafield(key: "locations", namespace: "booking") {\n      references(first: 3) {\n        nodes {\n          ... on Metaobject {\n            id\n            locationType: field(key: "location_type") {\n              value\n            }\n            geoLocation: field(key: "geo_location") {\n              value\n            }\n          }\n        }\n      }\n    }\n    duration: metafield(key: "duration", namespace: "booking") {\n      id\n      value\n    }\n    user: metafield(key: "user", namespace: "booking") {\n      reference {\n        ...UserCollection\n      }\n    }\n\n  }\n\n  query TreatmentCollection(\n    $handle: String!\n    $country: CountryCode\n    $language: LanguageCode\n    $first: Int\n    $last: Int\n    $startCursor: String\n    $endCursor: String\n    $filters: [ProductFilter!]!\n    $reverse: Boolean = true\n    $sortKey: ProductCollectionSortKeys = PRICE\n  ) @inContext(country: $country, language: $language) {\n    collection(handle: $handle) {\n      products(\n        first: $first,\n        last: $last,\n        before: $startCursor,\n        after: $endCursor,\n        filters: $filters,\n        sortKey: $sortKey,\n        reverse: $reverse\n      ) {\n        nodes {\n          ...TreatmentsForCollection\n        }\n        pageInfo {\n          hasPreviousPage\n          hasNextPage\n          endCursor\n          startCursor\n        }\n      }\n    }\n  }\n': {
+  '#graphql\n  #graphql\n  #graphql\n  fragment UserCollection on Metaobject {\n    id\n    fullname: field(key: "fullname") {\n      value\n    }\n    professions: field(key: "professions") {\n      value\n    }\n    shortDescription: field(key: "short_description") {\n      value\n    }\n    username: field(key: "username") {\n      value\n    }\n    image: field(key: "image") {\n      reference {\n        ... on MediaImage {\n          image {\n            width\n            height\n            url(transform: { maxHeight: 100, maxWidth: 100, crop: CENTER })\n          }\n        }\n      }\n    }\n    collection: field(key: "collection") {\n      reference {\n        ... on Collection {\n          id\n          products(first: 3, sortKey: BEST_SELLING, filters: [{productMetafield: {namespace: "system", key: "type", value: "product"}}, {productMetafield: {namespace: "booking",key: "hide_from_profile",value: "false"}}]) {\n            nodes {\n              id\n              title\n              handle\n              productType\n              variants(first: 1) {\n                nodes {\n                  id\n                  compareAtPrice {\n                    amount\n                    currencyCode\n                  }\n                  price {\n                    amount\n                    currencyCode\n                  }\n                }\n              }\n              duration: metafield(key: "duration", namespace: "booking") {\n                id\n                value\n              }\n              locations: metafield(key: "locations", namespace: "booking") {\n                references(first: 3) {\n                  nodes {\n                    ... on Metaobject {\n                      id\n                      locationType: field(key: "location_type") {\n                        value\n                      }\n                    }\n                  }\n                }\n              }\n            }\n          }\n        }\n      }\n    }\n  }\n\n  fragment TreatmentsForCollection on Product {\n    id\n    title\n    handle\n    productType\n    variants(first: 1) {\n      nodes {\n        id\n        compareAtPrice {\n          amount\n          currencyCode\n        }\n        price {\n          amount\n          currencyCode\n        }\n      }\n    }\n    locations: metafield(key: "locations", namespace: "booking") {\n      references(first: 3) {\n        nodes {\n          ... on Metaobject {\n            id\n            locationType: field(key: "location_type") {\n              value\n            }\n            geoLocation: field(key: "geo_location") {\n              value\n            }\n          }\n        }\n      }\n    }\n    duration: metafield(key: "duration", namespace: "booking") {\n      id\n      value\n    }\n    user: metafield(key: "user", namespace: "booking") {\n      reference {\n        ...UserCollection\n      }\n    }\n\n  }\n\n  query TreatmentCollection(\n    $handle: String!\n    $country: CountryCode\n    $language: LanguageCode\n    $first: Int\n    $last: Int\n    $startCursor: String\n    $endCursor: String\n    $filters: [ProductFilter!]!\n    $reverse: Boolean = true\n    $sortKey: ProductCollectionSortKeys = PRICE\n  ) @inContext(country: $country, language: $language) {\n    collection(handle: $handle) {\n      products(\n        first: $first,\n        last: $last,\n        before: $startCursor,\n        after: $endCursor,\n        filters: $filters,\n        sortKey: $sortKey,\n        reverse: $reverse\n      ) {\n        nodes {\n          ...TreatmentsForCollection\n        }\n        pageInfo {\n          hasPreviousPage\n          hasNextPage\n          endCursor\n          startCursor\n        }\n      }\n    }\n  }\n': {
     return: TreatmentCollectionQuery;
     variables: TreatmentCollectionQueryVariables;
   };
