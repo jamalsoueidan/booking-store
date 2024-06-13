@@ -55,7 +55,7 @@ const convertJsonStructure = (data?: TranslationsFragment[] | null) => {
   const result: Record<string, string> = {};
 
   data?.forEach((node) => {
-    const key = node.key?.value;
+    const key = node.handle;
     const value = node.value?.value;
     if (key && value) {
       result[key] = value;

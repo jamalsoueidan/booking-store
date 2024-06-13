@@ -1,8 +1,6 @@
 export const TRANSLATIONS_FRAGMENT = `#graphql
   fragment Translations on Metaobject {
-    key: field(key: "key") {
-      value
-    }
+    handle
     value: field(key: "value") {
       value
     }
