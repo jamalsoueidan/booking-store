@@ -768,7 +768,7 @@ const USER_COLLECTION_FRAGMENT = `#graphql
       reference {
         ... on Collection {
           id
-          products(first: 3, sortKey: BEST_SELLING, filters: [{tag: "treatments"}, {productMetafield: {namespace: "booking",key: "hide_from_profile",value: "false"}}]) {
+          products(first: 3, sortKey: BEST_SELLING, filters: [{productMetafield: {namespace: "system", key: "type", value: "product"}}, {productMetafield: {namespace: "booking",key: "hide_from_profile",value: "false"}}]) {
             nodes {
               id
               title

@@ -120,9 +120,9 @@ function getLocaleFromRequest(request: Request): I18nLocale {
 
   // Map directly from subdomains to locale values
   const supportedLocales = {
-    EN: {language: 'EN', country: 'US'},
+    EN: {language: 'EN', country: 'DK'},
     DK: {language: 'DA', country: 'DK'},
-    AR: {language: 'AR', country: 'AE'},
+    AR: {language: 'AR', country: 'DK'},
   } as Record<string, I18nLocale>;
 
   const url = new URL(request.url);

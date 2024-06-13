@@ -134,34 +134,14 @@ export async function loader({params, request, context}: LoaderFunctionArgs) {
   const locationId = searchParams.get('locationId') as string;
   let products: PickMoreTreatmentProductFragment[] = [];
   if (locationId) {
-    const {collection} = await context.storefront.query(PICK_MORE_PRODUCTS, {
+    const data = await context.storefront.query(PICK_MORE_PRODUCTS, {
       variables: {
-        handle: product.user?.reference?.username?.value || '',
-        filters: [
-          {tag: 'treatments'},
-          {tag: `locationid-${locationId}`},
-          {tag: `scheduleid-${product.scheduleId?.reference?.handle}`},
-          {
-            productMetafield: {
-              namespace: 'booking',
-              key: 'hide_from_combine',
-              value: 'False',
-            },
-          },
-        ],
-        country: context.storefront.i18n.country,
-        language: context.storefront.i18n.language,
+        query: `tag:"locationid-${locationId}" AND tag:"scheduleid-${product.scheduleId?.reference?.handle}" AND tag:"treatments" AND -tag:"hide_from_combine"`,
       },
       cache: context.storefront.CacheShort(),
     });
 
-    if (!collection?.products) {
-      throw new Response('Collection graphql is wrong', {
-        status: 404,
-      });
-    }
-
-    products = collection.products.nodes.filter((p) => p.id !== product.id);
+    products = data?.products.nodes.filter((p) => p.id !== product.id);
   }
 
   return json({product, products});
@@ -476,16 +456,13 @@ export const PICK_MORE_PRODUCTS = `#graphql
   ${PICK_MORE_TREATMENT_PRODUCT}
 
   query PickMoreProducts(
-    $handle: String!
     $country: CountryCode
     $language: LanguageCode
-    $filters: [ProductFilter!] = {}
+    $query: String
   ) @inContext(country: $country, language: $language) {
-    collection(handle: $handle) {
-      products(first: 20, sortKey: TITLE, filters: $filters) {
-        nodes {
-          ...PickMoreTreatmentProduct
-        }
+    products(first: 20, sortKey: TITLE, query: $query) {
+      nodes {
+        ...PickMoreTreatmentProduct
       }
     }
   }

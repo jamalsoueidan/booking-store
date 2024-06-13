@@ -16,6 +16,47 @@ I wouldn't recommend using Tailwind for personal projects, as it can be time-con
 
 In my search for a UI library that includes most of the components I need, I discovered Mantine UI. It's an excellent choice, offering a range of features including a theme style, modal manager, notification system, dropdown menus, grid system, autocomplete fields, a calendar component, and even app shell for admin dashboard.
 
+## Translations
+
+We manage all translations in Shopify by creating a meta definition (Translation with key and value pairs) and then adding meta objects with these keys and values. The key is used in React to retrieve the corresponding translation value.
+
+We chose this method because Shopify allows us to automatically translate our app this way.
+All our product titles, and descriptions etc. can be translated!
+
+```
+const {page} = await context.storefront.query(PAGE_QUERY, {
+  variables: {
+    handle: params.handle,
+    country: context.storefront.i18n.country, // <<
+    language: context.storefront.i18n.language, // <<
+  },
+});
+```
+
+One particular issue we encountered with this method, as opposed to using an internal i18n package, is that tags cannot be mixed with filters when using GraphQL. In Shopify, if you request translations in a language other than the default, you cannot use tags in filters; they are only allowed in queries.
+
+After adding the translations, we receive them in our frontend and add them to the respective pages. The pages that load the translations will provide the translation to all nested components using the TranslationProvider.
+
+```
+{
+  "handle": "jamal-soueidan",
+  "filters": [
+    {
+      "tag": "treatments" // this is not allowed <<
+    },
+    {
+      "productMetafield": {
+        "namespace": "booking",
+        "key": "hide_from_profile",
+        "value": "false"
+      }
+    }
+  ],
+  "country": "US",
+  "language": "EN"
+}
+```
+
 ## Notifications
 
 Here is how to set and display notification messages:

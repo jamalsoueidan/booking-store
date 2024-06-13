@@ -42,14 +42,17 @@ export async function loader({request, params, context}: LoaderFunctionArgs) {
     });
   }
 
-  const {searchParams} = new URL(request.url);
-  const type = searchParams.get('type');
-
   const collection = context.storefront.query(GET_USER_PRODUCTS, {
     variables: {
       handle: username,
       filters: [
-        {tag: 'treatments'},
+        {
+          productMetafield: {
+            namespace: 'system',
+            key: 'type',
+            value: 'product',
+          },
+        },
         {
           productMetafield: {
             namespace: 'booking',
@@ -57,10 +60,7 @@ export async function loader({request, params, context}: LoaderFunctionArgs) {
             value: 'false',
           },
         },
-        ...(type ? [{productType: type}] : []),
       ],
-      country: context.storefront.i18n.country,
-      language: context.storefront.i18n.language,
     },
     cache: context.storefront.CacheShort(),
   });
