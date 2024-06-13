@@ -136,7 +136,7 @@ export async function loader({params, request, context}: LoaderFunctionArgs) {
   if (locationId) {
     const data = await context.storefront.query(PICK_MORE_PRODUCTS, {
       variables: {
-        query: `tag:"locationid-${locationId}" AND tag:"scheduleid-${product.scheduleId?.reference?.handle}" AND tag:"treatments" AND -tag:"hide_from_combine"`,
+        query: `tag:"locationid-${locationId}" AND tag:"scheduleid-${product.scheduleId?.reference?.handle}" AND tag:"treatments" AND tag_not:"hide-from-combine"`,
       },
       cache: context.storefront.CacheShort(),
     });
