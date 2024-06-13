@@ -122,6 +122,7 @@ function getLocaleFromRequest(request: Request): I18nLocale {
   const supportedLocales = {
     EN: {language: 'EN', country: 'US'},
     DK: {language: 'DA', country: 'DK'},
+    AR: {language: 'AR', country: 'AE'},
   } as Record<string, I18nLocale>;
 
   const url = new URL(request.url);

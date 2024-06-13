@@ -31,7 +31,7 @@ import {useUser} from '~/hooks/use-user';
 import {type CustomerScheduleSlot} from '~/lib/api/model';
 import {convertLocations} from '~/lib/convertLocations';
 import {durationToTime} from '~/lib/duration';
-import {translationsDays} from './api.users.filters';
+import {useTranslations} from '~/providers/Translation';
 
 export async function loader({request, params, context}: LoaderFunctionArgs) {
   const {username} = params;
@@ -72,66 +72,72 @@ export async function loader({request, params, context}: LoaderFunctionArgs) {
 
 export default function ArtistIndex() {
   const data = useLoaderData<typeof loader>();
+  const {t} = useTranslations();
   const user = useUser();
 
   return (
-    <Suspense fallback={<Skeleton height={8} radius="xl" />}>
-      <Await resolve={data.collection}>
-        {({collection}) => {
-          const collections =
-            collection?.products.nodes.reduce((collections, product) => {
-              if (!collections[product.productType]) {
-                collections[product.productType] = [];
-              }
-              collections[product.productType].push(product);
-              return collections;
-            }, {} as Record<string, TreatmentProductFragment[]>) || {};
-          return (
-            <Grid gutter="xl">
-              <Grid.Col span={{base: 12, md: 8}}>
-                <Stack gap="xl">
-                  {Object.keys(collections).map((key) => (
-                    <Stack key={key} gap="sm">
-                      <Title order={3} fw="bold">
-                        {key}
-                      </Title>
-                      <Stack gap="md">
-                        {collections[key].map((product) => (
-                          <ArtistProduct key={product.id} product={product} />
-                        ))}
+    <>
+      <Title order={2} fw="600" mb="md">
+        {t('artist_treatments_title')}
+      </Title>
+      <Suspense fallback={<Skeleton height={8} radius="xl" />}>
+        <Await resolve={data.collection}>
+          {({collection}) => {
+            const collections =
+              collection?.products.nodes.reduce((collections, product) => {
+                if (!collections[product.productType]) {
+                  collections[product.productType] = [];
+                }
+                collections[product.productType].push(product);
+                return collections;
+              }, {} as Record<string, TreatmentProductFragment[]>) || {};
+            return (
+              <Grid gutter="xl">
+                <Grid.Col span={{base: 12, md: 8}}>
+                  <Stack gap="xl">
+                    {Object.keys(collections).map((key) => (
+                      <Stack key={key} gap="sm">
+                        <Title order={4} fw="600">
+                          {key}
+                        </Title>
+                        <Stack gap="md">
+                          {collections[key].map((product) => (
+                            <ArtistProduct key={product.id} product={product} />
+                          ))}
+                        </Stack>
                       </Stack>
-                    </Stack>
-                  ))}
-                </Stack>
-              </Grid.Col>
-              <Grid.Col span={{base: 12, md: 4}}>
-                <Stack gap="md">
-                  {user.schedules
-                    ?.sort((a, b) => {
-                      const aContainsMonday =
-                        a.slots?.value?.includes('monday');
-                      const bContainsMonday =
-                        b.slots?.value?.includes('monday');
-
-                      if (aContainsMonday && !bContainsMonday) {
-                        return -1;
-                      } else if (!aContainsMonday && bContainsMonday) {
-                        return 1;
-                      } else {
-                        return 0;
-                      }
-                    })
-                    .map((schedule) => (
-                      <Schedule key={schedule.handle} schedule={schedule} />
                     ))}
-                </Stack>
-              </Grid.Col>
-            </Grid>
-          );
-        }}
-      </Await>
-      <Outlet />
-    </Suspense>
+                  </Stack>
+                </Grid.Col>
+                <Grid.Col span={{base: 12, md: 4}}>
+                  <Stack gap="md">
+                    {user.schedules
+                      ?.sort((a, b) => {
+                        const aContainsMonday =
+                          a.slots?.value?.includes('monday');
+                        const bContainsMonday =
+                          b.slots?.value?.includes('monday');
+
+                        if (aContainsMonday && !bContainsMonday) {
+                          return -1;
+                        } else if (!aContainsMonday && bContainsMonday) {
+                          return 1;
+                        } else {
+                          return 0;
+                        }
+                      })
+                      .map((schedule) => (
+                        <Schedule key={schedule.handle} schedule={schedule} />
+                      ))}
+                  </Stack>
+                </Grid.Col>
+              </Grid>
+            );
+          }}
+        </Await>
+        <Outlet />
+      </Suspense>
+    </>
   );
 }
 
@@ -152,6 +158,7 @@ async function wordToColor(word: string) {
 }
 
 function Schedule({schedule}: {schedule: ScheduleFragment}) {
+  const {t} = useTranslations();
   const [scheduleColor, setScheduleColor] = useState<string>('#fff');
 
   useEffect(() => {
@@ -176,13 +183,13 @@ function Schedule({schedule}: {schedule: ScheduleFragment}) {
       </Card.Section>
       <Divider mb="md" />
       <Title order={4} mb="xs">
-        Åbningstider{' '}
+        {t('artist_openingtime')}
       </Title>
       <Stack gap={rem(3)}>
         {slots?.map((slot) => {
           return (
             <Group key={slot.day}>
-              <Text>{translationsDays[slot.day]}</Text>
+              <Text>{t(slot.day)}</Text>
               {slot.intervals.map((interval) => {
                 return (
                   <Group key={interval.from + interval.to}>
@@ -233,6 +240,7 @@ function Schedule({schedule}: {schedule: ScheduleFragment}) {
 
 export function ArtistProduct({product}: {product: TreatmentProductFragment}) {
   const [scheduleColor, setScheduleColor] = useState<string>('#fff');
+  const {t} = useTranslations();
 
   useEffect(() => {
     const fetchColor = async () => {
@@ -260,10 +268,10 @@ export function ArtistProduct({product}: {product: TreatmentProductFragment}) {
       const discountPercentage = Math.abs(
         (discountAmount / parseInt(variant.compareAtPrice?.amount)) * 100,
       );
-      return `Spar ${discountPercentage.toFixed(0)}%`;
+      return `${t('discount')} ${discountPercentage.toFixed(0)}%`;
     }
     return null;
-  }, [variant.compareAtPrice?.amount, variant.price.amount]);
+  }, [t, variant.compareAtPrice?.amount, variant.price.amount]);
 
   return (
     <Card
@@ -319,7 +327,8 @@ export function ArtistProduct({product}: {product: TreatmentProductFragment}) {
 
             <Group>
               <Text size="sm">
-                {product.options?.value ? 'fra' : ''} {variant.price.amount} kr
+                {product.options?.value ? t('from') : ''} {variant.price.amount}{' '}
+                kr
               </Text>
               {discountString ? <Text size="sm">{discountString}</Text> : null}
             </Group>
@@ -328,7 +337,7 @@ export function ArtistProduct({product}: {product: TreatmentProductFragment}) {
         <Grid.Col span={4}>
           <Flex justify="flex-end" align="center" h="100%">
             <Button variant="outline" c="black" color="gray.4" radius="lg">
-              Bestil tid
+              {t('artist_booktime')}
             </Button>
           </Flex>
         </Grid.Col>

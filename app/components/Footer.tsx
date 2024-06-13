@@ -12,7 +12,9 @@ import {
 } from '@mantine/core';
 import {Link, NavLink} from '@remix-run/react';
 import {IconBrandFacebook, IconBrandInstagram} from '@tabler/icons-react';
+import {AE, DK, US} from 'country-flag-icons/react/3x2';
 import type {FooterQuery, HeaderQuery} from 'storefrontapi.generated';
+import {useTranslations} from '~/providers/Translation';
 import {useRootLoaderData} from '~/root';
 import classes from './Footer.module.css';
 import logo from '/logo.avif';
@@ -21,6 +23,7 @@ export function Footer({
   menu,
   shop,
 }: FooterQuery & {shop: HeaderQuery['shop']}) {
+  const {t} = useTranslations();
   return (
     <footer className={classes.footer}>
       <Container size="xl">
@@ -35,8 +38,7 @@ export function Footer({
                 <Image src={logo} alt={shop.name} maw={200} />
               </NavLink>
               <Text size="md" c="dimmed" className={classes.description}>
-                Vores platform forbinder dig med talentfulde eksperter inden for
-                alle aspekter af skønhed.
+                {t('footer_logo_text')}
               </Text>
             </Flex>
             <Flex
@@ -51,7 +53,7 @@ export function Footer({
                 variant="outline"
                 color="black"
               >
-                Find en skønhedskarriere
+                {t('footer_left_button')}
               </Button>
               <Button
                 component={Link}
@@ -60,45 +62,85 @@ export function Footer({
                 variant="outline"
                 color="black"
               >
-                Start din skønhedskarriere
+                {t('footer_right_button')}
               </Button>
             </Flex>
           </Stack>
 
           <FooterMenu menu={menu} />
 
-          <Stack gap="xs" w={{base: '100%', sm: '20%'}}>
-            <Text className={classes.title}>Socialmedia</Text>
-            <Group gap="lg" justify="flex-start">
-              <ActionIcon
-                size="lg"
-                variant="default"
-                radius="xl"
-                component={Link}
-                to="https://www.facebook.com/makeuphair.sisters/"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                <IconBrandFacebook
-                  style={{width: rem(24), height: rem(24)}}
-                  stroke={1.5}
-                />
-              </ActionIcon>
-              <ActionIcon
-                size="lg"
-                variant="default"
-                radius="xl"
-                component={Link}
-                to="https://www.instagram.com/__bysisters/"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                <IconBrandInstagram
-                  style={{width: rem(24), height: rem(24)}}
-                  stroke={1.5}
-                />
-              </ActionIcon>
-            </Group>
+          <Stack gap="lg" w={{base: '100%', sm: '20%'}}>
+            <Stack gap="xs">
+              <Text className={classes.title}>Socialmedia</Text>
+              <Group gap="xs" justify="flex-start">
+                <ActionIcon
+                  size="lg"
+                  variant="default"
+                  radius="xl"
+                  component={Link}
+                  to="https://www.facebook.com/makeuphair.sisters/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <IconBrandFacebook
+                    style={{width: rem(24), height: rem(24)}}
+                    stroke={1.5}
+                  />
+                </ActionIcon>
+                <ActionIcon
+                  size="lg"
+                  variant="default"
+                  radius="xl"
+                  component={Link}
+                  to="https://www.instagram.com/__bysisters/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <IconBrandInstagram
+                    style={{width: rem(24), height: rem(24)}}
+                    stroke={1.5}
+                  />
+                </ActionIcon>
+              </Group>
+            </Stack>
+            <Stack gap="xs">
+              <Text className={classes.title}>{t('footer_language')}</Text>
+              <Group gap="4px" justify="flex-start">
+                <ActionIcon
+                  size="lg"
+                  variant="transparent"
+                  radius="xl"
+                  component={Link}
+                  to="https://www.bysisters.dk/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <DK style={{width: rem(24), height: rem(24)}} />
+                </ActionIcon>
+                <ActionIcon
+                  size="lg"
+                  variant="transparent"
+                  radius="xl"
+                  component={Link}
+                  to="https://en.bysisters.dk/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <US style={{width: rem(24), height: rem(24)}} />
+                </ActionIcon>
+                <ActionIcon
+                  size="lg"
+                  variant="transparent"
+                  radius="xl"
+                  component={Link}
+                  to="https://ar.bysisters.dk/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <AE style={{width: rem(24), height: rem(24)}} />
+                </ActionIcon>
+              </Group>
+            </Stack>
           </Stack>
         </Flex>
         <Text c="dimmed" size="sm" mt="xl">
@@ -110,11 +152,12 @@ export function Footer({
 }
 
 function FooterMenu({menu}: {menu: FooterQuery['menu']}) {
+  const {t} = useTranslations();
   const {publicStoreDomain} = useRootLoaderData();
 
   return (
     <Stack align="flex-start" gap="xs" w={{base: '100%', sm: '20%'}}>
-      <Text className={classes.title}>Virksomhed</Text>
+      <Text className={classes.title}>{t('footer_company')}</Text>
       {menu?.items
         .filter(({url}) => url !== null && url !== undefined)
         .map((item) => {
