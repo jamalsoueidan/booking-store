@@ -71,7 +71,7 @@ export function Footer({
 
           <Stack gap="lg" w={{base: '100%', sm: '20%'}}>
             <Stack gap="xs">
-              <Text className={classes.title}>Socialmedia</Text>
+              <Text className={classes.title}>{t('footer_social_media')}</Text>
               <Group gap="xs" justify="flex-start">
                 <ActionIcon
                   size="lg"

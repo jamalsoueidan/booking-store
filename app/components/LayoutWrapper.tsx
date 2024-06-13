@@ -103,7 +103,7 @@ export function LayoutWrapper({children}: {children: ReactNode}) {
                 fw="500"
                 data-testid="logo-login"
               >
-                {data.language === 'AR' ? (
+                {data.language !== 'AR' ? (
                   <>
                     ByS
                     <Image src={logo} alt="it's me" h="auto" w="8px" mx="2px" />
@@ -128,37 +128,36 @@ export function LayoutWrapper({children}: {children: ReactNode}) {
           >
             {data &&
               data.header &&
-              data.header.menu?.items.map(({url, title}) => (
-                <NavLink
-                  key={url}
-                  to={new URL(url || '').pathname
-                    .replace('/en/', '/')
-                    .replace('/ar/', '/')}
-                  onClick={publishSideCartViewed}
-                >
-                  {({isActive}) => (
-                    <Button
-                      radius="xl"
-                      fz="md"
-                      fw="500"
-                      variant={
-                        title.includes('skønhedskarriere') ||
-                        title.includes('beauty career')
-                          ? 'filled'
-                          : 'transparent'
-                      }
-                      color={
-                        title.includes('skønhedskarriere') ||
-                        title.includes('beauty career')
-                          ? '#8a60f6'
-                          : 'black'
-                      }
-                    >
-                      {title}
-                    </Button>
-                  )}
-                </NavLink>
-              ))}
+              data.header.menu?.items.map(({url, title}) => {
+                const newURL = new URL(url || '').pathname
+                  .replace('/en/', '/')
+                  .replace('/ar/', '/');
+                return (
+                  <NavLink
+                    key={newURL}
+                    to={newURL}
+                    onClick={publishSideCartViewed}
+                  >
+                    {({isActive}) => (
+                      <Button
+                        radius="xl"
+                        fz="md"
+                        fw="500"
+                        variant={
+                          newURL.includes('start-din-sko')
+                            ? 'filled'
+                            : 'transparent'
+                        }
+                        color={
+                          newURL.includes('start-din-sko') ? '#8a60f6' : 'black'
+                        }
+                      >
+                        {title}
+                      </Button>
+                    )}
+                  </NavLink>
+                );
+              })}
           </Flex>
           <Flex
             justify="flex-end"
