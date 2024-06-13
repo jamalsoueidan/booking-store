@@ -111,9 +111,9 @@ export function LayoutWrapper({children}: {children: ReactNode}) {
                   </>
                 ) : (
                   <>
-                    سيستر
-                    <Image src={logo} alt="it's me" h="auto" w="8px" mx="2px" />
                     باي
+                    <Image src={logo} alt="it's me" h="auto" w="8px" mx="2px" />
+                    سيستر
                   </>
                 )}
               </Title>
