@@ -103,9 +103,19 @@ export function LayoutWrapper({children}: {children: ReactNode}) {
                 fw="500"
                 data-testid="logo-login"
               >
-                ByS
-                <Image src={logo} alt="it's me" h="auto" w="8px" mx="2px" />
-                sters
+                {data.language === 'AR' ? (
+                  <>
+                    ByS
+                    <Image src={logo} alt="it's me" h="auto" w="8px" mx="2px" />
+                    sters
+                  </>
+                ) : (
+                  <>
+                    سيستر
+                    <Image src={logo} alt="it's me" h="auto" w="8px" mx="2px" />
+                    باي
+                  </>
+                )}
               </Title>
             </UnstyledButton>
           </Group>
