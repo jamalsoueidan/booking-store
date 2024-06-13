@@ -157,7 +157,7 @@ export function Layout({children}: {children: ReactNode}) {
     : true;
 
   return (
-    <html lang="en">
+    <html lang="en" dir={data.language === 'AR' ? 'rtl' : 'ltr'}>
       <head>
         <meta charSet="utf-8" />
         <meta
@@ -169,9 +169,7 @@ export function Layout({children}: {children: ReactNode}) {
         <ColorSchemeScript />
       </head>
       <body>
-        <DirectionProvider
-          initialDirection={data.language === 'AR' ? 'rtl' : 'ltr'}
-        >
+        <DirectionProvider detectDirection>
           <MantineProvider>
             <NavigationProgress />
             <ModalsProvider>
