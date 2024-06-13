@@ -1,5 +1,9 @@
 import carouselStyles from '@mantine/carousel/styles.css?url';
-import {ColorSchemeScript, MantineProvider} from '@mantine/core';
+import {
+  ColorSchemeScript,
+  DirectionProvider,
+  MantineProvider,
+} from '@mantine/core';
 import coreStyles from '@mantine/core/styles.css?url';
 import {ModalsProvider} from '@mantine/modals';
 import {NavigationProgress, nprogress} from '@mantine/nprogress';
@@ -129,6 +133,7 @@ export async function loader({context}: LoaderFunctionArgs) {
       checkoutDomain: env.PUBLIC_CHECKOUT_DOMAIN,
       storefrontAccessToken: env.PUBLIC_STOREFRONT_API_TOKEN,
     },
+    language: storefront.i18n.language,
   });
 }
 
@@ -164,24 +169,28 @@ export function Layout({children}: {children: ReactNode}) {
         <ColorSchemeScript />
       </head>
       <body>
-        <MantineProvider>
-          <NavigationProgress />
-          <ModalsProvider>
-            {!path.includes('/account') && pathNotBooking && data?.cart ? (
-              <Analytics.Provider
-                cart={data.cart}
-                shop={data.shop}
-                consent={data.consent}
-                customData={{foo: 'bar'}}
-              >
-                <LayoutWrapper>{children}</LayoutWrapper>
-                <CustomAnalytics />
-              </Analytics.Provider>
-            ) : (
-              children
-            )}
-          </ModalsProvider>
-        </MantineProvider>
+        <DirectionProvider
+          initialDirection={data.language === 'AR' ? 'rtl' : 'ltr'}
+        >
+          <MantineProvider>
+            <NavigationProgress />
+            <ModalsProvider>
+              {!path.includes('/account') && pathNotBooking && data?.cart ? (
+                <Analytics.Provider
+                  cart={data.cart}
+                  shop={data.shop}
+                  consent={data.consent}
+                  customData={{foo: 'bar'}}
+                >
+                  <LayoutWrapper>{children}</LayoutWrapper>
+                  <CustomAnalytics />
+                </Analytics.Provider>
+              ) : (
+                children
+              )}
+            </ModalsProvider>
+          </MantineProvider>
+        </DirectionProvider>
         <ScrollRestoration nonce={nonce} />
         <Scripts nonce={nonce} />
       </body>
