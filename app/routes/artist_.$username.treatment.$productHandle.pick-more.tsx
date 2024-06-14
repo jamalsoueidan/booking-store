@@ -23,9 +23,11 @@ import {IconCheck, IconPlus} from '@tabler/icons-react';
 import {useMemo} from 'react';
 import {type PickMoreTreatmentProductFragment} from 'storefrontapi.generated';
 import {durationToTime} from '~/lib/duration';
+import {useTranslations} from '~/providers/Translation';
 import {BookingDetails} from './artist_.$username.treatment.$productHandle';
 
 export default function ArtistTreatments() {
+  const {t} = useTranslations();
   const [searchParams] = useSearchParams();
   const {products} = useOutletContext<{
     products: PickMoreTreatmentProductFragment[];
@@ -37,14 +39,12 @@ export default function ArtistTreatments() {
         <Stack gap="xl">
           <div>
             <Text size="sm" c="dimmed">
-              Trin 3 ud af 4
+              {t('artist_booking_steps', {step: 3, total: 4})}
             </Text>
             <Title order={1} fw={600}>
-              Vælg yderligere behandlinger
+              {t('artist_booking_pickmore_title')}
             </Title>
-            <Text c="dimmed">
-              Forkæl dig selv med en eller flere ekstra behandlinger.
-            </Text>
+            <Text c="dimmed">{t('artist_booking_pickmore_subtitle')}</Text>
           </div>
 
           {products.length > 0 ? (
@@ -59,12 +59,9 @@ export default function ArtistTreatments() {
             </>
           ) : (
             <Text>
-              Der er ingen ekstra behandlinger tilgængelige for dette produkt.
-              Klik venligst på{' '}
-              <Text component="span" fw="bold">
-                Fortsæt
-              </Text>
-              .
+              {t('artist_booking_pickmore_empty', {
+                $: <Text component="span" fw="bold" />,
+              })}
             </Text>
           )}
         </Stack>
@@ -79,7 +76,7 @@ export default function ArtistTreatments() {
           prefetch="render"
           size="lg"
         >
-          Forsæt
+          {t('continue')}
         </Button>
       </BookingDetails>
     </>

@@ -1,4 +1,4 @@
-import {
+import React, {
   createContext,
   type PropsWithChildren,
   useCallback,
@@ -34,16 +34,61 @@ export const TranslationProvider = ({
 export const useTranslations = () => {
   const data = useContext(TranslationContext);
 
+  const interpolateText = useCallback(
+    (value: string, options: Record<string, any>) => {
+      return value.replace(/{(.*?)}/g, (match, key) => options[key] ?? match);
+    },
+    [],
+  );
+
+  const interpolateComponents = useCallback(
+    (value: string, components: Record<string, React.ReactNode>) => {
+      return value
+        .split(/(<\$.*?>[^<]*<\/\$.*?>|<\$.*?>)/g)
+        .map((part, index) => {
+          const match = part.match(/<(\$.*?)>([^<]*)<\/\$.*?>|<\$.*?>/);
+          if (match) {
+            const key = match[1];
+            const nestedText = match[2];
+            const component = components[key];
+            if (React.isValidElement(component)) {
+              return React.cloneElement(
+                component,
+                {key: key + index},
+                nestedText,
+              );
+            }
+            return (
+              <React.Fragment key={match[1] + index}>
+                {component}
+              </React.Fragment>
+            );
+          }
+          return <React.Fragment key={value + index}>{part}</React.Fragment>;
+        });
+    },
+    [],
+  );
+
   const t = useCallback(
-    (key: string) => {
+    (key: string, options: Record<string, any> = {}) => {
       const value = data[key];
       if (!value) {
         console.log(`missing_${key}`, data);
         return `missing_${key}`;
       }
-      return value;
+      if (options['replace']) {
+        return interpolateComponents(options['replace'], options);
+      }
+      const text = interpolateText(value, options);
+      const regex = /<.*?>/;
+      if (regex.test(text)) {
+        return interpolateComponents(text, options);
+      } else {
+        return text;
+      }
     },
-    [data],
+    [data, interpolateComponents, interpolateText],
   );
 
   return {
