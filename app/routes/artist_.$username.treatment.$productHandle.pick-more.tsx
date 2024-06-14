@@ -60,7 +60,7 @@ export default function ArtistTreatments() {
           ) : (
             <Text>
               {t('artist_booking_pickmore_empty', {
-                $: <Text component="span" fw="bold" />,
+                1: <Text component="span" fw="bold" />,
               })}
             </Text>
           )}

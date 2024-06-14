@@ -14,8 +14,6 @@ import {useLoaderData, useOutletContext} from '@remix-run/react';
 import {parseGid} from '@shopify/hydrogen';
 import {json, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
 import {IconClockHour3, IconServicemark} from '@tabler/icons-react';
-import {format} from 'date-fns';
-import da from 'date-fns/locale/da';
 import {v4 as uuidv4} from 'uuid';
 import {AddToCartTreatment} from '~/components/AddToCartTreatments';
 import {
@@ -27,8 +25,9 @@ import {
 import {LocationIcon} from '~/components/LocationIcon';
 import {getBookingShopifyApi} from '~/lib/api/bookingShopifyApi';
 import {convertToLocation} from '~/lib/convertLocations';
-import {durationToTime} from '~/lib/duration';
+import {useDate, useDuration} from '~/lib/duration';
 import {parseOptionsFromQuery} from '~/lib/parseOptionsQueryParameters';
+import {useTranslations} from '~/providers/Translation';
 
 export const loader = async ({
   request,
@@ -93,6 +92,9 @@ export const loader = async ({
 };
 
 export default function ArtistTreatmentsBooking() {
+  const {t} = useTranslations();
+  const {format} = useDate();
+  const durationToTime = useDuration();
   const data = useLoaderData<typeof loader>();
   const {product, pickedVariants, summary} = useOutletContext<OutletLoader>();
 
@@ -102,10 +104,10 @@ export default function ArtistTreatmentsBooking() {
         <Stack gap="lg">
           <div>
             <Text size="sm" c="dimmed">
-              Trin 4 ud af 4
+              {t('artist_booking_steps', {step: 4, total: 4})}
             </Text>
             <Title order={1} fw={600} size="h2">
-              Gennemgå og bekræft
+              {t('artist_booking_confirm_title')}
             </Title>
           </div>
 
@@ -121,7 +123,7 @@ export default function ArtistTreatmentsBooking() {
               />
               <div style={{flex: 1}}>
                 <Text size="md" c="dimmed" fw="500">
-                  Du bliver behandlet af
+                  {t('artist_booking_confirm_artist')}
                 </Text>
                 <Text size="xl" fw="bold">
                   {data.product.user?.reference?.fullname?.value}
@@ -135,7 +137,7 @@ export default function ArtistTreatmentsBooking() {
               <Group gap="xs" align="center">
                 <IconClockHour3 />
                 <Title order={3} fw={600} fz="xl">
-                  Tid
+                  {t('time')}
                 </Title>
               </Group>
 
@@ -145,9 +147,6 @@ export default function ArtistTreatmentsBooking() {
                     {format(
                       new Date(data?.availability.slot.from || ''),
                       "EEEE',' 'd.' d'.' LLL 'kl 'HH:mm",
-                      {
-                        locale: da,
-                      },
                     )}
                   </Text>
                 )}
@@ -164,7 +163,7 @@ export default function ArtistTreatmentsBooking() {
                   }}
                 />
                 <Title order={3} fw={600} fz="xl">
-                  Location
+                  {t('location')}
                 </Title>
               </Group>
 
@@ -175,7 +174,7 @@ export default function ArtistTreatmentsBooking() {
                       {data?.availability.shipping?.destination.fullAddress}
                     </Text>
                     <Text fz="xs" c="red" fw={500}>
-                      Udgifterne bliver beregnet under købsprocessen{' '}
+                      {t('artist_booking_complete_shipping_calculation')}{' '}
                       {data?.availability.shipping?.cost.value}{' '}
                       {data?.availability.shipping?.cost.currency}
                     </Text>
@@ -188,7 +187,9 @@ export default function ArtistTreatmentsBooking() {
                     <Text fz="md" fw={500}>
                       {data?.location.fullAddress}
                     </Text>
-                    <Anchor href="googlemap">Se google map</Anchor>
+                    <Anchor href="googlemap">
+                      {t('artist_booking_complete_map')}
+                    </Anchor>
                   </>
                 )}
               </Stack>
@@ -200,7 +201,7 @@ export default function ArtistTreatmentsBooking() {
               <Group gap="xs" align="center">
                 <IconServicemark />
                 <Title order={3} fw={600} fz="xl">
-                  Behandlinger
+                  {t('treatments')}
                 </Title>
               </Group>
               <Flex justify="space-between">
@@ -239,12 +240,14 @@ export default function ArtistTreatmentsBooking() {
         </Stack>
       </Grid.Col>
       <BookingDetails>
-        <AddToCartTreatment
-          availability={data.availability}
-          location={data.location}
-          groupId={data.groupId}
-          redirectTo="cart"
-        />
+        <div id="payment">
+          <AddToCartTreatment
+            availability={data.availability}
+            location={data.location}
+            groupId={data.groupId}
+            redirectTo="cart"
+          />
+        </div>
       </BookingDetails>
     </>
   );

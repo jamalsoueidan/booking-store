@@ -79,7 +79,7 @@ export default function ProductDescription() {
           ) : (
             <Text>
               {t('artist_booking_index_no_options', {
-                $: <Text component="span" fw="bold" />,
+                1: <Text component="span" fw="bold" />,
               })}
             </Text>
           )}

@@ -27,7 +27,7 @@ import {
   type MetaFunction,
   type SerializeFrom,
 } from '@shopify/remix-oxygen';
-import {IconArrowLeft, IconX} from '@tabler/icons-react';
+import {IconArrowLeft, IconArrowRight, IconX} from '@tabler/icons-react';
 import {type PropsWithChildren} from 'react';
 import type {
   PickMoreTreatmentProductFragment,
@@ -45,6 +45,7 @@ import {USER_FRAGMENT} from '~/graphql/fragments/User';
 import {useScrollEffect} from '~/hooks/useScrollEffect';
 import {type CustomerLocation} from '~/lib/api/model';
 import {useDuration} from '~/lib/duration';
+import {useLanguage} from '~/providers/Language';
 import {TranslationProvider, useTranslations} from '~/providers/Translation';
 import {PAGE_QUERY} from './pages.$handle';
 
@@ -157,6 +158,7 @@ export async function loader({params, request, context}: LoaderFunctionArgs) {
 }
 
 export default function Booking() {
+  const language = useLanguage();
   const {product, products, page} = useLoaderData<typeof loader>();
   const {opacity, shadow} = useScrollEffect();
   const navigate = useNavigate();
@@ -187,9 +189,15 @@ export default function Booking() {
               c="black"
               onClick={() => navigate(-1)}
             >
-              <IconArrowLeft
-                style={{width: rem(36), height: rem(36), strokeWidth: 1}}
-              />
+              {language === 'AR' ? (
+                <IconArrowRight
+                  style={{width: rem(36), height: rem(36), strokeWidth: 1}}
+                />
+              ) : (
+                <IconArrowLeft
+                  style={{width: rem(36), height: rem(36), strokeWidth: 1}}
+                />
+              )}
             </ActionIcon>
 
             <Title

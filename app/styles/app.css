@@ -1,3 +1,9 @@
+#payment {
+  form {
+    width: 100%;
+  }
+}
+
 body {
   background-color: #fff;
 }

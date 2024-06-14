@@ -26,6 +26,8 @@ import {parseGid} from '@shopify/hydrogen';
 import {defer, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
 import {format, isValid, parse, set} from 'date-fns';
 import {da} from 'date-fns/locale';
+import ar from 'date-fns/locale/ar';
+import enUS from 'date-fns/locale/en-US';
 import {Suspense} from 'react';
 import {getBookingShopifyApi} from '~/lib/api/bookingShopifyApi';
 import type {
@@ -33,7 +35,10 @@ import type {
   UserAvailabilityMulti,
   UserAvailabilitySlot,
 } from '~/lib/api/model';
+import {useDate} from '~/lib/duration';
 import {parseOptionsFromQuery} from '~/lib/parseOptionsQueryParameters';
+import {useLanguage} from '~/providers/Language';
+import {useTranslations} from '~/providers/Translation';
 import {
   BookingDetails,
   GET_PRODUCT_WITH_OPTIONS,
@@ -99,6 +104,7 @@ export async function loader({params, request, context}: LoaderFunctionArgs) {
 }
 
 export default function ArtistTreatmentPickDatetime() {
+  const {t} = useTranslations();
   const {availability} = useLoaderData<typeof loader>();
   const location = useLocation();
   const searchParams = new URLSearchParams(location.search);
@@ -148,7 +154,7 @@ export default function ArtistTreatmentPickDatetime() {
           prefetch="render"
           size="lg"
         >
-          Færdig
+          {t('finished')}
         </Button>
       </BookingDetails>
     </>
@@ -160,6 +166,7 @@ type TreatmentPickDatetimeProps = {
 };
 
 function TreatmentPickDatetime({availability}: TreatmentPickDatetimeProps) {
+  const {t} = useTranslations();
   const [searchParams, setSearchParams] = useSearchParams();
 
   const onPickDate = (month: string | null) => {
@@ -242,10 +249,10 @@ function TreatmentPickDatetime({availability}: TreatmentPickDatetimeProps) {
     <Stack gap="xl">
       <div>
         <Text size="sm" c="dimmed">
-          Trin 3 ud af 4
+          {t('artist_booking_steps', {step: 3, total: 4})}
         </Text>
         <Title order={1} fw={600}>
-          Tidsbestilling
+          {t('artist_booking_pickdate_title')}
         </Title>
       </div>
 
@@ -258,20 +265,20 @@ function TreatmentPickDatetime({availability}: TreatmentPickDatetimeProps) {
       {days && days.length > 0 ? (
         <div>
           <Title order={4} mb="sm" fw={600} size="md">
-            Hvornår skal vi mødes?
+            {t('artist_booking_pickdate_day')}
           </Title>
           <ScrollArea type="auto" offsetScrollbars="x">
             <Flex gap="sm">{days}</Flex>
           </ScrollArea>
         </div>
       ) : (
-        <>Prøv en anden måned</>
+        <>{t('artist_booking_pickdate_empty')}</>
       )}
 
       {slots ? (
         <div>
           <Title order={4} mb="sm" fw={600} size="md">
-            Vælg tidspunkt på dagen:
+            {t('artist_booking_pickdate_time')}
           </Title>
           <SimpleGrid cols={3} spacing="sm">
             {slots}
@@ -291,6 +298,7 @@ function AvailabilityDay({
   selected: string | null;
   onClick: () => void;
 }) {
+  const {format} = useDate();
   const isSelected =
     availability.date.substring(0, 10) === selected?.substring(0, 10);
 
@@ -304,11 +312,9 @@ function AvailabilityDay({
           radius="xl"
           size={rem(60)}
         >
-          <Text>{format(new Date(availability.date), 'd.', {locale: da})}</Text>
+          <Text>{format(new Date(availability.date), 'd')}</Text>
         </ActionIcon>
-        <Text ta="center">
-          {format(new Date(availability.date), 'EEE', {locale: da})}
-        </Text>
+        <Text ta="center">{format(new Date(availability.date), 'EEE')}</Text>
       </Stack>
     </UnstyledButton>
   );
@@ -323,6 +329,8 @@ function AvailabilityTime({
   selected?: string | null;
   onClick: () => void;
 }) {
+  const {format} = useDate();
+
   const isSelected = slot.from === selected;
   return (
     <Button
@@ -337,30 +345,26 @@ function AvailabilityTime({
         fw={isSelected ? 700 : 400}
         c={isSelected ? 'white' : 'black'}
       >
-        {format(new Date(slot.from), 'HH:mm', {locale: da})}
+        {format(new Date(slot.from), 'HH:mm')}
       </Text>
     </Button>
   );
 }
 
 function MonthSelector(props: SelectProps) {
+  const lang = useLanguage();
   const currentDate = new Date();
   const currentMonth = currentDate.getMonth();
 
-  const months = [
-    {label: 'Januar', value: 'january'},
-    {label: 'Februar', value: 'february'},
-    {label: 'Marts', value: 'march'},
-    {label: 'April', value: 'april'},
-    {label: 'Maj', value: 'may'},
-    {label: 'Juni', value: 'june'},
-    {label: 'Juli', value: 'july'},
-    {label: 'August', value: 'august'},
-    {label: 'September', value: 'september'},
-    {label: 'Oktober', value: 'october'},
-    {label: 'November', value: 'november'},
-    {label: 'December', value: 'december'},
-  ];
+  const months = [];
+  for (let month = 0; month < 12; month++) {
+    const date = new Date(2000, month, 1); // Use any non-leap year to avoid issues
+    const label = format(date, 'MMMM', {
+      locale: lang === 'AR' ? ar : lang === 'EN' ? enUS : da,
+    });
+    const value = format(date, 'MMMM').toLowerCase();
+    months.push({label, value});
+  }
 
   const data = months.map((month, index) => ({
     ...month,
