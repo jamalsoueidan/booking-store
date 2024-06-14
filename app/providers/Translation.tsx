@@ -43,29 +43,27 @@ export const useTranslations = () => {
 
   const interpolateComponents = useCallback(
     (value: string, components: Record<string, React.ReactNode>) => {
-      return value
-        .split(/(<\$.*?>[^<]*<\/\$.*?>|<\$.*?>)/g)
-        .map((part, index) => {
-          const match = part.match(/<(\$.*?)>([^<]*)<\/\$.*?>|<\$.*?>/);
-          if (match) {
-            const key = match[1];
-            const nestedText = match[2];
-            const component = components[key];
-            if (React.isValidElement(component)) {
-              return React.cloneElement(
-                component,
-                {key: key + index},
-                nestedText,
-              );
-            }
-            return (
-              <React.Fragment key={match[1] + index}>
-                {component}
-              </React.Fragment>
+      return value.split(/(<.*?>)/g).map((part, index) => {
+        const match = part.match(/<(.*?)>/);
+        if (match) {
+          const nestedText = match[1];
+          console.log(nestedText);
+          const component = components[index];
+          if (React.isValidElement(component)) {
+            return React.cloneElement(
+              component,
+              {key: nestedText + index},
+              nestedText,
             );
           }
-          return <React.Fragment key={value + index}>{part}</React.Fragment>;
-        });
+          return (
+            <React.Fragment key={nestedText + index}>
+              {component}
+            </React.Fragment>
+          );
+        }
+        return <React.Fragment key={part + index}>{part}</React.Fragment>;
+      });
     },
     [],
   );
