@@ -16,7 +16,6 @@ import {
 // @ts-ignore
 import * as remixBuild from 'virtual:remix/server-build';
 
-import useEmblaCarousel from 'embla-carousel-react/components';
 import {AppSession} from '~/lib/session';
 
 /**
@@ -128,10 +127,6 @@ function getLocaleFromRequest(request: Request): I18nLocale {
 
   const url = new URL(request.url);
   const firstSubdomain = url.hostname.split('.')[0]?.toUpperCase();
-
-  useEmblaCarousel.globalOptions = {
-    direction: firstSubdomain === 'ar' ? 'rtl' : 'ltr',
-  };
 
   return supportedLocales[firstSubdomain] || defaultLocale;
 }

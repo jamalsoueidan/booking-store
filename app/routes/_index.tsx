@@ -92,6 +92,7 @@ export async function loader({context, request}: LoaderFunctionArgs) {
     users: data,
     page,
     tags,
+    language: context.storefront.i18n.language,
   });
 }
 
@@ -225,7 +226,7 @@ function FeaturedArtists() {
 }
 
 function RecommendedTreatments() {
-  const {recommendedTreatments} = useLoaderData<typeof loader>();
+  const {recommendedTreatments, language} = useLoaderData<typeof loader>();
   const theme = useMantineTheme();
   const {t} = useTranslations();
   const AUTOPLAY_DELAY = useRef(Autoplay({delay: 2000}));
@@ -245,6 +246,7 @@ function RecommendedTreatments() {
           <Slider
             plugins={[AUTOPLAY_DELAY.current]}
             slideSize={{base: '100%', md: '20%'}}
+            language={language}
           >
             {recommendedTreatments.nodes.map((product) => {
               return (
