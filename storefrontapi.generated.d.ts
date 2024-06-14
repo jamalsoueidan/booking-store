@@ -2464,44 +2464,6 @@ export type CategoriesWithChildrenQuery = {
   >;
 };
 
-export type ProductCreateVariantFragment = Pick<
-  StorefrontAPI.ProductVariant,
-  'id' | 'title'
-> & {
-  compareAtPrice?: StorefrontAPI.Maybe<
-    Pick<StorefrontAPI.MoneyV2, 'amount' | 'currencyCode'>
-  >;
-  price: Pick<StorefrontAPI.MoneyV2, 'amount' | 'currencyCode'>;
-  product: Pick<StorefrontAPI.Product, 'title' | 'handle'>;
-  selectedOptions: Array<Pick<StorefrontAPI.SelectedOption, 'name' | 'value'>>;
-};
-
-export type ProductCreateVariantIdQueryVariables = StorefrontAPI.Exact<{
-  country?: StorefrontAPI.InputMaybe<StorefrontAPI.CountryCode>;
-  Id: StorefrontAPI.Scalars['ID']['input'];
-  language?: StorefrontAPI.InputMaybe<StorefrontAPI.LanguageCode>;
-  selectedOptions:
-    | Array<StorefrontAPI.SelectedOptionInput>
-    | StorefrontAPI.SelectedOptionInput;
-}>;
-
-export type ProductCreateVariantIdQuery = {
-  product?: StorefrontAPI.Maybe<{
-    selectedVariant?: StorefrontAPI.Maybe<
-      Pick<StorefrontAPI.ProductVariant, 'id' | 'title'> & {
-        compareAtPrice?: StorefrontAPI.Maybe<
-          Pick<StorefrontAPI.MoneyV2, 'amount' | 'currencyCode'>
-        >;
-        price: Pick<StorefrontAPI.MoneyV2, 'amount' | 'currencyCode'>;
-        product: Pick<StorefrontAPI.Product, 'title' | 'handle'>;
-        selectedOptions: Array<
-          Pick<StorefrontAPI.SelectedOption, 'name' | 'value'>
-        >;
-      }
-    >;
-  }>;
-};
-
 export type MoneyFragment = Pick<
   StorefrontAPI.MoneyV2,
   'currencyCode' | 'amount'
@@ -5979,10 +5941,6 @@ interface GeneratedQueryTypes {
   '#graphql\n  #graphql\n  fragment CategoryWithChildren on Collection {\n    id\n    title\n    handle\n    description\n    image {\n      id\n      url\n      altText\n      width\n      height\n    }\n    children: metafield(key: "children", namespace: "booking") {\n      id\n      type\n      references(first: 20) {\n        nodes {\n          ... on Collection {\n            id\n            title\n            handle\n            description\n            image {\n              id\n              url\n              altText\n              width\n              height\n            }\n          }\n        }\n      }\n    }\n  }\n\n  query CategoriesWithChildren(\n    $country: CountryCode\n    $language: LanguageCode\n  ) @inContext(country: $country, language: $language) {\n    collection(handle: "alle-behandlinger") {\n      ...CategoryWithChildren\n    }\n  }\n': {
     return: CategoriesWithChildrenQuery;
     variables: CategoriesWithChildrenQueryVariables;
-  };
-  '#graphql\n  #graphql\n  fragment ProductCreateVariant on ProductVariant {\n    id\n    title\n    compareAtPrice {\n      amount\n      currencyCode\n    }\n    price {\n      amount\n      currencyCode\n    }\n    product {\n      title\n      handle\n    }\n    selectedOptions {\n      name\n      value\n    }\n  }\n\n  query ProductCreateVariantId(\n    $country: CountryCode\n    $Id: ID!\n    $language: LanguageCode\n    $selectedOptions: [SelectedOptionInput!]!\n  ) @inContext(country: $country, language: $language) {\n    product(id: $Id) {\n      ...on Product {\n        selectedVariant: variantBySelectedOptions(selectedOptions: $selectedOptions) {\n          ...ProductCreateVariant\n        }\n      }\n    }\n  }\n': {
-    return: ProductCreateVariantIdQuery;
-    variables: ProductCreateVariantIdQueryVariables;
   };
   '#graphql\n  fragment Shop on Shop {\n    id\n    name\n    description\n    primaryDomain {\n      url\n    }\n    brand {\n      logo {\n        image {\n          url\n        }\n      }\n    }\n  }\n  query Header(\n    $country: CountryCode\n    $headerMenuHandle: String!\n    $language: LanguageCode\n  ) @inContext(language: $language, country: $country) {\n    shop {\n      ...Shop\n    }\n    menu(handle: $headerMenuHandle) {\n      ...Menu\n    }\n  }\n  #graphql\n  fragment MenuItem on MenuItem {\n    id\n    resourceId\n    tags\n    title\n    type\n    url\n  }\n  fragment ChildMenuItem on MenuItem {\n    ...MenuItem\n  }\n  fragment ParentMenuItem on MenuItem {\n    ...MenuItem\n    items {\n      ...ChildMenuItem\n    }\n  }\n  fragment Menu on Menu {\n    id\n    items {\n      ...ParentMenuItem\n    }\n  }\n\n': {
     return: HeaderQuery;
