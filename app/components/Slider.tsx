@@ -1,6 +1,5 @@
 import {Carousel, type CarouselProps} from '@mantine/carousel';
 import useEmblaCarousel from 'embla-carousel-react';
-import {useState} from 'react';
 import classes from './Slider.module.css';
 
 export function Slider({
@@ -8,8 +7,9 @@ export function Slider({
   language,
   ...props
 }: CarouselProps & {language: string}) {
-  const [options, setOptions] = useState({direction: 'rtl' as any});
-  const [emblaRef, emblaApi] = useEmblaCarousel(options);
+  const [emblaRef, emblaApi] = useEmblaCarousel({
+    direction: language === 'AR' ? 'rtl' : 'ltr',
+  });
 
   return (
     <Carousel
@@ -19,6 +19,7 @@ export function Slider({
       withControls={false}
       align="start"
       containScroll="keepSnaps"
+      ref={emblaRef}
       {...props}
     >
       {children}
