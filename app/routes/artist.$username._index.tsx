@@ -30,7 +30,7 @@ import {GET_USER_PRODUCTS} from '~/graphql/queries/GetUserProducts';
 import {useUser} from '~/hooks/use-user';
 import {type CustomerScheduleSlot} from '~/lib/api/model';
 import {convertLocations} from '~/lib/convertLocations';
-import {durationToTime} from '~/lib/duration';
+import {useDuration} from '~/lib/duration';
 import {useTranslations} from '~/providers/Translation';
 
 export async function loader({request, params, context}: LoaderFunctionArgs) {
@@ -239,6 +239,7 @@ function Schedule({schedule}: {schedule: ScheduleFragment}) {
 }
 
 export function ArtistProduct({product}: {product: TreatmentProductFragment}) {
+  const durationToTime = useDuration();
   const [scheduleColor, setScheduleColor] = useState<string>('#fff');
   const {t} = useTranslations();
 

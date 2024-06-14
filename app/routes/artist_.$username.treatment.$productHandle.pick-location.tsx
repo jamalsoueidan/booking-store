@@ -8,12 +8,14 @@ import {
   type CustomerLocation,
 } from '~/lib/api/model';
 import {convertLocations} from '~/lib/convertLocations';
+import {useTranslations} from '~/providers/Translation';
 import {
   BookingDetails,
   type OutletLoader,
 } from './artist_.$username.treatment.$productHandle';
 
 export default function ArtistTreatmentPickLocation() {
+  const {t} = useTranslations();
   const {product} = useOutletContext<OutletLoader>();
   const [searchParams] = useSearchParams();
   const isDisabled =
@@ -27,11 +29,11 @@ export default function ArtistTreatmentPickLocation() {
         <Stack gap="xl">
           <div>
             <Text size="sm" c="dimmed">
-              Trin 2 ud af 4
+              {t('artist_booking_steps', {step: 2, total: 4})}
             </Text>
 
             <Title order={1} fw={600} size="h2">
-              Vælg lokation
+              {t('artist_booking_location_title')}
             </Title>
           </div>
           <ArtistLocationPicker locations={locations} />
@@ -48,7 +50,7 @@ export default function ArtistTreatmentPickLocation() {
           size="lg"
           disabled={isDisabled}
         >
-          Forsæt
+          {t('continue')}
         </Button>
       </BookingDetails>
     </>

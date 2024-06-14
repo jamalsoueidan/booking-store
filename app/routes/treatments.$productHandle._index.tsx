@@ -36,7 +36,7 @@ import type {
 import {LeafletMap} from '~/components/LeafletMap.client';
 import {LocationIcon} from '~/components/LocationIcon';
 import type {CustomerLocationBaseLocationType} from '~/lib/api/model';
-import {durationToTime} from '~/lib/duration';
+import {useDuration} from '~/lib/duration';
 import {useTranslations} from '~/providers/Translation';
 
 import leafletStyles from 'leaflet/dist/leaflet.css?url';
@@ -319,6 +319,7 @@ export function ArtistProduct({
   product: TreatmentsForCollectionFragment;
 } & UnstyledButtonProps) {
   const productId = parseGid(product?.id).id;
+  const durationToTime = useDuration();
   const locations =
     product.locations?.references?.nodes.map((p) => ({
       locationType: p.locationType?.value as CustomerLocationBaseLocationType,

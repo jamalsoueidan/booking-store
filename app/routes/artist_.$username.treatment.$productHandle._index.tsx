@@ -2,17 +2,18 @@ import {Button, Grid, Stack, Text, Title} from '@mantine/core';
 import {Link, useOutletContext, useSearchParams} from '@remix-run/react';
 import {OptionSelector, ProductOption} from '~/components/OptionSelector';
 
+import {useTranslations} from '~/providers/Translation';
 import {
   BookingDetails,
   type OutletLoader,
 } from './artist_.$username.treatment.$productHandle';
 
 export default function ProductDescription() {
+  const {t} = useTranslations();
   const [searchParams] = useSearchParams();
   const {product} = useOutletContext<OutletLoader>();
 
   const productOptions = product.options?.references?.nodes;
-
   const required = productOptions?.filter(
     (p) => p.required?.value.toLowerCase() === 'true',
   );
@@ -27,10 +28,10 @@ export default function ProductDescription() {
         <Stack gap="xl">
           <div>
             <Text size="sm" c="dimmed">
-              Trin 1 ud af 4
+              {t('artist_booking_steps', {step: 1, total: 4})}
             </Text>
             <Title order={1} fw={600} size="h2">
-              Vælg detaljer
+              {t('artist_booking_index_title')}
             </Title>
           </div>
           {productOptions ? (
@@ -56,7 +57,7 @@ export default function ProductDescription() {
               {choices && choices.length > 0 ? (
                 <div>
                   <Title order={3} fw={600} mb="sm" fz="xl">
-                    Tilvalg til den behandling
+                    {t('artist_booking_index_subtitle')}
                   </Title>
                   <Stack gap="md">
                     {choices?.map((productWithVariants) => {
@@ -77,12 +78,9 @@ export default function ProductDescription() {
             </>
           ) : (
             <Text>
-              Der er ingen detaljer at udfylde for dette produkt. Klik venligst
-              på{' '}
-              <Text component="span" fw="bold">
-                Fortsæt
-              </Text>
-              .
+              {t('artist_booking_index_no_options', {
+                $: <Text component="span" fw="bold" />,
+              })}
             </Text>
           )}
         </Stack>
@@ -98,7 +96,7 @@ export default function ProductDescription() {
           prefetch="render"
           size="lg"
         >
-          Forsæt
+          {t('continue')}
         </Button>
       </BookingDetails>
     </>

@@ -44,7 +44,9 @@ import {TREATMENT_OPTION_FRAGMENT} from '~/graphql/fragments/TreatmentOption';
 import {USER_FRAGMENT} from '~/graphql/fragments/User';
 import {useScrollEffect} from '~/hooks/useScrollEffect';
 import {type CustomerLocation} from '~/lib/api/model';
-import {durationToTime} from '~/lib/duration';
+import {useDuration} from '~/lib/duration';
+import {TranslationProvider, useTranslations} from '~/providers/Translation';
+import {PAGE_QUERY} from './pages.$handle';
 
 export function shouldRevalidate({
   currentUrl,
@@ -144,11 +146,18 @@ export async function loader({params, request, context}: LoaderFunctionArgs) {
     products = data?.products.nodes.filter((p) => p.id !== product.id);
   }
 
-  return json({product, products});
+  const {page} = await context.storefront.query(PAGE_QUERY, {
+    variables: {
+      handle: 'artist_booking',
+    },
+    cache: context.storefront.CacheLong(),
+  });
+
+  return json({product, page, products});
 }
 
 export default function Booking() {
-  const {product, products} = useLoaderData<typeof loader>();
+  const {product, products, page} = useLoaderData<typeof loader>();
   const {opacity, shadow} = useScrollEffect();
   const navigate = useNavigate();
 
@@ -169,7 +178,7 @@ export default function Booking() {
   });
 
   return (
-    <div>
+    <TranslationProvider data={page?.translations}>
       <Affix position={{top: 0, left: 0, right: 0}}>
         <Container size="xl">
           <Flex h={50} bg="white" justify="space-between" align="center">
@@ -189,9 +198,7 @@ export default function Booking() {
                 transition: 'all 0.3s ease',
                 opacity,
               }}
-            >
-              Vælg tjenester
-            </Title>
+            ></Title>
             <ActionIcon
               variant="transparent"
               c="black"
@@ -229,11 +236,13 @@ export default function Booking() {
           />
         </Grid>
       </Container>
-    </div>
+    </TranslationProvider>
   );
 }
 
 export function BookingDetails({children}: PropsWithChildren) {
+  const {t} = useTranslations();
+  const durationToTime = useDuration();
   const {
     selectedLocation,
     product,
@@ -300,11 +309,11 @@ export function BookingDetails({children}: PropsWithChildren) {
           ))}
           <Divider />
           <Flex justify="space-between">
-            <Text>I alt</Text>
+            <Text>{t('total_amount')}</Text>
             <Text>{totalPrice + summary.price} kr.</Text>
           </Flex>
           <Flex justify="space-between">
-            <Text>Varighed</Text>
+            <Text>{t('total_time')}</Text>
             <Text>{durationToTime(totalDuration + summary.duration)}</Text>
           </Flex>
           {children}
@@ -318,7 +327,8 @@ export function BookingDetails({children}: PropsWithChildren) {
               <Text fw="bold">{totalPrice + summary.price} kr.</Text>
               <Text>
                 {1 + summary.pickedVariants.filter((f) => !f.isVariant).length}{' '}
-                ydelse - {durationToTime(totalDuration + summary.duration)}
+                {t('total_services')} -{' '}
+                {durationToTime(totalDuration + summary.duration)}
               </Text>
             </Flex>
             {children}
