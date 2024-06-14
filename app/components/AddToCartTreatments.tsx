@@ -7,6 +7,7 @@ import {format} from 'date-fns';
 import da from 'date-fns/locale/da';
 import type {CustomerLocation, UserAvailabilitySingle} from '~/lib/api/model';
 import {durationToTime} from '~/lib/duration';
+import {useTranslations} from '~/providers/Translation';
 
 type AddToCartTreatmentProps = {
   availability: UserAvailabilitySingle;
@@ -21,6 +22,7 @@ export function AddToCartTreatment({
   groupId,
   redirectTo,
 }: AddToCartTreatmentProps) {
+  const {t} = useTranslations();
   const lines: Array<CartLineInput> = availability.slot.products.map(
     (slotProduct) => {
       const input = {
@@ -98,7 +100,7 @@ export function AddToCartTreatment({
   return (
     <Flex justify="flex-end" gap="md">
       <AddToCartButton lines={lines} redirectTo={redirectTo}>
-        Gå til betaling
+        {t('goto_payment')}
       </AddToCartButton>
     </Flex>
   );
