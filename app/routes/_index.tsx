@@ -13,13 +13,10 @@ import {
 } from '@mantine/core';
 import {Link, useLoaderData, type MetaFunction} from '@remix-run/react';
 import {json, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
-import Autoplay from 'embla-carousel-autoplay';
 
 import {IconArrowRight, IconMoodWink, IconSearch} from '@tabler/icons-react';
 
-import {Carousel} from '@mantine/carousel';
-import {useRef} from 'react';
-import {Slider} from '~/components/Slider';
+import {Slice, Slider} from '~/components/Slider';
 import {H1} from '~/components/titles/H1';
 import {H2} from '~/components/titles/H2';
 
@@ -229,7 +226,6 @@ function RecommendedTreatments() {
   const {recommendedTreatments, language} = useLoaderData<typeof loader>();
   const theme = useMantineTheme();
   const {t} = useTranslations();
-  const AUTOPLAY_DELAY = useRef(Autoplay({delay: 2000}));
 
   return (
     <Box
@@ -243,16 +239,12 @@ function RecommendedTreatments() {
           </H2>
         </Container>
         <Box px="xl" style={{overflow: 'hidden'}}>
-          <Slider
-            plugins={[AUTOPLAY_DELAY.current]}
-            slideSize={{base: '100%', md: '20%'}}
-            language={language}
-          >
+          <Slider language={language}>
             {recommendedTreatments.nodes.map((product) => {
               return (
-                <Carousel.Slide key={product.id}>
+                <Slice key={product.id}>
                   <TreatmentCard product={product} />
-                </Carousel.Slide>
+                </Slice>
               );
             })}
           </Slider>
