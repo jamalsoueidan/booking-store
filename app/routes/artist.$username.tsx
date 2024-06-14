@@ -184,7 +184,7 @@ function AboutMe() {
             {user.specialties.length > 0 ? (
               <Stack gap="xs">
                 <Title order={2} fw="600" fz="h5">
-                  Skills
+                  {t('artist_skills')}
                 </Title>
                 <Flex wrap="wrap" gap="xs">
                   {user.specialties.map((p) => (
@@ -209,7 +209,7 @@ function AboutMe() {
               {user.social && Object.keys(user.social).length > 0 ? (
                 <Stack gap="xs">
                   <Title order={2} fw="600" fz="h5">
-                    Social
+                    {t('artist_social_media')}
                   </Title>
                   <Stack gap="xs">
                     {user.social.instagram ? (
@@ -220,7 +220,7 @@ function AboutMe() {
                           to={user.social.instagram}
                           target="_blank"
                         >
-                          Instagram
+                          {t('artist_instagram')}
                         </UnstyledButton>
                       </Group>
                     ) : null}
@@ -232,7 +232,7 @@ function AboutMe() {
                           to={user.social.youtube}
                           target="_blank"
                         >
-                          Youtube
+                          {t('artist_youtube')}
                         </UnstyledButton>
                       </Group>
                     ) : null}
@@ -244,7 +244,7 @@ function AboutMe() {
                           to={user.social.x}
                           target="_blank"
                         >
-                          X
+                          {t('artist_x')}
                         </UnstyledButton>
                       </Group>
                     ) : null}
@@ -256,7 +256,7 @@ function AboutMe() {
                           to={user.social.facebook}
                           target="_blank"
                         >
-                          Facebook
+                          {t('artist_facebook')}
                         </UnstyledButton>
                       </Group>
                     ) : null}
