@@ -1,4 +1,4 @@
-import {formatDuration, intervalToDuration} from 'date-fns';
+import {format as f, formatDuration, intervalToDuration} from 'date-fns';
 import {ar, da, enUS} from 'date-fns/locale';
 import {useCallback} from 'react';
 import {useLanguage} from '~/providers/Language';
@@ -44,4 +44,30 @@ export function useDuration() {
   );
 
   return durationToTime;
+}
+
+export function useDate() {
+  const lang = useLanguage();
+
+  const format = useCallback(
+    (
+      date: Date | number,
+      format: string,
+      options?: {
+        locale?: Locale;
+        weekStartsOn?: 0 | 1 | 2 | 3 | 4 | 5 | 6;
+        firstWeekContainsDate?: number;
+        useAdditionalWeekYearTokens?: boolean;
+        useAdditionalDayOfYearTokens?: boolean;
+      },
+    ) => {
+      return f(date, format, {
+        ...options,
+        locale: lang === 'AR' ? ar : lang === 'EN' ? enUS : da,
+      });
+    },
+    [lang],
+  );
+
+  return {format};
 }
