@@ -103,41 +103,38 @@ export function Footer({
                 </ActionIcon>
               </Group>
             </Stack>
-            <Stack gap="xs">
+            <Stack gap="0">
               <Text className={classes.title}>{t('footer_language')}</Text>
               <Group gap="4px" justify="flex-start">
                 <ActionIcon
-                  size="lg"
+                  size="xl"
                   variant="transparent"
-                  radius="xl"
                   component={Link}
                   to="https://www.bysisters.dk/"
                   target="_blank"
                   rel="noopener noreferrer"
                 >
-                  <DK style={{width: rem(24), height: rem(24)}} />
+                  <DK style={{width: rem(32), height: rem(32)}} />
                 </ActionIcon>
                 <ActionIcon
-                  size="lg"
+                  size="xl"
                   variant="transparent"
-                  radius="xl"
                   component={Link}
                   to="https://en.bysisters.dk/"
                   target="_blank"
                   rel="noopener noreferrer"
                 >
-                  <US style={{width: rem(24), height: rem(24)}} />
+                  <US style={{width: rem(32), height: rem(32)}} />
                 </ActionIcon>
                 <ActionIcon
-                  size="lg"
+                  size="xl"
                   variant="transparent"
-                  radius="xl"
                   component={Link}
                   to="https://ar.bysisters.dk/"
                   target="_blank"
                   rel="noopener noreferrer"
                 >
-                  <AE style={{width: rem(24), height: rem(24)}} />
+                  <AE style={{width: rem(32), height: rem(32)}} />
                 </ActionIcon>
               </Group>
             </Stack>
