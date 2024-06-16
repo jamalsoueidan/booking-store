@@ -44,6 +44,20 @@ export function AddToCartTreatment({
             value: availability.customer.customerId.toString(),
           },
           {
+            key: '_artistName',
+            value: availability.customer.fullname,
+          },
+          {
+            key: '_artistImage',
+            value:
+              'https://cdn.shopify.com/s/files/1/0682/4060/5458/files/7932440281415_customer_profile_1716936650197.jpg?v=1716936672',
+          },
+          {
+            key: '_bundleId',
+            value: 'gid://shopify/ProductVariant/48762648691015',
+          },
+
+          {
             key: '_locationId',
             value: location._id,
           },
