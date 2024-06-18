@@ -37,7 +37,6 @@ import {useEffect, type ReactNode} from 'react';
 import favicon from './assets/favicon.svg';
 import {CustomAnalytics} from './components/CustomAnalytics';
 import {LayoutWrapper} from './components/LayoutWrapper';
-import {LanguageProvider} from './providers/Language';
 import {PAGE_QUERY} from './routes/pages.$handle';
 import appStyles from './styles/app.css?url';
 
@@ -170,28 +169,26 @@ export function Layout({children}: {children: ReactNode}) {
         <ColorSchemeScript />
       </head>
       <body>
-        <LanguageProvider data={data.language}>
-          <DirectionProvider detectDirection>
-            <MantineProvider>
-              <NavigationProgress />
-              <ModalsProvider>
-                {!path.includes('/account') && pathNotBooking && data?.cart ? (
-                  <Analytics.Provider
-                    cart={data.cart}
-                    shop={data.shop}
-                    consent={data.consent}
-                    customData={{foo: 'bar'}}
-                  >
-                    <LayoutWrapper>{children}</LayoutWrapper>
-                    <CustomAnalytics />
-                  </Analytics.Provider>
-                ) : (
-                  children
-                )}
-              </ModalsProvider>
-            </MantineProvider>
-          </DirectionProvider>
-        </LanguageProvider>
+        <DirectionProvider detectDirection>
+          <MantineProvider>
+            <NavigationProgress />
+            <ModalsProvider>
+              {!path.includes('/account') && pathNotBooking && data?.cart ? (
+                <Analytics.Provider
+                  cart={data.cart}
+                  shop={data.shop}
+                  consent={data.consent}
+                  customData={{foo: 'bar'}}
+                >
+                  <LayoutWrapper>{children}</LayoutWrapper>
+                  <CustomAnalytics />
+                </Analytics.Provider>
+              ) : (
+                children
+              )}
+            </ModalsProvider>
+          </MantineProvider>
+        </DirectionProvider>
         <ScrollRestoration nonce={nonce} />
         <Scripts nonce={nonce} />
       </body>

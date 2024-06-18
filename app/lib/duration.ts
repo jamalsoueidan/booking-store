@@ -1,7 +1,7 @@
+import {useShop} from '@shopify/hydrogen-react';
 import {format as f, formatDuration, intervalToDuration} from 'date-fns';
 import {ar, da, enUS} from 'date-fns/locale';
 import {useCallback} from 'react';
-import {useLanguage} from '~/providers/Language';
 
 export function durationToTime(minutesString: number | string) {
   const minutes = parseInt(minutesString.toString());
@@ -21,7 +21,7 @@ export function durationToTime(minutesString: number | string) {
 }
 
 export function useDuration() {
-  const lang = useLanguage();
+  const {languageIsoCode} = useShop();
 
   const durationToTime = useCallback(
     (minutesString: number | string) => {
@@ -29,7 +29,8 @@ export function useDuration() {
       const milliseconds = minutes * 60 * 1000;
       const duration = intervalToDuration({start: 0, end: milliseconds});
       const format = formatDuration(duration, {
-        locale: lang === 'AR' ? ar : lang === 'EN' ? enUS : da,
+        locale:
+          languageIsoCode === 'AR' ? ar : languageIsoCode === 'EN' ? enUS : da,
         ...(milliseconds === 0
           ? {
               zero: true,
@@ -40,14 +41,14 @@ export function useDuration() {
 
       return format.replace('minutter', 'min');
     },
-    [lang],
+    [languageIsoCode],
   );
 
   return durationToTime;
 }
 
 export function useDate() {
-  const lang = useLanguage();
+  const {languageIsoCode} = useShop();
 
   const format = useCallback(
     (
@@ -63,10 +64,11 @@ export function useDate() {
     ) => {
       return f(date, format, {
         ...options,
-        locale: lang === 'AR' ? ar : lang === 'EN' ? enUS : da,
+        locale:
+          languageIsoCode === 'AR' ? ar : languageIsoCode === 'EN' ? enUS : da,
       });
     },
-    [lang],
+    [languageIsoCode],
   );
 
   return {format};

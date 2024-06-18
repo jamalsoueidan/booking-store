@@ -23,6 +23,7 @@ import {
   type ShouldRevalidateFunctionArgs,
 } from '@remix-run/react';
 import {parseGid} from '@shopify/hydrogen';
+import {useShop} from '@shopify/hydrogen-react';
 import {defer, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
 import {format, isValid, parse, set} from 'date-fns';
 import {da} from 'date-fns/locale';
@@ -37,7 +38,6 @@ import type {
 } from '~/lib/api/model';
 import {useDate} from '~/lib/duration';
 import {parseOptionsFromQuery} from '~/lib/parseOptionsQueryParameters';
-import {useLanguage} from '~/providers/Language';
 import {useTranslations} from '~/providers/Translation';
 import {
   BookingDetails,
@@ -353,7 +353,7 @@ function AvailabilityTime({
 }
 
 function MonthSelector(props: SelectProps) {
-  const lang = useLanguage();
+  const {languageIsoCode} = useShop();
   const currentDate = new Date();
   const currentMonth = currentDate.getMonth();
 
@@ -361,7 +361,8 @@ function MonthSelector(props: SelectProps) {
   for (let month = 0; month < 12; month++) {
     const date = new Date(2000, month, 1); // Use any non-leap year to avoid issues
     const label = format(date, 'MMMM', {
-      locale: lang === 'AR' ? ar : lang === 'EN' ? enUS : da,
+      locale:
+        languageIsoCode === 'AR' ? ar : languageIsoCode === 'EN' ? enUS : da,
     });
     const value = format(date, 'MMMM').toLowerCase();
     months.push({label, value});
