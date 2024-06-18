@@ -114,7 +114,7 @@ function Header() {
       <Container size="xl">
         <Stack gap="xl">
           <H1 gradients={{from: 'orange', to: 'orange.3'}}>
-            {t('index_title')}
+            {t('index_title') as string}
           </H1>
           <Title order={2} c="dimmed" fw="normal" ta="center">
             {t('index_subtitle')}

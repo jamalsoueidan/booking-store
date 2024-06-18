@@ -50,7 +50,7 @@ export function AddPriceFilter({min, max}: {min: number; max: number}) {
           },
           {
             value: max - 10,
-            label: `${'filter_price_to'} ${max} kr`,
+            label: `${t('filter_price_to')} ${max} kr`,
           },
         ]}
       />

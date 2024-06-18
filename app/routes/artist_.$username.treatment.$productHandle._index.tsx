@@ -9,7 +9,7 @@ import {
 } from './artist_.$username.treatment.$productHandle';
 
 export default function ProductDescription() {
-  const {t} = useTranslations();
+  const {t, tc} = useTranslations();
   const [searchParams] = useSearchParams();
   const {product} = useOutletContext<OutletLoader>();
 
@@ -78,7 +78,7 @@ export default function ProductDescription() {
             </>
           ) : (
             <Text>
-              {t('artist_booking_index_no_options', {
+              {tc('artist_booking_index_no_options', {
                 1: <Text component="span" fw="bold" />,
               })}
             </Text>

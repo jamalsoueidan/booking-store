@@ -74,6 +74,7 @@ export async function loader({params, context}: LoaderFunctionArgs) {
     {
       variables: {
         handle: product.collection.reference.handle,
+        language: 'DA',
       },
       cache: storefront.CacheLong(),
     },

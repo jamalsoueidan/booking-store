@@ -68,7 +68,7 @@ export const useTranslations = () => {
     [],
   );
 
-  const t = useCallback(
+  const tc = useCallback(
     (key: string, options: Record<string, any> = {}) => {
       const value = data[key];
       if (!value) {
@@ -89,8 +89,21 @@ export const useTranslations = () => {
     [data, interpolateComponents, interpolateText],
   );
 
+  const t = useCallback(
+    (key: string, options: Record<string, any> = {}) => {
+      const value = data[key];
+      if (!value) {
+        console.log(`missing_${key}`, data);
+        return `missing_${key}`;
+      }
+      return interpolateText(value, options);
+    },
+    [data, interpolateText],
+  );
+
   return {
     t,
+    tc,
   };
 };
 

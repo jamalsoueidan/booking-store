@@ -172,6 +172,7 @@ function TreatmentPickDatetime({availability}: TreatmentPickDatetimeProps) {
   const onPickDate = (month: string | null) => {
     if (month) {
       const monthDate = parse(month, 'MMMM', new Date());
+
       const startOfMonthDate = set(monthDate, {
         hours: 2,
         minutes: 0,

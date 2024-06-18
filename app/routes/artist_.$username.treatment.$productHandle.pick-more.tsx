@@ -27,7 +27,7 @@ import {useTranslations} from '~/providers/Translation';
 import {BookingDetails} from './artist_.$username.treatment.$productHandle';
 
 export default function ArtistTreatments() {
-  const {t} = useTranslations();
+  const {t, tc} = useTranslations();
   const [searchParams] = useSearchParams();
   const {products} = useOutletContext<{
     products: PickMoreTreatmentProductFragment[];
@@ -59,7 +59,7 @@ export default function ArtistTreatments() {
             </>
           ) : (
             <Text>
-              {t('artist_booking_pickmore_empty', {
+              {tc('artist_booking_pickmore_empty', {
                 1: <Text component="span" fw="bold" />,
               })}
             </Text>
