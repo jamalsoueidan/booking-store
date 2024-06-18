@@ -44,8 +44,6 @@ export function AddLocationFilter({tags}: {tags: string[]}) {
   const {t} = useTranslations();
   const {value, onChange} = useChangeFilter('location');
 
-  console.log(tags);
-
   return (
     <div>
       <Group gap="xs" mb="xs">
