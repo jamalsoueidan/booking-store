@@ -217,7 +217,12 @@ function Header() {
             </Text>
           </Flex>
         </Flex>
-        <Flex justify={{base: 'center', sm: 'flex-end'}} gap="md" miw="40%">
+        <Flex
+          justify={{base: 'center', sm: 'flex-end'}}
+          gap="md"
+          miw="40%"
+          wrap="wrap"
+        >
           <ResetFilter />
           <Button
             variant="outline"

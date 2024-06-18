@@ -9,6 +9,8 @@ export function AddPriceFilter({min, max}: {min: number; max: number}) {
   const [searchParams, setSearchParams] = useSearchParams();
   const [value, setValue] = useState([0, max]);
 
+  console.log(min, max);
+
   const onChange = (value: number[] | null) => {
     setSearchParams(
       (prev) => {
@@ -43,16 +45,8 @@ export function AddPriceFilter({min, max}: {min: number; max: number}) {
         min={0}
         max={max}
         label={(value: number) => `${value} kr`}
-        marks={[
-          {
-            value: 10,
-            label: `${t('filter_price_from')} ${0} kr`,
-          },
-          {
-            value: max - 10,
-            label: `${t('filter_price_to')} ${max} kr`,
-          },
-        ]}
+        labelAlwaysOn
+        styles={{label: {bottom: '-38px', top: 'unset'}}}
       />
     </Stack>
   );
