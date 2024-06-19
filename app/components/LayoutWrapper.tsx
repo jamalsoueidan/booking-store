@@ -33,6 +33,7 @@ import {
   IconShoppingCartPlus,
 } from '@tabler/icons-react';
 import {Suspense, type ReactNode} from 'react';
+import {useLanguage} from '~/hooks/useLanguage';
 import {TranslationProvider, useTranslations} from '~/providers/Translation';
 import {type loader} from '~/root';
 import {Footer} from './Footer';
@@ -45,6 +46,7 @@ export function LayoutWrapper({children}: {children: ReactNode}) {
   const [scroll] = useWindowScroll();
   const isMobile = useMediaQuery('(max-width: 62em)');
   const location = useLocation();
+  const language = useLanguage();
   const path = location.pathname;
 
   const {publish, cart: analyticsCart} = useAnalytics();
@@ -103,7 +105,7 @@ export function LayoutWrapper({children}: {children: ReactNode}) {
                 fw="500"
                 data-testid="logo-login"
               >
-                {data.language !== 'AR' ? (
+                {language !== 'AR' ? (
                   <>
                     ByS
                     <Image src={logo} alt="it's me" h="auto" w="8px" mx="2px" />

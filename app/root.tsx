@@ -8,7 +8,6 @@ import coreStyles from '@mantine/core/styles.css?url';
 import {ModalsProvider} from '@mantine/modals';
 import {NavigationProgress, nprogress} from '@mantine/nprogress';
 import nprogressStyles from '@mantine/nprogress/styles.css?url';
-import {useShop} from '@shopify/hydrogen-react';
 
 import {
   isRouteErrorResponse,
@@ -34,6 +33,7 @@ import {useEffect, type ReactNode} from 'react';
 import favicon from './assets/favicon.svg';
 import {CustomAnalytics} from './components/CustomAnalytics';
 import {LayoutWrapper} from './components/LayoutWrapper';
+import {useLanguage} from './hooks/useLanguage';
 import {PAGE_QUERY} from './routes/pages.$handle';
 import appStyles from './styles/app.css?url';
 
@@ -130,7 +130,6 @@ export async function loader({context}: LoaderFunctionArgs) {
       checkoutDomain: env.PUBLIC_CHECKOUT_DOMAIN,
       storefrontAccessToken: env.PUBLIC_STOREFRONT_API_TOKEN,
     },
-    language: storefront.i18n.language,
   });
 }
 
@@ -140,7 +139,7 @@ export function Layout({children}: {children: ReactNode}) {
   const location = useLocation();
   const path = location.pathname;
   const {state} = useNavigation();
-  const shop = useShop();
+  const lang = useLanguage();
 
   useEffect(() => {
     if (state === 'loading' || state === 'submitting') {
@@ -155,7 +154,7 @@ export function Layout({children}: {children: ReactNode}) {
     : true;
 
   return (
-    <html lang="en" dir={shop && shop.languageIsoCode === 'AR' ? 'rtl' : 'ltr'}>
+    <html lang="en" dir={lang === 'AR' ? 'rtl' : 'ltr'}>
       <head>
         <meta charSet="utf-8" />
         <meta
