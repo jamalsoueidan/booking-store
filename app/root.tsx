@@ -8,6 +8,7 @@ import coreStyles from '@mantine/core/styles.css?url';
 import {ModalsProvider} from '@mantine/modals';
 import {NavigationProgress, nprogress} from '@mantine/nprogress';
 import nprogressStyles from '@mantine/nprogress/styles.css?url';
+import {useShop} from '@shopify/hydrogen-react';
 
 import {
   isRouteErrorResponse,
@@ -139,6 +140,7 @@ export function Layout({children}: {children: ReactNode}) {
   const location = useLocation();
   const path = location.pathname;
   const {state} = useNavigation();
+  const shop = useShop();
 
   useEffect(() => {
     if (state === 'loading' || state === 'submitting') {
@@ -153,7 +155,7 @@ export function Layout({children}: {children: ReactNode}) {
     : true;
 
   return (
-    <html lang="en" dir={data.language === 'AR' ? 'rtl' : 'ltr'}>
+    <html lang="en" dir={shop && shop.languageIsoCode === 'AR' ? 'rtl' : 'ltr'}>
       <head>
         <meta charSet="utf-8" />
         <meta
