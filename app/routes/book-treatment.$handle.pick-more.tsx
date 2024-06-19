@@ -24,7 +24,7 @@ import {useMemo} from 'react';
 import {type PickMoreTreatmentProductFragment} from 'storefrontapi.generated';
 import {durationToTime} from '~/lib/duration';
 import {useTranslations} from '~/providers/Translation';
-import {BookingDetails} from './artist_.$username.treatment.$productHandle';
+import {BookingDetails} from './book-treatment.$handle';
 
 export default function ArtistTreatments() {
   const {t, tc} = useTranslations();
@@ -41,7 +41,7 @@ export default function ArtistTreatments() {
             <Text size="sm" c="dimmed">
               {t('artist_booking_steps', {step: 3, total: 4})}
             </Text>
-            <Title order={1} fw={600}>
+            <Title order={1} fw={600} size="h2">
               {t('artist_booking_pickmore_title')}
             </Title>
             <Text c="dimmed">{t('artist_booking_pickmore_subtitle')}</Text>

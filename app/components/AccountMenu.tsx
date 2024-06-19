@@ -187,7 +187,7 @@ export function AccountMenu({
             <ActionIcon
               variant="default"
               component={Link}
-              to={`/artist/${user?.username}`}
+              to={`/${user?.username}`}
               target="_blank"
               data-testid="preview-link"
             >

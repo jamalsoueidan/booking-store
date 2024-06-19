@@ -234,7 +234,7 @@ function TreatmentProductUser({
 
   return (
     <Card withBorder radius="md" pb="xs">
-      <UnstyledButton component={Link} to={`/artist/${user.username?.value}`}>
+      <UnstyledButton component={Link} to={`/${user.username?.value}`}>
         <Flex justify="space-between">
           <Flex gap="lg" align="center">
             <Avatar src={user.image?.reference?.image?.url} size={rem(90)} />
@@ -300,7 +300,7 @@ function TreatmentProductUser({
           color="gray.3"
           radius="lg"
           component={Link}
-          to={`/artist/${user.username?.value}`}
+          to={`/${user.username?.value}`}
           w="100%"
         >
           Vis profil
@@ -341,7 +341,7 @@ export function ArtistProduct({
     <UnstyledButton
       component={Link}
       data-testid={`service-item-${productId}`}
-      to={`/artist/${user.username?.value}/treatment/${product.handle}`}
+      to={`/book-treatment/${product.handle}`}
       {...props}
     >
       <Grid>

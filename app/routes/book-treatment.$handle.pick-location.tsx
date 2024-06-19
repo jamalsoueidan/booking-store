@@ -9,10 +9,7 @@ import {
 } from '~/lib/api/model';
 import {convertLocations} from '~/lib/convertLocations';
 import {useTranslations} from '~/providers/Translation';
-import {
-  BookingDetails,
-  type OutletLoader,
-} from './artist_.$username.treatment.$productHandle';
+import {BookingDetails, type OutletLoader} from './book-treatment.$handle';
 
 export default function ArtistTreatmentPickLocation() {
   const {t} = useTranslations();

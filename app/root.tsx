@@ -149,10 +149,6 @@ export function Layout({children}: {children: ReactNode}) {
     }
   }, [state]);
 
-  const pathNotBooking = path.includes('/artist')
-    ? !path.includes('/treatment')
-    : true;
-
   return (
     <html lang="en" dir={lang === 'AR' ? 'rtl' : 'ltr'}>
       <head>
@@ -170,7 +166,9 @@ export function Layout({children}: {children: ReactNode}) {
           <MantineProvider>
             <NavigationProgress />
             <ModalsProvider>
-              {!path.includes('/account') && pathNotBooking && data?.cart ? (
+              {!path.includes('/account') &&
+              !path.includes('/book-treatment') &&
+              data?.cart ? (
                 <Analytics.Provider
                   cart={data.cart}
                   shop={data.shop}

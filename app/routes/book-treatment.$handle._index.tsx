@@ -3,10 +3,7 @@ import {Link, useOutletContext, useSearchParams} from '@remix-run/react';
 import {OptionSelector, ProductOption} from '~/components/OptionSelector';
 
 import {useTranslations} from '~/providers/Translation';
-import {
-  BookingDetails,
-  type OutletLoader,
-} from './artist_.$username.treatment.$productHandle';
+import {BookingDetails, type OutletLoader} from './book-treatment.$handle';
 
 export default function ProductDescription() {
   const {t, tc} = useTranslations();
