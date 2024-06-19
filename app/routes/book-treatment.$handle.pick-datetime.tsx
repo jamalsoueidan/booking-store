@@ -77,7 +77,7 @@ export async function loader({params, request, context}: LoaderFunctionArgs) {
   const shippingId = searchParams.get('shippingId') as string | undefined;
 
   if (!handle || !locationId) {
-    throw new Response('Expected artist handle to be defined', {status: 400});
+    throw new Response('Expected  handle to be defined', {status: 400});
   }
 
   const {product} = await storefront.query(GET_PRODUCT_WITH_OPTIONS, {
@@ -87,7 +87,7 @@ export async function loader({params, request, context}: LoaderFunctionArgs) {
   });
 
   if (!product?.id) {
-    throw new Response('Expected product handle to be defined', {status: 404});
+    throw new Response('Expected handle to be defined', {status: 404});
   }
 
   const availability = getBookingShopifyApi().userAvailabilityGenerate(

@@ -93,7 +93,7 @@ export async function loader({params, request, context}: LoaderFunctionArgs) {
   const {storefront} = context;
 
   if (!handle) {
-    throw new Response('Expected product handle to be defined', {status: 404});
+    throw new Response('Expected handle to be defined', {status: 404});
   }
 
   const {product} = await storefront.query(GET_PRODUCT_WITH_OPTIONS, {
