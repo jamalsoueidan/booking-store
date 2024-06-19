@@ -87,6 +87,8 @@ export const meta: MetaFunction<typeof loader> = ({data}) => {
 };
 
 export async function loader({params, request, context}: LoaderFunctionArgs) {
+  await context.customerAccount.handleAuthStatus();
+
   const {productHandle} = params;
   const {storefront} = context;
 

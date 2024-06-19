@@ -20,6 +20,10 @@
   }
 
   @media (min-width: $mantine-breakpoint-sm) {
+    flex: 0 0 25%;
+  }
+
+  @media (min-width: $mantine-breakpoint-md) {
     flex: 0 0 20%;
   }
 

@@ -192,7 +192,7 @@ function FeaturedArtists() {
             </ScrollArea>
           ) : null}
 
-          <SimpleGrid cols={{base: 1, sm: 3}} spacing="xl">
+          <SimpleGrid cols={{base: 1, sm: 2, md: 3}} spacing="xl">
             {users?.users?.nodes.map((user) => (
               <UserCard key={user.id} article={user as any} />
             ))}
