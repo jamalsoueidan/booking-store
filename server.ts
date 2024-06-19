@@ -116,14 +116,14 @@ export default {
 };
 
 // Map directly from subdomains to locale values
-export const supportedLocales = {
-  EN: {language: 'EN', country: 'DK'},
-  DK: {language: 'DA', country: 'DK'},
-  AR: {language: 'AR', country: 'DK'},
-} as Record<string, I18nLocale>;
-
-function getLocaleFromRequest(request: Request): I18nLocale {
+export function getLocaleFromRequest(request: Request): I18nLocale {
   const defaultLocale: I18nLocale = {language: 'DA', country: 'DK'};
+
+  const supportedLocales = {
+    EN: {language: 'EN', country: 'DK'},
+    DK: {language: 'DA', country: 'DK'},
+    AR: {language: 'AR', country: 'DK'},
+  } as Record<string, I18nLocale>;
 
   const url = new URL(request.url);
   const firstSubdomain = url.hostname.split('.')[0]?.toUpperCase();
