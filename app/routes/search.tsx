@@ -1,8 +1,5 @@
 import {useLoaderData, type MetaFunction} from '@remix-run/react';
-import {
-  UNSTABLE_Analytics as Analytics,
-  getPaginationVariables,
-} from '@shopify/hydrogen';
+import {Analytics, getPaginationVariables} from '@shopify/hydrogen';
 import {defer, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
 
 import {NoSearchResults, SearchForm, SearchResults} from '~/components/Search';
