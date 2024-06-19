@@ -20,7 +20,7 @@ import {
   BookingDetails,
   GET_PRODUCT_WITH_OPTIONS,
   type OutletLoader,
-} from './artist_.$username.treatment.$productHandle';
+} from './book-treatment.$handle';
 
 import {LocationIcon} from '~/components/LocationIcon';
 import {getBookingShopifyApi} from '~/lib/api/bookingShopifyApi';
@@ -34,7 +34,7 @@ export const loader = async ({
   params,
   context,
 }: LoaderFunctionArgs) => {
-  const {productHandle} = params;
+  const {handle} = params;
   const {storefront} = context;
 
   const url = new URL(request.url);
@@ -45,14 +45,14 @@ export const loader = async ({
   const fromDate = searchParams.get('fromDate');
   const toDate = searchParams.get('toDate');
 
-  if (!productHandle || !locationId || !fromDate || !toDate) {
+  if (!handle || !locationId || !fromDate || !toDate) {
     throw new Response('Expected productId to be selected', {status: 400});
   }
 
   try {
     const {product} = await storefront.query(GET_PRODUCT_WITH_OPTIONS, {
       variables: {
-        productHandle,
+        productHandle: handle,
       },
     });
 

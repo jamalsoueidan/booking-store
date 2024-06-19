@@ -170,7 +170,7 @@ export const UserCard = ({article}: {article: ArticleUserFragment}) => {
   return (
     <Card
       component={Link}
-      to={`/artist/${user?.username?.value}`}
+      to={`/${user?.username?.value}`}
       withBorder
       radius="md"
       pos="relative"

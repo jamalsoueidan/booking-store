@@ -89,16 +89,16 @@ export const meta: MetaFunction<typeof loader> = ({data}) => {
 export async function loader({params, request, context}: LoaderFunctionArgs) {
   await context.customerAccount.handleAuthStatus();
 
-  const {productHandle} = params;
+  const {handle} = params;
   const {storefront} = context;
 
-  if (!productHandle) {
+  if (!handle) {
     throw new Response('Expected product handle to be defined', {status: 404});
   }
 
   const {product} = await storefront.query(GET_PRODUCT_WITH_OPTIONS, {
     variables: {
-      productHandle,
+      productHandle: handle,
     },
   });
 
@@ -230,7 +230,7 @@ export default function Booking() {
         />
       </Affix>
 
-      <Container size="md" my={rem(62)}>
+      <Container size="md" mt={rem(62)} mb={rem(100)}>
         <Grid gutter="xl">
           <Outlet
             context={{

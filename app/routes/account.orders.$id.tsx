@@ -307,7 +307,7 @@ function TreatmentLineRow({
         {treatmentLineItem.user ? (
           <Text size="sm">
             <strong>Hos: </strong>{' '}
-            <Link to={`/artist/${treatmentLineItem.user.username}`}>
+            <Link to={`/${treatmentLineItem.user.username}`}>
               {treatmentLineItem.user?.fullname}
             </Link>
           </Text>

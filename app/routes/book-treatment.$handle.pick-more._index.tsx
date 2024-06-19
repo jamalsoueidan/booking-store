@@ -17,7 +17,7 @@ import {
 
 import {useMediaQuery} from '@mantine/hooks';
 import {TreatmentStepper} from '~/components/TreatmentStepper';
-import {GET_PRODUCT_WITH_OPTIONS} from './artist_.$username.treatment.$productHandle';
+import {GET_PRODUCT_WITH_OPTIONS} from './book-treatment.$handle';
 
 export function shouldRevalidate({
   currentUrl,
@@ -40,16 +40,16 @@ export async function loader({params, request, context}: LoaderFunctionArgs) {
   const url = new URL(request.url);
   const searchParams = new URLSearchParams(url.search);
 
-  const productHandle = searchParams.get('modal');
+  const handle = searchParams.get('modal');
   const {username} = params;
 
-  if (!productHandle || !username) {
+  if (!handle || !username) {
     return json(null); // don't throw, this is for index file
   }
 
   const {product} = await storefront.query(GET_PRODUCT_WITH_OPTIONS, {
     variables: {
-      productHandle,
+      productHandle: handle,
     },
     cache: context.storefront.CacheShort(),
   });

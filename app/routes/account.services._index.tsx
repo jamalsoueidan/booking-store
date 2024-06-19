@@ -103,7 +103,7 @@ export default function AccountServicesIndex() {
                         variant="default"
                         aria-label="See live"
                         component={Link}
-                        to={`/artist/${user.username}/treatment/${product.productHandle}`}
+                        to={`/book-treatment/${product.productHandle}`}
                         target="_blank"
                         onClick={(event) => event.stopPropagation()}
                       >

@@ -1,5 +1,6 @@
 import {
   ActionIcon,
+  Box,
   Button,
   Flex,
   Grid,
@@ -42,7 +43,7 @@ import {useTranslations} from '~/providers/Translation';
 import {
   BookingDetails,
   GET_PRODUCT_WITH_OPTIONS,
-} from './artist_.$username.treatment.$productHandle';
+} from './book-treatment.$handle';
 
 export function shouldRevalidate({
   currentUrl,
@@ -65,7 +66,7 @@ export function shouldRevalidate({
 }
 
 export async function loader({params, request, context}: LoaderFunctionArgs) {
-  const {productHandle} = params;
+  const {handle} = params;
   const {storefront} = context;
   const url = new URL(request.url);
   const searchParams = url.searchParams;
@@ -75,13 +76,13 @@ export async function loader({params, request, context}: LoaderFunctionArgs) {
   const locationId = searchParams.get('locationId') as string | undefined;
   const shippingId = searchParams.get('shippingId') as string | undefined;
 
-  if (!productHandle || !locationId) {
+  if (!handle || !locationId) {
     throw new Response('Expected artist handle to be defined', {status: 400});
   }
 
   const {product} = await storefront.query(GET_PRODUCT_WITH_OPTIONS, {
     variables: {
-      productHandle,
+      productHandle: handle,
     },
   });
 
@@ -116,6 +117,14 @@ export default function ArtistTreatmentPickDatetime() {
   return (
     <>
       <Grid.Col span={{base: 12, md: 7}}>
+        <Box mb="xl">
+          <Text size="sm" c="dimmed">
+            {t('artist_booking_steps', {step: 3, total: 4})}
+          </Text>
+          <Title order={1} fw={600} size="h2">
+            {t('artist_booking_pickdate_title')}
+          </Title>
+        </Box>
         <Suspense
           fallback={
             <Stack gap="lg">
@@ -248,15 +257,6 @@ function TreatmentPickDatetime({availability}: TreatmentPickDatetimeProps) {
 
   return (
     <Stack gap="xl">
-      <div>
-        <Text size="sm" c="dimmed">
-          {t('artist_booking_steps', {step: 3, total: 4})}
-        </Text>
-        <Title order={1} fw={600}>
-          {t('artist_booking_pickdate_title')}
-        </Title>
-      </div>
-
       <SimpleGrid cols={2}>
         <MonthSelector
           onChange={onPickDate}
