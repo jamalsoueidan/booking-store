@@ -39,6 +39,8 @@ import {
   useCalculateDurationAndPrice,
   useCalculationForExtraProducts,
 } from '~/components/OptionSelector';
+import {CREATE_ADDRESS_MUTATION} from '~/graphql/customer-account/CustomerAddressMutations';
+import {CUSTOMER_DETAILS_QUERY} from '~/graphql/customer-account/CustomerDetailsQuery';
 import {LOCATION_FRAGMENT} from '~/graphql/fragments/Location';
 import {TREATMENT_OPTION_FRAGMENT} from '~/graphql/fragments/TreatmentOption';
 import {USER_FRAGMENT} from '~/graphql/fragments/User';
@@ -88,6 +90,23 @@ export const meta: MetaFunction<typeof loader> = ({data}) => {
 
 export async function loader({params, request, context}: LoaderFunctionArgs) {
   await context.customerAccount.handleAuthStatus();
+
+  const {data} = await context.customerAccount.query(CUSTOMER_DETAILS_QUERY);
+  if (!data.customer?.defaultAddress) {
+    await context.customerAccount.mutate(CREATE_ADDRESS_MUTATION, {
+      variables: {
+        address: {
+          firstName: 'BySisters',
+          lastName: '-',
+          address1: 'Trepkasgade 25',
+          city: 'Aarhus',
+          zip: '8000',
+          territoryCode: 'DK',
+        },
+        defaultAddress: true,
+      },
+    });
+  }
 
   const {handle} = params;
   const {storefront} = context;
