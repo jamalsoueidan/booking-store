@@ -1,6 +1,6 @@
 import {Await, useLoaderData, type MetaFunction} from '@remix-run/react';
 import type {CartQueryDataReturn} from '@shopify/hydrogen';
-import {UNSTABLE_Analytics as Analytics, CartForm} from '@shopify/hydrogen';
+import {Analytics, CartForm} from '@shopify/hydrogen';
 import {
   json,
   type ActionFunctionArgs,

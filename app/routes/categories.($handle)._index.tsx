@@ -13,11 +13,7 @@ import {
   Text,
 } from '@mantine/core';
 import {Link, useLoaderData, type MetaFunction} from '@remix-run/react';
-import {
-  UNSTABLE_Analytics as Analytics,
-  getPaginationVariables,
-  Pagination,
-} from '@shopify/hydrogen';
+import {Analytics, getPaginationVariables, Pagination} from '@shopify/hydrogen';
 import {json, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
 import type {
   CategoriesCollectionFilterFragment,

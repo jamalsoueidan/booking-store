@@ -12,7 +12,7 @@ import {
   Title,
 } from '@mantine/core';
 import {Outlet, useLoaderData, useSearchParams} from '@remix-run/react';
-import {UNSTABLE_Analytics as Analytics} from '@shopify/hydrogen';
+import {Analytics} from '@shopify/hydrogen';
 import {
   json,
   type LoaderFunctionArgs,

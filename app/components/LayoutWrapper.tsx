@@ -24,7 +24,7 @@ import {
   useLoaderData,
   useLocation,
 } from '@remix-run/react';
-import {unstable_useAnalytics as useAnalytics} from '@shopify/hydrogen';
+import {useAnalytics} from '@shopify/hydrogen';
 import {
   IconChevronRight,
   IconDashboard,

@@ -14,7 +14,7 @@ import type {
 } from 'storefrontapi.generated';
 
 import {
-  UNSTABLE_Analytics as Analytics,
+  Analytics,
   CartForm,
   getSelectedProductOptions,
   Image,
