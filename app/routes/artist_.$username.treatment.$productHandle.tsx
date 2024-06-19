@@ -21,7 +21,6 @@ import {
   useOutletContext,
   type ShouldRevalidateFunctionArgs,
 } from '@remix-run/react';
-import {useShop} from '@shopify/hydrogen-react';
 import {
   json,
   type LoaderFunctionArgs,
@@ -43,6 +42,7 @@ import {
 import {LOCATION_FRAGMENT} from '~/graphql/fragments/Location';
 import {TREATMENT_OPTION_FRAGMENT} from '~/graphql/fragments/TreatmentOption';
 import {USER_FRAGMENT} from '~/graphql/fragments/User';
+import {useLanguage} from '~/hooks/useLanguage';
 import {useScrollEffect} from '~/hooks/useScrollEffect';
 import {type CustomerLocation} from '~/lib/api/model';
 import {useDuration} from '~/lib/duration';
@@ -160,7 +160,7 @@ export async function loader({params, request, context}: LoaderFunctionArgs) {
 }
 
 export default function Booking() {
-  const {languageIsoCode} = useShop();
+  const lang = useLanguage();
   const {product, products, page} = useLoaderData<typeof loader>();
   const {opacity, shadow} = useScrollEffect();
   const navigate = useNavigate();
@@ -191,7 +191,7 @@ export default function Booking() {
               c="black"
               onClick={() => navigate(-1)}
             >
-              {languageIsoCode === 'AR' ? (
+              {lang === 'AR' ? (
                 <IconArrowRight
                   style={{width: rem(36), height: rem(36), strokeWidth: 1}}
                 />

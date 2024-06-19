@@ -115,10 +115,10 @@ export default {
   },
 };
 
-function getLocaleFromRequest(request: Request): I18nLocale {
+// Map directly from subdomains to locale values
+export function getLocaleFromRequest(request: Request): I18nLocale {
   const defaultLocale: I18nLocale = {language: 'DA', country: 'DK'};
 
-  // Map directly from subdomains to locale values
   const supportedLocales = {
     EN: {language: 'EN', country: 'DK'},
     DK: {language: 'DA', country: 'DK'},
