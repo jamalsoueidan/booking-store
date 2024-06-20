@@ -196,7 +196,7 @@ export default function ArtistTreatmentsBooking() {
             </Stack>
           </Card>
 
-          <Card withBorder radius="md" hiddenFrom="sm" mb={rem(70)}>
+          <Card withBorder radius="md" hiddenFrom="md" mb={rem(70)}>
             <Stack gap="sm">
               <Group gap="xs" align="center">
                 <IconServicemark />
