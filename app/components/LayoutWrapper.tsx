@@ -169,7 +169,9 @@ export function LayoutWrapper({children}: {children: ReactNode}) {
             <NavLinkMantine
               component={NavLink}
               key={url}
-              to={new URL(url || '').pathname}
+              to={new URL(url || '').pathname
+                .replace('/en/', '/')
+                .replace('/ar/', '/')}
               onClick={toggle}
               label={title}
               rightSection={

@@ -5,7 +5,6 @@ import {
   Card,
   Flex,
   Grid,
-  Mark,
   rem,
   RingProgress,
   Stack,
@@ -258,28 +257,26 @@ function BuyerAccount() {
         Du er nu officielt oprettet og logget ind på dit personlige dashboard.
         Herfra har du adgang til en række funktioner til at gøre din oplevelse
         så glidende og behagelig som muligt. Du kan gennemse din{' '}
-        <Link to="/account/orders">købshistorik</Link>,{' '}
-        <Link to="/account/password">opdatere dit kodeord</Link>, og se dine
-        fremtidige bookinger med talentfulde makeupartister, hårstylister og
-        meget mere.{' '}
+        <Link to="/account/orders">købshistorik</Link>, og se dine fremtidige
+        bookinger med skønhedseksperter.{' '}
       </Text>
 
       <Text>
-        <Mark>
-          Hvis du har en passion for skønhed og ønsker at dele dine egne
-          talenter med verden
-        </Mark>
-        , giver vi dig en unik mulighed. Du kan nemt konvertere din konto til en{' '}
-        <Link to="../business">business konto</Link> - helt gratis! Som business
-        bruger kan du udbyde dine egne ydelser på vores platform og tjene penge,
-        alt imens du udvider din kundekreds og bygger dit brand. At{' '}
-        <Mark>skifte til en business konto</Mark> er enkelt og ligetil.
+        <strong>
+          Hvis du elsker skønhed og vil dele dine talenter med verden, har vi en
+          unik mulighed for dig.{' '}
+        </strong>
+        Du kan gratis konvertere din konto til en{' '}
+        <Link to="../business">businesskonto</Link>. Efterfølgende kan du
+        tilbyde dine ydelser på vores platform, tjene penge, udvide din
+        kundekreds og bygge dit brand.
       </Text>
       <Text>
         Vi er her for at støtte dig på hvert skridt af vejen. Så hvis du har
         spørgsmål eller brug for hjælp undervejs, tøv ikke med at{' '}
-        <Link to="/pages/contact">kontakte os</Link>. Velkommen ombord, og lad
-        os sammen skabe skønhed!
+        <Link to="/pages/contact">kontakte os</Link>. <br />
+        <br />
+        Velkommen ombord, og lad os sammen skabe skønhed!
       </Text>
       <div>
         <Button

@@ -53,6 +53,7 @@ export async function loader({request, context}: LoaderFunctionArgs) {
 export default function Orders() {
   const {customer} = useLoaderData<{customer: CustomerOrdersFragment}>();
   const {orders} = customer;
+
   return (
     <>
       <AccountTitle

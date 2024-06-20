@@ -63,7 +63,7 @@ export async function loader({params, context, request}: LoaderFunctionArgs) {
 
   const lineItems = flattenConnection(order.lineItems);
   const discountApplications = flattenConnection(order.discountApplications);
-  const fulfillmentStatus = flattenConnection(order.fulfillments)[0].status;
+  const fulfillmentStatus = flattenConnection(order.fulfillments);
 
   const firstDiscount = discountApplications[0]?.value;
 
@@ -120,7 +120,9 @@ export default function OrderRoute() {
         <Stack gap="lg">
           <Text c="dimmed" size="sm">
             Købt {format(new Date(order.processedAt!), 'PPPP', {locale: da})}
-            <Badge ml="xs">{fulfillmentStatus}</Badge>
+            <Badge ml="xs">
+              {fulfillmentStatus.length > 0 ? fulfillmentStatus[0].status : '-'}
+            </Badge>
           </Text>
 
           {treatmentOrder ? (
@@ -184,30 +186,32 @@ export default function OrderRoute() {
                 <Money data={order.totalPrice!} as={Text} />
               </Flex>
             </Card>
-            <Card shadow="0" padding="md" radius="md" withBorder>
-              <Text fw={500} size="lg" mb="md">
-                Forsendelse
-              </Text>
-              {order?.shippingAddress ? (
-                <>
-                  <Text>{order.shippingAddress.name}</Text>
-                  {order?.shippingAddress?.formatted ? (
-                    order.shippingAddress.formatted.map((line: string) => (
-                      <Text key={line}>{line}</Text>
-                    ))
-                  ) : (
-                    <></>
-                  )}
-                  {order.shippingAddress.formattedArea ? (
-                    <p>{order.shippingAddress.formattedArea}</p>
-                  ) : (
-                    ''
-                  )}
-                </>
-              ) : (
-                <Text>Ingen forsendelse</Text>
-              )}
-            </Card>
+            {productsInOrder.length > 0 ? (
+              <Card shadow="0" padding="md" radius="md" withBorder>
+                <Text fw={500} size="lg" mb="md">
+                  Forsendelse
+                </Text>
+                {order?.shippingAddress ? (
+                  <>
+                    <Text>{order.shippingAddress.name}</Text>
+                    {order?.shippingAddress?.formatted ? (
+                      order.shippingAddress.formatted.map((line: string) => (
+                        <Text key={line}>{line}</Text>
+                      ))
+                    ) : (
+                      <></>
+                    )}
+                    {order.shippingAddress.formattedArea ? (
+                      <p>{order.shippingAddress.formattedArea}</p>
+                    ) : (
+                      ''
+                    )}
+                  </>
+                ) : (
+                  <Text>Ingen forsendelse</Text>
+                )}
+              </Card>
+            ) : null}
           </SimpleGrid>
         </Stack>
       </AccountContent>
