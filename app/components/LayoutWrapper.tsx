@@ -165,67 +165,7 @@ export function LayoutWrapper({children}: {children: ReactNode}) {
         </AppShell.Header>
 
         <AppShell.Navbar px={4}>
-          {data.header.menu?.items.map(({url, title}) => (
-            <NavLinkMantine
-              component={NavLink}
-              key={url}
-              to={new URL(url || '').pathname
-                .replace('/en/', '/')
-                .replace('/ar/', '/')}
-              onClick={toggle}
-              label={title}
-              rightSection={
-                <IconChevronRight
-                  size="0.8rem"
-                  stroke={1.5}
-                  className="mantine-rotate-rtl"
-                />
-              }
-            />
-          ))}
-          <Flex gap="xs" p="xs">
-            <Suspense>
-              <Await resolve={data.isLoggedIn}>
-                {(isLoggedIn) => (
-                  <Button
-                    variant="outline"
-                    size="compact-lg"
-                    color="black"
-                    component={Link}
-                    to="/account"
-                    data-testid="nav-login-button"
-                    rightSection={
-                      isLoggedIn ? <IconDashboard /> : <IconLogin />
-                    }
-                    fullWidth
-                  >
-                    {isLoggedIn ? 'Dashboard' : 'Log ind'}
-                  </Button>
-                )}
-              </Await>
-            </Suspense>
-            <Suspense>
-              <Await resolve={data.cart}>
-                {(cart) =>
-                  cart?.totalQuantity && cart?.totalQuantity > 0 ? (
-                    <Button
-                      variant="outline"
-                      size="compact-lg"
-                      color="black"
-                      component={Link}
-                      to="/cart"
-                      onClick={toggle}
-                      data-testid="nav-cart-button"
-                      rightSection={<IconShoppingCartPlus />}
-                      fullWidth
-                    >
-                      Indkøbskurv {cart.totalQuantity}
-                    </Button>
-                  ) : null
-                }
-              </Await>
-            </Suspense>
-          </Flex>
+          <MobilNavbar toggle={toggle} />
         </AppShell.Navbar>
 
         <AppShell.Main>
@@ -303,5 +243,74 @@ function AuthSection() {
         </Await>
       </Suspense>
     </Flex>
+  );
+}
+
+function MobilNavbar({toggle}: {toggle: () => void}) {
+  const data = useLoaderData<typeof loader>();
+  const {t} = useTranslations();
+
+  return (
+    <>
+      {data.header.menu?.items.map(({url, title}) => (
+        <NavLinkMantine
+          component={NavLink}
+          key={url}
+          to={new URL(url || '').pathname
+            .replace('/en/', '/')
+            .replace('/ar/', '/')}
+          onClick={toggle}
+          label={title}
+          rightSection={
+            <IconChevronRight
+              size="0.8rem"
+              stroke={1.5}
+              className="mantine-rotate-rtl"
+            />
+          }
+        />
+      ))}
+      <Flex gap="xs" p="xs">
+        <Suspense>
+          <Await resolve={data.isLoggedIn}>
+            {(isLoggedIn) => (
+              <Button
+                variant="outline"
+                size="compact-lg"
+                color="black"
+                component={Link}
+                to="/account"
+                data-testid="nav-login-button"
+                rightSection={isLoggedIn ? <IconDashboard /> : <IconLogin />}
+                fullWidth
+              >
+                {isLoggedIn ? 'Dashboard' : t('login')}
+              </Button>
+            )}
+          </Await>
+        </Suspense>
+        <Suspense>
+          <Await resolve={data.cart}>
+            {(cart) =>
+              cart?.totalQuantity && cart?.totalQuantity > 0 ? (
+                <Button
+                  variant="outline"
+                  size="compact-lg"
+                  color="black"
+                  component={Link}
+                  to="/cart"
+                  onClick={toggle}
+                  data-testid="nav-cart-button"
+                  rightSection={<IconShoppingCartPlus />}
+                  fullWidth
+                >
+                  {t('cart')} {cart.totalQuantity}
+                </Button>
+              ) : null
+            }
+          </Await>
+        </Suspense>
+      </Flex>
+    </>
   );
 }
