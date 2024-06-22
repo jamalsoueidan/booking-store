@@ -30,7 +30,6 @@ import {
   type SerializeFrom,
 } from '@shopify/remix-oxygen';
 import {useEffect, type ReactNode} from 'react';
-import {useTranslation} from 'react-i18next';
 import favicon from './assets/favicon.svg';
 import {CustomAnalytics} from './components/CustomAnalytics';
 import {LayoutWrapper} from './components/LayoutWrapper';
@@ -56,10 +55,6 @@ export const shouldRevalidate: ShouldRevalidateFunction = ({
   }
 
   return false;
-};
-
-export const handle = {
-  i18n: ['translation', 'component'],
 };
 
 export const links = () => {
@@ -144,7 +139,6 @@ export function Layout({children}: {children: ReactNode}) {
   const location = useLocation();
   const path = location.pathname;
   const {state} = useNavigation();
-  const [t] = useTranslation(['component', 'translation']);
 
   useEffect(() => {
     if (state === 'loading' || state === 'submitting') {
@@ -174,7 +168,6 @@ export function Layout({children}: {children: ReactNode}) {
           <MantineProvider>
             <NavigationProgress />
             <ModalsProvider>
-              {t('translation:welcome')}-{t('english', {ns: 'component'})}
               {!path.includes('/account') &&
               !path.includes('/book-treatment') &&
               data?.cart ? (

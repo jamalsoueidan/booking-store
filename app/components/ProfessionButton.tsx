@@ -1,7 +1,7 @@
 import {Avatar, rem, Space, Title, UnstyledButton} from '@mantine/core';
 import {Link, useSearchParams} from '@remix-run/react';
+import {useTranslation} from 'react-i18next';
 import {modifyImageUrl} from '~/lib/image';
-import {useTranslations} from '~/providers/Translation';
 import classes from './ProfessionButton.module.css';
 
 const ProfessionURL: Record<string, string> = {
@@ -30,7 +30,7 @@ export const ProfessionButton = ({
   reset?: boolean;
 }) => {
   const [searchParams] = useSearchParams();
-  const {t} = useTranslations();
+  const {t} = useTranslation(['professions']);
 
   const professionSearchParams = searchParams.get('profession') || '';
 
@@ -46,7 +46,7 @@ export const ProfessionButton = ({
     >
       <Avatar
         src={modifyImageUrl(ProfessionURL[profession], '200x200')}
-        alt={t(`profession_${profession}`)}
+        alt={t(`professions:${profession}` as any)}
         radius="100%"
         size={rem(90)}
       />
@@ -58,7 +58,7 @@ export const ProfessionButton = ({
         ta="center"
         fz={{base: 'xs', sm: 'md'}}
       >
-        {t(`profession_${profession}`)}
+        {t(`professions:${profession}` as any)}
       </Title>
     </UnstyledButton>
   );

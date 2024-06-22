@@ -23,9 +23,10 @@ import {H2} from '~/components/titles/H2';
 import {ProfessionButton} from '~/components/ProfessionButton';
 
 import {getPaginationVariables} from '@shopify/hydrogen';
+import {useTranslation} from 'react-i18next';
 import {Headless} from '~/components/blocks/Headless';
 import {getTags} from '~/lib/tags';
-import {TranslationProvider, useTranslations} from '~/providers/Translation';
+import {TranslationProvider} from '~/providers/Translation';
 import {UserCard, USERS_QUERY} from './artists._index';
 import {
   CATEGORIES_COLLECTION_FRAGMENT,
@@ -36,6 +37,10 @@ import {PAGE_QUERY} from './pages.$handle';
 export function shouldRevalidate() {
   return false;
 }
+
+export const handle: Handle = {
+  i18n: ['index', 'professions'],
+};
 
 export const meta: MetaFunction<typeof loader> = ({data}) => {
   return [
@@ -107,17 +112,17 @@ export default function Homepage() {
 }
 
 function Header() {
-  const {t} = useTranslations();
+  const {t} = useTranslation(['index']);
 
   return (
     <Box pt={rem(100)} pb={rem(50)}>
       <Container size="xl">
         <Stack gap="xl">
           <H1 gradients={{from: 'orange', to: 'orange.3'}}>
-            {t('index_title') as string}
+            {t('index:title')}
           </H1>
           <Title order={2} c="dimmed" fw="normal" ta="center">
-            {t('index_subtitle')}
+            {t('index:subtitle')}
           </Title>
 
           <Flex
@@ -135,7 +140,7 @@ function Header() {
               fw="bold"
               rightSection={<IconSearch />}
             >
-              {t('index_left_button')}
+              {t('index:left_button')}
             </Button>
 
             <Button
@@ -148,7 +153,7 @@ function Header() {
               radius="md"
               rightSection={<IconMoodWink />}
             >
-              {t('index_right_button')}
+              {t('index:right_button')}
             </Button>
           </Flex>
         </Stack>
@@ -160,7 +165,7 @@ function Header() {
 function FeaturedArtists() {
   const {users, tags} = useLoaderData<typeof loader>();
   const theme = useMantineTheme();
-  const {t} = useTranslations();
+  const {t} = useTranslation(['index', 'professions']);
 
   return (
     <Box
@@ -170,7 +175,7 @@ function FeaturedArtists() {
       <Container size="xl">
         <Stack gap="xl">
           <H2 gradients={{from: '#9030ed', to: '#e71b7c'}}>
-            {t('index_artists_title')}
+            {t('index:artists_title')}
           </H2>
 
           {tags && tags['profession'] ? (
@@ -178,8 +183,8 @@ function FeaturedArtists() {
               <Flex justify="center" gap={{base: 'sm', sm: 'lg'}}>
                 {tags['profession']
                   ?.sort((a, b) => {
-                    const translatedA = t(`profession_${a}`) || a;
-                    const translatedB = t(`profession_${b}`) || b;
+                    const translatedA = t(`professions:${a}` as any) || a;
+                    const translatedB = t(`professions:${b}` as any) || b;
                     return translatedA.localeCompare(translatedB);
                   })
                   .map((profession) => (
@@ -213,7 +218,7 @@ function FeaturedArtists() {
                 />
               }
             >
-              {t('index_artists_button')}
+              {t('index:artists_button')}
             </Button>
           </Flex>
         </Stack>
@@ -225,7 +230,7 @@ function FeaturedArtists() {
 function RecommendedTreatments() {
   const {recommendedTreatments, language} = useLoaderData<typeof loader>();
   const theme = useMantineTheme();
-  const {t} = useTranslations();
+  const {t} = useTranslation(['index']);
 
   return (
     <Box
@@ -235,7 +240,7 @@ function RecommendedTreatments() {
       <Stack gap="xl">
         <Container size="xl">
           <H2 gradients={{from: '#9030ed', to: '#e71b7c'}}>
-            {t('index_treatments_title')}
+            {t('index:treatments_title')}
           </H2>
         </Container>
         <Box px="xl" style={{overflow: 'hidden'}}>
@@ -266,7 +271,7 @@ function RecommendedTreatments() {
                 />
               }
             >
-              {t('index_treatments_button')}
+              {t('index:treatments_button')}
             </Button>
           </Flex>
         </Container>

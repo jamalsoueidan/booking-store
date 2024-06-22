@@ -30,7 +30,6 @@ export default async function handleRequest(
   });
 
   const namespaces = extractNamespaces(remixContext.routeModules);
-
   await initI18nServer(
     context.storefront.i18n.language.toLowerCase(),
     namespaces,
