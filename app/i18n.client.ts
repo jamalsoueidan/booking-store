@@ -1,13 +1,6 @@
 import i18n from 'i18next';
 import backend from 'i18next-http-backend';
 import {initReactI18next} from 'react-i18next';
-import daUrl from '~/assets/locales/da/translation.json?url';
-import enUrl from '~/assets/locales/en/translation.json?url';
-
-const translationUrls: Record<string, string> = {
-  en: enUrl,
-  da: daUrl,
-};
 
 export async function initI18nClient() {
   if (i18n.isInitialized) {
@@ -26,7 +19,7 @@ export async function initI18nClient() {
         useSuspense: false,
       },
       backend: {
-        loadPath: (lng: string, ns: string) => translationUrls[lng],
+        loadPath: '/locales/{{lng}}/{{ns}}.json',
       },
     });
 }
