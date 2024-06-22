@@ -58,6 +58,10 @@ export const shouldRevalidate: ShouldRevalidateFunction = ({
   return false;
 };
 
+export const handle = {
+  i18n: ['translation', 'component'],
+};
+
 export const links = () => {
   return [
     {rel: 'stylesheet', href: appStyles},
@@ -170,7 +174,7 @@ export function Layout({children}: {children: ReactNode}) {
           <MantineProvider>
             <NavigationProgress />
             <ModalsProvider>
-              {t('welcome')}
+              {t('welcome')}-{t('english', {ns: 'component'})}
               {!path.includes('/account') &&
               !path.includes('/book-treatment') &&
               data?.cart ? (

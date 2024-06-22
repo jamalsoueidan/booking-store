@@ -1,6 +1,8 @@
 import i18n from 'i18next';
 import backend from 'i18next-http-backend';
 import {initReactI18next} from 'react-i18next';
+import {i18nDefaultConfig} from './defaultConfig';
+import {getInitialNamespaces} from './getInitialNamespaces';
 
 export async function initI18nClient() {
   if (i18n.isInitialized) {
@@ -8,16 +10,15 @@ export async function initI18nClient() {
   }
 
   const language = getLanguageFromSubdomain();
+  const namespaces = getInitialNamespaces();
+
   return i18n
     .use(initReactI18next)
     .use(backend)
     .init({
+      ...i18nDefaultConfig,
       lng: language,
-      fallbackLng: 'en',
-      debug: true,
-      react: {
-        useSuspense: false,
-      },
+      ns: namespaces,
       backend: {
         loadPath: '/locales/{{lng}}/{{ns}}.json',
       },

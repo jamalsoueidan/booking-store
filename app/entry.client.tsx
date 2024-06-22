@@ -4,7 +4,7 @@ import {hydrateRoot} from 'react-dom/client';
 
 import i18n from 'i18next';
 import {I18nextProvider} from 'react-i18next';
-import {initI18nClient} from './i18n.client';
+import {initI18nClient} from './i18n/i18n.client';
 
 initI18nClient()
   .then(() => {
