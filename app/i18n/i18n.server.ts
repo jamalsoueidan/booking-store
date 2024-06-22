@@ -6,9 +6,7 @@ class CustomBackend implements BackendModule {
   static type: 'backend' = 'backend' as const;
   type = 'backend' as const;
 
-  init(services: any, backendOptions: any, i18nextOptions: any): void {
-    //any options here if needed
-  }
+  init(services: any, backendOptions: any, i18nextOptions: any): void {}
 
   read(language: string, namespace: string, callback: ReadCallback): void {
     import(`../../public/locales/${language}/${namespace}.json`)

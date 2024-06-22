@@ -6,7 +6,7 @@ import i18n from 'i18next';
 import isbot from 'isbot';
 import {renderToReadableStream} from 'react-dom/server';
 import {I18nextProvider} from 'react-i18next';
-import {getRouteNamespaces} from './i18n/getRouteNamespaces';
+import {extractNamespaces} from './i18n/extractNamespaces';
 import {initI18nServer} from './i18n/i18n.server';
 
 export default async function handleRequest(
@@ -29,7 +29,10 @@ export default async function handleRequest(
     ],
   });
 
-  const namespaces = getRouteNamespaces(remixContext);
+  const namespaces = extractNamespaces(
+    context.routeModules as EntryContext['routeModules'],
+  );
+
   await initI18nServer(
     context.storefront.i18n.language.toLowerCase(),
     namespaces,
