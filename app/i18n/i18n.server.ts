@@ -1,6 +1,5 @@
 import i18n, {type BackendModule, type ReadCallback} from 'i18next';
 import {initReactI18next} from 'react-i18next';
-import './@types/i18next';
 import {i18nDefaultConfig} from './defaultConfig';
 class CustomBackend implements BackendModule {
   static type: 'backend' = 'backend' as const;
