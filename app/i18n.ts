@@ -1,8 +1,8 @@
 import i18n, {type InitOptions} from 'i18next';
 import HttpApi from 'i18next-http-backend';
 import {initReactI18next} from 'react-i18next';
-import da from '~/assets/locales/da/translation.json';
-import en from '~/assets/locales/en/translation.json';
+import da from '../public/locales/da/translation.json';
+import en from '../public/locales/en/translation.json';
 
 const supportedLanguages = ['da', 'en'];
 const defaultLanguage = 'da';
@@ -11,7 +11,8 @@ const isBrowser = typeof window === 'object' && typeof document === 'object';
 //https://sergiodxa.com/articles/localizing-remix-apps-with-i18next
 
 export async function initI18Next(i18next: typeof i18n, language?: string) {
-  const lng = language ?? defaultLanguage;
+  const lng = language?.toLocaleLowerCase() ?? defaultLanguage;
+
   const options: InitOptions = {
     fallbackLng: defaultLanguage,
     supportedLngs: supportedLanguages,
@@ -27,7 +28,7 @@ export async function initI18Next(i18next: typeof i18n, language?: string) {
     options.lng = lng;
     options.defaultNS = 'namespace1';
   } else {
-    options.backend = {loadPath: '/locales/{{lng}}.json'};
+    options.backend = {loadPath: '/locales/{{lng}}/translation.json'};
     i18next.use(HttpApi);
   }
 
