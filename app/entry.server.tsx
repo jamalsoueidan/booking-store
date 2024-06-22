@@ -29,9 +29,7 @@ export default async function handleRequest(
     ],
   });
 
-  const namespaces = extractNamespaces(
-    context.routeModules as EntryContext['routeModules'],
-  );
+  const namespaces = extractNamespaces(remixContext.routeModules);
 
   await initI18nServer(
     context.storefront.i18n.language.toLowerCase(),
