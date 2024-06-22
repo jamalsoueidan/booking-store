@@ -1,6 +1,7 @@
 import {type UNSAFE_RouteModules} from '@remix-run/react';
 import {type EntryContext} from '@remix-run/server-runtime';
 
+//https://github.com/sergiodxa/remix-i18next/blob/main/src/client.ts
 export function extractNamespaces(
   routeModules: UNSAFE_RouteModules | EntryContext['routeModules'],
 ): string[] {
