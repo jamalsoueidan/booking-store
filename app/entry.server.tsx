@@ -6,7 +6,7 @@ import i18n from 'i18next';
 import isbot from 'isbot';
 import {renderToReadableStream} from 'react-dom/server';
 import {I18nextProvider} from 'react-i18next';
-import {initI18Next} from './i18n';
+import {initI18nServer} from './i18n.server';
 
 export default async function handleRequest(
   request: Request,
@@ -15,8 +15,6 @@ export default async function handleRequest(
   remixContext: EntryContext,
   context: AppLoadContext,
 ) {
-  await initI18Next(i18n, context.storefront.i18n.language);
-
   const {nonce, NonceProvider} = createContentSecurityPolicy({
     shop: {
       checkoutDomain: context.env.PUBLIC_CHECKOUT_DOMAIN,
@@ -29,6 +27,8 @@ export default async function handleRequest(
       'shopify-chat.shopifyapps.com', // Shopify Inbox
     ],
   });
+
+  await initI18nServer(context.storefront.i18n.language.toLowerCase());
 
   const body = await renderToReadableStream(
     <NonceProvider>

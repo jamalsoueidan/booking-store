@@ -4,9 +4,9 @@ import {hydrateRoot} from 'react-dom/client';
 
 import i18n from 'i18next';
 import {I18nextProvider} from 'react-i18next';
-import {initI18Next} from './i18n';
+import {initI18nClient} from './i18n.client';
 
-initI18Next(i18n)
+initI18nClient()
   .then(() => {
     return startTransition(() => {
       hydrateRoot(
