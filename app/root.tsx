@@ -30,10 +30,10 @@ import {
   type SerializeFrom,
 } from '@shopify/remix-oxygen';
 import {useEffect, type ReactNode} from 'react';
+import {useTranslation} from 'react-i18next';
 import favicon from './assets/favicon.svg';
 import {CustomAnalytics} from './components/CustomAnalytics';
 import {LayoutWrapper} from './components/LayoutWrapper';
-import {useLanguage} from './hooks/useLanguage';
 import {PAGE_QUERY} from './routes/pages.$handle';
 import appStyles from './styles/app.css?url';
 
@@ -58,7 +58,11 @@ export const shouldRevalidate: ShouldRevalidateFunction = ({
   return false;
 };
 
-export function links() {
+export const handle = {
+  i18n: ['translation', 'component'],
+};
+
+export const links = () => {
   return [
     {rel: 'stylesheet', href: appStyles},
     {rel: 'stylesheet', href: carouselStyles},
@@ -74,7 +78,7 @@ export function links() {
     },
     {rel: 'icon', type: 'image/svg+xml', href: favicon},
   ];
-}
+};
 
 /**
  * Access the result of the root loader from a React component.
@@ -130,6 +134,7 @@ export async function loader({context}: LoaderFunctionArgs) {
       checkoutDomain: env.PUBLIC_CHECKOUT_DOMAIN,
       storefrontAccessToken: env.PUBLIC_STOREFRONT_API_TOKEN,
     },
+    i18n: context.storefront.i18n,
   });
 }
 
@@ -139,7 +144,7 @@ export function Layout({children}: {children: ReactNode}) {
   const location = useLocation();
   const path = location.pathname;
   const {state} = useNavigation();
-  const lang = useLanguage();
+  const [t] = useTranslation(['component', 'translation']);
 
   useEffect(() => {
     if (state === 'loading' || state === 'submitting') {
@@ -150,7 +155,10 @@ export function Layout({children}: {children: ReactNode}) {
   }, [state]);
 
   return (
-    <html lang="en" dir={lang === 'AR' ? 'rtl' : 'ltr'}>
+    <html
+      lang={data.i18n.language}
+      dir={data.i18n.language === 'AR' ? 'rtl' : 'ltr'}
+    >
       <head>
         <meta charSet="utf-8" />
         <meta
@@ -166,6 +174,7 @@ export function Layout({children}: {children: ReactNode}) {
           <MantineProvider>
             <NavigationProgress />
             <ModalsProvider>
+              {t('translation:welcome')}-{t('english', {ns: 'component'})}
               {!path.includes('/account') &&
               !path.includes('/book-treatment') &&
               data?.cart ? (

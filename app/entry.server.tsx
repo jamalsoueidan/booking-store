@@ -2,8 +2,12 @@ import {RemixServer} from '@remix-run/react';
 import {type AppLoadContext} from '@remix-run/server-runtime';
 import {createContentSecurityPolicy} from '@shopify/hydrogen';
 import type {EntryContext} from '@shopify/remix-oxygen';
+import i18n from 'i18next';
 import isbot from 'isbot';
 import {renderToReadableStream} from 'react-dom/server';
+import {I18nextProvider} from 'react-i18next';
+import {extractNamespaces} from './i18n/extractNamespaces';
+import {initI18nServer} from './i18n/i18n.server';
 
 export default async function handleRequest(
   request: Request,
@@ -25,9 +29,20 @@ export default async function handleRequest(
     ],
   });
 
+  const namespaces = extractNamespaces(
+    context.routeModules as EntryContext['routeModules'],
+  );
+
+  await initI18nServer(
+    context.storefront.i18n.language.toLowerCase(),
+    namespaces,
+  );
+
   const body = await renderToReadableStream(
     <NonceProvider>
-      <RemixServer context={remixContext} url={request.url} />
+      <I18nextProvider i18n={i18n}>
+        <RemixServer context={remixContext} url={request.url} />
+      </I18nextProvider>
     </NonceProvider>,
     {
       nonce,
