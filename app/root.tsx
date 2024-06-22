@@ -144,7 +144,7 @@ export function Layout({children}: {children: ReactNode}) {
   const location = useLocation();
   const path = location.pathname;
   const {state} = useNavigation();
-  const [t] = useTranslation();
+  const [t] = useTranslation(['component', 'translation']);
 
   useEffect(() => {
     if (state === 'loading' || state === 'submitting') {
@@ -174,7 +174,7 @@ export function Layout({children}: {children: ReactNode}) {
           <MantineProvider>
             <NavigationProgress />
             <ModalsProvider>
-              {t('welcome')}-{t('english', {ns: 'component'})}
+              {t('translation:welcome')}-{t('english', {ns: 'component'})}
               {!path.includes('/account') &&
               !path.includes('/book-treatment') &&
               data?.cart ? (
