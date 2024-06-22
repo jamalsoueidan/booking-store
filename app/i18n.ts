@@ -1,6 +1,5 @@
 import i18n, {type InitOptions} from 'i18next';
 import HttpApi from 'i18next-http-backend';
-import {resolve} from 'path';
 import {initReactI18next} from 'react-i18next';
 import da from '~/assets/locales/da/translation.json';
 import en from '~/assets/locales/en/translation.json';
@@ -18,21 +17,17 @@ export async function initI18Next(i18next: typeof i18n, language?: string) {
     supportedLngs: supportedLanguages,
     keySeparator: false,
     load: 'languageOnly',
+    cleanCode: true,
     initImmediate: true,
     interpolation: {escapeValue: false},
     react: {useSuspense: false},
-    detection: {
-      caches: ['cookie'],
-    },
   };
 
   if (!isBrowser) {
     options.lng = lng;
     options.defaultNS = 'namespace1';
   } else {
-    options.backend = {
-      loadPath: resolve('./app/assets/locales/{{lng}}/{{ns}}.json'),
-    };
+    options.backend = {loadPath: '/locales/{{lng}}.json'};
     i18next.use(HttpApi);
   }
 
