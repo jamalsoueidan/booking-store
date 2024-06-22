@@ -9,11 +9,18 @@ export async function initI18nServer(language?: string) {
   }
 
   return i18n.use(initReactI18next).init({
+    fallbackLng: 'en',
     lng: language,
     debug: true,
+    react: {
+      useSuspense: false,
+    },
+    interpolation: {
+      escapeValue: false, // React already does escaping
+    },
     resources: {
-      en,
-      da,
+      en: {translation: en},
+      da: {translation: da},
     },
   });
 }
