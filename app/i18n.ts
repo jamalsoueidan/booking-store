@@ -1,8 +1,8 @@
 import i18n, {type InitOptions} from 'i18next';
 import HttpApi from 'i18next-http-backend';
 import {initReactI18next} from 'react-i18next';
-import da from '../public/locales/da/translation.json';
-import en from '../public/locales/en/translation.json';
+import da from '~/assets/locales/da/translation.json';
+import en from '~/assets/locales/en/translation.json';
 
 const supportedLanguages = ['da', 'en'];
 const defaultLanguage = 'da';
