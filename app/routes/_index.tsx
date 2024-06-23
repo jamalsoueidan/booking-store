@@ -38,7 +38,7 @@ export function shouldRevalidate() {
 }
 
 export const handle: Handle = {
-  i18n: ['index', 'professions'],
+  i18n: ['index', 'professions', 'categories'],
 };
 
 export const meta: MetaFunction<typeof loader> = ({data}) => {

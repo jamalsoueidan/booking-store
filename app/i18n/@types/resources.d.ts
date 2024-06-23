@@ -40,12 +40,16 @@ interface Resources {
     "total_services_other": "{{count}) ydelser",
     "finished": "Færdig"
   },
+  "categories": {
+    "all_treatments": "Alle behandlinger",
+    "view_treatment": "Vis behandling"
+  },
   "footer": {
     "social_media": "Social Media",
     "language": "Sprog",
     "company": "Virksomhed",
     "right_button": "Start din skønhedskarriere",
-    "left_button": "Find en skønhedskarriere",
+    "left_button": "Find en skønhedsekspert",
     "logo_text": "Vores platform forbinder dig med talentfulde eksperter inden for alle aspekter af skønhed."
   },
   "global": {
@@ -86,7 +90,7 @@ interface Resources {
     "makeup_artist": "Makeupartist",
     "hair_stylist": "Frisør",
     "esthetician": "Kosmetolog",
-    "nail_technician": "Negletekniker",
+    "nail_technicia": "Negletekniker",
     "all": "Alle"
   },
   "profile": {
@@ -102,7 +106,9 @@ interface Resources {
     "about_me": "Om mig",
     "professions": "Professioner",
     "not_active_description": "Din konto er pt. ikke aktiv, men du kan stadig tilgå din profilside, indtil den bliver godkendt.",
-    "not_active_title": "Din konto er inaktiv"
+    "not_active_title": "Din konto er inaktiv",
+    "show_more": "Show more",
+    "hide": "Skjul"
   },
   "skills": {
     "scar_treatment": "Ar Behandling",

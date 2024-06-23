@@ -276,7 +276,7 @@ function MobilNavbar({toggle}: {toggle: () => void}) {
                 rightSection={isLoggedIn ? <IconDashboard /> : <IconLogin />}
                 fullWidth
               >
-                {isLoggedIn ? 'Dashboard' : t('login')}
+                {isLoggedIn ? 'Dashboard' : t('login', {ns: 'global'})}
               </Button>
             )}
           </Await>

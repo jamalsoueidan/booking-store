@@ -11,5 +11,7 @@
   "about_me": "Om mig",
   "professions": "Professioner",
   "not_active_description": "Din konto er pt. ikke aktiv, men du kan stadig tilgå din profilside, indtil den bliver godkendt.",
-  "not_active_title": "Din konto er inaktiv"
+  "not_active_title": "Din konto er inaktiv",
+  "show_more": "Vis mere",
+  "hide": "Skjul"
 }

@@ -28,6 +28,7 @@ export async function initI18nClient() {
 export function getLanguageFromSubdomain() {
   const hostname = window.location.hostname;
   const subdomain = hostname.split('.')[0];
+  console.log(subdomain);
 
   switch (subdomain) {
     case 'en':

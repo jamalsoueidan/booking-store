@@ -1,10 +1,10 @@
 {
-  "brow_technician": "فني الحواجب",
-  "lash_technician": "فني الرموش",
-  "massage_therapist": "معالج تدليك",
-  "makeup_artist": "فنان مكياج",
-  "hair_stylist": "مصفف شعر",
-  "esthetician": "أخصائي تجميل",
-  "nail_technician": "فني الأظافر",
-  "all": "الكل"
+  "brow_technician": "Bryntekniker",
+  "lash_technician": "Vippetekniker",
+  "massage_therapist": "Massageterapeut",
+  "makeup_artist": "Makeupartist",
+  "hair_stylist": "Frisør",
+  "esthetician": "Kosmetolog",
+  "nail_technicia": "Negletekniker",
+  "all": "Alle"
 }

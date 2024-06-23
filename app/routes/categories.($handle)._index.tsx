@@ -15,13 +15,13 @@ import {
 import {Link, useLoaderData, type MetaFunction} from '@remix-run/react';
 import {Analytics, getPaginationVariables, Pagination} from '@shopify/hydrogen';
 import {json, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
+import {useTranslation} from 'react-i18next';
 import type {
   CategoriesCollectionFilterFragment,
   CategoriesCollectionFragment,
   CategoriesCollectionProductFragment,
 } from 'storefrontapi.generated';
 import {Wrapper} from '~/components/Wrapper';
-import {useTranslations} from '~/providers/Translation';
 
 export const meta: MetaFunction<typeof loader> = ({data}) => {
   return [
@@ -55,7 +55,7 @@ export async function loader({request, params, context}: LoaderFunctionArgs) {
 }
 
 export default function Collection() {
-  const {t} = useTranslations();
+  const {t} = useTranslation(['global']);
   const {collection} = useLoaderData<typeof loader>();
 
   return (
@@ -108,7 +108,7 @@ export function TreatmentCard({
 }: {
   product: CategoriesCollectionFragment;
 }) {
-  const {t} = useTranslations();
+  const {t} = useTranslation(['categories']);
   return (
     <Card
       key={product.handle}
@@ -148,7 +148,7 @@ export function TreatmentCard({
           filters={product.collection?.reference?.products.filters || []}
         />
         <Button variant="default" size="xs" radius="lg">
-          {t('treatments_view')}
+          {t('view_treatment')}
         </Button>
       </Group>
     </Card>
