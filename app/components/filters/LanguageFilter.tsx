@@ -10,12 +10,11 @@ import {
 import {IconFlag, IconX} from '@tabler/icons-react';
 import {DK, US} from 'country-flag-icons/react/3x2';
 import {useTranslation} from 'react-i18next';
-import {useTranslations} from '~/providers/Translation';
 import {useChangeFilter} from './useChangeFilter';
 
 export function RemoveLanguageFilterButton() {
   const {value, onChange} = useChangeFilter('lang');
-  const {t} = useTranslations();
+  const {t} = useTranslation(['global']);
   const transform = value?.split(',').filter((p) => p.length > 0);
 
   if (!transform) {
@@ -32,7 +31,7 @@ export function RemoveLanguageFilterButton() {
       rightSection={<IconX />}
       leftSection={<IconFlag />}
     >
-      {t('filter_language_reset_button')}
+      {t('language_reset_button')}
     </Button>
   );
 }

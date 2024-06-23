@@ -1,15 +1,20 @@
 import {
-  Anchor,
   AspectRatio,
+  Button,
+  Container,
+  Flex,
   Image,
   SimpleGrid,
   Stack,
+  Text,
   Title,
+  UnstyledButton,
   getGradient,
   rem,
   useMantineTheme,
 } from '@mantine/core';
 import {Link} from '@remix-run/react';
+import {IconArrowRight} from '@tabler/icons-react';
 import type {ImageGridWithHeaderFragment} from 'storefrontapi.generated';
 import {H2} from '../titles/H2';
 import {Wrapper} from '../Wrapper';
@@ -21,13 +26,15 @@ export function ImageGridWithHeader({
 }) {
   const theme = useMantineTheme();
   const title = data.title?.value;
-  const backgroundColor = data.backgroundColor?.value;
+  const fromColor = data.fromColor?.value;
+  const toColor = data.toColor?.value;
+  const button = data.button?.reference;
   const items = data.collections?.references?.nodes;
 
   return (
     <Wrapper
       bg={getGradient(
-        {deg: 180, from: 'pink.1', to: backgroundColor || 'white'},
+        {deg: 180, from: fromColor || 'white', to: toColor || 'white'},
         theme,
       )}
     >
@@ -43,11 +50,10 @@ export function ImageGridWithHeader({
             const title = `https://placehold.co/400x600?text=${item.title}`;
 
             return (
-              <Anchor
+              <UnstyledButton
                 key={item.id}
                 component={Link}
                 to={`categories/${item.handle}`}
-                underline="hover"
               >
                 <Stack>
                   <AspectRatio>
@@ -67,11 +73,35 @@ export function ImageGridWithHeader({
                   >
                     {item.title}
                   </Title>
+                  <Text>{item.description}</Text>
                 </Stack>
-              </Anchor>
+              </UnstyledButton>
             );
           })}
         </SimpleGrid>
+        {button ? (
+          <Container size="xl">
+            <Flex justify="center">
+              <Button
+                variant={button?.variant?.value || 'outline'}
+                color={button?.color?.value || 'black'}
+                size="lg"
+                aria-label="Settings"
+                component={Link}
+                to={button.linkTo?.value || '/'}
+                radius="lg"
+                rightSection={
+                  <IconArrowRight
+                    style={{width: '70%', height: '70%'}}
+                    stroke={1.5}
+                  />
+                }
+              >
+                {button?.text?.value}
+              </Button>
+            </Flex>
+          </Container>
+        ) : null}
       </Stack>
     </Wrapper>
   );

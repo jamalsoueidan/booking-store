@@ -1,12 +1,11 @@
 import {Button, Checkbox, Group, InputLabel, Stack} from '@mantine/core';
 import {IconWorldCheck, IconX} from '@tabler/icons-react';
 import {useTranslation} from 'react-i18next';
-import {useTranslations} from '~/providers/Translation';
 import {useChangeFilter} from './useChangeFilter';
 
 export function RemoveDayFilterButton() {
   const {value, onChange} = useChangeFilter('days');
-  const {t} = useTranslations();
+  const {t} = useTranslation(['global']);
   const transform = value?.split(',').filter((p) => p.length > 0);
 
   if (!transform) {
@@ -23,7 +22,7 @@ export function RemoveDayFilterButton() {
       rightSection={<IconX />}
       leftSection={<IconWorldCheck />}
     >
-      {t('filter_day_reset_button')}
+      {t('day_reset_button')}
     </Button>
   );
 }

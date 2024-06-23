@@ -13,6 +13,7 @@ import {
 import {Link, NavLink} from '@remix-run/react';
 import {IconBrandFacebook, IconBrandInstagram} from '@tabler/icons-react';
 import {AE, DK, US} from 'country-flag-icons/react/3x2';
+import {useEffect, useState} from 'react';
 import {useTranslation} from 'react-i18next';
 import type {FooterQuery, HeaderQuery} from 'storefrontapi.generated';
 import {useRootLoaderData} from '~/root';
@@ -24,6 +25,21 @@ export function Footer({
   shop,
 }: FooterQuery & {shop: HeaderQuery['shop']}) {
   const {t} = useTranslation(['footer']);
+  const [currentPath, setCurrentPath] = useState('');
+
+  useEffect(() => {
+    // Check if the window object is available (client-side rendering)
+    if (typeof window !== 'undefined') {
+      setCurrentPath(
+        window.location.pathname +
+          window.location.search +
+          window.location.hash,
+      );
+    }
+  }, []);
+
+  const getNewUrl = (newDomain: string) => `${newDomain}${currentPath}`;
+
   return (
     <footer className={classes.footer}>
       <Container size="xl">
@@ -110,7 +126,7 @@ export function Footer({
                   size="xl"
                   variant="transparent"
                   component={Link}
-                  to="https://www.bysisters.dk/"
+                  to={getNewUrl('https://www.bysisters.dk')}
                   target="_blank"
                   rel="noopener noreferrer"
                 >
@@ -120,7 +136,7 @@ export function Footer({
                   size="xl"
                   variant="transparent"
                   component={Link}
-                  to="https://en.bysisters.dk/"
+                  to={getNewUrl('https://en.bysisters.dk')}
                   target="_blank"
                   rel="noopener noreferrer"
                 >
@@ -130,7 +146,7 @@ export function Footer({
                   size="xl"
                   variant="transparent"
                   component={Link}
-                  to="https://ar.bysisters.dk/"
+                  to={getNewUrl('https://ar.bysisters.dk')}
                   target="_blank"
                   rel="noopener noreferrer"
                 >
