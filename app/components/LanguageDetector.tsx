@@ -30,7 +30,11 @@ export const LanguageDetector = () => {
 
   const changeLanguage = (url: string) => {
     localStorage.setItem('languageDecision', 'true');
-    window.location.href = url;
+    if (!window.location.href.includes(url)) {
+      window.location.href = url;
+    } else {
+      setShowModal(false);
+    }
   };
 
   const closeModal = () => {
@@ -41,7 +45,10 @@ export const LanguageDetector = () => {
   return (
     <Modal opened={showModal} onClose={closeModal}>
       <Flex gap="md" align="center" justify="center">
-        <Card withBorder onClick={closeModal}>
+        <Card
+          withBorder
+          onClick={() => changeLanguage(getNewUrl('https://www.bysisters.dk'))}
+        >
           <ActionIcon size={rem(100)} radius={rem(100)} bg="transparent">
             <DK style={{width: '100px', height: '100px'}} />
           </ActionIcon>
