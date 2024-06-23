@@ -113,9 +113,9 @@ export function TreatmentCard({
     <Card
       key={product.handle}
       withBorder
-      radius="xl"
+      radius="md"
       component={Link}
-      bg="transparent"
+      bg="white"
       p="0"
       to={`/treatments/${product.handle}`}
     >

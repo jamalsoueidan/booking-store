@@ -174,7 +174,7 @@ export const UserCard = ({article}: {article: ArticleUserFragment}) => {
       withBorder
       radius="md"
       pos="relative"
-      bg="transparent"
+      bg="white"
     >
       <Group>
         <Avatar

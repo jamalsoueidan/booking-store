@@ -1,6 +1,7 @@
 import {
   AspectRatio,
   Button,
+  Card,
   Container,
   Flex,
   Image,
@@ -8,7 +9,6 @@ import {
   Stack,
   Text,
   Title,
-  UnstyledButton,
   getGradient,
   useMantineTheme,
 } from '@mantine/core';
@@ -46,12 +46,15 @@ export function ImageGridWithHeader({
             const title = `https://placehold.co/400x600?text=${item.title}`;
 
             return (
-              <UnstyledButton
+              <Card
                 key={item.id}
                 component={Link}
                 to={`categories/${item.handle}`}
+                bg="white"
+                withBorder
+                radius="md"
               >
-                <Stack gap="xs">
+                <Stack gap="md">
                   <AspectRatio>
                     <Image src={item.image?.url} radius="md" loading="lazy" />
                   </AspectRatio>
@@ -70,12 +73,12 @@ export function ImageGridWithHeader({
                     </Text>
                   </Stack>
                 </Stack>
-              </UnstyledButton>
+              </Card>
             );
           })}
         </SimpleGrid>
         {button ? (
-          <Container size="xl" mt="lg">
+          <Container size="xl" mt="md">
             <Flex justify="center">
               <Button
                 variant={button?.variant?.value || 'outline'}

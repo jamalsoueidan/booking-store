@@ -16,7 +16,6 @@ import {json, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
 
 import {IconArrowRight, IconMoodWink, IconSearch} from '@tabler/icons-react';
 
-import {Slice, Slider} from '~/components/Slider';
 import {H1} from '~/components/titles/H1';
 import {H2} from '~/components/titles/H2';
 
@@ -25,6 +24,7 @@ import {ProfessionButton} from '~/components/ProfessionButton';
 import {getPaginationVariables} from '@shopify/hydrogen';
 import {useTranslation} from 'react-i18next';
 import {Headless} from '~/components/blocks/Headless';
+import {Wrapper} from '~/components/Wrapper';
 import {getTags} from '~/lib/tags';
 import {
   CATEGORIES_COLLECTION_FRAGMENT,
@@ -234,7 +234,7 @@ function RecommendedTreatments() {
   const {t} = useTranslation(['index']);
 
   return (
-    <Box
+    <Wrapper
       bg={getGradient({deg: 180, from: 'yellow.1', to: 'white'}, theme)}
       py={{base: rem(40), sm: rem(60)}}
     >
@@ -244,18 +244,14 @@ function RecommendedTreatments() {
             {t('index:treatments_title')}
           </H2>
         </Container>
-        <Box px="xl" style={{overflow: 'hidden'}}>
-          <Slider language={language}>
-            {recommendedTreatments.nodes.map((product) => {
-              return (
-                <Slice key={product.id}>
-                  <TreatmentCard product={product} />
-                </Slice>
-              );
-            })}
-          </Slider>
-        </Box>
-        <Container size="xl">
+
+        <SimpleGrid cols={{base: 1, xs: 2, sm: 3, md: 4}} spacing="lg">
+          {recommendedTreatments.nodes.map((product) => {
+            return <TreatmentCard key={product.id} product={product} />;
+          })}
+        </SimpleGrid>
+
+        <Container size="xl" mt="md">
           <Flex justify="center">
             <Button
               variant="outline"
@@ -277,7 +273,7 @@ function RecommendedTreatments() {
           </Flex>
         </Container>
       </Stack>
-    </Box>
+    </Wrapper>
   );
 }
 
@@ -288,7 +284,7 @@ export const RECOMMENDED_TREATMENTS_QUERY = `#graphql
     $country: CountryCode
     $language: LanguageCode
   ) @inContext(country: $country, language: $language) {
-    products(first: 10, sortKey: RELEVANCE, query: $query) {
+    products(first: 4, sortKey: RELEVANCE, query: $query) {
       nodes {
         ...CategoriesCollection
       }
