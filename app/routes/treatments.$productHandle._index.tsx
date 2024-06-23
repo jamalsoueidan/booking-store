@@ -6,7 +6,6 @@ import {
   Card,
   Divider,
   Flex,
-  Grid,
   Group,
   rem,
   SimpleGrid,
@@ -285,7 +284,7 @@ function TreatmentProductUser({
             <ArtistProduct
               user={user}
               product={p}
-              style={{opacity: Math.max(0.5 - index * 0.2, 0)}}
+              //style={{opacity: Math.max(0.5 - index * 0.1, 0)}}
             />
           </React.Fragment>
         ))}
@@ -344,51 +343,45 @@ export function ArtistProduct({
       to={`/book/${product.handle}`}
       {...props}
     >
-      <Grid>
-        <Grid.Col span={8}>
-          <Flex direction="column" gap="xs">
-            <div>
-              <Group gap="xs">
-                <Title
-                  order={2}
-                  size="md"
-                  fw={500}
-                  lts=".5px"
-                  data-testid={`service-title-${productId}`}
-                >
-                  {product.title}
-                </Title>
-                <Flex gap="4px">
-                  {sortedLocations.map((location) => (
-                    <LocationIcon
-                      key={location.locationType}
-                      location={location}
-                      style={{width: 18, height: 18}}
-                    />
-                  ))}
-                </Flex>
-              </Group>
+      <Flex justify="space-between">
+        <Flex direction="column" gap="4px">
+          <Group gap="xs">
+            <Title
+              order={2}
+              size="md"
+              fw={500}
+              lts=".5px"
+              data-testid={`service-title-${productId}`}
+            >
+              {product.title}
+            </Title>
+            <Flex gap="4px">
+              {sortedLocations.map((location) => (
+                <LocationIcon
+                  key={location.locationType}
+                  location={location}
+                  style={{width: 18, height: 18}}
+                />
+              ))}
+            </Flex>
+          </Group>
 
-              <Text
-                c="dimmed"
-                size="sm"
-                data-testid={`service-duration-text-${productId}`}
-              >
-                {durationToTime(product.duration?.value || 0)}
-              </Text>
-            </div>
-          </Flex>
-        </Grid.Col>
-        <Grid.Col span={4}>
-          <Flex justify="flex-end" align="center" h="100%">
-            <PriceBadge
-              compareAtPrice={product.variants.nodes[0].compareAtPrice}
-              price={product.variants.nodes[0].price}
-              fw="600"
-            />
-          </Flex>
-        </Grid.Col>
-      </Grid>
+          <Text
+            c="dimmed"
+            size="sm"
+            data-testid={`service-duration-text-${productId}`}
+          >
+            {durationToTime(product.duration?.value || 0)}
+          </Text>
+        </Flex>
+        <Flex justify="flex-end" align="center" h="100%">
+          <PriceBadge
+            compareAtPrice={product.variants.nodes[0].compareAtPrice}
+            price={product.variants.nodes[0].price}
+            fw="600"
+          />
+        </Flex>
+      </Flex>
     </UnstyledButton>
   );
 }

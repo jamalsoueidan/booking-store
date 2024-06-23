@@ -251,9 +251,9 @@ function AboutMe() {
           </Stack>
         </Grid.Col>
         <Grid.Col span={{base: 12, sm: 4}}>
-          <Card withBorder radius="md">
-            <Stack gap="xl">
-              {user.social && Object.keys(user.social).length > 0 ? (
+          {user.social && Object.keys(user.social).length > 0 ? (
+            <Card withBorder radius="md">
+              <Stack gap="xl">
                 <Stack gap="xs">
                   <Title order={2} fw="600" fz="h5">
                     {t('profile:social_media')}
@@ -309,9 +309,9 @@ function AboutMe() {
                     ) : null}
                   </Stack>
                 </Stack>
-              ) : null}
-            </Stack>
-          </Card>
+              </Stack>
+            </Card>
+          ) : null}
         </Grid.Col>
       </Grid>
 
