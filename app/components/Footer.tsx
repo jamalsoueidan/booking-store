@@ -127,8 +127,6 @@ export function Footer({
                   variant="transparent"
                   component={Link}
                   to={getNewUrl('https://www.bysisters.dk')}
-                  target="_blank"
-                  rel="noopener noreferrer"
                 >
                   <DK style={{width: rem(32), height: rem(32)}} />
                 </ActionIcon>
@@ -137,8 +135,6 @@ export function Footer({
                   variant="transparent"
                   component={Link}
                   to={getNewUrl('https://en.bysisters.dk')}
-                  target="_blank"
-                  rel="noopener noreferrer"
                 >
                   <US style={{width: rem(32), height: rem(32)}} />
                 </ActionIcon>
@@ -147,8 +143,6 @@ export function Footer({
                   variant="transparent"
                   component={Link}
                   to={getNewUrl('https://ar.bysisters.dk')}
-                  target="_blank"
-                  rel="noopener noreferrer"
                 >
                   <AE style={{width: rem(32), height: rem(32)}} />
                 </ActionIcon>
