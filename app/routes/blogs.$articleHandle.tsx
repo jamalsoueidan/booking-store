@@ -1,20 +1,22 @@
-import {json, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
+import {Box, Container, rem, Stack, Text, Title} from '@mantine/core';
 import {useLoaderData, type MetaFunction} from '@remix-run/react';
 import {Image} from '@shopify/hydrogen';
+import {json, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
+import {H1} from '~/components/titles/H1';
 
 export const meta: MetaFunction<typeof loader> = ({data}) => {
-  return [{title: `Hydrogen | ${data?.article.title ?? ''} article`}];
+  return [{title: `BySisters Blog | ${data?.article.title ?? ''}`}];
 };
 
 export async function loader({params, context}: LoaderFunctionArgs) {
-  const {blogHandle, articleHandle} = params;
+  const {articleHandle} = params;
 
-  if (!articleHandle || !blogHandle) {
+  if (!articleHandle) {
     throw new Response('Not found', {status: 404});
   }
 
   const {blog} = await context.storefront.query(ARTICLE_QUERY, {
-    variables: {blogHandle, articleHandle},
+    variables: {blogHandle: 'articles', articleHandle},
   });
 
   if (!blog?.articleByHandle) {
@@ -37,20 +39,24 @@ export default function Article() {
   }).format(new Date(article.publishedAt));
 
   return (
-    <div className="article">
-      <h1>
-        {title}
-        <span>
-          {publishedDate} &middot; {author?.name}
-        </span>
-      </h1>
+    <Box pt={rem(100)} pb={rem(50)}>
+      <Container size="xl" mb="60">
+        <Stack gap="xl" mb="60">
+          <H1 gradients={{from: 'orange', to: 'orange.3'}}>{title}</H1>
+          <Title order={2} c="dimmed" fw="normal" ta="center">
+            {publishedDate}
+          </Title>
+        </Stack>
 
-      {image && <Image data={image} sizes="90vw" loading="eager" />}
-      <div
-        dangerouslySetInnerHTML={{__html: contentHtml}}
-        className="article"
-      />
-    </div>
+        {image && (
+          <Image data={image} aspectRatio="1" sizes="200vw" loading="eager" />
+        )}
+        <Text
+          dangerouslySetInnerHTML={{__html: contentHtml}}
+          className="article"
+        />
+      </Container>
+    </Box>
   );
 }
 
