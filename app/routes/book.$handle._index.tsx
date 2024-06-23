@@ -2,11 +2,11 @@ import {Button, Grid, Stack, Text, Title} from '@mantine/core';
 import {Link, useOutletContext, useSearchParams} from '@remix-run/react';
 import {OptionSelector, ProductOption} from '~/components/OptionSelector';
 
-import {useTranslations} from '~/providers/Translation';
-import {BookingDetails, type OutletLoader} from './book-treatment.$handle';
+import {Trans, useTranslation} from 'react-i18next';
+import {BookingDetails, type OutletLoader} from './book.$handle';
 
 export default function ProductDescription() {
-  const {t, tc} = useTranslations();
+  const {t} = useTranslation(['book', 'global']);
   const [searchParams] = useSearchParams();
   const {product} = useOutletContext<OutletLoader>();
 
@@ -25,10 +25,10 @@ export default function ProductDescription() {
         <Stack gap="xl">
           <div>
             <Text size="sm" c="dimmed">
-              {t('artist_booking_steps', {step: 1, total: 4})}
+              {t('steps', {step: 1, total: 4})}
             </Text>
             <Title order={1} fw={600} size="h2">
-              {t('artist_booking_index_title')}
+              {t('index_title')}
             </Title>
           </div>
           {productOptions ? (
@@ -54,7 +54,7 @@ export default function ProductDescription() {
               {choices && choices.length > 0 ? (
                 <div>
                   <Title order={3} fw={600} mb="sm" fz="xl">
-                    {t('artist_booking_index_subtitle')}
+                    {t('index_subtitle')}
                   </Title>
                   <Stack gap="md">
                     {choices?.map((productWithVariants) => {
@@ -75,9 +75,11 @@ export default function ProductDescription() {
             </>
           ) : (
             <Text>
-              {tc('artist_booking_index_no_options', {
-                1: <Text component="span" fw="bold" />,
-              })}
+              <Trans
+                i18nKey="index_no_options"
+                ns="book"
+                components={{1: <strong />}}
+              />
             </Text>
           )}
         </Stack>
@@ -93,7 +95,7 @@ export default function ProductDescription() {
           prefetch="render"
           size="lg"
         >
-          {t('continue')}
+          {t('continue', {ns: 'global'})}
         </Button>
       </BookingDetails>
     </>

@@ -20,14 +20,14 @@ import {
   BookingDetails,
   GET_PRODUCT_WITH_OPTIONS,
   type OutletLoader,
-} from './book-treatment.$handle';
+} from './book.$handle';
 
+import {useTranslation} from 'react-i18next';
 import {LocationIcon} from '~/components/LocationIcon';
 import {getBookingShopifyApi} from '~/lib/api/bookingShopifyApi';
 import {convertToLocation} from '~/lib/convertLocations';
 import {useDate, useDuration} from '~/lib/duration';
 import {parseOptionsFromQuery} from '~/lib/parseOptionsQueryParameters';
-import {useTranslations} from '~/providers/Translation';
 
 export const loader = async ({
   request,
@@ -92,7 +92,7 @@ export const loader = async ({
 };
 
 export default function ArtistTreatmentsBooking() {
-  const {t} = useTranslations();
+  const {t} = useTranslation(['book', 'global']);
   const {format} = useDate();
   const durationToTime = useDuration();
   const data = useLoaderData<typeof loader>();
@@ -104,10 +104,10 @@ export default function ArtistTreatmentsBooking() {
         <Stack gap="lg">
           <div>
             <Text size="sm" c="dimmed">
-              {t('artist_booking_steps', {step: 4, total: 4})}
+              {t('steps', {step: 4, total: 4})}
             </Text>
             <Title order={1} fw={600} size="h2">
-              {t('artist_booking_confirm_title')}
+              {t('confirm_title')}
             </Title>
           </div>
 
@@ -123,7 +123,7 @@ export default function ArtistTreatmentsBooking() {
               />
               <div style={{flex: 1}}>
                 <Text size="md" c="dimmed" fw="500">
-                  {t('artist_booking_confirm_artist')}
+                  {t('confirm_artist')}
                 </Text>
                 <Text size="xl" fw="bold">
                   {data.product.user?.reference?.fullname?.value}
@@ -137,7 +137,7 @@ export default function ArtistTreatmentsBooking() {
               <Group gap="xs" align="center">
                 <IconClockHour3 />
                 <Title order={3} fw={600} fz="xl">
-                  {t('time')}
+                  {t('time', {ns: 'global'})}
                 </Title>
               </Group>
 
@@ -163,7 +163,7 @@ export default function ArtistTreatmentsBooking() {
                   }}
                 />
                 <Title order={3} fw={600} fz="xl">
-                  {t('location')}
+                  {t('location', {ns: 'global'})}
                 </Title>
               </Group>
 
@@ -174,7 +174,7 @@ export default function ArtistTreatmentsBooking() {
                       {data?.availability.shipping?.destination.fullAddress}
                     </Text>
                     <Text fz="xs" c="red" fw={500}>
-                      {t('artist_booking_complete_shipping_calculation')}{' '}
+                      {t('complete_shipping_calculation')}{' '}
                       {data?.availability.shipping?.cost.value}{' '}
                       {data?.availability.shipping?.cost.currency}
                     </Text>
@@ -187,9 +187,7 @@ export default function ArtistTreatmentsBooking() {
                     <Text fz="md" fw={500}>
                       {data?.location.fullAddress}
                     </Text>
-                    <Anchor href="googlemap">
-                      {t('artist_booking_complete_map')}
-                    </Anchor>
+                    <Anchor href="googlemap">{t('complete_map')}</Anchor>
                   </>
                 )}
               </Stack>

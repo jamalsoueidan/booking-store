@@ -26,7 +26,6 @@ import {getPaginationVariables} from '@shopify/hydrogen';
 import {useTranslation} from 'react-i18next';
 import {Headless} from '~/components/blocks/Headless';
 import {getTags} from '~/lib/tags';
-import {TranslationProvider} from '~/providers/Translation';
 import {UserCard, USERS_QUERY} from './artists._index';
 import {
   CATEGORIES_COLLECTION_FRAGMENT,
@@ -102,12 +101,12 @@ export default function Homepage() {
   const {page} = useLoaderData<typeof loader>();
 
   return (
-    <TranslationProvider data={page?.translations}>
+    <>
       <Header />
       <FeaturedArtists />
       <RecommendedTreatments />
       <Headless components={page?.components} />
-    </TranslationProvider>
+    </>
   );
 }
 

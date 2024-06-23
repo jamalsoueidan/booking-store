@@ -1,0 +1,17 @@
+{
+  "profession_placeholder": "Alle professioner",
+  "profession_label": "Skønhedseksperter profession:",
+  "treatments_placeholder": "Alle behandlinger",
+  "treatments_label": "Behandlinger:",
+  "sorting_by_label": "Sortere skønhedseksperter efter:",
+  "sorting_by_placeholder": "Vælge sortering",
+  "sorting_by_oldest": "Ældest tilføjet",
+  "sorting_by_newest": "Nyeste tilføjet",
+  "sorting_by_name": "Navn",
+  "gender_label": "Skønhedsekspert køn?",
+  "gender_all": "Alle",
+  "gender_men": "Mænd",
+  "gender_woman": "Kvinder",
+  "sorting": "Sortering",
+  "filters": "Filter"
+}

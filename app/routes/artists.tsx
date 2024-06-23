@@ -34,6 +34,7 @@ import {
   IconX,
 } from '@tabler/icons-react';
 import {useMemo} from 'react';
+import {useTranslation} from 'react-i18next';
 import {type CategoriesStorefrontQuery} from 'storefrontapi.generated';
 import {Headless} from '~/components/blocks/Headless';
 import {VisualTeaser} from '~/components/blocks/VisualTeaser';
@@ -55,9 +56,12 @@ import {
 } from '~/components/filters/LocationFilter';
 import {ProfessionButton} from '~/components/ProfessionButton';
 import {getTags} from '~/lib/tags';
-import {TranslationProvider, useTranslations} from '~/providers/Translation';
 import {COLLECTION} from './account.services.create';
 import {PAGE_QUERY} from './pages.$handle';
+
+export const handle: Handle = {
+  i18n: ['artists', 'professions'],
+};
 
 export const meta: MetaFunction<typeof loader> = ({data}) => {
   return [
@@ -104,7 +108,7 @@ export default function Artists() {
   const {tags, page, collection} = useLoaderData<typeof loader>();
 
   return (
-    <TranslationProvider data={page?.translations}>
+    <>
       <VisualTeaser data={page?.header?.reference} />
 
       <Container size="xl">
@@ -117,7 +121,7 @@ export default function Artists() {
       <Divider />
 
       <Headless components={page?.components} />
-    </TranslationProvider>
+    </>
   );
 }
 
@@ -128,7 +132,7 @@ function CategoriesAndFilters({
   tags: Record<string, string[]>;
   collection: CategoriesStorefrontQuery['collection'];
 }) {
-  const {t} = useTranslations();
+  const {t} = useTranslation(['artists', 'professions']);
   const [opened, {open, close}] = useDisclosure(false);
   const [searchParams, setSearchParams] = useSearchParams();
 
@@ -216,8 +220,8 @@ function CategoriesAndFilters({
           <ProfessionButton profession={'all'} reset />
           {tags['profession']
             .sort((a, b) => {
-              const translatedA = t(`profession_${a}`) || a;
-              const translatedB = t(`profession_${b}`) || b;
+              const translatedA = t(a as any, {ns: 'professions'}) || a;
+              const translatedB = t(b as any, {ns: 'professions'}) || b;
               return translatedA.localeCompare(translatedB);
             })
             .map((profession) => (
@@ -236,7 +240,7 @@ function CategoriesAndFilters({
             leftSection={<IconFilter />}
             rightSection={<IconArrowDown />}
           >
-            {t('artists_filters')}
+            {t('artists:filters')}
           </Button>
         </Flex>
         <Flex justify="center" gap="md" wrap="wrap">
@@ -252,11 +256,11 @@ function CategoriesAndFilters({
                   rightSection={<IconX />}
                   leftSection={<IconNetwork />}
                 >
-                  {`${t(
-                    `profession_${professionSearchParams}`,
-                  )[0].toUpperCase()}${t(
-                    `profession_${professionSearchParams}`,
-                  ).substring(1)}`}
+                  {`${t(professionSearchParams as any, {
+                    ns: 'professions',
+                  })[0].toUpperCase()}${t(professionSearchParams as any, {
+                    ns: 'professions',
+                  }).substring(1)}`}
                 </Button>
               ) : null}
               {selectedProduct ? (
@@ -283,7 +287,7 @@ function CategoriesAndFilters({
                   rightSection={<IconX />}
                   leftSection={<IconArrowsSort />}
                 >
-                  {t('artists_sorting')}
+                  {t('artists:sorting')}
                 </Button>
               ) : null}
               <RemoveLocationFilterButton />
@@ -297,8 +301,8 @@ function CategoriesAndFilters({
                   rightSection={<IconX />}
                   leftSection={<IconGenderFemale />}
                 >
-                  {genderValue === 'woman' && t('artists_gender_woman')}
-                  {genderValue === 'man' && t('artists_gender_men')}
+                  {genderValue === 'woman' && t('artists:gender_woman')}
+                  {genderValue === 'man' && t('artists:gender_men')}
                 </Button>
               ) : null}
               <RemoveDayFilterButton />
@@ -317,13 +321,14 @@ function CategoriesAndFilters({
           <Select
             size="md"
             value={professionSearchParams}
-            label={t('artists_profession_label')}
-            placeholder={t('artists_profession_placeholder')}
+            label={t('artists:profession_label')}
+            placeholder={t('artists:profession_placeholder')}
             onChange={onChangeProfession}
             leftSection={<IconNetwork />}
             data={tags['profession'].map((p) => ({
-              label: `${t(`profession_${p}`)[0].toUpperCase()}${t(
-                `profession_${p}`,
+              label: `${t(p as any, {ns: 'professions'})[0].toUpperCase()}${t(
+                p as any,
+                {ns: 'professions'},
               ).substring(1)}`,
               value: p,
             }))}
@@ -332,8 +337,8 @@ function CategoriesAndFilters({
           <Select
             size="md"
             value={productSearchParams}
-            label={t('artists_treatments_label')}
-            placeholder={t('artists_treatments_placeholder')}
+            label={t('artists:treatments_label')}
+            placeholder={t('artists:treatments_placeholder')}
             onChange={onChangeProduct}
             leftSection={<IconServicemark />}
             data={products}
@@ -343,15 +348,15 @@ function CategoriesAndFilters({
           <Select
             size="md"
             value={sortValue}
-            label={t('artists_sorting_by_label')}
+            label={t('artists:sorting_by_label')}
             leftSection={<IconArrowsSort />}
-            placeholder={t('artists_sorting_by_placeholder')}
+            placeholder={t('artists:sorting_by_placeholder')}
             onChange={onChangeSort}
             data={[
-              {label: t('artists_sorting_by_name'), value: 'title'},
-              {label: t('artists_sorting_by_newest'), value: 'published_at'},
+              {label: t('artists:sorting_by_name'), value: 'title'},
+              {label: t('artists:sorting_by_newest'), value: 'published_at'},
               {
-                label: t('artists_sorting_by_oldest'),
+                label: t('artists:sorting_by_oldest'),
                 value: 'reverse',
               },
             ]}
@@ -363,13 +368,13 @@ function CategoriesAndFilters({
           <div>
             <Group gap="xs" mb="xs">
               <IconGenderFemale />
-              <InputLabel size="md">{t('artists_gender_label')}</InputLabel>
+              <InputLabel size="md">{t('artists:gender_label')}</InputLabel>
             </Group>
             <Radio.Group value={genderValue} onChange={onChangeGender}>
               <Stack gap="3px">
-                <Radio value={null!} label={t('artists_gender_all')} />
-                <Radio value="woman" label={t('artists_gender_woman')} />
-                <Radio value="man" label={t('artists_gender_men')} />
+                <Radio value={null!} label={t('artists:gender_all')} />
+                <Radio value="woman" label={t('artists:gender_woman')} />
+                <Radio value="man" label={t('artists:gender_men')} />
               </Stack>
             </Radio.Group>
           </div>

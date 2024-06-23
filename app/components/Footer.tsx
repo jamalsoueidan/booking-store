@@ -13,8 +13,8 @@ import {
 import {Link, NavLink} from '@remix-run/react';
 import {IconBrandFacebook, IconBrandInstagram} from '@tabler/icons-react';
 import {AE, DK, US} from 'country-flag-icons/react/3x2';
+import {useTranslation} from 'react-i18next';
 import type {FooterQuery, HeaderQuery} from 'storefrontapi.generated';
-import {useTranslations} from '~/providers/Translation';
 import {useRootLoaderData} from '~/root';
 import classes from './Footer.module.css';
 import logo from '/logo.avif';
@@ -23,7 +23,7 @@ export function Footer({
   menu,
   shop,
 }: FooterQuery & {shop: HeaderQuery['shop']}) {
-  const {t} = useTranslations();
+  const {t} = useTranslation(['footer']);
   return (
     <footer className={classes.footer}>
       <Container size="xl">
@@ -38,7 +38,7 @@ export function Footer({
                 <Image src={logo} alt={shop.name} maw={200} />
               </NavLink>
               <Text size="md" c="dimmed" className={classes.description}>
-                {t('footer_logo_text')}
+                {t('logo_text')}
               </Text>
             </Flex>
             <Flex
@@ -53,7 +53,7 @@ export function Footer({
                 variant="outline"
                 color="black"
               >
-                {t('footer_left_button')}
+                {t('left_button')}
               </Button>
               <Button
                 component={Link}
@@ -62,7 +62,7 @@ export function Footer({
                 variant="outline"
                 color="black"
               >
-                {t('footer_right_button')}
+                {t('right_button')}
               </Button>
             </Flex>
           </Stack>
@@ -71,7 +71,7 @@ export function Footer({
 
           <Stack gap="lg" w={{base: '100%', sm: '20%'}}>
             <Stack gap="xs">
-              <Text className={classes.title}>{t('footer_social_media')}</Text>
+              <Text className={classes.title}>{t('social_media')}</Text>
               <Group gap="xs" justify="flex-start">
                 <ActionIcon
                   size="lg"
@@ -104,7 +104,7 @@ export function Footer({
               </Group>
             </Stack>
             <Stack gap="0">
-              <Text className={classes.title}>{t('footer_language')}</Text>
+              <Text className={classes.title}>{t('language')}</Text>
               <Group gap="4px" justify="flex-start">
                 <ActionIcon
                   size="xl"
@@ -149,12 +149,12 @@ export function Footer({
 }
 
 function FooterMenu({menu}: {menu: FooterQuery['menu']}) {
-  const {t} = useTranslations();
+  const {t} = useTranslation(['footer']);
   const {publicStoreDomain} = useRootLoaderData();
 
   return (
     <Stack align="flex-start" gap="xs" w={{base: '100%', sm: '20%'}}>
-      <Text className={classes.title}>{t('footer_company')}</Text>
+      <Text className={classes.title}>{t('company')}</Text>
       {menu?.items
         .filter(({url}) => url !== null && url !== undefined)
         .map((item) => {

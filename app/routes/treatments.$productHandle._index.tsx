@@ -341,7 +341,7 @@ export function ArtistProduct({
     <UnstyledButton
       component={Link}
       data-testid={`service-item-${productId}`}
-      to={`/book-treatment/${product.handle}`}
+      to={`/book/${product.handle}`}
       {...props}
     >
       <Grid>

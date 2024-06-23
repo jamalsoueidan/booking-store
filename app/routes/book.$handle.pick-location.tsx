@@ -16,6 +16,7 @@ import {
   useSearchParams,
 } from '@remix-run/react';
 import {useEffect, useState} from 'react';
+import {useTranslation} from 'react-i18next';
 import {AristLocationRadioCard} from '~/components/artist/ArtistLocationRadioCard';
 import {AddressAutocompleteInput} from '~/components/form/AddressAutocompleteInput';
 import MobileModal from '~/components/MobileModal';
@@ -25,11 +26,10 @@ import {
   type Shipping,
 } from '~/lib/api/model';
 import {convertLocations} from '~/lib/convertLocations';
-import {useTranslations} from '~/providers/Translation';
-import {BookingDetails, type OutletLoader} from './book-treatment.$handle';
+import {BookingDetails, type OutletLoader} from './book.$handle';
 
 export default function ArtistTreatmentPickLocation() {
-  const {t} = useTranslations();
+  const {t} = useTranslation(['book', 'global']);
   const {product} = useOutletContext<OutletLoader>();
   const [searchParams] = useSearchParams();
   const isDisabled =
@@ -43,11 +43,11 @@ export default function ArtistTreatmentPickLocation() {
         <Stack gap="xl">
           <div>
             <Text size="sm" c="dimmed">
-              {t('artist_booking_steps', {step: 2, total: 4})}
+              {t('steps', {step: 2, total: 4})}
             </Text>
 
             <Title order={1} fw={600} size="h2">
-              {t('artist_booking_location_title')}
+              {t('location_title')}
             </Title>
           </div>
           <ArtistLocationPicker locations={locations} />
@@ -64,7 +64,7 @@ export default function ArtistTreatmentPickLocation() {
           size="lg"
           disabled={isDisabled}
         >
-          {t('continue')}
+          {t('continue', {ns: 'global'})}
         </Button>
       </BookingDetails>
     </>
