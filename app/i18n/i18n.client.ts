@@ -17,6 +17,7 @@ export async function initI18nClient() {
     .use(backend)
     .init({
       ...i18nDefaultConfig,
+      fallbackLng: language,
       lng: language,
       ns: namespaces,
       backend: {

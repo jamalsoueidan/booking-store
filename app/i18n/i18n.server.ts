@@ -23,6 +23,7 @@ export async function initI18nServer(
 
   return i18n.use(initReactI18next).init({
     ...i18nDefaultConfig,
+    fallbackLng: language,
     lng: language,
     ns: namespaces,
     resources: {
