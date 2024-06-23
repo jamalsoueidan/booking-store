@@ -46,14 +46,16 @@ import {LocationIcon} from '~/components/LocationIcon';
 import {type CustomerScheduleSlot} from '~/lib/api/model';
 import {convertLocations} from '~/lib/convertLocations';
 import {useDuration} from '~/lib/duration';
-import {TranslationProvider, useTranslations} from '~/providers/Translation';
 
 import {AE, DK, US} from 'country-flag-icons/react/3x2';
+import {useTranslation} from 'react-i18next';
 import {USER_METAOBJECT_QUERY} from '~/graphql/fragments/UserMetaobject';
 import {GET_USER_PRODUCTS} from '~/graphql/queries/GetUserProducts';
 import {UserProvider, useUser} from '~/hooks/use-user';
 
-import {PAGE_QUERY} from './pages.$handle';
+export const handle: Handle = {
+  i18n: ['global', 'profile', 'professions', 'skills'],
+};
 
 export function shouldRevalidate() {
   return false;
@@ -89,13 +91,6 @@ export async function loader({request, context}: LoaderFunctionArgs) {
     });
   }
 
-  const {page} = await context.storefront.query(PAGE_QUERY, {
-    variables: {
-      handle: 'artist',
-    },
-    cache: context.storefront.CacheLong(),
-  });
-
   const collection = context.storefront.query(GET_USER_PRODUCTS, {
     variables: {
       handle: username,
@@ -121,28 +116,25 @@ export async function loader({request, context}: LoaderFunctionArgs) {
 
   return defer({
     user,
-    page,
     collection,
   });
 }
 
 export default function UserIndex() {
-  const {user, page} = useLoaderData<typeof loader>();
+  const {user} = useLoaderData<typeof loader>();
 
   return (
-    <TranslationProvider data={page?.translations}>
-      <UserProvider user={user}>
-        <Container size="xl" mb="xl" mt={rem(100)}>
-          <AboutMe />
-          <UserTreatments />
-        </Container>
-      </UserProvider>
-    </TranslationProvider>
+    <UserProvider user={user}>
+      <Container size="xl" mb="xl" mt={rem(100)}>
+        <AboutMe />
+        <UserTreatments />
+      </Container>
+    </UserProvider>
   );
 }
 
 function AboutMe() {
-  const {t} = useTranslations();
+  const {t} = useTranslation(['global', 'profile', 'professions', 'skills']);
   const user = useUser();
 
   return (
@@ -197,7 +189,7 @@ function AboutMe() {
             {user.aboutMe ? (
               <Stack gap="xs">
                 <Title order={2} fw="600" fz="h5">
-                  {t('artist_about_me')}
+                  {t('profile:about_me')}
                 </Title>
                 <Spoiler maxHeight={54} showLabel="Show more" hideLabel="Hide">
                   <div
@@ -214,7 +206,7 @@ function AboutMe() {
             {user.professions.length > 0 ? (
               <Stack gap="xs">
                 <Title order={2} fw="600" fz="h5">
-                  {t('artist_professions')}
+                  {t('profile:professions')}
                 </Title>
                 <Flex wrap="wrap" gap="xs">
                   {user.professions.map((p) => (
@@ -225,7 +217,7 @@ function AboutMe() {
                       key={p}
                       fw="400"
                     >
-                      {t(`profession_${p}`)}
+                      {t(p as any, {ns: 'professions'})}
                     </Badge>
                   ))}
                 </Flex>
@@ -235,7 +227,7 @@ function AboutMe() {
             {user.specialties.length > 0 ? (
               <Stack gap="xs">
                 <Title order={2} fw="600" fz="h5">
-                  {t('artist_skills')}
+                  {t('profile:skills')}
                 </Title>
                 <Flex wrap="wrap" gap="xs">
                   {user.specialties.map((p) => (
@@ -246,7 +238,7 @@ function AboutMe() {
                       key={p}
                       fw="400"
                     >
-                      {t(`skills_${p}`)}
+                      {t(p as any, {ns: 'skills'})}
                     </Badge>
                   ))}
                 </Flex>
@@ -260,7 +252,7 @@ function AboutMe() {
               {user.social && Object.keys(user.social).length > 0 ? (
                 <Stack gap="xs">
                   <Title order={2} fw="600" fz="h5">
-                    {t('artist_social_media')}
+                    {t('profile:social_media')}
                   </Title>
                   <Stack gap="xs">
                     {user.social.instagram ? (
@@ -271,7 +263,7 @@ function AboutMe() {
                           to={user.social.instagram}
                           target="_blank"
                         >
-                          {t('artist_instagram')}
+                          {t('profile:instagram')}
                         </UnstyledButton>
                       </Group>
                     ) : null}
@@ -283,7 +275,7 @@ function AboutMe() {
                           to={user.social.youtube}
                           target="_blank"
                         >
-                          {t('artist_youtube')}
+                          {t('profile:youtube')}
                         </UnstyledButton>
                       </Group>
                     ) : null}
@@ -295,7 +287,7 @@ function AboutMe() {
                           to={user.social.x}
                           target="_blank"
                         >
-                          {t('artist_x')}
+                          {t('profile:x')}
                         </UnstyledButton>
                       </Group>
                     ) : null}
@@ -307,7 +299,7 @@ function AboutMe() {
                           to={user.social.facebook}
                           target="_blank"
                         >
-                          {t('artist_facebook')}
+                          {t('profile:facebook')}
                         </UnstyledButton>
                       </Group>
                     ) : null}
@@ -322,10 +314,10 @@ function AboutMe() {
       {!user?.active ? (
         <Alert
           variant="light"
-          title={t('artist_not_active_title')}
+          title={t('profile:not_active_title')}
           icon={<IconInfoCircle />}
         >
-          {t('artist_not_active_description')}
+          {t('profile:not_active_description')}
         </Alert>
       ) : null}
     </Flex>
@@ -334,13 +326,13 @@ function AboutMe() {
 
 function UserTreatments() {
   const data = useLoaderData<typeof loader>();
-  const {t} = useTranslations();
+  const {t} = useTranslation(['profile']);
   const user = useUser();
 
   return (
     <>
       <Title order={2} fw="600" mb="md">
-        {t('artist_treatments_title')}
+        {t('treatments_title')}
       </Title>
       <Suspense fallback={<Skeleton height={8} radius="xl" />}>
         <Await resolve={data.collection}>
@@ -420,7 +412,7 @@ async function wordToColor(word: string) {
 }
 
 function Schedule({schedule}: {schedule: ScheduleFragment}) {
-  const {t} = useTranslations();
+  const {t} = useTranslation(['profile', 'global']);
   const [scheduleColor, setScheduleColor] = useState<string>('#fff');
 
   useEffect(() => {
@@ -445,13 +437,13 @@ function Schedule({schedule}: {schedule: ScheduleFragment}) {
       </Card.Section>
       <Divider mb="md" />
       <Title order={4} mb="xs">
-        {t('artist_openingtime')}
+        {t('openingtime')}
       </Title>
       <Stack gap={rem(3)}>
         {slots?.map((slot) => {
           return (
             <Group key={slot.day}>
-              <Text>{t(slot.day)}</Text>
+              <Text>{t(slot.day as any, {ns: 'global'})}</Text>
               {slot.intervals.map((interval) => {
                 return (
                   <Group key={interval.from + interval.to}>
@@ -503,7 +495,7 @@ function Schedule({schedule}: {schedule: ScheduleFragment}) {
 export function ArtistProduct({product}: {product: TreatmentProductFragment}) {
   const durationToTime = useDuration();
   const [scheduleColor, setScheduleColor] = useState<string>('#fff');
-  const {t} = useTranslations();
+  const {t} = useTranslation(['profile', 'global']);
 
   useEffect(() => {
     const fetchColor = async () => {
@@ -531,7 +523,9 @@ export function ArtistProduct({product}: {product: TreatmentProductFragment}) {
       const discountPercentage = Math.abs(
         (discountAmount / parseInt(variant.compareAtPrice?.amount)) * 100,
       );
-      return `${t('discount')} ${discountPercentage.toFixed(0)}%`;
+      return `${t('discount', {ns: 'global'})} ${discountPercentage.toFixed(
+        0,
+      )}%`;
     }
     return null;
   }, [t, variant.compareAtPrice?.amount, variant.price.amount]);
@@ -543,7 +537,7 @@ export function ArtistProduct({product}: {product: TreatmentProductFragment}) {
       component={Link}
       radius="md"
       data-testid={`service-item-${productId}`}
-      to={`/book-treatment/${product.handle}`}
+      to={`/book/${product.handle}`}
     >
       <Grid>
         <Grid.Col span={8}>
@@ -590,8 +584,8 @@ export function ArtistProduct({product}: {product: TreatmentProductFragment}) {
 
             <Group>
               <Text size="sm">
-                {product.options?.value ? t('from') : ''} {variant.price.amount}{' '}
-                kr
+                {product.options?.value ? t('from', {ns: 'global'}) : ''}{' '}
+                {variant.price.amount} kr
               </Text>
               {discountString ? <Text size="sm">{discountString}</Text> : null}
             </Group>
@@ -600,7 +594,7 @@ export function ArtistProduct({product}: {product: TreatmentProductFragment}) {
         <Grid.Col span={4}>
           <Flex justify="flex-end" align="center" h="100%">
             <Button variant="outline" c="black" color="gray.4" radius="lg">
-              {t('artist_booktime')}
+              {t('booktime')}
             </Button>
           </Flex>
         </Grid.Col>

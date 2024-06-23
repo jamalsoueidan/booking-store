@@ -1,0 +1,17 @@
+{
+  "profession_placeholder": "All Professions",
+  "profession_label": "Beauty Experts Profession:",
+  "treatments_placeholder": "All Treatments",
+  "treatments_label": "Treatments:",
+  "sorting_by_label": "Sort Beauty Experts By:",
+  "sorting_by_placeholder": "Choose Sorting",
+  "sorting_by_oldest": "Oldest Added",
+  "sorting_by_newest": "Newest Added",
+  "sorting_by_name": "Name",
+  "gender_label": "Beauty Expert Gender?",
+  "gender_all": "All",
+  "gender_men": "Men",
+  "gender_woman": "Women",
+  "sorting": "Sorting",
+  "filters": "Filters"
+}

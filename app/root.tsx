@@ -36,6 +36,10 @@ import {LayoutWrapper} from './components/LayoutWrapper';
 import {PAGE_QUERY} from './routes/pages.$handle';
 import appStyles from './styles/app.css?url';
 
+export const handle: Handle = {
+  i18n: ['footer', 'global'],
+};
+
 /**
  * This is important to avoid re-fetching root queries on sub-navigations
  */
@@ -168,8 +172,8 @@ export function Layout({children}: {children: ReactNode}) {
           <MantineProvider>
             <NavigationProgress />
             <ModalsProvider>
-              {!path.includes('/account') &&
-              !path.includes('/book-treatment') &&
+              {!path.includes('/account/') &&
+              !path.includes('/book/') &&
               data?.cart ? (
                 <Analytics.Provider
                   cart={data.cart}

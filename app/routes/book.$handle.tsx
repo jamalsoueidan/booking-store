@@ -29,6 +29,7 @@ import {
 } from '@shopify/remix-oxygen';
 import {IconArrowLeft, IconArrowRight, IconX} from '@tabler/icons-react';
 import {type PropsWithChildren} from 'react';
+import {useTranslation} from 'react-i18next';
 import type {
   PickMoreTreatmentProductFragment,
   TreatmentOptionVariantFragment,
@@ -48,8 +49,10 @@ import {useLanguage} from '~/hooks/useLanguage';
 import {useScrollEffect} from '~/hooks/useScrollEffect';
 import {type CustomerLocation} from '~/lib/api/model';
 import {useDuration} from '~/lib/duration';
-import {TranslationProvider, useTranslations} from '~/providers/Translation';
-import {PAGE_QUERY} from './pages.$handle';
+
+export const handle: Handle = {
+  i18n: ['global', 'book'],
+};
 
 export function shouldRevalidate({
   currentUrl,
@@ -168,19 +171,12 @@ export async function loader({params, request, context}: LoaderFunctionArgs) {
     products = data?.products.nodes.filter((p) => p.id !== product.id);
   }
 
-  const {page} = await context.storefront.query(PAGE_QUERY, {
-    variables: {
-      handle: 'artist_booking',
-    },
-    cache: context.storefront.CacheLong(),
-  });
-
-  return json({product, page, products});
+  return json({product, products});
 }
 
 export default function Booking() {
   const lang = useLanguage();
-  const {product, products, page} = useLoaderData<typeof loader>();
+  const {product, products} = useLoaderData<typeof loader>();
   const {opacity, shadow} = useScrollEffect();
   const navigate = useNavigate();
 
@@ -201,7 +197,7 @@ export default function Booking() {
   });
 
   return (
-    <TranslationProvider data={page?.translations}>
+    <>
       <Affix position={{top: 0, left: 0, right: 0}}>
         <Container size="xl">
           <Flex h={50} bg="white" justify="space-between" align="center">
@@ -265,12 +261,12 @@ export default function Booking() {
           />
         </Grid>
       </Container>
-    </TranslationProvider>
+    </>
   );
 }
 
 export function BookingDetails({children}: PropsWithChildren) {
-  const {t} = useTranslations();
+  const {t} = useTranslation('book');
   const durationToTime = useDuration();
   const {
     selectedLocation,
@@ -355,9 +351,12 @@ export function BookingDetails({children}: PropsWithChildren) {
             <Flex direction="column">
               <Text fw="bold">{totalPrice + summary.price} kr.</Text>
               <Text>
-                {1 + summary.pickedVariants.filter((f) => !f.isVariant).length}{' '}
-                {t('total_services')} -{' '}
-                {durationToTime(totalDuration + summary.duration)}
+                {t('total_services', {
+                  count:
+                    1 +
+                    summary.pickedVariants.filter((f) => !f.isVariant).length,
+                })}{' '}
+                - {durationToTime(totalDuration + summary.duration)}
               </Text>
             </Flex>
             {children}

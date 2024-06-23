@@ -1,0 +1,21 @@
+{
+  "pagination_next_button": "تحميل المزيد",
+  "pagination_previous_button": "تحميل السابق",
+  "danish": "دانماركي",
+  "english": "إنجليزي",
+  "arabic": "عربي",
+  "login": "تسجيل الدخول",
+  "monday": "الإثنين",
+  "tuesday": "الثلاثاء",
+  "wednesday": "الأربعاء",
+  "thursday": "الخميس",
+  "friday": "الجمعة",
+  "saturday": "السبت",
+  "sunday": "الأحد",
+  "discount": "توفير",
+  "from": "من",
+  "to": "إلى",
+  "continue": "متابعة",
+  "time": "الوقت",
+  "location": "الموقع"
+}

@@ -17,7 +17,7 @@ import {
 
 import {useMediaQuery} from '@mantine/hooks';
 import {TreatmentStepper} from '~/components/TreatmentStepper';
-import {GET_PRODUCT_WITH_OPTIONS} from './book-treatment.$handle';
+import {GET_PRODUCT_WITH_OPTIONS} from './book.$handle';
 
 export function shouldRevalidate({
   currentUrl,

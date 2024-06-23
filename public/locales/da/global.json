@@ -1,0 +1,21 @@
+{
+  "pagination_next_button": "Hent flere",
+  "pagination_previous_button": "Hent tidligere",
+  "danish": "Dansk",
+  "english": "Engelsk",
+  "arabic": "Arabisk",
+  "login": "Log ind",
+  "monday": "Mandag",
+  "tuesday": "Tirsdag",
+  "wednesday": "Onsdag",
+  "thursday": "Torsdag",
+  "friday": "Fredag",
+  "saturday": "Lørdag",
+  "sunday": "Søndag",
+  "discount": "Spar",
+  "from": "Fra",
+  "to": "Til",
+  "continue": "Forsæt",
+  "time": "Tid",
+  "location": "Lokation"
+}

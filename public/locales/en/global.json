@@ -1,0 +1,21 @@
+{
+  "pagination_next_button": "Load More",
+  "pagination_previous_button": "Load Previous",
+  "danish": "Danish",
+  "english": "English",
+  "arabic": "Arabic",
+  "login": "Login",
+  "monday": "Monday",
+  "tuesday": "Tuesday",
+  "wednesday": "Wednesday",
+  "thursday": "Thursday",
+  "friday": "Friday",
+  "saturday": "Saturday",
+  "sunday": "Sunday",
+  "discount": "Save",
+  "from": "From",
+  "to": "To",
+  "continue": "Continue",
+  "time": "Time",
+  "location": "Location"
+}

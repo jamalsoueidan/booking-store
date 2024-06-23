@@ -20,12 +20,12 @@ import {
   type MetaFunction,
 } from '@shopify/remix-oxygen';
 import {DK, US} from 'country-flag-icons/react/3x2';
+import {useTranslation} from 'react-i18next';
 import {type ArticleUserFragment} from 'storefrontapi.generated';
 import {LocationIcon} from '~/components/LocationIcon';
 import {ARTICLE_USER_FRAGMENT} from '~/graphql/fragments/ArticleUser';
 import {CustomerLocationBaseLocationType} from '~/lib/api/model';
 import {splitTags} from '~/lib/tags';
-import {useTranslations} from '~/providers/Translation';
 
 export const meta: MetaFunction = () => {
   return [{title: `BySisters | Find Skønhedseksperter`}];
@@ -111,7 +111,7 @@ export const loader = async ({context, request}: LoaderFunctionArgs) => {
 };
 
 export default function Component() {
-  const {t} = useTranslations();
+  const {t} = useTranslation(['global']);
   const {users} = useLoaderData<typeof loader>();
 
   if (!users) return <>No users</>;
@@ -152,7 +152,7 @@ export default function Component() {
 }
 
 export const UserCard = ({article}: {article: ArticleUserFragment}) => {
-  const {t} = useTranslations();
+  const {t} = useTranslation(['professions']);
   const user = article.user?.reference;
   const professions = user?.professions?.value
     ? (JSON.parse(user.professions.value) as Record<string, []>)
@@ -263,7 +263,7 @@ export const UserCard = ({article}: {article: ArticleUserFragment}) => {
       <Flex gap="xs" my="md">
         {professions['professions'].map((p) => (
           <Badge variant="outline" c="black" color="gray.4" key={p} fw="400">
-            {t(`profession_${p}`)}
+            {t(p as any, {ns: 'professions'})}
           </Badge>
         ))}
       </Flex>

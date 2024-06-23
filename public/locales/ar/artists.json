@@ -1,0 +1,17 @@
+{
+  "profession_placeholder": "جميع المهن",
+  "profession_label": "مهنة خبراء التجميل:",
+  "treatments_placeholder": "جميع العلاجات",
+  "treatments_label": "العلاجات:",
+  "sorting_by_label": "فرز خبراء التجميل حسب:",
+  "sorting_by_placeholder": "اختر الفرز",
+  "sorting_by_oldest": "الأقدم إضافة",
+  "sorting_by_newest": "الأحدث إضافة",
+  "sorting_by_name": "الاسم",
+  "gender_label": "جنس خبير التجميل؟",
+  "gender_all": "الجميع",
+  "gender_men": "رجال",
+  "gender_woman": "نساء",
+  "sorting": "فرز",
+  "filters": "فلتر"
+}

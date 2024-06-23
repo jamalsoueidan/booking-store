@@ -30,6 +30,7 @@ import {da} from 'date-fns/locale';
 import ar from 'date-fns/locale/ar';
 import enUS from 'date-fns/locale/en-US';
 import {Suspense} from 'react';
+import {useTranslation} from 'react-i18next';
 import {useLanguage} from '~/hooks/useLanguage';
 import {getBookingShopifyApi} from '~/lib/api/bookingShopifyApi';
 import type {
@@ -39,11 +40,7 @@ import type {
 } from '~/lib/api/model';
 import {useDate} from '~/lib/duration';
 import {parseOptionsFromQuery} from '~/lib/parseOptionsQueryParameters';
-import {useTranslations} from '~/providers/Translation';
-import {
-  BookingDetails,
-  GET_PRODUCT_WITH_OPTIONS,
-} from './book-treatment.$handle';
+import {BookingDetails, GET_PRODUCT_WITH_OPTIONS} from './book.$handle';
 
 export function shouldRevalidate({
   currentUrl,
@@ -105,7 +102,7 @@ export async function loader({params, request, context}: LoaderFunctionArgs) {
 }
 
 export default function ArtistTreatmentPickDatetime() {
-  const {t} = useTranslations();
+  const {t} = useTranslation(['book', 'global']);
   const {availability} = useLoaderData<typeof loader>();
   const location = useLocation();
   const searchParams = new URLSearchParams(location.search);
@@ -119,10 +116,10 @@ export default function ArtistTreatmentPickDatetime() {
       <Grid.Col span={{base: 12, md: 7}}>
         <Box mb="xl">
           <Text size="sm" c="dimmed">
-            {t('artist_booking_steps', {step: 3, total: 4})}
+            {t('steps', {step: 3, total: 4})}
           </Text>
           <Title order={1} fw={600} size="h2">
-            {t('artist_booking_pickdate_title')}
+            {t('pickdate_title')}
           </Title>
         </Box>
         <Suspense
@@ -175,7 +172,7 @@ type TreatmentPickDatetimeProps = {
 };
 
 function TreatmentPickDatetime({availability}: TreatmentPickDatetimeProps) {
-  const {t} = useTranslations();
+  const {t} = useTranslation(['book', 'global']);
   const [searchParams, setSearchParams] = useSearchParams();
 
   const onPickDate = (month: string | null) => {
@@ -266,20 +263,20 @@ function TreatmentPickDatetime({availability}: TreatmentPickDatetimeProps) {
       {days && days.length > 0 ? (
         <div>
           <Title order={4} mb="sm" fw={600} size="md">
-            {t('artist_booking_pickdate_day')}
+            {t('pickdate_day')}
           </Title>
           <ScrollArea type="auto" offsetScrollbars="x">
             <Flex gap="sm">{days}</Flex>
           </ScrollArea>
         </div>
       ) : (
-        <>{t('artist_booking_pickdate_empty')}</>
+        <>{t('pickdate_empty')}</>
       )}
 
       {slots ? (
         <div>
           <Title order={4} mb="sm" fw={600} size="md">
-            {t('artist_booking_pickdate_time')}
+            {t('pickdate_time')}
           </Title>
           <SimpleGrid cols={3} spacing="sm">
             {slots}

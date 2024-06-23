@@ -21,13 +21,13 @@ import {parseGid} from '@shopify/hydrogen';
 
 import {IconCheck, IconPlus} from '@tabler/icons-react';
 import {useMemo} from 'react';
+import {Trans, useTranslation} from 'react-i18next';
 import {type PickMoreTreatmentProductFragment} from 'storefrontapi.generated';
 import {durationToTime} from '~/lib/duration';
-import {useTranslations} from '~/providers/Translation';
-import {BookingDetails} from './book-treatment.$handle';
+import {BookingDetails} from './book.$handle';
 
 export default function ArtistTreatments() {
-  const {t, tc} = useTranslations();
+  const {t} = useTranslation(['book', 'global']);
   const [searchParams] = useSearchParams();
   const {products} = useOutletContext<{
     products: PickMoreTreatmentProductFragment[];
@@ -39,12 +39,12 @@ export default function ArtistTreatments() {
         <Stack gap="xl">
           <div>
             <Text size="sm" c="dimmed">
-              {t('artist_booking_steps', {step: 3, total: 4})}
+              {t('steps', {step: 3, total: 4})}
             </Text>
             <Title order={1} fw={600} size="h2">
-              {t('artist_booking_pickmore_title')}
+              {t('pickmore_title')}
             </Title>
-            <Text c="dimmed">{t('artist_booking_pickmore_subtitle')}</Text>
+            <Text c="dimmed">{t('pickmore_subtitle')}</Text>
           </div>
 
           {products.length > 0 ? (
@@ -59,9 +59,11 @@ export default function ArtistTreatments() {
             </>
           ) : (
             <Text>
-              {tc('artist_booking_pickmore_empty', {
-                1: <Text component="span" fw="bold" />,
-              })}
+              <Trans
+                i18nKey="pickmore_empty"
+                ns="book"
+                components={{1: <strong />}}
+              />
             </Text>
           )}
         </Stack>
@@ -76,7 +78,7 @@ export default function ArtistTreatments() {
           prefetch="render"
           size="lg"
         >
-          {t('continue')}
+          {t('continue', {ns: 'global'})}
         </Button>
       </BookingDetails>
     </>
