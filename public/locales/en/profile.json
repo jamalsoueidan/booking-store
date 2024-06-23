@@ -5,11 +5,11 @@
   "facebook": "Facebook",
   "social_media": "Social Media",
   "skills": "Skills",
-  "openingtime": "Åbningstider",
-  "booktime": "Bestil tid",
-  "treatments_title": "Behandlinger",
-  "about_me": "Om mig",
-  "professions": "Professioner",
-  "not_active_description": "Din konto er pt. ikke aktiv, men du kan stadig tilgå din profilside, indtil den bliver godkendt.",
-  "not_active_title": "Din konto er inaktiv"
+  "openingtime": "Opening Hours",
+  "booktime": "Book Time",
+  "treatments_title": "Treatments",
+  "about_me": "About Me",
+  "professions": "Professions",
+  "not_active_description": "Your account is currently inactive, but you can still access your profile page until it is approved.",
+  "not_active_title": "Your Account is Inactive"
 }

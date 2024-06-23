@@ -1,10 +1,10 @@
 {
-  "brow_technician": "Bryntekniker",
-  "lash_technician": "Vippetekniker",
-  "massage_therapist": "Massageterapeut",
-  "makeup_artist": "Makeupartist",
-  "hair_stylist": "Frisør",
-  "esthetician": "Kosmetolog",
-  "nail_technicia": "Negletekniker",
-  "all": "Alle"
+  "brow_technician": "Brow Technician",
+  "lash_technician": "Lash Technician",
+  "massage_therapist": "Massage Therapist",
+  "makeup_artist": "Makeup Artist",
+  "hair_stylist": "Hair Stylist",
+  "esthetician": "Esthetician",
+  "nail_technician": "Nail Technician",
+  "all": "All"
 }
