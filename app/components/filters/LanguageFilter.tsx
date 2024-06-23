@@ -8,7 +8,7 @@ import {
   Text,
 } from '@mantine/core';
 import {IconFlag, IconX} from '@tabler/icons-react';
-import {DK, US} from 'country-flag-icons/react/3x2';
+import {AE, DK, US} from 'country-flag-icons/react/3x2';
 import {useTranslation} from 'react-i18next';
 import {useChangeFilter} from './useChangeFilter';
 
@@ -67,7 +67,7 @@ export function AddLanguageFilter() {
             <Flex gap="xs" align="center">
               <Checkbox.Indicator />
               <Text>{t('arabic', {ns: 'global'})}</Text>
-              <DK width={16} height={16} />
+              <AE width={16} height={16} />
             </Flex>
           </Checkbox.Card>
         </Stack>
