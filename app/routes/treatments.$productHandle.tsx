@@ -33,7 +33,6 @@ import {AddLocationFilter} from '~/components/filters/LocationFilter';
 import {AddPriceFilter} from '~/components/filters/PriceFilter';
 import {ResetFilter} from '~/components/filters/ResetFilter';
 import {USER_COLLECTION_FILTER} from '~/graphql/fragments/UserCollectionFilter';
-import {useTranslations} from '~/providers/Translation';
 
 export const handle: Handle = {
   i18n: ['treatments'],
@@ -285,7 +284,7 @@ function Header() {
 
 function Stats() {
   const {product, filters} = useLoaderData<typeof loader>();
-  const {t} = useTranslations();
+  const {t} = useTranslation(['treatments', 'global']);
   const tags = filters.find((p) => p.id === 'filter.p.tag');
 
   const availability = filters
@@ -316,7 +315,7 @@ function Stats() {
         <Flex gap="xl" wrap="wrap">
           <Flex direction="column" justify="center">
             <Text tt="uppercase" ta="center" fz="sm" c="gray" fw="400">
-              {t('treatments_category')}
+              {t('category')}
             </Text>
             <Text ta="center" fw="600">
               {product.productType}
@@ -324,7 +323,7 @@ function Stats() {
           </Flex>
           <Flex direction="column" justify="center">
             <Text tt="uppercase" ta="center" fz="sm" c="gray" fw="400">
-              {t('treatments_beauty_expert')}
+              {t('beauty_experts')}
             </Text>
             <Text ta="center" fw="600">
               {availability?.count}
@@ -332,7 +331,7 @@ function Stats() {
           </Flex>
           <Flex direction="column" justify="center">
             <Text tt="uppercase" ta="center" fz="sm" c="gray" fw="400">
-              {t('treatments_cities')}
+              {t('cities')}
             </Text>
             <Text ta="center">{cityCount}</Text>
           </Flex>

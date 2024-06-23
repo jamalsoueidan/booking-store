@@ -33,7 +33,6 @@ import {useEffect, type ReactNode} from 'react';
 import favicon from './assets/favicon.svg';
 import {CustomAnalytics} from './components/CustomAnalytics';
 import {LayoutWrapper} from './components/LayoutWrapper';
-import {PAGE_QUERY} from './routes/pages.$handle';
 import appStyles from './styles/app.css?url';
 
 export const handle: Handle = {
@@ -110,17 +109,8 @@ export async function loader({context}: LoaderFunctionArgs) {
     },
   });
 
-  // await the header query (above the fold)
-  const page = await storefront.query(PAGE_QUERY, {
-    cache: storefront.CacheLong(),
-    variables: {
-      handle: 'global',
-    },
-  });
-
   return defer({
     cart: cartPromise,
-    page,
     footer: footerPromise,
     header: await headerPromise,
     isLoggedIn: isLoggedInPromise,

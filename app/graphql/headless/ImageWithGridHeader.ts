@@ -2,6 +2,7 @@ export const IMAGE_GRID_WITH_HEADER_COLLECTION_FRAGMENT = `#graphql
   fragment ImageGridWithHeaderCollection on Collection {
     id
     title
+    description
     handle
     image {
       height
@@ -19,8 +20,16 @@ export const IMAGE_GRID_WITH_HEADER_FRAGMENT = `#graphql
     title: field(key: "title") {
       value
     }
-    backgroundColor:field(key:"background_color") {
+    fromColor: field(key:"from_color") {
       value
+    }
+    toColor: field(key:"to_color") {
+      value
+    }
+    button: field(key:"button") {
+      reference {
+        ...Button
+      }
     }
     collections: field(key:"collections") {
       references(first: 5) {

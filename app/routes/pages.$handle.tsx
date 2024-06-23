@@ -1,8 +1,8 @@
 import {useLoaderData, type MetaFunction} from '@remix-run/react';
 import {json, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
 import {Headless} from '~/components/blocks/Headless';
+import {VisualTeaser} from '~/components/blocks/VisualTeaser';
 import {Wrapper} from '~/components/Wrapper';
-import {TRANSLATIONS_FRAGMENT} from '~/graphql/fragments/Translation';
 import {ACCORDION_FRAGMENT} from '~/graphql/headless/Accordion';
 import {BACKGROUND_IMAGE_FRAGMENT} from '~/graphql/headless/BackgroundImage';
 import {BUTTON_FRAGMENT} from '~/graphql/headless/Button';
@@ -52,6 +52,8 @@ export default function Page() {
 
   return (
     <>
+      <VisualTeaser data={page?.header?.reference} />
+
       <Headless components={page.options} />
       {page.body.length > 1 && (
         <Wrapper>
@@ -82,7 +84,6 @@ const PAGE_FRAGMENT = `#graphql
   ${FAQ_FRAGMENT}
   ${IMAGE_GRID_WITH_HEADER_FRAGMENT}
 
-  ${TRANSLATIONS_FRAGMENT}
 
   fragment Page on Page {
     id
@@ -121,14 +122,6 @@ const PAGE_FRAGMENT = `#graphql
         ...VisualTeaser
         ...Faq
         ...ImageGridWithHeader
-      }
-    }
-
-    translations: metafield(namespace: "booking", key: "translations") {
-      references(first: 250) {
-        nodes {
-          ...Translations
-        }
       }
     }
 

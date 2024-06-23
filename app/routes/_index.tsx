@@ -100,9 +100,11 @@ export async function loader({context, request}: LoaderFunctionArgs) {
 export default function Homepage() {
   const {page} = useLoaderData<typeof loader>();
 
+  console.log(page);
   return (
     <>
       <Header />
+      <Headless components={page?.options} />
       <FeaturedArtists />
       <RecommendedTreatments />
       <Headless components={page?.components} />
@@ -168,7 +170,7 @@ function FeaturedArtists() {
 
   return (
     <Box
-      bg={getGradient({deg: 180, from: 'white', to: 'yellow.1'}, theme)}
+      bg={getGradient({deg: 180, from: 'pink.1', to: 'yellow.1'}, theme)}
       py={{base: rem(40), sm: rem(60)}}
     >
       <Container size="xl">
@@ -233,7 +235,7 @@ function RecommendedTreatments() {
 
   return (
     <Box
-      bg={getGradient({deg: 180, from: 'yellow.1', to: 'pink.1'}, theme)}
+      bg={getGradient({deg: 180, from: 'yellow.1', to: 'white'}, theme)}
       py={{base: rem(40), sm: rem(60)}}
     >
       <Stack gap="xl">
