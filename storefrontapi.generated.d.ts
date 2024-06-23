@@ -642,10 +642,6 @@ export type LocationFragment = Pick<
   >;
 };
 
-export type TranslationsFragment = Pick<StorefrontAPI.Metaobject, 'handle'> & {
-  value?: StorefrontAPI.Maybe<Pick<StorefrontAPI.MetaobjectField, 'value'>>;
-};
-
 export type TreatmentCollectionFragment = Pick<
   StorefrontAPI.Product,
   | 'id'
@@ -1688,10 +1684,19 @@ export type ComponentsFragment = {
                 }
               >;
             }>;
+            fromColor?: StorefrontAPI.Maybe<
+              Pick<StorefrontAPI.MetaobjectField, 'value'>
+            >;
+            toColor?: StorefrontAPI.Maybe<
+              Pick<StorefrontAPI.MetaobjectField, 'value'>
+            >;
             collections?: StorefrontAPI.Maybe<{
               references?: StorefrontAPI.Maybe<{
                 nodes: Array<
-                  Pick<StorefrontAPI.Collection, 'id' | 'title' | 'handle'> & {
+                  Pick<
+                    StorefrontAPI.Collection,
+                    'id' | 'title' | 'description' | 'handle'
+                  > & {
                     image?: StorefrontAPI.Maybe<
                       Pick<StorefrontAPI.Image, 'height' | 'width' | 'url'>
                     >;
@@ -1861,7 +1866,7 @@ export type ImageFragment = Pick<StorefrontAPI.MediaImage, 'id'> & {
 
 export type ImageGridWithHeaderCollectionFragment = Pick<
   StorefrontAPI.Collection,
-  'id' | 'title' | 'handle'
+  'id' | 'title' | 'description' | 'handle'
 > & {
   image?: StorefrontAPI.Maybe<
     Pick<StorefrontAPI.Image, 'height' | 'width' | 'url'>
@@ -1873,13 +1878,33 @@ export type ImageGridWithHeaderFragment = Pick<
   'id' | 'type'
 > & {
   title?: StorefrontAPI.Maybe<Pick<StorefrontAPI.MetaobjectField, 'value'>>;
-  backgroundColor?: StorefrontAPI.Maybe<
-    Pick<StorefrontAPI.MetaobjectField, 'value'>
-  >;
+  fromColor?: StorefrontAPI.Maybe<Pick<StorefrontAPI.MetaobjectField, 'value'>>;
+  toColor?: StorefrontAPI.Maybe<Pick<StorefrontAPI.MetaobjectField, 'value'>>;
+  button?: StorefrontAPI.Maybe<{
+    reference?: StorefrontAPI.Maybe<
+      Pick<StorefrontAPI.Metaobject, 'id' | 'type'> & {
+        text?: StorefrontAPI.Maybe<
+          Pick<StorefrontAPI.MetaobjectField, 'value'>
+        >;
+        linkTo?: StorefrontAPI.Maybe<
+          Pick<StorefrontAPI.MetaobjectField, 'value'>
+        >;
+        variant?: StorefrontAPI.Maybe<
+          Pick<StorefrontAPI.MetaobjectField, 'value'>
+        >;
+        color?: StorefrontAPI.Maybe<
+          Pick<StorefrontAPI.MetaobjectField, 'value'>
+        >;
+      }
+    >;
+  }>;
   collections?: StorefrontAPI.Maybe<{
     references?: StorefrontAPI.Maybe<{
       nodes: Array<
-        Pick<StorefrontAPI.Collection, 'id' | 'title' | 'handle'> & {
+        Pick<
+          StorefrontAPI.Collection,
+          'id' | 'title' | 'description' | 'handle'
+        > & {
           image?: StorefrontAPI.Maybe<
             Pick<StorefrontAPI.Image, 'height' | 'width' | 'url'>
           >;
@@ -2308,12 +2333,18 @@ export type MetaobjectQueryQuery = {
                   }
                 >;
               }>;
+              fromColor?: StorefrontAPI.Maybe<
+                Pick<StorefrontAPI.MetaobjectField, 'value'>
+              >;
+              toColor?: StorefrontAPI.Maybe<
+                Pick<StorefrontAPI.MetaobjectField, 'value'>
+              >;
               collections?: StorefrontAPI.Maybe<{
                 references?: StorefrontAPI.Maybe<{
                   nodes: Array<
                     Pick<
                       StorefrontAPI.Collection,
-                      'id' | 'title' | 'handle'
+                      'id' | 'title' | 'description' | 'handle'
                     > & {
                       image?: StorefrontAPI.Maybe<
                         Pick<StorefrontAPI.Image, 'height' | 'width' | 'url'>
@@ -4142,10 +4173,19 @@ export type PageFragment = Pick<StorefrontAPI.Page, 'id' | 'title' | 'body'> & {
               }
             >;
           }>;
+          fromColor?: StorefrontAPI.Maybe<
+            Pick<StorefrontAPI.MetaobjectField, 'value'>
+          >;
+          toColor?: StorefrontAPI.Maybe<
+            Pick<StorefrontAPI.MetaobjectField, 'value'>
+          >;
           collections?: StorefrontAPI.Maybe<{
             references?: StorefrontAPI.Maybe<{
               nodes: Array<
-                Pick<StorefrontAPI.Collection, 'id' | 'title' | 'handle'> & {
+                Pick<
+                  StorefrontAPI.Collection,
+                  'id' | 'title' | 'description' | 'handle'
+                > & {
                   image?: StorefrontAPI.Maybe<
                     Pick<StorefrontAPI.Image, 'height' | 'width' | 'url'>
                   >;
@@ -4351,10 +4391,19 @@ export type PageFragment = Pick<StorefrontAPI.Page, 'id' | 'title' | 'body'> & {
             }
           >;
         }>;
+        fromColor?: StorefrontAPI.Maybe<
+          Pick<StorefrontAPI.MetaobjectField, 'value'>
+        >;
+        toColor?: StorefrontAPI.Maybe<
+          Pick<StorefrontAPI.MetaobjectField, 'value'>
+        >;
         collections?: StorefrontAPI.Maybe<{
           references?: StorefrontAPI.Maybe<{
             nodes: Array<
-              Pick<StorefrontAPI.Collection, 'id' | 'title' | 'handle'> & {
+              Pick<
+                StorefrontAPI.Collection,
+                'id' | 'title' | 'description' | 'handle'
+              > & {
                 image?: StorefrontAPI.Maybe<
                   Pick<StorefrontAPI.Image, 'height' | 'width' | 'url'>
                 >;
@@ -4364,17 +4413,6 @@ export type PageFragment = Pick<StorefrontAPI.Page, 'id' | 'title' | 'body'> & {
         }>;
       }
     >;
-  }>;
-  translations?: StorefrontAPI.Maybe<{
-    references?: StorefrontAPI.Maybe<{
-      nodes: Array<
-        Pick<StorefrontAPI.Metaobject, 'handle'> & {
-          value?: StorefrontAPI.Maybe<
-            Pick<StorefrontAPI.MetaobjectField, 'value'>
-          >;
-        }
-      >;
-    }>;
   }>;
   options?: StorefrontAPI.Maybe<{
     references?: StorefrontAPI.Maybe<{
@@ -4573,10 +4611,19 @@ export type PageFragment = Pick<StorefrontAPI.Page, 'id' | 'title' | 'body'> & {
               }
             >;
           }>;
+          fromColor?: StorefrontAPI.Maybe<
+            Pick<StorefrontAPI.MetaobjectField, 'value'>
+          >;
+          toColor?: StorefrontAPI.Maybe<
+            Pick<StorefrontAPI.MetaobjectField, 'value'>
+          >;
           collections?: StorefrontAPI.Maybe<{
             references?: StorefrontAPI.Maybe<{
               nodes: Array<
-                Pick<StorefrontAPI.Collection, 'id' | 'title' | 'handle'> & {
+                Pick<
+                  StorefrontAPI.Collection,
+                  'id' | 'title' | 'description' | 'handle'
+                > & {
                   image?: StorefrontAPI.Maybe<
                     Pick<StorefrontAPI.Image, 'height' | 'width' | 'url'>
                   >;
@@ -4802,12 +4849,18 @@ export type PageQuery = {
                   }
                 >;
               }>;
+              fromColor?: StorefrontAPI.Maybe<
+                Pick<StorefrontAPI.MetaobjectField, 'value'>
+              >;
+              toColor?: StorefrontAPI.Maybe<
+                Pick<StorefrontAPI.MetaobjectField, 'value'>
+              >;
               collections?: StorefrontAPI.Maybe<{
                 references?: StorefrontAPI.Maybe<{
                   nodes: Array<
                     Pick<
                       StorefrontAPI.Collection,
-                      'id' | 'title' | 'handle'
+                      'id' | 'title' | 'description' | 'handle'
                     > & {
                       image?: StorefrontAPI.Maybe<
                         Pick<StorefrontAPI.Image, 'height' | 'width' | 'url'>
@@ -5016,10 +5069,19 @@ export type PageQuery = {
                 }
               >;
             }>;
+            fromColor?: StorefrontAPI.Maybe<
+              Pick<StorefrontAPI.MetaobjectField, 'value'>
+            >;
+            toColor?: StorefrontAPI.Maybe<
+              Pick<StorefrontAPI.MetaobjectField, 'value'>
+            >;
             collections?: StorefrontAPI.Maybe<{
               references?: StorefrontAPI.Maybe<{
                 nodes: Array<
-                  Pick<StorefrontAPI.Collection, 'id' | 'title' | 'handle'> & {
+                  Pick<
+                    StorefrontAPI.Collection,
+                    'id' | 'title' | 'description' | 'handle'
+                  > & {
                     image?: StorefrontAPI.Maybe<
                       Pick<StorefrontAPI.Image, 'height' | 'width' | 'url'>
                     >;
@@ -5029,17 +5091,6 @@ export type PageQuery = {
             }>;
           }
         >;
-      }>;
-      translations?: StorefrontAPI.Maybe<{
-        references?: StorefrontAPI.Maybe<{
-          nodes: Array<
-            Pick<StorefrontAPI.Metaobject, 'handle'> & {
-              value?: StorefrontAPI.Maybe<
-                Pick<StorefrontAPI.MetaobjectField, 'value'>
-              >;
-            }
-          >;
-        }>;
       }>;
       options?: StorefrontAPI.Maybe<{
         references?: StorefrontAPI.Maybe<{
@@ -5241,12 +5292,18 @@ export type PageQuery = {
                   }
                 >;
               }>;
+              fromColor?: StorefrontAPI.Maybe<
+                Pick<StorefrontAPI.MetaobjectField, 'value'>
+              >;
+              toColor?: StorefrontAPI.Maybe<
+                Pick<StorefrontAPI.MetaobjectField, 'value'>
+              >;
               collections?: StorefrontAPI.Maybe<{
                 references?: StorefrontAPI.Maybe<{
                   nodes: Array<
                     Pick<
                       StorefrontAPI.Collection,
-                      'id' | 'title' | 'handle'
+                      'id' | 'title' | 'description' | 'handle'
                     > & {
                       image?: StorefrontAPI.Maybe<
                         Pick<StorefrontAPI.Image, 'height' | 'width' | 'url'>
@@ -5930,7 +5987,7 @@ interface GeneratedQueryTypes {
     return: GetUserProductsQuery;
     variables: GetUserProductsQueryVariables;
   };
-  '#graphql\n  #graphql\n  #tags\n  #graphql\n  fragment Image on MediaImage {\n    id\n    image {\n      url\n      height\n      width\n    }\n  }\n\n  #graphql\n  fragment BackgroundImage on Metaobject {\n    id\n    type\n    image: field(key: "image") {\n      reference {\n        ...Image\n      }\n    }\n    opacity: field(key:"opacity") {\n      value\n    }\n    style: field(key:"style") {\n      value\n    }\n  }\n\n  #graphql\n  fragment Button on Metaobject {\n    id\n    type\n    text: field(key: "text") {\n      value\n    }\n    linkTo: field(key:"link_to") {\n      value\n    }\n    variant: field(key:"variant") {\n      value\n    }\n    color: field(key:"color") {\n      value\n    }\n  }\n\n  #graphql\n  fragment Overlay on Metaobject {\n    id\n    type\n    color: field(key: "color") {\n      value\n    }\n    opacity: field(key:"opacity") {\n      value\n      type\n    }\n  }\n\n\n  #fragments\n  #graphql\n  #graphql\n  fragment AccordionItem on Metaobject {\n    id\n    type\n    label: field(key: "label") {\n      value\n    }\n    text: field(key:"text") {\n      value\n    }\n  }\n\n  fragment Accordion on Metaobject {\n    id\n    type\n    name: field(key: "name") {\n      value\n    }\n    variant: field(key:"variant") {\n      key\n      value\n    }\n    items: field(key:"items") {\n      references(first: 10) {\n        nodes {\n          ...AccordionItem\n        }\n      }\n    }\n  }\n\n  #graphql\n  fragment CallToAction on Metaobject {\n    id\n    type\n    name: field(key:"name") {\n      value\n    }\n    title: field(key:"title") {\n      value\n    }\n    image: field(key: "image") {\n      reference {\n        ...Image\n      }\n    }\n    color: field(key: "color") {\n      value\n    }\n    button: field(key:"button") {\n      reference {\n        ...Button\n      }\n    }\n    overlay: field(key: "overlay") {\n      reference {\n        ...Overlay\n      }\n    }\n  }\n\n  #graphql\n  fragment CardMedia on Metaobject {\n    id\n    type\n    title: field(key: "title") {\n      value\n    }\n    description: field(key:"description") {\n      value\n    }\n    image: field(key: "image") {\n      reference {\n        ...Image\n      }\n    }\n    flip: field(key:"flip") {\n      value\n    }\n  }\n\n  #graphql\n  #graphql\n  fragment FeatureItem on Metaobject {\n    id\n    type\n    title: field(key: "title") {\n      value\n    }\n    description: field(key: "description") {\n      value\n    }\n    icon: field(key: "icon") {\n      value\n    }\n  }\n\n\n  fragment Features on Metaobject {\n    id\n    type\n    title: field(key: "title") {\n      value\n    }\n    subtitle: field(key: "subtitle") {\n      value\n    }\n    items: field(key: "items") {\n      references(first: 10) {\n        nodes {\n          ...FeatureItem\n        }\n      }\n    }\n  }\n\n  #graphql\n  #graphql\n  #graphql\n  fragment ThemeIcon on Metaobject {\n    id\n    type\n    name: field(key: "name") {\n      value\n    }\n    icon: field(key: "icon") {\n      value\n    }\n    variant: field(key: "variant") {\n      value\n    }\n    color: field(key: "color") {\n      value\n    }\n    radius: field(key: "radius") {\n      value\n    }\n  }\n\n\n  fragment HelpItem on Metaobject {\n    id\n    type\n    title: field(key: "title") {\n      value\n    }\n    description: field(key: "description") {\n      value\n    }\n    themeIcon: field(key: "theme_icon") {\n      reference {\n        ...ThemeIcon\n      }\n    }\n    backgroundColor: field(key: "background_color") {\n      value\n    }\n  }\n\n\n  fragment Help on Metaobject {\n    id\n    type\n    name: field(key: "name") {\n      value\n    }\n    title: field(key: "title") {\n      value\n    }\n    items: field(key: "items") {\n      references(first: 10) {\n        nodes {\n          ...HelpItem\n        }\n      }\n    }\n    backgroundColor: field(key: "background_color") {\n      value\n    }\n  }\n\n  #graphql\n  fragment Maps on Metaobject {\n    id\n    type\n    url: field(key: "url") {\n      value\n    }\n  }\n\n  #graphql\n  fragment SideBySide on Metaobject {\n    id\n    type\n    title: field(key:"title") {\n      value\n    }\n    text: field(key: "text") {\n      value\n    }\n  }\n\n  #graphql\n  fragment VisualTeaser on Metaobject {\n    id\n    type\n    title: field(key: "title") {\n      value\n    }\n    subtitle: field(key: "subtitle") {\n      value\n    }\n    height:field(key:"height") {\n      value\n    }\n    backgroundColor:field(key:"background_color") {\n      value\n    }\n    fontColor: field(key:"font_color") {\n      value\n    }\n    justify: field(key:"justify") {\n      value\n    }\n    backgroundImage: field(key:"background_image") {\n      reference {\n        ...BackgroundImage\n      }\n    }\n    subbutton: field(key:"subbutton") {\n      reference {\n        ...Button\n      }\n    }\n  }\n\n  #graphql\n  fragment Faq on Metaobject {\n    id\n    type\n    title: field(key: "title") {\n      value\n    }\n    description:field(key:"description") {\n      value\n    }\n    backgroundColor:field(key:"background_color") {\n      value\n    }\n    direction: field(key:"direction") {\n      value\n    }\n    accordion: field(key: "accordion") {\n      reference {\n        ...Accordion\n      }\n    }\n  }\n\n  #graphql\n  #graphql\n  fragment ImageGridWithHeaderCollection on Collection {\n    id\n    title\n    handle\n    image {\n      height\n      width\n      url(transform: {maxHeight: 150, maxWidth: 150, crop: CENTER})\n    }\n  }\n\n  fragment ImageGridWithHeader on Metaobject {\n    id\n    type\n    title: field(key: "title") {\n      value\n    }\n    backgroundColor:field(key:"background_color") {\n      value\n    }\n    collections: field(key:"collections") {\n      references(first: 5) {\n        nodes {\n          ...ImageGridWithHeaderCollection\n        }\n      }\n    }\n  }\n\n\n  fragment Components on Metaobject {\n    components: field(key: "components") {\n      value\n      references(first: 5) {\n        nodes {\n          ...Accordion\n          ...CallToAction\n          ...CardMedia\n          ...Features\n          ...Help\n          ...Maps\n          ...SideBySide\n          ...VisualTeaser\n          ...Faq\n          ...ImageGridWithHeader\n        }\n      }\n    }\n  }\n\n  query MetaobjectQuery ($country: CountryCode, $language: LanguageCode, $handle: String!, $type: String!)\n    @inContext(country: $country, language: $language) {\n    metaobject(handle: {handle: $handle, type: $type}) {\n      ...Components\n    }\n  }\n': {
+  '#graphql\n  #graphql\n  #tags\n  #graphql\n  fragment Image on MediaImage {\n    id\n    image {\n      url\n      height\n      width\n    }\n  }\n\n  #graphql\n  fragment BackgroundImage on Metaobject {\n    id\n    type\n    image: field(key: "image") {\n      reference {\n        ...Image\n      }\n    }\n    opacity: field(key:"opacity") {\n      value\n    }\n    style: field(key:"style") {\n      value\n    }\n  }\n\n  #graphql\n  fragment Button on Metaobject {\n    id\n    type\n    text: field(key: "text") {\n      value\n    }\n    linkTo: field(key:"link_to") {\n      value\n    }\n    variant: field(key:"variant") {\n      value\n    }\n    color: field(key:"color") {\n      value\n    }\n  }\n\n  #graphql\n  fragment Overlay on Metaobject {\n    id\n    type\n    color: field(key: "color") {\n      value\n    }\n    opacity: field(key:"opacity") {\n      value\n      type\n    }\n  }\n\n\n  #fragments\n  #graphql\n  #graphql\n  fragment AccordionItem on Metaobject {\n    id\n    type\n    label: field(key: "label") {\n      value\n    }\n    text: field(key:"text") {\n      value\n    }\n  }\n\n  fragment Accordion on Metaobject {\n    id\n    type\n    name: field(key: "name") {\n      value\n    }\n    variant: field(key:"variant") {\n      key\n      value\n    }\n    items: field(key:"items") {\n      references(first: 10) {\n        nodes {\n          ...AccordionItem\n        }\n      }\n    }\n  }\n\n  #graphql\n  fragment CallToAction on Metaobject {\n    id\n    type\n    name: field(key:"name") {\n      value\n    }\n    title: field(key:"title") {\n      value\n    }\n    image: field(key: "image") {\n      reference {\n        ...Image\n      }\n    }\n    color: field(key: "color") {\n      value\n    }\n    button: field(key:"button") {\n      reference {\n        ...Button\n      }\n    }\n    overlay: field(key: "overlay") {\n      reference {\n        ...Overlay\n      }\n    }\n  }\n\n  #graphql\n  fragment CardMedia on Metaobject {\n    id\n    type\n    title: field(key: "title") {\n      value\n    }\n    description: field(key:"description") {\n      value\n    }\n    image: field(key: "image") {\n      reference {\n        ...Image\n      }\n    }\n    flip: field(key:"flip") {\n      value\n    }\n  }\n\n  #graphql\n  #graphql\n  fragment FeatureItem on Metaobject {\n    id\n    type\n    title: field(key: "title") {\n      value\n    }\n    description: field(key: "description") {\n      value\n    }\n    icon: field(key: "icon") {\n      value\n    }\n  }\n\n\n  fragment Features on Metaobject {\n    id\n    type\n    title: field(key: "title") {\n      value\n    }\n    subtitle: field(key: "subtitle") {\n      value\n    }\n    items: field(key: "items") {\n      references(first: 10) {\n        nodes {\n          ...FeatureItem\n        }\n      }\n    }\n  }\n\n  #graphql\n  #graphql\n  #graphql\n  fragment ThemeIcon on Metaobject {\n    id\n    type\n    name: field(key: "name") {\n      value\n    }\n    icon: field(key: "icon") {\n      value\n    }\n    variant: field(key: "variant") {\n      value\n    }\n    color: field(key: "color") {\n      value\n    }\n    radius: field(key: "radius") {\n      value\n    }\n  }\n\n\n  fragment HelpItem on Metaobject {\n    id\n    type\n    title: field(key: "title") {\n      value\n    }\n    description: field(key: "description") {\n      value\n    }\n    themeIcon: field(key: "theme_icon") {\n      reference {\n        ...ThemeIcon\n      }\n    }\n    backgroundColor: field(key: "background_color") {\n      value\n    }\n  }\n\n\n  fragment Help on Metaobject {\n    id\n    type\n    name: field(key: "name") {\n      value\n    }\n    title: field(key: "title") {\n      value\n    }\n    items: field(key: "items") {\n      references(first: 10) {\n        nodes {\n          ...HelpItem\n        }\n      }\n    }\n    backgroundColor: field(key: "background_color") {\n      value\n    }\n  }\n\n  #graphql\n  fragment Maps on Metaobject {\n    id\n    type\n    url: field(key: "url") {\n      value\n    }\n  }\n\n  #graphql\n  fragment SideBySide on Metaobject {\n    id\n    type\n    title: field(key:"title") {\n      value\n    }\n    text: field(key: "text") {\n      value\n    }\n  }\n\n  #graphql\n  fragment VisualTeaser on Metaobject {\n    id\n    type\n    title: field(key: "title") {\n      value\n    }\n    subtitle: field(key: "subtitle") {\n      value\n    }\n    height:field(key:"height") {\n      value\n    }\n    backgroundColor:field(key:"background_color") {\n      value\n    }\n    fontColor: field(key:"font_color") {\n      value\n    }\n    justify: field(key:"justify") {\n      value\n    }\n    backgroundImage: field(key:"background_image") {\n      reference {\n        ...BackgroundImage\n      }\n    }\n    subbutton: field(key:"subbutton") {\n      reference {\n        ...Button\n      }\n    }\n  }\n\n  #graphql\n  fragment Faq on Metaobject {\n    id\n    type\n    title: field(key: "title") {\n      value\n    }\n    description:field(key:"description") {\n      value\n    }\n    backgroundColor:field(key:"background_color") {\n      value\n    }\n    direction: field(key:"direction") {\n      value\n    }\n    accordion: field(key: "accordion") {\n      reference {\n        ...Accordion\n      }\n    }\n  }\n\n  #graphql\n  #graphql\n  fragment ImageGridWithHeaderCollection on Collection {\n    id\n    title\n    description\n    handle\n    image {\n      height\n      width\n      url(transform: {maxHeight: 150, maxWidth: 150, crop: CENTER})\n    }\n  }\n\n  fragment ImageGridWithHeader on Metaobject {\n    id\n    type\n    title: field(key: "title") {\n      value\n    }\n    fromColor: field(key:"from_color") {\n      value\n    }\n    toColor: field(key:"to_color") {\n      value\n    }\n    button: field(key:"button") {\n      reference {\n        ...Button\n      }\n    }\n    collections: field(key:"collections") {\n      references(first: 5) {\n        nodes {\n          ...ImageGridWithHeaderCollection\n        }\n      }\n    }\n  }\n\n\n  fragment Components on Metaobject {\n    components: field(key: "components") {\n      value\n      references(first: 5) {\n        nodes {\n          ...Accordion\n          ...CallToAction\n          ...CardMedia\n          ...Features\n          ...Help\n          ...Maps\n          ...SideBySide\n          ...VisualTeaser\n          ...Faq\n          ...ImageGridWithHeader\n        }\n      }\n    }\n  }\n\n  query MetaobjectQuery ($country: CountryCode, $language: LanguageCode, $handle: String!, $type: String!)\n    @inContext(country: $country, language: $language) {\n    metaobject(handle: {handle: $handle, type: $type}) {\n      ...Components\n    }\n  }\n': {
     return: MetaobjectQueryQuery;
     variables: MetaobjectQueryQueryVariables;
   };
@@ -6018,7 +6075,7 @@ interface GeneratedQueryTypes {
     return: StoreCollectionsQuery;
     variables: StoreCollectionsQueryVariables;
   };
-  '#graphql\n  #graphql\n  #tags\n  #graphql\n  fragment Image on MediaImage {\n    id\n    image {\n      url\n      height\n      width\n    }\n  }\n\n  #graphql\n  fragment BackgroundImage on Metaobject {\n    id\n    type\n    image: field(key: "image") {\n      reference {\n        ...Image\n      }\n    }\n    opacity: field(key:"opacity") {\n      value\n    }\n    style: field(key:"style") {\n      value\n    }\n  }\n\n  #graphql\n  fragment Button on Metaobject {\n    id\n    type\n    text: field(key: "text") {\n      value\n    }\n    linkTo: field(key:"link_to") {\n      value\n    }\n    variant: field(key:"variant") {\n      value\n    }\n    color: field(key:"color") {\n      value\n    }\n  }\n\n  #graphql\n  fragment Overlay on Metaobject {\n    id\n    type\n    color: field(key: "color") {\n      value\n    }\n    opacity: field(key:"opacity") {\n      value\n      type\n    }\n  }\n\n\n  #fragments\n  #graphql\n  #graphql\n  fragment AccordionItem on Metaobject {\n    id\n    type\n    label: field(key: "label") {\n      value\n    }\n    text: field(key:"text") {\n      value\n    }\n  }\n\n  fragment Accordion on Metaobject {\n    id\n    type\n    name: field(key: "name") {\n      value\n    }\n    variant: field(key:"variant") {\n      key\n      value\n    }\n    items: field(key:"items") {\n      references(first: 10) {\n        nodes {\n          ...AccordionItem\n        }\n      }\n    }\n  }\n\n  #graphql\n  fragment CallToAction on Metaobject {\n    id\n    type\n    name: field(key:"name") {\n      value\n    }\n    title: field(key:"title") {\n      value\n    }\n    image: field(key: "image") {\n      reference {\n        ...Image\n      }\n    }\n    color: field(key: "color") {\n      value\n    }\n    button: field(key:"button") {\n      reference {\n        ...Button\n      }\n    }\n    overlay: field(key: "overlay") {\n      reference {\n        ...Overlay\n      }\n    }\n  }\n\n  #graphql\n  fragment CardMedia on Metaobject {\n    id\n    type\n    title: field(key: "title") {\n      value\n    }\n    description: field(key:"description") {\n      value\n    }\n    image: field(key: "image") {\n      reference {\n        ...Image\n      }\n    }\n    flip: field(key:"flip") {\n      value\n    }\n  }\n\n  #graphql\n  #graphql\n  fragment FeatureItem on Metaobject {\n    id\n    type\n    title: field(key: "title") {\n      value\n    }\n    description: field(key: "description") {\n      value\n    }\n    icon: field(key: "icon") {\n      value\n    }\n  }\n\n\n  fragment Features on Metaobject {\n    id\n    type\n    title: field(key: "title") {\n      value\n    }\n    subtitle: field(key: "subtitle") {\n      value\n    }\n    items: field(key: "items") {\n      references(first: 10) {\n        nodes {\n          ...FeatureItem\n        }\n      }\n    }\n  }\n\n  #graphql\n  #graphql\n  #graphql\n  fragment ThemeIcon on Metaobject {\n    id\n    type\n    name: field(key: "name") {\n      value\n    }\n    icon: field(key: "icon") {\n      value\n    }\n    variant: field(key: "variant") {\n      value\n    }\n    color: field(key: "color") {\n      value\n    }\n    radius: field(key: "radius") {\n      value\n    }\n  }\n\n\n  fragment HelpItem on Metaobject {\n    id\n    type\n    title: field(key: "title") {\n      value\n    }\n    description: field(key: "description") {\n      value\n    }\n    themeIcon: field(key: "theme_icon") {\n      reference {\n        ...ThemeIcon\n      }\n    }\n    backgroundColor: field(key: "background_color") {\n      value\n    }\n  }\n\n\n  fragment Help on Metaobject {\n    id\n    type\n    name: field(key: "name") {\n      value\n    }\n    title: field(key: "title") {\n      value\n    }\n    items: field(key: "items") {\n      references(first: 10) {\n        nodes {\n          ...HelpItem\n        }\n      }\n    }\n    backgroundColor: field(key: "background_color") {\n      value\n    }\n  }\n\n  #graphql\n  fragment Maps on Metaobject {\n    id\n    type\n    url: field(key: "url") {\n      value\n    }\n  }\n\n  #graphql\n  fragment SideBySide on Metaobject {\n    id\n    type\n    title: field(key:"title") {\n      value\n    }\n    text: field(key: "text") {\n      value\n    }\n  }\n\n  #graphql\n  fragment VisualTeaser on Metaobject {\n    id\n    type\n    title: field(key: "title") {\n      value\n    }\n    subtitle: field(key: "subtitle") {\n      value\n    }\n    height:field(key:"height") {\n      value\n    }\n    backgroundColor:field(key:"background_color") {\n      value\n    }\n    fontColor: field(key:"font_color") {\n      value\n    }\n    justify: field(key:"justify") {\n      value\n    }\n    backgroundImage: field(key:"background_image") {\n      reference {\n        ...BackgroundImage\n      }\n    }\n    subbutton: field(key:"subbutton") {\n      reference {\n        ...Button\n      }\n    }\n  }\n\n  #graphql\n  fragment Faq on Metaobject {\n    id\n    type\n    title: field(key: "title") {\n      value\n    }\n    description:field(key:"description") {\n      value\n    }\n    backgroundColor:field(key:"background_color") {\n      value\n    }\n    direction: field(key:"direction") {\n      value\n    }\n    accordion: field(key: "accordion") {\n      reference {\n        ...Accordion\n      }\n    }\n  }\n\n  #graphql\n  #graphql\n  fragment ImageGridWithHeaderCollection on Collection {\n    id\n    title\n    handle\n    image {\n      height\n      width\n      url(transform: {maxHeight: 150, maxWidth: 150, crop: CENTER})\n    }\n  }\n\n  fragment ImageGridWithHeader on Metaobject {\n    id\n    type\n    title: field(key: "title") {\n      value\n    }\n    backgroundColor:field(key:"background_color") {\n      value\n    }\n    collections: field(key:"collections") {\n      references(first: 5) {\n        nodes {\n          ...ImageGridWithHeaderCollection\n        }\n      }\n    }\n  }\n\n\n  #graphql\n  fragment Translations on Metaobject {\n    handle\n    value: field(key: "value") {\n      value\n    }\n  }\n\n\n  fragment Page on Page {\n    id\n    title\n    body\n    seo {\n      description\n      title\n    }\n    components: metafield(namespace: "custom", key: "components") {\n      references(first: 10) {\n        nodes {\n          ...Accordion\n          ...CallToAction\n          ...CardMedia\n          ...Features\n          ...Help\n          ...Maps\n          ...SideBySide\n          ...VisualTeaser\n          ...Faq\n          ...ImageGridWithHeader\n        }\n      }\n    }\n\n    header: metafield(namespace: "booking", key: "header") {\n      reference {\n        ...Accordion\n        ...CallToAction\n        ...CardMedia\n        ...Features\n        ...Help\n        ...Maps\n        ...SideBySide\n        ...VisualTeaser\n        ...Faq\n        ...ImageGridWithHeader\n      }\n    }\n\n    translations: metafield(namespace: "booking", key: "translations") {\n      references(first: 250) {\n        nodes {\n          ...Translations\n        }\n      }\n    }\n\n    options: metafield(namespace: "custom", key: "options") {\n      references(first: 10) {\n        nodes {\n          ...Accordion\n          ...CallToAction\n          ...CardMedia\n          ...Features\n          ...Help\n          ...Maps\n          ...SideBySide\n          ...VisualTeaser\n          ...Faq\n          ...ImageGridWithHeader\n        }\n      }\n    }\n  }\n\n  query Page(\n    $language: LanguageCode,\n    $country: CountryCode,\n    $handle: String!\n  )\n  @inContext(language: $language, country: $country) {\n    page(handle: $handle) {\n      ...Page\n    }\n  }\n': {
+  '#graphql\n  #graphql\n  #tags\n  #graphql\n  fragment Image on MediaImage {\n    id\n    image {\n      url\n      height\n      width\n    }\n  }\n\n  #graphql\n  fragment BackgroundImage on Metaobject {\n    id\n    type\n    image: field(key: "image") {\n      reference {\n        ...Image\n      }\n    }\n    opacity: field(key:"opacity") {\n      value\n    }\n    style: field(key:"style") {\n      value\n    }\n  }\n\n  #graphql\n  fragment Button on Metaobject {\n    id\n    type\n    text: field(key: "text") {\n      value\n    }\n    linkTo: field(key:"link_to") {\n      value\n    }\n    variant: field(key:"variant") {\n      value\n    }\n    color: field(key:"color") {\n      value\n    }\n  }\n\n  #graphql\n  fragment Overlay on Metaobject {\n    id\n    type\n    color: field(key: "color") {\n      value\n    }\n    opacity: field(key:"opacity") {\n      value\n      type\n    }\n  }\n\n\n  #fragments\n  #graphql\n  #graphql\n  fragment AccordionItem on Metaobject {\n    id\n    type\n    label: field(key: "label") {\n      value\n    }\n    text: field(key:"text") {\n      value\n    }\n  }\n\n  fragment Accordion on Metaobject {\n    id\n    type\n    name: field(key: "name") {\n      value\n    }\n    variant: field(key:"variant") {\n      key\n      value\n    }\n    items: field(key:"items") {\n      references(first: 10) {\n        nodes {\n          ...AccordionItem\n        }\n      }\n    }\n  }\n\n  #graphql\n  fragment CallToAction on Metaobject {\n    id\n    type\n    name: field(key:"name") {\n      value\n    }\n    title: field(key:"title") {\n      value\n    }\n    image: field(key: "image") {\n      reference {\n        ...Image\n      }\n    }\n    color: field(key: "color") {\n      value\n    }\n    button: field(key:"button") {\n      reference {\n        ...Button\n      }\n    }\n    overlay: field(key: "overlay") {\n      reference {\n        ...Overlay\n      }\n    }\n  }\n\n  #graphql\n  fragment CardMedia on Metaobject {\n    id\n    type\n    title: field(key: "title") {\n      value\n    }\n    description: field(key:"description") {\n      value\n    }\n    image: field(key: "image") {\n      reference {\n        ...Image\n      }\n    }\n    flip: field(key:"flip") {\n      value\n    }\n  }\n\n  #graphql\n  #graphql\n  fragment FeatureItem on Metaobject {\n    id\n    type\n    title: field(key: "title") {\n      value\n    }\n    description: field(key: "description") {\n      value\n    }\n    icon: field(key: "icon") {\n      value\n    }\n  }\n\n\n  fragment Features on Metaobject {\n    id\n    type\n    title: field(key: "title") {\n      value\n    }\n    subtitle: field(key: "subtitle") {\n      value\n    }\n    items: field(key: "items") {\n      references(first: 10) {\n        nodes {\n          ...FeatureItem\n        }\n      }\n    }\n  }\n\n  #graphql\n  #graphql\n  #graphql\n  fragment ThemeIcon on Metaobject {\n    id\n    type\n    name: field(key: "name") {\n      value\n    }\n    icon: field(key: "icon") {\n      value\n    }\n    variant: field(key: "variant") {\n      value\n    }\n    color: field(key: "color") {\n      value\n    }\n    radius: field(key: "radius") {\n      value\n    }\n  }\n\n\n  fragment HelpItem on Metaobject {\n    id\n    type\n    title: field(key: "title") {\n      value\n    }\n    description: field(key: "description") {\n      value\n    }\n    themeIcon: field(key: "theme_icon") {\n      reference {\n        ...ThemeIcon\n      }\n    }\n    backgroundColor: field(key: "background_color") {\n      value\n    }\n  }\n\n\n  fragment Help on Metaobject {\n    id\n    type\n    name: field(key: "name") {\n      value\n    }\n    title: field(key: "title") {\n      value\n    }\n    items: field(key: "items") {\n      references(first: 10) {\n        nodes {\n          ...HelpItem\n        }\n      }\n    }\n    backgroundColor: field(key: "background_color") {\n      value\n    }\n  }\n\n  #graphql\n  fragment Maps on Metaobject {\n    id\n    type\n    url: field(key: "url") {\n      value\n    }\n  }\n\n  #graphql\n  fragment SideBySide on Metaobject {\n    id\n    type\n    title: field(key:"title") {\n      value\n    }\n    text: field(key: "text") {\n      value\n    }\n  }\n\n  #graphql\n  fragment VisualTeaser on Metaobject {\n    id\n    type\n    title: field(key: "title") {\n      value\n    }\n    subtitle: field(key: "subtitle") {\n      value\n    }\n    height:field(key:"height") {\n      value\n    }\n    backgroundColor:field(key:"background_color") {\n      value\n    }\n    fontColor: field(key:"font_color") {\n      value\n    }\n    justify: field(key:"justify") {\n      value\n    }\n    backgroundImage: field(key:"background_image") {\n      reference {\n        ...BackgroundImage\n      }\n    }\n    subbutton: field(key:"subbutton") {\n      reference {\n        ...Button\n      }\n    }\n  }\n\n  #graphql\n  fragment Faq on Metaobject {\n    id\n    type\n    title: field(key: "title") {\n      value\n    }\n    description:field(key:"description") {\n      value\n    }\n    backgroundColor:field(key:"background_color") {\n      value\n    }\n    direction: field(key:"direction") {\n      value\n    }\n    accordion: field(key: "accordion") {\n      reference {\n        ...Accordion\n      }\n    }\n  }\n\n  #graphql\n  #graphql\n  fragment ImageGridWithHeaderCollection on Collection {\n    id\n    title\n    description\n    handle\n    image {\n      height\n      width\n      url(transform: {maxHeight: 150, maxWidth: 150, crop: CENTER})\n    }\n  }\n\n  fragment ImageGridWithHeader on Metaobject {\n    id\n    type\n    title: field(key: "title") {\n      value\n    }\n    fromColor: field(key:"from_color") {\n      value\n    }\n    toColor: field(key:"to_color") {\n      value\n    }\n    button: field(key:"button") {\n      reference {\n        ...Button\n      }\n    }\n    collections: field(key:"collections") {\n      references(first: 5) {\n        nodes {\n          ...ImageGridWithHeaderCollection\n        }\n      }\n    }\n  }\n\n\n\n  fragment Page on Page {\n    id\n    title\n    body\n    seo {\n      description\n      title\n    }\n    components: metafield(namespace: "custom", key: "components") {\n      references(first: 10) {\n        nodes {\n          ...Accordion\n          ...CallToAction\n          ...CardMedia\n          ...Features\n          ...Help\n          ...Maps\n          ...SideBySide\n          ...VisualTeaser\n          ...Faq\n          ...ImageGridWithHeader\n        }\n      }\n    }\n\n    header: metafield(namespace: "booking", key: "header") {\n      reference {\n        ...Accordion\n        ...CallToAction\n        ...CardMedia\n        ...Features\n        ...Help\n        ...Maps\n        ...SideBySide\n        ...VisualTeaser\n        ...Faq\n        ...ImageGridWithHeader\n      }\n    }\n\n    options: metafield(namespace: "custom", key: "options") {\n      references(first: 10) {\n        nodes {\n          ...Accordion\n          ...CallToAction\n          ...CardMedia\n          ...Features\n          ...Help\n          ...Maps\n          ...SideBySide\n          ...VisualTeaser\n          ...Faq\n          ...ImageGridWithHeader\n        }\n      }\n    }\n  }\n\n  query Page(\n    $language: LanguageCode,\n    $country: CountryCode,\n    $handle: String!\n  )\n  @inContext(language: $language, country: $country) {\n    page(handle: $handle) {\n      ...Page\n    }\n  }\n': {
     return: PageQuery;
     variables: PageQueryVariables;
   };
