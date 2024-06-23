@@ -1,21 +1,4 @@
 interface Resources {
-  "artists": {
-    "profession_placeholder": "Alle professioner",
-    "profession_label": "Skønhedseksperter profession:",
-    "treatments_placeholder": "Alle behandlinger",
-    "treatments_label": "Behandlinger:",
-    "sorting_by_label": "Sortere skønhedseksperter efter:",
-    "sorting_by_placeholder": "Vælge sortering",
-    "sorting_by_oldest": "Ældest tilføjet",
-    "sorting_by_newest": "Nyeste tilføjet",
-    "sorting_by_name": "Navn",
-    "gender_label": "Skønhedsekspert køn?",
-    "gender_all": "Alle",
-    "gender_men": "Mænd",
-    "gender_woman": "Kvinder",
-    "sorting": "Sortering",
-    "filters": "Filter"
-  },
   "book": {
     "complete_shipping_calculation": "Udgifterne bliver beregnet under købsprocessen",
     "complete_map": "Se adresse på google map",
@@ -72,7 +55,25 @@ interface Resources {
     "continue": "Forsæt",
     "time": "Tid",
     "location": "Lokation",
-    "cart": "Indkøbskurv"
+    "cart": "Indkøbskurv",
+    "show_more": "Vis mere",
+    "show": "Show",
+    "hide": "Skjul",
+    "goto_payment": "Gå til betaling",
+    "location_all_types": "Alle steder",
+    "location_label": "Arbejdslokation?",
+    "location_virtual": "Telefonopkald",
+    "location_destination": "Kører ud til mig",
+    "location_commercial": "Salon",
+    "location_home": "Hjemmefra",
+    "day_reset_button": "Arbejdsdage valg",
+    "day_label": "Skønhedsekspert arbejdsdage?",
+    "city_placeholder": "Alle byer",
+    "city_label": "Vis skønhedseksperter fra byer:",
+    "language_reset_button": "Sprog valg",
+    "language_label": "Skønhedseksperten taler",
+    "price_label": "Pris:",
+    "reset_filters": "Nulstil filtering"
   },
   "index": {
     "treatments_button": "Vis Kategorier",
@@ -107,9 +108,7 @@ interface Resources {
     "about_me": "Om mig",
     "professions": "Professioner",
     "not_active_description": "Din konto er pt. ikke aktiv, men du kan stadig tilgå din profilside, indtil den bliver godkendt.",
-    "not_active_title": "Din konto er inaktiv",
-    "show_more": "Vis mere",
-    "hide": "Skjul"
+    "not_active_title": "Din konto er inaktiv"
   },
   "skills": {
     "scar_treatment": "Ar Behandling",
@@ -140,6 +139,37 @@ interface Resources {
     "editorial_makeup": "Redaktionel Makeup",
     "sfx_makeup": "SFX Makeup",
     "bridal_makeup": "Bryllups Makeup"
+  },
+  "treatments": {
+    "view_profile": "Vis profil",
+    "sort_expensive": "Dyrest",
+    "sort_cheapest": "Billigst",
+    "sort_newest": "Nyeste",
+    "sort_placeholder": "Vælg sortering",
+    "sort_label": "Sortere efter:",
+    "map": "Map",
+    "filter": "Filtre",
+    "cities": "Byer",
+    "beauty_experts": "Skønhedseksperter",
+    "category": "Kategori",
+    "view_treatment": "Vis behandling"
+  },
+  "users": {
+    "profession_placeholder": "Alle professioner",
+    "profession_label": "Skønhedseksperter profession:",
+    "treatments_placeholder": "Alle behandlinger",
+    "treatments_label": "Behandlinger:",
+    "sorting_by_label": "Sortere skønhedseksperter efter:",
+    "sorting_by_placeholder": "Vælge sortering",
+    "sorting_by_oldest": "Ældest tilføjet",
+    "sorting_by_newest": "Nyeste tilføjet",
+    "sorting_by_name": "Navn",
+    "gender_label": "Skønhedsekspert køn?",
+    "gender_all": "Alle",
+    "gender_men": "Mænd",
+    "gender_woman": "Kvinder",
+    "sorting": "Sortering",
+    "filters": "Filter"
   }
 }
 

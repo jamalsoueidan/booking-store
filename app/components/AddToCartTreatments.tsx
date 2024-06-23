@@ -3,9 +3,9 @@ import {type FetcherWithComponents} from '@remix-run/react';
 import {CartForm} from '@shopify/hydrogen';
 import {type CartLineInput} from '@shopify/hydrogen/storefront-api-types';
 import {IconPaywall, IconShoppingCart} from '@tabler/icons-react';
+import {useTranslation} from 'react-i18next';
 import type {CustomerLocation, UserAvailabilitySingle} from '~/lib/api/model';
 import {durationToTime, useDate} from '~/lib/duration';
-import {useTranslations} from '~/providers/Translation';
 
 type AddToCartTreatmentProps = {
   availability: UserAvailabilitySingle;
@@ -20,7 +20,7 @@ export function AddToCartTreatment({
   groupId,
   redirectTo,
 }: AddToCartTreatmentProps) {
-  const {t} = useTranslations();
+  const {t} = useTranslation('global');
   const {format} = useDate();
 
   const lines: Array<CartLineInput> = availability.slot.products.map(

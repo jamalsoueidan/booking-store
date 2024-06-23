@@ -37,7 +37,7 @@ import {PAGE_QUERY} from './routes/pages.$handle';
 import appStyles from './styles/app.css?url';
 
 export const handle: Handle = {
-  i18n: ['footer', 'global'],
+  i18n: ['footer', 'global', 'professions'],
 };
 
 /**

@@ -26,14 +26,18 @@ import {
   IconFilter,
   IconGps,
 } from '@tabler/icons-react';
+import {useTranslation} from 'react-i18next';
 import {AddCityFilter} from '~/components/filters/CityFilter';
 import {AddDayFilter} from '~/components/filters/DayFilter';
 import {AddLocationFilter} from '~/components/filters/LocationFilter';
 import {AddPriceFilter} from '~/components/filters/PriceFilter';
 import {ResetFilter} from '~/components/filters/ResetFilter';
 import {USER_COLLECTION_FILTER} from '~/graphql/fragments/UserCollectionFilter';
-import {TranslationProvider, useTranslations} from '~/providers/Translation';
-import {PAGE_QUERY} from './pages.$handle';
+import {useTranslations} from '~/providers/Translation';
+
+export const handle: Handle = {
+  i18n: ['treatments'],
+};
 
 export const meta: MetaFunction<typeof loader> = ({data}) => {
   return [{title: `BySisters | ${data?.product.title ?? ''}`}];
@@ -80,16 +84,8 @@ export async function loader({params, context}: LoaderFunctionArgs) {
     },
   );
 
-  const {page} = await context.storefront.query(PAGE_QUERY, {
-    variables: {
-      handle: 'treatments',
-    },
-    cache: context.storefront.CacheLong(),
-  });
-
   return json({
     product,
-    page,
     filters: collectionFiltersOnly?.products.filters || [],
   });
 }
@@ -102,10 +98,10 @@ interface PriceRange {
 }
 
 export default function Product() {
-  const {product, page} = useLoaderData<typeof loader>();
+  const {product} = useLoaderData<typeof loader>();
 
   return (
-    <TranslationProvider data={page?.translations}>
+    <>
       <Container size="xl">
         <Header />
         <Stats />
@@ -128,13 +124,13 @@ export default function Product() {
           }}
         />
       </Container>
-    </TranslationProvider>
+    </>
   );
 }
 
 function Header() {
   const {product, filters} = useLoaderData<typeof loader>();
-  const {t} = useTranslations();
+  const {t} = useTranslation(['treatments', 'global']);
   const [searchParams, setSearchParams] = useSearchParams();
   const [opened, {open, close}] = useDisclosure(false);
 
@@ -234,7 +230,7 @@ function Header() {
             leftSection={<IconFilter />}
             rightSection={<IconArrowDown />}
           >
-            {t('treatments_filter')}
+            {t('filter')}
           </Button>
           <Button
             variant="outline"
@@ -246,7 +242,10 @@ function Header() {
             rightSection={<IconGps />}
             visibleFrom="sm"
           >
-            {map === 'hide' ? t('show') : t('hide')} {t('treatments_map')}
+            {map === 'hide'
+              ? t('show', {ns: 'global'})
+              : t('hide', {ns: 'global'})}{' '}
+            {t('map')}
           </Button>
         </Flex>
       </Flex>
@@ -261,14 +260,14 @@ function Header() {
           <AddCityFilter tags={cities} />
           <Select
             size="md"
-            label={t('treatments_sort_label')}
-            placeholder={t('treatments_sort_placeholder')}
+            label={t('sort_label')}
+            placeholder={t('sort_placeholder')}
             onChange={onChangeSort}
             leftSection={<IconArrowsSort />}
             data={[
-              {label: t('treatments_sort_newest'), value: 'newest'},
-              {label: t('treatments_sort_cheapest'), value: 'cheapest'},
-              {label: t('treatments_sort_expensive'), value: 'expensive'},
+              {label: t('sort_newest'), value: 'newest'},
+              {label: t('sort_cheapest'), value: 'cheapest'},
+              {label: t('sort_expensive'), value: 'expensive'},
             ]}
             clearable
           />

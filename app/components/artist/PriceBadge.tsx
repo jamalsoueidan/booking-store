@@ -1,7 +1,7 @@
 import {Group, Text, type TextProps} from '@mantine/core';
 import type {Maybe, MoneyV2} from '@shopify/hydrogen/storefront-api-types';
 import {useMemo} from 'react';
-import {useTranslations} from '~/providers/Translation';
+import {useTranslation} from 'react-i18next';
 
 export function PriceBadge({
   price,
@@ -13,7 +13,7 @@ export function PriceBadge({
   compareAtPrice?: Maybe<Pick<MoneyV2, 'amount' | 'currencyCode'>>;
   options?: string | null;
 } & TextProps) {
-  const {t} = useTranslations();
+  const {t} = useTranslation(['global']);
   const discountString = useMemo(() => {
     if (compareAtPrice?.amount && compareAtPrice?.amount !== '0.0') {
       const discountAmount =
@@ -21,7 +21,7 @@ export function PriceBadge({
       const discountPercentage = Math.abs(
         (discountAmount / parseInt(compareAtPrice?.amount)) * 100,
       );
-      return `${t('price_badge_discount')} ${discountPercentage.toFixed(0)}%`;
+      return `${t('discount')} ${discountPercentage.toFixed(0)}%`;
     }
     return null;
   }, [compareAtPrice?.amount, price.amount, t]);
@@ -29,7 +29,7 @@ export function PriceBadge({
   return (
     <Group gap="xs" justify="flex-end">
       <Text size="sm" {...props}>
-        {options ? t('price_badge_from') : ''} {price.amount} kr
+        {options ? t('from') : ''} {price.amount} kr
       </Text>
       {discountString ? (
         <Text c="green.9" size="sm">

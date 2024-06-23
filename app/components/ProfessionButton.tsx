@@ -38,7 +38,7 @@ export const ProfessionButton = ({
     <UnstyledButton
       className={classes.button}
       component={Link}
-      to={reset ? '/artists' : `/artists?profession=${profession}`}
+      to={reset ? '/users' : `/users?profession=${profession}`}
       data-checked={
         professionSearchParams === profession ||
         (reset && !professionSearchParams)

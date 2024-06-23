@@ -3034,106 +3034,6 @@ export type PredictiveSearchQuery = {
   }>;
 };
 
-export type ArtistsIndexQueryVariables = StorefrontAPI.Exact<{
-  country?: StorefrontAPI.InputMaybe<StorefrontAPI.CountryCode>;
-  language?: StorefrontAPI.InputMaybe<StorefrontAPI.LanguageCode>;
-  first?: StorefrontAPI.InputMaybe<StorefrontAPI.Scalars['Int']['input']>;
-  last?: StorefrontAPI.InputMaybe<StorefrontAPI.Scalars['Int']['input']>;
-  startCursor?: StorefrontAPI.InputMaybe<
-    StorefrontAPI.Scalars['String']['input']
-  >;
-  endCursor?: StorefrontAPI.InputMaybe<
-    StorefrontAPI.Scalars['String']['input']
-  >;
-  query?: StorefrontAPI.InputMaybe<StorefrontAPI.Scalars['String']['input']>;
-  sortKey?: StorefrontAPI.InputMaybe<StorefrontAPI.ArticleSortKeys>;
-  reverse?: StorefrontAPI.InputMaybe<StorefrontAPI.Scalars['Boolean']['input']>;
-}>;
-
-export type ArtistsIndexQuery = {
-  data?: StorefrontAPI.Maybe<{
-    users: {
-      nodes: Array<
-        Pick<StorefrontAPI.Article, 'id' | 'title' | 'tags'> & {
-          user?: StorefrontAPI.Maybe<{
-            reference?: StorefrontAPI.Maybe<
-              Pick<StorefrontAPI.Metaobject, 'id'> & {
-                aboutMe?: StorefrontAPI.Maybe<
-                  Pick<StorefrontAPI.MetaobjectField, 'value'>
-                >;
-                active?: StorefrontAPI.Maybe<
-                  Pick<StorefrontAPI.MetaobjectField, 'value'>
-                >;
-                fullname?: StorefrontAPI.Maybe<
-                  Pick<StorefrontAPI.MetaobjectField, 'value'>
-                >;
-                professions?: StorefrontAPI.Maybe<
-                  Pick<StorefrontAPI.MetaobjectField, 'value'>
-                >;
-                specialties?: StorefrontAPI.Maybe<
-                  Pick<StorefrontAPI.MetaobjectField, 'value'>
-                >;
-                speaks?: StorefrontAPI.Maybe<
-                  Pick<StorefrontAPI.MetaobjectField, 'value'>
-                >;
-                social?: StorefrontAPI.Maybe<
-                  Pick<StorefrontAPI.MetaobjectField, 'value'>
-                >;
-                shortDescription?: StorefrontAPI.Maybe<
-                  Pick<StorefrontAPI.MetaobjectField, 'value'>
-                >;
-                username?: StorefrontAPI.Maybe<
-                  Pick<StorefrontAPI.MetaobjectField, 'value'>
-                >;
-                theme?: StorefrontAPI.Maybe<
-                  Pick<StorefrontAPI.MetaobjectField, 'value'>
-                >;
-                image?: StorefrontAPI.Maybe<{
-                  reference?: StorefrontAPI.Maybe<{
-                    image?: StorefrontAPI.Maybe<
-                      Pick<StorefrontAPI.Image, 'width' | 'height' | 'url'>
-                    >;
-                  }>;
-                }>;
-              }
-            >;
-          }>;
-          collection?: StorefrontAPI.Maybe<{
-            reference?: StorefrontAPI.Maybe<{
-              products: {
-                nodes: Array<
-                  Pick<StorefrontAPI.Product, 'id' | 'title'> & {
-                    featuredImage?: StorefrontAPI.Maybe<
-                      Pick<
-                        StorefrontAPI.Image,
-                        'id' | 'altText' | 'url' | 'width' | 'height'
-                      >
-                    >;
-                  }
-                >;
-                filters: Array<
-                  Pick<StorefrontAPI.Filter, 'id' | 'label'> & {
-                    values: Array<
-                      Pick<
-                        StorefrontAPI.FilterValue,
-                        'label' | 'input' | 'count'
-                      >
-                    >;
-                  }
-                >;
-              };
-            }>;
-          }>;
-        }
-      >;
-      pageInfo: Pick<
-        StorefrontAPI.PageInfo,
-        'hasPreviousPage' | 'hasNextPage' | 'endCursor' | 'startCursor'
-      >;
-    };
-  }>;
-};
-
 export type ArticleQueryVariables = StorefrontAPI.Exact<{
   articleHandle: StorefrontAPI.Scalars['String']['input'];
   blogHandle: StorefrontAPI.Scalars['String']['input'];
@@ -5893,6 +5793,106 @@ export type TreatmentFilterCollectionQuery = {
   }>;
 };
 
+export type ArtistsIndexQueryVariables = StorefrontAPI.Exact<{
+  country?: StorefrontAPI.InputMaybe<StorefrontAPI.CountryCode>;
+  language?: StorefrontAPI.InputMaybe<StorefrontAPI.LanguageCode>;
+  first?: StorefrontAPI.InputMaybe<StorefrontAPI.Scalars['Int']['input']>;
+  last?: StorefrontAPI.InputMaybe<StorefrontAPI.Scalars['Int']['input']>;
+  startCursor?: StorefrontAPI.InputMaybe<
+    StorefrontAPI.Scalars['String']['input']
+  >;
+  endCursor?: StorefrontAPI.InputMaybe<
+    StorefrontAPI.Scalars['String']['input']
+  >;
+  query?: StorefrontAPI.InputMaybe<StorefrontAPI.Scalars['String']['input']>;
+  sortKey?: StorefrontAPI.InputMaybe<StorefrontAPI.ArticleSortKeys>;
+  reverse?: StorefrontAPI.InputMaybe<StorefrontAPI.Scalars['Boolean']['input']>;
+}>;
+
+export type ArtistsIndexQuery = {
+  data?: StorefrontAPI.Maybe<{
+    users: {
+      nodes: Array<
+        Pick<StorefrontAPI.Article, 'id' | 'title' | 'tags'> & {
+          user?: StorefrontAPI.Maybe<{
+            reference?: StorefrontAPI.Maybe<
+              Pick<StorefrontAPI.Metaobject, 'id'> & {
+                aboutMe?: StorefrontAPI.Maybe<
+                  Pick<StorefrontAPI.MetaobjectField, 'value'>
+                >;
+                active?: StorefrontAPI.Maybe<
+                  Pick<StorefrontAPI.MetaobjectField, 'value'>
+                >;
+                fullname?: StorefrontAPI.Maybe<
+                  Pick<StorefrontAPI.MetaobjectField, 'value'>
+                >;
+                professions?: StorefrontAPI.Maybe<
+                  Pick<StorefrontAPI.MetaobjectField, 'value'>
+                >;
+                specialties?: StorefrontAPI.Maybe<
+                  Pick<StorefrontAPI.MetaobjectField, 'value'>
+                >;
+                speaks?: StorefrontAPI.Maybe<
+                  Pick<StorefrontAPI.MetaobjectField, 'value'>
+                >;
+                social?: StorefrontAPI.Maybe<
+                  Pick<StorefrontAPI.MetaobjectField, 'value'>
+                >;
+                shortDescription?: StorefrontAPI.Maybe<
+                  Pick<StorefrontAPI.MetaobjectField, 'value'>
+                >;
+                username?: StorefrontAPI.Maybe<
+                  Pick<StorefrontAPI.MetaobjectField, 'value'>
+                >;
+                theme?: StorefrontAPI.Maybe<
+                  Pick<StorefrontAPI.MetaobjectField, 'value'>
+                >;
+                image?: StorefrontAPI.Maybe<{
+                  reference?: StorefrontAPI.Maybe<{
+                    image?: StorefrontAPI.Maybe<
+                      Pick<StorefrontAPI.Image, 'width' | 'height' | 'url'>
+                    >;
+                  }>;
+                }>;
+              }
+            >;
+          }>;
+          collection?: StorefrontAPI.Maybe<{
+            reference?: StorefrontAPI.Maybe<{
+              products: {
+                nodes: Array<
+                  Pick<StorefrontAPI.Product, 'id' | 'title'> & {
+                    featuredImage?: StorefrontAPI.Maybe<
+                      Pick<
+                        StorefrontAPI.Image,
+                        'id' | 'altText' | 'url' | 'width' | 'height'
+                      >
+                    >;
+                  }
+                >;
+                filters: Array<
+                  Pick<StorefrontAPI.Filter, 'id' | 'label'> & {
+                    values: Array<
+                      Pick<
+                        StorefrontAPI.FilterValue,
+                        'label' | 'input' | 'count'
+                      >
+                    >;
+                  }
+                >;
+              };
+            }>;
+          }>;
+        }
+      >;
+      pageInfo: Pick<
+        StorefrontAPI.PageInfo,
+        'hasPreviousPage' | 'hasNextPage' | 'endCursor' | 'startCursor'
+      >;
+    };
+  }>;
+};
+
 interface GeneratedQueryTypes {
   '#graphql\n  #graphql\n  #graphql\n  fragment ProductCollection on Collection {\n    title\n    handle\n    icon:  metafield(namespace:"custom",  key: "icon") {\n      type\n      value\n    }\n  }\n\n  fragment MoneyProductItem on MoneyV2 {\n    amount\n    currencyCode\n  }\n\n  fragment ProductItem on Product {\n    id\n    title\n    description\n    handle\n    publishedAt\n    featuredImage {\n      id\n      altText\n      url(transform: { maxHeight: 250, maxWidth: 250, crop: CENTER })\n      width\n      height\n    }\n    priceRange {\n      minVariantPrice {\n        ...MoneyProductItem\n      }\n      maxVariantPrice {\n        ...MoneyProductItem\n      }\n    }\n    variants(first: 1) {\n      nodes {\n        id\n        selectedOptions {\n          name\n          value\n        }\n        price {\n          amount\n          currencyCode\n        }\n      }\n    }\n    collections(first:2) {\n      nodes {\n        ...ProductCollection\n      }\n    }\n  }\n\n  query ProductItemById(\n    $country: CountryCode\n    $language: LanguageCode\n    $Id: ID!\n  ) @inContext(country: $country, language: $language) {\n    product(id: $Id) {\n      ...ProductItem\n    }\n  }\n': {
     return: ProductItemByIdQuery;
@@ -5982,10 +5982,6 @@ interface GeneratedQueryTypes {
     return: PredictiveSearchQuery;
     variables: PredictiveSearchQueryVariables;
   };
-  '#graphql\n  #graphql\n  #graphql\n  fragment User on Metaobject {\n    id\n    aboutMe: field(key: "about_me") {\n      value\n    }\n    active: field(key: "active") {\n      value\n    }\n    fullname: field(key: "fullname") {\n      value\n    }\n    professions: field(key: "professions") {\n      value\n    }\n    specialties: field(key: "specialties") {\n      value\n    }\n    speaks: field(key: "speaks") {\n      value\n    }\n    social: field(key: "social") {\n      value\n    }\n    shortDescription: field(key: "short_description") {\n      value\n    }\n    username: field(key: "username") {\n      value\n    }\n    theme: field(key: "theme") {\n      value\n    }\n    image: field(key: "image") {\n      reference {\n        ... on MediaImage {\n          image {\n            width\n            height\n            url(transform: { maxHeight: 250, maxWidth: 250, crop: CENTER })\n          }\n        }\n      }\n    }\n  }\n\n  #graphql\n  fragment UserCollectionFilter on Filter {\n    id\n    label\n    values {\n      label\n      input\n      count\n    }\n  }\n\n  #graphql\n  fragment ArticleUserProduct on Product {\n    id\n    title\n    featuredImage {\n      id\n      altText\n      url(transform: { maxHeight: 250, maxWidth: 250, crop: CENTER })\n      width\n      height\n    }\n  }\n\n\n  fragment ArticleUser on Article {\n    id\n    title\n    tags\n    user: metafield(key: "user", namespace: "booking") {\n      reference {\n        ...User\n      }\n    }\n    collection: metafield(key: "collection", namespace: "booking") {\n      reference {\n        ... on Collection {\n          products(first: 2, sortKey: RELEVANCE, filters: [{productMetafield: {namespace: "booking", key: "hide_from_profile", value: "false"}}, {productMetafield: {namespace: "system", key: "active",value: "true"}}]) {\n            nodes {\n              ...ArticleUserProduct\n            }\n            filters {\n              ...UserCollectionFilter\n            }\n          }\n        }\n      }\n    }\n  }\n\n  query ArtistsIndex(\n    $country: CountryCode\n    $language: LanguageCode\n    $first: Int\n    $last: Int\n    $startCursor: String\n    $endCursor: String\n    $query: String\n    $sortKey: ArticleSortKeys = PUBLISHED_AT\n    $reverse: Boolean = true\n  ) @inContext(country: $country, language: $language) {\n    data: blog(id: "gid://shopify/Blog/105364226375") {\n      users: articles(first: $first, last: $last, before: $startCursor, after: $endCursor, query: $query, sortKey: $sortKey, reverse: $reverse) {\n        nodes {\n          ...ArticleUser\n        }\n        pageInfo {\n          hasPreviousPage\n          hasNextPage\n          endCursor\n          startCursor\n        }\n      }\n    }\n  }\n': {
-    return: ArtistsIndexQuery;
-    variables: ArtistsIndexQueryVariables;
-  };
   '#graphql\n  query Article(\n    $articleHandle: String!\n    $blogHandle: String!\n    $country: CountryCode\n    $language: LanguageCode\n  ) @inContext(language: $language, country: $country) {\n    blog(handle: $blogHandle) {\n      articleByHandle(handle: $articleHandle) {\n        title\n        contentHtml\n        publishedAt\n        author: authorV2 {\n          name\n        }\n        image {\n          id\n          altText\n          url\n          width\n          height\n        }\n        seo {\n          description\n          title\n        }\n      }\n    }\n  }\n': {
     return: ArticleQuery;
     variables: ArticleQueryVariables;
@@ -6049,6 +6045,10 @@ interface GeneratedQueryTypes {
   '#graphql\n  #graphql\n  fragment UserCollectionFilter on Filter {\n    id\n    label\n    values {\n      label\n      input\n      count\n    }\n  }\n\n  query TreatmentFilterCollection(\n    $handle: String!\n    $country: CountryCode\n    $language: LanguageCode\n  ) @inContext(country: $country, language: $language) {\n    collection(handle: $handle) {\n      products(first: 1) {\n        filters {\n          ...UserCollectionFilter\n        }\n      }\n    }\n  }\n': {
     return: TreatmentFilterCollectionQuery;
     variables: TreatmentFilterCollectionQueryVariables;
+  };
+  '#graphql\n  #graphql\n  #graphql\n  fragment User on Metaobject {\n    id\n    aboutMe: field(key: "about_me") {\n      value\n    }\n    active: field(key: "active") {\n      value\n    }\n    fullname: field(key: "fullname") {\n      value\n    }\n    professions: field(key: "professions") {\n      value\n    }\n    specialties: field(key: "specialties") {\n      value\n    }\n    speaks: field(key: "speaks") {\n      value\n    }\n    social: field(key: "social") {\n      value\n    }\n    shortDescription: field(key: "short_description") {\n      value\n    }\n    username: field(key: "username") {\n      value\n    }\n    theme: field(key: "theme") {\n      value\n    }\n    image: field(key: "image") {\n      reference {\n        ... on MediaImage {\n          image {\n            width\n            height\n            url(transform: { maxHeight: 250, maxWidth: 250, crop: CENTER })\n          }\n        }\n      }\n    }\n  }\n\n  #graphql\n  fragment UserCollectionFilter on Filter {\n    id\n    label\n    values {\n      label\n      input\n      count\n    }\n  }\n\n  #graphql\n  fragment ArticleUserProduct on Product {\n    id\n    title\n    featuredImage {\n      id\n      altText\n      url(transform: { maxHeight: 250, maxWidth: 250, crop: CENTER })\n      width\n      height\n    }\n  }\n\n\n  fragment ArticleUser on Article {\n    id\n    title\n    tags\n    user: metafield(key: "user", namespace: "booking") {\n      reference {\n        ...User\n      }\n    }\n    collection: metafield(key: "collection", namespace: "booking") {\n      reference {\n        ... on Collection {\n          products(first: 2, sortKey: RELEVANCE, filters: [{productMetafield: {namespace: "booking", key: "hide_from_profile", value: "false"}}, {productMetafield: {namespace: "system", key: "active",value: "true"}}]) {\n            nodes {\n              ...ArticleUserProduct\n            }\n            filters {\n              ...UserCollectionFilter\n            }\n          }\n        }\n      }\n    }\n  }\n\n  query ArtistsIndex(\n    $country: CountryCode\n    $language: LanguageCode\n    $first: Int\n    $last: Int\n    $startCursor: String\n    $endCursor: String\n    $query: String\n    $sortKey: ArticleSortKeys = PUBLISHED_AT\n    $reverse: Boolean = true\n  ) @inContext(country: $country, language: $language) {\n    data: blog(id: "gid://shopify/Blog/105364226375") {\n      users: articles(first: $first, last: $last, before: $startCursor, after: $endCursor, query: $query, sortKey: $sortKey, reverse: $reverse) {\n        nodes {\n          ...ArticleUser\n        }\n        pageInfo {\n          hasPreviousPage\n          hasNextPage\n          endCursor\n          startCursor\n        }\n      }\n    }\n  }\n': {
+    return: ArtistsIndexQuery;
+    variables: ArtistsIndexQueryVariables;
   };
 }
 

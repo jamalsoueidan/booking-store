@@ -37,9 +37,9 @@ import {LeafletMap} from '~/components/LeafletMap.client';
 import {LocationIcon} from '~/components/LocationIcon';
 import type {CustomerLocationBaseLocationType} from '~/lib/api/model';
 import {useDuration} from '~/lib/duration';
-import {useTranslations} from '~/providers/Translation';
 
 import leafletStyles from 'leaflet/dist/leaflet.css?url';
+import {useTranslation} from 'react-i18next';
 import localLeafletStyles from '~/styles/leaflet.css?url';
 
 export const links: LinksFunction = () => [
@@ -146,7 +146,7 @@ export async function loader({params, request, context}: LoaderFunctionArgs) {
 
 export default function PaginationContent() {
   const {products} = useLoaderData<typeof loader>();
-  const {t} = useTranslations();
+  const {t} = useTranslation();
   const [searchParams] = useSearchParams();
   const map = String(searchParams.get('map'));
 
@@ -219,7 +219,7 @@ function TreatmentProductUser({
 }: {
   product: TreatmentsForCollectionFragment;
 }) {
-  const {t} = useTranslations();
+  const {t} = useTranslation(['treatments', 'professions']);
   const user = product.user?.reference;
 
   if (!user) {
@@ -254,7 +254,7 @@ function TreatmentProductUser({
                     key={p}
                     fw="400"
                   >
-                    {t(`profession_${p}`)}
+                    {t(p, {ns: 'professions'})}
                   </Badge>
                 ))}
               </Flex>
@@ -262,7 +262,7 @@ function TreatmentProductUser({
           </Flex>
           <Flex visibleFrom="sm" align="center">
             <Button variant="outline" c="black" color="gray.3" radius="lg">
-              {t('treatments_view_profile')}
+              {t('view_profile')}
             </Button>
           </Flex>
         </Flex>
@@ -303,7 +303,7 @@ function TreatmentProductUser({
           to={`/${user.username?.value}`}
           w="100%"
         >
-          Vis profil
+          {t('view_profile')}
         </Button>
       </Box>
     </Card>

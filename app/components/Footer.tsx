@@ -48,7 +48,7 @@ export function Footer({
             >
               <Button
                 component={Link}
-                to="/artists"
+                to="/users"
                 size="sm"
                 variant="outline"
                 color="black"

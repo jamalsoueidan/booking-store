@@ -26,19 +26,19 @@ import {getPaginationVariables} from '@shopify/hydrogen';
 import {useTranslation} from 'react-i18next';
 import {Headless} from '~/components/blocks/Headless';
 import {getTags} from '~/lib/tags';
-import {UserCard, USERS_QUERY} from './artists._index';
 import {
   CATEGORIES_COLLECTION_FRAGMENT,
   TreatmentCard,
 } from './categories.($handle)._index';
 import {PAGE_QUERY} from './pages.$handle';
+import {UserCard, USERS_QUERY} from './users._index';
 
 export function shouldRevalidate() {
   return false;
 }
 
 export const handle: Handle = {
-  i18n: ['index', 'professions', 'categories'],
+  i18n: ['index', 'categories'],
 };
 
 export const meta: MetaFunction<typeof loader> = ({data}) => {
@@ -133,7 +133,7 @@ function Header() {
               variant="outline"
               color="orange"
               component={Link}
-              to="/artists"
+              to="/users"
               size="xl"
               radius="md"
               fw="bold"
@@ -208,7 +208,7 @@ function FeaturedArtists() {
               size="lg"
               aria-label="Settings"
               component={Link}
-              to="/artists"
+              to="/users"
               radius="lg"
               rightSection={
                 <IconArrowRight

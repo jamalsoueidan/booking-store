@@ -60,7 +60,7 @@ import {COLLECTION} from './account.services.create';
 import {PAGE_QUERY} from './pages.$handle';
 
 export const handle: Handle = {
-  i18n: ['artists', 'professions'],
+  i18n: ['users', 'professions'],
 };
 
 export const meta: MetaFunction<typeof loader> = ({data}) => {
@@ -132,7 +132,7 @@ function CategoriesAndFilters({
   tags: Record<string, string[]>;
   collection: CategoriesStorefrontQuery['collection'];
 }) {
-  const {t} = useTranslation(['artists', 'professions']);
+  const {t} = useTranslation(['users', 'professions']);
   const [opened, {open, close}] = useDisclosure(false);
   const [searchParams, setSearchParams] = useSearchParams();
 
@@ -240,7 +240,7 @@ function CategoriesAndFilters({
             leftSection={<IconFilter />}
             rightSection={<IconArrowDown />}
           >
-            {t('artists:filters')}
+            {t('users:filters')}
           </Button>
         </Flex>
         <Flex justify="center" gap="md" wrap="wrap">
@@ -287,7 +287,7 @@ function CategoriesAndFilters({
                   rightSection={<IconX />}
                   leftSection={<IconArrowsSort />}
                 >
-                  {t('artists:sorting')}
+                  {t('users:sorting')}
                 </Button>
               ) : null}
               <RemoveLocationFilterButton />
@@ -301,8 +301,8 @@ function CategoriesAndFilters({
                   rightSection={<IconX />}
                   leftSection={<IconGenderFemale />}
                 >
-                  {genderValue === 'woman' && t('artists:gender_woman')}
-                  {genderValue === 'man' && t('artists:gender_men')}
+                  {genderValue === 'woman' && t('users:gender_woman')}
+                  {genderValue === 'man' && t('users:gender_men')}
                 </Button>
               ) : null}
               <RemoveDayFilterButton />
@@ -321,8 +321,8 @@ function CategoriesAndFilters({
           <Select
             size="md"
             value={professionSearchParams}
-            label={t('artists:profession_label')}
-            placeholder={t('artists:profession_placeholder')}
+            label={t('users:profession_label')}
+            placeholder={t('users:profession_placeholder')}
             onChange={onChangeProfession}
             leftSection={<IconNetwork />}
             data={tags['profession'].map((p) => ({
@@ -337,8 +337,8 @@ function CategoriesAndFilters({
           <Select
             size="md"
             value={productSearchParams}
-            label={t('artists:treatments_label')}
-            placeholder={t('artists:treatments_placeholder')}
+            label={t('users:treatments_label')}
+            placeholder={t('users:treatments_placeholder')}
             onChange={onChangeProduct}
             leftSection={<IconServicemark />}
             data={products}
@@ -348,15 +348,15 @@ function CategoriesAndFilters({
           <Select
             size="md"
             value={sortValue}
-            label={t('artists:sorting_by_label')}
+            label={t('users:sorting_by_label')}
             leftSection={<IconArrowsSort />}
-            placeholder={t('artists:sorting_by_placeholder')}
+            placeholder={t('users:sorting_by_placeholder')}
             onChange={onChangeSort}
             data={[
-              {label: t('artists:sorting_by_name'), value: 'title'},
-              {label: t('artists:sorting_by_newest'), value: 'published_at'},
+              {label: t('users:sorting_by_name'), value: 'title'},
+              {label: t('users:sorting_by_newest'), value: 'published_at'},
               {
-                label: t('artists:sorting_by_oldest'),
+                label: t('users:sorting_by_oldest'),
                 value: 'reverse',
               },
             ]}
@@ -368,13 +368,13 @@ function CategoriesAndFilters({
           <div>
             <Group gap="xs" mb="xs">
               <IconGenderFemale />
-              <InputLabel size="md">{t('artists:gender_label')}</InputLabel>
+              <InputLabel size="md">{t('users:gender_label')}</InputLabel>
             </Group>
             <Radio.Group value={genderValue} onChange={onChangeGender}>
               <Stack gap="3px">
-                <Radio value={null!} label={t('artists:gender_all')} />
-                <Radio value="woman" label={t('artists:gender_woman')} />
-                <Radio value="man" label={t('artists:gender_men')} />
+                <Radio value={null!} label={t('users:gender_all')} />
+                <Radio value="woman" label={t('users:gender_woman')} />
+                <Radio value="man" label={t('users:gender_men')} />
               </Stack>
             </Radio.Group>
           </div>

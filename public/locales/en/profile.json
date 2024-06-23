@@ -11,7 +11,5 @@
   "about_me": "About Me",
   "professions": "Professions",
   "not_active_description": "Your account is currently inactive, but you can still access your profile page until it is approved.",
-  "not_active_title": "Your Account is Inactive",
-  "show_more": "Show more",
-  "hide": "Hide"
+  "not_active_title": "Your Account is Inactive"
 }

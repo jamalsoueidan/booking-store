@@ -1,10 +1,10 @@
 import {Button} from '@mantine/core';
 import {useSearchParams} from '@remix-run/react';
 import {IconX} from '@tabler/icons-react';
-import {useTranslations} from '~/providers/Translation';
+import {useTranslation} from 'react-i18next';
 
 export function ResetFilter() {
-  const {t} = useTranslations();
+  const {t} = useTranslation(['global']);
   const [searchParams, setSearchParams] = useSearchParams();
   const keysToKeep = ['direction', 'cursor', 'map'];
 
@@ -40,7 +40,7 @@ export function ResetFilter() {
       size="xl"
       rightSection={<IconX />}
     >
-      {t('filter_reset')}
+      {t('reset_filters')}
     </Button>
   );
 }
