@@ -35,7 +35,6 @@ import {
 import {Suspense, type ReactNode} from 'react';
 import {useTranslation} from 'react-i18next';
 import {useLanguage} from '~/hooks/useLanguage';
-import {useTranslations} from '~/providers/Translation';
 import {type loader} from '~/root';
 import {Footer} from './Footer';
 import logo from '/Artboard4.svg';
@@ -240,7 +239,7 @@ function AuthSection() {
 
 function MobilNavbar({toggle}: {toggle: () => void}) {
   const data = useLoaderData<typeof loader>();
-  const {t} = useTranslations();
+  const {t} = useTranslation('global');
 
   return (
     <>

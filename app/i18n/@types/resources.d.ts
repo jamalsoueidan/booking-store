@@ -71,7 +71,8 @@ interface Resources {
     "to": "Til",
     "continue": "Forsæt",
     "time": "Tid",
-    "location": "Lokation"
+    "location": "Lokation",
+    "cart": "Indkøbskurv"
   },
   "index": {
     "treatments_button": "Vis Kategorier",
@@ -90,7 +91,7 @@ interface Resources {
     "makeup_artist": "Makeupartist",
     "hair_stylist": "Frisør",
     "esthetician": "Kosmetolog",
-    "nail_technicia": "Negletekniker",
+    "nail_technician": "Negletekniker",
     "all": "Alle"
   },
   "profile": {
@@ -107,7 +108,7 @@ interface Resources {
     "professions": "Professioner",
     "not_active_description": "Din konto er pt. ikke aktiv, men du kan stadig tilgå din profilside, indtil den bliver godkendt.",
     "not_active_title": "Din konto er inaktiv",
-    "show_more": "Show more",
+    "show_more": "Vis mere",
     "hide": "Skjul"
   },
   "skills": {
