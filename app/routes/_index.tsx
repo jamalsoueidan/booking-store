@@ -100,7 +100,6 @@ export async function loader({context, request}: LoaderFunctionArgs) {
 export default function Homepage() {
   const {page} = useLoaderData<typeof loader>();
 
-  console.log(page);
   return (
     <>
       <Header />

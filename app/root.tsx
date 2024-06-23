@@ -32,6 +32,7 @@ import {
 import {useEffect, type ReactNode} from 'react';
 import favicon from './assets/favicon.svg';
 import {CustomAnalytics} from './components/CustomAnalytics';
+import {LanguageDetector} from './components/LanguageDetector';
 import {LayoutWrapper} from './components/LayoutWrapper';
 import appStyles from './styles/app.css?url';
 
@@ -177,6 +178,7 @@ export function Layout({children}: {children: ReactNode}) {
               ) : (
                 children
               )}
+              <LanguageDetector />
             </ModalsProvider>
           </MantineProvider>
         </DirectionProvider>
