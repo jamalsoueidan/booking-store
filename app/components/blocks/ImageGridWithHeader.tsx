@@ -10,7 +10,6 @@ import {
   Title,
   UnstyledButton,
   getGradient,
-  rem,
   useMantineTheme,
 } from '@mantine/core';
 import {Link} from '@remix-run/react';
@@ -42,10 +41,7 @@ export function ImageGridWithHeader({
         {title ? (
           <H2 gradients={{from: '#9030ed', to: '#e71b7c'}}>{title}</H2>
         ) : null}
-        <SimpleGrid
-          cols={{base: 2, sm: 3, md: 5}}
-          spacing={{base: 'lg', sm: rem(50)}}
-        >
+        <SimpleGrid cols={{base: 2, sm: 3, md: 5}} spacing="lg">
           {items?.map((item) => {
             const title = `https://placehold.co/400x600?text=${item.title}`;
 
@@ -55,32 +51,31 @@ export function ImageGridWithHeader({
                 component={Link}
                 to={`categories/${item.handle}`}
               >
-                <Stack>
+                <Stack gap="xs">
                   <AspectRatio>
-                    <Image
-                      src={item.image?.url}
-                      radius="xl"
-                      fallbackSrc={`${title}`}
-                      loading="lazy"
-                    />
+                    <Image src={item.image?.url} radius="md" loading="lazy" />
                   </AspectRatio>
-
-                  <Title
-                    order={3}
-                    c="black"
-                    fw="500"
-                    style={{textDecoration: 'none'}}
-                  >
-                    {item.title}
-                  </Title>
-                  <Text>{item.description}</Text>
+                  <Stack gap="4px">
+                    <Title
+                      order={3}
+                      c="black"
+                      fw="500"
+                      ta="center"
+                      style={{textDecoration: 'none'}}
+                    >
+                      {item.title}
+                    </Title>
+                    <Text fz="sm" ta="center">
+                      {item.description}
+                    </Text>
+                  </Stack>
                 </Stack>
               </UnstyledButton>
             );
           })}
         </SimpleGrid>
         {button ? (
-          <Container size="xl">
+          <Container size="xl" mt="lg">
             <Flex justify="center">
               <Button
                 variant={button?.variant?.value || 'outline'}
