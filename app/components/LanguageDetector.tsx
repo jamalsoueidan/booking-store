@@ -1,4 +1,4 @@
-import {ActionIcon, Card, Flex, Modal, rem, Title} from '@mantine/core';
+import {ActionIcon, Card, Flex, Modal, Stack, Title} from '@mantine/core';
 import {AE, DK, US} from 'country-flag-icons/react/1x1';
 import {useEffect, useState} from 'react';
 import {useTranslation} from 'react-i18next';
@@ -49,34 +49,40 @@ export const LanguageDetector = () => {
           withBorder
           onClick={() => changeLanguage(getNewUrl('https://www.bysisters.dk'))}
         >
-          <ActionIcon size={rem(100)} radius={rem(100)} bg="transparent">
-            <DK style={{width: '100px', height: '100px'}} />
-          </ActionIcon>
-          <Title fw="500" ta="center">
-            Dansk
-          </Title>
+          <Stack gap="xs">
+            <ActionIcon size="100%" radius="100%" bg="transparent">
+              <DK style={{width: '100%', height: '100%'}} />
+            </ActionIcon>
+            <Title fw="500" ta="center" fz="100%">
+              Dansk
+            </Title>
+          </Stack>
         </Card>
         <Card
           withBorder
           onClick={() => changeLanguage(getNewUrl('https://en.bysisters.dk'))}
         >
-          <ActionIcon size={rem(100)} radius={rem(100)} bg="transparent">
-            <US style={{width: '100px', height: '100px'}} />
-          </ActionIcon>
-          <Title fw="500" ta="center">
-            English
-          </Title>
+          <Stack gap="xs">
+            <ActionIcon size="100%" radius="100%" bg="transparent">
+              <US style={{width: '100%', height: '100%'}} />
+            </ActionIcon>
+            <Title fw="500" ta="center" fz="100%">
+              English
+            </Title>
+          </Stack>
         </Card>
         <Card
           withBorder
           onClick={() => changeLanguage(getNewUrl('https://ar.bysisters.dk'))}
         >
-          <ActionIcon size={rem(100)} radius={rem(100)} bg="transparent">
-            <AE style={{width: '100px', height: '100px'}} />
-          </ActionIcon>
-          <Title fw="400" ta="center">
-            عربي
-          </Title>
+          <Stack gap="xs">
+            <ActionIcon size="100%" radius="100%" bg="transparent">
+              <AE style={{width: '100%', height: '100%'}} />
+            </ActionIcon>
+            <Title fw="400" ta="center" fz="100%">
+              عربي
+            </Title>
+          </Stack>
         </Card>
       </Flex>
     </Modal>
