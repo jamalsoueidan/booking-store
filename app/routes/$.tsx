@@ -193,8 +193,8 @@ function AboutMe() {
                 </Title>
                 <Spoiler
                   maxHeight={54}
-                  showLabel={t('show_more', {ns: 'profile'})}
-                  hideLabel={t('hide', {ns: 'profile'})}
+                  showLabel={t('show_more', {ns: 'global'})}
+                  hideLabel={t('hide', {ns: 'global'})}
                 >
                   <div
                     dangerouslySetInnerHTML={{
