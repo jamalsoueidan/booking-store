@@ -1,4 +1,4 @@
-import {Button} from '@mantine/core';
+import {Button, Container, rem} from '@mantine/core';
 import {Form, Outlet, useLoaderData} from '@remix-run/react';
 import {json, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
 import {AccountButton} from '~/components/account/AccountButton';
@@ -28,7 +28,7 @@ export default function EditAddress() {
   const {product} = useLoaderData<typeof loader>();
 
   return (
-    <>
+    <Container size="md" my={{base: rem(80), sm: rem(100)}}>
       <AccountTitle linkBack="/account/services" heading={product.title}>
         <AccountButton
           to={`/account/services/${product.productId}`}
@@ -63,6 +63,6 @@ export default function EditAddress() {
       <AccountContent>
         <Outlet context={{product}} />
       </AccountContent>
-    </>
+    </Container>
   );
 }

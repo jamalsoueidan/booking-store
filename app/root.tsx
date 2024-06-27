@@ -29,11 +29,14 @@ import {
   type LoaderFunctionArgs,
   type SerializeFrom,
 } from '@shopify/remix-oxygen';
+import {type CustomerDetailsQuery} from 'customer-accountapi.generated';
 import {useEffect, type ReactNode} from 'react';
 import favicon from './assets/favicon.svg';
 import {CustomAnalytics} from './components/CustomAnalytics';
 import {LanguageDetector} from './components/LanguageDetector';
 import {LayoutWrapper} from './components/LayoutWrapper';
+import {ModalAccount} from './components/ModalAccount';
+import {CUSTOMER_DETAILS_QUERY} from './graphql/customer-account/CustomerDetailsQuery';
 import appStyles from './styles/app.css?url';
 
 export const handle: Handle = {
@@ -91,7 +94,12 @@ export async function loader({context}: LoaderFunctionArgs) {
   const {storefront, customerAccount, cart, env} = context;
   const publicStoreDomain = context.env.PUBLIC_STORE_DOMAIN;
 
-  const isLoggedInPromise = customerAccount.isLoggedIn();
+  const isLoggedInPromise = await customerAccount.isLoggedIn();
+  let customer: CustomerDetailsQuery | undefined = undefined;
+  if (isLoggedInPromise) {
+    const {data} = await context.customerAccount.query(CUSTOMER_DETAILS_QUERY);
+    customer = data;
+  }
   const cartPromise = cart.get();
 
   // defer the footer query (below the fold)
@@ -115,6 +123,7 @@ export async function loader({context}: LoaderFunctionArgs) {
     footer: footerPromise,
     header: await headerPromise,
     isLoggedIn: isLoggedInPromise,
+    customer,
     publicStoreDomain,
     shop: getShopAnalytics({
       storefront,
@@ -145,8 +154,14 @@ export function Layout({children}: {children: ReactNode}) {
 
   return (
     <html
-      lang={data.i18n.language}
-      dir={data.i18n.language === 'AR' ? 'rtl' : 'ltr'}
+      lang={data && data.i18n ? data.i18n?.language : 'da'}
+      dir={
+        data && data.i18n
+          ? data.i18n?.language === 'AR'
+            ? 'rtl'
+            : 'ltr'
+          : 'rtl'
+      }
     >
       <head>
         <meta charSet="utf-8" />
@@ -163,9 +178,7 @@ export function Layout({children}: {children: ReactNode}) {
           <MantineProvider>
             <NavigationProgress />
             <ModalsProvider>
-              {!path.includes('/account/') &&
-              !path.includes('/book/') &&
-              data?.cart ? (
+              {!path.includes('/book/') && data?.cart ? (
                 <Analytics.Provider
                   cart={data.cart}
                   shop={data.shop}
@@ -180,6 +193,7 @@ export function Layout({children}: {children: ReactNode}) {
               )}
               <LanguageDetector />
             </ModalsProvider>
+            <ModalAccount customer={data.customer} />
           </MantineProvider>
         </DirectionProvider>
         <ScrollRestoration nonce={nonce} />

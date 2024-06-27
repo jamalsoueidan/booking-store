@@ -1,8 +1,10 @@
 import {parseWithZod} from '@conform-to/zod';
 import {
+  Container,
   Flex,
   InputBase,
   Radio,
+  rem,
   Stack,
   Text,
   TextInput,
@@ -26,7 +28,7 @@ import {SubmitButton} from '~/components/form/SubmitButton';
 import {getBookingShopifyApi} from '~/lib/api/bookingShopifyApi';
 import {CustomerPayoutAccountType} from '~/lib/api/model';
 import {customerPayoutAccountCreateBody} from '~/lib/zod/bookingShopifyApi';
-import {isMobilePay} from './account.payouts';
+import {isMobilePay} from './business.payouts';
 
 const schema = customerPayoutAccountCreateBody;
 
@@ -95,7 +97,7 @@ export default function AccountPayoutsSettings() {
   const payoutType = useInputControl(fields.payoutType);
 
   return (
-    <>
+    <Container size="md" my={{base: rem(80), sm: rem(100)}}>
       <AccountTitle linkBack="../" heading="Opret overførsel metode" />
 
       <AccountContent>
@@ -180,6 +182,6 @@ export default function AccountPayoutsSettings() {
           </Stack>
         </Form>
       </AccountContent>
-    </>
+    </Container>
   );
 }

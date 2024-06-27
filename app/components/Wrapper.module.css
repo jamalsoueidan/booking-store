@@ -1,6 +1,6 @@
 .padding {
-  padding-top: 30px;
-  padding-bottom: 30px;
+  padding-top: 25px;
+  padding-bottom: 25px;
 
   @media (min-width: $mantine-breakpoint-sm) {
     padding-top: 50px;
@@ -9,8 +9,8 @@
 }
 
 .margin {
-  margin-top: 30px;
-  margin-bottom: 30px;
+  margin-top: 25px;
+  margin-bottom: 25px;
 
   @media (min-width: $mantine-breakpoint-sm) {
     margin-top: 50px;

@@ -3,6 +3,7 @@ import {
   Box,
   Divider,
   Flex,
+  Group,
   ScrollArea,
   Title,
   type TitleProps,
@@ -22,9 +23,9 @@ export function AccountTitle({
       <Flex
         direction="column"
         gap={{base: 'sm', md: 'lg'}}
-        p={{base: 'xs', md: 'xl'}}
+        p={{base: 'xs', md: 'sm'}}
       >
-        <Flex direction="row" align="center">
+        <Group gap="0">
           {linkBack ? (
             <ActionIcon
               variant="transparent"
@@ -47,7 +48,7 @@ export function AccountTitle({
           >
             {heading}
           </Title>
-        </Flex>
+        </Group>
         {children ? (
           <ScrollArea type="auto" h="52px">
             <Flex gap="md" direction="row">
@@ -56,7 +57,6 @@ export function AccountTitle({
           </ScrollArea>
         ) : null}
       </Flex>
-      <Divider />
     </Box>
   );
 }

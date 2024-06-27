@@ -1,4 +1,74 @@
 interface Resources {
+  "account": {
+    "business_title": "Partner",
+    "business_text": "Gå til business",
+    "business_action": "Gå til business",
+    "orders_title": "Bookinger",
+    "orders_text": "Administrer dine tidligere og kommende bookinger.",
+    "profile_title": "Personlig oplysninger",
+    "profile_text": "Ændre din fornavn eller efternavn.",
+    "address_title": "Adresser",
+    "address_text": "Administrer dine adresser",
+    "partner_title": "Partner",
+    "partner_text": "Start din skønhedskarrier",
+    "partner_action": "Kom igang",
+    "profile": {
+      "title": "Personlige oplysninger",
+      "error": "Fejl",
+      "first_name": "Fornavn",
+      "last_name": "Efternavn",
+      "save": "Gem ændringer"
+    },
+    "orders": {
+      "title": "Ordre",
+      "date": "Dato",
+      "payment": "Betaling",
+      "status": "Status",
+      "total": "Beløb",
+      "empty": "Du har ikke afgivet nogen ordre endnu",
+      "goto_frontpage": "Gå til forside",
+      "id": {
+        "title": "Ordre {{name}}",
+        "bought": "Købt",
+        "products": "Produkter",
+        "image": "Billed",
+        "description": "Beskrivelse",
+        "total": "Total",
+        "summary": "Summary",
+        "discount": "Rabat",
+        "subtotal": "Subtotal",
+        "tax": "Moms",
+        "shipping": "Forsendelse",
+        "no_shipping": "Ingen forsendelse",
+        "treatments": "Behandlinger",
+        "details": "Detaljer",
+        "visiting": "Hos <0>{{name}}</0>",
+        "visiting_deleted": "Skønhedsprofil er slettet",
+        "time": "Tid",
+        "location": "Location",
+        "location_expenses": "Udgifterne bliver beregnet under købsprocessen."
+      }
+    },
+    "address": {
+      "title": "Adresser",
+      "creating": "Opretter...",
+      "create": "Opret adresse",
+      "edit": "Ændre adresse",
+      "saving": "Gemmer...",
+      "save": "Gem",
+      "deleting": "Sletter...",
+      "delete": "Slet",
+      "form": {
+        "first_name": "Fornavn",
+        "last_name": "Efternavn",
+        "address": "Adresse",
+        "zip": "Postnummer",
+        "city": "By",
+        "phone": "Telefonnummer",
+        "default_address": "Indstil som standardadresse"
+      }
+    }
+  },
   "book": {
     "complete_shipping_calculation": "Udgifterne bliver beregnet under købsprocessen",
     "complete_map": "Se adresse på google map",
@@ -42,6 +112,7 @@ interface Resources {
     "english": "Engelsk",
     "arabic": "Arabisk",
     "login": "Log ind",
+    "logout": "Log ud",
     "monday": "Mandag",
     "tuesday": "Tirsdag",
     "wednesday": "Onsdag",
@@ -76,12 +147,12 @@ interface Resources {
     "reset_filters": "Nulstil filtering"
   },
   "index": {
-    "treatments_button": "Vis Kategorier",
-    "treatments_title": "Book unikke [oplevelser og skønhedsoplevelse]",
+    "treatments_button": "Vis skønhedsbehandlinger",
+    "treatments_title": "Book din [skønhedsbehandling] idag",
     "artists_button": "Vis skønhedseksperter",
     "artists_title": "Mød vores [talentfulde eksperter]",
     "left_button": "Find en skønhedsekspert",
-    "right_button": "Vis behandlinger",
+    "right_button": "Vis skønhedsbehandlinger",
     "subtitle": "Vores platform forbinder dig med talentfulde skønhedseksperter inden for alle aspekter af skønhed.",
     "title": "Find [skønhedseksperter] og book deres [behandlinger] direkte på vores platform"
   },

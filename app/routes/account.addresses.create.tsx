@@ -1,9 +1,16 @@
-import {Button, Checkbox, Group, Stack, TextInput} from '@mantine/core';
+import {
+  Button,
+  Checkbox,
+  Container,
+  Group,
+  rem,
+  Stack,
+  TextInput,
+} from '@mantine/core';
 import {
   Form,
   useActionData,
   useNavigation,
-  useOutletContext,
   type MetaFunction,
 } from '@remix-run/react';
 import type {CustomerAddressInput} from '@shopify/hydrogen/customer-account-api-types';
@@ -16,6 +23,7 @@ import type {
   AddressFragment,
   CustomerFragment,
 } from 'customer-accountapi.generated';
+import {useTranslation} from 'react-i18next';
 import {AccountContent} from '~/components/account/AccountContent';
 import {AccountTitle} from '~/components/account/AccountTitle';
 import {CREATE_ADDRESS_MUTATION} from '~/graphql/customer-account/CustomerAddressMutations';
@@ -193,20 +201,20 @@ export async function action({request, context}: ActionFunctionArgs) {
 }
 
 export default function Addresses() {
-  const {customer} = useOutletContext<{customer: CustomerFragment}>();
-  const {defaultAddress, addresses} = customer;
-
+  const {t} = useTranslation(['account'], {keyPrefix: 'address'});
   return (
-    <>
-      <AccountTitle linkBack="/account/addresses" heading="Adresser" />
+    <Container size="md" my={{base: rem(80), sm: rem(100)}}>
+      <AccountTitle linkBack="/account/addresses" heading={t('create')} />
       <AccountContent>
         <NewAddressForm />
       </AccountContent>
-    </>
+    </Container>
   );
 }
 
 function NewAddressForm() {
+  const {t} = useTranslation(['account'], {keyPrefix: 'address'});
+
   const newAddress = {
     address1: '',
     address2: '',
@@ -234,49 +242,11 @@ function NewAddressForm() {
             formMethod="POST"
             type="submit"
           >
-            {stateForMethod('POST') !== 'idle' ? 'Creating' : 'Create'}
+            {stateForMethod('POST') !== 'idle' ? t('creating') : t('create')}
           </Button>
         </div>
       )}
     </AddressForm>
-  );
-}
-
-function ExistingAddresses({
-  addresses,
-  defaultAddress,
-}: Pick<CustomerFragment, 'addresses' | 'defaultAddress'>) {
-  return (
-    <div>
-      <legend>Existing addresses</legend>
-      {addresses.nodes.map((address) => (
-        <AddressForm
-          key={address.id}
-          addressId={address.id}
-          address={address}
-          defaultAddress={defaultAddress}
-        >
-          {({stateForMethod}) => (
-            <div>
-              <Button
-                disabled={stateForMethod('PUT') !== 'idle'}
-                formMethod="PUT"
-                type="submit"
-              >
-                {stateForMethod('PUT') !== 'idle' ? 'Saving' : 'Save'}
-              </Button>
-              <Button
-                disabled={stateForMethod('DELETE') !== 'idle'}
-                formMethod="DELETE"
-                type="submit"
-              >
-                {stateForMethod('DELETE') !== 'idle' ? 'Deleting' : 'Delete'}
-              </Button>
-            </div>
-          )}
-        </AddressForm>
-      ))}
-    </div>
   );
 }
 
@@ -295,6 +265,7 @@ export function AddressForm({
     ) => ReturnType<typeof useNavigation>['state'];
   }) => React.ReactNode;
 }) {
+  const {t} = useTranslation(['account'], {keyPrefix: 'address.form'});
   const {state, formMethod} = useNavigation();
   const action = useActionData<ActionResponse>();
   const error = action?.error?.[addressId];
@@ -305,36 +276,36 @@ export function AddressForm({
         <input type="hidden" name="addressId" defaultValue={addressId} />
         <Group>
           <TextInput
-            label="Fornavn"
-            aria-label="First name"
+            label={t('first_name')}
+            aria-label={t('first_name')}
             autoComplete="given-name"
             defaultValue={address?.firstName ?? ''}
             id="firstName"
             name="firstName"
-            placeholder="First name"
+            placeholder={t('first_name')}
             required
             type="text"
           />
           <TextInput
-            label="Efternavn"
-            aria-label="Last name"
+            label={t('last_name')}
+            aria-label={t('last_name')}
             autoComplete="family-name"
             defaultValue={address?.lastName ?? ''}
             id="lastName"
             name="lastName"
-            placeholder="Last name"
+            placeholder={t('last_name')}
             required
             type="text"
           />
         </Group>
         <TextInput
-          label="Adresse"
-          aria-label="Adresse"
+          label={t('address')}
+          aria-label={t('address')}
           autoComplete="adresse"
           defaultValue={address?.address1 ?? ''}
           id="address1"
           name="address1"
-          placeholder="Adresse"
+          placeholder={t('address')}
           required
           type="text"
         />
@@ -349,23 +320,23 @@ export function AddressForm({
         />
         <Group>
           <TextInput
-            label="Postnummer"
+            label={t('zip')}
             autoComplete="postal-code"
             defaultValue={address?.zip ?? ''}
             id="zip"
             name="zip"
-            placeholder="Postnummer"
+            placeholder={t('zip')}
             required
             type="text"
           />
           <TextInput
-            label="By"
-            aria-label="City"
+            label={t('city')}
+            aria-label={t('city')}
             autoComplete="address-level2"
             defaultValue={address?.city ?? ''}
             id="city"
             name="city"
-            placeholder="By"
+            placeholder={t('city')}
             required
             type="text"
           />
@@ -391,7 +362,7 @@ export function AddressForm({
           maxLength={2}
         />
         <TextInput
-          label="Telefonnummer"
+          label={t('phone')}
           autoComplete="tel"
           defaultValue={address?.phoneNumber ?? ''}
           id="phoneNumber"
@@ -413,7 +384,7 @@ export function AddressForm({
         <div>
           <Checkbox
             defaultChecked={isDefaultAddress}
-            label="Indstil som standardadresse"
+            label={t('default_address')}
             id="defaultAddress"
             name="defaultAddress"
             type="checkbox"

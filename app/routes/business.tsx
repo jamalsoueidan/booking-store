@@ -1,25 +1,22 @@
 import tiptapStyles from '@mantine/tiptap/styles.css?url';
 import {
   Outlet,
-  type ShouldRevalidateFunction,
   useLoaderData,
+  type ShouldRevalidateFunction,
 } from '@remix-run/react';
-import {json, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
+import {parseGid} from '@shopify/hydrogen';
+import {json, redirect, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
 import {type CustomerFragment} from 'customer-accountapi.generated';
 import {useEffect} from 'react';
 import notify, {Toaster} from 'react-hot-toast';
 import {getToast} from 'remix-toast';
 import {CUSTOMER_DETAILS_QUERY} from '~/graphql/customer-account/CustomerDetailsQuery';
+import {getBookingShopifyApi} from '~/lib/api/bookingShopifyApi';
 import {type User} from '~/lib/api/model';
 
 export function links() {
   return [{rel: 'stylesheet', href: tiptapStyles}];
 }
-
-export const handle: Handle = {
-  i18n: ['global', 'account', 'professions'],
-};
-
 export type AccountOutlet = {
   customer: CustomerFragment;
   user?: User | null;
@@ -52,11 +49,20 @@ export async function loader({context, request}: LoaderFunctionArgs) {
     throw new Error('Customer not found');
   }
 
+  if (!data.customer.tags.includes('business')) {
+    return redirect('/account');
+  }
+
+  const {payload} = await getBookingShopifyApi().customerGet(
+    parseGid(data.customer.id).id,
+  );
+
   const {toast} = await getToast(request);
 
   return json(
     {
       customer: data.customer,
+      user: payload,
       toast,
     },
     {
@@ -69,7 +75,7 @@ export async function loader({context, request}: LoaderFunctionArgs) {
 }
 
 export default function Acccount() {
-  const {customer, toast} = useLoaderData<typeof loader>();
+  const {customer, user, toast} = useLoaderData<typeof loader>();
 
   useEffect(() => {
     if (toast) {
@@ -89,7 +95,7 @@ export default function Acccount() {
 
   return (
     <>
-      <Outlet context={{customer}} />
+      <Outlet context={{customer, user}} />
       <Toaster
         position="top-center"
         reverseOrder={false}

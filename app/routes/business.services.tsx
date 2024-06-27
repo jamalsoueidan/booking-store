@@ -1,4 +1,4 @@
-import {Button, Flex, rem, ThemeIcon, Title} from '@mantine/core';
+import {Button, Container, Flex, rem, ThemeIcon, Title} from '@mantine/core';
 import {Link, Outlet, useLoaderData, useOutletContext} from '@remix-run/react';
 
 import {json, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
@@ -29,8 +29,8 @@ export default function AccountServices() {
 
   if (!status.locations) {
     return (
-      <>
-        <AccountTitle heading="Ydelser"></AccountTitle>
+      <Container size="md" my={{base: rem(80), sm: rem(100)}}>
+        <AccountTitle linkBack="/business" heading="Ydelser"></AccountTitle>
         <AccountContent>
           <Flex gap="lg" direction="column" justify="center" align="center">
             <ThemeIcon variant="white" size={rem(100)}>
@@ -52,13 +52,13 @@ export default function AccountServices() {
             </Button>
           </Flex>
         </AccountContent>
-      </>
+      </Container>
     );
   }
 
   if (!status.schedules) {
     return (
-      <>
+      <Container size="md" my={{base: rem(80), sm: rem(100)}}>
         <AccountTitle heading="Ydelser"></AccountTitle>
         <AccountContent>
           <Flex gap="lg" direction="column" justify="center" align="center">
@@ -77,7 +77,7 @@ export default function AccountServices() {
             </Button>
           </Flex>
         </AccountContent>
-      </>
+      </Container>
     );
   }
 

@@ -1,5 +1,6 @@
 import {
   Button,
+  Container,
   Divider,
   Flex,
   rem,
@@ -23,7 +24,7 @@ import {AccountContent} from '~/components/account/AccountContent';
 import {AccountTitle} from '~/components/account/AccountTitle';
 import {getBookingShopifyApi} from '~/lib/api/bookingShopifyApi';
 import {getCustomer} from '~/lib/get-customer';
-import {AccountSchedulesCreate} from './account.schedules.create';
+import {AccountSchedulesCreate} from './business.schedules.create';
 
 export async function loader({context, request}: LoaderFunctionArgs) {
   const customerId = await getCustomer({context});
@@ -76,8 +77,8 @@ export default function AccountSchedulesIndex() {
     ) : null;
 
   return (
-    <>
-      <AccountTitle heading="Vagtplaner">
+    <Container size="md" my={{base: rem(80), sm: rem(100)}}>
+      <AccountTitle linkBack="/business" heading="Vagtplaner">
         <AccountButton
           to="#create"
           data-testid="create-button"
@@ -119,6 +120,6 @@ export default function AccountSchedulesIndex() {
           <AccountSchedulesCreate />
         </MobileModal>
       </AccountContent>
-    </>
+    </Container>
   );
 }

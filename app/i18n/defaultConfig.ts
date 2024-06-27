@@ -1,5 +1,5 @@
 export const i18nDefaultConfig = {
-  debug: true,
+  debug: false,
   react: {
     useSuspense: false,
   },

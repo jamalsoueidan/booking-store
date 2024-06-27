@@ -8,8 +8,10 @@ import {
 import {parseWithZod} from '@conform-to/zod';
 
 import {
+  Container,
   Divider,
   Flex,
+  rem,
   Select,
   Stack,
   Switch,
@@ -178,8 +180,8 @@ export default function AccountServicesCreate() {
   };
 
   return (
-    <>
-      <AccountTitle linkBack="/account/services" heading="Opret en ydelse" />
+    <Container size="md" my={{base: rem(80), sm: rem(100)}}>
+      <AccountTitle linkBack="/business/services" heading="Opret en ydelse" />
       <AccountContent>
         <FormProvider context={form.context}>
           <Form method="post" {...getFormProps(form)}>
@@ -341,7 +343,7 @@ export default function AccountServicesCreate() {
           </Form>
         </FormProvider>
       </AccountContent>
-    </>
+    </Container>
   );
 }
 

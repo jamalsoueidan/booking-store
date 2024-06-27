@@ -1,0 +1,70 @@
+{
+  "business_title": "Partner",
+  "business_text": "Go to business",
+  "business_action": "Go to business",
+  "orders_title": "Bookings",
+  "orders_text": "Manage your past and upcoming bookings.",
+  "profile_title": "Personal Information",
+  "profile_text": "Change your first or last name.",
+  "address_title": "Addresses",
+  "address_text": "Manage your addresses",
+  "partner_title": "Partner",
+  "partner_text": "Start your beauty career",
+  "partner_action": "Get started",
+  "profile": {
+    "title": "Personal Information",
+    "error": "Error",
+    "first_name": "First Name",
+    "last_name": "Last Name",
+    "save": "Save Changes"
+  },
+  "orders": {
+    "title": "Orders",
+    "date": "Date",
+    "payment": "Payment",
+    "status": "Status",
+    "total": "Amount",
+    "empty": "You have not placed any orders yet",
+    "goto_frontpage": "Go to Frontpage",
+    "id": {
+      "title": "Order {{name}}",
+      "bought": "Bought",
+      "products": "Products",
+      "image": "Image",
+      "description": "Description",
+      "total": "Total",
+      "summary": "Summary",
+      "discount": "Discount",
+      "subtotal": "Subtotal",
+      "tax": "Tax",
+      "shipping": "Shipping",
+      "no_shipping": "No shipping",
+      "treatments": "Treatments",
+      "details": "Details",
+      "visiting": "Visiting <0>{{name}}</0>",
+      "visiting_deleted": "Beauty profile deleted",
+      "time": "Time",
+      "location": "Location",
+      "location_expenses": "Expenses will be calculated during the purchase process."
+    }
+  },
+  "address": {
+    "title": "Addresses",
+    "creating": "Creating...",
+    "create": "Create Address",
+    "edit": "Edit Address",
+    "saving": "Saving...",
+    "save": "Save",
+    "deleting": "Deleting...",
+    "delete": "Delete",
+    "form": {
+      "first_name": "First Name",
+      "last_name": "Last Name",
+      "address": "Address",
+      "zip": "Zip Code",
+      "city": "City",
+      "phone": "Phone Number",
+      "default_address": "Set as default address"
+    }
+  }
+}

@@ -10,7 +10,7 @@ import {customerLocationCreateBody} from '~/lib/zod/bookingShopifyApi';
 
 import {getFormProps, getInputProps, useForm} from '@conform-to/react';
 import {parseWithZod} from '@conform-to/zod';
-import {Stack, TextInput} from '@mantine/core';
+import {Container, rem, Stack, TextInput} from '@mantine/core';
 import {redirectWithSuccess} from 'remix-toast';
 import {AccountContent} from '~/components/account/AccountContent';
 import {AccountTitle} from '~/components/account/AccountTitle';
@@ -85,8 +85,11 @@ export default function Component() {
   });
 
   return (
-    <>
-      <AccountTitle linkBack="/account/locations" heading="Opret en lokation" />
+    <Container size="md" my={{base: rem(80), sm: rem(100)}}>
+      <AccountTitle
+        linkBack="/business/locations"
+        heading="Opret en lokation"
+      />
 
       <AccountContent>
         <Form method="POST" {...getFormProps(form)}>
@@ -206,6 +209,6 @@ export default function Component() {
           </Stack>
         </Form>
       </AccountContent>
-    </>
+    </Container>
   );
 }
