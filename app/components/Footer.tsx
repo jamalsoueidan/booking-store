@@ -40,7 +40,10 @@ export function Footer({
     }
   }, []);
 
-  const getNewUrl = (newDomain: string) => `${newDomain}${currentPath}`;
+  const getNewUrl = (newDomain: string) => {
+    localStorage.setItem('languageDecision', 'true');
+    window.location.href = `${newDomain}${currentPath}`;
+  };
 
   return (
     <footer className={classes.footer}>
@@ -129,24 +132,21 @@ export function Footer({
                 <ActionIcon
                   size="xl"
                   variant="transparent"
-                  component={Link}
-                  to={getNewUrl('https://www.bysisters.dk')}
+                  onClick={() => getNewUrl('https://www.bysisters.dk')}
                 >
                   <DK style={{width: rem(32), height: rem(32)}} />
                 </ActionIcon>
                 <ActionIcon
                   size="xl"
                   variant="transparent"
-                  component={Link}
-                  to={getNewUrl('https://en.bysisters.dk')}
+                  onClick={() => getNewUrl('https://en.bysisters.dk')}
                 >
                   <US style={{width: rem(32), height: rem(32)}} />
                 </ActionIcon>
                 <ActionIcon
                   size="xl"
                   variant="transparent"
-                  component={Link}
-                  to={getNewUrl('https://ar.bysisters.dk')}
+                  onClick={() => getNewUrl('https://ar.bysisters.dk')}
                 >
                   <AE style={{width: rem(32), height: rem(32)}} />
                 </ActionIcon>
