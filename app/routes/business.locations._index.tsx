@@ -1,6 +1,7 @@
 import {
   Button,
   Card,
+  Container,
   Flex,
   rem,
   SimpleGrid,
@@ -35,8 +36,8 @@ export default function AccountLocationsIndex() {
   const {locations} = useLoaderData<typeof loader>();
 
   return (
-    <>
-      <AccountTitle heading="Lokationer">
+    <Container size="md" my={{base: rem(80), sm: rem(100)}}>
+      <AccountTitle linkBack="/business" heading="Lokationer">
         <AccountButton
           to={'create'}
           leftSection={<IconPlus size={14} />}
@@ -81,7 +82,7 @@ export default function AccountLocationsIndex() {
           ))}
         </SimpleGrid>
       </AccountContent>
-    </>
+    </Container>
   );
 }
 

@@ -6,7 +6,15 @@ import {
   useForm,
   useInputControl,
 } from '@conform-to/react';
-import {Stack, Text, TextInput, Textarea, Tooltip, rem} from '@mantine/core';
+import {
+  Container,
+  Stack,
+  Text,
+  TextInput,
+  Textarea,
+  Tooltip,
+  rem,
+} from '@mantine/core';
 import {Form, useActionData, useFetcher, useLoaderData} from '@remix-run/react';
 import {parseGid} from '@shopify/hydrogen';
 import {
@@ -64,7 +72,26 @@ export async function action({request, context}: ActionFunctionArgs) {
       aboutMeHtml: convertHTML(submission.value.aboutMe),
     });
 
-    return redirectWithSuccess('/account/dashboard?business=true', {
+    await fetch(
+      `https://${context.env.PUBLIC_STORE_DOMAIN}/admin/api/2024-01/customers/${
+        parseGid(data.customer.id).id
+      }.json`,
+      {
+        method: 'PUT',
+        headers: {
+          'X-Shopify-Access-Token': context.env.PRIVATE_API_ACCESS_TOKEN,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          customer: {
+            id: data.customer.id,
+            tags: 'business',
+          },
+        }),
+      },
+    );
+
+    return redirectWithSuccess('/business', {
       message: 'Du er nu opgraderet til business konto!',
     });
   } catch (error) {
@@ -83,13 +110,8 @@ export async function loader({context, params}: LoaderFunctionArgs) {
     throw new Error('Customer not found');
   }
 
-  const {payload: userIsBusiness} =
-    await getBookingShopifyApi().customerIsBusiness(
-      parseGid(data.customer.id).id,
-    );
-
-  if (userIsBusiness.isBusiness) {
-    return redirect('/account/public');
+  if (data.customer.tags.includes('business')) {
+    return redirect('/business');
   }
 
   const {payload: professionOptions} =
@@ -151,29 +173,31 @@ export default function AccountBusiness() {
   const control = useInputControl(aboutMe);
 
   return (
-    <>
-      <AccountTitle heading="Register selvstændig" />
+    <Container size="md" my={{base: rem(80), sm: rem(100)}}>
+      <AccountTitle
+        linkBack="/account/dashboard"
+        heading="Start din skønhedskarrier"
+      />
 
       <AccountContent>
         <Stack mb="xl">
           <Text>
-            Du er i gang med at registrere dig som selvstændig skønhedsekspert,
-            og vi er begejstrede for at have dig med på holdet. Ved at blive en
-            del af BySisters, træder du ind i et fællesskab, hvor passion for
+            Du er i gang med at starte din skønhedskarrier på vores platform, og
+            vi er begejstrede for at have dig med på holdet. Ved at blive en del
+            af BySisters, træder du ind i et fællesskab, hvor passion for
             skønhed og ekspertise mødes for at skabe unikke oplevelser for
-            kunderne.{' '}
+            kunderne.
           </Text>
           <Text>
             For at fuldføre din registrering, bedes du udfylde de nødvendige
-            oplysninger om dig selv. Vi ser frem til at se, hvordan du vil
-            berige vores fællesskab med din ekspertise og passion for skønhed.
-            Velkommen til bySisters – sammen skaber vi skønhed!
+            oplysninger om dig selv.
           </Text>
         </Stack>
         <FormProvider context={form.context}>
           <Form method="post" {...getFormProps(form)}>
             <Stack gap="md">
               <TextInput
+                size="lg"
                 label="Vælge en profilnavn"
                 {...getInputProps(username, {type: 'text'})}
                 onChange={onChangeUsername}
@@ -208,6 +232,7 @@ export default function AccountBusiness() {
               />
 
               <MultiTags
+                size="lg"
                 field={professions}
                 data={professionOptions}
                 label="Professioner"
@@ -252,7 +277,7 @@ export default function AccountBusiness() {
           </Form>
         </FormProvider>
       </AccountContent>
-    </>
+    </Container>
   );
 }
 

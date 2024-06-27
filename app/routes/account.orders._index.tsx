@@ -1,10 +1,10 @@
-import {Button, Card, Flex, Table, Title} from '@mantine/core';
+import {Button, Card, Container, Flex, rem, Table, Title} from '@mantine/core';
 import {Link, useLoaderData, type MetaFunction} from '@remix-run/react';
 import {
-  Money,
-  Pagination,
   flattenConnection,
   getPaginationVariables,
+  Money,
+  Pagination,
 } from '@shopify/hydrogen';
 import {json, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
 import {IconHeartHandshake} from '@tabler/icons-react';
@@ -12,11 +12,11 @@ import type {
   CustomerOrdersFragment,
   OrderItemFragment,
 } from 'customer-accountapi.generated';
-import {format} from 'date-fns';
-import {da} from 'date-fns/locale';
+import {useTranslation} from 'react-i18next';
 import {AccountContent} from '~/components/account/AccountContent';
 import {AccountTitle} from '~/components/account/AccountTitle';
 import {CUSTOMER_ORDERS_QUERY} from '~/graphql/customer-account/CustomerOrdersQuery';
+import {useDate} from '~/lib/duration';
 
 export const meta: MetaFunction = () => {
   return [{title: 'Købshistorik'}];
@@ -51,26 +51,22 @@ export async function loader({request, context}: LoaderFunctionArgs) {
 }
 
 export default function Orders() {
+  const {t} = useTranslation(['account'], {keyPrefix: 'orders'});
   const {customer} = useLoaderData<{customer: CustomerOrdersFragment}>();
   const {orders} = customer;
 
   return (
-    <>
-      <AccountTitle
-        heading={
-          <>
-            Orders <small>({orders.nodes.length})</small>
-          </>
-        }
-      />
+    <Container size="md" my={{base: rem(80), sm: rem(100)}}>
+      <AccountTitle linkBack="/account/dashboard" heading={t('title')} />
       <AccountContent>
         <OrdersTable orders={orders} />
       </AccountContent>
-    </>
+    </Container>
   );
 }
 
 function OrdersTable({orders}: Pick<CustomerOrdersFragment, 'orders'>) {
+  const {t} = useTranslation(['account', 'global'], {keyPrefix: 'orders'});
   return orders?.nodes.length ? (
     <Pagination connection={orders}>
       {({nodes, isLoading, PreviousLink, NextLink}) => {
@@ -78,16 +74,16 @@ function OrdersTable({orders}: Pick<CustomerOrdersFragment, 'orders'>) {
           <>
             <Flex justify="center">
               <Button component={PreviousLink} loading={isLoading}>
-                ↑ Hent tidligere
+                ↑ {t('global:pagination_previous_button')}
               </Button>
             </Flex>
             <Table>
               <Table.Thead>
                 <Table.Tr>
-                  <Table.Th>Dato</Table.Th>
-                  <Table.Th>Betaling</Table.Th>
-                  <Table.Th>Status</Table.Th>
-                  <Table.Th>Beløb</Table.Th>
+                  <Table.Th>{t('date')}</Table.Th>
+                  <Table.Th>{t('payment')}</Table.Th>
+                  <Table.Th>{t('status')}</Table.Th>
+                  <Table.Th>{t('total')}</Table.Th>
                   <Table.Th></Table.Th>
                 </Table.Tr>
               </Table.Thead>
@@ -101,7 +97,7 @@ function OrdersTable({orders}: Pick<CustomerOrdersFragment, 'orders'>) {
             <br />
             <Flex justify="center">
               <Button component={NextLink} loading={isLoading}>
-                Hent flere ↓
+                {t('global:pagination_next_button')} ↓
               </Button>
             </Flex>
           </>
@@ -114,15 +110,16 @@ function OrdersTable({orders}: Pick<CustomerOrdersFragment, 'orders'>) {
 }
 
 function EmptyOrders() {
+  const {t} = useTranslation(['account', 'global'], {keyPrefix: 'orders'});
   return (
     <Card>
       <Flex direction="column" align="center">
         <IconHeartHandshake size="25%" opacity={0.7} stroke={1} />
         <Title order={3} fw={500} mb="lg">
-          Du har ikke afgivet nogen ordre endnu
+          {t('empty')}
         </Title>
         <Button component={Link} to="/">
-          Gå til forside →
+          {t('goto_frontpage')} →
         </Button>
       </Flex>
     </Card>
@@ -130,12 +127,11 @@ function EmptyOrders() {
 }
 
 function OrderItem({order}: {order: OrderItemFragment}) {
+  const {format} = useDate();
   const fulfillmentStatus = flattenConnection(order.fulfillments)[0]?.status;
   return (
     <Table.Tr>
-      <Table.Td>
-        {format(new Date(order.processedAt), 'PPPP', {locale: da})}
-      </Table.Td>
+      <Table.Td>{format(new Date(order.processedAt), 'PPPP')}</Table.Td>
       <Table.Td>{order.financialStatus}</Table.Td>
       <Table.Td>{fulfillmentStatus && <p>{fulfillmentStatus}</p>}</Table.Td>
       <Table.Td>

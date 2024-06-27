@@ -1,9 +1,10 @@
-import {Button, Group} from '@mantine/core';
+import {Button, Container, Group, rem} from '@mantine/core';
 import {useOutletContext, useParams, type MetaFunction} from '@remix-run/react';
 import {parseGid} from '@shopify/hydrogen';
 import type {CustomerAddressInput} from '@shopify/hydrogen/customer-account-api-types';
 import {
   json,
+  redirect,
   type ActionFunctionArgs,
   type LoaderFunctionArgs,
 } from '@shopify/remix-oxygen';
@@ -11,6 +12,7 @@ import type {
   AddressFragment,
   CustomerFragment,
 } from 'customer-accountapi.generated';
+import {useTranslation} from 'react-i18next';
 import {AccountContent} from '~/components/account/AccountContent';
 import {AccountTitle} from '~/components/account/AccountTitle';
 import {
@@ -181,14 +183,7 @@ export async function action({request, context}: ActionFunctionArgs) {
             throw new Error('Customer address delete failed.');
           }
 
-          return json(
-            {error: null, deletedAddress: addressId},
-            {
-              headers: {
-                'Set-Cookie': await context.session.commit(),
-              },
-            },
-          );
+          return redirect('/account/addresses');
         } catch (error: unknown) {
           if (error instanceof Error) {
             return json(
@@ -250,6 +245,7 @@ export async function action({request, context}: ActionFunctionArgs) {
 }
 
 export default function Addresses() {
+  const {t} = useTranslation(['account'], {keyPrefix: 'address'});
   const {customer} = useOutletContext<{customer: CustomerFragment}>();
   const {defaultAddress, addresses} = customer;
   const {id} = useParams();
@@ -261,8 +257,8 @@ export default function Addresses() {
   }
 
   return (
-    <>
-      <AccountTitle linkBack="/account/addresses" heading="Adresser" />
+    <Container size="md" my={{base: rem(80), sm: rem(100)}}>
+      <AccountTitle linkBack="/account/addresses" heading={t('edit')} />
       <AccountContent>
         <AddressForm
           key={address.id}
@@ -277,19 +273,21 @@ export default function Addresses() {
                 formMethod="PUT"
                 type="submit"
               >
-                {stateForMethod('PUT') !== 'idle' ? 'Saving' : 'Save'}
+                {stateForMethod('PUT') !== 'idle' ? t('saving') : t('save')}
               </Button>
               <Button
                 disabled={stateForMethod('DELETE') !== 'idle'}
                 formMethod="DELETE"
                 type="submit"
               >
-                {stateForMethod('DELETE') !== 'idle' ? 'Deleting' : 'Delete'}
+                {stateForMethod('DELETE') !== 'idle'
+                  ? t('deleting')
+                  : t('delete')}
               </Button>
             </Group>
           )}
         </AddressForm>
       </AccountContent>
-    </>
+    </Container>
   );
 }

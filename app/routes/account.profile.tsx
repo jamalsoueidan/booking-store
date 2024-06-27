@@ -1,4 +1,4 @@
-import {Blockquote, Stack, TextInput} from '@mantine/core';
+import {Blockquote, Container, rem, Stack, TextInput} from '@mantine/core';
 import {
   Form,
   useActionData,
@@ -12,6 +12,7 @@ import {
   type LoaderFunctionArgs,
 } from '@shopify/remix-oxygen';
 import type {CustomerFragment} from 'customer-accountapi.generated';
+import {useTranslation} from 'react-i18next';
 import {AccountContent} from '~/components/account/AccountContent';
 import {AccountTitle} from '~/components/account/AccountTitle';
 import {SubmitButton} from '~/components/form/SubmitButton';
@@ -71,7 +72,7 @@ export async function action({request, context}: ActionFunctionArgs) {
     }
 
     if (!data?.customerUpdate?.customer) {
-      throw new Error('Customer profile update failed.');
+      throw new Error(data?.customerUpdate?.userErrors[0].message);
     }
 
     return json(
@@ -99,18 +100,19 @@ export async function action({request, context}: ActionFunctionArgs) {
 }
 
 export default function AccountProfile() {
+  const {t} = useTranslation(['account'], {keyPrefix: 'profile'});
   const account = useOutletContext<{customer: CustomerFragment}>();
   const action = useActionData<ActionResponse>();
   const customer = action?.customer ?? account?.customer;
 
   return (
-    <>
-      <AccountTitle heading="Personlige oplysninger" />
+    <Container size="md" my={{base: rem(80), sm: rem(100)}}>
+      <AccountTitle heading={t('title')} linkBack="/account/dashboard" />
 
       <AccountContent>
         {action?.error ? (
           <Blockquote color="red" my="md" data-testid="required-notification">
-            <strong>Fejl:</strong>
+            <strong>{t('error')}:</strong>
             <br />
             {action.error}
           </Blockquote>
@@ -119,26 +121,24 @@ export default function AccountProfile() {
         <Form method="post">
           <Stack>
             <TextInput
-              label="Fornavn"
+              label={t('first_name')}
               id="firstName"
               name="firstName"
               type="text"
               autoComplete="given-name"
-              placeholder="Fornavn"
-              aria-label="Fornavn"
+              aria-label={t('first_name')}
               defaultValue={customer.firstName ?? ''}
               required
               minLength={2}
               data-testid="first-name-input"
             />
             <TextInput
-              label="Efternavn"
+              label={t('last_name')}
               id="lastName"
               name="lastName"
               type="text"
               autoComplete="family-name"
-              placeholder="Efternavn"
-              aria-label="Efternavn"
+              aria-label={t('last_name')}
               defaultValue={customer.lastName ?? ''}
               required
               minLength={2}
@@ -146,11 +146,11 @@ export default function AccountProfile() {
             />
 
             <div>
-              <SubmitButton>Gem ændringer</SubmitButton>
+              <SubmitButton>{t('save')}</SubmitButton>
             </div>
           </Stack>
         </Form>
       </AccountContent>
-    </>
+    </Container>
   );
 }

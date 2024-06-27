@@ -1,4 +1,4 @@
-import {Button, Modal, ScrollArea, Table} from '@mantine/core';
+import {Button, Container, Modal, rem, ScrollArea, Table} from '@mantine/core';
 import {useMediaQuery} from '@mantine/hooks';
 import {
   Form,
@@ -66,8 +66,8 @@ export default function AccountBookings() {
   ));
 
   return (
-    <>
-      <AccountTitle heading="Ferie">
+    <Container size="md" my={{base: rem(80), sm: rem(100)}}>
+      <AccountTitle linkBack="/business" heading="Ferie">
         <AccountButton to={'create'}>Tilføj ferie</AccountButton>
       </AccountTitle>
       <AccountContent>
@@ -97,6 +97,6 @@ export default function AccountBookings() {
           <Outlet context={{closeModal}} />
         </Modal.Content>
       </Modal.Root>
-    </>
+    </Container>
   );
 }

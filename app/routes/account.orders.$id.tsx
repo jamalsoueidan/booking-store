@@ -1,6 +1,7 @@
 import {
   Badge,
   Card,
+  Container,
   Flex,
   rem,
   SimpleGrid,
@@ -13,8 +14,7 @@ import {Link, useLoaderData, type MetaFunction} from '@remix-run/react';
 import {flattenConnection, Image, Money, parseGid} from '@shopify/hydrogen';
 import {json, redirect, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
 import type {OrderLineItemFullFragment} from 'customer-accountapi.generated';
-import {format} from 'date-fns';
-import {da} from 'date-fns/locale';
+import {Trans, useTranslation} from 'react-i18next';
 import {AccountContent} from '~/components/account/AccountContent';
 import {AccountTitle} from '~/components/account/AccountTitle';
 import {isEqualGid} from '~/data/isEqualGid';
@@ -25,6 +25,7 @@ import type {
   CustomerOrderGetResponse,
   CustomerOrderLineItem,
 } from '~/lib/api/model';
+import {useDate} from '~/lib/duration';
 import {getCustomer} from '~/lib/get-customer';
 
 export const meta: MetaFunction<typeof loader> = ({data}) => {
@@ -92,6 +93,9 @@ export async function loader({params, context, request}: LoaderFunctionArgs) {
 }
 
 export default function OrderRoute() {
+  const {t} = useTranslation(['account'], {keyPrefix: 'orders.id'});
+  const {format} = useDate();
+
   const {
     treatmentOrder,
     order,
@@ -110,16 +114,16 @@ export default function OrderRoute() {
   );
 
   return (
-    <>
+    <Container size="md" my={{base: rem(80), sm: rem(100)}}>
       <AccountTitle
         linkBack="/account/orders"
-        heading={<>Ordre {order.name}</>}
+        heading={<>{t('title', {name: order.name})}</>}
       />
 
       <AccountContent>
         <Stack gap="lg">
           <Text c="dimmed" size="sm">
-            Købt {format(new Date(order.processedAt!), 'PPPP', {locale: da})}
+            {t('bought')} {format(new Date(order.processedAt!), 'PPPP')}
             <Badge ml="xs">
               {fulfillmentStatus.length > 0 ? fulfillmentStatus[0].status : '-'}
             </Badge>
@@ -135,14 +139,14 @@ export default function OrderRoute() {
           {productsInOrder.length > 0 ? (
             <Card withBorder>
               <Title order={3} mb="md">
-                Produkter:
+                {t('products')}:
               </Title>
               <Table>
                 <Table.Thead>
                   <Table.Tr>
-                    <Table.Th>Billed:</Table.Th>
-                    <Table.Th>Beskrivelse</Table.Th>
-                    <Table.Th> Total</Table.Th>
+                    <Table.Th visibleFrom="sm">{t('image')}:</Table.Th>
+                    <Table.Th>{t('description')}</Table.Th>
+                    <Table.Th> {t('total')}</Table.Th>
                   </Table.Tr>
                 </Table.Thead>
                 <Table.Tbody>
@@ -157,13 +161,13 @@ export default function OrderRoute() {
           <SimpleGrid cols={{base: 1, md: 2}}>
             <Card shadow="0" padding="md" radius="md" withBorder>
               <Text fw={500} size="lg" mb="md">
-                Summary
+                {t('summary')}
               </Text>
 
               {((discountValue && discountValue.amount) ||
                 discountPercentage) && (
                 <Flex justify="space-between" mb="cs">
-                  <Text>Discounts</Text>
+                  <Text>{t('discount')}</Text>
 
                   {discountPercentage ? (
                     <Text>-{discountPercentage}% OFF</Text>
@@ -174,22 +178,22 @@ export default function OrderRoute() {
               )}
 
               <Flex justify="space-between" mb="xs">
-                <Text>Subtotal</Text>
+                <Text>{t('subtotal')}</Text>
                 <Money data={order.subtotal!} as={Text} />
               </Flex>
               <Flex justify="space-between" mb="xs">
-                <Text>Moms</Text>
+                <Text>{t('tax')}</Text>
                 <Money data={order.totalTax!} as={Text} />
               </Flex>
               <Flex justify="space-between">
-                <Text>Total</Text>
+                <Text>{t('total')}</Text>
                 <Money data={order.totalPrice!} as={Text} />
               </Flex>
             </Card>
             {productsInOrder.length > 0 ? (
               <Card shadow="0" padding="md" radius="md" withBorder>
                 <Text fw={500} size="lg" mb="md">
-                  Forsendelse
+                  {t('shipping')}
                 </Text>
                 {order?.shippingAddress ? (
                   <>
@@ -208,21 +212,21 @@ export default function OrderRoute() {
                     )}
                   </>
                 ) : (
-                  <Text>Ingen forsendelse</Text>
+                  <Text>{t('no_shipping')}</Text>
                 )}
               </Card>
             ) : null}
           </SimpleGrid>
         </Stack>
       </AccountContent>
-    </>
+    </Container>
   );
 }
 
 function OrderLineRow({lineItem}: {lineItem: OrderLineItemFullFragment}) {
   return (
     <Table.Tr>
-      <Table.Td>
+      <Table.Td visibleFrom="sm">
         {lineItem.image && (
           <div>
             <Image data={lineItem.image} width={96} height={96} />
@@ -251,20 +255,21 @@ function TreatmentTable({
   treatmentOrder: CustomerOrder;
   lineItems: OrderLineItemFullFragment[];
 }) {
+  const {t} = useTranslation(['account'], {keyPrefix: 'orders.id'});
   if (treatmentOrder.line_items.length === 0) return null;
 
   return (
     <>
       <Card withBorder>
         <Title order={3} mb="md">
-          Behandlinger
+          {t('treatments')}
         </Title>
         <Table>
           <Table.Thead>
             <Table.Tr>
-              <Table.Th>Billed:</Table.Th>
-              <Table.Th>Detaljer:</Table.Th>
-              <Table.Th>Total</Table.Th>
+              <Table.Th visibleFrom="sm">{t('image')}:</Table.Th>
+              <Table.Th>{t('details')}:</Table.Th>
+              <Table.Th>{t('total')}</Table.Th>
             </Table.Tr>
           </Table.Thead>
           <Table.Tbody>
@@ -295,9 +300,11 @@ function TreatmentLineRow({
   treatmentLineItem: CustomerOrderLineItem;
   lineItem: OrderLineItemFullFragment;
 }) {
+  const {format} = useDate();
+  const {t} = useTranslation(['account'], {keyPrefix: 'orders.id'});
   return (
     <Table.Tr>
-      <Table.Td>
+      <Table.Td visibleFrom="sm">
         <Link to={`/products/`}>
           {lineItem?.image && (
             <div>
@@ -309,36 +316,36 @@ function TreatmentLineRow({
       <Table.Td valign="top" width="100%">
         <Text mb="xs">{treatmentLineItem.title}</Text>
         {treatmentLineItem.user ? (
-          <Text size="sm">
-            <strong>Hos: </strong>{' '}
-            <Link to={`/${treatmentLineItem.user.username}`}>
-              {treatmentLineItem.user?.fullname}
-            </Link>
-          </Text>
+          <Text
+            size="sm"
+            component={Trans}
+            i18nKey="account:orders.id.visiting"
+            values={{name: treatmentLineItem.user.fullname}}
+            components={[
+              <Link to={`/${treatmentLineItem.user.username}`} key={0}>
+                {treatmentLineItem.user.fullname}
+              </Link>,
+            ]}
+          />
         ) : (
-          <Text size="sm">
-            <strong>Hos: </strong> <i>Slettet skønhedsekspert</i>
-          </Text>
+          t('visiting_deleted')
         )}
         <Text size="sm">
-          <strong>Tid:</strong>{' '}
+          <strong>{t('time')}:</strong>{' '}
           {format(
             new Date(treatmentLineItem.properties.from || ''),
             "EEEE 'd.' d'.' LLL 'kl 'HH:mm",
-            {
-              locale: da,
-            },
           )}
         </Text>
 
         {treatmentLineItem.shipping ? (
           <Stack gap={rem(4)}>
             <Text size="sm">
-              <strong>Location:</strong>{' '}
+              <strong>{t('location')}:</strong>{' '}
               {treatmentLineItem.shipping.destination.fullAddress}
             </Text>
             <Text size="xs" c="red" fw={500}>
-              Udgifterne bliver beregnet under købsprocessen.
+              {t('location_expenses')}
               {treatmentLineItem.shipping.cost.value}{' '}
               {treatmentLineItem.shipping.cost.currency}
             </Text>
@@ -346,7 +353,7 @@ function TreatmentLineRow({
         ) : (
           <>
             <Text size="sm">
-              <strong>Location:</strong>{' '}
+              <strong>{t('location')}:</strong>{' '}
               {treatmentLineItem.location?.fullAddress}
             </Text>
           </>

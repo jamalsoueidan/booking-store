@@ -4,7 +4,7 @@ import dayGridPlugin from '@fullcalendar/daygrid';
 import interactionPlugin from '@fullcalendar/interaction';
 import FullCalendar from '@fullcalendar/react';
 import timeGridPlugin from '@fullcalendar/timegrid';
-import {Modal} from '@mantine/core';
+import {Container, Modal, rem} from '@mantine/core';
 import {useMediaQuery} from '@mantine/hooks';
 import {Outlet, useNavigate, useOutlet} from '@remix-run/react';
 import {AccountContent} from '~/components/account/AccountContent';
@@ -37,7 +37,7 @@ export default function AccountBookings() {
   };
 
   return (
-    <>
+    <Container size="md" my={{base: rem(80), sm: rem(100)}}>
       <AccountTitle heading="Bestillinger" />
       <AccountContent>
         <FullCalendar
@@ -168,6 +168,6 @@ export default function AccountBookings() {
           <Outlet context={{closeModal}} />
         </Modal.Content>
       </Modal.Root>
-    </>
+    </Container>
   );
 }

@@ -16,6 +16,7 @@ import {AE, DK, US} from 'country-flag-icons/react/3x2';
 import {useEffect, useState} from 'react';
 import {useTranslation} from 'react-i18next';
 import type {FooterQuery, HeaderQuery} from 'storefrontapi.generated';
+import {useMobile} from '~/hooks/isMobile';
 import {useRootLoaderData} from '~/root';
 import classes from './Footer.module.css';
 import logo from '/logo.avif';
@@ -26,6 +27,7 @@ export function Footer({
 }: FooterQuery & {shop: HeaderQuery['shop']}) {
   const {t} = useTranslation(['footer']);
   const [currentPath, setCurrentPath] = useState('');
+  const isMobile = useMobile();
 
   useEffect(() => {
     // Check if the window object is available (client-side rendering)
@@ -82,11 +84,9 @@ export function Footer({
               </Button>
             </Flex>
           </Stack>
-
           <FooterMenu menu={menu} />
-
           <Stack gap="lg" w={{base: '100%', sm: '20%'}}>
-            <Stack gap="xs">
+            <Stack gap="xs" align={isMobile ? 'center' : undefined}>
               <Text className={classes.title}>{t('social_media')}</Text>
               <Group gap="xs" justify="flex-start">
                 <ActionIcon
@@ -119,7 +119,11 @@ export function Footer({
                 </ActionIcon>
               </Group>
             </Stack>
-            <Stack gap="0">
+            <Stack
+              gap="0"
+              align={isMobile ? 'center' : undefined}
+              mt={isMobile ? 'md' : undefined}
+            >
               <Text className={classes.title}>{t('language')}</Text>
               <Group gap="4px" justify="flex-start">
                 <ActionIcon
@@ -150,7 +154,7 @@ export function Footer({
             </Stack>
           </Stack>
         </Flex>
-        <Text c="dimmed" size="sm" mt="xl">
+        <Text c="dimmed" size="sm" mt="xl" ta={isMobile ? 'center' : undefined}>
           © 2024 BySisters. All rights reserved.
         </Text>
       </Container>
@@ -161,9 +165,13 @@ export function Footer({
 function FooterMenu({menu}: {menu: FooterQuery['menu']}) {
   const {t} = useTranslation(['footer']);
   const {publicStoreDomain} = useRootLoaderData();
-
+  const isMobile = useMobile();
   return (
-    <Stack align="flex-start" gap="xs" w={{base: '100%', sm: '20%'}}>
+    <Stack
+      align={isMobile ? 'center' : 'flex-start'}
+      gap="xs"
+      w={{base: '100%', sm: '20%'}}
+    >
       <Text className={classes.title}>{t('company')}</Text>
       {menu?.items
         .filter(({url}) => url !== null && url !== undefined)

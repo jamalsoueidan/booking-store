@@ -2,6 +2,8 @@ import {
   Badge,
   Button,
   Card,
+  Container,
+  rem,
   SimpleGrid,
   Skeleton,
   Stack,
@@ -22,7 +24,7 @@ import type {
   CustomerPayoutBalanceResponse,
 } from '~/lib/api/model';
 import {getCustomer} from '~/lib/get-customer';
-import {isMobilePay} from './account.payouts';
+import {isMobilePay} from './business.payouts';
 
 export async function loader({context}: LoaderFunctionArgs) {
   const customerId = await getCustomer({context});
@@ -43,8 +45,8 @@ export default function AccountPayoutsIndex() {
   const data = useLoaderData<typeof loader>();
 
   return (
-    <>
-      <AccountTitle heading="Udbetalinger" />
+    <Container size="md" my={{base: rem(80), sm: rem(100)}}>
+      <AccountTitle linkBack="/business" heading="Udbetalinger" />
 
       <AccountContent>
         <Stack gap="xl">
@@ -114,7 +116,7 @@ export default function AccountPayoutsIndex() {
           </Suspense>
         </Stack>
       </AccountContent>
-    </>
+    </Container>
   );
 }
 

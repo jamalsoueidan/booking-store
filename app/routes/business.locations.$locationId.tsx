@@ -4,7 +4,7 @@ import {type LoaderFunctionArgs} from '@shopify/remix-oxygen';
 import {getBookingShopifyApi} from '~/lib/api/bookingShopifyApi';
 import {getCustomer} from '~/lib/get-customer';
 
-import {Button} from '@mantine/core';
+import {Button, Container, rem} from '@mantine/core';
 import {jsonWithSuccess} from 'remix-toast';
 import {AccountButton} from '~/components/account/AccountButton';
 import {AccountContent} from '~/components/account/AccountContent';
@@ -31,8 +31,8 @@ export default function AccountLocationsEdit() {
   const defaultValue = useLoaderData<typeof loader>();
 
   return (
-    <>
-      <AccountTitle linkBack="/account/locations" heading={defaultValue.name}>
+    <Container size="md" my={{base: rem(80), sm: rem(100)}}>
+      <AccountTitle linkBack="/business/locations" heading={defaultValue.name}>
         <AccountButton to={'.'} data-testid="products-button">
           Basic detaljer
         </AccountButton>
@@ -76,6 +76,6 @@ export default function AccountLocationsEdit() {
       <AccountContent>
         <Outlet />
       </AccountContent>
-    </>
+    </Container>
   );
 }

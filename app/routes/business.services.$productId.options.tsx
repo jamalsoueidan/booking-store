@@ -12,7 +12,7 @@ import {
   type SerializeFrom,
 } from '@shopify/remix-oxygen';
 import {getCustomer} from '~/lib/get-customer';
-import {type loader as rootLoader} from './account.services.$productId';
+import {type loader as rootLoader} from './business.services.$productId';
 
 import {
   Accordion,

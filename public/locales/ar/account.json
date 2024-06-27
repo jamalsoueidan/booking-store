@@ -1,0 +1,70 @@
+{
+  "business_title": "شريك",
+  "business_text": "اذهب إلى العمل",
+  "business_action": "اذهب إلى العمل",
+  "orders_title": "الحجوزات",
+  "orders_text": "إدارة حجوزاتك السابقة والقادمة.",
+  "profile_title": "معلومات شخصية",
+  "profile_text": "قم بتغيير اسمك الأول أو الأخير.",
+  "address_title": "العناوين",
+  "address_text": "إدارة عناوينك",
+  "partner_title": "شريك",
+  "partner_text": "ابدأ مسيرتك في مجال الجمال",
+  "partner_action": "ابدأ الآن",
+  "profile": {
+    "title": "معلومات شخصية",
+    "error": "خطأ",
+    "first_name": "الاسم الأول",
+    "last_name": "الاسم الأخير",
+    "save": "حفظ التغييرات"
+  },
+  "orders": {
+    "title": "الطلبات",
+    "date": "التاريخ",
+    "payment": "الدفع",
+    "status": "الحالة",
+    "total": "المبلغ",
+    "empty": "لم تقم بوضع أي طلبات حتى الآن",
+    "goto_frontpage": "اذهب إلى الصفحة الرئيسية",
+    "id": {
+      "title": "طلب {{name}}",
+      "bought": "تم الشراء",
+      "products": "المنتجات",
+      "image": "صورة",
+      "description": "الوصف",
+      "total": "المجموع",
+      "summary": "الملخص",
+      "discount": "الخصم",
+      "subtotal": "الإجمالي الفرعي",
+      "tax": "الضريبة",
+      "shipping": "الشحن",
+      "no_shipping": "لا يوجد شحن",
+      "treatments": "العلاجات",
+      "details": "التفاصيل",
+      "visiting": "زيارة <0>{{name}}</0>",
+      "visiting_deleted": "تم حذف ملف الجمال",
+      "time": "الوقت",
+      "location": "الموقع",
+      "location_expenses": "سيتم حساب النفقات أثناء عملية الشراء."
+    }
+  },
+  "address": {
+    "title": "العناوين",
+    "creating": "إنشاء...",
+    "create": "إنشاء عنوان",
+    "edit": "تعديل العنوان",
+    "saving": "حفظ...",
+    "save": "حفظ",
+    "deleting": "حذف...",
+    "delete": "حذف",
+    "form": {
+      "first_name": "الاسم الأول",
+      "last_name": "الاسم الأخير",
+      "address": "العنوان",
+      "zip": "الرمز البريدي",
+      "city": "المدينة",
+      "phone": "رقم الهاتف",
+      "default_address": "تعيين كعنوان افتراضي"
+    }
+  }
+}

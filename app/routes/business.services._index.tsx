@@ -2,6 +2,7 @@ import {
   ActionIcon,
   Button,
   Card,
+  Container,
   Divider,
   Flex,
   Grid,
@@ -37,8 +38,8 @@ export default function AccountServicesIndex() {
   const {user} = useOutletContext<any>();
 
   return (
-    <>
-      <AccountTitle heading="Ydelser">
+    <Container size="md" my={{base: rem(80), sm: rem(100)}}>
+      <AccountTitle linkBack="/business" heading="Ydelser">
         <AccountButton
           to={'create'}
           leftSection={<IconPlus size={14} />}
@@ -76,10 +77,7 @@ export default function AccountServicesIndex() {
           <Grid align="stretch">
             {products.map((product) => {
               return (
-                <Grid.Col
-                  key={product.productId}
-                  span={{base: 12, md: 6, lg: 4}}
-                >
+                <Grid.Col key={product.productId} span={{base: 12, md: 6}}>
                   <Card
                     padding="sm"
                     radius="md"
@@ -161,6 +159,6 @@ export default function AccountServicesIndex() {
           </Grid>
         )}
       </AccountContent>
-    </>
+    </Container>
   );
 }

@@ -56,7 +56,7 @@ import {
 } from '~/components/filters/LocationFilter';
 import {ProfessionButton} from '~/components/ProfessionButton';
 import {getTags} from '~/lib/tags';
-import {COLLECTION} from './account.services.create';
+import {COLLECTION} from './business.services.create';
 import {PAGE_QUERY} from './pages.$handle';
 
 export const handle: Handle = {

@@ -1,4 +1,4 @@
-import {Card, Stack, Table, Text} from '@mantine/core';
+import {Card, Container, rem, Stack, Table, Text} from '@mantine/core';
 import {defer, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
 import {getCustomer} from '~/lib/get-customer';
 
@@ -16,7 +16,7 @@ import type {
   CustomerPayoutLogResponse,
   Shipping,
 } from '~/lib/api/model';
-import {isMobilePay} from './account.payouts';
+import {isMobilePay} from './business.payouts';
 
 export function isShipping(
   details: CustomerPayoutLogReferenceDocument,
@@ -45,7 +45,7 @@ export default function AccountPayoutsId() {
   const data = useLoaderData<typeof loader>();
 
   return (
-    <>
+    <Container size="md" my={{base: rem(80), sm: rem(100)}}>
       <AccountTitle linkBack="../" heading="Visning af udbetaling" />
 
       <AccountContent>
@@ -54,7 +54,7 @@ export default function AccountPayoutsId() {
           <PayoutLogs data={data.payoutLogs} />
         </Stack>
       </AccountContent>
-    </>
+    </Container>
   );
 }
 
