@@ -27,6 +27,7 @@ import {SubmitButton} from '~/components/form/SubmitButton';
 
 import {parseWithZod} from '@conform-to/zod';
 import {IconCheck, IconExclamationCircle} from '@tabler/icons-react';
+import {useTranslation} from 'react-i18next';
 import {redirectWithSuccess} from 'remix-toast';
 import {type z} from 'zod';
 import {AccountContent} from '~/components/account/AccountContent';
@@ -146,6 +147,7 @@ export async function loader({context, params}: LoaderFunctionArgs) {
 }
 
 export default function AccountBusiness() {
+  const {t} = useTranslation(['account', 'global']);
   const lastResult = useActionData<typeof action>();
   const {professionOptions, defaultValue} = useLoaderData<typeof loader>();
 
@@ -176,29 +178,20 @@ export default function AccountBusiness() {
     <Container size="md" my={{base: rem(80), sm: rem(100)}}>
       <AccountTitle
         linkBack="/account/dashboard"
-        heading="Start din skønhedskarrier"
+        heading={t('account:business.title')}
       />
 
       <AccountContent>
         <Stack mb="xl">
-          <Text>
-            Du er i gang med at starte din skønhedskarrier på vores platform, og
-            vi er begejstrede for at have dig med på holdet. Ved at blive en del
-            af BySisters, træder du ind i et fællesskab, hvor passion for
-            skønhed og ekspertise mødes for at skabe unikke oplevelser for
-            kunderne.
-          </Text>
-          <Text>
-            For at fuldføre din registrering, bedes du udfylde de nødvendige
-            oplysninger om dig selv.
-          </Text>
+          <Text>{t('account:business.description1')}</Text>
+          <Text>{t('account:business.description2')}</Text>
         </Stack>
         <FormProvider context={form.context}>
           <Form method="post" {...getFormProps(form)}>
-            <Stack gap="md">
+            <Stack gap="xl">
               <TextInput
                 size="lg"
-                label="Vælge en profilnavn"
+                label={t('account:business.nickname')}
                 {...getInputProps(username, {type: 'text'})}
                 onChange={onChangeUsername}
                 rightSection={
@@ -222,11 +215,11 @@ export default function AccountBusiness() {
               />
 
               <RadioGroup
-                label="Hvad er dit køn?"
+                label={t('account:business.gender')}
                 field={gender}
                 data={[
-                  {value: 'woman', label: 'Kvinde'},
-                  {value: 'man', label: 'Mand'},
+                  {label: t('global:woman'), value: 'woman'},
+                  {label: t('global:man'), value: 'man'},
                 ]}
                 data-testid="gender-input"
               />
@@ -235,43 +228,56 @@ export default function AccountBusiness() {
                 size="lg"
                 field={professions}
                 data={professionOptions}
-                label="Professioner"
-                placeholder="Vælg professioner"
+                label={t('account:business.profession_label')}
+                placeholder={t('account:business.profession_placeholder')}
                 data-testid="professions-input"
-                error={professions.errors && 'Udfyld venligst'}
+                error={
+                  professions.errors && t('account:business.missing_fields')
+                }
               />
 
               <MultiTags
+                size="lg"
                 field={speaks}
                 data={[
-                  {label: 'Dansk', value: 'danish'},
-                  {label: 'Engelsk', value: 'english'},
+                  {label: t('global:danish'), value: 'danish'},
+                  {label: t('global:english'), value: 'english'},
+                  {label: t('global:arabic'), value: 'arabic'},
                 ]}
-                label="Hvilken sprog taler du"
-                placeholder="Vælge sprog"
+                label={t('account:business.speaks_label')}
+                placeholder={t('account:business.speaks_placeholder')}
                 data-testid="speaks-input"
-                error={speaks.errors && 'Udfyld venligst'}
+                error={speaks.errors && t('account:business.missing_fields')}
               />
 
               <Textarea
-                label="Skriv kort beskrivelse om dig selv"
+                label={t('account:business.short_description')}
                 {...getTextareaProps(shortDescription)}
-                error={shortDescription.errors && 'Udfyld venligst'}
-                minRows={10}
+                error={
+                  shortDescription.errors &&
+                  t('account:business.missing_fields')
+                }
+                mih="100px"
+                size="lg"
                 data-testid="short-description-input"
               />
 
-              <Text size="sm" mb={rem(2)} fw={500}>
-                Fortæl om dig selv og din erfaring:
-              </Text>
-              <TextEditor
-                onUpdate={({editor}) => {
-                  control.change(JSON.stringify(editor.getJSON()) as any);
-                }}
-              />
+              <div>
+                <Text size="lg" mb={rem(2)} fw={500}>
+                  {t('account:business.aboutme_label')}
+                </Text>
+
+                <TextEditor
+                  onUpdate={({editor}) => {
+                    control.change(JSON.stringify(editor.getJSON()) as any);
+                  }}
+                />
+              </div>
 
               <div>
-                <SubmitButton>Opret en business konto</SubmitButton>
+                <SubmitButton size="lg">
+                  {t('account:business.create_business')}
+                </SubmitButton>
               </div>
             </Stack>
           </Form>

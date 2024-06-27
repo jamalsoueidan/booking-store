@@ -49,46 +49,24 @@ export function TextEditor(options?: Partial<EditorOptions>) {
   }, [content, editor, options]);
 
   return (
-    <RichTextEditor editor={editor}>
+    <RichTextEditor editor={editor} mih="250px">
       <RichTextEditor.Toolbar sticky stickyOffset={60}>
         <RichTextEditor.ControlsGroup>
           <RichTextEditor.Bold />
           <RichTextEditor.Italic />
           <RichTextEditor.Underline />
-          <RichTextEditor.Strikethrough />
           <RichTextEditor.ClearFormatting />
-          <RichTextEditor.Highlight />
-          <RichTextEditor.Code />
         </RichTextEditor.ControlsGroup>
 
         <RichTextEditor.ControlsGroup>
           <RichTextEditor.AlignLeft />
           <RichTextEditor.AlignCenter />
-          <RichTextEditor.AlignJustify />
           <RichTextEditor.AlignRight />
-        </RichTextEditor.ControlsGroup>
-
-        <RichTextEditor.ControlsGroup>
-          <RichTextEditor.H1 />
-          <RichTextEditor.H2 />
-          <RichTextEditor.H3 />
         </RichTextEditor.ControlsGroup>
 
         <RichTextEditor.ControlsGroup>
           <RichTextEditor.Link />
           <RichTextEditor.Unlink />
-        </RichTextEditor.ControlsGroup>
-
-        <RichTextEditor.ControlsGroup>
-          <RichTextEditor.Blockquote />
-          <RichTextEditor.Hr />
-          <RichTextEditor.BulletList />
-          <RichTextEditor.OrderedList />
-        </RichTextEditor.ControlsGroup>
-
-        <RichTextEditor.ControlsGroup>
-          <RichTextEditor.Undo />
-          <RichTextEditor.Redo />
         </RichTextEditor.ControlsGroup>
 
         <ActionIcon

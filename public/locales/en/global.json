@@ -37,5 +37,7 @@
   "language_reset_button": "Language Selection",
   "language_label": "Beauty Expert Speaks",
   "price_label": "Price:",
-  "reset_filters": "Reset Filters"
+  "reset_filters": "Reset Filters",
+  "man": "Man",
+  "woman": "Woman"
 }

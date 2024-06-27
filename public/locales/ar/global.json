@@ -37,5 +37,7 @@
   "language_reset_button": "اختيار اللغة",
   "language_label": "خبير التجميل يتحدث",
   "price_label": "السعر:",
-  "reset_filters": "إعادة تعيين الفلاتر"
+  "reset_filters": "إعادة تعيين الفلاتر",
+  "man": "رجل",
+  "woman": "امرأة"
 }

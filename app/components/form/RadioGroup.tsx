@@ -28,6 +28,7 @@ export function RadioGroup({data, field, ...props}: RadioGroupProps) {
 
   return (
     <Radio.Group
+      size="lg"
       defaultValue={initialValue}
       onChange={control.change}
       {...props}
@@ -36,7 +37,7 @@ export function RadioGroup({data, field, ...props}: RadioGroupProps) {
         {data.map((d) => (
           <React.Fragment key={d.value}>
             <Group>
-              <Radio label={d.label} value={d.value} />
+              <Radio size="md" label={d.label} value={d.value} />
               {d.value === CustomerLocationBaseLocationType.home && (
                 <IconHome size={20} />
               )}

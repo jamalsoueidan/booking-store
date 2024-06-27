@@ -67,6 +67,21 @@ interface Resources {
         "phone": "Telefonnummer",
         "default_address": "Indstil som standardadresse"
       }
+    },
+    "business": {
+      "title": "Start din skønhedskarrier",
+      "description1": "Du er i gang med at starte din skønhedskarrier på vores platform, og vi er begejstrede for at have dig med på holdet. Ved at blive en del af BySisters, træder du ind i et fællesskab, hvor passion for skønhed og ekspertise mødes for at skabe unikke oplevelser for kunderne.",
+      "description2": "For at fuldføre din registrering, bedes du udfylde de nødvendige oplysninger om dig selv.",
+      "nickname": "Vælge en profilnavn",
+      "gender": "Hvad er dit køn?",
+      "profession_placeholder": "Vælg professioner",
+      "profession_label": "Professioner",
+      "missing_fields": "Udfyld venligst",
+      "speaks_label": "Hvilken sprog taler du",
+      "speaks_placeholder": "Vælge sprog",
+      "short_description": "Skriv kort beskrivelse om dig selv",
+      "aboutme_label": "Fortæl om dig selv og din erfaring:",
+      "create_business": "Opret en business konto"
     }
   },
   "book": {
@@ -144,7 +159,9 @@ interface Resources {
     "language_reset_button": "Sprog valg",
     "language_label": "Skønhedseksperten taler",
     "price_label": "Pris:",
-    "reset_filters": "Nulstil filtering"
+    "reset_filters": "Nulstil filtering",
+    "man": "Mand",
+    "woman": "Woman"
   },
   "index": {
     "treatments_button": "Vis skønhedsbehandlinger",

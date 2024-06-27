@@ -66,5 +66,20 @@
       "phone": "Phone Number",
       "default_address": "Set as default address"
     }
+  },
+  "business": {
+    "title": "Start your beauty career",
+    "description1": "You are about to start your beauty career on our platform, and we are excited to have you on board. By joining BySisters, you enter a community where passion for beauty and expertise come together to create unique experiences for customers.",
+    "description2": "To complete your registration, please fill in the necessary information about yourself.",
+    "nickname": "Choose a profile name",
+    "gender": "What is your gender?",
+    "profession_placeholder": "Choose professions",
+    "profession_label": "Professions",
+    "missing_fields": "Please fill out",
+    "speaks_label": "Which languages do you speak",
+    "speaks_placeholder": "Choose languages",
+    "short_description": "Write a short description about yourself",
+    "aboutme_label": "Tell us about yourself and your experience:",
+    "create_business": "Create a business account"
   }
 }

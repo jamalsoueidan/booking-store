@@ -37,5 +37,7 @@
   "language_reset_button": "Sprog valg",
   "language_label": "Skønhedseksperten taler",
   "price_label": "Pris:",
-  "reset_filters": "Nulstil filtering"
+  "reset_filters": "Nulstil filtering",
+  "man": "Mand",
+  "woman": "Woman"
 }
