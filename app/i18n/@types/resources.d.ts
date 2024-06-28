@@ -127,6 +127,7 @@ interface Resources {
     "english": "Engelsk",
     "arabic": "Arabisk",
     "login": "Log ind",
+    "my_account": "Min konto",
     "logout": "Log ud",
     "monday": "Mandag",
     "tuesday": "Tirsdag",

@@ -190,16 +190,17 @@ function AuthSection() {
         <Await resolve={data.isLoggedIn}>
           {(isLoggedIn) =>
             isLoggedIn ? (
-              <ActionIcon
+              <Button
                 variant="outline"
-                size="lg"
+                size="sm"
                 color="black"
                 component={Link}
                 to="/account"
                 data-testid="login-button"
+                rightSection={<IconKey />}
               >
-                <IconKey />
-              </ActionIcon>
+                {t('my_account', {ns: 'global'})}
+              </Button>
             ) : (
               <Button
                 variant="outline"
