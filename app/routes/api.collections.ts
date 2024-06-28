@@ -1,45 +1,38 @@
 import {json, type LoaderFunctionArgs} from '@remix-run/server-runtime';
 
 export async function loader({context, request}: LoaderFunctionArgs) {
-  const {collections} = await context.storefront.query(COLLECTIONS_QUERY, {
-    variables: {first: 250, query: '-Subcategory AND -User AND -Alle'},
-  });
-
-  return json(collections);
-}
-
-const COLLECTIONS_QUERY = `#graphql
-  fragment JsonCollection on Collection {
-    id
-    title
-  }
-
-  query JsonCollections(
-    $country: CountryCode
-    $endCursor: String
-    $first: Int
-    $language: LanguageCode
-    $last: Int
-    $query: String!
-    $startCursor: String
-  ) @inContext(country: $country, language: $language) {
-    collections(
-      first: $first,
-      last: $last,
-      before: $startCursor,
-      after: $endCursor,
-      query: $query,
-      sortKey: TITLE
-    ) {
-      nodes {
-        ...JsonCollection
-      }
-      pageInfo {
-        hasNextPage
-        hasPreviousPage
-        startCursor
-        endCursor
+  const query = `
+  {
+  collections(first: 250, query: "-Alle AND -Subcategory AND -User") {
+    nodes {
+      id
+      title
+      ruleSet {
+        rules {
+          column
+          condition
+        }
       }
     }
   }
-` as const;
+}
+  `;
+
+  const response = await fetch(
+    `https://${context.env.PUBLIC_STORE_DOMAIN}/admin/api/2024-04/graphql.json`,
+    {
+      method: 'POST',
+      headers: {
+        'X-Shopify-Access-Token': context.env.PRIVATE_API_ACCESS_TOKEN,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        query,
+      }),
+    },
+  );
+
+  const tags = await response.json();
+
+  return json(tags);
+}
