@@ -7,6 +7,7 @@ export async function loader({context, request}: LoaderFunctionArgs) {
     nodes {
       id
       title
+      description
       ruleSet {
         rules {
           column
