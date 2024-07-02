@@ -14,6 +14,7 @@ import {
   Stack,
   Text,
   Title,
+  UnstyledButton,
   useMantineTheme,
 } from '@mantine/core';
 import {useDisclosure} from '@mantine/hooks';
@@ -213,42 +214,43 @@ export function RenderProducts({
 export function TreatmentCard({product}: {product: TreatmentFragment}) {
   const {t} = useTranslation(['categories']);
   return (
-    <Card
-      key={product.handle}
-      withBorder
-      radius="md"
-      component={Link}
-      bg="white"
-      p="0"
-      to={`/treatments/${product.handle}`}
-    >
-      <Text fz={rem(20)} fw={500} m="sm" mb="4px" lineClamp={1}>
-        {product.title}
-      </Text>
-      <Flex
-        gap="sm"
-        direction="column"
-        justify="flex-start"
-        style={{flexGrow: 1, position: 'relative'}}
-        mih="38px"
-      >
-        <Text c="dimmed" fz="xs" fw={400} lineClamp={3} mx="sm">
-          {product.description || '...'}
-        </Text>
+    <Card key={product.handle} withBorder radius="md" bg="white" p="0">
+      <Flex flex="1">
+        <UnstyledButton component={Link} to={`/book/${product.handle}`}>
+          <Text fz={rem(20)} fw={500} m="sm" mb="4px" lineClamp={1}>
+            {product.title}
+          </Text>
+          <Flex
+            gap="sm"
+            direction="column"
+            justify="flex-start"
+            style={{flexGrow: 1, position: 'relative'}}
+            mih="38px"
+          >
+            <Text c="dimmed" fz="xs" fw={400} lineClamp={3} mx="sm">
+              {product.description || '...'}
+            </Text>
+          </Flex>
+        </UnstyledButton>
       </Flex>
       <Card.Section>
         <Divider mt="sm" />
       </Card.Section>
 
-      <Group justify="space-between" m="sm">
-        <Group gap="xs">
-          <Avatar
-            src={product.user?.reference?.image?.reference?.image?.url}
-            size="sm"
-          />
-          <Text>{product.user?.reference?.fullname?.value}</Text>
+      <UnstyledButton
+        component={Link}
+        to={`/${product.user?.reference?.username?.value || ''}`}
+      >
+        <Group justify="space-between" m="sm">
+          <Group gap="xs">
+            <Avatar
+              src={product.user?.reference?.image?.reference?.image?.url}
+              size="sm"
+            />
+            <Text>{product.user?.reference?.fullname?.value}</Text>
+          </Group>
         </Group>
-      </Group>
+      </UnstyledButton>
     </Card>
   );
 }
