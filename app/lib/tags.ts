@@ -27,5 +27,5 @@ export function splitTags(tags: string[]) {
     acc[category].push(value);
 
     return acc;
-  }, {} as Record<string, string[]>);
+  }, {} as Record<string, string[] | null>);
 }
