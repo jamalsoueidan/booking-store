@@ -1,10 +1,15 @@
-import {Avatar, MantineProvider} from '@mantine/core';
+import {Avatar, Box, MantineProvider} from '@mantine/core';
 import L, {divIcon, point} from 'leaflet';
 import {useEffect} from 'react';
 import {renderToStaticMarkup} from 'react-dom/server';
-import {MapContainer, Marker, Popup, TileLayer, useMap} from 'react-leaflet';
-import {type TreatmentsForCollectionFragment} from 'storefrontapi.generated';
-import {type CustomerLocationAllOfGeoLocation} from '~/lib/api/model';
+import {
+  Circle,
+  MapContainer,
+  Marker,
+  Popup,
+  TileLayer,
+  useMap,
+} from 'react-leaflet';
 
 export type Coordinates = {
   lat: number;
@@ -29,50 +34,28 @@ const AutoCenterMap = ({markers}: {markers: Coordinates[]}) => {
   useEffect(() => {
     if (markers.length > 0) {
       const bounds = L.latLngBounds(markers);
-      map.fitBounds(bounds, {padding: [100, 100]});
+      map.fitBounds(bounds, {padding: [1000, 1000]});
+      map.zoomOut(12);
     }
   }, [markers, map]);
 
   return null;
 };
 
-export function LeafletMap({
-  products,
-}: {
-  products: TreatmentsForCollectionFragment[];
-}) {
-  const geoLocations = products.reduce((geos, product) => {
-    const newGeos = product.locations?.references?.nodes.reduce((geos, l) => {
-      if (l.geoLocation?.value) {
-        const value = JSON.parse(
-          l.geoLocation.value,
-        ) as CustomerLocationAllOfGeoLocation;
-        geos.push({
-          lat: value.coordinates[1],
-          lng: value.coordinates[0],
-          image: product.user?.reference?.image?.reference?.image?.url || '',
-        });
-      }
-      return geos;
-    }, [] as Coordinates[]);
-    if (newGeos) {
-      geos.push(...newGeos);
-    }
-    return geos;
-  }, [] as Coordinates[]);
+export type LeafletMapMarker = {
+  id: string;
+  lng: number;
+  lat: number;
+  image: string;
+  radius: number | null;
+};
 
+export function LeafletMap({markers}: {markers: Array<LeafletMapMarker>}) {
   return (
-    <div
-      style={{
-        height: '100vh',
-        border: '1px solid #dee2e6',
-        borderRadius: '10px',
-      }}
-    >
+    <Box h="250px">
       <MapContainer
         style={{
           height: '100%',
-          borderRadius: '10px',
         }}
         zoom={6}
       >
@@ -80,21 +63,30 @@ export function LeafletMap({
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
         />
-        {geoLocations.map((geo) => {
-          return (
+        {markers.map((geo) =>
+          geo.radius ? (
+            <Circle
+              key={geo.lat}
+              color="red"
+              fillColor="#f04"
+              fillOpacity={0.5}
+              radius={geo.radius}
+              center={[geo.lat, geo.lng]}
+            >
+              <Popup>Kører ud til de her områder.</Popup>
+            </Circle>
+          ) : (
             <Marker
-              key={geo.lat + geo.lng}
-              position={geo}
+              key={geo.lng}
+              position={[geo.lat, geo.lng]}
               icon={createClusterCustomIcon(geo.image)}
             >
-              <Popup>
-                A pretty CSS3 popup. <br /> Easily customizable.
-              </Popup>
+              <Popup>Salon/Hjem position.</Popup>
             </Marker>
-          );
-        })}
-        <AutoCenterMap markers={geoLocations} />
+          ),
+        )}
+        <AutoCenterMap markers={markers} />
       </MapContainer>
-    </div>
+    </Box>
   );
 }
