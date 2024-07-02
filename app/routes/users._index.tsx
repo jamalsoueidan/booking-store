@@ -3,13 +3,14 @@ import {
   Badge,
   Button,
   Card,
+  Divider,
   Flex,
   Group,
   rem,
   SimpleGrid,
   Stack,
   Text,
-  Title,
+  UnstyledButton,
 } from '@mantine/core';
 import {Link, useLoaderData} from '@remix-run/react';
 import {getPaginationVariables, Pagination} from '@shopify/hydrogen';
@@ -26,6 +27,7 @@ import {LocationIcon} from '~/components/LocationIcon';
 import {ARTICLE_USER_FRAGMENT} from '~/graphql/fragments/ArticleUser';
 import {CustomerLocationBaseLocationType} from '~/lib/api/model';
 import {splitTags} from '~/lib/tags';
+import {ArtistProduct} from './treatments.$productHandle._index';
 
 export const meta: MetaFunction = () => {
   return [{title: `BySisters | Find Skønhedseksperter`}];
@@ -86,11 +88,11 @@ export const loader = async ({context, request}: LoaderFunctionArgs) => {
     query.push(`tag:location_type-${location}`);
   }
 
-  const product = searchParams.get('product');
+  const product = searchParams.get('collection');
   if (product) {
-    query.push(`tag:parentid-${product}`);
+    query.push(`tag:collectionid-${product}`);
   } else {
-    query.push('tag:parentid');
+    query.push('tag:collectionid');
   }
 
   const paginationVariables = getPaginationVariables(request, {
@@ -168,144 +170,114 @@ export const UserCard = ({article}: {article: ArticleUserFragment}) => {
   const total = (availability?.count || 0) - (products?.length || 0);
 
   return (
-    <Card
-      component={Link}
-      to={`/${user?.username?.value}`}
-      withBorder
-      radius="md"
-      pos="relative"
-      bg="white"
-    >
-      <Group>
-        <Avatar
-          style={{border: '3px solid #FFF'}}
-          src={
-            user?.image?.reference?.image?.url ||
-            'https://placehold.co/400x600?text=Ekspert'
-          }
-          size={rem(100)}
-        />
-
-        <Flex direction="column" justify="center">
-          <Text fz="lg" fw={600} c="black">
-            {user?.fullname?.value}{' '}
-          </Text>
-
-          <Group gap="4">
-            {tags['location_type']?.includes(
-              CustomerLocationBaseLocationType.destination,
-            ) && (
-              <LocationIcon
-                location={{
-                  locationType: CustomerLocationBaseLocationType.destination,
-                }}
-                width={18}
-                height={18}
-                color="gray"
-              />
-            )}
-            {tags['location_type']?.includes(
-              CustomerLocationBaseLocationType.commercial,
-            ) && (
-              <LocationIcon
-                location={{
-                  locationType: CustomerLocationBaseLocationType.commercial,
-                }}
-                width={18}
-                height={18}
-                color="gray"
-              />
-            )}
-            {tags['location_type']?.includes(
-              CustomerLocationBaseLocationType.home,
-            ) && (
-              <LocationIcon
-                location={{
-                  locationType: CustomerLocationBaseLocationType.home,
-                }}
-                width={18}
-                height={18}
-                color="gray"
-              />
-            )}
-            {tags['location_type']?.includes(
-              CustomerLocationBaseLocationType.virtual,
-            ) && (
-              <LocationIcon
-                location={{
-                  locationType: CustomerLocationBaseLocationType.virtual,
-                }}
-                width={18}
-                height={18}
-                color="gray"
-              />
-            )}
-            <Text fz="md" c="dimmed" lineClamp={1}>
-              {tags['city'][0][0].toUpperCase()}
-              {tags['city'][0].substring(1)}
-            </Text>
-          </Group>
-
-          {tags['speak'] ? (
-            <Group mt="2px">
-              <Flex gap="xs">
-                {tags['speak'].includes('danish') && (
-                  <DK width={18} height={18} />
-                )}
-                {tags['speak'].includes('english') && (
-                  <US width={18} height={18} />
-                )}
-              </Flex>
-            </Group>
-          ) : null}
-        </Flex>
-      </Group>
-      <Flex gap="xs" my="md">
-        {professions['professions'].map((p) => (
-          <Badge variant="outline" c="black" color="gray.4" key={p} fw="400">
-            {t(p as any, {ns: 'professions'})}
-          </Badge>
-        ))}
-      </Flex>
-      <SimpleGrid cols={total > 0 ? 3 : 2} spacing="xs">
-        {products?.map((p, index) => (
+    <Card withBorder radius="md" pos="relative" bg="white">
+      <UnstyledButton component={Link} to={`/${user?.username?.value}`}>
+        <Group>
           <Avatar
-            key={p.id}
-            src={p.featuredImage?.url}
-            radius="0"
-            size="100%"
-            style={
-              index === 0
-                ? {
-                    borderTopLeftRadius: '10px',
-                    borderBottomLeftRadius: '10px',
-                  }
-                : {}
+            style={{border: '3px solid #FFF'}}
+            src={
+              user?.image?.reference?.image?.url ||
+              'https://placehold.co/400x600?text=Ekspert'
             }
+            size={rem(100)}
           />
+
+          <Flex direction="column" justify="center">
+            <Text fz="lg" fw={600} c="black">
+              {user?.fullname?.value}{' '}
+            </Text>
+
+            <Group gap="4">
+              {tags['location_type']?.includes(
+                CustomerLocationBaseLocationType.destination,
+              ) && (
+                <LocationIcon
+                  location={{
+                    locationType: CustomerLocationBaseLocationType.destination,
+                  }}
+                  width={18}
+                  height={18}
+                  color="gray"
+                />
+              )}
+              {tags['location_type']?.includes(
+                CustomerLocationBaseLocationType.commercial,
+              ) && (
+                <LocationIcon
+                  location={{
+                    locationType: CustomerLocationBaseLocationType.commercial,
+                  }}
+                  width={18}
+                  height={18}
+                  color="gray"
+                />
+              )}
+              {tags['location_type']?.includes(
+                CustomerLocationBaseLocationType.home,
+              ) && (
+                <LocationIcon
+                  location={{
+                    locationType: CustomerLocationBaseLocationType.home,
+                  }}
+                  width={18}
+                  height={18}
+                  color="gray"
+                />
+              )}
+              {tags['location_type']?.includes(
+                CustomerLocationBaseLocationType.virtual,
+              ) && (
+                <LocationIcon
+                  location={{
+                    locationType: CustomerLocationBaseLocationType.virtual,
+                  }}
+                  width={18}
+                  height={18}
+                  color="gray"
+                />
+              )}
+              <Text fz="md" c="dimmed" lineClamp={1}>
+                asd
+              </Text>
+            </Group>
+
+            {tags['speak'] ? (
+              <Group mt="2px">
+                <Flex gap="xs">
+                  {tags['speak'].includes('danish') && (
+                    <DK width={18} height={18} />
+                  )}
+                  {tags['speak'].includes('english') && (
+                    <US width={18} height={18} />
+                  )}
+                </Flex>
+              </Group>
+            ) : null}
+          </Flex>
+        </Group>
+        <Flex gap="xs" my="md">
+          {professions['professions'].map((p) => (
+            <Badge variant="outline" c="black" color="gray.4" key={p} fw="400">
+              {t(p as any, {ns: 'professions'})}
+            </Badge>
+          ))}
+        </Flex>
+      </UnstyledButton>
+      <Card.Section>
+        <Divider mt="xs" mb="lg" />
+      </Card.Section>
+      <Stack gap="xs">
+        {products?.map((product) => (
+          <ArtistProduct key={product.id} product={product} />
         ))}
-        {total > 0 ? (
-          <Avatar
-            radius="0"
-            size="100%"
-            style={{
-              borderTopRightRadius: '10px',
-              borderBottomRightRadius: '10px',
-            }}
-          >
-            <Title>
-              +{(availability?.count || 0) - (products?.length || 0)}
-            </Title>
-          </Avatar>
-        ) : null}
-      </SimpleGrid>
+      </Stack>
     </Card>
   );
 };
 
 export const USERS_QUERY = `#graphql
   ${ARTICLE_USER_FRAGMENT}
-  query ArtistsIndex(
+  query GetUsers(
     $country: CountryCode
     $language: LanguageCode
     $first: Int

@@ -99,8 +99,8 @@ export async function loader({params, request, context}: LoaderFunctionArgs) {
     await context.customerAccount.mutate(CREATE_ADDRESS_MUTATION, {
       variables: {
         address: {
-          firstName: 'BySisters',
-          lastName: '-',
+          firstName: data.customer.firstName,
+          lastName: data.customer.lastName,
           address1: 'Trepkasgade 25',
           city: 'Aarhus',
           zip: '8000',
@@ -228,7 +228,7 @@ export default function Booking() {
               variant="transparent"
               c="black"
               component={Link}
-              to="./../../"
+              to={`/${product.user?.reference?.username?.value || ''}`}
             >
               <IconX
                 style={{width: rem(36), height: rem(36), strokeWidth: 1}}

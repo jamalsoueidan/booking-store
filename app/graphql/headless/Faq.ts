@@ -11,6 +11,12 @@ export const FAQ_FRAGMENT = `#graphql
     backgroundColor:field(key:"background_color") {
       value
     }
+    fromColor:field(key:"from_color") {
+      value
+    }
+    toColor:field(key:"to_color") {
+      value
+    }
     direction: field(key:"direction") {
       value
     }

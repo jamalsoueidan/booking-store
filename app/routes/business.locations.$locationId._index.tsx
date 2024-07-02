@@ -169,7 +169,7 @@ export default function AccountLocationsEdit() {
           <Text>eller</Text>
           <Anchor
             component={Link}
-            to="/account/locations"
+            to="/business/locations"
             data-testid="back-link"
           >
             Tilbage

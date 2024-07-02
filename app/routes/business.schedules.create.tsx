@@ -31,7 +31,7 @@ export const action = async ({request, context}: ActionFunctionArgs) => {
       `${baseURL}/customer/${customerId}/schedules`,
     );
 
-    return redirectWithSuccess(`/account/schedules/${response.payload._id}`, {
+    return redirectWithSuccess(`/business/schedules/${response.payload._id}`, {
       message: 'Du har oprettet en ny vagtplan',
     });
   } catch (error) {

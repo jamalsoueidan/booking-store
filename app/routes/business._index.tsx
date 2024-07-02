@@ -56,7 +56,7 @@ export default function AccountIndex() {
               {user?.images?.profile?.url ? (
                 <Avatar
                   component={Link}
-                  to={`/account/upload`}
+                  to={`/business/public/upload`}
                   size={isMobile ? 'lg' : 'xl'}
                   src={modifyImageUrl(user?.images?.profile?.url, '50x50')}
                 />

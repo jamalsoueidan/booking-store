@@ -52,7 +52,7 @@ export const action = async ({
       `${baseURL}/customer/${customerId}/schedules`,
     );
 
-    return redirectWithSuccess(`/account/schedules/${response.payload._id}`, {
+    return redirectWithSuccess(`/business/schedules/${response.payload._id}`, {
       message: 'Vagtplan er opdateret!',
     });
   } catch (error) {

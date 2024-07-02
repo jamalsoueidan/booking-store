@@ -44,7 +44,7 @@ export default function AccountServices() {
             </Title>
             <Button
               component={Link}
-              to="/account/locations/create"
+              to="/business/locations/create"
               data-testid="empty-create-button"
               leftSection={<IconPlus size={14} />}
             >
@@ -70,7 +70,7 @@ export default function AccountServices() {
             </Title>
             <Button
               component={Link}
-              to="/account/schedules#create"
+              to="/business/schedules#create"
               data-testid="empty-create-button"
             >
               Opret vagtplan

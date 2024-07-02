@@ -29,7 +29,11 @@ export const ModalAccount = ({customer}: {customer?: CustomerDetailsQuery}) => {
 
   // if user not logged in !customer
   // if user already firstname
-  if (!customer || customer.customer.firstName) {
+  if (!customer) {
+    return null;
+  }
+
+  if (customer.customer.firstName) {
     return null;
   }
 

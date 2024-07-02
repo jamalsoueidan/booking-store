@@ -1,25 +1,34 @@
 import {
   FormProvider,
   getFormProps,
+  getInputProps,
+  getSelectProps,
   useForm,
   useInputControl,
 } from '@conform-to/react';
 import {parseWithZod} from '@conform-to/zod';
 import {
+  ActionIcon,
   Divider,
   Flex,
+  Indicator,
+  Loader,
+  rem,
+  Select,
   Stack,
   Switch,
   Text,
   TextInput,
   Title,
 } from '@mantine/core';
-import {Form, useActionData, useLoaderData} from '@remix-run/react';
+import {Form, useActionData, useFetcher, useLoaderData} from '@remix-run/react';
 import {
   json,
   type ActionFunctionArgs,
   type LoaderFunctionArgs,
 } from '@shopify/remix-oxygen';
+import {IconAirBalloon} from '@tabler/icons-react';
+import {useCallback, useEffect, useState} from 'react';
 import {redirectWithSuccess} from 'remix-toast';
 import {AmountInput} from '~/components/form/AmountInput';
 import {SubmitButton} from '~/components/form/SubmitButton';
@@ -27,10 +36,12 @@ import {SwitchGroupLocations} from '~/components/form/SwitchGroupLocations';
 import {TextEditor} from '~/components/richtext/TextEditor';
 import {FlexInnerForm} from '~/components/tiny/FlexInnerForm';
 import {getBookingShopifyApi} from '~/lib/api/bookingShopifyApi';
+import {type OpenAIProductTitle200Payload} from '~/lib/api/model';
 import {baseURL} from '~/lib/api/mutator/query-client';
 import {convertHTML} from '~/lib/convertHTML';
 import {getCustomer} from '~/lib/get-customer';
 import {customerProductUpdateBody} from '~/lib/zod/bookingShopifyApi';
+import {GET_CATEGORY_QUERY} from './categories_.$handle';
 
 const schema = customerProductUpdateBody;
 
@@ -80,6 +91,16 @@ export const action = async ({
 export async function loader({context, params}: LoaderFunctionArgs) {
   const customerId = await getCustomer({context});
 
+  const {collection: rootCollection} = await context.storefront.query(
+    GET_CATEGORY_QUERY,
+    {
+      variables: {
+        handle: 'alle-behandlinger',
+      },
+      cache: context.storefront.CacheShort(),
+    },
+  );
+
   const {productId} = params;
   if (!productId) {
     throw new Error('Missing productId param');
@@ -98,6 +119,7 @@ export async function loader({context, params}: LoaderFunctionArgs) {
     );
 
   return json({
+    rootCollection,
     defaultValue: {
       ...defaultValue,
       hideFromCombine: defaultValue.hideFromCombine.toString(),
@@ -108,8 +130,15 @@ export async function loader({context, params}: LoaderFunctionArgs) {
 }
 
 export default function EditAddress() {
-  const {locations, defaultValue} = useLoaderData<typeof loader>();
+  const {locations, defaultValue, rootCollection} =
+    useLoaderData<typeof loader>();
   const lastResult = useActionData<typeof action>();
+  const [descriptionHtml, setDescriptionHtml] = useState<string | null>(
+    defaultValue.descriptionHtml
+      ? (JSON.parse(defaultValue.description) as any)
+      : '',
+  );
+  const fetcher = useFetcher<OpenAIProductTitle200Payload>();
 
   const [form, fields] = useForm({
     lastResult,
@@ -125,8 +154,34 @@ export default function EditAddress() {
 
   const hideFromProfile = useInputControl(fields.hideFromProfile);
   const hideFromCombine = useInputControl(fields.hideFromCombine);
-  const titleInput = useInputControl(fields.title);
   const descriptionInput = useInputControl(fields.description);
+
+  const aiSuggestion = useCallback(() => {
+    fetcher.submit(
+      {title: fields.title.value || ''},
+      {action: '/business/api/ai-suggestion'},
+    );
+  }, [fetcher, fields.title.value]);
+
+  useEffect(() => {
+    if (fetcher.data && fetcher.state === 'idle') {
+      form.update({name: fields.title.name, value: fetcher.data.title});
+      form.update({
+        name: fields.productType.name,
+        value: fetcher.data.collection?.title || '',
+      });
+      setDescriptionHtml(fetcher.data.description);
+      fetcher.load('/business/api/ai-suggestion');
+    }
+  }, [
+    fetcher,
+    fetcher.data,
+    fetcher.state,
+    fields.productType.name,
+    fields.title.name,
+    fields.title.value,
+    form,
+  ]);
 
   return (
     <FormProvider context={form.context}>
@@ -139,11 +194,45 @@ export default function EditAddress() {
               <Text fw="bold">Title:</Text>
               <Text>Title på ydelsen</Text>
             </Stack>
+            <TextInput
+              {...getInputProps(fields.title, {type: 'text'})}
+              style={{flex: 1}}
+              rightSection={
+                <Indicator inline label="AI" size={16}>
+                  <ActionIcon
+                    color="dark"
+                    disabled={!fields.title.value}
+                    onClick={aiSuggestion}
+                  >
+                    {fetcher.state !== 'idle' ? (
+                      <Loader color="white" size={rem(16)} />
+                    ) : (
+                      <IconAirBalloon
+                        style={{width: rem(16), height: rem(16)}}
+                      />
+                    )}
+                  </ActionIcon>
+                </Indicator>
+              }
+            />
+          </Flex>
+
+          <Flex direction={{base: 'column', md: 'row'}} gap="md">
+            <Stack gap="0" style={{flex: 1}}>
+              <Text fw="bold">Kategori:</Text>
+              <Text>Kategori på ydelsen</Text>
+            </Stack>
             <div style={{flex: 1}}>
-              <TextInput
-                defaultValue={titleInput.value}
-                disabled={!titleInput.value}
-                name={fields.title.name}
+              <Select
+                {...getSelectProps(fields.productType)}
+                defaultValue={fields.productType.initialValue}
+                placeholder="Vælg en kategori"
+                data={rootCollection?.children?.references?.nodes.map(
+                  (collection) => ({
+                    value: collection.title,
+                    label: collection.title,
+                  }),
+                )}
               />
             </div>
           </Flex>
@@ -155,12 +244,11 @@ export default function EditAddress() {
             </Stack>
             <div style={{flex: 1}}>
               <TextEditor
-                content={
-                  defaultValue.descriptionHtml
-                    ? (JSON.parse(defaultValue.description) as any)
-                    : ''
-                }
+                content={descriptionHtml}
                 onUpdate={({editor}) => {
+                  descriptionInput.change(JSON.stringify(editor.getJSON()));
+                }}
+                onSelectionUpdate={({editor}) => {
                   descriptionInput.change(JSON.stringify(editor.getJSON()));
                 }}
               />

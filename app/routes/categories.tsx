@@ -1,25 +1,39 @@
-import {Button, Container, Flex, Select} from '@mantine/core';
 import {
-  Link,
-  NavLink,
-  Outlet,
-  useLoaderData,
-  useNavigate,
-  useParams,
-} from '@remix-run/react';
+  Box,
+  Card,
+  Container,
+  Divider,
+  Flex,
+  rem,
+  SimpleGrid,
+  Stack,
+  Title,
+  UnstyledButton,
+  useMantineTheme,
+} from '@mantine/core';
+import {Link, useLoaderData} from '@remix-run/react';
 import {json, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
+import {IconArrowRight} from '@tabler/icons-react';
 import {useTranslation} from 'react-i18next';
 import {Headless} from '~/components/blocks/Headless';
 import {VisualTeaser} from '~/components/blocks/VisualTeaser';
-import {CATEGORIES} from '~/graphql/storefront/Categories';
+import {GET_CATEGORY_QUERY} from './categories_.$handle';
 import {PAGE_QUERY} from './pages.$handle';
 
 export const handle: Handle = {
   i18n: ['categories', 'global'],
 };
 
-export async function loader({context}: LoaderFunctionArgs) {
-  const {collection} = await context.storefront.query(CATEGORIES);
+export async function loader({context, params, request}: LoaderFunctionArgs) {
+  const {collection: rootCollection} = await context.storefront.query(
+    GET_CATEGORY_QUERY,
+    {
+      variables: {
+        handle: 'alle-behandlinger',
+      },
+      cache: context.storefront.CacheLong(),
+    },
+  );
 
   const {page} = await context.storefront.query(PAGE_QUERY, {
     variables: {
@@ -28,7 +42,7 @@ export async function loader({context}: LoaderFunctionArgs) {
     cache: context.storefront.CacheLong(),
   });
 
-  return json({page, collection});
+  return json({page, rootCollection});
 }
 
 export default function Collections() {
@@ -37,80 +51,56 @@ export default function Collections() {
   return (
     <>
       <VisualTeaser data={page?.header?.reference} />
-      <PickCategory />
-      <Outlet />
+      <FeaturedCollections />
       <Headless components={page?.components} />
     </>
   );
 }
 
-function PickCategory() {
-  const {t} = useTranslation(['categories']);
-  const params = useParams();
-  const navigate = useNavigate();
-  const {collection} = useLoaderData<typeof loader>();
-
-  const data = [
-    {label: t('all_treatments'), value: ''},
-    ...(collection?.children?.references?.nodes || []).map((collection) => ({
-      label: collection.title,
-      value: collection.handle,
-    })),
-  ];
+function FeaturedCollections() {
+  const theme = useMantineTheme();
+  const {t} = useTranslation(['index']);
+  const {rootCollection} = useLoaderData<typeof loader>();
 
   return (
-    <Container size="xl">
-      <Flex justify="center" gap="lg" visibleFrom="sm">
-        <Button
-          variant="filled"
-          color={
-            params.handle === 'alle-behandlinger' || !params.handle
-              ? 'orange'
-              : 'gray.2'
-          }
-          c={
-            params.handle === 'alle-behandlinger' || !params.handle
-              ? 'white'
-              : 'gray.7'
-          }
-          radius="xl"
-          size="lg"
-          component={Link}
-          to="/categories"
-        >
-          {t('all_treatments')}
-        </Button>
-
-        {collection?.children?.references?.nodes.map((collection) => (
-          <NavLink key={collection.id} to={`/categories/${collection.handle}`}>
-            {({isActive}) => (
-              <Button
-                variant="filled"
-                color={isActive ? 'orange' : 'gray.2'}
-                c={isActive ? 'white' : 'gray.7'}
-                radius="xl"
-                size="lg"
-              >
-                {collection.title}
-              </Button>
-            )}
-          </NavLink>
-        ))}
-      </Flex>
-      <Flex justify="center" gap="lg" hiddenFrom="sm">
-        <Select
-          placeholder={t('all_treatments')}
-          size="lg"
-          onChange={(value) => {
-            if (!value) {
-              navigate(`/categories`);
-            } else {
-              navigate(`/categories/${value}`);
-            }
-          }}
-          data={data}
-        />
-      </Flex>
-    </Container>
+    <Box py={{base: rem(20), sm: rem(40)}}>
+      <Container size="xl">
+        <Stack gap="xl">
+          <SimpleGrid cols={{base: 1, sm: 2, md: 4}} spacing="xl">
+            {rootCollection?.children?.references?.nodes.map((col) => (
+              <Card key={col.id} radius="sm" withBorder>
+                <UnstyledButton
+                  component={Link}
+                  to={`/categories/${col.handle}`}
+                >
+                  <Flex justify="space-between">
+                    <Title order={2} size="lg">
+                      {col.title}
+                    </Title>
+                    <IconArrowRight />
+                  </Flex>
+                </UnstyledButton>
+                <Card.Section>
+                  <Divider my="sm" />
+                </Card.Section>
+                <Stack gap="xs">
+                  {col.children?.references?.nodes.map((nesCol) => (
+                    <UnstyledButton
+                      key={nesCol.id}
+                      component={Link}
+                      to={`/categories/${nesCol.handle}`}
+                    >
+                      <Title order={2} size="lg">
+                        {nesCol.title}
+                      </Title>
+                    </UnstyledButton>
+                  ))}
+                </Stack>
+              </Card>
+            ))}
+          </SimpleGrid>
+        </Stack>
+      </Container>
+    </Box>
   );
 }

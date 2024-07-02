@@ -15,6 +15,7 @@ import {
 } from '@conform-to/react';
 import {parseWithZod} from '@conform-to/zod';
 
+import {useTranslation} from 'react-i18next';
 import {redirectWithSuccess} from 'remix-toast';
 import {MultiTags} from '~/components/form/MultiTags';
 import {RadioGroup} from '~/components/form/RadioGroup';
@@ -43,7 +44,7 @@ export const action = async ({request, context}: ActionFunctionArgs) => {
       aboutMeHtml: convertHTML(submission.value.aboutMe),
     });
 
-    return redirectWithSuccess('/account/public', {
+    return redirectWithSuccess('/business/public', {
       message: 'Profil er opdateret!',
     });
   } catch (error) {
@@ -66,6 +67,7 @@ export async function loader({context}: LoaderFunctionArgs) {
 }
 
 export default function AccountBusiness() {
+  const {t} = useTranslation(['global']);
   const lastResult = useActionData<typeof action>();
   const {user, professionOptions, specialityOptions} =
     useLoaderData<typeof loader>();
@@ -136,8 +138,9 @@ export default function AccountBusiness() {
           <MultiTags
             field={speaks}
             data={[
-              {label: 'Dansk', value: 'danish'},
-              {label: 'Engelsk', value: 'english'},
+              {label: t('global:danish'), value: 'danish'},
+              {label: t('global:english'), value: 'english'},
+              {label: t('global:arabic'), value: 'arabic'},
             ]}
             label="Hvilken sprog taler du"
             placeholder="Vælge sprog"

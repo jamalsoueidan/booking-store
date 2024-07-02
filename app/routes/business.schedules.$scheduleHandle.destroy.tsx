@@ -26,7 +26,7 @@ export const action: ActionFunction = async ({context, params}) => {
     `${baseURL}/customer/${customerId}/schedules`,
   );
 
-  return redirectWithSuccess('/account/schedules', {
+  return redirectWithSuccess('/business/schedules', {
     message: 'Vagtplanen er slettet!',
   });
 };

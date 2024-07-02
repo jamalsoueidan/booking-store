@@ -225,7 +225,9 @@ components:
         options:
           type: array
           items:
-            $ref: '#/components/schemas/CustomerProductOptionsList/items'
+            $ref: '#/components/schemas/CustomerProductOption'
+        productType:
+          type: string
         description:
           type: string
         descriptionHtml:
@@ -325,6 +327,43 @@ components:
         - hours
         - days
         - weeks
+    CustomerProductOption:
+      type: object
+      properties:
+        productId:
+          type: number
+        title:
+          type: string
+        variants:
+          type: array
+          items:
+            type: object
+            properties:
+              variantId:
+                type: number
+              title:
+                type: string
+              price:
+                type: string
+              duration:
+                type: object
+                properties:
+                  value:
+                    type: number
+                  metafieldId:
+                    type: number
+                required:
+                  - value
+                  - metafieldId
+            required:
+              - variantId
+              - duration
+              - title
+              - price
+      required:
+        - productId
+        - variants
+        - title
     CustomerProductLocations:
       type: array
       items:
@@ -359,6 +398,8 @@ components:
         hideFromProfile:
           type: string
         hideFromCombine:
+          type: string
+        productType:
           type: string
         price:
           type: object
@@ -404,9 +445,9 @@ components:
     CustomerProductAddBody:
       type: object
       properties:
-        parentId:
-          type: string
         title:
+          type: string
+        productType:
           type: string
         description:
           type: string
@@ -435,8 +476,8 @@ components:
             currencyCode:
               type: string
       required:
-        - parentId
         - title
+        - productType
         - description
         - descriptionHtml
         - scheduleId
@@ -485,7 +526,7 @@ components:
           type: boolean
           example: true
         payload:
-          $ref: '#/components/schemas/CustomerProductOptionsList/items'
+          $ref: '#/components/schemas/CustomerProductOption'
       required:
         - success
         - payload
@@ -512,42 +553,7 @@ components:
     CustomerProductOptionsList:
       type: array
       items:
-        type: object
-        properties:
-          productId:
-            type: number
-          title:
-            type: string
-          variants:
-            type: array
-            items:
-              type: object
-              properties:
-                variantId:
-                  type: number
-                title:
-                  type: string
-                price:
-                  type: string
-                duration:
-                  type: object
-                  properties:
-                    value:
-                      type: number
-                    metafieldId:
-                      type: number
-                  required:
-                    - value
-                    - metafieldId
-              required:
-                - variantId
-                - duration
-                - title
-                - price
-        required:
-          - productId
-          - variants
-          - title
+        $ref: '#/components/schemas/CustomerProductOption'
     CustomerProductOptionsListResponse:
       type: object
       properties:
@@ -566,7 +572,7 @@ components:
           type: boolean
           example: true
         payload:
-          $ref: '#/components/schemas/CustomerProductOptionsList/items'
+          $ref: '#/components/schemas/CustomerProductOption'
       required:
         - success
         - payload
@@ -589,7 +595,7 @@ components:
         payload:
           type: array
           items:
-            $ref: '#/components/schemas/CustomerProductOptionsList/items'
+            $ref: '#/components/schemas/CustomerProductOption'
       required:
         - success
         - payload
@@ -2630,8 +2636,6 @@ components:
           items:
             type: object
             properties:
-              parentId:
-                type: number
               productId:
                 type: number
               variantId:
@@ -5509,4 +5513,62 @@ paths:
           $ref: '#/components/responses/ForbiddenResponse'
         '404':
           $ref: '#/components/responses/NotFoundResponse'
+      security: []
+  /openai/products-title:
+    post:
+      tags:
+        - OpenAI
+      operationId: openAIProductTitle
+      summary: POST Correct any grammatical errors in title and description
+      description: This endpoint correct any grammatical errors in title and description
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                title:
+                  type: string
+                description:
+                  type: string
+              required:
+                - title
+      responses:
+        '200':
+          description: Response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  payload:
+                    type: object
+                    properties:
+                      collection:
+                        type: object
+                        properties:
+                          id:
+                            type: string
+                          title:
+                            type: string
+                      title:
+                        type: string
+                      description:
+                        type: string
+                    required:
+                      - title
+                      - description
+                required:
+                  - success
+                  - payload
+        '400':
+          $ref: '#/components/responses/BadResponse'
+        '401':
+          $ref: '#/components/responses/UnauthorizedResponse'
+        '403':
+          $ref: '#/components/responses/ForbiddenResponse'
       security: []

@@ -22,7 +22,7 @@ export const action: ActionFunction = async ({context, params}) => {
     ),
   ]);
 
-  return redirectWithSuccess('/account/locations', {
+  return redirectWithSuccess('/business/locations', {
     message: 'Lokation er slettet!!',
   });
 };

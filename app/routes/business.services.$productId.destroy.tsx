@@ -22,7 +22,7 @@ export const action: ActionFunction = async ({context, params}) => {
     `${baseURL}/customer/${customerId}/product/${productId}`,
   );
 
-  return redirectWithSuccess('/account/services', {
+  return redirectWithSuccess('/business/services', {
     message: 'Ydelsen er nu slettet!',
   });
 };

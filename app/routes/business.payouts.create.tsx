@@ -71,7 +71,7 @@ export const action = async ({request, context}: ActionFunctionArgs) => {
           },
     );
 
-    return redirect(`/account/payouts`);
+    return redirect(`/business/payouts`);
   } catch (error) {
     return submission.reply();
   }

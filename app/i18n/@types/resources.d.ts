@@ -165,6 +165,8 @@ interface Resources {
     "woman": "Woman"
   },
   "index": {
+    "collection_title": "Hvilken [skønhedsoplevelse] ønsker du?",
+    "collection_button": "Vis skønhedsoplevelser",
     "treatments_button": "Vis skønhedsbehandlinger",
     "treatments_title": "Book din [skønhedsbehandling] idag",
     "artists_button": "Vis skønhedseksperter",

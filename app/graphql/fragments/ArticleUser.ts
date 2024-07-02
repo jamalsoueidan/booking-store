@@ -1,11 +1,11 @@
-import {ARTICLE_USER_PRODUCT} from './ArticleUserProducts';
+import {TREATMENT_PRODUCT} from './TreatmentProduct';
 import {USER_FRAGMENT} from './User';
 import {USER_COLLECTION_FILTER} from './UserCollectionFilter';
 
 export const ARTICLE_USER_FRAGMENT = `#graphql
   ${USER_FRAGMENT}
   ${USER_COLLECTION_FILTER}
-  ${ARTICLE_USER_PRODUCT}
+  ${TREATMENT_PRODUCT}
 
   fragment ArticleUser on Article {
     id
@@ -21,7 +21,7 @@ export const ARTICLE_USER_FRAGMENT = `#graphql
         ... on Collection {
           products(first: 2, sortKey: RELEVANCE, filters: [{productMetafield: {namespace: "booking", key: "hide_from_profile", value: "false"}}, {productMetafield: {namespace: "system", key: "active",value: "true"}}]) {
             nodes {
-              ...ArticleUserProduct
+              ...TreatmentProduct
             }
             filters {
               ...UserCollectionFilter

@@ -29,7 +29,7 @@ export const action = async ({request, context}: ActionFunctionArgs) => {
       submission.value,
     );
 
-    return redirectWithSuccess('/account/booked', {
+    return redirectWithSuccess('/business/booked', {
       message: 'Ferie er nu tilføjet!',
     });
   } catch (error) {

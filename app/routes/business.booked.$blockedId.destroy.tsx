@@ -12,10 +12,10 @@ export const action: ActionFunction = async ({context, params}) => {
       params.blockedId || '',
     );
 
-    return redirectWithSuccess('/account/booked', {
+    return redirectWithSuccess('/business/booked', {
       message: 'Ferie er nu slettet!',
     });
   } catch (error) {
-    return redirect('/account/booked');
+    return redirect('/business/booked');
   }
 };
