@@ -36,10 +36,14 @@ export function RemoveLanguageFilterButton() {
   );
 }
 
-export function AddLanguageFilter() {
+export function AddLanguageFilter({tags}: {tags: string[] | null}) {
   const {t} = useTranslation('global');
   const {value, onChange} = useChangeFilter('lang');
   const transform = value?.split(',').filter((p) => p.length > 0);
+
+  if (!tags) {
+    return null;
+  }
 
   return (
     <div>
@@ -49,27 +53,33 @@ export function AddLanguageFilter() {
       </Group>
       <Checkbox.Group value={transform} onChange={onChange}>
         <Stack gap="3px">
-          <Checkbox.Card value="english" withBorder={false}>
-            <Flex gap="xs" align="center">
-              <Checkbox.Indicator />
-              <Text>{t('english', {ns: 'global'})}</Text>
-              <US width={16} height={16} />
-            </Flex>
-          </Checkbox.Card>
-          <Checkbox.Card value="danish" withBorder={false}>
-            <Flex gap="xs" align="center">
-              <Checkbox.Indicator />
-              <Text>{t('danish', {ns: 'global'})}</Text>
-              <DK width={16} height={16} />
-            </Flex>
-          </Checkbox.Card>
-          <Checkbox.Card value="arabic" withBorder={false}>
-            <Flex gap="xs" align="center">
-              <Checkbox.Indicator />
-              <Text>{t('arabic', {ns: 'global'})}</Text>
-              <AE width={16} height={16} />
-            </Flex>
-          </Checkbox.Card>
+          {tags.includes('english') ? (
+            <Checkbox.Card value="english" withBorder={false}>
+              <Flex gap="xs" align="center">
+                <Checkbox.Indicator />
+                <Text>{t('english', {ns: 'global'})}</Text>
+                <US width={16} height={16} />
+              </Flex>
+            </Checkbox.Card>
+          ) : null}
+          {tags.includes('danish') ? (
+            <Checkbox.Card value="danish" withBorder={false}>
+              <Flex gap="xs" align="center">
+                <Checkbox.Indicator />
+                <Text>{t('danish', {ns: 'global'})}</Text>
+                <DK width={16} height={16} />
+              </Flex>
+            </Checkbox.Card>
+          ) : null}
+          {tags.includes('arabic') ? (
+            <Checkbox.Card value="arabic" withBorder={false}>
+              <Flex gap="xs" align="center">
+                <Checkbox.Indicator />
+                <Text>{t('arabic', {ns: 'global'})}</Text>
+                <AE width={16} height={16} />
+              </Flex>
+            </Checkbox.Card>
+          ) : null}
         </Stack>
       </Checkbox.Group>
     </div>

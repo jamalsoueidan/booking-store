@@ -1,6 +1,7 @@
 import {
   FormProvider,
   getFormProps,
+  getInputProps,
   getSelectProps,
   useForm,
   useInputControl,
@@ -8,9 +9,12 @@ import {
 import {parseWithZod} from '@conform-to/zod';
 
 import {
+  ActionIcon,
   Container,
   Divider,
   Flex,
+  Indicator,
+  Loader,
   rem,
   Select,
   Stack,
@@ -19,7 +23,7 @@ import {
   TextInput,
   Title,
 } from '@mantine/core';
-import {Form, useActionData, useLoaderData} from '@remix-run/react';
+import {Form, useActionData, useFetcher, useLoaderData} from '@remix-run/react';
 import {redirect} from '@remix-run/server-runtime';
 import {
   json,
@@ -27,24 +31,28 @@ import {
   type LoaderFunctionArgs,
 } from '@shopify/remix-oxygen';
 
-import {useMemo, useState} from 'react';
+import {useCallback, useEffect, useState} from 'react';
 import {SubmitButton} from '~/components/form/SubmitButton';
 import {SwitchGroupLocations} from '~/components/form/SwitchGroupLocations';
 
 import {getBookingShopifyApi} from '~/lib/api/bookingShopifyApi';
 
-import {parseGid} from '@shopify/hydrogen';
+import {IconAirBalloon} from '@tabler/icons-react';
 import {redirectWithSuccess} from 'remix-toast';
 import {AccountContent} from '~/components/account/AccountContent';
 import {AccountTitle} from '~/components/account/AccountTitle';
 import {AmountInput} from '~/components/form/AmountInput';
 import {TextEditor} from '~/components/richtext/TextEditor';
 import {FlexInnerForm} from '~/components/tiny/FlexInnerForm';
-import {type CustomerProductLocationsItem} from '~/lib/api/model';
+import {
+  type CustomerProductLocationsItem,
+  type OpenAIProductTitle200Payload,
+} from '~/lib/api/model';
 import {baseURL} from '~/lib/api/mutator/query-client';
 import {convertHTML} from '~/lib/convertHTML';
 import {getCustomer} from '~/lib/get-customer';
 import {customerProductAddBody} from '~/lib/zod/bookingShopifyApi';
+import {GET_CATEGORY_QUERY} from './categories_.$handle';
 
 const schema = customerProductAddBody.omit({descriptionHtml: true});
 
@@ -72,7 +80,7 @@ export const action = async ({request, context}: ActionFunctionArgs) => {
       `${baseURL}/customer/${customerId}/products`,
     );
 
-    return redirectWithSuccess(`/account/services/${product.productId}`, {
+    return redirectWithSuccess(`/business/services/${product.productId}`, {
       message: 'Ydelsen er nu oprettet!',
     });
   } catch (error) {
@@ -83,7 +91,15 @@ export const action = async ({request, context}: ActionFunctionArgs) => {
 export async function loader({context}: LoaderFunctionArgs) {
   const customerId = await getCustomer({context});
 
-  const {collection} = await context.storefront.query(COLLECTION);
+  const {collection: rootCollection} = await context.storefront.query(
+    GET_CATEGORY_QUERY,
+    {
+      variables: {
+        handle: 'alle-behandlinger',
+      },
+      cache: context.storefront.CacheShort(),
+    },
+  );
 
   const {payload: schedules} =
     await getBookingShopifyApi().customerScheduleList(customerId, context);
@@ -92,16 +108,16 @@ export async function loader({context}: LoaderFunctionArgs) {
     await getBookingShopifyApi().customerLocationList(customerId, context);
 
   if (locations.length === 0 || schedules.length === 0) {
-    return redirect('/account/services');
+    return redirect('/business/services');
   }
 
   return json({
     locations,
     schedules,
-    collection,
+    rootCollection,
     defaultValue: {
       title: '',
-      parentId: null,
+      productType: '',
       description: null,
       hideFromCombine: 'false',
       hideFromProfile: 'false',
@@ -120,10 +136,11 @@ export async function loader({context}: LoaderFunctionArgs) {
 }
 
 export default function AccountServicesCreate() {
-  const {locations, defaultValue, schedules, collection} =
+  const {locations, defaultValue, schedules, rootCollection} =
     useLoaderData<typeof loader>();
   const lastResult = useActionData<typeof action>();
   const [descriptionHtml, setDescriptionHtml] = useState<string | null>(null);
+  const fetcher = useFetcher<OpenAIProductTitle200Payload>();
 
   const [form, fields] = useForm({
     lastResult,
@@ -144,40 +161,34 @@ export default function AccountServicesCreate() {
 
   const hideFromProfile = useInputControl(fields.hideFromProfile);
   const hideFromCombine = useInputControl(fields.hideFromCombine);
-  const titleInput = useInputControl(fields.title);
   const descriptionInput = useInputControl(fields.description);
-  const parentId = useInputControl(fields.parentId);
 
-  const products = useMemo(
-    () =>
-      collection?.children?.references?.nodes.reduce((products, collection) => {
-        collection.products.nodes.forEach((product) => {
-          products.push({
-            value: product.id,
-            label: `${collection.title}: ${product.title}`,
-          });
-        });
-        return products;
-      }, [] as Array<{value: string; label: string}>),
-    [collection?.children?.references?.nodes],
-  );
+  const aiSuggestion = useCallback(() => {
+    fetcher.submit(
+      {title: fields.title.value || ''},
+      {action: '/business/api/ai-suggestion'},
+    );
+  }, [fetcher, fields.title.value]);
 
-  const onChangeProduct = (value: string | null) => {
-    if (!value) {
-      titleInput.change(undefined);
-      setDescriptionHtml(null);
-      return;
+  useEffect(() => {
+    if (fetcher.data && fetcher.state === 'idle') {
+      form.update({name: fields.title.name, value: fetcher.data.title});
+      form.update({
+        name: fields.productType.name,
+        value: fetcher.data.collection?.title || '',
+      });
+      setDescriptionHtml(fetcher.data.description);
+      fetcher.load('/business/api/ai-suggestion'); //reset
     }
-    parentId.change(parseGid(value).id);
-    collection?.children?.references?.nodes.some((c) => {
-      const product = c.products.nodes.find((p) => p.id === value);
-      if (product) {
-        titleInput.change(product.title);
-        setDescriptionHtml(product.descriptionHtml);
-      }
-      return product !== undefined;
-    });
-  };
+  }, [
+    fetcher,
+    fetcher.data,
+    fetcher.state,
+    fields.productType.name,
+    fields.title.name,
+    fields.title.value,
+    form,
+  ]);
 
   return (
     <Container size="md" my={{base: rem(80), sm: rem(100)}}>
@@ -186,25 +197,6 @@ export default function AccountServicesCreate() {
         <FormProvider context={form.context}>
           <Form method="post" {...getFormProps(form)}>
             <FlexInnerForm>
-              <Flex direction={{base: 'column', md: 'row'}} gap="md">
-                <Stack gap="0" style={{flex: 1}}>
-                  <Text fw="bold">Kategori:</Text>
-                  <Text>
-                    Vælg den kategori for den ydelse, du ønsker at tilbyde?
-                  </Text>
-                </Stack>
-                <div style={{flex: 1}}>
-                  <Select
-                    data={products}
-                    onChange={onChangeProduct}
-                    searchable
-                    clearable
-                  />
-                </div>
-              </Flex>
-
-              <Divider />
-
               <Title order={3}>Title & Beskrivelse</Title>
 
               <Flex direction={{base: 'column', md: 'row'}} gap="md">
@@ -212,11 +204,45 @@ export default function AccountServicesCreate() {
                   <Text fw="bold">Title:</Text>
                   <Text>Title på ydelsen</Text>
                 </Stack>
+                <TextInput
+                  {...getInputProps(fields.title, {type: 'text'})}
+                  style={{flex: 1}}
+                  rightSection={
+                    <Indicator inline label="AI" size={16}>
+                      <ActionIcon
+                        color="dark"
+                        disabled={!fields.title.value}
+                        onClick={aiSuggestion}
+                      >
+                        {fetcher.state !== 'idle' ? (
+                          <Loader color="white" size={rem(16)} />
+                        ) : (
+                          <IconAirBalloon
+                            style={{width: rem(16), height: rem(16)}}
+                          />
+                        )}
+                      </ActionIcon>
+                    </Indicator>
+                  }
+                />
+              </Flex>
+
+              <Flex direction={{base: 'column', md: 'row'}} gap="md">
+                <Stack gap="0" style={{flex: 1}}>
+                  <Text fw="bold">Kategori:</Text>
+                  <Text>Kategori på ydelsen</Text>
+                </Stack>
                 <div style={{flex: 1}}>
-                  <TextInput
-                    defaultValue={titleInput.value}
-                    disabled={!titleInput.value}
-                    name={fields.title.name}
+                  <Select
+                    {...getSelectProps(fields.productType)}
+                    defaultValue={fields.productType.initialValue}
+                    placeholder="Vælg en kategori"
+                    data={rootCollection?.children?.references?.nodes.map(
+                      (collection) => ({
+                        value: collection.title,
+                        label: collection.title,
+                      }),
+                    )}
                   />
                 </div>
               </Flex>
@@ -346,39 +372,3 @@ export default function AccountServicesCreate() {
     </Container>
   );
 }
-
-export const CATEGORIES_FRAGMENT = `#graphql
-  fragment CategoryStorefront on Collection {
-    id
-    title
-    children: metafield(key: "children", namespace: "booking") {
-      references(first: 20) {
-        nodes {
-          ... on Collection {
-            id
-            title
-            products(first: 30) {
-              nodes {
-                id
-                title
-                descriptionHtml
-              }
-            }
-          }
-        }
-      }
-    }
-  }
-` as const;
-
-export const COLLECTION = `#graphql
-  ${CATEGORIES_FRAGMENT}
-  query CategoriesStorefront(
-    $country: CountryCode
-    $language: LanguageCode
-  ) @inContext(country: $country, language: $language) {
-    collection(handle: "alle-behandlinger") {
-      ...CategoryStorefront
-    }
-  }
-` as const;

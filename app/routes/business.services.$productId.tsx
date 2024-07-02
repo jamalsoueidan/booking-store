@@ -29,9 +29,9 @@ export default function EditAddress() {
 
   return (
     <Container size="md" my={{base: rem(80), sm: rem(100)}}>
-      <AccountTitle linkBack="/account/services" heading={product.title}>
+      <AccountTitle linkBack="/business/services" heading={product.title}>
         <AccountButton
-          to={`/account/services/${product.productId}`}
+          to={`/business/services/${product.productId}`}
           data-testid="basic-button"
         >
           Detaljer
@@ -44,7 +44,7 @@ export default function EditAddress() {
         </AccountButton>
         <Form
           method="post"
-          action={`/account/services/${product.productId}/destroy`}
+          action={`/business/services/${product.productId}/destroy`}
           style={{display: 'inline-block'}}
         >
           <Button

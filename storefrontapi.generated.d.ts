@@ -578,12 +578,103 @@ export type ArticleUserFragment = Pick<
     reference?: StorefrontAPI.Maybe<{
       products: {
         nodes: Array<
-          Pick<StorefrontAPI.Product, 'id' | 'title'> & {
+          Pick<
+            StorefrontAPI.Product,
+            | 'id'
+            | 'title'
+            | 'descriptionHtml'
+            | 'productType'
+            | 'handle'
+            | 'vendor'
+          > & {
             featuredImage?: StorefrontAPI.Maybe<
               Pick<
                 StorefrontAPI.Image,
                 'id' | 'altText' | 'url' | 'width' | 'height'
               >
+            >;
+            variants: {
+              nodes: Array<
+                Pick<StorefrontAPI.ProductVariant, 'id'> & {
+                  compareAtPrice?: StorefrontAPI.Maybe<
+                    Pick<StorefrontAPI.MoneyV2, 'amount' | 'currencyCode'>
+                  >;
+                  price: Pick<StorefrontAPI.MoneyV2, 'amount' | 'currencyCode'>;
+                }
+              >;
+            };
+            parentId?: StorefrontAPI.Maybe<
+              Pick<StorefrontAPI.Metafield, 'id' | 'value'>
+            >;
+            options?: StorefrontAPI.Maybe<
+              Pick<StorefrontAPI.Metafield, 'id' | 'value'>
+            >;
+            scheduleId?: StorefrontAPI.Maybe<{
+              reference?: StorefrontAPI.Maybe<
+                Pick<StorefrontAPI.Metaobject, 'handle'>
+              >;
+            }>;
+            locations?: StorefrontAPI.Maybe<{
+              references?: StorefrontAPI.Maybe<{
+                nodes: Array<
+                  Pick<StorefrontAPI.Metaobject, 'id' | 'handle'> & {
+                    locationType?: StorefrontAPI.Maybe<
+                      Pick<StorefrontAPI.MetaobjectField, 'value'>
+                    >;
+                    name?: StorefrontAPI.Maybe<
+                      Pick<StorefrontAPI.MetaobjectField, 'value'>
+                    >;
+                    fullAddress?: StorefrontAPI.Maybe<
+                      Pick<StorefrontAPI.MetaobjectField, 'value'>
+                    >;
+                    city?: StorefrontAPI.Maybe<
+                      Pick<StorefrontAPI.MetaobjectField, 'value'>
+                    >;
+                    country?: StorefrontAPI.Maybe<
+                      Pick<StorefrontAPI.MetaobjectField, 'value'>
+                    >;
+                    distanceForFree?: StorefrontAPI.Maybe<
+                      Pick<StorefrontAPI.MetaobjectField, 'value'>
+                    >;
+                    distanceHourlyRate?: StorefrontAPI.Maybe<
+                      Pick<StorefrontAPI.MetaobjectField, 'value'>
+                    >;
+                    fixedRatePerKm?: StorefrontAPI.Maybe<
+                      Pick<StorefrontAPI.MetaobjectField, 'value'>
+                    >;
+                    minDriveDistance?: StorefrontAPI.Maybe<
+                      Pick<StorefrontAPI.MetaobjectField, 'value'>
+                    >;
+                    maxDriveDistance?: StorefrontAPI.Maybe<
+                      Pick<StorefrontAPI.MetaobjectField, 'value'>
+                    >;
+                    startFee?: StorefrontAPI.Maybe<
+                      Pick<StorefrontAPI.MetaobjectField, 'value'>
+                    >;
+                    geoLocation?: StorefrontAPI.Maybe<
+                      Pick<StorefrontAPI.MetaobjectField, 'value'>
+                    >;
+                  }
+                >;
+              }>;
+            }>;
+            bookingPeriodValue?: StorefrontAPI.Maybe<
+              Pick<StorefrontAPI.Metafield, 'id' | 'value'>
+            >;
+            bookingPeriodUnit?: StorefrontAPI.Maybe<
+              Pick<StorefrontAPI.Metafield, 'id' | 'value'>
+            >;
+            noticePeriodValue?: StorefrontAPI.Maybe<
+              Pick<StorefrontAPI.Metafield, 'id' | 'value'>
+            >;
+            noticePeriodUnit?: StorefrontAPI.Maybe<
+              Pick<StorefrontAPI.Metafield, 'id' | 'value'>
+            >;
+            duration?: StorefrontAPI.Maybe<
+              Pick<StorefrontAPI.Metafield, 'id' | 'value'>
+            >;
+            breaktime?: StorefrontAPI.Maybe<
+              Pick<StorefrontAPI.Metafield, 'id' | 'value'>
             >;
           }
         >;
@@ -597,15 +688,6 @@ export type ArticleUserFragment = Pick<
       };
     }>;
   }>;
-};
-
-export type ArticleUserProductFragment = Pick<
-  StorefrontAPI.Product,
-  'id' | 'title'
-> & {
-  featuredImage?: StorefrontAPI.Maybe<
-    Pick<StorefrontAPI.Image, 'id' | 'altText' | 'url' | 'width' | 'height'>
-  >;
 };
 
 export type LocationFragment = Pick<
@@ -1655,6 +1737,12 @@ export type ComponentsFragment = {
                 }
               >;
             }>;
+            fromColor?: StorefrontAPI.Maybe<
+              Pick<StorefrontAPI.MetaobjectField, 'value'>
+            >;
+            toColor?: StorefrontAPI.Maybe<
+              Pick<StorefrontAPI.MetaobjectField, 'value'>
+            >;
             direction?: StorefrontAPI.Maybe<
               Pick<StorefrontAPI.MetaobjectField, 'value'>
             >;
@@ -1684,12 +1772,6 @@ export type ComponentsFragment = {
                 }
               >;
             }>;
-            fromColor?: StorefrontAPI.Maybe<
-              Pick<StorefrontAPI.MetaobjectField, 'value'>
-            >;
-            toColor?: StorefrontAPI.Maybe<
-              Pick<StorefrontAPI.MetaobjectField, 'value'>
-            >;
             collections?: StorefrontAPI.Maybe<{
               references?: StorefrontAPI.Maybe<{
                 nodes: Array<
@@ -1719,6 +1801,8 @@ export type FaqFragment = Pick<StorefrontAPI.Metaobject, 'id' | 'type'> & {
   backgroundColor?: StorefrontAPI.Maybe<
     Pick<StorefrontAPI.MetaobjectField, 'value'>
   >;
+  fromColor?: StorefrontAPI.Maybe<Pick<StorefrontAPI.MetaobjectField, 'value'>>;
+  toColor?: StorefrontAPI.Maybe<Pick<StorefrontAPI.MetaobjectField, 'value'>>;
   direction?: StorefrontAPI.Maybe<Pick<StorefrontAPI.MetaobjectField, 'value'>>;
   accordion?: StorefrontAPI.Maybe<{
     reference?: StorefrontAPI.Maybe<
@@ -2304,6 +2388,12 @@ export type MetaobjectQueryQuery = {
                   }
                 >;
               }>;
+              fromColor?: StorefrontAPI.Maybe<
+                Pick<StorefrontAPI.MetaobjectField, 'value'>
+              >;
+              toColor?: StorefrontAPI.Maybe<
+                Pick<StorefrontAPI.MetaobjectField, 'value'>
+              >;
               direction?: StorefrontAPI.Maybe<
                 Pick<StorefrontAPI.MetaobjectField, 'value'>
               >;
@@ -2333,12 +2423,6 @@ export type MetaobjectQueryQuery = {
                   }
                 >;
               }>;
-              fromColor?: StorefrontAPI.Maybe<
-                Pick<StorefrontAPI.MetaobjectField, 'value'>
-              >;
-              toColor?: StorefrontAPI.Maybe<
-                Pick<StorefrontAPI.MetaobjectField, 'value'>
-              >;
               collections?: StorefrontAPI.Maybe<{
                 references?: StorefrontAPI.Maybe<{
                   nodes: Array<
@@ -2426,71 +2510,6 @@ export type MetaobjectVisualTeaserQueryQuery = {
           }
         >;
       }>;
-    }
-  >;
-};
-
-export type CategoryWithChildrenFragment = Pick<
-  StorefrontAPI.Collection,
-  'id' | 'title' | 'handle' | 'description'
-> & {
-  image?: StorefrontAPI.Maybe<
-    Pick<StorefrontAPI.Image, 'id' | 'url' | 'altText' | 'width' | 'height'>
-  >;
-  children?: StorefrontAPI.Maybe<
-    Pick<StorefrontAPI.Metafield, 'id' | 'type'> & {
-      references?: StorefrontAPI.Maybe<{
-        nodes: Array<
-          Pick<
-            StorefrontAPI.Collection,
-            'id' | 'title' | 'handle' | 'description'
-          > & {
-            image?: StorefrontAPI.Maybe<
-              Pick<
-                StorefrontAPI.Image,
-                'id' | 'url' | 'altText' | 'width' | 'height'
-              >
-            >;
-          }
-        >;
-      }>;
-    }
-  >;
-};
-
-export type CategoriesWithChildrenQueryVariables = StorefrontAPI.Exact<{
-  country?: StorefrontAPI.InputMaybe<StorefrontAPI.CountryCode>;
-  language?: StorefrontAPI.InputMaybe<StorefrontAPI.LanguageCode>;
-}>;
-
-export type CategoriesWithChildrenQuery = {
-  collection?: StorefrontAPI.Maybe<
-    Pick<
-      StorefrontAPI.Collection,
-      'id' | 'title' | 'handle' | 'description'
-    > & {
-      image?: StorefrontAPI.Maybe<
-        Pick<StorefrontAPI.Image, 'id' | 'url' | 'altText' | 'width' | 'height'>
-      >;
-      children?: StorefrontAPI.Maybe<
-        Pick<StorefrontAPI.Metafield, 'id' | 'type'> & {
-          references?: StorefrontAPI.Maybe<{
-            nodes: Array<
-              Pick<
-                StorefrontAPI.Collection,
-                'id' | 'title' | 'handle' | 'description'
-              > & {
-                image?: StorefrontAPI.Maybe<
-                  Pick<
-                    StorefrontAPI.Image,
-                    'id' | 'url' | 'altText' | 'width' | 'height'
-                  >
-                >;
-              }
-            >;
-          }>;
-        }
-      >;
     }
   >;
 };
@@ -2743,67 +2762,6 @@ export type SitemapQuery = {
   pages: {
     nodes: Array<
       Pick<StorefrontAPI.Page, 'updatedAt' | 'handle' | 'onlineStoreUrl'>
-    >;
-  };
-};
-
-export type RecommendedTreatmentsQueryVariables = StorefrontAPI.Exact<{
-  query: StorefrontAPI.Scalars['String']['input'];
-  country?: StorefrontAPI.InputMaybe<StorefrontAPI.CountryCode>;
-  language?: StorefrontAPI.InputMaybe<StorefrontAPI.LanguageCode>;
-}>;
-
-export type RecommendedTreatmentsQuery = {
-  products: {
-    nodes: Array<
-      Pick<
-        StorefrontAPI.Product,
-        | 'id'
-        | 'title'
-        | 'descriptionHtml'
-        | 'description'
-        | 'productType'
-        | 'handle'
-        | 'vendor'
-      > & {
-        featuredImage?: StorefrontAPI.Maybe<
-          Pick<
-            StorefrontAPI.Image,
-            'id' | 'altText' | 'url' | 'width' | 'height'
-          >
-        >;
-        collection?: StorefrontAPI.Maybe<{
-          reference?: StorefrontAPI.Maybe<{
-            products: {
-              filters: Array<
-                Pick<StorefrontAPI.Filter, 'id' | 'label'> & {
-                  values: Array<Pick<StorefrontAPI.FilterValue, 'count'>>;
-                }
-              >;
-              nodes: Array<
-                Pick<StorefrontAPI.Product, 'id'> & {
-                  user?: StorefrontAPI.Maybe<{
-                    reference?: StorefrontAPI.Maybe<
-                      Pick<StorefrontAPI.Metaobject, 'id'> & {
-                        image?: StorefrontAPI.Maybe<{
-                          reference?: StorefrontAPI.Maybe<{
-                            image?: StorefrontAPI.Maybe<
-                              Pick<
-                                StorefrontAPI.Image,
-                                'width' | 'height' | 'url'
-                              >
-                            >;
-                          }>;
-                        }>;
-                      }
-                    >;
-                  }>;
-                }
-              >;
-            };
-          }>;
-        }>;
-      }
     >;
   };
 };
@@ -3625,73 +3583,68 @@ export type ServicesOptionsTagOptionsQueryQuery = {
   };
 };
 
-export type CategoryStorefrontFragment = Pick<
-  StorefrontAPI.Collection,
-  'id' | 'title'
+export type TreatmentFragment = Pick<
+  StorefrontAPI.Product,
+  'id' | 'title' | 'description' | 'handle'
 > & {
-  children?: StorefrontAPI.Maybe<{
+  variants: {
+    nodes: Array<
+      Pick<StorefrontAPI.ProductVariant, 'id'> & {
+        compareAtPrice?: StorefrontAPI.Maybe<
+          Pick<StorefrontAPI.MoneyV2, 'amount' | 'currencyCode'>
+        >;
+        price: Pick<StorefrontAPI.MoneyV2, 'amount' | 'currencyCode'>;
+      }
+    >;
+  };
+  locations?: StorefrontAPI.Maybe<{
     references?: StorefrontAPI.Maybe<{
       nodes: Array<
-        Pick<StorefrontAPI.Collection, 'id' | 'title'> & {
-          products: {
-            nodes: Array<
-              Pick<StorefrontAPI.Product, 'id' | 'title' | 'descriptionHtml'>
-            >;
-          };
+        Pick<StorefrontAPI.Metaobject, 'id'> & {
+          locationType?: StorefrontAPI.Maybe<
+            Pick<StorefrontAPI.MetaobjectField, 'value'>
+          >;
+          geoLocation?: StorefrontAPI.Maybe<
+            Pick<StorefrontAPI.MetaobjectField, 'value'>
+          >;
         }
       >;
     }>;
   }>;
-};
-
-export type CategoriesStorefrontQueryVariables = StorefrontAPI.Exact<{
-  country?: StorefrontAPI.InputMaybe<StorefrontAPI.CountryCode>;
-  language?: StorefrontAPI.InputMaybe<StorefrontAPI.LanguageCode>;
-}>;
-
-export type CategoriesStorefrontQuery = {
-  collection?: StorefrontAPI.Maybe<
-    Pick<StorefrontAPI.Collection, 'id' | 'title'> & {
-      children?: StorefrontAPI.Maybe<{
-        references?: StorefrontAPI.Maybe<{
-          nodes: Array<
-            Pick<StorefrontAPI.Collection, 'id' | 'title'> & {
-              products: {
-                nodes: Array<
-                  Pick<
-                    StorefrontAPI.Product,
-                    'id' | 'title' | 'descriptionHtml'
-                  >
-                >;
-              };
-            }
-          >;
-        }>;
-      }>;
-    }
-  >;
-};
-
-export type CategoriesCollectionProductUserFragment = Pick<
-  StorefrontAPI.Metaobject,
-  'id'
-> & {
-  image?: StorefrontAPI.Maybe<{
-    reference?: StorefrontAPI.Maybe<{
-      image?: StorefrontAPI.Maybe<
-        Pick<StorefrontAPI.Image, 'width' | 'height' | 'url'>
-      >;
-    }>;
-  }>;
-};
-
-export type CategoriesCollectionProductFragment = Pick<
-  StorefrontAPI.Product,
-  'id'
-> & {
+  duration?: StorefrontAPI.Maybe<Pick<StorefrontAPI.Metafield, 'id' | 'value'>>;
   user?: StorefrontAPI.Maybe<{
     reference?: StorefrontAPI.Maybe<
       Pick<StorefrontAPI.Metaobject, 'id'> & {
+        aboutMe?: StorefrontAPI.Maybe<
+          Pick<StorefrontAPI.MetaobjectField, 'value'>
+        >;
+        active?: StorefrontAPI.Maybe<
+          Pick<StorefrontAPI.MetaobjectField, 'value'>
+        >;
+        fullname?: StorefrontAPI.Maybe<
+          Pick<StorefrontAPI.MetaobjectField, 'value'>
+        >;
+        professions?: StorefrontAPI.Maybe<
+          Pick<StorefrontAPI.MetaobjectField, 'value'>
+        >;
+        specialties?: StorefrontAPI.Maybe<
+          Pick<StorefrontAPI.MetaobjectField, 'value'>
+        >;
+        speaks?: StorefrontAPI.Maybe<
+          Pick<StorefrontAPI.MetaobjectField, 'value'>
+        >;
+        social?: StorefrontAPI.Maybe<
+          Pick<StorefrontAPI.MetaobjectField, 'value'>
+        >;
+        shortDescription?: StorefrontAPI.Maybe<
+          Pick<StorefrontAPI.MetaobjectField, 'value'>
+        >;
+        username?: StorefrontAPI.Maybe<
+          Pick<StorefrontAPI.MetaobjectField, 'value'>
+        >;
+        theme?: StorefrontAPI.Maybe<
+          Pick<StorefrontAPI.MetaobjectField, 'value'>
+        >;
         image?: StorefrontAPI.Maybe<{
           reference?: StorefrontAPI.Maybe<{
             image?: StorefrontAPI.Maybe<
@@ -3704,56 +3657,8 @@ export type CategoriesCollectionProductFragment = Pick<
   }>;
 };
 
-export type CategoriesCollectionFilterFragment = Pick<
-  StorefrontAPI.Filter,
-  'id' | 'label'
-> & {values: Array<Pick<StorefrontAPI.FilterValue, 'count'>>};
-
-export type CategoriesCollectionFragment = Pick<
-  StorefrontAPI.Product,
-  | 'id'
-  | 'title'
-  | 'descriptionHtml'
-  | 'description'
-  | 'productType'
-  | 'handle'
-  | 'vendor'
-> & {
-  featuredImage?: StorefrontAPI.Maybe<
-    Pick<StorefrontAPI.Image, 'id' | 'altText' | 'url' | 'width' | 'height'>
-  >;
-  collection?: StorefrontAPI.Maybe<{
-    reference?: StorefrontAPI.Maybe<{
-      products: {
-        filters: Array<
-          Pick<StorefrontAPI.Filter, 'id' | 'label'> & {
-            values: Array<Pick<StorefrontAPI.FilterValue, 'count'>>;
-          }
-        >;
-        nodes: Array<
-          Pick<StorefrontAPI.Product, 'id'> & {
-            user?: StorefrontAPI.Maybe<{
-              reference?: StorefrontAPI.Maybe<
-                Pick<StorefrontAPI.Metaobject, 'id'> & {
-                  image?: StorefrontAPI.Maybe<{
-                    reference?: StorefrontAPI.Maybe<{
-                      image?: StorefrontAPI.Maybe<
-                        Pick<StorefrontAPI.Image, 'width' | 'height' | 'url'>
-                      >;
-                    }>;
-                  }>;
-                }
-              >;
-            }>;
-          }
-        >;
-      };
-    }>;
-  }>;
-};
-
-export type CategoriesCollectionQueryVariables = StorefrontAPI.Exact<{
-  handle: StorefrontAPI.Scalars['String']['input'];
+export type GetTreatmentsQueryVariables = StorefrontAPI.Exact<{
+  query?: StorefrontAPI.InputMaybe<StorefrontAPI.Scalars['String']['input']>;
   country?: StorefrontAPI.InputMaybe<StorefrontAPI.CountryCode>;
   language?: StorefrontAPI.InputMaybe<StorefrontAPI.LanguageCode>;
   first?: StorefrontAPI.InputMaybe<StorefrontAPI.Scalars['Int']['input']>;
@@ -3766,68 +3671,119 @@ export type CategoriesCollectionQueryVariables = StorefrontAPI.Exact<{
   >;
 }>;
 
-export type CategoriesCollectionQuery = {
+export type GetTreatmentsQuery = {
+  products: {
+    nodes: Array<
+      Pick<StorefrontAPI.Product, 'id' | 'title' | 'description' | 'handle'> & {
+        variants: {
+          nodes: Array<
+            Pick<StorefrontAPI.ProductVariant, 'id'> & {
+              compareAtPrice?: StorefrontAPI.Maybe<
+                Pick<StorefrontAPI.MoneyV2, 'amount' | 'currencyCode'>
+              >;
+              price: Pick<StorefrontAPI.MoneyV2, 'amount' | 'currencyCode'>;
+            }
+          >;
+        };
+        locations?: StorefrontAPI.Maybe<{
+          references?: StorefrontAPI.Maybe<{
+            nodes: Array<
+              Pick<StorefrontAPI.Metaobject, 'id'> & {
+                locationType?: StorefrontAPI.Maybe<
+                  Pick<StorefrontAPI.MetaobjectField, 'value'>
+                >;
+                geoLocation?: StorefrontAPI.Maybe<
+                  Pick<StorefrontAPI.MetaobjectField, 'value'>
+                >;
+              }
+            >;
+          }>;
+        }>;
+        duration?: StorefrontAPI.Maybe<
+          Pick<StorefrontAPI.Metafield, 'id' | 'value'>
+        >;
+        user?: StorefrontAPI.Maybe<{
+          reference?: StorefrontAPI.Maybe<
+            Pick<StorefrontAPI.Metaobject, 'id'> & {
+              aboutMe?: StorefrontAPI.Maybe<
+                Pick<StorefrontAPI.MetaobjectField, 'value'>
+              >;
+              active?: StorefrontAPI.Maybe<
+                Pick<StorefrontAPI.MetaobjectField, 'value'>
+              >;
+              fullname?: StorefrontAPI.Maybe<
+                Pick<StorefrontAPI.MetaobjectField, 'value'>
+              >;
+              professions?: StorefrontAPI.Maybe<
+                Pick<StorefrontAPI.MetaobjectField, 'value'>
+              >;
+              specialties?: StorefrontAPI.Maybe<
+                Pick<StorefrontAPI.MetaobjectField, 'value'>
+              >;
+              speaks?: StorefrontAPI.Maybe<
+                Pick<StorefrontAPI.MetaobjectField, 'value'>
+              >;
+              social?: StorefrontAPI.Maybe<
+                Pick<StorefrontAPI.MetaobjectField, 'value'>
+              >;
+              shortDescription?: StorefrontAPI.Maybe<
+                Pick<StorefrontAPI.MetaobjectField, 'value'>
+              >;
+              username?: StorefrontAPI.Maybe<
+                Pick<StorefrontAPI.MetaobjectField, 'value'>
+              >;
+              theme?: StorefrontAPI.Maybe<
+                Pick<StorefrontAPI.MetaobjectField, 'value'>
+              >;
+              image?: StorefrontAPI.Maybe<{
+                reference?: StorefrontAPI.Maybe<{
+                  image?: StorefrontAPI.Maybe<
+                    Pick<StorefrontAPI.Image, 'width' | 'height' | 'url'>
+                  >;
+                }>;
+              }>;
+            }
+          >;
+        }>;
+      }
+    >;
+    pageInfo: Pick<
+      StorefrontAPI.PageInfo,
+      'hasPreviousPage' | 'hasNextPage' | 'endCursor' | 'startCursor'
+    >;
+  };
+};
+
+export type GetCategoryQueryVariables = StorefrontAPI.Exact<{
+  handle: StorefrontAPI.Scalars['String']['input'];
+  country?: StorefrontAPI.InputMaybe<StorefrontAPI.CountryCode>;
+  language?: StorefrontAPI.InputMaybe<StorefrontAPI.LanguageCode>;
+}>;
+
+export type GetCategoryQuery = {
   collection?: StorefrontAPI.Maybe<
     Pick<
       StorefrontAPI.Collection,
       'id' | 'handle' | 'title' | 'description'
     > & {
-      products: {
-        nodes: Array<
-          Pick<
-            StorefrontAPI.Product,
-            | 'id'
-            | 'title'
-            | 'descriptionHtml'
-            | 'description'
-            | 'productType'
-            | 'handle'
-            | 'vendor'
-          > & {
-            featuredImage?: StorefrontAPI.Maybe<
-              Pick<
-                StorefrontAPI.Image,
-                'id' | 'altText' | 'url' | 'width' | 'height'
-              >
-            >;
-            collection?: StorefrontAPI.Maybe<{
-              reference?: StorefrontAPI.Maybe<{
-                products: {
-                  filters: Array<
-                    Pick<StorefrontAPI.Filter, 'id' | 'label'> & {
-                      values: Array<Pick<StorefrontAPI.FilterValue, 'count'>>;
-                    }
-                  >;
+      image?: StorefrontAPI.Maybe<
+        Pick<StorefrontAPI.Image, 'url' | 'altText' | 'width' | 'height'>
+      >;
+      children?: StorefrontAPI.Maybe<{
+        references?: StorefrontAPI.Maybe<{
+          nodes: Array<
+            Pick<StorefrontAPI.Collection, 'id' | 'handle' | 'title'> & {
+              children?: StorefrontAPI.Maybe<{
+                references?: StorefrontAPI.Maybe<{
                   nodes: Array<
-                    Pick<StorefrontAPI.Product, 'id'> & {
-                      user?: StorefrontAPI.Maybe<{
-                        reference?: StorefrontAPI.Maybe<
-                          Pick<StorefrontAPI.Metaobject, 'id'> & {
-                            image?: StorefrontAPI.Maybe<{
-                              reference?: StorefrontAPI.Maybe<{
-                                image?: StorefrontAPI.Maybe<
-                                  Pick<
-                                    StorefrontAPI.Image,
-                                    'width' | 'height' | 'url'
-                                  >
-                                >;
-                              }>;
-                            }>;
-                          }
-                        >;
-                      }>;
-                    }
+                    Pick<StorefrontAPI.Collection, 'id' | 'handle' | 'title'>
                   >;
-                };
+                }>;
               }>;
-            }>;
-          }
-        >;
-        pageInfo: Pick<
-          StorefrontAPI.PageInfo,
-          'hasPreviousPage' | 'hasNextPage' | 'endCursor' | 'startCursor'
-        >;
-      };
+            }
+          >;
+        }>;
+      }>;
     }
   >;
 };
@@ -4115,6 +4071,12 @@ export type PageFragment = Pick<StorefrontAPI.Page, 'id' | 'title' | 'body'> & {
               }
             >;
           }>;
+          fromColor?: StorefrontAPI.Maybe<
+            Pick<StorefrontAPI.MetaobjectField, 'value'>
+          >;
+          toColor?: StorefrontAPI.Maybe<
+            Pick<StorefrontAPI.MetaobjectField, 'value'>
+          >;
           direction?: StorefrontAPI.Maybe<
             Pick<StorefrontAPI.MetaobjectField, 'value'>
           >;
@@ -4144,12 +4106,6 @@ export type PageFragment = Pick<StorefrontAPI.Page, 'id' | 'title' | 'body'> & {
               }
             >;
           }>;
-          fromColor?: StorefrontAPI.Maybe<
-            Pick<StorefrontAPI.MetaobjectField, 'value'>
-          >;
-          toColor?: StorefrontAPI.Maybe<
-            Pick<StorefrontAPI.MetaobjectField, 'value'>
-          >;
           collections?: StorefrontAPI.Maybe<{
             references?: StorefrontAPI.Maybe<{
               nodes: Array<
@@ -4333,6 +4289,12 @@ export type PageFragment = Pick<StorefrontAPI.Page, 'id' | 'title' | 'body'> & {
             }
           >;
         }>;
+        fromColor?: StorefrontAPI.Maybe<
+          Pick<StorefrontAPI.MetaobjectField, 'value'>
+        >;
+        toColor?: StorefrontAPI.Maybe<
+          Pick<StorefrontAPI.MetaobjectField, 'value'>
+        >;
         direction?: StorefrontAPI.Maybe<
           Pick<StorefrontAPI.MetaobjectField, 'value'>
         >;
@@ -4362,12 +4324,6 @@ export type PageFragment = Pick<StorefrontAPI.Page, 'id' | 'title' | 'body'> & {
             }
           >;
         }>;
-        fromColor?: StorefrontAPI.Maybe<
-          Pick<StorefrontAPI.MetaobjectField, 'value'>
-        >;
-        toColor?: StorefrontAPI.Maybe<
-          Pick<StorefrontAPI.MetaobjectField, 'value'>
-        >;
         collections?: StorefrontAPI.Maybe<{
           references?: StorefrontAPI.Maybe<{
             nodes: Array<
@@ -4553,6 +4509,12 @@ export type PageFragment = Pick<StorefrontAPI.Page, 'id' | 'title' | 'body'> & {
               }
             >;
           }>;
+          fromColor?: StorefrontAPI.Maybe<
+            Pick<StorefrontAPI.MetaobjectField, 'value'>
+          >;
+          toColor?: StorefrontAPI.Maybe<
+            Pick<StorefrontAPI.MetaobjectField, 'value'>
+          >;
           direction?: StorefrontAPI.Maybe<
             Pick<StorefrontAPI.MetaobjectField, 'value'>
           >;
@@ -4582,12 +4544,6 @@ export type PageFragment = Pick<StorefrontAPI.Page, 'id' | 'title' | 'body'> & {
               }
             >;
           }>;
-          fromColor?: StorefrontAPI.Maybe<
-            Pick<StorefrontAPI.MetaobjectField, 'value'>
-          >;
-          toColor?: StorefrontAPI.Maybe<
-            Pick<StorefrontAPI.MetaobjectField, 'value'>
-          >;
           collections?: StorefrontAPI.Maybe<{
             references?: StorefrontAPI.Maybe<{
               nodes: Array<
@@ -4791,6 +4747,12 @@ export type PageQuery = {
                   }
                 >;
               }>;
+              fromColor?: StorefrontAPI.Maybe<
+                Pick<StorefrontAPI.MetaobjectField, 'value'>
+              >;
+              toColor?: StorefrontAPI.Maybe<
+                Pick<StorefrontAPI.MetaobjectField, 'value'>
+              >;
               direction?: StorefrontAPI.Maybe<
                 Pick<StorefrontAPI.MetaobjectField, 'value'>
               >;
@@ -4820,12 +4782,6 @@ export type PageQuery = {
                   }
                 >;
               }>;
-              fromColor?: StorefrontAPI.Maybe<
-                Pick<StorefrontAPI.MetaobjectField, 'value'>
-              >;
-              toColor?: StorefrontAPI.Maybe<
-                Pick<StorefrontAPI.MetaobjectField, 'value'>
-              >;
               collections?: StorefrontAPI.Maybe<{
                 references?: StorefrontAPI.Maybe<{
                   nodes: Array<
@@ -5011,6 +4967,12 @@ export type PageQuery = {
                 }
               >;
             }>;
+            fromColor?: StorefrontAPI.Maybe<
+              Pick<StorefrontAPI.MetaobjectField, 'value'>
+            >;
+            toColor?: StorefrontAPI.Maybe<
+              Pick<StorefrontAPI.MetaobjectField, 'value'>
+            >;
             direction?: StorefrontAPI.Maybe<
               Pick<StorefrontAPI.MetaobjectField, 'value'>
             >;
@@ -5040,12 +5002,6 @@ export type PageQuery = {
                 }
               >;
             }>;
-            fromColor?: StorefrontAPI.Maybe<
-              Pick<StorefrontAPI.MetaobjectField, 'value'>
-            >;
-            toColor?: StorefrontAPI.Maybe<
-              Pick<StorefrontAPI.MetaobjectField, 'value'>
-            >;
             collections?: StorefrontAPI.Maybe<{
               references?: StorefrontAPI.Maybe<{
                 nodes: Array<
@@ -5234,6 +5190,12 @@ export type PageQuery = {
                   }
                 >;
               }>;
+              fromColor?: StorefrontAPI.Maybe<
+                Pick<StorefrontAPI.MetaobjectField, 'value'>
+              >;
+              toColor?: StorefrontAPI.Maybe<
+                Pick<StorefrontAPI.MetaobjectField, 'value'>
+              >;
               direction?: StorefrontAPI.Maybe<
                 Pick<StorefrontAPI.MetaobjectField, 'value'>
               >;
@@ -5263,12 +5225,6 @@ export type PageQuery = {
                   }
                 >;
               }>;
-              fromColor?: StorefrontAPI.Maybe<
-                Pick<StorefrontAPI.MetaobjectField, 'value'>
-              >;
-              toColor?: StorefrontAPI.Maybe<
-                Pick<StorefrontAPI.MetaobjectField, 'value'>
-              >;
               collections?: StorefrontAPI.Maybe<{
                 references?: StorefrontAPI.Maybe<{
                   nodes: Array<
@@ -5821,7 +5777,7 @@ export type TreatmentFilterCollectionQuery = {
   }>;
 };
 
-export type ArtistsIndexQueryVariables = StorefrontAPI.Exact<{
+export type GetUsersQueryVariables = StorefrontAPI.Exact<{
   country?: StorefrontAPI.InputMaybe<StorefrontAPI.CountryCode>;
   language?: StorefrontAPI.InputMaybe<StorefrontAPI.LanguageCode>;
   first?: StorefrontAPI.InputMaybe<StorefrontAPI.Scalars['Int']['input']>;
@@ -5837,7 +5793,7 @@ export type ArtistsIndexQueryVariables = StorefrontAPI.Exact<{
   reverse?: StorefrontAPI.InputMaybe<StorefrontAPI.Scalars['Boolean']['input']>;
 }>;
 
-export type ArtistsIndexQuery = {
+export type GetUsersQuery = {
   data?: StorefrontAPI.Maybe<{
     users: {
       nodes: Array<
@@ -5889,12 +5845,109 @@ export type ArtistsIndexQuery = {
             reference?: StorefrontAPI.Maybe<{
               products: {
                 nodes: Array<
-                  Pick<StorefrontAPI.Product, 'id' | 'title'> & {
+                  Pick<
+                    StorefrontAPI.Product,
+                    | 'id'
+                    | 'title'
+                    | 'descriptionHtml'
+                    | 'productType'
+                    | 'handle'
+                    | 'vendor'
+                  > & {
                     featuredImage?: StorefrontAPI.Maybe<
                       Pick<
                         StorefrontAPI.Image,
                         'id' | 'altText' | 'url' | 'width' | 'height'
                       >
+                    >;
+                    variants: {
+                      nodes: Array<
+                        Pick<StorefrontAPI.ProductVariant, 'id'> & {
+                          compareAtPrice?: StorefrontAPI.Maybe<
+                            Pick<
+                              StorefrontAPI.MoneyV2,
+                              'amount' | 'currencyCode'
+                            >
+                          >;
+                          price: Pick<
+                            StorefrontAPI.MoneyV2,
+                            'amount' | 'currencyCode'
+                          >;
+                        }
+                      >;
+                    };
+                    parentId?: StorefrontAPI.Maybe<
+                      Pick<StorefrontAPI.Metafield, 'id' | 'value'>
+                    >;
+                    options?: StorefrontAPI.Maybe<
+                      Pick<StorefrontAPI.Metafield, 'id' | 'value'>
+                    >;
+                    scheduleId?: StorefrontAPI.Maybe<{
+                      reference?: StorefrontAPI.Maybe<
+                        Pick<StorefrontAPI.Metaobject, 'handle'>
+                      >;
+                    }>;
+                    locations?: StorefrontAPI.Maybe<{
+                      references?: StorefrontAPI.Maybe<{
+                        nodes: Array<
+                          Pick<StorefrontAPI.Metaobject, 'id' | 'handle'> & {
+                            locationType?: StorefrontAPI.Maybe<
+                              Pick<StorefrontAPI.MetaobjectField, 'value'>
+                            >;
+                            name?: StorefrontAPI.Maybe<
+                              Pick<StorefrontAPI.MetaobjectField, 'value'>
+                            >;
+                            fullAddress?: StorefrontAPI.Maybe<
+                              Pick<StorefrontAPI.MetaobjectField, 'value'>
+                            >;
+                            city?: StorefrontAPI.Maybe<
+                              Pick<StorefrontAPI.MetaobjectField, 'value'>
+                            >;
+                            country?: StorefrontAPI.Maybe<
+                              Pick<StorefrontAPI.MetaobjectField, 'value'>
+                            >;
+                            distanceForFree?: StorefrontAPI.Maybe<
+                              Pick<StorefrontAPI.MetaobjectField, 'value'>
+                            >;
+                            distanceHourlyRate?: StorefrontAPI.Maybe<
+                              Pick<StorefrontAPI.MetaobjectField, 'value'>
+                            >;
+                            fixedRatePerKm?: StorefrontAPI.Maybe<
+                              Pick<StorefrontAPI.MetaobjectField, 'value'>
+                            >;
+                            minDriveDistance?: StorefrontAPI.Maybe<
+                              Pick<StorefrontAPI.MetaobjectField, 'value'>
+                            >;
+                            maxDriveDistance?: StorefrontAPI.Maybe<
+                              Pick<StorefrontAPI.MetaobjectField, 'value'>
+                            >;
+                            startFee?: StorefrontAPI.Maybe<
+                              Pick<StorefrontAPI.MetaobjectField, 'value'>
+                            >;
+                            geoLocation?: StorefrontAPI.Maybe<
+                              Pick<StorefrontAPI.MetaobjectField, 'value'>
+                            >;
+                          }
+                        >;
+                      }>;
+                    }>;
+                    bookingPeriodValue?: StorefrontAPI.Maybe<
+                      Pick<StorefrontAPI.Metafield, 'id' | 'value'>
+                    >;
+                    bookingPeriodUnit?: StorefrontAPI.Maybe<
+                      Pick<StorefrontAPI.Metafield, 'id' | 'value'>
+                    >;
+                    noticePeriodValue?: StorefrontAPI.Maybe<
+                      Pick<StorefrontAPI.Metafield, 'id' | 'value'>
+                    >;
+                    noticePeriodUnit?: StorefrontAPI.Maybe<
+                      Pick<StorefrontAPI.Metafield, 'id' | 'value'>
+                    >;
+                    duration?: StorefrontAPI.Maybe<
+                      Pick<StorefrontAPI.Metafield, 'id' | 'value'>
+                    >;
+                    breaktime?: StorefrontAPI.Maybe<
+                      Pick<StorefrontAPI.Metafield, 'id' | 'value'>
                     >;
                   }
                 >;
@@ -5919,6 +5972,16 @@ export type ArtistsIndexQuery = {
       >;
     };
   }>;
+};
+
+export type ArticleCollectionIdsTagQueryVariables = StorefrontAPI.Exact<{
+  country?: StorefrontAPI.InputMaybe<StorefrontAPI.CountryCode>;
+  language?: StorefrontAPI.InputMaybe<StorefrontAPI.LanguageCode>;
+  query: StorefrontAPI.Scalars['String']['input'];
+}>;
+
+export type ArticleCollectionIdsTagQuery = {
+  collections: {nodes: Array<Pick<StorefrontAPI.Collection, 'id' | 'title'>>};
 };
 
 interface GeneratedQueryTypes {
@@ -5958,17 +6021,13 @@ interface GeneratedQueryTypes {
     return: GetUserProductsQuery;
     variables: GetUserProductsQueryVariables;
   };
-  '#graphql\n  #graphql\n  #tags\n  #graphql\n  fragment Image on MediaImage {\n    id\n    image {\n      url\n      height\n      width\n    }\n  }\n\n  #graphql\n  fragment BackgroundImage on Metaobject {\n    id\n    type\n    image: field(key: "image") {\n      reference {\n        ...Image\n      }\n    }\n    opacity: field(key:"opacity") {\n      value\n    }\n    style: field(key:"style") {\n      value\n    }\n  }\n\n  #graphql\n  fragment Button on Metaobject {\n    id\n    type\n    text: field(key: "text") {\n      value\n    }\n    linkTo: field(key:"link_to") {\n      value\n    }\n    variant: field(key:"variant") {\n      value\n    }\n    color: field(key:"color") {\n      value\n    }\n  }\n\n  #graphql\n  fragment Overlay on Metaobject {\n    id\n    type\n    color: field(key: "color") {\n      value\n    }\n    opacity: field(key:"opacity") {\n      value\n      type\n    }\n  }\n\n\n  #fragments\n  #graphql\n  #graphql\n  fragment AccordionItem on Metaobject {\n    id\n    type\n    label: field(key: "label") {\n      value\n    }\n    text: field(key:"text") {\n      value\n    }\n  }\n\n  fragment Accordion on Metaobject {\n    id\n    type\n    name: field(key: "name") {\n      value\n    }\n    variant: field(key:"variant") {\n      key\n      value\n    }\n    items: field(key:"items") {\n      references(first: 10) {\n        nodes {\n          ...AccordionItem\n        }\n      }\n    }\n  }\n\n  #graphql\n  fragment CallToAction on Metaobject {\n    id\n    type\n    name: field(key:"name") {\n      value\n    }\n    title: field(key:"title") {\n      value\n    }\n    image: field(key: "image") {\n      reference {\n        ...Image\n      }\n    }\n    color: field(key: "color") {\n      value\n    }\n    button: field(key:"button") {\n      reference {\n        ...Button\n      }\n    }\n    overlay: field(key: "overlay") {\n      reference {\n        ...Overlay\n      }\n    }\n  }\n\n  #graphql\n  fragment CardMedia on Metaobject {\n    id\n    type\n    title: field(key: "title") {\n      value\n    }\n    description: field(key:"description") {\n      value\n    }\n    image: field(key: "image") {\n      reference {\n        ...Image\n      }\n    }\n    flip: field(key:"flip") {\n      value\n    }\n  }\n\n  #graphql\n  #graphql\n  fragment FeatureItem on Metaobject {\n    id\n    type\n    title: field(key: "title") {\n      value\n    }\n    description: field(key: "description") {\n      value\n    }\n    icon: field(key: "icon") {\n      value\n    }\n  }\n\n\n  fragment Features on Metaobject {\n    id\n    type\n    title: field(key: "title") {\n      value\n    }\n    subtitle: field(key: "subtitle") {\n      value\n    }\n    items: field(key: "items") {\n      references(first: 10) {\n        nodes {\n          ...FeatureItem\n        }\n      }\n    }\n  }\n\n  #graphql\n  #graphql\n  #graphql\n  fragment ThemeIcon on Metaobject {\n    id\n    type\n    name: field(key: "name") {\n      value\n    }\n    icon: field(key: "icon") {\n      value\n    }\n    variant: field(key: "variant") {\n      value\n    }\n    color: field(key: "color") {\n      value\n    }\n    radius: field(key: "radius") {\n      value\n    }\n  }\n\n\n  fragment HelpItem on Metaobject {\n    id\n    type\n    title: field(key: "title") {\n      value\n    }\n    description: field(key: "description") {\n      value\n    }\n    themeIcon: field(key: "theme_icon") {\n      reference {\n        ...ThemeIcon\n      }\n    }\n    backgroundColor: field(key: "background_color") {\n      value\n    }\n  }\n\n\n  fragment Help on Metaobject {\n    id\n    type\n    name: field(key: "name") {\n      value\n    }\n    title: field(key: "title") {\n      value\n    }\n    items: field(key: "items") {\n      references(first: 10) {\n        nodes {\n          ...HelpItem\n        }\n      }\n    }\n    backgroundColor: field(key: "background_color") {\n      value\n    }\n  }\n\n  #graphql\n  fragment Maps on Metaobject {\n    id\n    type\n    url: field(key: "url") {\n      value\n    }\n  }\n\n  #graphql\n  fragment SideBySide on Metaobject {\n    id\n    type\n    title: field(key:"title") {\n      value\n    }\n    text: field(key: "text") {\n      value\n    }\n  }\n\n  #graphql\n  fragment VisualTeaser on Metaobject {\n    id\n    type\n    title: field(key: "title") {\n      value\n    }\n    subtitle: field(key: "subtitle") {\n      value\n    }\n    height:field(key:"height") {\n      value\n    }\n    backgroundColor:field(key:"background_color") {\n      value\n    }\n    fontColor: field(key:"font_color") {\n      value\n    }\n    justify: field(key:"justify") {\n      value\n    }\n    backgroundImage: field(key:"background_image") {\n      reference {\n        ...BackgroundImage\n      }\n    }\n    subbutton: field(key:"subbutton") {\n      reference {\n        ...Button\n      }\n    }\n  }\n\n  #graphql\n  fragment Faq on Metaobject {\n    id\n    type\n    title: field(key: "title") {\n      value\n    }\n    description:field(key:"description") {\n      value\n    }\n    backgroundColor:field(key:"background_color") {\n      value\n    }\n    direction: field(key:"direction") {\n      value\n    }\n    accordion: field(key: "accordion") {\n      reference {\n        ...Accordion\n      }\n    }\n  }\n\n  #graphql\n  #graphql\n  fragment ImageGridWithHeaderCollection on Collection {\n    id\n    title\n    description\n    handle\n    image {\n      height\n      width\n      url(transform: {maxHeight: 150, maxWidth: 150, crop: CENTER})\n    }\n  }\n\n  fragment ImageGridWithHeader on Metaobject {\n    id\n    type\n    title: field(key: "title") {\n      value\n    }\n    fromColor: field(key:"from_color") {\n      value\n    }\n    toColor: field(key:"to_color") {\n      value\n    }\n    button: field(key:"button") {\n      reference {\n        ...Button\n      }\n    }\n    collections: field(key:"collections") {\n      references(first: 5) {\n        nodes {\n          ...ImageGridWithHeaderCollection\n        }\n      }\n    }\n  }\n\n\n  fragment Components on Metaobject {\n    components: field(key: "components") {\n      value\n      references(first: 5) {\n        nodes {\n          ...Accordion\n          ...CallToAction\n          ...CardMedia\n          ...Features\n          ...Help\n          ...Maps\n          ...SideBySide\n          ...VisualTeaser\n          ...Faq\n          ...ImageGridWithHeader\n        }\n      }\n    }\n  }\n\n  query MetaobjectQuery ($country: CountryCode, $language: LanguageCode, $handle: String!, $type: String!)\n    @inContext(country: $country, language: $language) {\n    metaobject(handle: {handle: $handle, type: $type}) {\n      ...Components\n    }\n  }\n': {
+  '#graphql\n  #graphql\n  #tags\n  #graphql\n  fragment Image on MediaImage {\n    id\n    image {\n      url\n      height\n      width\n    }\n  }\n\n  #graphql\n  fragment BackgroundImage on Metaobject {\n    id\n    type\n    image: field(key: "image") {\n      reference {\n        ...Image\n      }\n    }\n    opacity: field(key:"opacity") {\n      value\n    }\n    style: field(key:"style") {\n      value\n    }\n  }\n\n  #graphql\n  fragment Button on Metaobject {\n    id\n    type\n    text: field(key: "text") {\n      value\n    }\n    linkTo: field(key:"link_to") {\n      value\n    }\n    variant: field(key:"variant") {\n      value\n    }\n    color: field(key:"color") {\n      value\n    }\n  }\n\n  #graphql\n  fragment Overlay on Metaobject {\n    id\n    type\n    color: field(key: "color") {\n      value\n    }\n    opacity: field(key:"opacity") {\n      value\n      type\n    }\n  }\n\n\n  #fragments\n  #graphql\n  #graphql\n  fragment AccordionItem on Metaobject {\n    id\n    type\n    label: field(key: "label") {\n      value\n    }\n    text: field(key:"text") {\n      value\n    }\n  }\n\n  fragment Accordion on Metaobject {\n    id\n    type\n    name: field(key: "name") {\n      value\n    }\n    variant: field(key:"variant") {\n      key\n      value\n    }\n    items: field(key:"items") {\n      references(first: 10) {\n        nodes {\n          ...AccordionItem\n        }\n      }\n    }\n  }\n\n  #graphql\n  fragment CallToAction on Metaobject {\n    id\n    type\n    name: field(key:"name") {\n      value\n    }\n    title: field(key:"title") {\n      value\n    }\n    image: field(key: "image") {\n      reference {\n        ...Image\n      }\n    }\n    color: field(key: "color") {\n      value\n    }\n    button: field(key:"button") {\n      reference {\n        ...Button\n      }\n    }\n    overlay: field(key: "overlay") {\n      reference {\n        ...Overlay\n      }\n    }\n  }\n\n  #graphql\n  fragment CardMedia on Metaobject {\n    id\n    type\n    title: field(key: "title") {\n      value\n    }\n    description: field(key:"description") {\n      value\n    }\n    image: field(key: "image") {\n      reference {\n        ...Image\n      }\n    }\n    flip: field(key:"flip") {\n      value\n    }\n  }\n\n  #graphql\n  #graphql\n  fragment FeatureItem on Metaobject {\n    id\n    type\n    title: field(key: "title") {\n      value\n    }\n    description: field(key: "description") {\n      value\n    }\n    icon: field(key: "icon") {\n      value\n    }\n  }\n\n\n  fragment Features on Metaobject {\n    id\n    type\n    title: field(key: "title") {\n      value\n    }\n    subtitle: field(key: "subtitle") {\n      value\n    }\n    items: field(key: "items") {\n      references(first: 10) {\n        nodes {\n          ...FeatureItem\n        }\n      }\n    }\n  }\n\n  #graphql\n  #graphql\n  #graphql\n  fragment ThemeIcon on Metaobject {\n    id\n    type\n    name: field(key: "name") {\n      value\n    }\n    icon: field(key: "icon") {\n      value\n    }\n    variant: field(key: "variant") {\n      value\n    }\n    color: field(key: "color") {\n      value\n    }\n    radius: field(key: "radius") {\n      value\n    }\n  }\n\n\n  fragment HelpItem on Metaobject {\n    id\n    type\n    title: field(key: "title") {\n      value\n    }\n    description: field(key: "description") {\n      value\n    }\n    themeIcon: field(key: "theme_icon") {\n      reference {\n        ...ThemeIcon\n      }\n    }\n    backgroundColor: field(key: "background_color") {\n      value\n    }\n  }\n\n\n  fragment Help on Metaobject {\n    id\n    type\n    name: field(key: "name") {\n      value\n    }\n    title: field(key: "title") {\n      value\n    }\n    items: field(key: "items") {\n      references(first: 10) {\n        nodes {\n          ...HelpItem\n        }\n      }\n    }\n    backgroundColor: field(key: "background_color") {\n      value\n    }\n  }\n\n  #graphql\n  fragment Maps on Metaobject {\n    id\n    type\n    url: field(key: "url") {\n      value\n    }\n  }\n\n  #graphql\n  fragment SideBySide on Metaobject {\n    id\n    type\n    title: field(key:"title") {\n      value\n    }\n    text: field(key: "text") {\n      value\n    }\n  }\n\n  #graphql\n  fragment VisualTeaser on Metaobject {\n    id\n    type\n    title: field(key: "title") {\n      value\n    }\n    subtitle: field(key: "subtitle") {\n      value\n    }\n    height:field(key:"height") {\n      value\n    }\n    backgroundColor:field(key:"background_color") {\n      value\n    }\n    fontColor: field(key:"font_color") {\n      value\n    }\n    justify: field(key:"justify") {\n      value\n    }\n    backgroundImage: field(key:"background_image") {\n      reference {\n        ...BackgroundImage\n      }\n    }\n    subbutton: field(key:"subbutton") {\n      reference {\n        ...Button\n      }\n    }\n  }\n\n  #graphql\n  fragment Faq on Metaobject {\n    id\n    type\n    title: field(key: "title") {\n      value\n    }\n    description:field(key:"description") {\n      value\n    }\n    backgroundColor:field(key:"background_color") {\n      value\n    }\n    fromColor:field(key:"from_color") {\n      value\n    }\n    toColor:field(key:"to_color") {\n      value\n    }\n    direction: field(key:"direction") {\n      value\n    }\n    accordion: field(key: "accordion") {\n      reference {\n        ...Accordion\n      }\n    }\n  }\n\n  #graphql\n  #graphql\n  fragment ImageGridWithHeaderCollection on Collection {\n    id\n    title\n    description\n    handle\n    image {\n      height\n      width\n      url(transform: {maxHeight: 150, maxWidth: 150, crop: CENTER})\n    }\n  }\n\n  fragment ImageGridWithHeader on Metaobject {\n    id\n    type\n    title: field(key: "title") {\n      value\n    }\n    fromColor: field(key:"from_color") {\n      value\n    }\n    toColor: field(key:"to_color") {\n      value\n    }\n    button: field(key:"button") {\n      reference {\n        ...Button\n      }\n    }\n    collections: field(key:"collections") {\n      references(first: 5) {\n        nodes {\n          ...ImageGridWithHeaderCollection\n        }\n      }\n    }\n  }\n\n\n  fragment Components on Metaobject {\n    components: field(key: "components") {\n      value\n      references(first: 5) {\n        nodes {\n          ...Accordion\n          ...CallToAction\n          ...CardMedia\n          ...Features\n          ...Help\n          ...Maps\n          ...SideBySide\n          ...VisualTeaser\n          ...Faq\n          ...ImageGridWithHeader\n        }\n      }\n    }\n  }\n\n  query MetaobjectQuery ($country: CountryCode, $language: LanguageCode, $handle: String!, $type: String!)\n    @inContext(country: $country, language: $language) {\n    metaobject(handle: {handle: $handle, type: $type}) {\n      ...Components\n    }\n  }\n': {
     return: MetaobjectQueryQuery;
     variables: MetaobjectQueryQueryVariables;
   };
   '#graphql\n  #graphql\n  fragment Image on MediaImage {\n    id\n    image {\n      url\n      height\n      width\n    }\n  }\n\n  #graphql\n  fragment BackgroundImage on Metaobject {\n    id\n    type\n    image: field(key: "image") {\n      reference {\n        ...Image\n      }\n    }\n    opacity: field(key:"opacity") {\n      value\n    }\n    style: field(key:"style") {\n      value\n    }\n  }\n\n  #graphql\n  fragment Button on Metaobject {\n    id\n    type\n    text: field(key: "text") {\n      value\n    }\n    linkTo: field(key:"link_to") {\n      value\n    }\n    variant: field(key:"variant") {\n      value\n    }\n    color: field(key:"color") {\n      value\n    }\n  }\n\n  #graphql\n  fragment VisualTeaser on Metaobject {\n    id\n    type\n    title: field(key: "title") {\n      value\n    }\n    subtitle: field(key: "subtitle") {\n      value\n    }\n    height:field(key:"height") {\n      value\n    }\n    backgroundColor:field(key:"background_color") {\n      value\n    }\n    fontColor: field(key:"font_color") {\n      value\n    }\n    justify: field(key:"justify") {\n      value\n    }\n    backgroundImage: field(key:"background_image") {\n      reference {\n        ...BackgroundImage\n      }\n    }\n    subbutton: field(key:"subbutton") {\n      reference {\n        ...Button\n      }\n    }\n  }\n\n\n  query MetaobjectVisualTeaserQuery ($country: CountryCode, $language: LanguageCode, $handle: String!, $type: String!)\n    @inContext(country: $country, language: $language) {\n    metaobject(handle: {handle: $handle, type: $type}) {\n      ...VisualTeaser\n    }\n  }\n': {
     return: MetaobjectVisualTeaserQueryQuery;
     variables: MetaobjectVisualTeaserQueryQueryVariables;
-  };
-  '#graphql\n  #graphql\n  fragment CategoryWithChildren on Collection {\n    id\n    title\n    handle\n    description\n    image {\n      id\n      url\n      altText\n      width\n      height\n    }\n    children: metafield(key: "children", namespace: "booking") {\n      id\n      type\n      references(first: 20) {\n        nodes {\n          ... on Collection {\n            id\n            title\n            handle\n            description\n            image {\n              id\n              url\n              altText\n              width\n              height\n            }\n          }\n        }\n      }\n    }\n  }\n\n  query CategoriesWithChildren(\n    $country: CountryCode\n    $language: LanguageCode\n  ) @inContext(country: $country, language: $language) {\n    collection(handle: "alle-behandlinger") {\n      ...CategoryWithChildren\n    }\n  }\n': {
-    return: CategoriesWithChildrenQuery;
-    variables: CategoriesWithChildrenQueryVariables;
   };
   '#graphql\n  fragment Shop on Shop {\n    id\n    name\n    description\n    primaryDomain {\n      url\n    }\n    brand {\n      logo {\n        image {\n          url\n        }\n      }\n    }\n  }\n  query Header(\n    $country: CountryCode\n    $headerMenuHandle: String!\n    $language: LanguageCode\n  ) @inContext(language: $language, country: $country) {\n    shop {\n      ...Shop\n    }\n    menu(handle: $headerMenuHandle) {\n      ...Menu\n    }\n  }\n  #graphql\n  fragment MenuItem on MenuItem {\n    id\n    resourceId\n    tags\n    title\n    type\n    url\n  }\n  fragment ChildMenuItem on MenuItem {\n    ...MenuItem\n  }\n  fragment ParentMenuItem on MenuItem {\n    ...MenuItem\n    items {\n      ...ChildMenuItem\n    }\n  }\n  fragment Menu on Menu {\n    id\n    items {\n      ...ParentMenuItem\n    }\n  }\n\n': {
     return: HeaderQuery;
@@ -5985,10 +6044,6 @@ interface GeneratedQueryTypes {
   '#graphql\n  query Sitemap($urlLimits: Int, $language: LanguageCode)\n  @inContext(language: $language) {\n    products(\n      first: $urlLimits\n      query: "published_status:\'online_store:visible\'"\n    ) {\n      nodes {\n        updatedAt\n        handle\n        onlineStoreUrl\n        title\n        featuredImage {\n          url\n          altText\n        }\n      }\n    }\n    collections(\n      first: $urlLimits\n      query: "published_status:\'online_store:visible\'"\n    ) {\n      nodes {\n        updatedAt\n        handle\n        onlineStoreUrl\n      }\n    }\n    pages(first: $urlLimits, query: "published_status:\'published\'") {\n      nodes {\n        updatedAt\n        handle\n        onlineStoreUrl\n      }\n    }\n  }\n': {
     return: SitemapQuery;
     variables: SitemapQueryVariables;
-  };
-  '#graphql\n  #graphql\n  #graphql\n  #graphql\n  fragment CategoriesCollectionProductUser on Metaobject {\n    id\n    image: field(key: "image") {\n      reference {\n        ... on MediaImage {\n          image {\n            width\n            height\n            url(transform: { maxHeight: 100, maxWidth: 100, crop: CENTER })\n          }\n        }\n      }\n    }\n  }\n\n\n  fragment CategoriesCollectionProduct on Product {\n    id\n    user: metafield(key: "user", namespace: "booking") {\n      reference {\n        ...CategoriesCollectionProductUser\n      }\n    }\n  }\n\n  #graphql\n  fragment CategoriesCollectionFilter on Filter {\n    id\n    label\n    values {\n      count\n    }\n  }\n\n\n  fragment CategoriesCollection on Product {\n    id\n    title\n    descriptionHtml\n    description\n    productType\n    handle\n    vendor\n    featuredImage {\n      id\n      altText\n      url(transform: { maxHeight: 250, maxWidth: 250, crop: CENTER })\n      width\n      height\n    }\n    collection: metafield(key: "collection", namespace: "system") {\n      reference {\n        ... on Collection {\n          products(first: 3, sortKey: RELEVANCE, filters: [{productMetafield: {namespace: "system", key: "default", value: "true"}}, {productMetafield: {namespace: "booking", key: "hide_from_profile", value: "false"}}, {productMetafield: {namespace: "system", key: "active",value: "true"}}]) {\n            filters {\n              ...CategoriesCollectionFilter\n            }\n            nodes {\n              ...CategoriesCollectionProduct\n            }\n          }\n        }\n      }\n    }\n  }\n\n  query RecommendedTreatments(\n    $query: String!\n    $country: CountryCode\n    $language: LanguageCode\n  ) @inContext(country: $country, language: $language) {\n    products(first: 4, sortKey: RELEVANCE, query: $query) {\n      nodes {\n        ...CategoriesCollection\n      }\n    }\n  }\n': {
-    return: RecommendedTreatmentsQuery;
-    variables: RecommendedTreatmentsQueryVariables;
   };
   '#graphql\n  fragment PredictiveArticle on Article {\n    __typename\n    id\n    title\n    handle\n    image {\n      url\n      altText\n      width\n      height\n    }\n    trackingParameters\n  }\n  fragment PredictiveCollection on Collection {\n    __typename\n    id\n    title\n    handle\n    image {\n      url\n      altText\n      width\n      height\n    }\n    trackingParameters\n  }\n  fragment PredictivePage on Page {\n    __typename\n    id\n    title\n    handle\n    trackingParameters\n  }\n  fragment PredictiveProduct on Product {\n    __typename\n    id\n    title\n    handle\n    trackingParameters\n    variants(first: 1) {\n      nodes {\n        id\n        image {\n          url\n          altText\n          width\n          height\n        }\n        price {\n          amount\n          currencyCode\n        }\n      }\n    }\n  }\n  fragment PredictiveQuery on SearchQuerySuggestion {\n    __typename\n    text\n    styledText\n    trackingParameters\n  }\n  query predictiveSearch(\n    $country: CountryCode\n    $language: LanguageCode\n    $limit: Int!\n    $limitScope: PredictiveSearchLimitScope!\n    $searchTerm: String!\n    $types: [PredictiveSearchType!]\n  ) @inContext(country: $country, language: $language) {\n    predictiveSearch(\n      limit: $limit,\n      limitScope: $limitScope,\n      query: $searchTerm,\n      types: $types,\n    ) {\n      articles {\n        ...PredictiveArticle\n      }\n      collections {\n        ...PredictiveCollection\n      }\n      pages {\n        ...PredictivePage\n      }\n      products {\n        ...PredictiveProduct\n      }\n      queries {\n        ...PredictiveQuery\n      }\n    }\n  }\n': {
     return: PredictiveSearchQuery;
@@ -6026,13 +6081,13 @@ interface GeneratedQueryTypes {
     return: ServicesOptionsTagOptionsQueryQuery;
     variables: ServicesOptionsTagOptionsQueryQueryVariables;
   };
-  '#graphql\n  #graphql\n  fragment CategoryStorefront on Collection {\n    id\n    title\n    children: metafield(key: "children", namespace: "booking") {\n      references(first: 20) {\n        nodes {\n          ... on Collection {\n            id\n            title\n            products(first: 30) {\n              nodes {\n                id\n                title\n                descriptionHtml\n              }\n            }\n          }\n        }\n      }\n    }\n  }\n\n  query CategoriesStorefront(\n    $country: CountryCode\n    $language: LanguageCode\n  ) @inContext(country: $country, language: $language) {\n    collection(handle: "alle-behandlinger") {\n      ...CategoryStorefront\n    }\n  }\n': {
-    return: CategoriesStorefrontQuery;
-    variables: CategoriesStorefrontQueryVariables;
+  '#graphql\n  #graphql\n  #graphql\n  fragment User on Metaobject {\n    id\n    aboutMe: field(key: "about_me") {\n      value\n    }\n    active: field(key: "active") {\n      value\n    }\n    fullname: field(key: "fullname") {\n      value\n    }\n    professions: field(key: "professions") {\n      value\n    }\n    specialties: field(key: "specialties") {\n      value\n    }\n    speaks: field(key: "speaks") {\n      value\n    }\n    social: field(key: "social") {\n      value\n    }\n    shortDescription: field(key: "short_description") {\n      value\n    }\n    username: field(key: "username") {\n      value\n    }\n    theme: field(key: "theme") {\n      value\n    }\n    image: field(key: "image") {\n      reference {\n        ... on MediaImage {\n          image {\n            width\n            height\n            url(transform: { maxHeight: 250, maxWidth: 250, crop: CENTER })\n          }\n        }\n      }\n    }\n  }\n\n\n  fragment Treatment on Product {\n    id\n    title\n    description\n    handle\n    variants(first: 1) {\n      nodes {\n        id\n        compareAtPrice {\n          amount\n          currencyCode\n        }\n        price {\n          amount\n          currencyCode\n        }\n      }\n    }\n    locations: metafield(key: "locations", namespace: "booking") {\n      references(first: 3) {\n        nodes {\n          ... on Metaobject {\n            id\n            locationType: field(key: "location_type") {\n              value\n            }\n            geoLocation: field(key: "geo_location") {\n              value\n            }\n          }\n        }\n      }\n    }\n    duration: metafield(key: "duration", namespace: "booking") {\n      id\n      value\n    }\n    user: metafield(key: "user", namespace: "booking") {\n      reference {\n        ...User\n      }\n    }\n  }\n\n  query GetTreatments(\n    $query: String\n    $country: CountryCode\n    $language: LanguageCode\n    $first: Int\n    $last: Int\n    $startCursor: String\n    $endCursor: String\n  ) @inContext(country: $country, language: $language) {\n    products(\n      query: $query,\n      first: $first,\n      last: $last,\n      before: $startCursor,\n      after: $endCursor,\n      sortKey: TITLE\n    ) {\n      nodes {\n        ...Treatment\n      }\n      pageInfo {\n        hasPreviousPage\n        hasNextPage\n        endCursor\n        startCursor\n      }\n    }\n  }\n': {
+    return: GetTreatmentsQuery;
+    variables: GetTreatmentsQueryVariables;
   };
-  '#graphql\n  #graphql\n  #graphql\n  #graphql\n  fragment CategoriesCollectionProductUser on Metaobject {\n    id\n    image: field(key: "image") {\n      reference {\n        ... on MediaImage {\n          image {\n            width\n            height\n            url(transform: { maxHeight: 100, maxWidth: 100, crop: CENTER })\n          }\n        }\n      }\n    }\n  }\n\n\n  fragment CategoriesCollectionProduct on Product {\n    id\n    user: metafield(key: "user", namespace: "booking") {\n      reference {\n        ...CategoriesCollectionProductUser\n      }\n    }\n  }\n\n  #graphql\n  fragment CategoriesCollectionFilter on Filter {\n    id\n    label\n    values {\n      count\n    }\n  }\n\n\n  fragment CategoriesCollection on Product {\n    id\n    title\n    descriptionHtml\n    description\n    productType\n    handle\n    vendor\n    featuredImage {\n      id\n      altText\n      url(transform: { maxHeight: 250, maxWidth: 250, crop: CENTER })\n      width\n      height\n    }\n    collection: metafield(key: "collection", namespace: "system") {\n      reference {\n        ... on Collection {\n          products(first: 3, sortKey: RELEVANCE, filters: [{productMetafield: {namespace: "system", key: "default", value: "true"}}, {productMetafield: {namespace: "booking", key: "hide_from_profile", value: "false"}}, {productMetafield: {namespace: "system", key: "active",value: "true"}}]) {\n            filters {\n              ...CategoriesCollectionFilter\n            }\n            nodes {\n              ...CategoriesCollectionProduct\n            }\n          }\n        }\n      }\n    }\n  }\n\n  query categoriesCollection(\n    $handle: String!\n    $country: CountryCode\n    $language: LanguageCode\n    $first: Int\n    $last: Int\n    $startCursor: String\n    $endCursor: String\n  ) @inContext(country: $country, language: $language) {\n    collection(handle: $handle) {\n      id\n      handle\n      title\n      description\n      products(\n        first: $first,\n        last: $last,\n        before: $startCursor,\n        after: $endCursor,\n        sortKey: TITLE\n      ) {\n        nodes {\n          ...CategoriesCollection\n        }\n        pageInfo {\n          hasPreviousPage\n          hasNextPage\n          endCursor\n          startCursor\n        }\n      }\n    }\n  }\n': {
-    return: CategoriesCollectionQuery;
-    variables: CategoriesCollectionQueryVariables;
+  '#graphql\n  query GetCategory(\n    $handle: String!\n    $country: CountryCode\n    $language: LanguageCode\n  ) @inContext(country: $country, language: $language) {\n    collection(handle: $handle) {\n      id\n      handle\n      title\n      description\n      image {\n        url\n        altText\n        width\n        height\n      }\n      children: metafield(key: "children", namespace: "booking") {\n        references(first: 20) {\n          nodes {\n            ... on Collection {\n              id\n              handle\n              title\n              children: metafield(key: "children", namespace: "booking") {\n                references(first: 20) {\n                  nodes {\n                    ... on Collection {\n                      id\n                      handle\n                      title\n                    }\n                  }\n                }\n              }\n            }\n          }\n        }\n      }\n    }\n  }\n': {
+    return: GetCategoryQuery;
+    variables: GetCategoryQueryVariables;
   };
   '#graphql\n  #graphql\n  #graphql\n  fragment ProductCollection on Collection {\n    title\n    handle\n    icon:  metafield(namespace:"custom",  key: "icon") {\n      type\n      value\n    }\n  }\n\n  fragment MoneyProductItem on MoneyV2 {\n    amount\n    currencyCode\n  }\n\n  fragment ProductItem on Product {\n    id\n    title\n    description\n    handle\n    publishedAt\n    featuredImage {\n      id\n      altText\n      url(transform: { maxHeight: 250, maxWidth: 250, crop: CENTER })\n      width\n      height\n    }\n    priceRange {\n      minVariantPrice {\n        ...MoneyProductItem\n      }\n      maxVariantPrice {\n        ...MoneyProductItem\n      }\n    }\n    variants(first: 1) {\n      nodes {\n        id\n        selectedOptions {\n          name\n          value\n        }\n        price {\n          amount\n          currencyCode\n        }\n      }\n    }\n    collections(first:2) {\n      nodes {\n        ...ProductCollection\n      }\n    }\n  }\n\n  query Collection(\n    $handle: String!\n    $country: CountryCode\n    $language: LanguageCode\n    $first: Int\n    $last: Int\n    $startCursor: String\n    $endCursor: String\n  ) @inContext(country: $country, language: $language) {\n    collection(handle: $handle) {\n      id\n      handle\n      title\n      description\n      products(\n        first: $first,\n        last: $last,\n        before: $startCursor,\n        after: $endCursor,\n        sortKey: TITLE\n      ) {\n        nodes {\n          ...ProductItem\n        }\n        pageInfo {\n          hasPreviousPage\n          hasNextPage\n          endCursor\n          startCursor\n        }\n      }\n    }\n  }\n': {
     return: CollectionQuery;
@@ -6042,7 +6097,7 @@ interface GeneratedQueryTypes {
     return: StoreCollectionsQuery;
     variables: StoreCollectionsQueryVariables;
   };
-  '#graphql\n  #graphql\n  #tags\n  #graphql\n  fragment Image on MediaImage {\n    id\n    image {\n      url\n      height\n      width\n    }\n  }\n\n  #graphql\n  fragment BackgroundImage on Metaobject {\n    id\n    type\n    image: field(key: "image") {\n      reference {\n        ...Image\n      }\n    }\n    opacity: field(key:"opacity") {\n      value\n    }\n    style: field(key:"style") {\n      value\n    }\n  }\n\n  #graphql\n  fragment Button on Metaobject {\n    id\n    type\n    text: field(key: "text") {\n      value\n    }\n    linkTo: field(key:"link_to") {\n      value\n    }\n    variant: field(key:"variant") {\n      value\n    }\n    color: field(key:"color") {\n      value\n    }\n  }\n\n  #graphql\n  fragment Overlay on Metaobject {\n    id\n    type\n    color: field(key: "color") {\n      value\n    }\n    opacity: field(key:"opacity") {\n      value\n      type\n    }\n  }\n\n\n  #fragments\n  #graphql\n  #graphql\n  fragment AccordionItem on Metaobject {\n    id\n    type\n    label: field(key: "label") {\n      value\n    }\n    text: field(key:"text") {\n      value\n    }\n  }\n\n  fragment Accordion on Metaobject {\n    id\n    type\n    name: field(key: "name") {\n      value\n    }\n    variant: field(key:"variant") {\n      key\n      value\n    }\n    items: field(key:"items") {\n      references(first: 10) {\n        nodes {\n          ...AccordionItem\n        }\n      }\n    }\n  }\n\n  #graphql\n  fragment CallToAction on Metaobject {\n    id\n    type\n    name: field(key:"name") {\n      value\n    }\n    title: field(key:"title") {\n      value\n    }\n    image: field(key: "image") {\n      reference {\n        ...Image\n      }\n    }\n    color: field(key: "color") {\n      value\n    }\n    button: field(key:"button") {\n      reference {\n        ...Button\n      }\n    }\n    overlay: field(key: "overlay") {\n      reference {\n        ...Overlay\n      }\n    }\n  }\n\n  #graphql\n  fragment CardMedia on Metaobject {\n    id\n    type\n    title: field(key: "title") {\n      value\n    }\n    description: field(key:"description") {\n      value\n    }\n    image: field(key: "image") {\n      reference {\n        ...Image\n      }\n    }\n    flip: field(key:"flip") {\n      value\n    }\n  }\n\n  #graphql\n  #graphql\n  fragment FeatureItem on Metaobject {\n    id\n    type\n    title: field(key: "title") {\n      value\n    }\n    description: field(key: "description") {\n      value\n    }\n    icon: field(key: "icon") {\n      value\n    }\n  }\n\n\n  fragment Features on Metaobject {\n    id\n    type\n    title: field(key: "title") {\n      value\n    }\n    subtitle: field(key: "subtitle") {\n      value\n    }\n    items: field(key: "items") {\n      references(first: 10) {\n        nodes {\n          ...FeatureItem\n        }\n      }\n    }\n  }\n\n  #graphql\n  #graphql\n  #graphql\n  fragment ThemeIcon on Metaobject {\n    id\n    type\n    name: field(key: "name") {\n      value\n    }\n    icon: field(key: "icon") {\n      value\n    }\n    variant: field(key: "variant") {\n      value\n    }\n    color: field(key: "color") {\n      value\n    }\n    radius: field(key: "radius") {\n      value\n    }\n  }\n\n\n  fragment HelpItem on Metaobject {\n    id\n    type\n    title: field(key: "title") {\n      value\n    }\n    description: field(key: "description") {\n      value\n    }\n    themeIcon: field(key: "theme_icon") {\n      reference {\n        ...ThemeIcon\n      }\n    }\n    backgroundColor: field(key: "background_color") {\n      value\n    }\n  }\n\n\n  fragment Help on Metaobject {\n    id\n    type\n    name: field(key: "name") {\n      value\n    }\n    title: field(key: "title") {\n      value\n    }\n    items: field(key: "items") {\n      references(first: 10) {\n        nodes {\n          ...HelpItem\n        }\n      }\n    }\n    backgroundColor: field(key: "background_color") {\n      value\n    }\n  }\n\n  #graphql\n  fragment Maps on Metaobject {\n    id\n    type\n    url: field(key: "url") {\n      value\n    }\n  }\n\n  #graphql\n  fragment SideBySide on Metaobject {\n    id\n    type\n    title: field(key:"title") {\n      value\n    }\n    text: field(key: "text") {\n      value\n    }\n  }\n\n  #graphql\n  fragment VisualTeaser on Metaobject {\n    id\n    type\n    title: field(key: "title") {\n      value\n    }\n    subtitle: field(key: "subtitle") {\n      value\n    }\n    height:field(key:"height") {\n      value\n    }\n    backgroundColor:field(key:"background_color") {\n      value\n    }\n    fontColor: field(key:"font_color") {\n      value\n    }\n    justify: field(key:"justify") {\n      value\n    }\n    backgroundImage: field(key:"background_image") {\n      reference {\n        ...BackgroundImage\n      }\n    }\n    subbutton: field(key:"subbutton") {\n      reference {\n        ...Button\n      }\n    }\n  }\n\n  #graphql\n  fragment Faq on Metaobject {\n    id\n    type\n    title: field(key: "title") {\n      value\n    }\n    description:field(key:"description") {\n      value\n    }\n    backgroundColor:field(key:"background_color") {\n      value\n    }\n    direction: field(key:"direction") {\n      value\n    }\n    accordion: field(key: "accordion") {\n      reference {\n        ...Accordion\n      }\n    }\n  }\n\n  #graphql\n  #graphql\n  fragment ImageGridWithHeaderCollection on Collection {\n    id\n    title\n    description\n    handle\n    image {\n      height\n      width\n      url(transform: {maxHeight: 150, maxWidth: 150, crop: CENTER})\n    }\n  }\n\n  fragment ImageGridWithHeader on Metaobject {\n    id\n    type\n    title: field(key: "title") {\n      value\n    }\n    fromColor: field(key:"from_color") {\n      value\n    }\n    toColor: field(key:"to_color") {\n      value\n    }\n    button: field(key:"button") {\n      reference {\n        ...Button\n      }\n    }\n    collections: field(key:"collections") {\n      references(first: 5) {\n        nodes {\n          ...ImageGridWithHeaderCollection\n        }\n      }\n    }\n  }\n\n\n\n  fragment Page on Page {\n    id\n    title\n    body\n    seo {\n      description\n      title\n    }\n    components: metafield(namespace: "custom", key: "components") {\n      references(first: 10) {\n        nodes {\n          ...Accordion\n          ...CallToAction\n          ...CardMedia\n          ...Features\n          ...Help\n          ...Maps\n          ...SideBySide\n          ...VisualTeaser\n          ...Faq\n          ...ImageGridWithHeader\n        }\n      }\n    }\n\n    header: metafield(namespace: "booking", key: "header") {\n      reference {\n        ...Accordion\n        ...CallToAction\n        ...CardMedia\n        ...Features\n        ...Help\n        ...Maps\n        ...SideBySide\n        ...VisualTeaser\n        ...Faq\n        ...ImageGridWithHeader\n      }\n    }\n\n    options: metafield(namespace: "custom", key: "options") {\n      references(first: 10) {\n        nodes {\n          ...Accordion\n          ...CallToAction\n          ...CardMedia\n          ...Features\n          ...Help\n          ...Maps\n          ...SideBySide\n          ...VisualTeaser\n          ...Faq\n          ...ImageGridWithHeader\n        }\n      }\n    }\n  }\n\n  query Page(\n    $language: LanguageCode,\n    $country: CountryCode,\n    $handle: String!\n  )\n  @inContext(language: $language, country: $country) {\n    page(handle: $handle) {\n      ...Page\n    }\n  }\n': {
+  '#graphql\n  #graphql\n  #tags\n  #graphql\n  fragment Image on MediaImage {\n    id\n    image {\n      url\n      height\n      width\n    }\n  }\n\n  #graphql\n  fragment BackgroundImage on Metaobject {\n    id\n    type\n    image: field(key: "image") {\n      reference {\n        ...Image\n      }\n    }\n    opacity: field(key:"opacity") {\n      value\n    }\n    style: field(key:"style") {\n      value\n    }\n  }\n\n  #graphql\n  fragment Button on Metaobject {\n    id\n    type\n    text: field(key: "text") {\n      value\n    }\n    linkTo: field(key:"link_to") {\n      value\n    }\n    variant: field(key:"variant") {\n      value\n    }\n    color: field(key:"color") {\n      value\n    }\n  }\n\n  #graphql\n  fragment Overlay on Metaobject {\n    id\n    type\n    color: field(key: "color") {\n      value\n    }\n    opacity: field(key:"opacity") {\n      value\n      type\n    }\n  }\n\n\n  #fragments\n  #graphql\n  #graphql\n  fragment AccordionItem on Metaobject {\n    id\n    type\n    label: field(key: "label") {\n      value\n    }\n    text: field(key:"text") {\n      value\n    }\n  }\n\n  fragment Accordion on Metaobject {\n    id\n    type\n    name: field(key: "name") {\n      value\n    }\n    variant: field(key:"variant") {\n      key\n      value\n    }\n    items: field(key:"items") {\n      references(first: 10) {\n        nodes {\n          ...AccordionItem\n        }\n      }\n    }\n  }\n\n  #graphql\n  fragment CallToAction on Metaobject {\n    id\n    type\n    name: field(key:"name") {\n      value\n    }\n    title: field(key:"title") {\n      value\n    }\n    image: field(key: "image") {\n      reference {\n        ...Image\n      }\n    }\n    color: field(key: "color") {\n      value\n    }\n    button: field(key:"button") {\n      reference {\n        ...Button\n      }\n    }\n    overlay: field(key: "overlay") {\n      reference {\n        ...Overlay\n      }\n    }\n  }\n\n  #graphql\n  fragment CardMedia on Metaobject {\n    id\n    type\n    title: field(key: "title") {\n      value\n    }\n    description: field(key:"description") {\n      value\n    }\n    image: field(key: "image") {\n      reference {\n        ...Image\n      }\n    }\n    flip: field(key:"flip") {\n      value\n    }\n  }\n\n  #graphql\n  #graphql\n  fragment FeatureItem on Metaobject {\n    id\n    type\n    title: field(key: "title") {\n      value\n    }\n    description: field(key: "description") {\n      value\n    }\n    icon: field(key: "icon") {\n      value\n    }\n  }\n\n\n  fragment Features on Metaobject {\n    id\n    type\n    title: field(key: "title") {\n      value\n    }\n    subtitle: field(key: "subtitle") {\n      value\n    }\n    items: field(key: "items") {\n      references(first: 10) {\n        nodes {\n          ...FeatureItem\n        }\n      }\n    }\n  }\n\n  #graphql\n  #graphql\n  #graphql\n  fragment ThemeIcon on Metaobject {\n    id\n    type\n    name: field(key: "name") {\n      value\n    }\n    icon: field(key: "icon") {\n      value\n    }\n    variant: field(key: "variant") {\n      value\n    }\n    color: field(key: "color") {\n      value\n    }\n    radius: field(key: "radius") {\n      value\n    }\n  }\n\n\n  fragment HelpItem on Metaobject {\n    id\n    type\n    title: field(key: "title") {\n      value\n    }\n    description: field(key: "description") {\n      value\n    }\n    themeIcon: field(key: "theme_icon") {\n      reference {\n        ...ThemeIcon\n      }\n    }\n    backgroundColor: field(key: "background_color") {\n      value\n    }\n  }\n\n\n  fragment Help on Metaobject {\n    id\n    type\n    name: field(key: "name") {\n      value\n    }\n    title: field(key: "title") {\n      value\n    }\n    items: field(key: "items") {\n      references(first: 10) {\n        nodes {\n          ...HelpItem\n        }\n      }\n    }\n    backgroundColor: field(key: "background_color") {\n      value\n    }\n  }\n\n  #graphql\n  fragment Maps on Metaobject {\n    id\n    type\n    url: field(key: "url") {\n      value\n    }\n  }\n\n  #graphql\n  fragment SideBySide on Metaobject {\n    id\n    type\n    title: field(key:"title") {\n      value\n    }\n    text: field(key: "text") {\n      value\n    }\n  }\n\n  #graphql\n  fragment VisualTeaser on Metaobject {\n    id\n    type\n    title: field(key: "title") {\n      value\n    }\n    subtitle: field(key: "subtitle") {\n      value\n    }\n    height:field(key:"height") {\n      value\n    }\n    backgroundColor:field(key:"background_color") {\n      value\n    }\n    fontColor: field(key:"font_color") {\n      value\n    }\n    justify: field(key:"justify") {\n      value\n    }\n    backgroundImage: field(key:"background_image") {\n      reference {\n        ...BackgroundImage\n      }\n    }\n    subbutton: field(key:"subbutton") {\n      reference {\n        ...Button\n      }\n    }\n  }\n\n  #graphql\n  fragment Faq on Metaobject {\n    id\n    type\n    title: field(key: "title") {\n      value\n    }\n    description:field(key:"description") {\n      value\n    }\n    backgroundColor:field(key:"background_color") {\n      value\n    }\n    fromColor:field(key:"from_color") {\n      value\n    }\n    toColor:field(key:"to_color") {\n      value\n    }\n    direction: field(key:"direction") {\n      value\n    }\n    accordion: field(key: "accordion") {\n      reference {\n        ...Accordion\n      }\n    }\n  }\n\n  #graphql\n  #graphql\n  fragment ImageGridWithHeaderCollection on Collection {\n    id\n    title\n    description\n    handle\n    image {\n      height\n      width\n      url(transform: {maxHeight: 150, maxWidth: 150, crop: CENTER})\n    }\n  }\n\n  fragment ImageGridWithHeader on Metaobject {\n    id\n    type\n    title: field(key: "title") {\n      value\n    }\n    fromColor: field(key:"from_color") {\n      value\n    }\n    toColor: field(key:"to_color") {\n      value\n    }\n    button: field(key:"button") {\n      reference {\n        ...Button\n      }\n    }\n    collections: field(key:"collections") {\n      references(first: 5) {\n        nodes {\n          ...ImageGridWithHeaderCollection\n        }\n      }\n    }\n  }\n\n\n\n  fragment Page on Page {\n    id\n    title\n    body\n    seo {\n      description\n      title\n    }\n    components: metafield(namespace: "custom", key: "components") {\n      references(first: 10) {\n        nodes {\n          ...Accordion\n          ...CallToAction\n          ...CardMedia\n          ...Features\n          ...Help\n          ...Maps\n          ...SideBySide\n          ...VisualTeaser\n          ...Faq\n          ...ImageGridWithHeader\n        }\n      }\n    }\n\n    header: metafield(namespace: "booking", key: "header") {\n      reference {\n        ...Accordion\n        ...CallToAction\n        ...CardMedia\n        ...Features\n        ...Help\n        ...Maps\n        ...SideBySide\n        ...VisualTeaser\n        ...Faq\n        ...ImageGridWithHeader\n      }\n    }\n\n    options: metafield(namespace: "custom", key: "options") {\n      references(first: 10) {\n        nodes {\n          ...Accordion\n          ...CallToAction\n          ...CardMedia\n          ...Features\n          ...Help\n          ...Maps\n          ...SideBySide\n          ...VisualTeaser\n          ...Faq\n          ...ImageGridWithHeader\n        }\n      }\n    }\n  }\n\n  query Page(\n    $language: LanguageCode,\n    $country: CountryCode,\n    $handle: String!\n  )\n  @inContext(language: $language, country: $country) {\n    page(handle: $handle) {\n      ...Page\n    }\n  }\n': {
     return: PageQuery;
     variables: PageQueryVariables;
   };
@@ -6070,9 +6125,13 @@ interface GeneratedQueryTypes {
     return: TreatmentFilterCollectionQuery;
     variables: TreatmentFilterCollectionQueryVariables;
   };
-  '#graphql\n  #graphql\n  #graphql\n  fragment User on Metaobject {\n    id\n    aboutMe: field(key: "about_me") {\n      value\n    }\n    active: field(key: "active") {\n      value\n    }\n    fullname: field(key: "fullname") {\n      value\n    }\n    professions: field(key: "professions") {\n      value\n    }\n    specialties: field(key: "specialties") {\n      value\n    }\n    speaks: field(key: "speaks") {\n      value\n    }\n    social: field(key: "social") {\n      value\n    }\n    shortDescription: field(key: "short_description") {\n      value\n    }\n    username: field(key: "username") {\n      value\n    }\n    theme: field(key: "theme") {\n      value\n    }\n    image: field(key: "image") {\n      reference {\n        ... on MediaImage {\n          image {\n            width\n            height\n            url(transform: { maxHeight: 250, maxWidth: 250, crop: CENTER })\n          }\n        }\n      }\n    }\n  }\n\n  #graphql\n  fragment UserCollectionFilter on Filter {\n    id\n    label\n    values {\n      label\n      input\n      count\n    }\n  }\n\n  #graphql\n  fragment ArticleUserProduct on Product {\n    id\n    title\n    featuredImage {\n      id\n      altText\n      url(transform: { maxHeight: 250, maxWidth: 250, crop: CENTER })\n      width\n      height\n    }\n  }\n\n\n  fragment ArticleUser on Article {\n    id\n    title\n    tags\n    user: metafield(key: "user", namespace: "booking") {\n      reference {\n        ...User\n      }\n    }\n    collection: metafield(key: "collection", namespace: "booking") {\n      reference {\n        ... on Collection {\n          products(first: 2, sortKey: RELEVANCE, filters: [{productMetafield: {namespace: "booking", key: "hide_from_profile", value: "false"}}, {productMetafield: {namespace: "system", key: "active",value: "true"}}]) {\n            nodes {\n              ...ArticleUserProduct\n            }\n            filters {\n              ...UserCollectionFilter\n            }\n          }\n        }\n      }\n    }\n  }\n\n  query ArtistsIndex(\n    $country: CountryCode\n    $language: LanguageCode\n    $first: Int\n    $last: Int\n    $startCursor: String\n    $endCursor: String\n    $query: String\n    $sortKey: ArticleSortKeys = PUBLISHED_AT\n    $reverse: Boolean = true\n  ) @inContext(country: $country, language: $language) {\n    data: blog(id: "gid://shopify/Blog/105364226375") {\n      users: articles(first: $first, last: $last, before: $startCursor, after: $endCursor, query: $query, sortKey: $sortKey, reverse: $reverse) {\n        nodes {\n          ...ArticleUser\n        }\n        pageInfo {\n          hasPreviousPage\n          hasNextPage\n          endCursor\n          startCursor\n        }\n      }\n    }\n  }\n': {
-    return: ArtistsIndexQuery;
-    variables: ArtistsIndexQueryVariables;
+  '#graphql\n  #graphql\n  #graphql\n  fragment User on Metaobject {\n    id\n    aboutMe: field(key: "about_me") {\n      value\n    }\n    active: field(key: "active") {\n      value\n    }\n    fullname: field(key: "fullname") {\n      value\n    }\n    professions: field(key: "professions") {\n      value\n    }\n    specialties: field(key: "specialties") {\n      value\n    }\n    speaks: field(key: "speaks") {\n      value\n    }\n    social: field(key: "social") {\n      value\n    }\n    shortDescription: field(key: "short_description") {\n      value\n    }\n    username: field(key: "username") {\n      value\n    }\n    theme: field(key: "theme") {\n      value\n    }\n    image: field(key: "image") {\n      reference {\n        ... on MediaImage {\n          image {\n            width\n            height\n            url(transform: { maxHeight: 250, maxWidth: 250, crop: CENTER })\n          }\n        }\n      }\n    }\n  }\n\n  #graphql\n  fragment UserCollectionFilter on Filter {\n    id\n    label\n    values {\n      label\n      input\n      count\n    }\n  }\n\n  #graphql\n  #graphql\n  fragment Location on Metaobject {\n    id\n    handle\n    locationType: field(key: "location_type") {\n      value\n    }\n    name: field(key: "name") {\n      value\n    }\n    fullAddress: field(key: "full_address") {\n      value\n    }\n    city: field(key: "city") {\n      value\n    }\n    country: field(key: "country") {\n      value\n    }\n    distanceForFree: field(key: "distance_for_free") {\n      value\n    }\n    distanceHourlyRate: field(key: "distance_hourly_rate") {\n      value\n    }\n    fixedRatePerKm: field(key: "fixed_rate_per_km") {\n      value\n    }\n    minDriveDistance: field(key: "min_drive_distance") {\n      value\n    }\n    maxDriveDistance: field(key: "max_drive_distance") {\n      value\n    }\n    startFee: field(key: "start_fee") {\n      value\n    }\n    geoLocation: field(key: "geo_location") {\n      value\n    }\n  }\n\n  fragment TreatmentProduct on Product {\n    id\n    title\n    descriptionHtml\n    productType\n    handle\n    vendor\n    featuredImage {\n      id\n      altText\n      url(transform: { maxHeight: 250, maxWidth: 250, crop: CENTER })\n      width\n      height\n    }\n    variants(first: 1) {\n      nodes {\n        id\n        compareAtPrice {\n          amount\n          currencyCode\n        }\n        price {\n          amount\n          currencyCode\n        }\n      }\n    }\n    parentId: metafield(key: "parentId", namespace: "booking") {\n      id\n      value\n    }\n    options: metafield(key: "options", namespace: "booking") {\n      id\n      value\n    }\n    scheduleId: metafield(key: "scheduleId", namespace: "booking") {\n      reference {\n        ... on Metaobject {\n          handle\n        }\n      }\n    }\n    locations: metafield(key: "locations", namespace: "booking") {\n      references(first: 10) {\n        nodes {\n          ...Location\n        }\n      }\n    }\n    bookingPeriodValue: metafield(key: "booking_period_value", namespace: "booking") {\n      id\n      value\n    }\n    bookingPeriodUnit: metafield(key: "booking_period_unit", namespace: "booking") {\n      id\n      value\n    }\n    noticePeriodValue: metafield(key: "notice_period_value", namespace: "booking") {\n      id\n      value\n    }\n    noticePeriodUnit: metafield(key: "notice_period_unit", namespace: "booking") {\n      id\n      value\n    }\n    duration: metafield(key: "duration", namespace: "booking") {\n      id\n      value\n    }\n    breaktime: metafield(key: "breaktime", namespace: "booking") {\n      id\n      value\n    }\n  }\n\n\n  fragment ArticleUser on Article {\n    id\n    title\n    tags\n    user: metafield(key: "user", namespace: "booking") {\n      reference {\n        ...User\n      }\n    }\n    collection: metafield(key: "collection", namespace: "booking") {\n      reference {\n        ... on Collection {\n          products(first: 2, sortKey: RELEVANCE, filters: [{productMetafield: {namespace: "booking", key: "hide_from_profile", value: "false"}}, {productMetafield: {namespace: "system", key: "active",value: "true"}}]) {\n            nodes {\n              ...TreatmentProduct\n            }\n            filters {\n              ...UserCollectionFilter\n            }\n          }\n        }\n      }\n    }\n  }\n\n  query GetUsers(\n    $country: CountryCode\n    $language: LanguageCode\n    $first: Int\n    $last: Int\n    $startCursor: String\n    $endCursor: String\n    $query: String\n    $sortKey: ArticleSortKeys = PUBLISHED_AT\n    $reverse: Boolean = true\n  ) @inContext(country: $country, language: $language) {\n    data: blog(id: "gid://shopify/Blog/105364226375") {\n      users: articles(first: $first, last: $last, before: $startCursor, after: $endCursor, query: $query, sortKey: $sortKey, reverse: $reverse) {\n        nodes {\n          ...ArticleUser\n        }\n        pageInfo {\n          hasPreviousPage\n          hasNextPage\n          endCursor\n          startCursor\n        }\n      }\n    }\n  }\n': {
+    return: GetUsersQuery;
+    variables: GetUsersQueryVariables;
+  };
+  '#graphql\n  query ArticleCollectionIdsTag(\n    $country: CountryCode, $language: LanguageCode, $query: String!\n  ) @inContext(country: $country, language: $language) {\n    collections(first: 10, query: $query) {\n      nodes {\n        id\n        title\n      }\n    }\n  }\n': {
+    return: ArticleCollectionIdsTagQuery;
+    variables: ArticleCollectionIdsTagQueryVariables;
   };
 }
 

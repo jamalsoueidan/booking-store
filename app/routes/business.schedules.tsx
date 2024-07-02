@@ -34,7 +34,7 @@ export async function loader({context, request}: LoaderFunctionArgs) {
   );
 
   const url = new URL(request.url);
-  if (url.pathname === '/account/schedules' && response.payload.length > 0) {
+  if (url.pathname === '/business/schedules' && response.payload.length > 0) {
     return redirect(response.payload[0]._id);
   }
 

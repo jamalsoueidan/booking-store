@@ -193,7 +193,7 @@ export function Layout({children}: {children: ReactNode}) {
               )}
               <LanguageDetector />
             </ModalsProvider>
-            <ModalAccount customer={data.customer} />
+            <ModalAccount customer={data?.customer} />
           </MantineProvider>
         </DirectionProvider>
         <ScrollRestoration nonce={nonce} />

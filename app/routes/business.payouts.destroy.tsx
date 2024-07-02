@@ -7,5 +7,5 @@ export const action: ActionFunction = async ({context, params}) => {
 
   await getBookingShopifyApi().customerPayoutAccountDestroy(customerId);
 
-  return redirect(`/account/payouts`);
+  return redirect(`/business/payouts`);
 };

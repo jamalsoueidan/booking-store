@@ -41,7 +41,7 @@ export const AccordionItemMetaobject = ({
   return (
     <Accordion.Item key={item.id} value={label || ''}>
       <Accordion.Control>
-        <Text fz="lg" fw={500}>
+        <Text fz="md" fw={500}>
           {label}
         </Text>
       </Accordion.Control>

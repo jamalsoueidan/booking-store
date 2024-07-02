@@ -39,9 +39,13 @@ export function RemoveLocationFilterButton() {
   );
 }
 
-export function AddLocationFilter({tags}: {tags: string[]}) {
+export function AddLocationFilter({tags}: {tags: string[] | null}) {
   const {t} = useTranslation(['global']);
   const {value, onChange} = useChangeFilter('location');
+
+  if (!tags) {
+    return null;
+  }
 
   return (
     <div>

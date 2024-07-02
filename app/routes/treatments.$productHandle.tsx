@@ -275,7 +275,7 @@ function Header() {
             max={priceRange.price.max}
           />
           <AddLocationFilter tags={locations} />
-          <AddDayFilter />
+          <AddDayFilter tags={[]} />
         </Stack>
       </Drawer>
     </>

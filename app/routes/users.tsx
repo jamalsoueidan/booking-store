@@ -1,15 +1,14 @@
 import {
+  Box,
   Button,
   Container,
-  Divider,
   Drawer,
   Flex,
-  Group,
-  InputLabel,
-  Radio,
+  getGradient,
   ScrollArea,
   Select,
   Stack,
+  useMantineTheme,
 } from '@mantine/core';
 import {useDisclosure} from '@mantine/hooks';
 import {
@@ -28,14 +27,13 @@ import {
   IconArrowDown,
   IconArrowsSort,
   IconFilter,
-  IconGenderFemale,
   IconNetwork,
   IconServicemark,
   IconX,
 } from '@tabler/icons-react';
 import {useMemo} from 'react';
 import {useTranslation} from 'react-i18next';
-import {type CategoriesStorefrontQuery} from 'storefrontapi.generated';
+import {type ArticleCollectionIdsTagQuery} from 'storefrontapi.generated';
 import {Headless} from '~/components/blocks/Headless';
 import {VisualTeaser} from '~/components/blocks/VisualTeaser';
 import {
@@ -47,6 +45,10 @@ import {
   RemoveDayFilterButton,
 } from '~/components/filters/DayFilter';
 import {
+  AddGenderFilter,
+  RemoveGenderFilterButton,
+} from '~/components/filters/GenderFilter';
+import {
   AddLanguageFilter,
   RemoveLanguageFilterButton,
 } from '~/components/filters/LanguageFilter';
@@ -56,7 +58,6 @@ import {
 } from '~/components/filters/LocationFilter';
 import {ProfessionButton} from '~/components/ProfessionButton';
 import {getTags} from '~/lib/tags';
-import {COLLECTION} from './business.services.create';
 import {PAGE_QUERY} from './pages.$handle';
 
 export const handle: Handle = {
@@ -88,7 +89,14 @@ export const loader = async (args: LoaderFunctionArgs) => {
     context.env.PRIVATE_API_ACCESS_TOKEN,
   );
 
-  const {collection} = await context.storefront.query(COLLECTION);
+  const {collections} = await context.storefront.query(
+    ARTICLE_COLLECTION_IDS_TAG_QUERY,
+    {
+      variables: {
+        query: tags['collectionid']?.join(' OR ') || '',
+      },
+    },
+  );
 
   const {page} = await context.storefront.query(PAGE_QUERY, {
     variables: {
@@ -100,25 +108,29 @@ export const loader = async (args: LoaderFunctionArgs) => {
   return json({
     page,
     tags,
-    collection,
+    collections,
   });
 };
 
 export default function Artists() {
-  const {tags, page, collection} = useLoaderData<typeof loader>();
+  const theme = useMantineTheme();
+  const {tags, page, collections} = useLoaderData<typeof loader>();
 
   return (
     <>
       <VisualTeaser data={page?.header?.reference} />
 
-      <Container size="xl">
-        <Stack gap="xl">
-          <CategoriesAndFilters tags={tags} collection={collection} />
-          <Outlet />
-        </Stack>
-      </Container>
-
-      <Divider />
+      <Box
+        bg={getGradient({deg: 180, from: 'white', to: 'red.0'}, theme)}
+        style={{position: 'relative', overflow: 'hidden'}}
+      >
+        <Container size="xl">
+          <Stack gap="xl">
+            <CategoriesAndFilters tags={tags} collections={collections} />
+            <Outlet />
+          </Stack>
+        </Container>
+      </Box>
 
       <Headless components={page?.components} />
     </>
@@ -127,10 +139,10 @@ export default function Artists() {
 
 function CategoriesAndFilters({
   tags,
-  collection,
+  collections,
 }: {
-  tags: Record<string, string[]>;
-  collection: CategoriesStorefrontQuery['collection'];
+  tags: Record<string, string[] | null>;
+  collections: ArticleCollectionIdsTagQuery['collections'];
 }) {
   const {t} = useTranslation(['users', 'professions']);
   const [opened, {open, close}] = useDisclosure(false);
@@ -138,16 +150,11 @@ function CategoriesAndFilters({
 
   const products = useMemo(
     () =>
-      collection?.children?.references?.nodes.reduce((products, collection) => {
-        collection.products.nodes.forEach((product) => {
-          products.push({
-            value: parseGid(product.id).id,
-            label: `${collection.title}: ${product.title}`,
-          });
-        });
-        return products;
-      }, [] as Array<{value: string; label: string}>),
-    [collection?.children?.references?.nodes],
+      collections.nodes.map((collection) => ({
+        value: parseGid(collection.id).id,
+        label: collection.title,
+      })),
+    [collections],
   );
 
   const sortValue = searchParams.get('sort');
@@ -158,21 +165,6 @@ function CategoriesAndFilters({
           prev.set('sort', value);
         } else {
           prev.delete('sort');
-        }
-        return prev;
-      },
-      {preventScrollReset: true},
-    );
-  };
-
-  const genderValue = searchParams.get('gender');
-  const onChangeGender = (value: string | null) => {
-    setSearchParams(
-      (prev) => {
-        if (value) {
-          prev.set('gender', value);
-        } else {
-          prev.delete('gender');
         }
         return prev;
       },
@@ -218,15 +210,16 @@ function CategoriesAndFilters({
       <ScrollArea h="auto" type="auto" py={{base: 'md', sm: undefined}}>
         <Flex gap={{base: 'sm', sm: 'lg'}} justify="center">
           <ProfessionButton profession={'all'} reset />
-          {tags['profession']
-            .sort((a, b) => {
-              const translatedA = t(a as any, {ns: 'professions'}) || a;
-              const translatedB = t(b as any, {ns: 'professions'}) || b;
-              return translatedA.localeCompare(translatedB);
-            })
-            .map((profession) => (
-              <ProfessionButton key={profession} profession={profession} />
-            ))}
+          {tags['profession'] &&
+            tags['profession']
+              .sort((a, b) => {
+                const translatedA = t(a as any, {ns: 'professions'}) || a;
+                const translatedB = t(b as any, {ns: 'professions'}) || b;
+                return translatedA.localeCompare(translatedB);
+              })
+              .map((profession) => (
+                <ProfessionButton key={profession} profession={profession} />
+              ))}
         </Flex>
       </ScrollArea>
       <Flex direction="column" justify="center" gap="md">
@@ -291,26 +284,14 @@ function CategoriesAndFilters({
                 </Button>
               ) : null}
               <RemoveLocationFilterButton />
-              {genderValue ? (
-                <Button
-                  variant="outline"
-                  c="black"
-                  color="gray.3"
-                  onClick={() => onChangeGender(null)}
-                  size="md"
-                  rightSection={<IconX />}
-                  leftSection={<IconGenderFemale />}
-                >
-                  {genderValue === 'woman' && t('users:gender_woman')}
-                  {genderValue === 'man' && t('users:gender_men')}
-                </Button>
-              ) : null}
+              <RemoveGenderFilterButton />
               <RemoveDayFilterButton />
               <RemoveLanguageFilterButton />
             </>
           ) : null}
         </Flex>
       </Flex>
+
       <Drawer
         position="right"
         opened={opened}
@@ -325,13 +306,18 @@ function CategoriesAndFilters({
             placeholder={t('users:profession_placeholder')}
             onChange={onChangeProfession}
             leftSection={<IconNetwork />}
-            data={tags['profession'].map((p) => ({
-              label: `${t(p as any, {ns: 'professions'})[0].toUpperCase()}${t(
-                p as any,
-                {ns: 'professions'},
-              ).substring(1)}`,
-              value: p,
-            }))}
+            data={
+              tags['profession']
+                ? tags['profession'].map((p) => ({
+                    label: `${t(p as any, {
+                      ns: 'professions',
+                    })[0].toUpperCase()}${t(p as any, {
+                      ns: 'professions',
+                    }).substring(1)}`,
+                    value: p,
+                  }))
+                : []
+            }
             clearable
           />
           <Select
@@ -363,23 +349,24 @@ function CategoriesAndFilters({
             clearable
           />
           <AddLocationFilter tags={tags['location_type']} />
-          <AddDayFilter />
-          <AddLanguageFilter />
-          <div>
-            <Group gap="xs" mb="xs">
-              <IconGenderFemale />
-              <InputLabel size="md">{t('users:gender_label')}</InputLabel>
-            </Group>
-            <Radio.Group value={genderValue} onChange={onChangeGender}>
-              <Stack gap="3px">
-                <Radio value={null!} label={t('users:gender_all')} />
-                <Radio value="woman" label={t('users:gender_woman')} />
-                <Radio value="man" label={t('users:gender_men')} />
-              </Stack>
-            </Radio.Group>
-          </div>
+          <AddDayFilter tags={tags['day']} />
+          <AddLanguageFilter tags={tags['speak']} />
+          <AddGenderFilter tags={tags['gender']} />
         </Stack>
       </Drawer>
     </>
   );
 }
+
+export const ARTICLE_COLLECTION_IDS_TAG_QUERY = `#graphql
+  query ArticleCollectionIdsTag(
+    $country: CountryCode, $language: LanguageCode, $query: String!
+  ) @inContext(country: $country, language: $language) {
+    collections(first: 10, query: $query) {
+      nodes {
+        id
+        title
+      }
+    }
+  }
+` as const;

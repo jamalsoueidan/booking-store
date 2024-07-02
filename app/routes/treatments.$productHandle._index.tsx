@@ -28,10 +28,7 @@ import {PriceBadge} from '~/components/artist/PriceBadge';
 
 import type {ProductCollectionSortKeys} from '@shopify/hydrogen/storefront-api-types';
 import React from 'react';
-import type {
-  TreatmentsForCollectionFragment,
-  UserCollectionFragment,
-} from 'storefrontapi.generated';
+import type {TreatmentsForCollectionFragment} from 'storefrontapi.generated';
 import {LeafletMap} from '~/components/LeafletMap.client';
 import {LocationIcon} from '~/components/LocationIcon';
 import type {CustomerLocationBaseLocationType} from '~/lib/api/model';
@@ -271,7 +268,7 @@ function TreatmentProductUser({
         <Divider mt="md" mb="xs" color="gray.2" />
       </Card.Section>
 
-      <ArtistProduct user={user} product={product} />
+      <ArtistProduct product={product} />
 
       {userProducts
         .filter((p) => p.id !== product.id)
@@ -282,7 +279,6 @@ function TreatmentProductUser({
               <Divider my="xs" color="gray.2" />
             </Card.Section>
             <ArtistProduct
-              user={user}
               product={p}
               //style={{opacity: Math.max(0.5 - index * 0.1, 0)}}
             />
@@ -310,11 +306,9 @@ function TreatmentProductUser({
 }
 
 export function ArtistProduct({
-  user,
   product,
   ...props
 }: {
-  user: UserCollectionFragment;
   product: TreatmentsForCollectionFragment;
 } & UnstyledButtonProps) {
   const productId = parseGid(product?.id).id;

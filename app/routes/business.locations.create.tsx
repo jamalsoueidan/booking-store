@@ -44,7 +44,7 @@ export const action = async ({request, context}: ActionFunctionArgs) => {
       `${baseURL}/customer/${customerId}/locations`,
     );
 
-    return redirectWithSuccess('/account/locations', {
+    return redirectWithSuccess('/business/locations', {
       message: 'Lokation er nu oprettet!',
     });
   } catch (error) {

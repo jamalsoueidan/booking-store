@@ -27,10 +27,14 @@ export function RemoveDayFilterButton() {
   );
 }
 
-export function AddDayFilter() {
+export function AddDayFilter({tags}: {tags: string[] | null}) {
   const {t} = useTranslation('global');
   const {value, onChange} = useChangeFilter('days');
   const transform = value?.split(',').filter((p) => p.length > 0);
+
+  if (!tags) {
+    return null;
+  }
 
   return (
     <div>
@@ -40,13 +44,27 @@ export function AddDayFilter() {
       </Group>
       <Checkbox.Group value={transform} onChange={onChange}>
         <Stack gap="3px">
-          <Checkbox value="monday" label={t('monday')} />
-          <Checkbox value="tuesday" label={t('tuesday')} />
-          <Checkbox value="wednesday" label={t('wednesday')} />
-          <Checkbox value="thursday" label={t('thursday')} />
-          <Checkbox value="friday" label={t('friday')} />
-          <Checkbox value="saturday" label={t('saturday')} />
-          <Checkbox value="sunday" label={t('sunday')} />
+          {tags.includes('monday') ? (
+            <Checkbox value="monday" label={t('monday')} />
+          ) : null}
+          {tags.includes('tuesday') ? (
+            <Checkbox value="tuesday" label={t('tuesday')} />
+          ) : null}
+          {tags.includes('wednesday') ? (
+            <Checkbox value="wednesday" label={t('wednesday')} />
+          ) : null}
+          {tags.includes('thursday') ? (
+            <Checkbox value="thursday" label={t('thursday')} />
+          ) : null}
+          {tags.includes('friday') ? (
+            <Checkbox value="friday" label={t('friday')} />
+          ) : null}
+          {tags.includes('saturday') ? (
+            <Checkbox value="saturday" label={t('saturday')} />
+          ) : null}
+          {tags.includes('sunday') ? (
+            <Checkbox value="sunday" label={t('sunday')} />
+          ) : null}
         </Stack>
       </Checkbox.Group>
     </div>

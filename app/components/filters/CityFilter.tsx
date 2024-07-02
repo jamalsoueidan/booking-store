@@ -24,9 +24,13 @@ export function RemoveCityFilterButton() {
   );
 }
 
-export function AddCityFilter({tags}: {tags: string[]}) {
+export function AddCityFilter({tags}: {tags: string[] | null}) {
   const {t} = useTranslation('global');
   const {value, onChange} = useChangeFilter('city');
+
+  if (!tags) {
+    return null;
+  }
 
   const data = tags.sort().map((p) => ({
     label: `${p[0].toUpperCase()}${p.substring(1)}`,

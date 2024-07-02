@@ -58,7 +58,7 @@ export default function AccountLocationsEdit() {
         </Title>
         <Button
           component={Link}
-          to="/account/services/create"
+          to="/business/services/create"
           data-testid="empty-create-button"
           leftSection={<IconPlus size={14} />}
         >
@@ -79,7 +79,7 @@ export default function AccountLocationsEdit() {
               h="100%"
               withBorder
               component={Link}
-              to={`/account/services/${product.productId}`}
+              to={`/business/services/${product.productId}`}
             >
               <Flex justify="space-between">
                 <Group gap="sm" align="flex-start">
