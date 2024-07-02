@@ -237,7 +237,7 @@ export const UserCard = ({article}: {article: ArticleUserFragment}) => {
                 />
               )}
               <Text fz="md" c="dimmed" lineClamp={1}>
-                asd
+                {tags['city']}
               </Text>
             </Group>
 

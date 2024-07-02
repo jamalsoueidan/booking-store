@@ -9,6 +9,7 @@ import {
   Flex,
   Grid,
   Group,
+  Loader,
   rem,
   Skeleton,
   Spoiler,
@@ -18,13 +19,14 @@ import {
   UnstyledButton,
 } from '@mantine/core';
 import '@mantine/tiptap/styles.css';
-import {Await, Link, Outlet, useLoaderData} from '@remix-run/react';
+import {Await, Link, useLoaderData} from '@remix-run/react';
 import {
   defer,
+  type LinksFunction,
   type LoaderFunctionArgs,
   type MetaFunction,
 } from '@shopify/remix-oxygen';
-import {Suspense, useEffect, useMemo, useState} from 'react';
+import React, {Suspense, useEffect, useMemo, useState} from 'react';
 
 import {parseGid} from '@shopify/hydrogen';
 import {da} from 'date-fns/locale';
@@ -43,15 +45,37 @@ import type {
 } from 'storefrontapi.generated';
 import {LocationIcon} from '~/components/LocationIcon';
 
-import {type CustomerScheduleSlot} from '~/lib/api/model';
+import {
+  type CustomerLocationAllOfGeoLocation,
+  type CustomerScheduleSlot,
+} from '~/lib/api/model';
 import {convertLocations} from '~/lib/convertLocations';
 import {useDuration} from '~/lib/duration';
 
 import {AE, DK, US} from 'country-flag-icons/react/3x2';
+import leafletStyles from 'leaflet/dist/leaflet.css?url';
 import {useTranslation} from 'react-i18next';
+import {ClientOnly} from 'remix-utils/client-only';
+import {
+  LeafletMap,
+  type LeafletMapMarker,
+} from '~/components/LeafletMap.client';
 import {USER_METAOBJECT_QUERY} from '~/graphql/fragments/UserMetaobject';
 import {GET_USER_PRODUCTS} from '~/graphql/queries/GetUserProducts';
 import {UserProvider, useUser} from '~/hooks/use-user';
+
+import localLeafletStyles from '~/styles/leaflet.css?url';
+
+export const links: LinksFunction = () => [
+  {
+    rel: 'stylesheet',
+    href: leafletStyles,
+  },
+  {
+    rel: 'stylesheet',
+    href: localLeafletStyles,
+  },
+];
 
 export const handle: Handle = {
   i18n: ['global', 'profile', 'professions', 'skills'],
@@ -338,6 +362,7 @@ function UserTreatments() {
       <Title order={2} fw="600" mb="md">
         {t('treatments_title')}
       </Title>
+
       <Suspense fallback={<Skeleton height={8} radius="xl" />}>
         <Await resolve={data.collection}>
           {({collection}) => {
@@ -349,22 +374,28 @@ function UserTreatments() {
                 collections[product.productType].push(product);
                 return collections;
               }, {} as Record<string, TreatmentProductFragment[]>) || {};
+
             return (
               <Grid gutter="xl">
                 <Grid.Col span={{base: 12, md: 8}}>
                   <Stack gap="xl">
-                    {Object.keys(collections).map((key) => (
-                      <Stack key={key} gap="sm">
-                        <Title order={4} fw="600">
-                          {key}
-                        </Title>
-                        <Stack gap="md">
-                          {collections[key].map((product) => (
-                            <ArtistProduct key={product.id} product={product} />
-                          ))}
+                    {Object.keys(collections)
+                      .sort()
+                      .map((key) => (
+                        <Stack key={key} gap="sm">
+                          <Title order={4} fw="600">
+                            {key}
+                          </Title>
+                          <Stack gap="md">
+                            {collections[key].map((product) => (
+                              <ArtistProduct
+                                key={product.id}
+                                product={product}
+                              />
+                            ))}
+                          </Stack>
                         </Stack>
-                      </Stack>
-                    ))}
+                      ))}
                   </Stack>
                 </Grid.Col>
                 <Grid.Col span={{base: 12, md: 4}}>
@@ -393,7 +424,6 @@ function UserTreatments() {
             );
           }}
         </Await>
-        <Outlet />
       </Suspense>
     </>
   );
@@ -417,7 +447,31 @@ async function wordToColor(word: string) {
 
 function Schedule({schedule}: {schedule: ScheduleFragment}) {
   const {t} = useTranslation(['profile', 'global']);
+  const user = useUser();
   const [scheduleColor, setScheduleColor] = useState<string>('#fff');
+
+  const markers = useMemo(
+    () =>
+      schedule.locations?.references?.nodes.reduce((geos, l) => {
+        if (l.geoLocation?.value) {
+          const value = JSON.parse(
+            l.geoLocation.value,
+          ) as CustomerLocationAllOfGeoLocation;
+          geos.push({
+            id: l.id,
+            lat: value.coordinates[1],
+            lng: value.coordinates[0],
+            radius:
+              l.locationType?.value === 'destination'
+                ? parseInt(l.maxDriveDistance?.value || '0') * 1000
+                : null,
+            image: user.image.url,
+          });
+        }
+        return geos;
+      }, [] as LeafletMapMarker[]) || [],
+    [schedule.locations?.references?.nodes, user.image.url],
+  );
 
   useEffect(() => {
     const fetchColor = async () => {
@@ -443,7 +497,7 @@ function Schedule({schedule}: {schedule: ScheduleFragment}) {
       <Title order={4} mb="xs">
         {t('openingtime')}
       </Title>
-      <Stack gap={rem(3)}>
+      <Stack gap={rem(3)} mb="md">
         {slots?.map((slot) => {
           return (
             <Group key={slot.day}>
@@ -467,12 +521,13 @@ function Schedule({schedule}: {schedule: ScheduleFragment}) {
           );
         })}
       </Stack>
-      <Card.Section>
-        <Divider my="md" />
-      </Card.Section>
-      <Stack gap="xs">
-        {schedule.locations?.references?.nodes.map((location) => (
-          <Group key={location.handle}>
+
+      {schedule.locations?.references?.nodes.map((location) => (
+        <React.Fragment key={location.handle}>
+          <Card.Section>
+            <Divider mb="md" />
+          </Card.Section>
+          <Group mb="md">
             <LocationIcon
               location={{locationType: location.locationType?.value as any}}
               color={scheduleColor || '#000000'}
@@ -480,18 +535,33 @@ function Schedule({schedule}: {schedule: ScheduleFragment}) {
             {location.locationType?.value === 'destination' ||
             location.locationType?.value === 'virtual' ? (
               <>
-                {
-                  location.fullAddress?.value?.split(',')[
-                    location.fullAddress?.value?.split(',').length - 1
-                  ]
-                }
+                <Text>
+                  {
+                    location.fullAddress?.value?.split(',')[
+                      location.fullAddress?.value?.split(',').length - 1
+                    ]
+                  }
+                </Text>
+                <Text>Hvor skønhedseksperten kører ud til!</Text>
               </>
             ) : (
-              <>{location.fullAddress?.value}</>
+              <>
+                <Text>{location.fullAddress?.value}</Text>
+                <Text>Hvor behandling finder sted!</Text>
+              </>
             )}
           </Group>
-        ))}
-      </Stack>
+          <Card.Section>
+            <ClientOnly fallback={<Loader />}>
+              {() => (
+                <LeafletMap
+                  markers={markers.filter((m) => m.id === location.id)}
+                />
+              )}
+            </ClientOnly>
+          </Card.Section>
+        </React.Fragment>
+      ))}
     </Card>
   );
 }

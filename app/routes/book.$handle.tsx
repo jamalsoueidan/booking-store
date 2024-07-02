@@ -1,6 +1,7 @@
 import {
   ActionIcon,
   Affix,
+  Avatar,
   Box,
   Card,
   Container,
@@ -33,6 +34,7 @@ import {useTranslation} from 'react-i18next';
 import type {
   PickMoreTreatmentProductFragment,
   TreatmentOptionVariantFragment,
+  UserFragment,
 } from 'storefrontapi.generated';
 import {LocationIcon} from '~/components/LocationIcon';
 import {
@@ -70,6 +72,7 @@ export function shouldRevalidate({
 }
 
 export type OutletLoader = SerializeFrom<typeof loader> & {
+  user: UserFragment;
   selectedLocation: CustomerLocation;
   pickedVariants: TreatmentOptionVariantFragment[];
   summary: {
@@ -217,13 +220,21 @@ export default function Booking() {
               )}
             </ActionIcon>
 
-            <Title
-              order={2}
-              style={{
-                transition: 'all 0.3s ease',
-                opacity,
-              }}
-            ></Title>
+            <Title order={2} hiddenFrom="sm">
+              <Group gap="4px" justify="center">
+                <Avatar
+                  size="md"
+                  style={{border: '3px solid #FFF'}}
+                  src={
+                    user?.image?.reference?.image?.url ||
+                    'https://placehold.co/400x600?text=Ekspert'
+                  }
+                />
+                <Title fz="md" fw="400">
+                  {user?.fullname?.value}
+                </Title>
+              </Group>
+            </Title>
             <ActionIcon
               variant="transparent"
               c="black"
@@ -269,6 +280,7 @@ export function BookingDetails({children}: PropsWithChildren) {
   const {t} = useTranslation('book');
   const durationToTime = useDuration();
   const {
+    user,
     selectedLocation,
     product,
     pickedVariants,
@@ -280,6 +292,20 @@ export function BookingDetails({children}: PropsWithChildren) {
   return (
     <Grid.Col span={{base: 12, md: 5}} visibleFrom="md" pos="relative">
       <Card withBorder radius="md" pos="sticky" top="64px" flex="1">
+        <Group gap="xs" justify="center">
+          <Avatar
+            size="md"
+            style={{border: '3px solid #FFF'}}
+            src={
+              user?.image?.reference?.image?.url ||
+              'https://placehold.co/400x600?text=Ekspert'
+            }
+          />
+          <Title fz="lg">{user.fullname?.value}</Title>
+        </Group>
+        <Card.Section>
+          <Divider mt="md" mb="lg" />
+        </Card.Section>
         <Stack gap="md">
           {selectedLocation ? (
             <div>
