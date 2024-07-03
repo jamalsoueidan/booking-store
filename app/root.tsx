@@ -176,6 +176,7 @@ export function Layout({children}: {children: ReactNode}) {
       <body>
         <DirectionProvider detectDirection>
           <MantineProvider>
+            <ModalAccount customer={data?.customer} />
             <NavigationProgress />
             <ModalsProvider>
               {!path.includes('/book/') && data?.cart ? (
@@ -193,7 +194,6 @@ export function Layout({children}: {children: ReactNode}) {
               )}
               <LanguageDetector />
             </ModalsProvider>
-            <ModalAccount customer={data?.customer} />
           </MantineProvider>
         </DirectionProvider>
         <ScrollRestoration nonce={nonce} />
