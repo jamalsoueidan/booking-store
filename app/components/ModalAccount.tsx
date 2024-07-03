@@ -1,5 +1,4 @@
 import {
-  Blockquote,
   Button,
   Card,
   Center,
@@ -27,7 +26,7 @@ export const ModalAccount = ({customer}: {customer?: CustomerDetailsQuery}) => {
     return null;
   }
 
-  if (customer.customer.firstName && !!fetcher.data) {
+  if (customer.customer.firstName || !!fetcher.data) {
     return null;
   }
 
@@ -38,7 +37,7 @@ export const ModalAccount = ({customer}: {customer?: CustomerDetailsQuery}) => {
 
   return (
     <>
-      <Center w="100%" h="100vh" style={{zIndex: 3000}} pos="absolute">
+      <Center w="100%" h="100vh" style={{zIndex: 201}} pos="absolute">
         <Card bg="white" radius="sm" w={{base: '100%', sm: '476px'}}>
           <fetcher.Form
             action="/account/profile"
@@ -57,17 +56,7 @@ export const ModalAccount = ({customer}: {customer?: CustomerDetailsQuery}) => {
                 venligst oplyse dit fornavn og efternavn.
               </Text>
             </Stack>
-            {fetcher.data?.error ? (
-              <Blockquote
-                color="red"
-                my="xl"
-                data-testid="required-notification"
-              >
-                <strong>Fejl:</strong>
-                <br />
-                {fetcher.data.error}
-              </Blockquote>
-            ) : null}
+
             <TextInput
               label="Fornavn"
               id="firstName"

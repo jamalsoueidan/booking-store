@@ -28,7 +28,7 @@ export function RadioGroup({data, field, ...props}: RadioGroupProps) {
 
   return (
     <Radio.Group
-      size="lg"
+      size="md"
       defaultValue={initialValue}
       onChange={control.change}
       {...props}
