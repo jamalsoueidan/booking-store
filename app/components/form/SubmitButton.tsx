@@ -21,6 +21,7 @@ export const SubmitButton: React.FC<
 
   useEffect(() => {
     const form = buttonRef.current ? buttonRef.current.closest('form') : null;
+    console.log(form);
     if (form) {
       const url = new URL(form.action);
       setAction(url.pathname);

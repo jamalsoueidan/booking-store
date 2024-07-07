@@ -13,6 +13,7 @@ import {
 } from '@mantine/core';
 import {useFetcher} from '@remix-run/react';
 import {type CustomerDetailsQuery} from 'customer-accountapi.generated';
+import {useEffect} from 'react';
 import {useMobile} from '~/hooks/isMobile';
 import {type ActionResponse} from '~/routes/account.profile';
 
@@ -20,20 +21,16 @@ export const ModalAccount = ({customer}: {customer?: CustomerDetailsQuery}) => {
   const isMobile = useMobile();
   const fetcher = useFetcher<ActionResponse>();
 
-  // if user not logged in !customer
-  // if user already firstname
-  if (!customer) {
-    return null;
-  }
-
-  if (customer.customer.firstName || !!fetcher.data) {
-    return null;
-  }
-
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     fetcher.submit(event.currentTarget, {method: 'post'});
   };
+
+  useEffect(() => {
+    if (fetcher.data) {
+      window.location.reload();
+    }
+  }, [fetcher.data]);
 
   return (
     <Box

@@ -7,7 +7,7 @@ import {
 import {
   Box,
   Container,
-  Grid,
+  Flex,
   Progress,
   Stack,
   Text,
@@ -32,21 +32,8 @@ import {MultiTags} from '~/components/form/MultiTags';
 import {RadioGroup} from '~/components/form/RadioGroup';
 import {CUSTOMER_DETAILS_QUERY} from '~/graphql/customer-account/CustomerDetailsQuery';
 import {getBookingShopifyApi} from '~/lib/api/bookingShopifyApi';
-import {type UserUsernameTakenResponsePayload} from '~/lib/api/model';
 import {customerCreateBody} from '~/lib/zod/bookingShopifyApi';
-import {ControlDetails} from './account.business';
-
-const isUsernameUnique =
-  ({request}: ActionFunctionArgs) =>
-  async (username: string) => {
-    const url = new URL(request.url);
-    const response = await fetch(
-      `${url.origin}/api/check-username?username=${username}`,
-    );
-    const data: UserUsernameTakenResponsePayload =
-      (await response.json()) as any;
-    return data.usernameTaken;
-  };
+import {isUsernameUnique} from './api.check-username';
 
 function createSchema(options?: {
   isUsernameUnique: (username: string) => Promise<boolean>;
@@ -150,16 +137,22 @@ export default function AccountBusiness() {
   const [form, {username, gender, speaks}] = useForm({
     lastResult,
     defaultValue: {
-      username: '',
+      username: undefined,
       speaks: ['danish'],
       gender: 'woman',
     },
     onValidate({formData}) {
+      console.log(
+        parseWithZod(formData, {
+          schema: createSchema(),
+        }),
+      );
       return parseWithZod(formData, {
         schema: createSchema(),
       });
     },
     shouldValidate: 'onBlur',
+    shouldRevalidate: 'onInput',
   });
 
   const iconMarkup = useMemo(() => {
@@ -184,79 +177,87 @@ export default function AccountBusiness() {
     }
   }, [username.errors]);
 
+  console.log(form.dirty, form.valid, form.allErrors, form.errors, form.status);
+
   return (
     <>
-      <Box mt={rem(60)} mb={rem(100)}>
-        <Progress value={20} size="sm" />
-        <Container
-          size="md"
-          p={{base: 'md', sm: 'xl'}}
-          pt={{base: 'md', sm: rem(80)}}
+      <Progress value={20} size="sm" />
+      <FormProvider context={form.context}>
+        <Form
+          method="post"
+          {...getFormProps(form)}
+          style={{
+            flex: 1,
+            display: 'flex',
+            flexDirection: 'column',
+          }}
         >
-          <FormProvider context={form.context}>
-            <Form method="post" {...getFormProps(form)}>
-              <Grid gutter="xl">
-                <Grid.Col span={{base: 12}}>
-                  <Stack mb="lg">
-                    <div>
-                      <Text c="dimmed" tt="uppercase" fz="sm">
-                        Step 1
-                      </Text>
-                      <Title fw="600">{t('account:business.title')}</Title>
-                    </div>
-                    <Text>{t('account:business.description1')}</Text>
-                  </Stack>
+          <Container size="md" flex="1" p={{base: 'md', sm: rem(70)}}>
+            <Stack mb="lg">
+              <div>
+                <Text c="dimmed" tt="uppercase" fz="sm">
+                  Step 1
+                </Text>
+                <Title fw="600">{t('account:business.title')}</Title>
+              </div>
+              <Text>{t('account:business.description1')}</Text>
+            </Stack>
+            <Stack gap="lg">
+              <TextInput
+                size="md"
+                leftSection={<IconAt size={16} />}
+                label={t('account:business.nickname')}
+                pattern="[a-zA-Z0-9\\-_]*"
+                {...getInputProps(username, {type: 'text'})}
+                error={username.errors && username.errors[0]}
+                rightSection={iconMarkup}
+                required
+                data-testid="username-input"
+              />
 
-                  <Stack gap="lg">
-                    <TextInput
-                      size="md"
-                      leftSection={<IconAt size={16} />}
-                      label={t('account:business.nickname')}
-                      pattern="[a-zA-Z0-9\\-_]*"
-                      {...getInputProps(username, {type: 'text'})}
-                      error={username.errors && username.errors[0]}
-                      rightSection={iconMarkup}
-                      required
-                      data-testid="username-input"
-                    />
+              <MultiTags
+                size="md"
+                field={speaks}
+                data={[
+                  {label: t('global:danish'), value: 'danish'},
+                  {label: t('global:english'), value: 'english'},
+                  {label: t('global:arabic'), value: 'arabic'},
+                ]}
+                label={t('account:business.speaks_label')}
+                placeholder={t('account:business.speaks_placeholder')}
+                data-testid="speaks-input"
+                error={speaks.errors && t('account:business.missing_fields')}
+              />
 
-                    <MultiTags
-                      size="md"
-                      field={speaks}
-                      data={[
-                        {label: t('global:danish'), value: 'danish'},
-                        {label: t('global:english'), value: 'english'},
-                        {label: t('global:arabic'), value: 'arabic'},
-                      ]}
-                      label={t('account:business.speaks_label')}
-                      placeholder={t('account:business.speaks_placeholder')}
-                      data-testid="speaks-input"
-                      error={
-                        speaks.errors && t('account:business.missing_fields')
-                      }
-                    />
-
-                    <RadioGroup
-                      label={t('account:business.gender')}
-                      field={gender}
-                      data={[
-                        {label: t('global:woman'), value: 'woman'},
-                        {label: t('global:man'), value: 'man'},
-                      ]}
-                      data-testid="gender-input"
-                    />
-                  </Stack>
-                </Grid.Col>
-                <ControlDetails>
-                  <SubmitButton size="md" disabled={!form.valid}>
-                    {t('account:business.create_business')}
-                  </SubmitButton>
-                </ControlDetails>
-              </Grid>
-            </Form>
-          </FormProvider>
-        </Container>
-      </Box>
+              <RadioGroup
+                label={t('account:business.gender')}
+                field={gender}
+                data={[
+                  {label: t('global:woman'), value: 'woman'},
+                  {label: t('global:man'), value: 'man'},
+                ]}
+                data-testid="gender-input"
+              />
+            </Stack>
+          </Container>
+          <Box
+            style={{
+              position: 'sticky',
+              bottom: 0,
+              background: '#fff',
+              padding: '1rem',
+              boxShadow: '0 -2px 10px rgba(0, 0, 0, 0.1)',
+            }}
+          >
+            <Flex justify="space-between" align="center">
+              <div></div>
+              <SubmitButton size="md" disabled={!form.valid}>
+                {t('account:business.create_business')}
+              </SubmitButton>
+            </Flex>
+          </Box>
+        </Form>
+      </FormProvider>
     </>
   );
 }
