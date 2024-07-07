@@ -16,41 +16,85 @@ import {
   Tooltip,
   rem,
 } from '@mantine/core';
-import {Form, useActionData, useFetcher, useLoaderData} from '@remix-run/react';
+import {Form, useActionData} from '@remix-run/react';
 import {parseGid} from '@shopify/hydrogen';
-import {
-  json,
-  redirect,
-  type ActionFunctionArgs,
-  type LoaderFunctionArgs,
-} from '@shopify/remix-oxygen';
+import {type ActionFunctionArgs} from '@shopify/remix-oxygen';
 import {SubmitButton} from '~/components/form/SubmitButton';
 
-import {parseWithZod} from '@conform-to/zod';
-import {IconCheck, IconExclamationCircle} from '@tabler/icons-react';
+import {conformZodMessage, parseWithZod} from '@conform-to/zod';
+import {IconAt, IconCheck, IconExclamationCircle} from '@tabler/icons-react';
+import {useMemo} from 'react';
 import {useTranslation} from 'react-i18next';
 import {redirectWithSuccess} from 'remix-toast';
-import {type z} from 'zod';
+import {z} from 'zod';
+import {makeZodI18nMap} from 'zod-i18n-map';
 import {MultiTags} from '~/components/form/MultiTags';
 import {RadioGroup} from '~/components/form/RadioGroup';
 import {CUSTOMER_DETAILS_QUERY} from '~/graphql/customer-account/CustomerDetailsQuery';
 import {getBookingShopifyApi} from '~/lib/api/bookingShopifyApi';
 import {type UserUsernameTakenResponsePayload} from '~/lib/api/model';
-import {convertHTML} from '~/lib/convertHTML';
 import {customerCreateBody} from '~/lib/zod/bookingShopifyApi';
 import {ControlDetails} from './account.business';
 
-export const schema = customerCreateBody.omit({
-  fullname: true,
-  customerId: true,
-  aboutMeHtml: true,
-});
+const isUsernameUnique =
+  ({request}: ActionFunctionArgs) =>
+  async (username: string) => {
+    const url = new URL(request.url);
+    const response = await fetch(
+      `${url.origin}/api/check-username?username=${username}`,
+    );
+    const data: UserUsernameTakenResponsePayload =
+      (await response.json()) as any;
+    return data.usernameTaken;
+  };
 
-export async function action({request, context}: ActionFunctionArgs) {
+function createSchema(options?: {
+  isUsernameUnique: (username: string) => Promise<boolean>;
+}) {
+  return customerCreateBody
+    .omit({
+      fullname: true,
+      customerId: true,
+    })
+    .extend({
+      username: customerCreateBody.shape.username.pipe(
+        // Note: The callback cannot be async here
+        // As we run zod validation synchronously on the client
+        z.string().superRefine((username, ctx) => {
+          if (typeof options?.isUsernameUnique !== 'function') {
+            ctx.addIssue({
+              code: 'custom',
+              message: conformZodMessage.VALIDATION_UNDEFINED,
+              fatal: true,
+            });
+            return;
+          }
+
+          return options.isUsernameUnique(username).then((usernameIsTaken) => {
+            if (usernameIsTaken) {
+              ctx.addIssue({
+                code: z.ZodIssueCode.custom,
+                params: {
+                  i18n: 'username.username_taken',
+                },
+              });
+            }
+          });
+        }),
+      ),
+    });
+}
+
+export async function action({request, params, context}: ActionFunctionArgs) {
   await context.customerAccount.handleAuthStatus();
 
   const formData = await request.formData();
-  const submission = parseWithZod(formData, {schema});
+  const submission = await parseWithZod(formData, {
+    schema: createSchema({
+      isUsernameUnique: isUsernameUnique({request, params, context}),
+    }),
+    async: true,
+  });
 
   if (submission.status !== 'success') {
     return submission.reply();
@@ -69,7 +113,6 @@ export async function action({request, context}: ActionFunctionArgs) {
       ...submission.value,
       customerId: parseInt(parseGid(data.customer.id).id),
       fullname: `${data.customer.firstName} ${data.customer.lastName}`,
-      aboutMeHtml: convertHTML(submission.value.aboutMe),
     });
 
     await fetch(
@@ -85,7 +128,7 @@ export async function action({request, context}: ActionFunctionArgs) {
         body: JSON.stringify({
           customer: {
             id: data.customer.id,
-            tags: 'business',
+            tags: 'business-step1',
           },
         }),
       },
@@ -99,80 +142,57 @@ export async function action({request, context}: ActionFunctionArgs) {
   }
 }
 
-export async function loader({context, params}: LoaderFunctionArgs) {
-  await context.customerAccount.handleAuthStatus();
-
-  const {data, errors} = await context.customerAccount.query(
-    CUSTOMER_DETAILS_QUERY,
-  );
-
-  if (errors?.length || !data?.customer) {
-    throw new Error('Customer not found');
-  }
-
-  if (data.customer.tags.includes('business')) {
-    return redirect('/business');
-  }
-
-  const {payload: professionOptions} =
-    await getBookingShopifyApi().metaProfessions();
-
-  const username = convertToValidUrlPath(
-    data.customer.firstName || '',
-    data.customer.lastName || '',
-  );
-
-  const {payload: usernameTaken} =
-    await getBookingShopifyApi().userUsernameTaken(username);
-
-  return json({
-    professionOptions,
-    defaultValue: {
-      username: !usernameTaken.usernameTaken
-        ? username
-        : convertToValidUrlPath(
-            data.customer.firstName || '',
-            data.customer.lastName || '',
-            true,
-          ),
-      shortDescription: '',
-      professions: [],
-      speaks: ['danish'],
-      yearsExperience: '1',
-      gender: 'woman',
-      aboutMe: '',
-    } as z.infer<typeof schema>,
-  });
-}
-
 export default function AccountBusiness() {
-  const {t} = useTranslation(['account', 'global']);
+  const {t} = useTranslation(['account', 'global', 'zod']);
+  z.setErrorMap(makeZodI18nMap());
   const lastResult = useActionData<typeof action>();
-  const {defaultValue} = useLoaderData<typeof loader>();
 
-  const [form, {aboutMe, username, gender, speaks}] = useForm({
+  const [form, {username, gender, speaks}] = useForm({
     lastResult,
-    defaultValue,
+    defaultValue: {
+      username: '',
+      speaks: ['danish'],
+      gender: 'woman',
+    },
     onValidate({formData}) {
       return parseWithZod(formData, {
-        schema,
+        schema: createSchema(),
       });
     },
-    shouldValidate: 'onSubmit',
-    shouldRevalidate: 'onInput',
+    shouldValidate: 'onBlur',
   });
 
-  const fetcher = useFetcher<UserUsernameTakenResponsePayload>();
-
-  const onChangeUsername = (event: React.ChangeEvent<HTMLInputElement>) => {
-    fetcher.load(`/api/usernameTaken?username=${event.target.value}`);
-  };
+  const iconMarkup = useMemo(() => {
+    if (username.errors) {
+      return (
+        <Tooltip label="Profilnavn er optaget">
+          <IconExclamationCircle
+            style={{width: rem(20), height: rem(20)}}
+            color="var(--mantine-color-error)"
+            data-testid="username-error"
+          />
+        </Tooltip>
+      );
+    } else {
+      return (
+        <IconCheck
+          style={{width: rem(20), height: rem(20)}}
+          color="var(--mantine-color-green-filled)"
+          data-testid="username-success"
+        />
+      );
+    }
+  }, [username.errors]);
 
   return (
     <>
-      <Box mt={rem(50)} mb={rem(100)}>
-        <Progress value={50} />
-        <Container size="md" p={{base: 'xs', sm: 'xl'}}>
+      <Box mt={rem(60)} mb={rem(100)}>
+        <Progress value={20} size="sm" />
+        <Container
+          size="md"
+          p={{base: 'md', sm: 'xl'}}
+          pt={{base: 'md', sm: rem(80)}}
+        >
           <FormProvider context={form.context}>
             <Form method="post" {...getFormProps(form)}>
               <Grid gutter="xl">
@@ -190,37 +210,14 @@ export default function AccountBusiness() {
                   <Stack gap="lg">
                     <TextInput
                       size="md"
+                      leftSection={<IconAt size={16} />}
                       label={t('account:business.nickname')}
+                      pattern="[a-zA-Z0-9\\-_]*"
                       {...getInputProps(username, {type: 'text'})}
-                      onChange={onChangeUsername}
-                      rightSection={
-                        fetcher.data?.usernameTaken ? (
-                          <Tooltip label="Profilnavn er optaget">
-                            <IconExclamationCircle
-                              style={{width: rem(20), height: rem(20)}}
-                              color="var(--mantine-color-error)"
-                              data-testid="username-error"
-                            />
-                          </Tooltip>
-                        ) : (
-                          <IconCheck
-                            style={{width: rem(20), height: rem(20)}}
-                            color="var(--mantine-color-green-filled)"
-                            data-testid="username-success"
-                          />
-                        )
-                      }
+                      error={username.errors && username.errors[0]}
+                      rightSection={iconMarkup}
+                      required
                       data-testid="username-input"
-                    />
-
-                    <RadioGroup
-                      label={t('account:business.gender')}
-                      field={gender}
-                      data={[
-                        {label: t('global:woman'), value: 'woman'},
-                        {label: t('global:man'), value: 'man'},
-                      ]}
-                      data-testid="gender-input"
                     />
 
                     <MultiTags
@@ -238,10 +235,20 @@ export default function AccountBusiness() {
                         speaks.errors && t('account:business.missing_fields')
                       }
                     />
+
+                    <RadioGroup
+                      label={t('account:business.gender')}
+                      field={gender}
+                      data={[
+                        {label: t('global:woman'), value: 'woman'},
+                        {label: t('global:man'), value: 'man'},
+                      ]}
+                      data-testid="gender-input"
+                    />
                   </Stack>
                 </Grid.Col>
                 <ControlDetails>
-                  <SubmitButton size="md">
+                  <SubmitButton size="md" disabled={!form.valid}>
                     {t('account:business.create_business')}
                   </SubmitButton>
                 </ControlDetails>
@@ -252,16 +259,4 @@ export default function AccountBusiness() {
       </Box>
     </>
   );
-}
-
-function convertToValidUrlPath(
-  firstName: string,
-  lastName: string,
-  random?: boolean,
-): string {
-  const allowedCharactersRegex = /[^a-zA-Z0-9\-_]/g;
-  firstName = firstName.replace(allowedCharactersRegex, '');
-  lastName = lastName.replace(allowedCharactersRegex, '');
-  const urlPath = `${firstName}-${lastName}${random ? '-96' : ''}`;
-  return urlPath?.toLowerCase();
 }

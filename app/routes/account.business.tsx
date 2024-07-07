@@ -1,23 +1,14 @@
-import {
-  ActionIcon,
-  Affix,
-  Box,
-  Container,
-  Divider,
-  Flex,
-  rem,
-  Title,
-} from '@mantine/core';
+import {ActionIcon, Affix, Box, Divider, Flex, rem} from '@mantine/core';
 import {Link, Outlet} from '@remix-run/react';
 import {json, redirect, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
 import {IconX} from '@tabler/icons-react';
 import {type PropsWithChildren} from 'react';
 
 import {useTranslation} from 'react-i18next';
+import {Logo} from '~/components/Logo';
 import {CUSTOMER_DETAILS_QUERY} from '~/graphql/customer-account/CustomerDetailsQuery';
-import {useScrollEffect} from '~/hooks/useScrollEffect';
 
-export async function loader({context, params}: LoaderFunctionArgs) {
+export async function loader({context}: LoaderFunctionArgs) {
   await context.customerAccount.handleAuthStatus();
 
   const {data, errors} = await context.customerAccount.query(
@@ -36,7 +27,6 @@ export async function loader({context, params}: LoaderFunctionArgs) {
 }
 
 export default function AccountBusiness() {
-  const {opacity, shadow} = useScrollEffect();
   const {t} = useTranslation(['account', 'global']);
 
   return (
@@ -50,25 +40,18 @@ export default function AccountBusiness() {
       bottom="0"
     >
       <Affix position={{top: 0, left: 0, right: 0}}>
-        <Container size="xl">
-          <Flex h={50} bg="white" justify="space-between" align="center">
-            <div></div>
+        <Flex h={60} bg="white" justify="space-between" align="center" p="sm">
+          <Logo close={() => {}} />
 
-            <Title order={2} hiddenFrom="sm">
-              BySisters
-            </Title>
-            <ActionIcon
-              variant="transparent"
-              c="black"
-              component={Link}
-              to={`/account`}
-            >
-              <IconX
-                style={{width: rem(36), height: rem(36), strokeWidth: 1}}
-              />
-            </ActionIcon>
-          </Flex>
-        </Container>
+          <ActionIcon
+            variant="transparent"
+            c="black"
+            component={Link}
+            to={`/account`}
+          >
+            <IconX style={{width: rem(36), height: rem(36), strokeWidth: 1}} />
+          </ActionIcon>
+        </Flex>
       </Affix>
 
       <Outlet />

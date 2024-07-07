@@ -6,17 +6,14 @@
  */
 
 export interface CustomerCreateBody {
-  aboutMe: string;
-  aboutMeHtml: string;
   customerId: number;
   fullname: string;
   gender: string;
   /** @minItems 1 */
-  professions: string[];
-  /** @minLength 3 */
-  shortDescription: string;
-  /** @minItems 1 */
   speaks: string[];
-  /** @pattern ^[a-zA-Z0-9-_]+$ */
+  /**
+   * @minItems 3
+   * @pattern ^[a-zA-Z0-9\-_]*$
+   */
   username: string;
 }

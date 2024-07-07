@@ -12,18 +12,15 @@ import {
  * This endpoint creates new user
  * @summary POST Create user
  */
-export const customerCreateBodyUsernameRegExp = new RegExp('^[a-zA-Z0-9-_]+$');
-export const customerCreateBodyShortDescriptionMin = 3;
+export const customerCreateBodyUsernameMin = 3;
+
+export const customerCreateBodyUsernameRegExp = new RegExp('^[a-zA-Z0-9\\-_]*$');
 
 
 export const customerCreateBody = zod.object({
   "customerId": zod.number(),
   "fullname": zod.string(),
-  "username": zod.string().regex(customerCreateBodyUsernameRegExp),
-  "professions": zod.array(zod.string()).min(1),
-  "aboutMeHtml": zod.string(),
-  "aboutMe": zod.string(),
-  "shortDescription": zod.string().min(customerCreateBodyShortDescriptionMin),
+  "username": zod.string().min(customerCreateBodyUsernameMin).regex(customerCreateBodyUsernameRegExp),
   "gender": zod.string(),
   "speaks": zod.array(zod.string()).min(1)
 })

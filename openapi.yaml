@@ -1799,19 +1799,8 @@ components:
           type: string
         username:
           type: string
-          pattern: '^[a-zA-Z0-9-_]+$'
-        professions:
-          type: array
-          items:
-            type: string
-          minItems: 1
-        aboutMeHtml:
-          type: string
-        aboutMe:
-          type: string
-        shortDescription:
-          type: string
-          minLength: 3
+          pattern: '^[a-zA-Z0-9\-_]*$'
+          minItems: 3
         gender:
           type: string
         speaks:
@@ -1823,10 +1812,6 @@ components:
         - customerId
         - fullname
         - username
-        - professions
-        - aboutMe
-        - aboutMeHtml
-        - shortDescription
         - gender
         - speaks
     CustomerUpdateResponse:

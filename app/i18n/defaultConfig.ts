@@ -1,9 +1,10 @@
 export const i18nDefaultConfig = {
-  debug: false,
+  debug: true,
   react: {
     useSuspense: false,
   },
   interpolation: {
     escapeValue: false,
   },
+  returnObjects: true,
 };

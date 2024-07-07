@@ -1,10 +1,10 @@
 import {
+  Box,
   Button,
   Card,
   Center,
   Flex,
   Image,
-  Overlay,
   rem,
   Stack,
   Text,
@@ -36,8 +36,16 @@ export const ModalAccount = ({customer}: {customer?: CustomerDetailsQuery}) => {
   };
 
   return (
-    <>
-      <Center w="100%" h="100vh" style={{zIndex: 201}} pos="absolute">
+    <Box
+      style={{zIndex: 201}}
+      pos="absolute"
+      top="0"
+      left="0"
+      right="0"
+      bottom="0"
+      bg={isMobile ? '#FFF' : '#f5f5f5'}
+    >
+      <Center w="100%" h="100vh">
         <Card bg="white" radius="sm" w={{base: '100%', sm: '476px'}}>
           <fetcher.Form
             action="/account/profile"
@@ -95,7 +103,6 @@ export const ModalAccount = ({customer}: {customer?: CustomerDetailsQuery}) => {
           </fetcher.Form>
         </Card>
       </Center>
-      <Overlay color={isMobile ? '#FFF' : '#f5f5f5'} backgroundOpacity={1} />
-    </>
+    </Box>
   );
 };

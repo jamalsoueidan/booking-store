@@ -5,11 +5,7 @@ import {
   Button,
   Flex,
   Group,
-  Image,
   NavLink as NavLinkMantine,
-  rem,
-  Title,
-  UnstyledButton,
 } from '@mantine/core';
 import {
   useDisclosure,
@@ -34,10 +30,9 @@ import {
 } from '@tabler/icons-react';
 import {Suspense, type ReactNode} from 'react';
 import {useTranslation} from 'react-i18next';
-import {useLanguage} from '~/hooks/useLanguage';
 import {type loader} from '~/root';
 import {Footer} from './Footer';
-import logo from '/Artboard4.svg';
+import {Logo} from './Logo';
 
 export function LayoutWrapper({children}: {children: ReactNode}) {
   const data = useLoaderData<typeof loader>();
@@ -46,7 +41,6 @@ export function LayoutWrapper({children}: {children: ReactNode}) {
   const [scroll] = useWindowScroll();
   const isMobile = useMediaQuery('(max-width: 62em)');
   const location = useLocation();
-  const language = useLanguage();
   const path = location.pathname;
 
   const {publish, cart: analyticsCart} = useAnalytics();
@@ -90,30 +84,7 @@ export function LayoutWrapper({children}: {children: ReactNode}) {
         ) : null}
         <Group h="100%" miw="150px">
           <Burger opened={opened} onClick={toggle} hiddenFrom="sm" size="sm" />
-          <UnstyledButton component={Link} to="/" onClick={close}>
-            <Title
-              order={1}
-              component={Flex}
-              lh="xs"
-              fz={rem(28)}
-              fw="500"
-              data-testid="logo-login"
-            >
-              {language !== 'AR' ? (
-                <>
-                  ByS
-                  <Image src={logo} alt="it's me" h="auto" w="8px" mx="2px" />
-                  sters
-                </>
-              ) : (
-                <>
-                  باي
-                  <Image src={logo} alt="it's me" h="auto" w="8px" mx="2px" />
-                  سيستر
-                </>
-              )}
-            </Title>
-          </UnstyledButton>
+          <Logo close={close} />
         </Group>
         <Flex
           justify="center"

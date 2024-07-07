@@ -76,7 +76,8 @@
     "remix-toast": "^1.2.0",
     "remix-utils": "^7.6.0",
     "uuid": "^9.0.1",
-    "zod": "^3.21.4"
+    "zod": "^3.21.4",
+    "zod-i18n-map": "^2.27.0"
   },
   "devDependencies": {
     "@graphql-codegen/cli": "5.0.2",

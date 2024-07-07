@@ -179,7 +179,7 @@ function AboutMe() {
             <Text fz="lg">
               {user?.shortDescription} <br />
             </Text>
-            {user.speaks.length > 0 ? (
+            {user.speaks?.length > 0 ? (
               <Stack gap="xs">
                 <Flex wrap="wrap" gap="xs">
                   {user.speaks.includes('danish') && (
