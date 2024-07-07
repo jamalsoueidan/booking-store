@@ -176,24 +176,30 @@ export function Layout({children}: {children: ReactNode}) {
       <body>
         <DirectionProvider detectDirection>
           <MantineProvider>
-            <ModalAccount customer={data?.customer} />
-            <NavigationProgress />
-            <ModalsProvider>
-              {!path.includes('/book/') && data?.cart ? (
-                <Analytics.Provider
-                  cart={data.cart}
-                  shop={data.shop}
-                  consent={data.consent}
-                  customData={{foo: 'bar'}}
-                >
-                  <LayoutWrapper>{children}</LayoutWrapper>
-                  <CustomAnalytics />
-                </Analytics.Provider>
-              ) : (
-                children
-              )}
-              <LanguageDetector />
-            </ModalsProvider>
+            {data.customer && !data.customer.customer.firstName ? (
+              <ModalAccount customer={data?.customer} />
+            ) : (
+              <>
+                <NavigationProgress />
+                <ModalsProvider>
+                  {!path.includes('/book/') &&
+                  !path.includes('/account/business') ? (
+                    <Analytics.Provider
+                      cart={data.cart}
+                      shop={data.shop}
+                      consent={data.consent}
+                      customData={{foo: 'bar'}}
+                    >
+                      <LayoutWrapper>{children}</LayoutWrapper>
+                      <CustomAnalytics />
+                    </Analytics.Provider>
+                  ) : (
+                    children
+                  )}
+                  <LanguageDetector />
+                </ModalsProvider>
+              </>
+            )}
           </MantineProvider>
         </DirectionProvider>
         <ScrollRestoration nonce={nonce} />
