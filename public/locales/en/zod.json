@@ -1,4 +1,10 @@
 {
+  "username": {
+    "username_taken": "Username is taken"
+  },
+  "fullAddress": {
+    "not_valid": "Address is not valid"
+  },
   "errors": {
     "invalid_type": "Expected {{expected}}, received {{received}}",
     "invalid_type_received_undefined": "Required",

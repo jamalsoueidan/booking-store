@@ -5,29 +5,31 @@ import {
   useForm,
 } from '@conform-to/react';
 import {
-  Box,
   Container,
   Flex,
   Progress,
+  rem,
   Stack,
   Text,
   TextInput,
   Title,
   Tooltip,
-  rem,
 } from '@mantine/core';
 import {Form, useActionData} from '@remix-run/react';
 import {parseGid} from '@shopify/hydrogen';
-import {type ActionFunctionArgs} from '@shopify/remix-oxygen';
+import {
+  json,
+  redirect,
+  type ActionFunctionArgs,
+  type LoaderFunctionArgs,
+} from '@shopify/remix-oxygen';
 import {SubmitButton} from '~/components/form/SubmitButton';
 
 import {conformZodMessage, parseWithZod} from '@conform-to/zod';
 import {IconAt, IconCheck, IconExclamationCircle} from '@tabler/icons-react';
 import {useMemo} from 'react';
 import {useTranslation} from 'react-i18next';
-import {redirectWithSuccess} from 'remix-toast';
 import {z} from 'zod';
-import {makeZodI18nMap} from 'zod-i18n-map';
 import {MultiTags} from '~/components/form/MultiTags';
 import {RadioGroup} from '~/components/form/RadioGroup';
 import {CUSTOMER_DETAILS_QUERY} from '~/graphql/customer-account/CustomerDetailsQuery';
@@ -121,17 +123,26 @@ export async function action({request, params, context}: ActionFunctionArgs) {
       },
     );
 
-    return redirectWithSuccess('/business', {
-      message: 'Du er nu opgraderet til business konto!',
-    });
+    return redirect('/account/business/location');
   } catch (error) {
     return submission.reply();
   }
 }
 
+export async function loader({context}: LoaderFunctionArgs) {
+  await context.customerAccount.handleAuthStatus();
+
+  const {data} = await context.customerAccount.query(CUSTOMER_DETAILS_QUERY);
+
+  if (data.customer.tags.includes('business-step1')) {
+    return redirect('/account/business/location');
+  }
+
+  return json(null);
+}
+
 export default function AccountBusiness() {
   const {t} = useTranslation(['account', 'global', 'zod']);
-  z.setErrorMap(makeZodI18nMap());
   const lastResult = useActionData<typeof action>();
 
   const [form, {username, gender, speaks}] = useForm({
@@ -142,11 +153,6 @@ export default function AccountBusiness() {
       gender: 'woman',
     },
     onValidate({formData}) {
-      console.log(
-        parseWithZod(formData, {
-          schema: createSchema(),
-        }),
-      );
       return parseWithZod(formData, {
         schema: createSchema(),
       });
@@ -166,7 +172,8 @@ export default function AccountBusiness() {
           />
         </Tooltip>
       );
-    } else {
+    }
+    if (username.value && !username.errors) {
       return (
         <IconCheck
           style={{width: rem(20), height: rem(20)}}
@@ -175,9 +182,7 @@ export default function AccountBusiness() {
         />
       );
     }
-  }, [username.errors]);
-
-  console.log(form.dirty, form.valid, form.allErrors, form.errors, form.status);
+  }, [username.errors, username.value]);
 
   return (
     <>
@@ -196,7 +201,7 @@ export default function AccountBusiness() {
             <Stack mb="lg">
               <div>
                 <Text c="dimmed" tt="uppercase" fz="sm">
-                  Step 1
+                  {t('account:business.step', {step: 1})}
                 </Text>
                 <Title fw="600">{t('account:business.title')}</Title>
               </div>
@@ -240,22 +245,18 @@ export default function AccountBusiness() {
               />
             </Stack>
           </Container>
-          <Box
-            style={{
-              position: 'sticky',
-              bottom: 0,
-              background: '#fff',
-              padding: '1rem',
-              boxShadow: '0 -2px 10px rgba(0, 0, 0, 0.1)',
-            }}
+          <Flex
+            justify="flex-end"
+            align="center"
+            pos="sticky"
+            bottom="0"
+            p="md"
+            style={{boxShadow: '0 -2px 10px rgba(0, 0, 0, 0.1)'}}
           >
-            <Flex justify="space-between" align="center">
-              <div></div>
-              <SubmitButton size="md" disabled={!form.valid}>
-                {t('account:business.create_business')}
-              </SubmitButton>
-            </Flex>
-          </Box>
+            <SubmitButton size="md" disabled={!form.valid}>
+              {t('account:business.create_business')}
+            </SubmitButton>
+          </Flex>
         </Form>
       </FormProvider>
     </>

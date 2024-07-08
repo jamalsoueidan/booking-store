@@ -176,8 +176,8 @@ export function Layout({children}: {children: ReactNode}) {
       <body>
         <DirectionProvider detectDirection>
           <MantineProvider>
-            {data.customer && !data.customer.customer.firstName ? (
-              <ModalAccount customer={data?.customer} />
+            {data && data.customer && !data.customer.customer.firstName ? (
+              <ModalAccount customer={data.customer} />
             ) : (
               <>
                 <NavigationProgress />

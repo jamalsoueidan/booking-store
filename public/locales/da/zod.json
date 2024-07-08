@@ -2,6 +2,9 @@
   "username": {
     "username_taken": "Brugernavn er taget"
   },
+  "fullAddress": {
+    "not_valid": "Adresse er ikke korrekt"
+  },
   "errors": {
     "invalid_type": "Forventet {{expected}}, modtaget {{received}}",
     "invalid_type_received_undefined": "Påkrævet",

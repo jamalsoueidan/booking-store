@@ -15,7 +15,7 @@ export async function loader({context}: LoaderFunctionArgs) {
     return redirect('/business');
   }
 
-  return json({});
+  return json(null);
 }
 
 export default function AccountBusiness() {

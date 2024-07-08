@@ -81,7 +81,17 @@ interface Resources {
       "speaks_placeholder": "Tilføj flere sprog",
       "short_description": "Skriv kort beskrivelse om dig selv",
       "aboutme_label": "Fortæl om dig selv og din erfaring:",
-      "create_business": "Gem og forsæt"
+      "create_business": "Gem og forsæt",
+      "step": "Step {{step}}",
+      "location": {
+        "title": "Hvordan vil du gerne tilbyde dine tjenester?",
+        "commercial": "Salon - dine kunder kommer til en butik",
+        "home": "Hjemmebasaret - dine kunder kommer til dit hjem",
+        "destination": "Mobil - du tager hjem til din kunder",
+        "drive_from": "Hvor vil du køre fra?",
+        "drive_to": "Hvor skal kunden køre hen til?",
+        "submit": "Tilføj og forsæt"
+      }
     }
   },
   "book": {
@@ -263,6 +273,12 @@ interface Resources {
     "filters": "Filter"
   },
   "zod": {
+    "username": {
+      "username_taken": "Brugernavn er taget"
+    },
+    "fullAddress": {
+      "not_valid": "Adresse er ikke korrekt"
+    },
     "errors": {
       "invalid_type": "Forventet {{expected}}, modtaget {{received}}",
       "invalid_type_received_undefined": "Påkrævet",

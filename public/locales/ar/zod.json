@@ -1,4 +1,10 @@
 {
+  "username": {
+    "username_taken": "اسم المستخدم مأخوذ"
+  },
+  "fullAddress": {
+    "not_valid": "العنوان غير صحيح"
+  },
   "errors": {
     "invalid_type": "المتوقع {{expected}}، المستلم {{received}}",
     "invalid_type_received_undefined": "مطلوب",
