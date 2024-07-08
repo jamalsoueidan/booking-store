@@ -84,9 +84,9 @@
     "step": "Step {{step}}",
     "location": {
       "title": "How would you like to offer your services?",
-      "commercial": "Salon - your customers come to a shop",
-      "home": "Home-based - your customers come to your home",
-      "destination": "Mobile - you go to your customers' homes",
+      "commercial": "Salon: your customers come to a shop",
+      "home": "Home: your customers come to your home",
+      "destination": "Mobile: you go to your customers' homes",
       "drive_from": "Where will you drive from?",
       "drive_to": "Where should the customer drive to?",
       "submit": "Add and continue"
