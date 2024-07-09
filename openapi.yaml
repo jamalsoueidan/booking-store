@@ -5544,9 +5544,12 @@ paths:
                         type: string
                       description:
                         type: string
+                      price:
+                        type: string
                     required:
                       - title
                       - description
+                      - price
                 required:
                   - success
                   - payload

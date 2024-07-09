@@ -1,19 +1,21 @@
 import {useField, useInputControl} from '@conform-to/react';
-import {Combobox, Loader, rem, TextInput, useCombobox} from '@mantine/core';
+import {
+  Combobox,
+  Loader,
+  rem,
+  TextInput,
+  type TextInputProps,
+  useCombobox,
+} from '@mantine/core';
 import {useFetcher} from '@remix-run/react';
 import {IconCheck} from '@tabler/icons-react';
 import {useMemo, useState} from 'react';
 import {type ApiAutoCompleteProposal} from '~/routes/api.address-autocomplete';
 
-export type AddressAutocompleteInputProps = {
-  label: string;
-  name: string;
-};
-
 export function AddressAutocompleteInput({
-  label,
   name,
-}: AddressAutocompleteInputProps) {
+  ...textProps
+}: Omit<TextInputProps, 'name'> & {name: string}) {
   const [field] = useField<string>(name);
   const input = useInputControl(field);
   const combobox = useCombobox({
@@ -52,11 +54,14 @@ export function AddressAutocompleteInput({
       (v) => v.tekst === value,
     );
 
+    if (!address) return;
+
     if (address?.type === 'adresse') {
       input.change(value);
       setValue(address.tekst);
       combobox.closeDropdown();
     } else {
+      setValue(address.tekst);
       fetchOptions(value);
     }
   };
@@ -84,45 +89,38 @@ export function AddressAutocompleteInput({
   }, [fetcher.state, field.errors, field.value]);
 
   return (
-    <>
-      <input name={field.name} value={input.value} type="hidden" />
-      <Combobox
-        onOptionSubmit={onOptionSubmit}
-        withinPortal={false}
-        store={combobox}
-      >
-        <Combobox.Target>
-          <TextInput
-            placeholder="Sigridsvej 45, 8220 Brabrand"
-            label={label}
-            value={value}
-            onChange={(event) => {
-              input.change(undefined);
-              setValue(event.currentTarget.value);
-              fetchOptions(event.currentTarget.value);
-              combobox.resetSelectedOption();
-              combobox.openDropdown();
-            }}
-            onClick={showDropdown}
-            onFocus={showDropdown}
-            onBlur={() => {
-              combobox.closeDropdown();
-            }}
-            error={field.errors && field.errors[0]}
-            rightSection={rightSection}
-          />
-        </Combobox.Target>
+    <Combobox
+      onOptionSubmit={onOptionSubmit}
+      withinPortal={false}
+      store={combobox}
+    >
+      <Combobox.Target>
+        <TextInput
+          {...textProps}
+          placeholder="Sigridsvej 45, 8220 Brabrand"
+          value={value}
+          onChange={(event) => {
+            input.change(undefined);
+            setValue(event.currentTarget.value);
+            fetchOptions(event.currentTarget.value);
+            combobox.resetSelectedOption();
+            combobox.openDropdown();
+          }}
+          onClick={showDropdown}
+          onFocus={showDropdown}
+          onBlur={() => {
+            combobox.closeDropdown();
+          }}
+          error={field.errors && field.errors[0]}
+          rightSection={rightSection}
+        />
+      </Combobox.Target>
 
-        <Combobox.Dropdown>
-          <Combobox.Options>
-            {!options ? (
-              <Combobox.Empty>Nothing found</Combobox.Empty>
-            ) : (
-              options
-            )}
-          </Combobox.Options>
-        </Combobox.Dropdown>
-      </Combobox>
-    </>
+      <Combobox.Dropdown>
+        <Combobox.Options>
+          {!options ? <Combobox.Empty>Nothing found</Combobox.Empty> : options}
+        </Combobox.Options>
+      </Combobox.Dropdown>
+    </Combobox>
   );
 }

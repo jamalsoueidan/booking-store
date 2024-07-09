@@ -6,7 +6,6 @@ import {
 } from '@conform-to/react';
 import {
   Container,
-  Flex,
   Progress,
   rem,
   Stack,
@@ -34,7 +33,9 @@ import {MultiTags} from '~/components/form/MultiTags';
 import {RadioGroup} from '~/components/form/RadioGroup';
 import {CUSTOMER_DETAILS_QUERY} from '~/graphql/customer-account/CustomerDetailsQuery';
 import {getBookingShopifyApi} from '~/lib/api/bookingShopifyApi';
+import {updateCustomerTag} from '~/lib/updateTag';
 import {customerCreateBody} from '~/lib/zod/bookingShopifyApi';
+import {BottomSection, WrapSection} from './account.business';
 import {isUsernameUnique} from './api.check-username';
 
 function createSchema(options?: {
@@ -104,24 +105,11 @@ export async function action({request, params, context}: ActionFunctionArgs) {
       fullname: `${data.customer.firstName} ${data.customer.lastName}`,
     });
 
-    await fetch(
-      `https://${context.env.PUBLIC_STORE_DOMAIN}/admin/api/2024-01/customers/${
-        parseGid(data.customer.id).id
-      }.json`,
-      {
-        method: 'PUT',
-        headers: {
-          'X-Shopify-Access-Token': context.env.PRIVATE_API_ACCESS_TOKEN,
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          customer: {
-            id: data.customer.id,
-            tags: 'business-step1',
-          },
-        }),
-      },
-    );
+    await updateCustomerTag({
+      env: context.env,
+      customerId: parseGid(data.customer.id).id,
+      tags: 'business-step1',
+    });
 
     return redirect('/account/business/location');
   } catch (error) {
@@ -176,7 +164,7 @@ export default function AccountBusiness() {
     if (username.value && !username.errors) {
       return (
         <IconCheck
-          style={{width: rem(20), height: rem(20)}}
+          style={{width: rem(25), height: rem(20)}}
           color="var(--mantine-color-green-filled)"
           data-testid="username-success"
         />
@@ -185,25 +173,19 @@ export default function AccountBusiness() {
   }, [username.errors, username.value]);
 
   return (
-    <>
+    <WrapSection>
       <Progress value={20} size="sm" />
       <FormProvider context={form.context}>
-        <Form
-          method="post"
-          {...getFormProps(form)}
-          style={{
-            flex: 1,
-            display: 'flex',
-            flexDirection: 'column',
-          }}
-        >
-          <Container size="md" flex="1" p={{base: 'md', sm: rem(70)}}>
+        <Form method="post" {...getFormProps(form)}>
+          <Container size="md" py={{base: 'sm', md: rem(60)}}>
             <Stack mb="lg">
               <div>
                 <Text c="dimmed" tt="uppercase" fz="sm">
                   {t('account:business.step', {step: 1})}
                 </Text>
-                <Title fw="600">{t('account:business.title')}</Title>
+                <Title fw="600" fz={{base: 'h2', sm: undefined}}>
+                  {t('account:business.title')}
+                </Title>
               </div>
               <Text>{t('account:business.description1')}</Text>
             </Stack>
@@ -245,20 +227,13 @@ export default function AccountBusiness() {
               />
             </Stack>
           </Container>
-          <Flex
-            justify="flex-end"
-            align="center"
-            pos="sticky"
-            bottom="0"
-            p="md"
-            style={{boxShadow: '0 -2px 10px rgba(0, 0, 0, 0.1)'}}
-          >
+          <BottomSection>
             <SubmitButton size="md" disabled={!form.valid}>
               {t('account:business.create_business')}
             </SubmitButton>
-          </Flex>
+          </BottomSection>
         </Form>
       </FormProvider>
-    </>
+    </WrapSection>
   );
 }

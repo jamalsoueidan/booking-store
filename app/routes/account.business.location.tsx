@@ -10,15 +10,7 @@ import {getCustomer} from '~/lib/get-customer';
 
 import {FormProvider, getFormProps, useForm} from '@conform-to/react';
 import {parseWithZod} from '@conform-to/zod';
-import {
-  Container,
-  Flex,
-  Progress,
-  rem,
-  Stack,
-  Text,
-  Title,
-} from '@mantine/core';
+import {Container, Progress, rem, Stack, Text, Title} from '@mantine/core';
 import {IconBuildingStore, IconCar, IconHome} from '@tabler/icons-react';
 import {useTranslation} from 'react-i18next';
 import {AddressAutocompleteInput} from '~/components/form/AddressAutocompleteInput';
@@ -27,7 +19,8 @@ import {SubmitButton} from '~/components/form/SubmitButton';
 import {CUSTOMER_DETAILS_QUERY} from '~/graphql/customer-account/CustomerDetailsQuery';
 import {getBookingShopifyApi} from '~/lib/api/bookingShopifyApi';
 import {CustomerLocationBaseLocationType} from '~/lib/api/model';
-import {customerLocationCreateBody} from '~/lib/zod/bookingShopifyApi';
+import {updateCustomerTag} from '~/lib/updateTag';
+import {BottomSection, WrapSection} from './account.business';
 import {
   createValidateAddressSchema,
   validateAddress,
@@ -37,12 +30,9 @@ export const action = async ({request, context}: ActionFunctionArgs) => {
   const customerId = await getCustomer({context});
 
   const formData = await request.formData();
+
   const submission = await parseWithZod(formData, {
     schema: createValidateAddressSchema({
-      customerLocationCreateBody: customerLocationCreateBody.pick({
-        locationType: true,
-        fullAddress: true,
-      }),
       validateAddress,
     }),
     async: true,
@@ -62,6 +52,12 @@ export const action = async ({request, context}: ActionFunctionArgs) => {
       minDriveDistance: 0,
       maxDriveDistance: 50,
       startFee: 0,
+    });
+
+    await updateCustomerTag({
+      env: context.env,
+      customerId,
+      tags: 'business-step1, business-step2',
     });
 
     return redirect('/account/business/schedule');
@@ -94,41 +90,30 @@ export default function Component() {
     },
     onValidate({formData}) {
       return parseWithZod(formData, {
-        schema: createValidateAddressSchema({
-          customerLocationCreateBody: customerLocationCreateBody.pick({
-            locationType: true,
-            fullAddress: true,
-          }),
-        }),
+        schema: createValidateAddressSchema(),
       });
     },
-    shouldValidate: 'onInput',
+    shouldValidate: 'onBlur',
   });
 
   return (
-    <>
-      <Progress value={30} size="sm" />
+    <WrapSection>
+      <Progress value={50} size="sm" />
       <FormProvider context={form.context}>
-        <Form
-          method="POST"
-          {...getFormProps(form)}
-          style={{
-            flex: 1,
-            display: 'flex',
-            flexDirection: 'column',
-          }}
-        >
-          <Container size="md" flex="1" p={{base: 'md', sm: rem(70)}}>
+        <Form method="POST" {...getFormProps(form)}>
+          <Container size="md" py={{base: 'sm', md: rem(60)}}>
             <Stack mb="lg">
               <div>
                 <Text c="dimmed" tt="uppercase" fz="sm">
                   {t('account:business.step', {step: 2})}
                 </Text>
-                <Title fw="600">{t('account:business.location.title')}</Title>
+                <Title fw="600" fz={{base: 'h2', sm: undefined}}>
+                  {t('account:business.location.title')}
+                </Title>
               </div>
             </Stack>
 
-            <Stack gap="lg">
+            <Stack gap="xl">
               <RadioGroup
                 label={''}
                 field={locationType}
@@ -160,24 +145,18 @@ export default function Component() {
                 }
                 data-testid="address-input"
                 name={fullAddress.name}
+                size="lg"
               />
             </Stack>
           </Container>
 
-          <Flex
-            justify="flex-end"
-            align="center"
-            pos="sticky"
-            bottom="0"
-            p="md"
-            style={{boxShadow: '0 -2px 10px rgba(0, 0, 0, 0.1)'}}
-          >
+          <BottomSection>
             <SubmitButton size="md" disabled={!form.valid}>
               {t('account:business.location.submit')}
             </SubmitButton>
-          </Flex>
+          </BottomSection>
         </Form>
       </FormProvider>
-    </>
+    </WrapSection>
   );
 }

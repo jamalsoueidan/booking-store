@@ -1,27 +1,33 @@
-import {ActionIcon, Flex, rem} from '@mantine/core';
+import {ActionIcon, Box, Flex, rem} from '@mantine/core';
 import {Link, Outlet} from '@remix-run/react';
-import {json, redirect, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
+import {json, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
 import {IconX} from '@tabler/icons-react';
+import {type PropsWithChildren} from 'react';
 
 import {Logo} from '~/components/Logo';
-import {CUSTOMER_DETAILS_QUERY} from '~/graphql/customer-account/CustomerDetailsQuery';
+
+const HEIGHT = 70;
 
 export async function loader({context}: LoaderFunctionArgs) {
   await context.customerAccount.handleAuthStatus();
-
-  const {data} = await context.customerAccount.query(CUSTOMER_DETAILS_QUERY);
-
-  if (data.customer.tags.includes('business')) {
-    return redirect('/business');
-  }
 
   return json(null);
 }
 
 export default function AccountBusiness() {
   return (
-    <Flex direction="column" mih="100vh">
-      <Flex h={60} bg="white" justify="space-between" align="center" p="sm">
+    <>
+      <Flex
+        justify="space-between"
+        align="center"
+        pos="absolute"
+        top="0"
+        left="0"
+        right="0"
+        h={HEIGHT}
+        p="md"
+        bg="white"
+      >
         <Logo close={() => {}} />
 
         <ActionIcon
@@ -35,6 +41,33 @@ export default function AccountBusiness() {
       </Flex>
 
       <Outlet />
+    </>
+  );
+}
+
+export function WrapSection({children}: PropsWithChildren) {
+  return (
+    <Box mt={HEIGHT} mb={HEIGHT + 10}>
+      {children}
+    </Box>
+  );
+}
+
+export function BottomSection({children}: PropsWithChildren) {
+  return (
+    <Flex
+      justify="flex-end"
+      align="center"
+      pos="fixed"
+      left="0"
+      right="0"
+      bottom="0"
+      p="md"
+      bg="white"
+      h={HEIGHT}
+      style={{boxShadow: '0 -2px 10px rgba(0, 0, 0, 0.1)', zIndex: 10}}
+    >
+      {children}
     </Flex>
   );
 }

@@ -85,12 +85,20 @@ interface Resources {
       "step": "Step {{step}}",
       "location": {
         "title": "Hvordan vil du gerne tilbyde dine tjenester?",
-        "commercial": "Salon - dine kunder kommer til en butik",
-        "home": "Hjemmebasaret - dine kunder kommer til dit hjem",
-        "destination": "Mobil - du tager hjem til din kunder",
+        "commercial": "Salon: dine kunder kommer til en butik",
+        "home": "Hjemme: dine kunder kommer til dit hjem",
+        "destination": "Mobil: du tager hjem til din kunder",
         "drive_from": "Hvor vil du køre fra?",
         "drive_to": "Hvor skal kunden køre hen til?",
         "submit": "Tilføj og forsæt"
+      },
+      "schedule": {
+        "title": "Hvordan ser din arbejdsuge ud?",
+        "submit": "Gem og forsæt"
+      },
+      "service": {
+        "title": "Tilføj din første ydelse",
+        "submit": "Gem og forsæt"
       }
     }
   },

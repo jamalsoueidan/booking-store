@@ -2,7 +2,6 @@ import {conformZodMessage} from '@conform-to/zod';
 import {json, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
 import {z} from 'zod';
 import {customerLocationCreateBody} from '~/lib/zod/bookingShopifyApi';
-
 export interface ApiAutoCompleteProposal
   extends Record<string, object | string | number> {
   type: string;
@@ -50,32 +49,38 @@ export const validateAddress = async (address: string) => {
 };
 
 export function createValidateAddressSchema(options?: {
-  customerLocationCreateBody: z.ZodObject<{fullAddress: z.ZodString}>;
   validateAddress?: (username: string) => Promise<boolean>;
 }) {
-  return customerLocationCreateBody.extend({
-    fullAddress: customerLocationCreateBody.shape.fullAddress.pipe(
-      z.string().superRefine((fullAddress, ctx) => {
-        if (typeof options?.validateAddress !== 'function') {
-          ctx.addIssue({
-            code: 'custom',
-            message: conformZodMessage.VALIDATION_UNDEFINED,
-            fatal: true,
-          });
-          return;
-        }
-
-        return options.validateAddress(fullAddress).then((addressIsCorrect) => {
-          if (!addressIsCorrect) {
+  return customerLocationCreateBody
+    .pick({
+      locationType: true,
+      fullAddress: true,
+    })
+    .extend({
+      fullAddress: customerLocationCreateBody.shape.fullAddress.pipe(
+        z.string().superRefine((fullAddress, ctx) => {
+          if (typeof options?.validateAddress !== 'function') {
             ctx.addIssue({
-              code: z.ZodIssueCode.custom,
-              params: {
-                i18n: 'full_address.not_valid',
-              },
+              code: 'custom',
+              message: conformZodMessage.VALIDATION_UNDEFINED,
+              fatal: true,
             });
+            return;
           }
-        });
-      }),
-    ),
-  });
+
+          return options
+            .validateAddress(fullAddress)
+            .then((addressIsCorrect) => {
+              if (!addressIsCorrect) {
+                ctx.addIssue({
+                  code: z.ZodIssueCode.custom,
+                  params: {
+                    i18n: 'full_address.not_valid',
+                  },
+                });
+              }
+            });
+        }),
+      ),
+    });
 }

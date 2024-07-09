@@ -1,4 +1,9 @@
-import {getFormProps, getInputProps, useForm} from '@conform-to/react';
+import {
+  FormProvider,
+  getFormProps,
+  getInputProps,
+  useForm,
+} from '@conform-to/react';
 import {Form, Link, useActionData, useLoaderData} from '@remix-run/react';
 
 import {
@@ -96,86 +101,88 @@ export default function AccountLocationsEdit() {
   });
 
   return (
-    <Form method="post" {...getFormProps(form)}>
-      <Stack>
-        <TextInput
-          label="Navn"
-          placeholder="BySisters"
-          {...getInputProps(fields.name, {type: 'text'})}
-          data-testid="name-input"
-        />
+    <FormProvider context={form.context}>
+      <Form method="post" {...getFormProps(form)}>
+        <Stack>
+          <TextInput
+            label="Navn"
+            placeholder="BySisters"
+            {...getInputProps(fields.name, {type: 'text'})}
+            data-testid="name-input"
+          />
 
-        <AddressAutocompleteInput
-          label={
-            defaultValue.locationType === 'destination'
-              ? 'Hvor vil du kører fra?'
-              : 'Hvor skal kunden køre til?'
-          }
-          placeholder="Sigridsvej 45, 8220 Brabrand"
-          {...getInputProps(fields.fullAddress, {type: 'text'})}
-          data-testid="address-input"
-        />
+          <AddressAutocompleteInput
+            label={
+              defaultValue.locationType === 'destination'
+                ? 'Hvor vil du kører fra?'
+                : 'Hvor skal kunden køre til?'
+            }
+            placeholder="Sigridsvej 45, 8220 Brabrand"
+            {...getInputProps(fields.fullAddress, {type: 'text'})}
+            data-testid="address-input"
+          />
 
-        <NumericInput
-          field={fields.startFee}
-          label="Udgifter for turen"
-          suffix=" kr"
-          hidden={defaultValue.locationType !== 'destination'}
-          data-testid="start-fee-input"
-        />
+          <NumericInput
+            field={fields.startFee}
+            label="Udgifter for turen"
+            suffix=" kr"
+            hidden={defaultValue.locationType !== 'destination'}
+            data-testid="start-fee-input"
+          />
 
-        <NumericInput
-          field={fields.distanceHourlyRate}
-          label="Timepris for kørsel"
-          suffix=" kr"
-          hidden={defaultValue.locationType !== 'destination'}
-          data-testid="hourly-rate-input"
-        />
+          <NumericInput
+            field={fields.distanceHourlyRate}
+            label="Timepris for kørsel"
+            suffix=" kr"
+            hidden={defaultValue.locationType !== 'destination'}
+            data-testid="hourly-rate-input"
+          />
 
-        <NumericInput
-          field={fields.fixedRatePerKm}
-          label="Pris pr. kilometer"
-          suffix=" kr"
-          hidden={defaultValue.locationType !== 'destination'}
-          data-testid="fixed-rate-input"
-        />
+          <NumericInput
+            field={fields.fixedRatePerKm}
+            label="Pris pr. kilometer"
+            suffix=" kr"
+            hidden={defaultValue.locationType !== 'destination'}
+            data-testid="fixed-rate-input"
+          />
 
-        <NumericInput
-          field={fields.distanceForFree}
-          label="Afstanden der køres gratis, inden takstberegningen påbegyndes."
-          suffix=" km"
-          hidden={defaultValue.locationType !== 'destination'}
-          data-testid="distance-free-input"
-        />
+          <NumericInput
+            field={fields.distanceForFree}
+            label="Afstanden der køres gratis, inden takstberegningen påbegyndes."
+            suffix=" km"
+            hidden={defaultValue.locationType !== 'destination'}
+            data-testid="distance-free-input"
+          />
 
-        <NumericInput
-          field={fields.minDriveDistance}
-          label="Minimum der skal køres for at acceptere en kørselsopgave"
-          suffix=" km"
-          hidden={defaultValue.locationType !== 'destination'}
-          data-testid="min-drive-distance-input"
-        />
+          <NumericInput
+            field={fields.minDriveDistance}
+            label="Minimum der skal køres for at acceptere en kørselsopgave"
+            suffix=" km"
+            hidden={defaultValue.locationType !== 'destination'}
+            data-testid="min-drive-distance-input"
+          />
 
-        <NumericInput
-          field={fields.maxDriveDistance}
-          label="Maximum der køres"
-          suffix=" km"
-          hidden={defaultValue.locationType !== 'destination'}
-          data-testid="max-drive-distance-input"
-        />
+          <NumericInput
+            field={fields.maxDriveDistance}
+            label="Maximum der køres"
+            suffix=" km"
+            hidden={defaultValue.locationType !== 'destination'}
+            data-testid="max-drive-distance-input"
+          />
 
-        <Group>
-          <SubmitButton>Gem ændringer</SubmitButton>
-          <Text>eller</Text>
-          <Anchor
-            component={Link}
-            to="/business/locations"
-            data-testid="back-link"
-          >
-            Tilbage
-          </Anchor>
-        </Group>
-      </Stack>
-    </Form>
+          <Group>
+            <SubmitButton>Gem ændringer</SubmitButton>
+            <Text>eller</Text>
+            <Anchor
+              component={Link}
+              to="/business/locations"
+              data-testid="back-link"
+            >
+              Tilbage
+            </Anchor>
+          </Group>
+        </Stack>
+      </Form>
+    </FormProvider>
   );
 }

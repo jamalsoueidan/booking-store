@@ -4325,7 +4325,8 @@ export const openAIProductTitleResponse = zod.object({
   "title": zod.string().optional()
 }).optional(),
   "title": zod.string(),
-  "description": zod.string()
+  "description": zod.string(),
+  "price": zod.string()
 })
 })
 
