@@ -98,7 +98,7 @@ export default function Component() {
 
   return (
     <WrapSection>
-      <Progress value={50} size="sm" />
+      <Progress value={40} size="sm" />
       <FormProvider context={form.context}>
         <Form method="POST" {...getFormProps(form)}>
           <Container size="md" py={{base: 'sm', md: rem(60)}}>

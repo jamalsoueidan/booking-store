@@ -2881,6 +2881,97 @@ export type PredictiveSearchQuery = {
   }>;
 };
 
+export type UserProductsQueryVariables = StorefrontAPI.Exact<{
+  handle: StorefrontAPI.Scalars['String']['input'];
+  country?: StorefrontAPI.InputMaybe<StorefrontAPI.CountryCode>;
+  language?: StorefrontAPI.InputMaybe<StorefrontAPI.LanguageCode>;
+  filters?: StorefrontAPI.InputMaybe<
+    Array<StorefrontAPI.ProductFilter> | StorefrontAPI.ProductFilter
+  >;
+}>;
+
+export type UserProductsQuery = {
+  collection?: StorefrontAPI.Maybe<{
+    products: {
+      nodes: Array<
+        Pick<StorefrontAPI.Product, 'title' | 'descriptionHtml' | 'productType'>
+      >;
+    };
+  }>;
+};
+
+export type UserMetaobjectQueryVariables = StorefrontAPI.Exact<{
+  username: StorefrontAPI.Scalars['String']['input'];
+  country?: StorefrontAPI.InputMaybe<StorefrontAPI.CountryCode>;
+  language?: StorefrontAPI.InputMaybe<StorefrontAPI.LanguageCode>;
+}>;
+
+export type UserMetaobjectQuery = {
+  metaobject?: StorefrontAPI.Maybe<{
+    fullname?: StorefrontAPI.Maybe<
+      Pick<StorefrontAPI.MetaobjectField, 'value'>
+    >;
+    schedules?: StorefrontAPI.Maybe<{
+      references?: StorefrontAPI.Maybe<{
+        nodes: Array<
+          Pick<StorefrontAPI.Metaobject, 'id' | 'handle'> & {
+            name?: StorefrontAPI.Maybe<
+              Pick<StorefrontAPI.MetaobjectField, 'value'>
+            >;
+            slots?: StorefrontAPI.Maybe<
+              Pick<StorefrontAPI.MetaobjectField, 'value'>
+            >;
+          }
+        >;
+      }>;
+    }>;
+    locations?: StorefrontAPI.Maybe<{
+      references?: StorefrontAPI.Maybe<{
+        nodes: Array<
+          Pick<StorefrontAPI.Metaobject, 'id' | 'handle'> & {
+            locationType?: StorefrontAPI.Maybe<
+              Pick<StorefrontAPI.MetaobjectField, 'value'>
+            >;
+            name?: StorefrontAPI.Maybe<
+              Pick<StorefrontAPI.MetaobjectField, 'value'>
+            >;
+            fullAddress?: StorefrontAPI.Maybe<
+              Pick<StorefrontAPI.MetaobjectField, 'value'>
+            >;
+            city?: StorefrontAPI.Maybe<
+              Pick<StorefrontAPI.MetaobjectField, 'value'>
+            >;
+            country?: StorefrontAPI.Maybe<
+              Pick<StorefrontAPI.MetaobjectField, 'value'>
+            >;
+            distanceForFree?: StorefrontAPI.Maybe<
+              Pick<StorefrontAPI.MetaobjectField, 'value'>
+            >;
+            distanceHourlyRate?: StorefrontAPI.Maybe<
+              Pick<StorefrontAPI.MetaobjectField, 'value'>
+            >;
+            fixedRatePerKm?: StorefrontAPI.Maybe<
+              Pick<StorefrontAPI.MetaobjectField, 'value'>
+            >;
+            minDriveDistance?: StorefrontAPI.Maybe<
+              Pick<StorefrontAPI.MetaobjectField, 'value'>
+            >;
+            maxDriveDistance?: StorefrontAPI.Maybe<
+              Pick<StorefrontAPI.MetaobjectField, 'value'>
+            >;
+            startFee?: StorefrontAPI.Maybe<
+              Pick<StorefrontAPI.MetaobjectField, 'value'>
+            >;
+            geoLocation?: StorefrontAPI.Maybe<
+              Pick<StorefrontAPI.MetaobjectField, 'value'>
+            >;
+          }
+        >;
+      }>;
+    }>;
+  }>;
+};
+
 export type ArticleQueryVariables = StorefrontAPI.Exact<{
   articleHandle: StorefrontAPI.Scalars['String']['input'];
   blogHandle: StorefrontAPI.Scalars['String']['input'];
@@ -6048,6 +6139,14 @@ interface GeneratedQueryTypes {
   '#graphql\n  fragment PredictiveArticle on Article {\n    __typename\n    id\n    title\n    handle\n    image {\n      url\n      altText\n      width\n      height\n    }\n    trackingParameters\n  }\n  fragment PredictiveCollection on Collection {\n    __typename\n    id\n    title\n    handle\n    image {\n      url\n      altText\n      width\n      height\n    }\n    trackingParameters\n  }\n  fragment PredictivePage on Page {\n    __typename\n    id\n    title\n    handle\n    trackingParameters\n  }\n  fragment PredictiveProduct on Product {\n    __typename\n    id\n    title\n    handle\n    trackingParameters\n    variants(first: 1) {\n      nodes {\n        id\n        image {\n          url\n          altText\n          width\n          height\n        }\n        price {\n          amount\n          currencyCode\n        }\n      }\n    }\n  }\n  fragment PredictiveQuery on SearchQuerySuggestion {\n    __typename\n    text\n    styledText\n    trackingParameters\n  }\n  query predictiveSearch(\n    $country: CountryCode\n    $language: LanguageCode\n    $limit: Int!\n    $limitScope: PredictiveSearchLimitScope!\n    $searchTerm: String!\n    $types: [PredictiveSearchType!]\n  ) @inContext(country: $country, language: $language) {\n    predictiveSearch(\n      limit: $limit,\n      limitScope: $limitScope,\n      query: $searchTerm,\n      types: $types,\n    ) {\n      articles {\n        ...PredictiveArticle\n      }\n      collections {\n        ...PredictiveCollection\n      }\n      pages {\n        ...PredictivePage\n      }\n      products {\n        ...PredictiveProduct\n      }\n      queries {\n        ...PredictiveQuery\n      }\n    }\n  }\n': {
     return: PredictiveSearchQuery;
     variables: PredictiveSearchQueryVariables;
+  };
+  '#graphql\n  query UserProducts(\n    $handle: String!\n    $country: CountryCode\n    $language: LanguageCode\n    $filters: [ProductFilter!] = {}\n  ) @inContext(country: $country, language: $language) {\n    collection(handle: $handle) {\n      products(first: 20, sortKey: TITLE, filters: $filters) {\n        nodes {\n          title\n          descriptionHtml\n          productType\n        }\n      }\n    }\n  }\n': {
+    return: UserProductsQuery;
+    variables: UserProductsQueryVariables;
+  };
+  '#graphql\n  query UserMetaobject(\n    $username: String!\n    $country: CountryCode\n    $language: LanguageCode\n  ) @inContext(country: $country, language: $language) {\n    metaobject(handle: {handle: $username, type: "user"}) {\n      fullname: field(key: "fullname") {\n        value\n      }\n      schedules: field(key: "schedules") {\n        references(first: 4) {\n          nodes {\n            ...on Metaobject {\n              id\n              handle\n              name: field(key: "name") {\n                value\n              }\n              slots: field(key: "slots") {\n                value\n              }\n            }\n          }\n        }\n      }\n      locations: field(key: "locations") {\n        references(first: 4) {\n          nodes {\n            ...on Metaobject {\n              id\n              handle\n              locationType: field(key: "location_type") {\n                value\n              }\n              name: field(key: "name") {\n                value\n              }\n              fullAddress: field(key: "full_address") {\n                value\n              }\n              city: field(key: "city") {\n                value\n              }\n              country: field(key: "country") {\n                value\n              }\n              distanceForFree: field(key: "distance_for_free") {\n                value\n              }\n              distanceHourlyRate: field(key: "distance_hourly_rate") {\n                value\n              }\n              fixedRatePerKm: field(key: "fixed_rate_per_km") {\n                value\n              }\n              minDriveDistance: field(key: "min_drive_distance") {\n                value\n              }\n              maxDriveDistance: field(key: "max_drive_distance") {\n                value\n              }\n              startFee: field(key: "start_fee") {\n                value\n              }\n              geoLocation: field(key: "geo_location") {\n                value\n              }\n            }\n          }\n        }\n      }\n    }\n  }\n': {
+    return: UserMetaobjectQuery;
+    variables: UserMetaobjectQueryVariables;
   };
   '#graphql\n  query Article(\n    $articleHandle: String!\n    $blogHandle: String!\n    $country: CountryCode\n    $language: LanguageCode\n  ) @inContext(language: $language, country: $country) {\n    blog(handle: $blogHandle) {\n      articleByHandle(handle: $articleHandle) {\n        title\n        contentHtml\n        publishedAt\n        author: authorV2 {\n          name\n        }\n        image {\n          id\n          altText\n          url\n          width\n          height\n        }\n        seo {\n          description\n          title\n        }\n      }\n    }\n  }\n': {
     return: ArticleQuery;

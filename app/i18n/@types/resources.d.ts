@@ -90,15 +90,19 @@ interface Resources {
         "destination": "Mobil: du tager hjem til din kunder",
         "drive_from": "Hvor vil du køre fra?",
         "drive_to": "Hvor skal kunden køre hen til?",
-        "submit": "Tilføj og forsæt"
+        "submit": "Gem og forsæt"
       },
       "schedule": {
         "title": "Hvordan ser din arbejdsuge ud?",
         "submit": "Gem og forsæt"
       },
       "service": {
-        "title": "Tilføj din første ydelse",
+        "title": "Opret din første ydelse",
         "submit": "Gem og forsæt"
+      },
+      "profile": {
+        "title": "...udfyld resten af felterne for at fuldføre din profil",
+        "description": "Du kan vælge og trykke på AI knappen og autoudfylde felterne udefra de de data du har angivet herunder."
       }
     }
   },

@@ -14,7 +14,7 @@ export function AmountInput({field, ...props}: AmountInputProps) {
   return !props.hidden ? (
     <NumberInput
       ref={inputRef}
-      defaultValue={parseInt(price.amount.initialValue || '0')}
+      value={parseInt(price.amount.initialValue || '0')}
       onChange={(value: string | number) => {
         control.change(value.toString());
       }}

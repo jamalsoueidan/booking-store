@@ -98,6 +98,10 @@
     "service": {
       "title": "Opret din første ydelse",
       "submit": "Gem og forsæt"
+    },
+    "profile": {
+      "title": "...udfyld resten af felterne for at fuldføre din profil",
+      "description": "Du kan vælge og trykke på AI knappen og autoudfylde felterne udefra de de data du har angivet herunder."
     }
   }
 }

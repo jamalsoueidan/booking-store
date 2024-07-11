@@ -12,7 +12,6 @@ import {
   ActionIcon,
   Container,
   Flex,
-  Indicator,
   Loader,
   Progress,
   rem,
@@ -21,6 +20,7 @@ import {
   Text,
   TextInput,
   Title,
+  Tooltip,
 } from '@mantine/core';
 import {Form, useActionData, useFetcher, useLoaderData} from '@remix-run/react';
 import {
@@ -35,7 +35,7 @@ import {SubmitButton} from '~/components/form/SubmitButton';
 
 import {getBookingShopifyApi} from '~/lib/api/bookingShopifyApi';
 
-import {IconAirBalloon} from '@tabler/icons-react';
+import {IconAi} from '@tabler/icons-react';
 import {useTranslation} from 'react-i18next';
 import {AmountInput} from '~/components/form/AmountInput';
 import {TextEditor} from '~/components/richtext/TextEditor';
@@ -91,10 +91,10 @@ export const action = async ({request, context}: ActionFunctionArgs) => {
     await updateCustomerTag({
       env: context.env,
       customerId,
-      tags: 'business-step1, business-step2, business-step3, business-step4, business',
+      tags: 'business-step1, business-step2, business-step3, business-step4',
     });
 
-    return redirect(`/account/business/done`);
+    return redirect(`/account/business/profile`);
   } catch (error) {
     return submission.reply();
   }
@@ -114,7 +114,7 @@ export async function loader({context}: LoaderFunctionArgs) {
   const {data} = await context.customerAccount.query(CUSTOMER_DETAILS_QUERY);
 
   if (data.customer.tags.includes('business-step4')) {
-    return redirect('/account/business/done');
+    return redirect('/account/business/profile');
   }
 
   return json({
@@ -170,6 +170,13 @@ export default function AccountServicesCreate() {
         name: fields.productType.name,
         value: fetcher.data.collection?.title || '',
       });
+      form.update({
+        name: fields.price.name,
+        value: {
+          amount: fetcher.data.price,
+          currencyCode: 'DKK',
+        },
+      });
       setDescriptionHtml(fetcher.data.description);
       fetcher.load('/api/reset'); //reset
     }
@@ -177,6 +184,7 @@ export default function AccountServicesCreate() {
     fetcher,
     fetcher.data,
     fetcher.state,
+    fields.price.name,
     fields.productType.name,
     fields.title.name,
     fields.title.value,
@@ -198,10 +206,6 @@ export default function AccountServicesCreate() {
                   {t('account:business.service.title')}
                 </Title>
               </div>
-              <Text>
-                Indtast behandlingstitle og efterfølgende tryk på ikonet til
-                højre for at bruge AI til at autogenere de resterende felter
-              </Text>
             </Stack>
 
             <Stack>
@@ -210,21 +214,40 @@ export default function AccountServicesCreate() {
                 style={{flex: 1}}
                 label="Title på ydelsen"
                 rightSection={
-                  <Indicator inline label="AI" size={16}>
-                    <ActionIcon
-                      color="dark"
-                      disabled={!fields.title.value}
-                      onClick={aiSuggestion}
-                    >
-                      {fetcher.state !== 'idle' ? (
-                        <Loader color="white" size={rem(16)} />
-                      ) : (
-                        <IconAirBalloon
-                          style={{width: rem(16), height: rem(16)}}
-                        />
-                      )}
-                    </ActionIcon>
-                  </Indicator>
+                  <ActionIcon
+                    color="dark"
+                    disabled={
+                      !(
+                        fields.title.valid &&
+                        fields.title.value &&
+                        fields.title.value.length > 7
+                      )
+                    }
+                    onClick={aiSuggestion}
+                  >
+                    {fetcher.state !== 'idle' ? (
+                      <Loader color="white" size={rem(16)} />
+                    ) : (
+                      <Tooltip
+                        label="Klik her for at bruge AI til at udfylde resten af felterne automatisk. Sørg for at afslutte indtastningen af titlen først."
+                        offset={{mainAxis: 16, crossAxis: 0}}
+                        arrowSize={10}
+                        multiline
+                        w={220}
+                        withArrow
+                        opened={
+                          fields.title.valid &&
+                          fields.title.value &&
+                          fields.title.value.length > 7
+                            ? true
+                            : false
+                        }
+                        position="top"
+                      >
+                        <IconAi />
+                      </Tooltip>
+                    )}
+                  </ActionIcon>
                 }
               />
 

@@ -11,7 +11,6 @@ import {
   Group,
   Loader,
   rem,
-  Skeleton,
   Spoiler,
   Stack,
   Text,
@@ -19,14 +18,14 @@ import {
   UnstyledButton,
 } from '@mantine/core';
 import '@mantine/tiptap/styles.css';
-import {Await, Link, useLoaderData} from '@remix-run/react';
+import {Link, useLoaderData} from '@remix-run/react';
 import {
-  defer,
+  json,
   type LinksFunction,
   type LoaderFunctionArgs,
   type MetaFunction,
 } from '@shopify/remix-oxygen';
-import React, {Suspense, useEffect, useMemo, useState} from 'react';
+import React, {useEffect, useMemo, useState} from 'react';
 
 import {parseGid} from '@shopify/hydrogen';
 import {da} from 'date-fns/locale';
@@ -96,7 +95,8 @@ export const meta: MetaFunction<typeof loader> = ({data}) => {
 export async function loader({request, context}: LoaderFunctionArgs) {
   const {storefront} = context;
   const url = new URL(request.url);
-  const username = url.pathname.substring(1);
+  const segments = url.pathname.split('/');
+  const username = segments[segments.length - 1];
 
   if (!username) {
     throw new Error('Invalid request method');
@@ -115,7 +115,7 @@ export async function loader({request, context}: LoaderFunctionArgs) {
     });
   }
 
-  const collection = context.storefront.query(GET_USER_PRODUCTS, {
+  const collection = await context.storefront.query(GET_USER_PRODUCTS, {
     variables: {
       handle: username,
       filters: [
@@ -138,7 +138,7 @@ export async function loader({request, context}: LoaderFunctionArgs) {
     cache: context.storefront.CacheShort(),
   });
 
-  return defer({
+  return json({
     user,
     collection,
   });
@@ -353,9 +353,18 @@ function AboutMe() {
 }
 
 function UserTreatments() {
-  const data = useLoaderData<typeof loader>();
+  const {collection} = useLoaderData<typeof loader>();
   const {t} = useTranslation(['profile']);
   const user = useUser();
+
+  const collectionsCategorized =
+    collection?.collection?.products.nodes.reduce((collections, product) => {
+      if (!collections[product.productType]) {
+        collections[product.productType] = [];
+      }
+      collections[product.productType].push(product);
+      return collections;
+    }, {} as Record<string, TreatmentProductFragment[]>) || {};
 
   return (
     <>
@@ -363,68 +372,46 @@ function UserTreatments() {
         {t('treatments_title')}
       </Title>
 
-      <Suspense fallback={<Skeleton height={8} radius="xl" />}>
-        <Await resolve={data.collection}>
-          {({collection}) => {
-            const collections =
-              collection?.products.nodes.reduce((collections, product) => {
-                if (!collections[product.productType]) {
-                  collections[product.productType] = [];
-                }
-                collections[product.productType].push(product);
-                return collections;
-              }, {} as Record<string, TreatmentProductFragment[]>) || {};
-
-            return (
-              <Grid gutter="xl">
-                <Grid.Col span={{base: 12, md: 8}}>
-                  <Stack gap="xl">
-                    {Object.keys(collections)
-                      .sort()
-                      .map((key) => (
-                        <Stack key={key} gap="sm">
-                          <Title order={4} fw="600">
-                            {key}
-                          </Title>
-                          <Stack gap="md">
-                            {collections[key].map((product) => (
-                              <ArtistProduct
-                                key={product.id}
-                                product={product}
-                              />
-                            ))}
-                          </Stack>
-                        </Stack>
-                      ))}
-                  </Stack>
-                </Grid.Col>
-                <Grid.Col span={{base: 12, md: 4}}>
+      <Grid gutter="xl">
+        <Grid.Col span={{base: 12, md: 8}}>
+          <Stack gap="xl">
+            {Object.keys(collectionsCategorized)
+              .sort()
+              .map((key) => (
+                <Stack key={key} gap="sm">
+                  <Title order={4} fw="600">
+                    {key}
+                  </Title>
                   <Stack gap="md">
-                    {user.schedules
-                      ?.sort((a, b) => {
-                        const aContainsMonday =
-                          a.slots?.value?.includes('monday');
-                        const bContainsMonday =
-                          b.slots?.value?.includes('monday');
-
-                        if (aContainsMonday && !bContainsMonday) {
-                          return -1;
-                        } else if (!aContainsMonday && bContainsMonday) {
-                          return 1;
-                        } else {
-                          return 0;
-                        }
-                      })
-                      .map((schedule) => (
-                        <Schedule key={schedule.handle} schedule={schedule} />
-                      ))}
+                    {collectionsCategorized[key].map((product) => (
+                      <ArtistProduct key={product.id} product={product} />
+                    ))}
                   </Stack>
-                </Grid.Col>
-              </Grid>
-            );
-          }}
-        </Await>
-      </Suspense>
+                </Stack>
+              ))}
+          </Stack>
+        </Grid.Col>
+        <Grid.Col span={{base: 12, md: 4}}>
+          <Stack gap="md">
+            {user.schedules
+              ?.sort((a, b) => {
+                const aContainsMonday = a.slots?.value?.includes('monday');
+                const bContainsMonday = b.slots?.value?.includes('monday');
+
+                if (aContainsMonday && !bContainsMonday) {
+                  return -1;
+                } else if (!aContainsMonday && bContainsMonday) {
+                  return 1;
+                } else {
+                  return 0;
+                }
+              })
+              .map((schedule) => (
+                <Schedule key={schedule.handle} schedule={schedule} />
+              ))}
+          </Stack>
+        </Grid.Col>
+      </Grid>
     </>
   );
 }
