@@ -1,6 +1,7 @@
 import {Form, useActionData, useLoaderData} from '@remix-run/react';
 import {
   json,
+  redirect,
   type ActionFunctionArgs,
   type LoaderFunctionArgs,
 } from '@shopify/remix-oxygen';
@@ -16,7 +17,6 @@ import {
 } from '@conform-to/react';
 import {parseWithZod} from '@conform-to/zod';
 import {Container, rem, Stack, TextInput} from '@mantine/core';
-import {redirectWithSuccess} from 'remix-toast';
 import {AccountContent} from '~/components/account/AccountContent';
 import {AccountTitle} from '~/components/account/AccountTitle';
 import {AddressAutocompleteInput} from '~/components/form/AddressAutocompleteInput';
@@ -49,9 +49,7 @@ export const action = async ({request, context}: ActionFunctionArgs) => {
       `${baseURL}/customer/${customerId}/locations`,
     );
 
-    return redirectWithSuccess('/business/locations', {
-      message: 'Lokation er nu oprettet!',
-    });
+    return redirect('/business/locations');
   } catch (error) {
     return submission.reply();
   }

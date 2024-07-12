@@ -1,9 +1,8 @@
 import {getFormProps, getInputProps, useForm} from '@conform-to/react';
 import {parseWithZod} from '@conform-to/zod';
 import {FocusTrap, Modal, Stack, TextInput} from '@mantine/core';
-import {Form, useActionData} from '@remix-run/react';
+import {Form, redirect, useActionData} from '@remix-run/react';
 import type {ActionFunctionArgs} from 'react-router';
-import {redirectWithSuccess} from 'remix-toast';
 import {type z} from 'zod';
 import DateTimeInput from '~/components/form/DateTimeInput';
 import {SubmitButton} from '~/components/form/SubmitButton';
@@ -29,9 +28,7 @@ export const action = async ({request, context}: ActionFunctionArgs) => {
       submission.value,
     );
 
-    return redirectWithSuccess('/business/booked', {
-      message: 'Ferie er nu tilføjet!',
-    });
+    return redirect('/business/booked');
   } catch (error) {
     return submission.reply();
   }

@@ -1,11 +1,10 @@
 import {Form, Link, Outlet, useLoaderData} from '@remix-run/react';
 
-import {type LoaderFunctionArgs} from '@shopify/remix-oxygen';
+import {json, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
 import {getBookingShopifyApi} from '~/lib/api/bookingShopifyApi';
 import {getCustomer} from '~/lib/get-customer';
 
 import {Button, Container, rem} from '@mantine/core';
-import {jsonWithSuccess} from 'remix-toast';
 import {AccountButton} from '~/components/account/AccountButton';
 import {AccountContent} from '~/components/account/AccountContent';
 import {AccountTitle} from '~/components/account/AccountTitle';
@@ -24,7 +23,7 @@ export async function loader({context, params}: LoaderFunctionArgs) {
     context,
   );
 
-  return jsonWithSuccess(response.payload, {message: 'Location er opdateret!'});
+  return json(response.payload);
 }
 
 export default function AccountLocationsEdit() {

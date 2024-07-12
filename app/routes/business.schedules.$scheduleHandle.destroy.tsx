@@ -1,5 +1,4 @@
-import {type ActionFunction} from '@shopify/remix-oxygen';
-import {redirectWithSuccess} from 'remix-toast';
+import {redirect, type ActionFunction} from '@shopify/remix-oxygen';
 
 import {getBookingShopifyApi} from '~/lib/api/bookingShopifyApi';
 import {baseURL} from '~/lib/api/mutator/query-client';
@@ -26,7 +25,5 @@ export const action: ActionFunction = async ({context, params}) => {
     `${baseURL}/customer/${customerId}/schedules`,
   );
 
-  return redirectWithSuccess('/business/schedules', {
-    message: 'Vagtplanen er slettet!',
-  });
+  return redirect('/business/schedules');
 };

@@ -2,8 +2,7 @@ import {getFormProps, getInputProps, useForm} from '@conform-to/react';
 import {parseWithZod} from '@conform-to/zod';
 import {FocusTrap, Stack, TextInput} from '@mantine/core';
 import {Form, useActionData} from '@remix-run/react';
-import {type ActionFunctionArgs} from '@shopify/remix-oxygen';
-import {redirectWithSuccess} from 'remix-toast';
+import {redirect, type ActionFunctionArgs} from '@shopify/remix-oxygen';
 import {SubmitButton} from '~/components/form/SubmitButton';
 import {getBookingShopifyApi} from '~/lib/api/bookingShopifyApi';
 import {baseURL} from '~/lib/api/mutator/query-client';
@@ -31,9 +30,7 @@ export const action = async ({request, context}: ActionFunctionArgs) => {
       `${baseURL}/customer/${customerId}/schedules`,
     );
 
-    return redirectWithSuccess(`/business/schedules/${response.payload._id}`, {
-      message: 'Du har oprettet en ny vagtplan',
-    });
+    return redirect(`/business/schedules/${response.payload._id}`);
   } catch (error) {
     return submission.reply();
   }

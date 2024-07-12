@@ -3,6 +3,7 @@ import {Form, useActionData, useLoaderData} from '@remix-run/react';
 
 import {
   json,
+  redirect,
   type ActionFunctionArgs,
   type LoaderFunctionArgs,
 } from '@shopify/remix-oxygen';
@@ -12,7 +13,6 @@ import {customerScheduleCreateBody} from '~/lib/zod/bookingShopifyApi';
 
 import {parseWithZod} from '@conform-to/zod';
 import {FocusTrap, Stack, TextInput} from '@mantine/core';
-import {redirectWithSuccess} from 'remix-toast';
 import {SubmitButton} from '~/components/form/SubmitButton';
 import {baseURL} from '~/lib/api/mutator/query-client';
 
@@ -52,9 +52,7 @@ export const action = async ({
       `${baseURL}/customer/${customerId}/schedules`,
     );
 
-    return redirectWithSuccess(`/business/schedules/${response.payload._id}`, {
-      message: 'Vagtplan er opdateret!',
-    });
+    return redirect(`/business/schedules/${response.payload._id}`);
   } catch (error) {
     return submission.reply();
   }

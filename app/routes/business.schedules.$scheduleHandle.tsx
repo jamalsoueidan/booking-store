@@ -9,6 +9,7 @@ import {
 } from '@remix-run/react';
 import {
   json,
+  redirect,
   type ActionFunctionArgs,
   type LoaderFunctionArgs,
 } from '@shopify/remix-oxygen';
@@ -39,7 +40,6 @@ import {
 import {IconEdit, IconMinus, IconPlus, IconX} from '@tabler/icons-react';
 import {addMinutes, format, set} from 'date-fns';
 import {useMemo} from 'react';
-import {redirectWithSuccess} from 'remix-toast';
 import {SubmitButton} from '~/components/form/SubmitButton';
 import MobileModal from '~/components/MobileModal';
 import {CustomerScheduleSlotDay} from '~/lib/api/model';
@@ -88,9 +88,7 @@ export const action = async ({
       `${baseURL}/customer/${customerId}/schedule/${scheduleHandle}`,
     );
 
-    return redirectWithSuccess('.', {
-      message: 'Vagtplan navn er opdateret!',
-    });
+    return redirect('.');
   } catch (error) {
     return json(submission);
   }

@@ -1,5 +1,4 @@
-import {type ActionFunction} from '@shopify/remix-oxygen';
-import {redirectWithSuccess} from 'remix-toast';
+import {redirect, type ActionFunction} from '@shopify/remix-oxygen';
 import {getBookingShopifyApi} from '~/lib/api/bookingShopifyApi';
 import {baseURL} from '~/lib/api/mutator/query-client';
 import {getCustomer} from '~/lib/get-customer';
@@ -22,7 +21,5 @@ export const action: ActionFunction = async ({context, params}) => {
     ),
   ]);
 
-  return redirectWithSuccess('/business/locations', {
-    message: 'Lokation er slettet!!',
-  });
+  return redirect('/business/locations');
 };
