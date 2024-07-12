@@ -27,7 +27,7 @@ import {getCustomer} from '~/lib/get-customer';
 export async function loader({context}: LoaderFunctionArgs) {
   const customerId = await getCustomer({context});
   const {payload: locations} =
-    await getBookingShopifyApi().customerLocationList(customerId, context);
+    await getBookingShopifyApi().customerLocationList(customerId);
 
   return json({locations});
 }

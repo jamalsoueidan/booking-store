@@ -110,25 +110,6 @@ export default function AccountBusiness() {
           />
 
           <MultiTags
-            field={professions}
-            data={professionOptions}
-            label="Hvad er dine professioner"
-            placeholder="Vælg professioner"
-          />
-
-          <MultiTags
-            field={specialties}
-            data={skillsOptions}
-            label="Hvad er dine specialer?"
-            placeholder="Vælge special(er)?"
-          />
-
-          <TextInput
-            label="Års erfaring"
-            {...getInputProps(yearsExperience, {type: 'number'})}
-          />
-
-          <MultiTags
             field={speaks}
             data={[
               {label: t('global:danish'), value: 'danish'},
@@ -157,6 +138,25 @@ export default function AccountBusiness() {
               }}
             />
           </div>
+
+          <MultiTags
+            field={professions}
+            data={professionOptions}
+            label="Hvad er dine professioner"
+            placeholder="Vælg professioner"
+          />
+
+          <MultiTags
+            field={specialties}
+            data={skillsOptions}
+            label="Hvad er dine specialer?"
+            placeholder="Vælge special(er)?"
+          />
+
+          <TextInput
+            label="Års erfaring"
+            {...getInputProps(yearsExperience, {type: 'number'})}
+          />
 
           <div>
             <SubmitButton>Gem ændringer</SubmitButton>
