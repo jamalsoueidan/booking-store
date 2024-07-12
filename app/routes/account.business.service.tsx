@@ -220,7 +220,7 @@ export default function AccountServicesCreate() {
                       !(
                         fields.title.valid &&
                         fields.title.value &&
-                        fields.title.value.length > 7
+                        fields.title.value.length > 5
                       )
                     }
                     onClick={aiSuggestion}
@@ -238,7 +238,7 @@ export default function AccountServicesCreate() {
                         opened={
                           fields.title.valid &&
                           fields.title.value &&
-                          fields.title.value.length > 7
+                          fields.title.value.length > 5
                             ? true
                             : false
                         }

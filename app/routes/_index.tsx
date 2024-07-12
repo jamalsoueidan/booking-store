@@ -217,9 +217,9 @@ function FeaturedCollections() {
               variant="outline"
               color="black"
               size="lg"
-              aria-label="Settings"
+              aria-label="Categories"
               component={Link}
-              to="/users"
+              to="/categories"
               radius="lg"
               rightSection={
                 <IconArrowRight
@@ -283,7 +283,7 @@ function FeaturedArtists() {
               variant="outline"
               color="black"
               size="lg"
-              aria-label="Settings"
+              aria-label="Users"
               component={Link}
               to="/users"
               radius="lg"

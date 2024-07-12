@@ -51,7 +51,11 @@ export default function AccountIndex() {
     <Container size="md" my={{base: rem(80), sm: rem(100)}}>
       <Grid align="center">
         <Grid.Col span={{base: 12, sm: 6}}>
-          <Card p={{base: 'sm', sm: 'xl'}}>
+          <Card
+            p={{base: 'sm', sm: 'xl'}}
+            component={Link}
+            to={`/${user?.username}`}
+          >
             <Group>
               {user?.images?.profile?.url ? (
                 <Avatar
