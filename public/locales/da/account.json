@@ -83,7 +83,7 @@
     "create_business": "Gem og forsæt",
     "step": "Step {{step}}",
     "location": {
-      "title": "Hvordan vil du gerne tilbyde dine tjenester?",
+      "title": "Angiv et mødested",
       "commercial": "Salon: dine kunder kommer til en butik",
       "home": "Hjemme: dine kunder kommer til dit hjem",
       "destination": "Mobil: du tager hjem til din kunder",
@@ -92,7 +92,7 @@
       "submit": "Gem og forsæt"
     },
     "schedule": {
-      "title": "Hvordan ser din arbejdsuge ud?",
+      "title": "Vælg de tidspunkter, hvor du er tilgængelig",
       "submit": "Gem og forsæt"
     },
     "service": {
@@ -100,7 +100,7 @@
       "submit": "Gem og forsæt"
     },
     "profile": {
-      "title": "...udfyld resten af felterne for at fuldføre din profil",
+      "title": "Udfyld resten af felterne for at fuldføre din profil",
       "description": "Du kan vælge og trykke på AI knappen og autoudfylde felterne udefra de de data du har angivet herunder."
     }
   }

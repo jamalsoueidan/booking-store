@@ -159,7 +159,7 @@ export default function AccountServicesCreate() {
   const aiSuggestion = useCallback(() => {
     fetcher.submit(
       {title: fields.title.value || ''},
-      {action: '/business/api/ai-suggestion'},
+      {action: '/business/api/ai/product'},
     );
   }, [fetcher, fields.title.value]);
 

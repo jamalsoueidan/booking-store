@@ -72,18 +72,6 @@ components:
       required:
         - success
         - errors
-    MetaItem:
-      type: object
-      properties:
-        label:
-          type: string
-          example: Makeupartist
-        value:
-          type: string
-          example: makeup_artist
-      required:
-        - label
-        - value
     CustomerUploadResourceURLResponse:
       type: object
       properties:
@@ -4679,74 +4667,6 @@ paths:
         '404':
           $ref: '#/components/responses/NotFoundResponse'
       security: []
-  /meta/professions:
-    get:
-      tags:
-        - Meta
-      operationId: metaProfessions
-      summary: GET Get all professions
-      description: This endpoint get all professions
-      responses:
-        '200':
-          description: Response
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  success:
-                    type: boolean
-                    example: true
-                  payload:
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/MetaItem'
-                required:
-                  - success
-                  - payload
-        '400':
-          $ref: '#/components/responses/BadResponse'
-        '401':
-          $ref: '#/components/responses/UnauthorizedResponse'
-        '403':
-          $ref: '#/components/responses/ForbiddenResponse'
-        '404':
-          $ref: '#/components/responses/NotFoundResponse'
-      security: []
-  /meta/specialties:
-    get:
-      tags:
-        - Meta
-      operationId: metaspecialties
-      summary: GET Get all specialties
-      description: This endpoint get all specialties
-      responses:
-        '200':
-          description: Response
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  success:
-                    type: boolean
-                    example: true
-                  payload:
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/MetaItem'
-                required:
-                  - success
-                  - payload
-        '400':
-          $ref: '#/components/responses/BadResponse'
-        '401':
-          $ref: '#/components/responses/UnauthorizedResponse'
-        '403':
-          $ref: '#/components/responses/ForbiddenResponse'
-        '404':
-          $ref: '#/components/responses/NotFoundResponse'
-      security: []
   /orchestrators/upload:
     post:
       tags:
@@ -5550,6 +5470,80 @@ paths:
                       - title
                       - description
                       - price
+                required:
+                  - success
+                  - payload
+        '400':
+          $ref: '#/components/responses/BadResponse'
+        '401':
+          $ref: '#/components/responses/UnauthorizedResponse'
+        '403':
+          $ref: '#/components/responses/ForbiddenResponse'
+      security: []
+  /openai/profile:
+    post:
+      tags:
+        - OpenAI
+      operationId: openAIProfile
+      summary: POST autofill profile forms
+      description: This endpoint autofill profile forms
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                professions:
+                  type: array
+                  items:
+                    type: string
+                skills:
+                  type: array
+                  items:
+                    type: string
+                user:
+                  type: object
+                products:
+                  type: array
+                  items:
+                    type: object
+              required:
+                - professions
+                - skills
+                - user
+                - products
+      responses:
+        '200':
+          description: Response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  payload:
+                    type: object
+                    properties:
+                      professions:
+                        type: array
+                        items:
+                          type: string
+                      skills:
+                        type: array
+                        items:
+                          type: string
+                      aboutMe:
+                        type: string
+                      shortDescription:
+                        type: string
+                    required:
+                      - professions
+                      - skills
+                      - aboutMe
+                      - shortDescription
                 required:
                   - success
                   - payload

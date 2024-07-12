@@ -25,11 +25,7 @@ export const MultiTags: React.FC<MultiTagsProps> = ({field, ...props}) => {
 
   return (
     <>
-      <MultiSelect
-        defaultValue={defaultValue}
-        onChange={handleChange}
-        {...props}
-      />
+      <MultiSelect value={defaultValue} onChange={handleChange} {...props} />
 
       {list.map((item) => (
         <input

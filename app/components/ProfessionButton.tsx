@@ -36,7 +36,7 @@ export const skills = {
   bridal_makeup: 'Bryllups Makeup',
 };
 
-export const professionImages: Record<string, string> = {
+export const professions: Record<string, string> = {
   all: 'https://cdn.shopify.com/s/files/1/0682/4060/5458/files/all.jpg?v=1713361903',
   nail_technician:
     'https://cdn.shopify.com/s/files/1/0682/4060/5458/files/nail_technician.webp?v=1713361477',
@@ -57,7 +57,7 @@ export const professionImages: Record<string, string> = {
 export const useProfessionAndSkills = () => {
   const {t} = useTranslation(['professions', 'skills']);
   const professionOptions = useMemo(() => {
-    return Object.keys(professionImages)
+    return Object.keys(professions)
       .filter((key) => key !== 'all')
       .map((key) => ({
         label: t(`professions:${key}` as any),
@@ -98,7 +98,7 @@ export const ProfessionButton = ({
       }
     >
       <Avatar
-        src={modifyImageUrl(professionImages[profession], '200x200')}
+        src={modifyImageUrl(professions[profession], '200x200')}
         alt={t(`professions:${profession}` as any)}
         radius="100%"
         size={rem(90)}

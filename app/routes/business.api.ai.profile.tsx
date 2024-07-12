@@ -1,16 +1,20 @@
 import {json, type LoaderFunctionArgs} from '@remix-run/server-runtime';
+import {professions, skills} from '~/components/ProfessionButton';
+import {getBookingShopifyApi} from '~/lib/api/bookingShopifyApi';
+import {getCustomer} from '~/lib/get-customer';
 
-export async function loader({context, params}: LoaderFunctionArgs) {
+export async function loader({context}: LoaderFunctionArgs) {
+  const customerId = await getCustomer({context});
+
+  const {payload} = await getBookingShopifyApi().customerGet(customerId);
+
+  const username = payload.username;
+
   const {storefront} = context;
-  const {username} = params;
-
-  if (!username) {
-    throw new Error('Invalid request method');
-  }
 
   const {metaobject: user} = await storefront.query(USER_METAOBJECT_QUERY, {
     variables: {
-      username,
+      username: payload.username,
     },
     cache: context.storefront.CacheShort(),
   });
@@ -44,10 +48,14 @@ export async function loader({context, params}: LoaderFunctionArgs) {
     cache: context.storefront.CacheNone(),
   });
 
-  return json({
+  const response = await getBookingShopifyApi().openAIProfile({
+    professions: Object.keys(professions).filter((key) => key !== 'all'),
+    skills: Object.keys(skills),
     user,
-    product: collection?.products,
+    products: collection?.products.nodes || [],
   });
+
+  return json(response.payload);
 }
 
 const USER_PRODUCTS = `#graphql

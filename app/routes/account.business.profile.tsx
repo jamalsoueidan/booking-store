@@ -6,16 +6,18 @@ import {
   useInputControl,
 } from '@conform-to/react';
 import {
+  ActionIcon,
   Container,
+  Loader,
   Progress,
   rem,
   Stack,
   Text,
   TextInput,
   Title,
+  Tooltip,
 } from '@mantine/core';
-import {Form, useActionData} from '@remix-run/react';
-import {parseGid} from '@shopify/hydrogen';
+import {Form, useActionData, useFetcher} from '@remix-run/react';
 import {
   json,
   redirect,
@@ -25,12 +27,15 @@ import {
 import {SubmitButton} from '~/components/form/SubmitButton';
 
 import {parseWithZod} from '@conform-to/zod';
+import {IconAi} from '@tabler/icons-react';
+import {useCallback, useEffect, useState} from 'react';
 import {useTranslation} from 'react-i18next';
 import {MultiTags} from '~/components/form/MultiTags';
 import {useProfessionAndSkills} from '~/components/ProfessionButton';
 import {TextEditor} from '~/components/richtext/TextEditor';
 import {CUSTOMER_DETAILS_QUERY} from '~/graphql/customer-account/CustomerDetailsQuery';
 import {getBookingShopifyApi} from '~/lib/api/bookingShopifyApi';
+import {type OpenAIProfile200Payload} from '~/lib/api/model';
 import {convertHTML} from '~/lib/convertHTML';
 import {getCustomer} from '~/lib/get-customer';
 import {updateCustomerTag} from '~/lib/updateTag';
@@ -57,14 +62,6 @@ export async function action({request, context}: ActionFunctionArgs) {
   }
 
   try {
-    const {data, errors} = await context.customerAccount.query(
-      CUSTOMER_DETAILS_QUERY,
-    );
-
-    if (errors?.length || !data?.customer) {
-      throw new Error('Customer not found');
-    }
-
     await getBookingShopifyApi().customerUpdate(customerId, {
       ...submission.value,
       aboutMeHtml: convertHTML(submission.value.aboutMe),
@@ -72,7 +69,7 @@ export async function action({request, context}: ActionFunctionArgs) {
 
     await updateCustomerTag({
       env: context.env,
-      customerId: parseGid(data.customer.id).id,
+      customerId,
       tags: 'business-step1, business-step2, business-step3, business-step4, business-step5, business',
     });
 
@@ -98,6 +95,7 @@ export default function AccountBusiness() {
   const lastResult = useActionData<typeof action>();
   const {t} = useTranslation(['account', 'global']);
   const {professionOptions, skillsOptions} = useProfessionAndSkills();
+  const fetcher = useFetcher<OpenAIProfile200Payload>();
 
   const [form, {shortDescription, aboutMe, professions, specialties}] = useForm(
     {
@@ -118,7 +116,40 @@ export default function AccountBusiness() {
     },
   );
 
-  const control = useInputControl(aboutMe);
+  const [aboutMeAi, setAboutMeAi] = useState<string | null>(null);
+  const aboutMeControl = useInputControl(aboutMe);
+
+  const aiSuggestion = useCallback(() => {
+    fetcher.load('/business/api/ai/profile');
+  }, [fetcher]);
+
+  useEffect(() => {
+    if (fetcher.data && fetcher.state === 'idle') {
+      form.update({
+        name: shortDescription.name,
+        value: fetcher.data.shortDescription,
+      });
+      form.update({
+        name: professions.name,
+        value: fetcher.data.professions,
+      });
+      form.update({
+        name: specialties.name,
+        value: fetcher.data.skills,
+      });
+      setAboutMeAi(fetcher.data.aboutMe);
+      fetcher.load('/api/reset'); //reset
+    }
+  }, [
+    aboutMe.name,
+    fetcher,
+    fetcher.data,
+    fetcher.state,
+    form,
+    professions.name,
+    shortDescription.name,
+    specialties.name,
+  ]);
 
   return (
     <WrapSection>
@@ -138,6 +169,48 @@ export default function AccountBusiness() {
               <Text>{t('account:business.profile.description')}</Text>
             </Stack>
             <Stack gap="lg">
+              <TextInput
+                label="Skriv kort beskrivelse"
+                {...getInputProps(shortDescription, {type: 'text'})}
+                rightSection={
+                  <ActionIcon color="dark" onClick={aiSuggestion}>
+                    {fetcher.state !== 'idle' ? (
+                      <Loader color="white" size={rem(16)} />
+                    ) : (
+                      <Tooltip
+                        label="Klik her for at bruge AI til at udfylde resten af felterne automatisk."
+                        offset={{mainAxis: 16, crossAxis: 0}}
+                        arrowSize={10}
+                        multiline
+                        w={220}
+                        withArrow
+                        opened={!aboutMeControl.value}
+                        position="top"
+                      >
+                        <IconAi />
+                      </Tooltip>
+                    )}
+                  </ActionIcon>
+                }
+              />
+
+              <div>
+                <Text size="sm" mb={rem(2)} fw={500}>
+                  Fortæl om dig selv og din erfaring:
+                </Text>
+                <TextEditor
+                  content={aboutMeAi}
+                  onUpdate={({editor}) => {
+                    aboutMeControl.change(
+                      JSON.stringify(editor.getJSON()) as any,
+                    );
+                  }}
+                  onSelectionUpdate={({editor}) => {
+                    aboutMeControl.change(JSON.stringify(editor.getJSON()));
+                  }}
+                />
+              </div>
+
               <MultiTags
                 field={professions}
                 data={professionOptions}
@@ -151,25 +224,6 @@ export default function AccountBusiness() {
                 label="Hvad er dine specialer?"
                 placeholder="Vælge special(er)?"
               />
-
-              <TextInput
-                label="Skriv kort beskrivelse"
-                {...getInputProps(shortDescription, {type: 'text'})}
-              />
-
-              <div>
-                <Text size="sm" mb={rem(2)} fw={500}>
-                  Fortæl om dig selv og din erfaring:
-                </Text>
-                <TextEditor
-                  /*content={
-                    aboutMe.value ? (JSON.parse(aboutMe.value) as any) : ''
-                  }*/
-                  onUpdate={({editor}) => {
-                    control.change(JSON.stringify(editor.getJSON()) as any);
-                  }}
-                />
-              </div>
             </Stack>
           </Container>
           <BottomSection>

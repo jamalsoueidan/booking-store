@@ -71,10 +71,10 @@ import type {
   LocationGetCoordinatesResponse,
   LocationGetTravelTimeParams,
   LocationGetTravelTimeResponse,
-  MetaProfessions200,
-  Metaspecialties200,
   OpenAIProductTitle200,
   OpenAIProductTitleBody,
+  OpenAIProfile200,
+  OpenAIProfileBody,
   ProductsGetUsersByVariantParams,
   ProductsGetUsersByVariantResponse,
   ProductsGetUsersImageBody,
@@ -886,28 +886,6 @@ export const getBookingShopifyApi = () => {
   };
 
   /**
-   * This endpoint get all professions
-   * @summary GET Get all professions
-   */
-  const metaProfessions = (options?: SecondParameter<typeof queryClient>) => {
-    return queryClient<MetaProfessions200>(
-      {url: `/meta/professions`, method: 'GET'},
-      options,
-    );
-  };
-
-  /**
-   * This endpoint get all specialties
-   * @summary GET Get all specialties
-   */
-  const metaspecialties = (options?: SecondParameter<typeof queryClient>) => {
-    return queryClient<Metaspecialties200>(
-      {url: `/meta/specialties`, method: 'GET'},
-      options,
-    );
-  };
-
-  /**
    * This endpoint is used to upload new image for customer
    * @summary POST Upload new customer image
    */
@@ -1294,6 +1272,25 @@ export const getBookingShopifyApi = () => {
     );
   };
 
+  /**
+   * This endpoint autofill profile forms
+   * @summary POST autofill profile forms
+   */
+  const openAIProfile = (
+    openAIProfileBody: BodyType<OpenAIProfileBody>,
+    options?: SecondParameter<typeof queryClient>,
+  ) => {
+    return queryClient<OpenAIProfile200>(
+      {
+        url: `/openai/profile`,
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        data: openAIProfileBody,
+      },
+      options,
+    );
+  };
+
   return {
     customerCreate,
     customerUpdate,
@@ -1341,8 +1338,6 @@ export const getBookingShopifyApi = () => {
     customerIsBusiness,
     locationGetCoordinates,
     locationGetTravelTime,
-    metaProfessions,
-    metaspecialties,
     upload,
     productsGetUsersImage,
     productsGetUsersByVariant,
@@ -1366,6 +1361,7 @@ export const getBookingShopifyApi = () => {
     usersSearch,
     usersTop,
     openAIProductTitle,
+    openAIProfile,
   };
 };
 export type CustomerCreateResult = NonNullable<
@@ -1638,16 +1634,6 @@ export type LocationGetTravelTimeResult = NonNullable<
     ReturnType<ReturnType<typeof getBookingShopifyApi>['locationGetTravelTime']>
   >
 >;
-export type MetaProfessionsResult = NonNullable<
-  Awaited<
-    ReturnType<ReturnType<typeof getBookingShopifyApi>['metaProfessions']>
-  >
->;
-export type MetaspecialtiesResult = NonNullable<
-  Awaited<
-    ReturnType<ReturnType<typeof getBookingShopifyApi>['metaspecialties']>
-  >
->;
 export type UploadResult = NonNullable<
   Awaited<ReturnType<ReturnType<typeof getBookingShopifyApi>['upload']>>
 >;
@@ -1762,4 +1748,7 @@ export type OpenAIProductTitleResult = NonNullable<
   Awaited<
     ReturnType<ReturnType<typeof getBookingShopifyApi>['openAIProductTitle']>
   >
+>;
+export type OpenAIProfileResult = NonNullable<
+  Awaited<ReturnType<ReturnType<typeof getBookingShopifyApi>['openAIProfile']>>
 >;
