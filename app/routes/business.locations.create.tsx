@@ -25,7 +25,6 @@ import {RadioGroup} from '~/components/form/RadioGroup';
 import {SubmitButton} from '~/components/form/SubmitButton';
 import {getBookingShopifyApi} from '~/lib/api/bookingShopifyApi';
 import {CustomerLocationBaseLocationType} from '~/lib/api/model';
-import {baseURL} from '~/lib/api/mutator/query-client';
 
 const schema = customerLocationCreateBody;
 
@@ -43,10 +42,6 @@ export const action = async ({request, context}: ActionFunctionArgs) => {
     await getBookingShopifyApi().customerLocationCreate(
       customerId,
       submission.value,
-    );
-
-    await context.storefront.cache?.delete(
-      `${baseURL}/customer/${customerId}/locations`,
     );
 
     return redirect('/business/locations');

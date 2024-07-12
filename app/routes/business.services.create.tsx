@@ -47,7 +47,6 @@ import {
   type CustomerProductLocationsItem,
   type OpenAIProductTitle200Payload,
 } from '~/lib/api/model';
-import {baseURL} from '~/lib/api/mutator/query-client';
 import {convertHTML} from '~/lib/convertHTML';
 import {getCustomer} from '~/lib/get-customer';
 import {customerProductAddBody} from '~/lib/zod/bookingShopifyApi';
@@ -75,10 +74,6 @@ export const action = async ({request, context}: ActionFunctionArgs) => {
       },
     );
 
-    await context.storefront.cache?.delete(
-      `${baseURL}/customer/${customerId}/products`,
-    );
-
     return redirect(`/business/services/${product.productId}`);
   } catch (error) {
     return submission.reply();
@@ -99,10 +94,10 @@ export async function loader({context}: LoaderFunctionArgs) {
   );
 
   const {payload: schedules} =
-    await getBookingShopifyApi().customerScheduleList(customerId, context);
+    await getBookingShopifyApi().customerScheduleList(customerId);
 
   const {payload: locations} =
-    await getBookingShopifyApi().customerLocationList(customerId, context);
+    await getBookingShopifyApi().customerLocationList(customerId);
 
   if (locations.length === 0 || schedules.length === 0) {
     return redirect('/business/services');
@@ -163,7 +158,7 @@ export default function AccountServicesCreate() {
   const aiSuggestion = useCallback(() => {
     fetcher.submit(
       {title: fields.title.value || ''},
-      {action: '/business/api/ai-suggestion'},
+      {action: '/business/api/ai/product'},
     );
   }, [fetcher, fields.title.value]);
 
@@ -174,13 +169,21 @@ export default function AccountServicesCreate() {
         name: fields.productType.name,
         value: fetcher.data.collection?.title || '',
       });
+      form.update({
+        name: fields.price.name,
+        value: {
+          amount: fetcher.data.price,
+          currencyCode: 'DKK',
+        },
+      });
       setDescriptionHtml(fetcher.data.description);
-      fetcher.load('/business/api/ai-suggestion'); //reset
+      fetcher.load('/api/reset'); //reset
     }
   }, [
     fetcher,
     fetcher.data,
     fetcher.state,
+    fields.price.name,
     fields.productType.name,
     fields.title.name,
     fields.title.value,
