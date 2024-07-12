@@ -32,11 +32,29 @@ import {z} from 'zod';
 import {MultiTags} from '~/components/form/MultiTags';
 import {RadioGroup} from '~/components/form/RadioGroup';
 import {CUSTOMER_DETAILS_QUERY} from '~/graphql/customer-account/CustomerDetailsQuery';
+import {USER_METAOBJECT_QUERY} from '~/graphql/fragments/UserMetaobject';
 import {getBookingShopifyApi} from '~/lib/api/bookingShopifyApi';
 import {updateCustomerTag} from '~/lib/updateTag';
 import {customerCreateBody} from '~/lib/zod/bookingShopifyApi';
 import {BottomSection, WrapSection} from './account.business';
-import {isUsernameUnique} from './api.check-username';
+
+const isUsernameUnique =
+  ({context}: ActionFunctionArgs) =>
+  async (username: string) => {
+    if (username.length <= 3) return true;
+
+    const {metaobject: user} = await context.storefront.query(
+      USER_METAOBJECT_QUERY,
+      {
+        variables: {
+          username,
+        },
+        cache: context.storefront.CacheShort(),
+      },
+    );
+
+    return user !== null;
+  };
 
 function createSchema(options?: {
   isUsernameUnique: (username: string) => Promise<boolean>;
