@@ -3,18 +3,23 @@ import {
   json,
   type LoaderFunctionArgs,
 } from '@shopify/remix-oxygen';
-import {getBookingShopifyApi} from '~/lib/api/bookingShopifyApi';
-import {type UserUsernameTakenResponsePayload} from '~/lib/api/model';
+import {USER_METAOBJECT_QUERY} from '~/graphql/fragments/UserMetaobject';
 
-export async function loader({request}: LoaderFunctionArgs) {
+export async function loader({request, context}: LoaderFunctionArgs) {
+  const {storefront} = context;
   const url = new URL(request.url);
   const searchParams = new URLSearchParams(url.search);
   const username = searchParams.get('username') || '';
+  if (username.length <= 3) return true;
 
-  const {payload: usernameTaken} =
-    await getBookingShopifyApi().userUsernameTaken(username);
+  const {metaobject: user} = await storefront.query(USER_METAOBJECT_QUERY, {
+    variables: {
+      username,
+    },
+    cache: context.storefront.CacheShort(),
+  });
 
-  return json(usernameTaken);
+  return json(user !== null);
 }
 
 export const isUsernameUnique =
@@ -24,7 +29,6 @@ export const isUsernameUnique =
     const response = await fetch(
       `${url.origin}/api/check-username?username=${username}`,
     );
-    const data: UserUsernameTakenResponsePayload =
-      (await response.json()) as any;
-    return data.usernameTaken;
+    const data = await response.json();
+    return data as boolean;
   };
