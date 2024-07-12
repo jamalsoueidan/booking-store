@@ -1,4 +1,3 @@
-import carouselStyles from '@mantine/carousel/styles.css?url';
 import {
   ColorSchemeScript,
   DirectionProvider,
@@ -67,7 +66,6 @@ export const shouldRevalidate: ShouldRevalidateFunction = ({
 export const links = () => {
   return [
     {rel: 'stylesheet', href: appStyles},
-    {rel: 'stylesheet', href: carouselStyles},
     {rel: 'stylesheet', href: coreStyles},
     {rel: 'stylesheet', href: nprogressStyles},
     {
