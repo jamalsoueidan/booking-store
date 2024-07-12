@@ -7,9 +7,6 @@ import {
 import {parseGid} from '@shopify/hydrogen';
 import {json, redirect, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
 import {type CustomerFragment} from 'customer-accountapi.generated';
-import {useEffect} from 'react';
-import notify, {Toaster} from 'react-hot-toast';
-import {getToast} from 'remix-toast';
 import {CUSTOMER_DETAILS_QUERY} from '~/graphql/customer-account/CustomerDetailsQuery';
 import {getBookingShopifyApi} from '~/lib/api/bookingShopifyApi';
 import {type User} from '~/lib/api/model';
@@ -57,50 +54,18 @@ export async function loader({context, request}: LoaderFunctionArgs) {
     parseGid(data.customer.id).id,
   );
 
-  const {toast} = await getToast(request);
-
-  return json(
-    {
-      customer: data.customer,
-      user: payload,
-      toast,
-    },
-    {
-      headers: {
-        'Cache-Control': 'no-cache, no-store, must-revalidate',
-        'Set-Cookie': await context.session.commit(),
-      },
-    },
-  );
+  return json({
+    customer: data.customer,
+    user: payload,
+  });
 }
 
 export default function Acccount() {
-  const {customer, user, toast} = useLoaderData<typeof loader>();
-
-  useEffect(() => {
-    if (toast) {
-      switch (toast.type) {
-        case 'success':
-          notify.success(toast.message);
-          return;
-        case 'error':
-          notify.error(toast.message);
-
-          return;
-        default:
-          return;
-      }
-    }
-  }, [toast]);
+  const {customer, user} = useLoaderData<typeof loader>();
 
   return (
     <>
       <Outlet context={{customer, user}} />
-      <Toaster
-        position="top-center"
-        reverseOrder={false}
-        toastOptions={{duration: 3000, className: 'toast', id: 'toast'}}
-      />
     </>
   );
 }

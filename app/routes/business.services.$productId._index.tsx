@@ -24,12 +24,12 @@ import {
 import {Form, useActionData, useFetcher, useLoaderData} from '@remix-run/react';
 import {
   json,
+  redirect,
   type ActionFunctionArgs,
   type LoaderFunctionArgs,
 } from '@shopify/remix-oxygen';
 import {IconAirBalloon} from '@tabler/icons-react';
 import {useCallback, useEffect, useState} from 'react';
-import {redirectWithSuccess} from 'remix-toast';
 import {AmountInput} from '~/components/form/AmountInput';
 import {SubmitButton} from '~/components/form/SubmitButton';
 import {SwitchGroupLocations} from '~/components/form/SwitchGroupLocations';
@@ -80,9 +80,7 @@ export const action = async ({
       `${baseURL}/customer/${customerId}/product/${productId}`,
     );
 
-    return redirectWithSuccess('.', {
-      message: 'Ydelsen er nu opdateret!',
-    });
+    return redirect('.');
   } catch (error) {
     return submission.reply();
   }

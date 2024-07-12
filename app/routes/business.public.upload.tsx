@@ -7,12 +7,12 @@ import {
 } from '@remix-run/react';
 import {
   json,
+  redirect,
   type ActionFunctionArgs,
   type LoaderFunctionArgs,
 } from '@shopify/remix-oxygen';
 import {IconFileCv, IconInfoCircle} from '@tabler/icons-react';
 import {useEffect, useRef, useState} from 'react';
-import {redirectWithSuccess} from 'remix-toast';
 import {getBookingShopifyApi} from '~/lib/api/bookingShopifyApi';
 import {getCustomer} from '~/lib/get-customer';
 
@@ -41,9 +41,7 @@ export const action = async ({
     resourceUrl,
   });
 
-  return redirectWithSuccess('.', {
-    message: 'Der kan gå få sekunder inden dit billed bliver opdateret!',
-  });
+  return redirect('.');
 };
 
 export async function loader({context}: LoaderFunctionArgs) {

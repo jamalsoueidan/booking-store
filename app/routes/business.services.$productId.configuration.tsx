@@ -9,10 +9,10 @@ import {Flex, Stack, Text, TextInput} from '@mantine/core';
 import {Form, useActionData, useLoaderData} from '@remix-run/react';
 import {
   json,
+  redirect,
   type ActionFunctionArgs,
   type LoaderFunctionArgs,
 } from '@shopify/remix-oxygen';
-import {redirectWithSuccess} from 'remix-toast';
 import PeriodInput from '~/components/form/PeriodInput';
 import {SubmitButton} from '~/components/form/SubmitButton';
 import {FlexInnerForm} from '~/components/tiny/FlexInnerForm';
@@ -55,9 +55,7 @@ export const action = async ({
       `${baseURL}/customer/${customerId}/product/${productId}`,
     );
 
-    return redirectWithSuccess('.', {
-      message: 'Ydelsen er nu opdateret!',
-    });
+    return redirect('.');
   } catch (error) {
     return submission.reply();
   }

@@ -2,6 +2,7 @@ import {Stack, Text, TextInput, rem} from '@mantine/core';
 import {Form, useActionData, useLoaderData} from '@remix-run/react';
 import {
   json,
+  redirect,
   type ActionFunctionArgs,
   type LoaderFunctionArgs,
 } from '@shopify/remix-oxygen';
@@ -16,10 +17,10 @@ import {
 import {parseWithZod} from '@conform-to/zod';
 
 import {useTranslation} from 'react-i18next';
-import {redirectWithSuccess} from 'remix-toast';
 import {MultiTags} from '~/components/form/MultiTags';
 import {RadioGroup} from '~/components/form/RadioGroup';
 import {SubmitButton} from '~/components/form/SubmitButton';
+import {useProfessionAndSkills} from '~/components/ProfessionButton';
 import {TextEditor} from '~/components/richtext/TextEditor';
 import {getBookingShopifyApi} from '~/lib/api/bookingShopifyApi';
 import {convertHTML} from '~/lib/convertHTML';
@@ -44,9 +45,7 @@ export const action = async ({request, context}: ActionFunctionArgs) => {
       aboutMeHtml: convertHTML(submission.value.aboutMe),
     });
 
-    return redirectWithSuccess('/business/public', {
-      message: 'Profil er opdateret!',
-    });
+    return redirect('/business/public');
   } catch (error) {
     return submission.reply();
   }
@@ -57,20 +56,14 @@ export async function loader({context}: LoaderFunctionArgs) {
 
   const {payload: user} = await getBookingShopifyApi().customerGet(customerId);
 
-  const {payload: professionOptions} =
-    await getBookingShopifyApi().metaProfessions();
-
-  const {payload: specialityOptions} =
-    await getBookingShopifyApi().metaspecialties();
-
-  return json({user, professionOptions, specialityOptions});
+  return json({user});
 }
 
 export default function AccountBusiness() {
   const {t} = useTranslation(['global']);
   const lastResult = useActionData<typeof action>();
-  const {user, professionOptions, specialityOptions} =
-    useLoaderData<typeof loader>();
+  const {professionOptions, skillsOptions} = useProfessionAndSkills();
+  const {user} = useLoaderData<typeof loader>();
 
   const [
     form,
@@ -125,7 +118,7 @@ export default function AccountBusiness() {
 
           <MultiTags
             field={specialties}
-            data={specialityOptions}
+            data={skillsOptions}
             label="Hvad er dine specialer?"
             placeholder="Vælge special(er)?"
           />

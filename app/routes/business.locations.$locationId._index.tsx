@@ -8,6 +8,7 @@ import {Form, Link, useActionData, useLoaderData} from '@remix-run/react';
 
 import {
   json,
+  redirect,
   type ActionFunctionArgs,
   type LoaderFunctionArgs,
 } from '@shopify/remix-oxygen';
@@ -17,7 +18,6 @@ import {customerLocationUpdateBody} from '~/lib/zod/bookingShopifyApi';
 
 import {parseWithZod} from '@conform-to/zod';
 import {Anchor, Group, Stack, Text, TextInput} from '@mantine/core';
-import {redirectWithSuccess} from 'remix-toast';
 import {AddressAutocompleteInput} from '~/components/form/AddressAutocompleteInput';
 import {NumericInput} from '~/components/form/NumericInput';
 import {SubmitButton} from '~/components/form/SubmitButton';
@@ -59,9 +59,7 @@ export const action = async ({
       `${baseURL}/customer/${customerId}/locations`,
     );
 
-    return redirectWithSuccess('.', {
-      message: 'Lokation er opdateret!',
-    });
+    return redirect('.');
   } catch (error) {
     return submission.reply();
   }

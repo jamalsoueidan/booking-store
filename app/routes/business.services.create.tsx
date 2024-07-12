@@ -38,7 +38,6 @@ import {SwitchGroupLocations} from '~/components/form/SwitchGroupLocations';
 import {getBookingShopifyApi} from '~/lib/api/bookingShopifyApi';
 
 import {IconAirBalloon} from '@tabler/icons-react';
-import {redirectWithSuccess} from 'remix-toast';
 import {AccountContent} from '~/components/account/AccountContent';
 import {AccountTitle} from '~/components/account/AccountTitle';
 import {AmountInput} from '~/components/form/AmountInput';
@@ -80,9 +79,7 @@ export const action = async ({request, context}: ActionFunctionArgs) => {
       `${baseURL}/customer/${customerId}/products`,
     );
 
-    return redirectWithSuccess(`/business/services/${product.productId}`, {
-      message: 'Ydelsen er nu oprettet!',
-    });
+    return redirect(`/business/services/${product.productId}`);
   } catch (error) {
     return submission.reply();
   }
