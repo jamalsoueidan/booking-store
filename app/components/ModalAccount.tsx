@@ -1,11 +1,10 @@
 import {
-  Blockquote,
+  Box,
   Button,
   Card,
   Center,
   Flex,
   Image,
-  Overlay,
   rem,
   Stack,
   Text,
@@ -14,6 +13,7 @@ import {
 } from '@mantine/core';
 import {useFetcher} from '@remix-run/react';
 import {type CustomerDetailsQuery} from 'customer-accountapi.generated';
+import {useEffect} from 'react';
 import {useMobile} from '~/hooks/isMobile';
 import {type ActionResponse} from '~/routes/account.profile';
 
@@ -21,24 +21,28 @@ export const ModalAccount = ({customer}: {customer?: CustomerDetailsQuery}) => {
   const isMobile = useMobile();
   const fetcher = useFetcher<ActionResponse>();
 
-  // if user not logged in !customer
-  // if user already firstname
-  if (!customer) {
-    return null;
-  }
-
-  if (customer.customer.firstName && !!fetcher.data) {
-    return null;
-  }
-
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     fetcher.submit(event.currentTarget, {method: 'post'});
   };
 
+  useEffect(() => {
+    if (fetcher.data) {
+      window.location.reload();
+    }
+  }, [fetcher.data]);
+
   return (
-    <>
-      <Center w="100%" h="100vh" style={{zIndex: 3000}} pos="absolute">
+    <Box
+      style={{zIndex: 201}}
+      pos="absolute"
+      top="0"
+      left="0"
+      right="0"
+      bottom="0"
+      bg={isMobile ? '#FFF' : '#f5f5f5'}
+    >
+      <Center w="100%" h="100vh">
         <Card bg="white" radius="sm" w={{base: '100%', sm: '476px'}}>
           <fetcher.Form
             action="/account/profile"
@@ -57,17 +61,7 @@ export const ModalAccount = ({customer}: {customer?: CustomerDetailsQuery}) => {
                 venligst oplyse dit fornavn og efternavn.
               </Text>
             </Stack>
-            {fetcher.data?.error ? (
-              <Blockquote
-                color="red"
-                my="xl"
-                data-testid="required-notification"
-              >
-                <strong>Fejl:</strong>
-                <br />
-                {fetcher.data.error}
-              </Blockquote>
-            ) : null}
+
             <TextInput
               label="Fornavn"
               id="firstName"
@@ -106,7 +100,6 @@ export const ModalAccount = ({customer}: {customer?: CustomerDetailsQuery}) => {
           </fetcher.Form>
         </Card>
       </Center>
-      <Overlay color={isMobile ? '#FFF' : '#f5f5f5'} backgroundOpacity={1} />
-    </>
+    </Box>
   );
 };

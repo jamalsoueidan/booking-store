@@ -9,5 +9,6 @@ import type {OpenAIProductTitle200PayloadCollection} from './openAIProductTitle2
 export type OpenAIProductTitle200Payload = {
   collection?: OpenAIProductTitle200PayloadCollection;
   description: string;
+  price: string;
   title: string;
 };

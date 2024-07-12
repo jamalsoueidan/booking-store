@@ -77,9 +77,31 @@
     "profession_label": "Professioner",
     "missing_fields": "Udfyld venligst",
     "speaks_label": "Hvilken sprog taler du",
-    "speaks_placeholder": "Vælge sprog",
+    "speaks_placeholder": "Tilføj flere sprog",
     "short_description": "Skriv kort beskrivelse om dig selv",
     "aboutme_label": "Fortæl om dig selv og din erfaring:",
-    "create_business": "Opret en business konto"
+    "create_business": "Gem og forsæt",
+    "step": "Step {{step}}",
+    "location": {
+      "title": "Angiv et mødested",
+      "commercial": "Salon: dine kunder kommer til en butik",
+      "home": "Hjemme: dine kunder kommer til dit hjem",
+      "destination": "Mobil: du tager hjem til din kunder",
+      "drive_from": "Hvor vil du køre fra?",
+      "drive_to": "Hvor skal kunden køre hen til?",
+      "submit": "Gem og forsæt"
+    },
+    "schedule": {
+      "title": "Vælg de tidspunkter, hvor du er tilgængelig",
+      "submit": "Gem og forsæt"
+    },
+    "service": {
+      "title": "Opret din første ydelse",
+      "submit": "Gem og forsæt"
+    },
+    "profile": {
+      "title": "Udfyld resten af felterne for at fuldføre din profil",
+      "description": "Du kan vælge og trykke på AI knappen og autoudfylde felterne udefra de de data du har angivet herunder."
+    }
   }
 }

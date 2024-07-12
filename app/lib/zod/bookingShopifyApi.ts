@@ -12,18 +12,15 @@ import {
  * This endpoint creates new user
  * @summary POST Create user
  */
-export const customerCreateBodyUsernameRegExp = new RegExp('^[a-zA-Z0-9-_]+$');
-export const customerCreateBodyShortDescriptionMin = 3;
+export const customerCreateBodyUsernameMin = 3;
+
+export const customerCreateBodyUsernameRegExp = new RegExp('^[a-zA-Z0-9\\-_]*$');
 
 
 export const customerCreateBody = zod.object({
   "customerId": zod.number(),
   "fullname": zod.string(),
-  "username": zod.string().regex(customerCreateBodyUsernameRegExp),
-  "professions": zod.array(zod.string()).min(1),
-  "aboutMeHtml": zod.string(),
-  "aboutMe": zod.string(),
-  "shortDescription": zod.string().min(customerCreateBodyShortDescriptionMin),
+  "username": zod.string().min(customerCreateBodyUsernameMin).regex(customerCreateBodyUsernameRegExp),
   "gender": zod.string(),
   "speaks": zod.array(zod.string()).min(1)
 })
@@ -3083,32 +3080,6 @@ export const locationGetTravelTimeResponse = zod.object({
 
 
 /**
- * This endpoint get all professions
- * @summary GET Get all professions
- */
-export const metaProfessionsResponse = zod.object({
-  "success": zod.boolean(),
-  "payload": zod.array(zod.object({
-  "label": zod.string(),
-  "value": zod.string()
-}))
-})
-
-
-/**
- * This endpoint get all specialties
- * @summary GET Get all specialties
- */
-export const metaspecialtiesResponse = zod.object({
-  "success": zod.boolean(),
-  "payload": zod.array(zod.object({
-  "label": zod.string(),
-  "value": zod.string()
-}))
-})
-
-
-/**
  * This endpoint is used to upload new image for customer
  * @summary POST Upload new customer image
  */
@@ -4328,7 +4299,34 @@ export const openAIProductTitleResponse = zod.object({
   "title": zod.string().optional()
 }).optional(),
   "title": zod.string(),
-  "description": zod.string()
+  "description": zod.string(),
+  "price": zod.string()
+})
+})
+
+
+/**
+ * This endpoint autofill profile forms
+ * @summary POST autofill profile forms
+ */
+export const openAIProfileBody = zod.object({
+  "professions": zod.array(zod.string()),
+  "skills": zod.array(zod.string()),
+  "user": zod.object({
+
+}),
+  "products": zod.array(zod.object({
+
+}))
+})
+
+export const openAIProfileResponse = zod.object({
+  "success": zod.boolean(),
+  "payload": zod.object({
+  "professions": zod.array(zod.string()),
+  "skills": zod.array(zod.string()),
+  "aboutMe": zod.string(),
+  "shortDescription": zod.string()
 })
 })
 

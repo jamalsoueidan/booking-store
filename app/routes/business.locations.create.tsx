@@ -8,7 +8,12 @@ import {
 import {getCustomer} from '~/lib/get-customer';
 import {customerLocationCreateBody} from '~/lib/zod/bookingShopifyApi';
 
-import {getFormProps, getInputProps, useForm} from '@conform-to/react';
+import {
+  FormProvider,
+  getFormProps,
+  getInputProps,
+  useForm,
+} from '@conform-to/react';
 import {parseWithZod} from '@conform-to/zod';
 import {Container, rem, Stack, TextInput} from '@mantine/core';
 import {redirectWithSuccess} from 'remix-toast';
@@ -92,122 +97,122 @@ export default function Component() {
       />
 
       <AccountContent>
-        <Form method="POST" {...getFormProps(form)}>
-          <Stack>
-            <RadioGroup
-              label={'Hvilken type location vil du oprette?'}
-              field={fields.locationType}
-              data={[
-                {
-                  label: 'Arbejder fra salon/klink',
-                  value: CustomerLocationBaseLocationType.commercial,
-                },
-                {
-                  label: 'Arbejder hjemmefra',
-                  value: CustomerLocationBaseLocationType.home,
-                },
-                {
-                  label: 'Jeg vil kører ud til kunden.',
-                  value: CustomerLocationBaseLocationType.destination,
-                },
-                {
-                  label:
-                    'Jeg vil mødes online via videochat eller telefonopkald',
-                  value: CustomerLocationBaseLocationType.virtual,
-                },
-              ]}
-              data-testid="location-type-input"
-            />
+        <FormProvider context={form.context}>
+          <Form method="POST" {...getFormProps(form)}>
+            <Stack>
+              <RadioGroup
+                label={'Hvilken type location vil du oprette?'}
+                field={fields.locationType}
+                data={[
+                  {
+                    label: 'Arbejder fra salon/klink',
+                    value: CustomerLocationBaseLocationType.commercial,
+                  },
+                  {
+                    label: 'Arbejder hjemmefra',
+                    value: CustomerLocationBaseLocationType.home,
+                  },
+                  {
+                    label: 'Jeg vil kører ud til kunden.',
+                    value: CustomerLocationBaseLocationType.destination,
+                  },
+                  {
+                    label:
+                      'Jeg vil mødes online via videochat eller telefonopkald',
+                    value: CustomerLocationBaseLocationType.virtual,
+                  },
+                ]}
+                data-testid="location-type-input"
+              />
 
-            <TextInput
-              label="Navn"
-              placeholder="BySisters"
-              data-testid="name-input"
-              {...getInputProps(fields.name, {type: 'text'})}
-              error={fields.name.errors}
-            />
+              <TextInput
+                label="Navn"
+                placeholder="BySisters"
+                data-testid="name-input"
+                {...getInputProps(fields.name, {type: 'text'})}
+                error={fields.name.errors}
+              />
 
-            <AddressAutocompleteInput
-              label={
-                fields.locationType.value === 'destination'
-                  ? 'Hvor vil du kører fra?'
-                  : 'Hvor skal kunden køre hen til?'
-              }
-              placeholder="Sigridsvej 45, 8220 Brabrand"
-              data-testid="address-input"
-              error={fields.fullAddress.errors}
-              {...getInputProps(fields.fullAddress, {type: 'text'})}
-            />
+              <AddressAutocompleteInput
+                label={
+                  fields.locationType.value === 'destination'
+                    ? 'Hvor vil du kører fra?'
+                    : 'Hvor skal kunden køre hen til?'
+                }
+                data-testid="address-input"
+                {...getInputProps(fields.fullAddress, {type: 'text'})}
+              />
 
-            <NumericInput
-              field={fields.startFee}
-              label="Udgifter for turen"
-              rightSection="kr"
-              hidden={
-                fields.locationType.value !==
-                CustomerLocationBaseLocationType.destination
-              }
-              data-testid="start-fee-input"
-            />
+              <NumericInput
+                field={fields.startFee}
+                label="Udgifter for turen"
+                rightSection="kr"
+                hidden={
+                  fields.locationType.value !==
+                  CustomerLocationBaseLocationType.destination
+                }
+                data-testid="start-fee-input"
+              />
 
-            <NumericInput
-              field={fields.distanceHourlyRate}
-              label="Timepris for kørsel"
-              rightSection="kr"
-              hidden={
-                fields.locationType.value !==
-                CustomerLocationBaseLocationType.destination
-              }
-              data-testid="hourly-rate-input"
-            />
+              <NumericInput
+                field={fields.distanceHourlyRate}
+                label="Timepris for kørsel"
+                rightSection="kr"
+                hidden={
+                  fields.locationType.value !==
+                  CustomerLocationBaseLocationType.destination
+                }
+                data-testid="hourly-rate-input"
+              />
 
-            <NumericInput
-              field={fields.fixedRatePerKm}
-              label="Pris pr. kilometer"
-              rightSection="kr"
-              hidden={
-                fields.locationType.value !==
-                CustomerLocationBaseLocationType.destination
-              }
-              data-testid="fixed-rate-input"
-            />
+              <NumericInput
+                field={fields.fixedRatePerKm}
+                label="Pris pr. kilometer"
+                rightSection="kr"
+                hidden={
+                  fields.locationType.value !==
+                  CustomerLocationBaseLocationType.destination
+                }
+                data-testid="fixed-rate-input"
+              />
 
-            <NumericInput
-              field={fields.distanceForFree}
-              label="Afstanden der køres gratis, inden takstberegningen påbegyndes."
-              suffix=" km"
-              hidden={
-                fields.locationType.value !==
-                CustomerLocationBaseLocationType.destination
-              }
-              data-testid="distance-free-input"
-            />
+              <NumericInput
+                field={fields.distanceForFree}
+                label="Afstanden der køres gratis, inden takstberegningen påbegyndes."
+                suffix=" km"
+                hidden={
+                  fields.locationType.value !==
+                  CustomerLocationBaseLocationType.destination
+                }
+                data-testid="distance-free-input"
+              />
 
-            <NumericInput
-              field={fields.minDriveDistance}
-              label="Minimum der skal køres for at acceptere en kørselsopgave"
-              suffix=" km"
-              hidden={
-                fields.locationType.value !==
-                CustomerLocationBaseLocationType.destination
-              }
-              data-testid="min-drive-distance-input"
-            />
+              <NumericInput
+                field={fields.minDriveDistance}
+                label="Minimum der skal køres for at acceptere en kørselsopgave"
+                suffix=" km"
+                hidden={
+                  fields.locationType.value !==
+                  CustomerLocationBaseLocationType.destination
+                }
+                data-testid="min-drive-distance-input"
+              />
 
-            <NumericInput
-              field={fields.maxDriveDistance}
-              label="Maximum der køres"
-              suffix=" km"
-              hidden={
-                fields.locationType.value !==
-                CustomerLocationBaseLocationType.destination
-              }
-              data-testid="max-drive-distance-input"
-            />
+              <NumericInput
+                field={fields.maxDriveDistance}
+                label="Maximum der køres"
+                suffix=" km"
+                hidden={
+                  fields.locationType.value !==
+                  CustomerLocationBaseLocationType.destination
+                }
+                data-testid="max-drive-distance-input"
+              />
 
-            <SubmitButton>Tilføj</SubmitButton>
-          </Stack>
-        </Form>
+              <SubmitButton>Tilføj</SubmitButton>
+            </Stack>
+          </Form>
+        </FormProvider>
       </AccountContent>
     </Container>
   );

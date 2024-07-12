@@ -10,7 +10,6 @@ import {
 } from '@mantine/core';
 import {Link} from '@remix-run/react';
 import {IconArrowLeft} from '@tabler/icons-react';
-import classes from './AccountTitle.module.css';
 
 export function AccountTitle({
   heading,
@@ -42,7 +41,7 @@ export function AccountTitle({
             </ActionIcon>
           ) : null}
           <Title
-            className={classes.title}
+            fz={{base: 'lg', md: 'h3'}}
             {...props}
             data-testid="account-title"
           >
@@ -68,7 +67,7 @@ export function AccountTitleBack({
 }: TitleProps & {heading: string}) {
   return (
     <>
-      <Title className={classes.title} {...props}>
+      <Title fz={{base: 'lg', md: 'h3'}} {...props}>
         {heading}
       </Title>
       {children}

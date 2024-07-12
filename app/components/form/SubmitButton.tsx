@@ -35,6 +35,7 @@ export const SubmitButton: React.FC<
         type="submit"
         data-testid="submit-button"
         {...props}
+        disabled={props.disabled || isSubmitting}
       >
         {children}
       </Button>

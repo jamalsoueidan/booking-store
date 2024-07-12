@@ -1,9 +1,8 @@
 import {json, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
 import {getBookingShopifyApi} from '~/lib/api/bookingShopifyApi';
-import {getCustomer} from '~/lib/get-customer';
 
 export async function loader({request, context}: LoaderFunctionArgs) {
-  const customerId = await getCustomer({context});
+  await context.customerAccount.handleAuthStatus();
 
   const url = new URL(request.url);
   const searchParams = new URLSearchParams(url.search);
@@ -14,9 +13,9 @@ export async function loader({request, context}: LoaderFunctionArgs) {
     return null;
   }
 
-  const {payload} = await getBookingShopifyApi().openAIProductTitle({
+  const response = await getBookingShopifyApi().openAIProductTitle({
     title,
   });
 
-  return json(payload);
+  return json(response.payload);
 }

@@ -1,6 +1,8 @@
 import i18n from 'i18next';
 import backend from 'i18next-http-backend';
 import {initReactI18next} from 'react-i18next';
+import {z} from 'zod';
+import {makeZodI18nMap} from 'zod-i18n-map';
 import {i18nDefaultConfig} from './defaultConfig';
 import {extractNamespaces} from './extractNamespaces';
 
@@ -23,6 +25,9 @@ export async function initI18nClient() {
       backend: {
         loadPath: '/locales/{{lng}}/{{ns}}.json',
       },
+    })
+    .then(() => {
+      z.setErrorMap(makeZodI18nMap());
     });
 }
 

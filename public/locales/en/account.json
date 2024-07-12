@@ -80,6 +80,16 @@
     "speaks_placeholder": "Choose languages",
     "short_description": "Write a short description about yourself",
     "aboutme_label": "Tell us about yourself and your experience:",
-    "create_business": "Create a business account"
+    "create_business": "Save and Continue",
+    "step": "Step {{step}}",
+    "location": {
+      "title": "How would you like to offer your services?",
+      "commercial": "Salon: your customers come to a shop",
+      "home": "Home: your customers come to your home",
+      "destination": "Mobile: you go to your customers' homes",
+      "drive_from": "Where will you drive from?",
+      "drive_to": "Where should the customer drive to?",
+      "submit": "Add and continue"
+    }
   }
 }

@@ -27,16 +27,15 @@ import {
 import {parseWithZod} from '@conform-to/zod';
 import {
   ActionIcon,
+  Card,
   Checkbox,
   Flex,
   Group,
   Select,
   Stack,
-  Table,
   Text,
   rem,
 } from '@mantine/core';
-import {useMediaQuery} from '@mantine/hooks';
 import {IconEdit, IconMinus, IconPlus, IconX} from '@tabler/icons-react';
 import {addMinutes, format, set} from 'date-fns';
 import {useMemo} from 'react';
@@ -125,14 +124,7 @@ export async function loader({context, params}: LoaderFunctionArgs) {
       return days.indexOf(a.day) - days.indexOf(b.day);
     });
 
-  return json(
-    {...response.payload, slots},
-    {
-      headers: {
-        'Cache-Control': 'no-cache, no-store, must-revalidate',
-      },
-    },
-  );
+  return json({...response.payload, slots});
 }
 
 export default function AccountSchedules() {
@@ -186,13 +178,10 @@ export default function AccountSchedules() {
       </Group>
       <FormProvider context={form.context}>
         <Form method="post" {...getFormProps(form)}>
-          <Table mt="lg" withTableBorder>
-            <Table.Tbody>
-              {slotsList.map((slot) => (
-                <SlotInput key={slot.key} field={slot} />
-              ))}
-            </Table.Tbody>
-          </Table>
+          {slotsList.map((slot) => (
+            <SlotInput key={slot.key} field={slot} />
+          ))}
+
           <Group mt="md">
             <SubmitButton size="sm">Gem ændringer</SubmitButton>
           </Group>
@@ -213,7 +202,7 @@ type SlotInputProps = {
   field: FieldMetadata<z.infer<typeof slotSchema>>;
 };
 
-function SlotInput({field}: SlotInputProps) {
+export function SlotInput({field}: SlotInputProps) {
   const [, form] = useField(field.name);
   const {day, intervals} = field.getFieldset();
   const intervalsList = intervals.getFieldList();
@@ -232,29 +221,29 @@ function SlotInput({field}: SlotInputProps) {
   const dayInput = useInputControl(day);
 
   return (
-    <Table.Tr>
-      <Table.Td valign="top">
+    <Card withBorder>
+      <Flex direction={{base: 'column', sm: 'row'}} gap="md">
         <Checkbox
           checked={intervalsList.length > 0}
           onChange={onChange}
           label={translationsDays[day.initialValue || '']}
           size={'sm'}
           data-testid={`${day.initialValue}-checkbox`}
+          mt={intervalsList.length > 0 ? 'xs' : undefined}
+          flex={1}
         />
-      </Table.Td>
-      <Table.Td>
+
         <Stack gap="sm">
-          {intervalsList.length === 0 && <>Ingen tider</>}
+          {intervalsList.length === 0 && <Text size="sm">Arbejder ikke?</Text>}
           {intervalsList.map((interval: any, index: number) => (
             <Flex gap="sm" w="100%" key={interval.key}>
               <IntervalInput field={interval} day={day.initialValue || ''} />
               {index > 0 ? (
                 <button
                   {...form.remove.getButtonProps({name: intervals.name, index})}
-                  style={{display: 'flex', alignItems: 'center'}}
                   data-testid={`${day.initialValue}-remove-button`}
                 >
-                  <IconMinus style={{width: rem(24), height: rem(24)}} />
+                  <IconMinus style={{width: '100%', height: '100%'}} />
                 </button>
               ) : (
                 <button
@@ -263,16 +252,15 @@ function SlotInput({field}: SlotInputProps) {
                     defaultValue,
                   })}
                   data-testid={`${day.initialValue}-add-button`}
-                  style={{display: 'flex', alignItems: 'center'}}
                 >
-                  <IconPlus style={{width: rem(24), height: rem(24)}} />
+                  <IconPlus style={{width: '100%', height: '100%'}} />
                 </button>
               )}
             </Flex>
           ))}
         </Stack>
-      </Table.Td>
-    </Table.Tr>
+      </Flex>
+    </Card>
   );
 }
 
@@ -282,7 +270,6 @@ type IntervalInputProps = {
 };
 
 function IntervalInput({field, day}: IntervalInputProps) {
-  const isMobile = useMediaQuery('(max-width: 48em)');
   const {from, to} = field.getFieldset();
 
   const fromInput = useInputControl(from);
@@ -293,7 +280,6 @@ function IntervalInput({field, day}: IntervalInputProps) {
   return (
     <Flex gap={{base: 'xs', sm: 'md'}}>
       <Select
-        size={isMobile ? 'xs' : 'md'}
         placeholder="Fra"
         data={data}
         defaultValue={field.initialValue?.from}
@@ -302,7 +288,6 @@ function IntervalInput({field, day}: IntervalInputProps) {
         data-testid={`${day}-from-select`}
       />
       <Select
-        size={isMobile ? 'xs' : 'md'}
         placeholder="Til"
         defaultValue={field.initialValue?.to}
         onChange={(value: string | null) => toInput.change(value!)}

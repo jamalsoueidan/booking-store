@@ -92,7 +92,7 @@ export const loader = async ({context, request}: LoaderFunctionArgs) => {
   if (product) {
     query.push(`tag:collectionid-${product}`);
   } else {
-    query.push('tag:collectionid');
+    query.push('tag:"collectionid*"');
   }
 
   const paginationVariables = getPaginationVariables(request, {

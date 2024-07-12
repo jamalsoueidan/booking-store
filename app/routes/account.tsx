@@ -17,7 +17,7 @@ export function links() {
 }
 
 export const handle: Handle = {
-  i18n: ['global', 'account', 'professions'],
+  i18n: ['global', 'account', 'professions', 'zod'],
 };
 
 export type AccountOutlet = {

@@ -1,78 +1,68 @@
+import {useField, useInputControl} from '@conform-to/react';
 import {
   Combobox,
+  Loader,
+  rem,
   TextInput,
   type TextInputProps,
   useCombobox,
 } from '@mantine/core';
 import {useFetcher} from '@remix-run/react';
-import {useEffect, useState} from 'react';
-import {type ApiAutoCompleteProposal} from '~/routes/api.autocomplete';
-
-export type AddressAutocompleteInputProps = {
-  defaultValue?: string;
-} & TextInputProps;
+import {IconCheck} from '@tabler/icons-react';
+import {useMemo, useState} from 'react';
+import {type ApiAutoCompleteProposal} from '~/routes/api.address-autocomplete';
 
 export function AddressAutocompleteInput({
-  defaultValue,
-  ...props
-}: AddressAutocompleteInputProps) {
-  const fetcher = useFetcher<Array<ApiAutoCompleteProposal>>();
-  const [query, setQuery] = useState({
-    q: '',
-    type: 'adresse',
-    caretpos: 2,
-    supplerendebynavn: true,
-    stormodtagerpostnumre: true,
-    multilinje: false,
-    fuzzy: '',
-    adgangsadresseid: null,
-    startFra: null,
+  name,
+  ...textProps
+}: Omit<TextInputProps, 'name'> & {name: string}) {
+  const [field] = useField<string>(name);
+  const input = useInputControl(field);
+  const combobox = useCombobox({
+    onDropdownClose: () => {
+      setTimeout(() => {
+        input.blur();
+      }, 50);
+    },
+    onDropdownOpen: () => {
+      setTimeout(() => {
+        input.focus();
+      }, 50);
+    },
   });
+  const [value, setValue] = useState(field.initialValue ?? '');
 
-  const combobox = useCombobox();
-  const [value, setValue] = useState(defaultValue ?? '');
+  const fetcher = useFetcher<Array<ApiAutoCompleteProposal>>();
+  const fetchOptions = (query: string) => {
+    fetcher.load(`/api/address-autocomplete?q=${query}`);
+  };
 
-  useEffect(() => {
-    if (query.q !== '' && query.q.length > 1) {
-      fetcher.load(`/api/autocomplete?${objectToQueryString(query)}`);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [query]);
-
-  const options = fetcher.data?.map((item) => (
-    <Combobox.Option value={item.forslagstekst} key={item.forslagstekst}>
-      {item.forslagstekst}
-    </Combobox.Option>
-  ));
+  const options = fetcher.data
+    ?.map((item) => (
+      <Combobox.Option value={item.tekst} key={item.tekst}>
+        {item.tekst}
+      </Combobox.Option>
+    ))
+    .slice(0, 5);
 
   const onOptionSubmit = (value: string) => {
-    const address: ApiAutoCompleteProposal | undefined = fetcher.data?.find(
-      (v) => v.forslagstekst === value,
+    if (!fetcher.data) {
+      return null;
+    }
+
+    const address: ApiAutoCompleteProposal | undefined = fetcher.data.find(
+      (v) => v.tekst === value,
     );
 
-    if (!address) {
-      return;
-    }
+    if (!address) return;
 
-    if ((address.data as any).adgangsadresseid !== undefined) {
+    if (address?.type === 'adresse') {
+      input.change(value);
+      setValue(address.tekst);
       combobox.closeDropdown();
-      return setValue(address.tekst);
-    }
-
-    if (
-      fetcher.data &&
-      fetcher.data.length === 1 &&
-      address.type !== 'vejnavn'
-    ) {
-      combobox.closeDropdown();
-      return setValue(address.tekst);
     } else {
-      setQuery((prev) => ({
-        ...prev,
-        q: address.tekst,
-        caretpos: address.caretpos,
-        startfra: address.type === 'vejnavn' ? 'adgangsadresse' : null,
-      }));
+      setValue(address.tekst);
+      fetchOptions(value);
     }
   };
 
@@ -82,23 +72,47 @@ export function AddressAutocompleteInput({
     }
   };
 
+  const rightSection = useMemo(() => {
+    if (fetcher.state !== 'idle') {
+      return <Loader size="xs" />;
+    }
+
+    if ((field.value && !field.errors) || field.errors?.length === 0) {
+      return (
+        <IconCheck
+          style={{width: rem(20), height: rem(20)}}
+          color="var(--mantine-color-green-filled)"
+          data-testid="username-success"
+        />
+      );
+    }
+  }, [fetcher.state, field.errors, field.value]);
+
   return (
-    <Combobox onOptionSubmit={onOptionSubmit} store={combobox}>
+    <Combobox
+      onOptionSubmit={onOptionSubmit}
+      withinPortal={false}
+      store={combobox}
+    >
       <Combobox.Target>
         <TextInput
-          {...props}
+          {...textProps}
+          placeholder="Sigridsvej 45, 8220 Brabrand"
           value={value}
           onChange={(event) => {
+            input.change(undefined);
             setValue(event.currentTarget.value);
-            setQuery({...query, q: event.currentTarget.value});
-            if (event.currentTarget.value.length === 0) {
-              return combobox.closeDropdown();
-            }
+            fetchOptions(event.currentTarget.value);
+            combobox.resetSelectedOption();
             combobox.openDropdown();
           }}
           onClick={showDropdown}
           onFocus={showDropdown}
-          onBlur={() => combobox.closeDropdown()}
+          onBlur={() => {
+            combobox.closeDropdown();
+          }}
+          error={field.errors && field.errors[0]}
+          rightSection={rightSection}
         />
       </Combobox.Target>
 
@@ -110,10 +124,3 @@ export function AddressAutocompleteInput({
     </Combobox>
   );
 }
-
-const objectToQueryString = (obj: any) => {
-  return Object.keys(obj)
-    .filter((key) => obj[key] !== null && obj[key] !== undefined)
-    .map((key) => encodeURIComponent(key) + '=' + encodeURIComponent(obj[key]))
-    .join('&');
-};

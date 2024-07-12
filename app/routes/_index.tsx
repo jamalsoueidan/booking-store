@@ -74,7 +74,7 @@ export async function loader({context, request}: LoaderFunctionArgs) {
     variables: {
       sortKey: 'PUBLISHED_AT',
       reverse: true,
-      query: 'tag:collectionid',
+      query: 'tag:"collectionid*"',
       ...paginationVariables,
     },
     cache: context.storefront.CacheShort(),
