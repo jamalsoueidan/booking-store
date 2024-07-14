@@ -220,37 +220,39 @@ function Header() {
         align="center"
         gap="md"
       >
-        {!!rootCollection.children?.references?.nodes.length && (
-          <Radio.Group
-            value={
-              searchParams.get('collection')
-                ? searchParams.get('collection')
-                : ''
-            }
-            onChange={(collection: string) =>
-              setSearchParams({collection}, {preventScrollReset: true})
-            }
-          >
-            <Group gap="xs" wrap="wrap">
-              <Radio
-                label={`Alle (${
-                  collectionCount[parseGid(rootCollection.id).id]
-                })`}
-                value=""
-              />
-              {rootCollection.children?.references?.nodes.map((col) => (
+        <Flex flex={1}>
+          {!!rootCollection.children?.references?.nodes.length && (
+            <Radio.Group
+              value={
+                searchParams.get('collection')
+                  ? searchParams.get('collection')
+                  : ''
+              }
+              onChange={(collection: string) =>
+                setSearchParams({collection}, {preventScrollReset: true})
+              }
+            >
+              <Group gap="xs" wrap="wrap">
                 <Radio
-                  key={col.id}
-                  value={col.handle}
-                  label={`${col.title} (${
-                    collectionCount[parseGid(col.id).id] || 0
+                  label={`Alle (${
+                    collectionCount[parseGid(rootCollection.id).id] || 0
                   })`}
+                  value=""
                 />
-              ))}
-            </Group>
-          </Radio.Group>
-        )}
-        <Group gap="xs">
+                {rootCollection.children?.references?.nodes.map((col) => (
+                  <Radio
+                    key={col.id}
+                    value={col.handle}
+                    label={`${col.title} (${
+                      collectionCount[parseGid(col.id).id] || 0
+                    })`}
+                  />
+                ))}
+              </Group>
+            </Radio.Group>
+          )}
+        </Flex>
+        <Group gap="xs" flex={0.6} align="center" justify="flex-end">
           <Select
             value={
               (searchParams.get('sort') as ProductSortKeys) || 'CREATED_AT'
@@ -531,7 +533,7 @@ export const GET_CATEGORY_QUERY = `#graphql
   }
 ` as const;
 
-const GET_COLLECTION_FILTERS = `#graphql
+export const GET_COLLECTION_FILTERS = `#graphql
   ${USER_COLLECTION_FILTER}
   query GetCollectionFilters(
     $handle: String!

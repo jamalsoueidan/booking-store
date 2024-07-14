@@ -24,11 +24,15 @@ import {H2} from '~/components/titles/H2';
 
 import {ProfessionButton} from '~/components/ProfessionButton';
 
-import {getPaginationVariables} from '@shopify/hydrogen';
+import {getPaginationVariables, parseGid} from '@shopify/hydrogen';
 import {useTranslation} from 'react-i18next';
 import {Headless} from '~/components/blocks/Headless';
+import {useFilterCounts} from '~/hooks/useFilterCounts';
 import {getTags} from '~/lib/tags';
-import {GET_CATEGORY_QUERY} from './categories_.$handle';
+import {
+  GET_CATEGORY_QUERY,
+  GET_COLLECTION_FILTERS,
+} from './categories_.$handle';
 import {PAGE_QUERY} from './pages.$handle';
 import {UserCard, USERS_QUERY} from './users._index';
 
@@ -66,6 +70,18 @@ export async function loader({context, request}: LoaderFunctionArgs) {
     },
   );
 
+  // we are getting rootCollectionFilters to figure out the total count of the subcollections
+  const {collection: rootCollectionFilters} = await context.storefront.query(
+    GET_COLLECTION_FILTERS,
+    {
+      variables: {
+        handle: 'alle-behandlinger',
+        language: 'DA',
+      },
+      cache: context.storefront.CacheLong(),
+    },
+  );
+
   const paginationVariables = getPaginationVariables(request, {
     pageBy: 4,
   });
@@ -92,6 +108,7 @@ export async function loader({context, request}: LoaderFunctionArgs) {
     page,
     tags,
     rootCollection,
+    rootCollectionFilters: rootCollectionFilters?.products.filters,
   });
 }
 
@@ -163,7 +180,12 @@ function Header() {
 function FeaturedCollections() {
   const theme = useMantineTheme();
   const {t} = useTranslation(['index']);
-  const {rootCollection} = useLoaderData<typeof loader>();
+  const {rootCollection, rootCollectionFilters} =
+    useLoaderData<typeof loader>();
+  const collectionCount = useFilterCounts(
+    rootCollectionFilters as any,
+    'collectionid',
+  );
 
   return (
     <Box
@@ -187,7 +209,8 @@ function FeaturedCollections() {
                   >
                     <Flex justify="space-between">
                       <Title order={2} size="lg">
-                        {col.title}
+                        {col.title} ({collectionCount[parseGid(col.id).id] || 0}
+                        )
                       </Title>
                       <IconArrowRight />
                     </Flex>
@@ -203,7 +226,8 @@ function FeaturedCollections() {
                         to={`/categories/${col.handle}?collection=${nesCol.handle}`}
                       >
                         <Title order={2} size="lg">
-                          {nesCol.title}
+                          {nesCol.title} (
+                          {collectionCount[parseGid(nesCol.id).id] || 0})
                         </Title>
                       </UnstyledButton>
                     ))}
