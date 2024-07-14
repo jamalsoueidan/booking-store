@@ -27,7 +27,7 @@ export function PriceBadge({
   }, [compareAtPrice?.amount, price.amount, t]);
 
   return (
-    <Flex direction="column" gap="4px" justify="flex-start" align="flex-end">
+    <Flex direction="column" gap="4px" justify="flex-start">
       <Text size="sm" {...props}>
         {options ? t('from') : ''} {price.amount} kr
       </Text>
@@ -35,9 +35,7 @@ export function PriceBadge({
         <Text c="green.9" size="sm">
           {discountString}
         </Text>
-      ) : (
-        <br />
-      )}
+      ) : null}
     </Flex>
   );
 }

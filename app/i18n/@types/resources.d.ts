@@ -84,7 +84,7 @@ interface Resources {
       "create_business": "Gem og forsæt",
       "step": "Step {{step}}",
       "location": {
-        "title": "Hvordan vil du gerne tilbyde dine tjenester?",
+        "title": "Angiv et mødested",
         "commercial": "Salon: dine kunder kommer til en butik",
         "home": "Hjemme: dine kunder kommer til dit hjem",
         "destination": "Mobil: du tager hjem til din kunder",
@@ -93,7 +93,7 @@ interface Resources {
         "submit": "Gem og forsæt"
       },
       "schedule": {
-        "title": "Hvordan ser din arbejdsuge ud?",
+        "title": "Vælg de tidspunkter, hvor du er tilgængelig",
         "submit": "Gem og forsæt"
       },
       "service": {
@@ -101,7 +101,7 @@ interface Resources {
         "submit": "Gem og forsæt"
       },
       "profile": {
-        "title": "...udfyld resten af felterne for at fuldføre din profil",
+        "title": "Udfyld resten af felterne for at fuldføre din profil",
         "description": "Du kan vælge og trykke på AI knappen og autoudfylde felterne udefra de de data du har angivet herunder."
       }
     }
@@ -184,7 +184,16 @@ interface Resources {
     "price_label": "Pris:",
     "reset_filters": "Nulstil filtering",
     "man": "Mand",
-    "woman": "Woman"
+    "woman": "Woman",
+    "best_selling": "Bedst Sælgende",
+    "created_at": "Oprettet Dato",
+    "id": "ID",
+    "price": "Pris",
+    "product_type": "Produkt Type",
+    "relevance": "Relevans",
+    "title": "Titel",
+    "updated_at": "Opdateret dDto",
+    "vendor": "Leverandør"
   },
   "index": {
     "collection_title": "Hvilken [skønhedsoplevelse] ønsker du?",

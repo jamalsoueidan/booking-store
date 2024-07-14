@@ -1,5 +1,16 @@
-import {Button, Group, InputLabel, Radio, Stack, Text} from '@mantine/core';
 import {
+  Button,
+  Checkbox,
+  type CheckboxProps,
+  Group,
+  InputLabel,
+  Radio,
+  Stack,
+  Text,
+} from '@mantine/core';
+import {useSearchParams} from '@remix-run/react';
+import {
+  IconBiohazard,
   IconBuilding,
   IconCar,
   IconHome,
@@ -8,6 +19,8 @@ import {
   IconX,
 } from '@tabler/icons-react';
 import {useTranslation} from 'react-i18next';
+import {type UserCollectionFilterFragment} from 'storefrontapi.generated';
+import {useFilterCounts} from '~/hooks/useFilterCounts';
 import {CustomerLocationBaseLocationType} from '~/lib/api/model';
 import {useChangeFilter} from './useChangeFilter';
 
@@ -118,5 +131,113 @@ export function AddLocationFilter({tags}: {tags: string[] | null}) {
         </Stack>
       </Radio.Group>
     </div>
+  );
+}
+
+export function LocationFilter({
+  filters,
+}: {
+  filters: UserCollectionFilterFragment[];
+}) {
+  const [searchParams, setSearchParams] = useSearchParams();
+  const {t} = useTranslation(['global']);
+  const locationType = useFilterCounts(filters as any, 'location_type');
+
+  const CheckboxIconCar: CheckboxProps['icon'] = ({indeterminate, ...others}) =>
+    indeterminate ? <IconBiohazard {...others} /> : <IconCar {...others} />;
+
+  const CheckboxIconHome: CheckboxProps['icon'] = ({
+    indeterminate,
+    ...others
+  }) =>
+    indeterminate ? <IconBiohazard {...others} /> : <IconHome {...others} />;
+
+  const CheckboxIconBuilding: CheckboxProps['icon'] = ({
+    indeterminate,
+    ...others
+  }) =>
+    indeterminate ? (
+      <IconBiohazard {...others} />
+    ) : (
+      <IconBuilding {...others} />
+    );
+
+  const CheckboxIconPhone: CheckboxProps['icon'] = ({
+    indeterminate,
+    ...others
+  }) =>
+    indeterminate ? <IconBiohazard {...others} /> : <IconPhone {...others} />;
+
+  return (
+    <Stack>
+      <Group gap="xs">
+        <IconLocation />
+        <InputLabel size="md">{t('location_label')}</InputLabel>
+      </Group>
+      <Checkbox.Group
+        value={searchParams.getAll('locationType')}
+        onChange={(locationType: string[]) =>
+          setSearchParams(
+            (prev) => {
+              prev.delete('locationType');
+              locationType.forEach((item) => {
+                prev.append('locationType', item);
+              });
+              return prev;
+            },
+            {preventScrollReset: true},
+          )
+        }
+      >
+        <Stack gap="xs">
+          <Checkbox
+            value={CustomerLocationBaseLocationType.destination}
+            icon={CheckboxIconCar}
+            label={`${t('location_destination')} (${
+              locationType[CustomerLocationBaseLocationType.destination] || 0
+            })`}
+            disabled={
+              locationType[CustomerLocationBaseLocationType.destination] ===
+                0 || !locationType[CustomerLocationBaseLocationType.destination]
+            }
+          />
+
+          <Checkbox
+            icon={CheckboxIconBuilding}
+            value={CustomerLocationBaseLocationType.commercial}
+            label={`${t('location_commercial')} (${
+              locationType[CustomerLocationBaseLocationType.commercial] || 0
+            })`}
+            disabled={
+              locationType[CustomerLocationBaseLocationType.commercial] === 0 ||
+              !locationType[CustomerLocationBaseLocationType.commercial]
+            }
+          />
+
+          <Checkbox
+            icon={CheckboxIconHome}
+            value={CustomerLocationBaseLocationType.home}
+            label={`${t('location_home')} (
+                  ${locationType[CustomerLocationBaseLocationType.home] || 0})`}
+            disabled={
+              locationType[CustomerLocationBaseLocationType.home] === 0 ||
+              !locationType[CustomerLocationBaseLocationType.home]
+            }
+          />
+          <Checkbox
+            icon={CheckboxIconPhone}
+            value={CustomerLocationBaseLocationType.virtual}
+            label={`${t('location_virtual')} (
+                  ${
+                    locationType[CustomerLocationBaseLocationType.virtual] || 0
+                  })`}
+            disabled={
+              locationType[CustomerLocationBaseLocationType.virtual] === 0 ||
+              !locationType[CustomerLocationBaseLocationType.virtual]
+            }
+          />
+        </Stack>
+      </Checkbox.Group>
+    </Stack>
   );
 }

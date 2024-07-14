@@ -40,5 +40,14 @@
   "price_label": "Pris:",
   "reset_filters": "Nulstil filtering",
   "man": "Mand",
-  "woman": "Woman"
+  "woman": "Woman",
+  "best_selling": "Bedst Sælgende",
+  "created_at": "Oprettet Dato",
+  "id": "ID",
+  "price": "Pris",
+  "product_type": "Produkt Type",
+  "relevance": "Relevans",
+  "title": "Titel",
+  "updated_at": "Opdateret dDto",
+  "vendor": "Leverandør"
 }

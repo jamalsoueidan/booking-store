@@ -40,5 +40,14 @@
   "price_label": "السعر:",
   "reset_filters": "إعادة تعيين الفلاتر",
   "man": "رجل",
-  "woman": "امرأة"
+  "woman": "امرأة",
+  "best_selling": "الأكثر مبيعاً",
+  "created_at": "تاريخ الإنشاء",
+  "id": "معرف",
+  "price": "السعر",
+  "product_type": "نوع المنتج",
+  "relevance": "الصلة",
+  "title": "العنوان",
+  "updated_at": "تاريخ التحديث",
+  "vendor": "البائع"
 }

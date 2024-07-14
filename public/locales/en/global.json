@@ -40,5 +40,14 @@
   "price_label": "Price:",
   "reset_filters": "Reset Filters",
   "man": "Man",
-  "woman": "Woman"
+  "woman": "Woman",
+  "best_selling": "Best Selling",
+  "created_at": "Created at",
+  "id": "ID",
+  "price": "Price",
+  "product_type": "Product type",
+  "relevance": "Relevance",
+  "title": "Title",
+  "updated_at": "Updated at",
+  "vendor": "Vendor"
 }

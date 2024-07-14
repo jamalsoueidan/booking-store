@@ -37,7 +37,7 @@ export function ResetFilter() {
       color="gray.3"
       bg="white"
       onClick={deleteSearchParams}
-      size="xl"
+      size="sm"
       rightSection={<IconX />}
     >
       {t('reset_filters')}
