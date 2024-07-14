@@ -9,7 +9,6 @@ import {
   Stack,
   Title,
   UnstyledButton,
-  useMantineTheme,
 } from '@mantine/core';
 import {Link, useLoaderData} from '@remix-run/react';
 import {json, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
@@ -58,7 +57,6 @@ export default function Collections() {
 }
 
 function FeaturedCollections() {
-  const theme = useMantineTheme();
   const {t} = useTranslation(['index']);
   const {rootCollection} = useLoaderData<typeof loader>();
 
@@ -88,7 +86,7 @@ function FeaturedCollections() {
                     <UnstyledButton
                       key={nesCol.id}
                       component={Link}
-                      to={`/categories/${nesCol.handle}`}
+                      to={`/categories/${col.handle}?collection=${nesCol.handle}`}
                     >
                       <Title order={2} size="lg">
                         {nesCol.title}

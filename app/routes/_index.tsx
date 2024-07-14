@@ -200,7 +200,7 @@ function FeaturedCollections() {
                       <UnstyledButton
                         key={nesCol.id}
                         component={Link}
-                        to={`/categories/${nesCol.handle}`}
+                        to={`/categories/${col.handle}?collection=${nesCol.handle}`}
                       >
                         <Title order={2} size="lg">
                           {nesCol.title}
