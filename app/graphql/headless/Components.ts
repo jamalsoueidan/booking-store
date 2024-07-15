@@ -3,7 +3,6 @@ import {BACKGROUND_IMAGE_FRAGMENT} from './BackgroundImage';
 import {BUTTON_FRAGMENT} from './Button';
 import {CALL_TO_ACTION_FRAGMENT} from './CallToAction';
 import {CARD_MEDIA_FRAGMENT} from './CardMedia';
-import {FAQ_FRAGMENT} from './Faq';
 import {FEATURES_FRAGMENT} from './Features';
 import {HELP_FRAGMENT} from './Help';
 import {IMAGE_FRAGMENT} from './Image';
@@ -29,7 +28,6 @@ export const COMPONENTS_FRAGMENT = `#graphql
   ${MAPS_FRAGMENT}
   ${SIDE_BY_SIDE_FRAGMENT}
   ${VISUAL_TEASER_FRAGMENT}
-  ${FAQ_FRAGMENT}
   ${IMAGE_GRID_WITH_HEADER_FRAGMENT}
 
   fragment Components on Metaobject {
@@ -45,7 +43,6 @@ export const COMPONENTS_FRAGMENT = `#graphql
           ...Maps
           ...SideBySide
           ...VisualTeaser
-          ...Faq
           ...ImageGridWithHeader
         }
       }

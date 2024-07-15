@@ -1,7 +1,7 @@
 import {type PageFragment} from 'storefrontapi.generated';
+import {Accordion} from '~/components/blocks/Accordion';
 import {CallToAction} from '~/components/blocks/CallToAction';
 import {CardMedia} from '~/components/blocks/CardMedia';
-import {Faq} from '~/components/blocks/Faq';
 import {Features} from '~/components/blocks/Features';
 import {GoogleMap} from '~/components/blocks/GoogleMap';
 import {Help} from '~/components/blocks/Help';
@@ -17,8 +17,8 @@ export function Headless({
   return components?.references?.nodes.map((c) => {
     if (c.type === 'features') {
       return <Features key={c.id} data={c} />;
-    } else if (c.type === 'faq') {
-      return <Faq key={c.id} data={c} />;
+    } else if (c.type === 'accordion') {
+      return <Accordion key={c.id} data={c} />;
     } else if (c.type === 'maps') {
       return <GoogleMap key={c.id} component={c} />;
     } else if (c.type === 'card_media') {

@@ -23,6 +23,24 @@ export const ACCORDION_FRAGMENT = `#graphql
       key
       value
     }
+    title: field(key: "title") {
+      value
+    }
+    description:field(key:"description") {
+      value
+    }
+    backgroundColor:field(key:"background_color") {
+      value
+    }
+    fromColor:field(key:"from_color") {
+      value
+    }
+    toColor:field(key:"to_color") {
+      value
+    }
+    direction: field(key:"direction") {
+      value
+    }
     items: field(key:"items") {
       references(first: 10) {
         nodes {

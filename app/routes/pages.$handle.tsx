@@ -8,7 +8,6 @@ import {BACKGROUND_IMAGE_FRAGMENT} from '~/graphql/headless/BackgroundImage';
 import {BUTTON_FRAGMENT} from '~/graphql/headless/Button';
 import {CALL_TO_ACTION_FRAGMENT} from '~/graphql/headless/CallToAction';
 import {CARD_MEDIA_FRAGMENT} from '~/graphql/headless/CardMedia';
-import {FAQ_FRAGMENT} from '~/graphql/headless/Faq';
 import {FEATURES_FRAGMENT} from '~/graphql/headless/Features';
 import {HELP_FRAGMENT} from '~/graphql/headless/Help';
 import {IMAGE_FRAGMENT} from '~/graphql/headless/Image';
@@ -81,7 +80,6 @@ const PAGE_FRAGMENT = `#graphql
   ${MAPS_FRAGMENT}
   ${SIDE_BY_SIDE_FRAGMENT}
   ${VISUAL_TEASER_FRAGMENT}
-  ${FAQ_FRAGMENT}
   ${IMAGE_GRID_WITH_HEADER_FRAGMENT}
 
 
@@ -104,7 +102,6 @@ const PAGE_FRAGMENT = `#graphql
           ...Maps
           ...SideBySide
           ...VisualTeaser
-          ...Faq
           ...ImageGridWithHeader
         }
       }
@@ -120,7 +117,6 @@ const PAGE_FRAGMENT = `#graphql
         ...Maps
         ...SideBySide
         ...VisualTeaser
-        ...Faq
         ...ImageGridWithHeader
       }
     }
@@ -136,7 +132,6 @@ const PAGE_FRAGMENT = `#graphql
           ...Maps
           ...SideBySide
           ...VisualTeaser
-          ...Faq
           ...ImageGridWithHeader
         }
       }

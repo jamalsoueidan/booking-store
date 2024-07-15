@@ -1,6 +1,0 @@
-.title {
-  font-size: var(--mantine-font-size-xl);
-  @media (min-width: $mantine-breakpoint-md) {
-    font-size: rem(28);
-  }
-}
